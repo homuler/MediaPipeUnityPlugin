@@ -1,0 +1,10 @@
+.vscode/
+
+Temp/
+Library/
+Logs/
+*.csproj
+*.sln
+
+*.so
+*.so.meta
