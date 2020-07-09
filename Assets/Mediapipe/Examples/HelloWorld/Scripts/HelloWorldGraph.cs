@@ -51,7 +51,8 @@ node {
     private OutputStreamPoller outputStreamPoller;
     private Status lastStatus;
 
-    public HelloWorldGraph() {
+    public HelloWorldGraph()
+    {
       mpCalculatorGraph = MpCalculatorGraphCreate();
 
       Initialize();
@@ -61,7 +62,8 @@ node {
       MpCalculatorGraphDestroy(mpCalculatorGraph);
     }
 
-    public void StartRun() {
+    public void StartRun()
+    {
       var outputStreamPollerOrStatus = new StatusOrPoller(MpCalculatorGraphAddOutputStreamPoller(mpCalculatorGraph, "out"));
 
       if (!outputStreamPollerOrStatus.IsOk()) {
@@ -75,35 +77,43 @@ node {
       lastStatus = new Status(MpCalculatorGraphStartRun(mpCalculatorGraph, sidePacket.GetPtr()));
     }
 
-    public Status AddStringToInputStream(string text, int timestamp) {
+    public Status AddStringToInputStream(string text, int timestamp)
+    {
       return new Status(MpCalculatorGraphAddStringPacketToInputStream(mpCalculatorGraph, "in", text, timestamp));
     }
 
-    public void CloseInputStream() {
+    public void CloseInputStream()
+    {
       lastStatus = new Status(MpCalculatorGraphCloseInputStream(mpCalculatorGraph, "in"));
     }
 
-    public void WaitUntilDone() {
+    public void WaitUntilDone()
+    {
       lastStatus = new Status(MpCalculatorGraphWaitUntilDone(mpCalculatorGraph));
     }
 
-    public bool HasNextPacket() {
+    public bool HasNextPacket()
+    {
       return outputStreamPoller.HasNextPacket();
     }
 
-    public string GetPacketValue() {
+    public string GetPacketValue()
+    {
       return outputStreamPoller.GetPacketValue();
     }
 
-    public bool IsOk() {
+    public bool IsOk()
+    {
       return lastStatus == null ? true : lastStatus.IsOk();
     }
 
-    public Status GetLastStatus() {
+    public Status GetLastStatus()
+    {
       return lastStatus;
     }
 
-    private void Initialize() {
+    private void Initialize()
+    {
       var config = ParseMpCalculatorGraphConfigOrDie(configText);
 
       lastStatus = new Status(MpCalculatorGraphInitialize(mpCalculatorGraph, config));

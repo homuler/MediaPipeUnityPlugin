@@ -10,23 +10,28 @@ namespace Mediapipe
 
     private MpStatus mpStatus;
 
-    public Status(MpStatus ptr) {
+    public Status(MpStatus ptr)
+    {
       mpStatus = ptr;
     }
 
-    ~Status() {
+    ~Status()
+    {
       MpStatusDestroy(mpStatus);
     }
 
-    public bool IsOk() {
+    public bool IsOk()
+    {
       return MpStatusOk(mpStatus);
     }
 
-    public int GetRawCode() {
+    public int GetRawCode()
+    {
       return GetMpStatusRawCode(mpStatus);
     }
 
-    public override string ToString() {
+    public override string ToString()
+    {
       return MpStatusToString(mpStatus);
     }
 

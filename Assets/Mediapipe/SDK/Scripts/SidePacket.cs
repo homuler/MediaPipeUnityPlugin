@@ -14,15 +14,18 @@ namespace Mediapipe
       mpPacket = MpSidePacketCreate();
     }
 
-    public SidePacket(MpSidePacket ptr) {
+    public SidePacket(MpSidePacket ptr)
+    {
       mpPacket = ptr;
     }
 
-    ~SidePacket() {
+    ~SidePacket()
+    {
       MpSidePacketDestroy(mpPacket);
     }
 
-    public MpSidePacket GetPtr() {
+    public MpSidePacket GetPtr()
+    {
       return mpPacket;
     }
 

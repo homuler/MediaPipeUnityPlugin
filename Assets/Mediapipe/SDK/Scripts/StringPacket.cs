@@ -10,27 +10,33 @@ namespace Mediapipe
 
     private MpPacket mpPacket;
 
-    public StringPacket() {
+    public StringPacket()
+    {
       mpPacket = MpPacketCreate();
     }
 
-    public StringPacket(MpPacket ptr) {
+    public StringPacket(MpPacket ptr)
+    {
       mpPacket = ptr;
     }
 
-    ~StringPacket() {
+    ~StringPacket()
+    {
       MpPacketDestroy(mpPacket);
     }
 
-    public MpPacket GetPtr() {
+    public MpPacket GetPtr()
+    {
       return mpPacket;
     }
 
-    public string GetValue() {
+    public string GetValue()
+    {
       return MpPacketGetString(mpPacket);
     }
 
-    public static StringPacket BuildStringPacketAt(string text, int timestamp) {
+    public static StringPacket BuildStringPacketAt(string text, int timestamp)
+    {
       return new StringPacket(MpMakeStringPacketAt(text, timestamp));
     }
 

@@ -12,20 +12,24 @@ namespace Mediapipe
     private MpOutputStreamPoller mpOutputStreamPoller;
     private StringPacket packet;
 
-    public OutputStreamPoller(MpOutputStreamPoller ptr) {
+    public OutputStreamPoller(MpOutputStreamPoller ptr)
+    {
       mpOutputStreamPoller = ptr;
       packet = new StringPacket();
     }
 
-    ~OutputStreamPoller() {
+    ~OutputStreamPoller()
+    {
       MpOutputStreamPollerDestroy(mpOutputStreamPoller);
     }
 
-    public bool HasNextPacket() {
+    public bool HasNextPacket()
+    {
       return MpOutputStreamPollerNext(mpOutputStreamPoller, packet.GetPtr());
     }
 
-    public string GetPacketValue() {
+    public string GetPacketValue()
+    {
       return packet.GetValue();
     }
 

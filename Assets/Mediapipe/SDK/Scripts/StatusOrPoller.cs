@@ -11,20 +11,25 @@ namespace Mediapipe
 
     private MpStatusOrPoller mpStatusOrPoller;
 
-    public StatusOrPoller(MpStatusOrPoller ptr) {
+    public StatusOrPoller(MpStatusOrPoller ptr)
+    {
       mpStatusOrPoller = ptr;
     }
 
-    ~StatusOrPoller() {
+    ~StatusOrPoller()
+    {
       MpStatusOrPollerDestroy(mpStatusOrPoller);
     }
 
-    public bool IsOk() {
+    public bool IsOk()
+    {
       return MpStatusOrPollerOk(mpStatusOrPoller);
     }
 
-    public OutputStreamPoller GetPoller() {
-      if (!MpStatusOrPollerOk(mpStatusOrPoller)) {
+    public OutputStreamPoller GetPoller()
+    {
+      if (!MpStatusOrPollerOk(mpStatusOrPoller))
+      {
         return null;
       }
 
