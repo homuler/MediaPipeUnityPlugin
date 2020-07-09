@@ -14,3 +14,6 @@ bazel build -c opt //mediapipe/apis:mediapipe_c
 ```
 
 and place the generated shared object (e.g. `libmediapipe_c.so`) in Assets/Mediapipe/SDK/Plugins/.
+
+## LICENSE
+MIT
