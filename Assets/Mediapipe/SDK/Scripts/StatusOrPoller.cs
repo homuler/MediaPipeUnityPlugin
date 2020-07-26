@@ -33,7 +33,7 @@ namespace Mediapipe
         return null;
       }
 
-      var mpOutputStreamPoller = MpStatusOrPollerValueOrDie(mpStatusOrPoller);
+      var mpOutputStreamPoller = MpStatusOrPollerValue(mpStatusOrPoller);
 
       return new OutputStreamPoller(mpOutputStreamPoller);
     }
@@ -44,12 +44,11 @@ namespace Mediapipe
     private static extern unsafe bool MpStatusOrPollerOk(MpStatusOrPoller statusOrPoller);
 
     [DllImport (MediapipeLibrary)]
-    private static extern unsafe MpOutputStreamPoller MpStatusOrPollerValueOrDie(MpStatusOrPoller statusOrPoller);
+    private static extern unsafe MpOutputStreamPoller MpStatusOrPollerValue(MpStatusOrPoller statusOrPoller);
 
 
     [DllImport (MediapipeLibrary)]
     private static extern unsafe void MpStatusOrPollerDestroy(MpStatusOrPoller statusOrPoller);
-
 
     #endregion
   }
