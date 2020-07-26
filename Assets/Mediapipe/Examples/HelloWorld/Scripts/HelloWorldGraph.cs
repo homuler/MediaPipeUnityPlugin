@@ -104,7 +104,7 @@ node {
 
     public bool IsOk()
     {
-      return lastStatus == null ? true : lastStatus.IsOk();
+      return lastStatus == null ? false : lastStatus.IsOk();
     }
 
     public Status GetLastStatus()
@@ -114,9 +114,47 @@ node {
 
     private void Initialize()
     {
-      var config = ParseMpCalculatorGraphConfigOrDie(configText);
+      SetUpDebug();
+      var config = ParseMpCalculatorGraphConfig(configText);
+
+      if (config == System.IntPtr.Zero)
+      {
+        Debug.Log("Failed to parse graph config");
+        return;
+      }
 
       lastStatus = new Status(MpCalculatorGraphInitialize(mpCalculatorGraph, config));
+    }
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    private delegate void DebugProtobufLog(int level, string filename, int line, string message);
+    private static readonly DebugProtobufLog debugProtobufLog = DebugProtobufLogImpl;
+    private static System.IntPtr functionPointer;
+
+    private static void DebugProtobufLogImpl(int level, string filename, int line, string message)
+    {
+      Debug.Log($"[libprotobuf {FormatProtobufLogLevel(level)} {filename}:{line}] {message}");
+    }
+
+    private static string FormatProtobufLogLevel(int level)
+    {
+      switch (level)
+      {
+        case 1: return "WARNING";
+        case 2: return "ERROR";
+        case 3: return "FATAL";
+        default: return "INFO";
+      }
+    }
+
+    public static void SetUpDebug()
+    {
+      if (functionPointer == System.IntPtr.Zero)
+      {
+        functionPointer = Marshal.GetFunctionPointerForDelegate(debugProtobufLog);
+      }
+
+      SetProtobufLogHandler(functionPointer);
     }
 
     #region Externs
@@ -129,7 +167,10 @@ node {
     private static extern unsafe void MpCalculatorGraphDestroy(MpCalculatorGraph graph);
 
     [DllImport (MediapipeLibrary)]
-    private static extern unsafe MpCalculatorGraphConfig ParseMpCalculatorGraphConfigOrDie(string input);
+    private static extern unsafe System.IntPtr SetProtobufLogHandler([MarshalAs(UnmanagedType.FunctionPtr)]System.IntPtr debugCal);
+
+    [DllImport (MediapipeLibrary)]
+    private static extern unsafe MpCalculatorGraphConfig ParseMpCalculatorGraphConfig(string input);
 
     [DllImport (MediapipeLibrary)]
     private static extern unsafe MpStatus MpCalculatorGraphInitialize(MpCalculatorGraph graph, MpCalculatorGraphConfig config);
