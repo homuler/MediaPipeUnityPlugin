@@ -35,7 +35,6 @@ namespace Mediapipe
 
     #region Externs
 
-    // CalculatorGraph API
     [DllImport (MediapipeLibrary)]
     private static extern unsafe bool MpOutputStreamPollerNext(MpOutputStreamPoller poller, MpPacket packet);
 

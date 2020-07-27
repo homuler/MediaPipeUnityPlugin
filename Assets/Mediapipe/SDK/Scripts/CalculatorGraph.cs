@@ -52,7 +52,6 @@ namespace Mediapipe
       return new StatusOrPoller(MpCalculatorGraphAddOutputStreamPoller(mpCalculatorGraph, name));
     }
 
-    // TODO: add Packet, instead of StringPacket
     public Status AddPacketToInputStream(string name, Packet packet)
     {
       return new Status(MpCalculatorGraphAddPacketToInputStream(mpCalculatorGraph, name, packet.GetPtr()));
@@ -101,7 +100,6 @@ namespace Mediapipe
 
     #region Externs
 
-    // CalculatorGraph API
     [DllImport (MediapipeLibrary)]
     private static extern unsafe MpCalculatorGraph MpCalculatorGraphCreate();
 

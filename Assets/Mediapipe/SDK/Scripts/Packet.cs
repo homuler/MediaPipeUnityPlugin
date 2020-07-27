@@ -22,7 +22,7 @@ namespace Mediapipe
 
     ~Packet()
     {
-      // MpPacketDestroy(mpPacket);
+      MpPacketDestroy(mpPacket);
     }
 
     public MpPacket GetPtr()
