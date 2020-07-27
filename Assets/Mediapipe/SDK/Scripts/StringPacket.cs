@@ -4,35 +4,17 @@ using MpPacket = System.IntPtr;
 
 namespace Mediapipe
 {
-  public class StringPacket
+  public class StringPacket : Packet
   {
     private const string MediapipeLibrary = "mediapipe_c";
 
-    private MpPacket mpPacket;
+    public StringPacket() : base() {}
 
-    public StringPacket()
-    {
-      mpPacket = MpPacketCreate();
-    }
-
-    public StringPacket(MpPacket ptr)
-    {
-      mpPacket = ptr;
-    }
-
-    ~StringPacket()
-    {
-      MpPacketDestroy(mpPacket);
-    }
-
-    public MpPacket GetPtr()
-    {
-      return mpPacket;
-    }
+    public StringPacket(MpPacket ptr) : base(ptr) {}
 
     public string GetValue()
     {
-      return MpPacketGetString(mpPacket);
+      return MpPacketGetString(GetPtr());
     }
 
     public static StringPacket BuildStringPacketAt(string text, int timestamp)
@@ -43,16 +25,10 @@ namespace Mediapipe
     #region Externs
 
     [DllImport (MediapipeLibrary)]
-    private static extern unsafe MpPacket MpPacketCreate();
-
-    [DllImport (MediapipeLibrary)]
     private static extern unsafe MpPacket MpMakeStringPacketAt(string text, int timestamp);
 
     [DllImport (MediapipeLibrary)]
     private static extern unsafe string MpPacketGetString(MpPacket packet);
-
-    [DllImport (MediapipeLibrary)]
-    private static extern unsafe void MpPacketDestroy(MpPacket packet);
 
     #endregion
   }

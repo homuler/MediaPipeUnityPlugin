@@ -8,25 +8,25 @@ namespace Mediapipe
   {
     private const string MediapipeLibrary = "mediapipe_c";
 
-    private MpSidePacket mpPacket;
+    private MpSidePacket mpSidePacket;
 
     public SidePacket() {
-      mpPacket = MpSidePacketCreate();
+      mpSidePacket = MpSidePacketCreate();
     }
 
     public SidePacket(MpSidePacket ptr)
     {
-      mpPacket = ptr;
+      mpSidePacket = ptr;
     }
 
     ~SidePacket()
     {
-      MpSidePacketDestroy(mpPacket);
+      MpSidePacketDestroy(mpSidePacket);
     }
 
     public MpSidePacket GetPtr()
     {
-      return mpPacket;
+      return mpSidePacket;
     }
 
     #region Externs

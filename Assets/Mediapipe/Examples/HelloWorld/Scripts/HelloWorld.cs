@@ -14,7 +14,6 @@
 //
 // A simple example to print out "Hello World!" from a MediaPipe graph.
 
-using Mediapipe;
 using UnityEngine;
 
 public class HelloWorld : MonoBehaviour
@@ -30,23 +29,17 @@ public class HelloWorld : MonoBehaviour
   {
     graph = new HelloWorldGraph();
 
-    if (!graph.IsOk())
-    {
-      Debug.Log("Failed to initialize the graph: " + graph.GetLastStatus());
-      return;
-    }
+    var status = graph.StartRun();
 
-    graph.StartRun();
-
-    if (!graph.IsOk())
+    if (!status.IsOk())
     {
-      Debug.Log(graph.GetLastStatus());
+      Debug.Log(status);
       return;
     }
 
     for (int i = 0; i < 10; i++)
     {
-      var status = graph.AddStringToInputStream("Hello World!", i);
+      status = graph.AddStringToInputStream("Hello World!", i);
 
       if (!status.IsOk())
       {
@@ -55,23 +48,25 @@ public class HelloWorld : MonoBehaviour
       }
     }
 
-    graph.CloseInputStream();
+    status = graph.CloseInputStream();
 
-    if (!graph.IsOk())
+
+    if (!status.IsOk())
     {
-      Debug.Log(graph.GetLastStatus());
+      Debug.Log(status);
       return;
     }
 
+    var outputStreamPoller = graph.outputStreamPoller;
     int count = 0;
 
-    while (graph.HasNextPacket())
+    while (outputStreamPoller.HasNextPacket())
     {
-      Debug.Log($"#{++count} {graph.GetPacketValue()}");
+      Debug.Log($"#{++count} {outputStreamPoller.GetPacketValue()}");
     }
 
-    graph.WaitUntilDone();
+    status = graph.WaitUntilDone();
 
-    Debug.Log(graph.GetLastStatus());
+    Debug.Log(status);
   }
 }

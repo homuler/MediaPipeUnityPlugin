@@ -26,7 +26,7 @@ namespace Mediapipe
       return MpStatusOrPollerOk(mpStatusOrPoller);
     }
 
-    public OutputStreamPoller GetPoller()
+    public OutputStreamPoller GetValue()
     {
       if (!MpStatusOrPollerOk(mpStatusOrPoller))
       {
