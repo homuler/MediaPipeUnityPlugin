@@ -3,6 +3,7 @@ using UnityEngine;
 
 using MpCalculatorGraph = System.IntPtr;
 using MpCalculatorGraphConfig = System.IntPtr;
+using MpPacket = System.IntPtr;
 using MpSidePacket = System.IntPtr;
 using MpStatus = System.IntPtr;
 using MpStatusOrPoller = System.IntPtr;
@@ -52,9 +53,9 @@ namespace Mediapipe
     }
 
     // TODO: add Packet, instead of StringPacket
-    public Mediapipe.Status AddStringToInputStream(string name, string text, int timestamp)
+    public Status AddPacketToInputStream(string name, Packet packet)
     {
-      return new Status(MpCalculatorGraphAddStringPacketToInputStream(mpCalculatorGraph, name, text, timestamp));
+      return new Status(MpCalculatorGraphAddPacketToInputStream(mpCalculatorGraph, name, packet.GetPtr()));
     }
 
     public Status CloseInputStream(string name)
@@ -126,7 +127,7 @@ namespace Mediapipe
     private static extern unsafe MpStatusOrPoller MpCalculatorGraphAddOutputStreamPoller(MpCalculatorGraph graph, string name);
 
     [DllImport (MediapipeLibrary)]
-    private static extern unsafe MpStatus MpCalculatorGraphAddStringPacketToInputStream(MpCalculatorGraph graph, string name, string packet, int timestamp);
+    private static extern unsafe MpStatus MpCalculatorGraphAddPacketToInputStream(MpCalculatorGraph graph, string name, MpPacket packet);
 
     [DllImport (MediapipeLibrary)]
     private static extern unsafe MpStatus MpCalculatorGraphCloseInputStream(MpCalculatorGraph graph, string name);

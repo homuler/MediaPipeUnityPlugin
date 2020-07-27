@@ -58,7 +58,8 @@ node {
 
   public Mediapipe.Status AddStringToInputStream(string text, int timestamp)
   {
-    return base.AddStringToInputStream("in", text, timestamp);
+    var packet = Mediapipe.StringPacket.BuildStringPacketAt(text, timestamp);
+    return base.AddPacketToInputStream("in", packet);
   }
 
   public Mediapipe.Status CloseInputStream()
