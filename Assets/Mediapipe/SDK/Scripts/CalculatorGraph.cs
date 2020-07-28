@@ -27,9 +27,9 @@ namespace Mediapipe
       this.mpCalculatorGraph = MpCalculatorGraphCreate();
       var status = Initialize(configText);
 
-      if (status == null || !status.IsOk())
+      if (!status.IsOk())
       {
-        throw new System.SystemException(status == null ? "Failed to parse the config text" : status.ToString());
+        throw new System.SystemException(status.ToString());
       }
     }
 
@@ -69,8 +69,8 @@ namespace Mediapipe
       if (config == System.IntPtr.Zero)
       {
         Debug.Log("Failed to parse graph config");
-        return null;
-        // TODO: build error status
+
+        return Status.Build(3, "Failed to parse the text as graph config");
       }
 
       return new Status(MpCalculatorGraphInitialize(mpCalculatorGraph, config));

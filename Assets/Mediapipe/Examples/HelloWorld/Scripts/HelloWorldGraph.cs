@@ -45,7 +45,7 @@ node {
       Debug.Log("Failed to add output stream: out");
 
       // TODO: select an appropriate exception class, and read the status
-      throw new System.SystemException("Failed to add an output stream poller: out");
+      throw new System.SystemException(statusOrPoller.status.ToString());
     }
 
     outputStreamPoller = statusOrPoller.GetValue();

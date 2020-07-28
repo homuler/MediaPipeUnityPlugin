@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 
 using MpOutputStreamPoller = System.IntPtr;
 using MpStatusOrPoller = System.IntPtr;
+using MpStatus = System.IntPtr;
 
 namespace Mediapipe
 {
@@ -9,11 +10,13 @@ namespace Mediapipe
   {
     private const string MediapipeLibrary = "mediapipe_c";
 
+    public Status status;
     private MpStatusOrPoller mpStatusOrPoller;
 
     public StatusOrPoller(MpStatusOrPoller ptr)
     {
       mpStatusOrPoller = ptr;
+      status = new Status(MpStatusOrPollerStatus(mpStatusOrPoller));
     }
 
     ~StatusOrPoller()
@@ -23,12 +26,12 @@ namespace Mediapipe
 
     public bool IsOk()
     {
-      return MpStatusOrPollerOk(mpStatusOrPoller);
+      return status.IsOk();
     }
 
     public OutputStreamPoller GetValue()
     {
-      if (!MpStatusOrPollerOk(mpStatusOrPoller))
+      if (!IsOk())
       {
         return null;
       }
@@ -41,7 +44,7 @@ namespace Mediapipe
     #region Externs
 
     [DllImport (MediapipeLibrary)]
-    private static extern unsafe bool MpStatusOrPollerOk(MpStatusOrPoller statusOrPoller);
+    private static extern unsafe MpStatus MpStatusOrPollerStatus(MpStatusOrPoller statusOrPoller);
 
     [DllImport (MediapipeLibrary)]
     private static extern unsafe MpOutputStreamPoller MpStatusOrPollerValue(MpStatusOrPoller statusOrPoller);

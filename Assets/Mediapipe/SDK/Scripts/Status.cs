@@ -35,7 +35,16 @@ namespace Mediapipe
       return MpStatusToString(mpStatus);
     }
 
+    public static Status Build(int code, string message)
+    {
+      var ptr = MpStatusCreate(code, message);
+      return new Status(ptr);
+    }
+
     #region Externs
+
+    [DllImport (MediapipeLibrary)]
+    private static extern unsafe MpStatus MpStatusCreate(int code, string message);
 
     [DllImport (MediapipeLibrary)]
     private static extern unsafe bool MpStatusOk(MpStatus status);
