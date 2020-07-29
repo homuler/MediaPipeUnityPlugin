@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using UnityEngine;
 
 using MpCalculatorGraph = System.IntPtr;
 using MpCalculatorGraphConfig = System.IntPtr;
@@ -7,7 +6,6 @@ using MpPacket = System.IntPtr;
 using MpSidePacket = System.IntPtr;
 using MpStatus = System.IntPtr;
 using MpStatusOrPoller = System.IntPtr;
-using ProtobufLogHandlerPtr = System.IntPtr;
 
 namespace Mediapipe
 {
@@ -15,17 +13,15 @@ namespace Mediapipe
   {
     private const string MediapipeLibrary = "mediapipe_c";
 
+    private CalculatorGraphConfig graphConfig;
     public MpCalculatorGraph mpCalculatorGraph;
-
-    static CalculatorGraph()
-    {
-      SetProtobufLogHandler(Marshal.GetFunctionPointerForDelegate(protobufLogHandler));
-    }
 
     public CalculatorGraph(string configText)
     {
-      this.mpCalculatorGraph = MpCalculatorGraphCreate();
-      var status = Initialize(configText);
+      graphConfig = new CalculatorGraphConfig(configText);
+      mpCalculatorGraph = MpCalculatorGraphCreate();
+
+      var status = Initialize(graphConfig);
 
       if (!status.IsOk())
       {
@@ -62,40 +58,9 @@ namespace Mediapipe
       return new Status(MpCalculatorGraphCloseInputStream(mpCalculatorGraph, name));
     }
 
-    private Status Initialize(string configText)
+    private Status Initialize(CalculatorGraphConfig config)
     {
-      var config = ParseMpCalculatorGraphConfig(configText);
-
-      if (config == System.IntPtr.Zero)
-      {
-        Debug.Log("Failed to parse graph config");
-
-        return Status.Build(3, "Failed to parse the text as graph config");
-      }
-
-      return new Status(MpCalculatorGraphInitialize(mpCalculatorGraph, config));
-    }
-
-    // Protobuf Logger
-    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    private delegate void ProtobufLogHandler(int level, string filename, int line, string message);
-    private static readonly ProtobufLogHandler protobufLogHandler = LogProtobufMessage;
-    private static ProtobufLogHandlerPtr protobufLogHandlerPtr;
-
-    private static void LogProtobufMessage(int level, string filename, int line, string message)
-    {
-      Debug.Log($"[libprotobuf {FormatProtobufLogLevel(level)} {filename}:{line}] {message}");
-    }
-
-    private static string FormatProtobufLogLevel(int level)
-    {
-      switch (level)
-      {
-        case 1: return "WARNING";
-        case 2: return "ERROR";
-        case 3: return "FATAL";
-        default: return "INFO";
-      }
+      return new Status(MpCalculatorGraphInitialize(mpCalculatorGraph, config.GetPtr()));
     }
 
     #region Externs
@@ -105,12 +70,6 @@ namespace Mediapipe
 
     [DllImport (MediapipeLibrary)]
     private static extern unsafe void MpCalculatorGraphDestroy(MpCalculatorGraph graph);
-
-    [DllImport (MediapipeLibrary)]
-    private static extern unsafe System.IntPtr SetProtobufLogHandler([MarshalAs(UnmanagedType.FunctionPtr)]System.IntPtr debugCal);
-
-    [DllImport (MediapipeLibrary)]
-    private static extern unsafe MpCalculatorGraphConfig ParseMpCalculatorGraphConfig(string input);
 
     [DllImport (MediapipeLibrary)]
     private static extern unsafe MpStatus MpCalculatorGraphInitialize(MpCalculatorGraph graph, MpCalculatorGraphConfig config);
