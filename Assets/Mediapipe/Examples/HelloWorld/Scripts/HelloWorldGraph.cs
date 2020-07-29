@@ -14,8 +14,7 @@
 
 using UnityEngine;
 
-public class HelloWorldGraph : Mediapipe.CalculatorGraph
-{
+public class HelloWorldGraph : Mediapipe.CalculatorGraph {
   /// <Summary>
   ///   A simple example to print out "Hello World!" from a MediaPipe graph.
   ///   Original C++ source code is <see cref="https://github.com/google/mediapipe/blob/master/mediapipe/examples/desktop/hello_world/hello_world.cc">HERE</see>
@@ -44,26 +43,23 @@ node {
     if (!statusOrPoller.IsOk()) {
       Debug.Log("Failed to add output stream: out");
 
-      // TODO: select an appropriate exception class, and read the status
+      // TODO: select an appropriate exception class
       throw new System.SystemException(statusOrPoller.status.ToString());
     }
 
     outputStreamPoller = statusOrPoller.GetValue();
   }
 
-  public Mediapipe.Status StartRun()
-  {
+  public Mediapipe.Status StartRun() {
     return base.StartRun(new Mediapipe.SidePacket());
   }
 
-  public Mediapipe.Status AddStringToInputStream(string text, int timestamp)
-  {
+  public Mediapipe.Status AddStringToInputStream(string text, int timestamp) {
     var packet = Mediapipe.StringPacket.BuildStringPacketAt(text, timestamp);
     return base.AddPacketToInputStream("in", packet);
   }
 
-  public Mediapipe.Status CloseInputStream()
-  {
+  public Mediapipe.Status CloseInputStream() {
     return base.CloseInputStream("in");
   }
 }

@@ -2,41 +2,33 @@ using System.Runtime.InteropServices;
 
 using MpStatus = System.IntPtr;
 
-namespace Mediapipe
-{
-  public class Status
-  {
+namespace Mediapipe {
+  public class Status {
     private const string MediapipeLibrary = "mediapipe_c";
 
     private MpStatus mpStatus;
 
-    public Status(MpStatus ptr)
-    {
+    public Status(MpStatus ptr) {
       mpStatus = ptr;
     }
 
-    ~Status()
-    {
+    ~Status() {
       MpStatusDestroy(mpStatus);
     }
 
-    public bool IsOk()
-    {
+    public bool IsOk() {
       return MpStatusOk(mpStatus);
     }
 
-    public int GetRawCode()
-    {
+    public int GetRawCode() {
       return GetMpStatusRawCode(mpStatus);
     }
 
-    public override string ToString()
-    {
+    public override string ToString() {
       return MpStatusToString(mpStatus);
     }
 
-    public static Status Build(int code, string message)
-    {
+    public static Status Build(int code, string message) {
       var ptr = MpStatusCreate(code, message);
       return new Status(ptr);
     }

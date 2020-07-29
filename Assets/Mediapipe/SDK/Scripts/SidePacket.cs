@@ -2,10 +2,8 @@ using System.Runtime.InteropServices;
 
 using MpSidePacket = System.IntPtr;
 
-namespace Mediapipe
-{
-  public class SidePacket
-  {
+namespace Mediapipe {
+  public class SidePacket {
     private const string MediapipeLibrary = "mediapipe_c";
 
     private MpSidePacket mpSidePacket;
@@ -14,18 +12,15 @@ namespace Mediapipe
       mpSidePacket = MpSidePacketCreate();
     }
 
-    public SidePacket(MpSidePacket ptr)
-    {
+    public SidePacket(MpSidePacket ptr) {
       mpSidePacket = ptr;
     }
 
-    ~SidePacket()
-    {
+    ~SidePacket() {
       MpSidePacketDestroy(mpSidePacket);
     }
 
-    public MpSidePacket GetPtr()
-    {
+    public MpSidePacket GetPtr() {
       return mpSidePacket;
     }
 

@@ -4,37 +4,28 @@ using MpOutputStreamPoller = System.IntPtr;
 using MpStatusOrPoller = System.IntPtr;
 using MpStatus = System.IntPtr;
 
-namespace Mediapipe
-{
-  public class StatusOrPoller
-  {
+namespace Mediapipe {
+  public class StatusOrPoller {
     private const string MediapipeLibrary = "mediapipe_c";
 
     public Status status;
     private MpStatusOrPoller mpStatusOrPoller;
 
-    public StatusOrPoller(MpStatusOrPoller ptr)
-    {
+    public StatusOrPoller(MpStatusOrPoller ptr) {
       mpStatusOrPoller = ptr;
       status = new Status(MpStatusOrPollerStatus(mpStatusOrPoller));
     }
 
-    ~StatusOrPoller()
-    {
+    ~StatusOrPoller() {
       MpStatusOrPollerDestroy(mpStatusOrPoller);
     }
 
-    public bool IsOk()
-    {
+    public bool IsOk() {
       return status.IsOk();
     }
 
-    public OutputStreamPoller GetValue()
-    {
-      if (!IsOk())
-      {
-        return null;
-      }
+    public OutputStreamPoller GetValue() {
+      if (!IsOk()) return null;
 
       var mpOutputStreamPoller = MpStatusOrPollerValue(mpStatusOrPoller);
 

@@ -4,36 +4,30 @@ using UnityEngine;
 using MpCalculatorGraphConfig = System.IntPtr;
 using ProtobufLogHandlerPtr = System.IntPtr;
 
-namespace Mediapipe
-{
-  public class CalculatorGraphConfig
-  {
+namespace Mediapipe {
+  public class CalculatorGraphConfig {
     private const string MediapipeLibrary = "mediapipe_c";
 
     public MpCalculatorGraphConfig mpCalculatorGraphConfig;
 
-    static CalculatorGraphConfig()
-    {
+    static CalculatorGraphConfig() {
       SetProtobufLogHandler(Marshal.GetFunctionPointerForDelegate(protobufLogHandler));
     }
 
-    public CalculatorGraphConfig(string configText)
-    {
+    public CalculatorGraphConfig(string configText) {
       mpCalculatorGraphConfig = ParseMpCalculatorGraphConfig(configText);
 
-      if (mpCalculatorGraphConfig == System.IntPtr.Zero)
-      {
+      if (mpCalculatorGraphConfig == System.IntPtr.Zero) {
+        // TODO: select an appropriate exception class
         throw new System.SystemException("Failed to parse the text as graph config");
       }
     }
 
-    ~CalculatorGraphConfig()
-    {
+    ~CalculatorGraphConfig() {
       MpCalculatorGraphConfigDestroy(mpCalculatorGraphConfig);
     }
 
-    public MpCalculatorGraphConfig GetPtr()
-    {
+    public MpCalculatorGraphConfig GetPtr() {
       return mpCalculatorGraphConfig;
     }
 
@@ -43,15 +37,12 @@ namespace Mediapipe
     private static readonly ProtobufLogHandler protobufLogHandler = LogProtobufMessage;
     private static ProtobufLogHandlerPtr protobufLogHandlerPtr;
 
-    private static void LogProtobufMessage(int level, string filename, int line, string message)
-    {
+    private static void LogProtobufMessage(int level, string filename, int line, string message) {
       Debug.Log($"[libprotobuf {FormatProtobufLogLevel(level)} {filename}:{line}] {message}");
     }
 
-    private static string FormatProtobufLogLevel(int level)
-    {
-      switch (level)
-      {
+    private static string FormatProtobufLogLevel(int level) {
+      switch (level) {
         case 1: return "WARNING";
         case 2: return "ERROR";
         case 3: return "FATAL";

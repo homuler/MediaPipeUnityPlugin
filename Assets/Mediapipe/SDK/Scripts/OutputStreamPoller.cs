@@ -3,33 +3,27 @@ using System.Runtime.InteropServices;
 using MpPacket = System.IntPtr;
 using MpOutputStreamPoller = System.IntPtr;
 
-namespace Mediapipe
-{
-  public class OutputStreamPoller
-  {
+namespace Mediapipe {
+  public class OutputStreamPoller {
     private const string MediapipeLibrary = "mediapipe_c";
 
     private MpOutputStreamPoller mpOutputStreamPoller;
     private StringPacket packet;
 
-    public OutputStreamPoller(MpOutputStreamPoller ptr)
-    {
+    public OutputStreamPoller(MpOutputStreamPoller ptr) {
       mpOutputStreamPoller = ptr;
       packet = new StringPacket();
     }
 
-    ~OutputStreamPoller()
-    {
+    ~OutputStreamPoller() {
       MpOutputStreamPollerDestroy(mpOutputStreamPoller);
     }
 
-    public bool HasNextPacket()
-    {
+    public bool HasNextPacket() {
       return MpOutputStreamPollerNext(mpOutputStreamPoller, packet.GetPtr());
     }
 
-    public string GetPacketValue()
-    {
+    public string GetPacketValue() {
       return packet.GetValue();
     }
 

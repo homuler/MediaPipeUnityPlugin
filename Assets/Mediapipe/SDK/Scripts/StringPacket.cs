@@ -2,23 +2,19 @@ using System.Runtime.InteropServices;
 
 using MpPacket = System.IntPtr;
 
-namespace Mediapipe
-{
-  public class StringPacket : Packet
-  {
+namespace Mediapipe {
+  public class StringPacket : Packet {
     private const string MediapipeLibrary = "mediapipe_c";
 
     public StringPacket() : base() {}
 
     public StringPacket(MpPacket ptr) : base(ptr) {}
 
-    public string GetValue()
-    {
+    public string GetValue() {
       return MpPacketGetString(GetPtr());
     }
 
-    public static StringPacket BuildStringPacketAt(string text, int timestamp)
-    {
+    public static StringPacket BuildStringPacketAt(string text, int timestamp) {
       return new StringPacket(MpMakeStringPacketAt(text, timestamp));
     }
 

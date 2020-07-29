@@ -2,31 +2,25 @@ using System.Runtime.InteropServices;
 
 using MpPacket = System.IntPtr;
 
-namespace Mediapipe
-{
-  public class Packet
-  {
+namespace Mediapipe {
+  public class Packet {
     private const string MediapipeLibrary = "mediapipe_c";
 
     private MpPacket mpPacket;
 
-    public Packet()
-    {
+    public Packet() {
       mpPacket = MpPacketCreate();
     }
 
-    public Packet(MpPacket ptr)
-    {
+    public Packet(MpPacket ptr) {
       mpPacket = ptr;
     }
 
-    ~Packet()
-    {
+    ~Packet() {
       MpPacketDestroy(mpPacket);
     }
 
-    public MpPacket GetPtr()
-    {
+    public MpPacket GetPtr() {
       return mpPacket;
     }
 

@@ -16,8 +16,7 @@
 
 using UnityEngine;
 
-public class HelloWorld : MonoBehaviour
-{
+public class HelloWorld : MonoBehaviour {
   /// <Summary>
   ///   A simple example to print out "Hello World!" from a MediaPipe graph.
   ///   Original C++ source code is <see cref="https://github.com/google/mediapipe/blob/master/mediapipe/examples/desktop/hello_world/hello_world.cc">HERE</see>
@@ -25,24 +24,20 @@ public class HelloWorld : MonoBehaviour
 
   private HelloWorldGraph graph;
 
-  void Start ()
-  {
+  void Start () {
     graph = new HelloWorldGraph();
 
     var status = graph.StartRun();
 
-    if (!status.IsOk())
-    {
+    if (!status.IsOk()) {
       Debug.Log(status);
       return;
     }
 
-    for (int i = 0; i < 10; i++)
-    {
+    for (int i = 0; i < 10; i++) {
       status = graph.AddStringToInputStream("Hello World!", i);
 
-      if (!status.IsOk())
-      {
+      if (!status.IsOk()) {
         Debug.Log(status);
         return;
       }
@@ -50,9 +45,7 @@ public class HelloWorld : MonoBehaviour
 
     status = graph.CloseInputStream();
 
-
-    if (!status.IsOk())
-    {
+    if (!status.IsOk()) {
       Debug.Log(status);
       return;
     }
@@ -60,8 +53,7 @@ public class HelloWorld : MonoBehaviour
     var outputStreamPoller = graph.outputStreamPoller;
     int count = 0;
 
-    while (outputStreamPoller.HasNextPacket())
-    {
+    while (outputStreamPoller.HasNextPacket()) {
       Debug.Log($"#{++count} {outputStreamPoller.GetPacketValue()}");
     }
 

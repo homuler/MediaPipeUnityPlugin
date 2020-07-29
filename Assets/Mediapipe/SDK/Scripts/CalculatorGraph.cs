@@ -7,24 +7,21 @@ using MpSidePacket = System.IntPtr;
 using MpStatus = System.IntPtr;
 using MpStatusOrPoller = System.IntPtr;
 
-namespace Mediapipe
-{
-  public class CalculatorGraph
-  {
+namespace Mediapipe {
+  public class CalculatorGraph {
     private const string MediapipeLibrary = "mediapipe_c";
 
     private CalculatorGraphConfig graphConfig;
     public MpCalculatorGraph mpCalculatorGraph;
 
-    public CalculatorGraph(string configText)
-    {
+    public CalculatorGraph(string configText) {
       graphConfig = new CalculatorGraphConfig(configText);
       mpCalculatorGraph = MpCalculatorGraphCreate();
 
       var status = Initialize(graphConfig);
 
-      if (!status.IsOk())
-      {
+      if (!status.IsOk()) {
+        // TODO: select an appropriate exception class
         throw new System.SystemException(status.ToString());
       }
     }
@@ -33,33 +30,27 @@ namespace Mediapipe
       MpCalculatorGraphDestroy(mpCalculatorGraph);
     }
 
-    public Status StartRun(SidePacket sidePacket)
-    {
+    public Status StartRun(SidePacket sidePacket) {
       return new Status(MpCalculatorGraphStartRun(mpCalculatorGraph, sidePacket.GetPtr()));
     }
 
-    public Status WaitUntilDone()
-    {
+    public Status WaitUntilDone() {
       return new Status(MpCalculatorGraphWaitUntilDone(mpCalculatorGraph));
     }
 
-    public StatusOrPoller AddOutputStreamPoller(string name)
-    {
+    public StatusOrPoller AddOutputStreamPoller(string name) {
       return new StatusOrPoller(MpCalculatorGraphAddOutputStreamPoller(mpCalculatorGraph, name));
     }
 
-    public Status AddPacketToInputStream(string name, Packet packet)
-    {
+    public Status AddPacketToInputStream(string name, Packet packet) {
       return new Status(MpCalculatorGraphAddPacketToInputStream(mpCalculatorGraph, name, packet.GetPtr()));
     }
 
-    public Status CloseInputStream(string name)
-    {
+    public Status CloseInputStream(string name) {
       return new Status(MpCalculatorGraphCloseInputStream(mpCalculatorGraph, name));
     }
 
-    private Status Initialize(CalculatorGraphConfig config)
-    {
+    private Status Initialize(CalculatorGraphConfig config) {
       return new Status(MpCalculatorGraphInitialize(mpCalculatorGraph, config.GetPtr()));
     }
 
