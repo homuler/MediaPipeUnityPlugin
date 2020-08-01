@@ -8,15 +8,15 @@ namespace Mediapipe {
     private const string MediapipeLibrary = "mediapipe_c";
 
     private MpImageFrame mpImageFrame;
-    private GCHandle gcHandle;
+    private GCHandle pixelDataGcHandle;
 
     public ImageFrame(ImageFormat format, int width, int height, byte[] pixelData) {
-      gcHandle = GCHandle.Alloc(pixelData);
+      pixelDataGcHandle = GCHandle.Alloc(pixelData);
       mpImageFrame = MpImageFrameCreate((int)format, width, height, pixelData);
     }
 
     ~ImageFrame() {
-      gcHandle.Free();
+      pixelDataGcHandle.Free();
       MpImageFrameDestroy(mpImageFrame);
     }
 

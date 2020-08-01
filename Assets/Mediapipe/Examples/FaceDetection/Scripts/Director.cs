@@ -16,4 +16,8 @@ public class Director : MonoBehaviour {
 
     webCamScreen.GetComponent<WebCamScreenController>().ResetScreen(webCamDevice);
   }
+
+  void RunGraph(Color32[] pixelData, int width, int height) {
+    Mediapipe.ImageFrame.BuildFromColor32Array(pixelData, width, height);
+  }
 }
