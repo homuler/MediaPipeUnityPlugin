@@ -1,40 +1,23 @@
-using System.Runtime.InteropServices;
-
-using MpPacket = System.IntPtr;
-using MpOutputStreamPoller = System.IntPtr;
+using OutputStreamPollerPtr = System.IntPtr;
 
 namespace Mediapipe {
-  public class OutputStreamPoller {
-    private const string MediapipeLibrary = "mediapipe_c";
+  public class OutputStreamPoller<S, T> where S : Packet<T>, new() {
+    private OutputStreamPollerPtr outputStreamPollerPtr;
+    private S packet;
 
-    private MpOutputStreamPoller mpOutputStreamPoller;
-    private StringPacket packet;
-
-    public OutputStreamPoller(MpOutputStreamPoller ptr) {
-      mpOutputStreamPoller = ptr;
-      packet = new StringPacket();
+    public OutputStreamPoller(OutputStreamPollerPtr ptr) {
+      outputStreamPollerPtr = ptr;
+      this.packet = new S();
     }
 
-    ~OutputStreamPoller() {
-      MpOutputStreamPollerDestroy(mpOutputStreamPoller);
+    private bool HasNext() {
+      return UnsafeNativeMethods.MpOutputStreamPollerNext(outputStreamPollerPtr, packet.GetPtr());
     }
 
-    public bool HasNextPacket() {
-      return MpOutputStreamPollerNext(mpOutputStreamPoller, packet.GetPtr());
+    public (bool, T) GetNextValue() {
+      if (!HasNext()) { return (false, default(T)); }
+
+      return (true, packet.GetValue());
     }
-
-    public string GetPacketValue() {
-      return packet.GetValue();
-    }
-
-    #region Externs
-
-    [DllImport (MediapipeLibrary)]
-    private static extern unsafe bool MpOutputStreamPollerNext(MpOutputStreamPoller poller, MpPacket packet);
-
-    [DllImport (MediapipeLibrary)]
-    private static extern unsafe void MpOutputStreamPollerDestroy(MpOutputStreamPoller poller);
-
-    #endregion
   }
 }

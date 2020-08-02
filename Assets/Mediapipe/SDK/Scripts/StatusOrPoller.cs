@@ -1,49 +1,21 @@
-using System.Runtime.InteropServices;
-
-using MpOutputStreamPoller = System.IntPtr;
 using MpStatusOrPoller = System.IntPtr;
-using MpStatus = System.IntPtr;
 
 namespace Mediapipe {
-  public class StatusOrPoller {
-    private const string MediapipeLibrary = "mediapipe_c";
-
-    public Status status;
-    private MpStatusOrPoller mpStatusOrPoller;
-
-    public StatusOrPoller(MpStatusOrPoller ptr) {
-      mpStatusOrPoller = ptr;
-      status = new Status(MpStatusOrPollerStatus(mpStatusOrPoller));
+  public class StatusOrPoller<S, T> : StatusOr<OutputStreamPoller<S, T>> where S : Packet<T>, new() {
+    public StatusOrPoller(MpStatusOrPoller ptr) : base(ptr) {
+      status = new Status(UnsafeNativeMethods.MpStatusOrPollerStatus(GetPtr()));
     }
 
     ~StatusOrPoller() {
-      MpStatusOrPollerDestroy(mpStatusOrPoller);
+      UnsafeNativeMethods.MpStatusOrPollerDestroy(GetPtr());
     }
 
-    public bool IsOk() {
-      return status.IsOk();
-    }
-
-    public OutputStreamPoller GetValue() {
+    public override OutputStreamPoller<S, T> GetValue() {
       if (!IsOk()) return null;
 
-      var mpOutputStreamPoller = MpStatusOrPollerValue(mpStatusOrPoller);
+      var mpOutputStreamPoller = UnsafeNativeMethods.MpStatusOrPollerValue(GetPtr());
 
-      return new OutputStreamPoller(mpOutputStreamPoller);
+      return new OutputStreamPoller<S, T>(mpOutputStreamPoller);
     }
-
-    #region Externs
-
-    [DllImport (MediapipeLibrary)]
-    private static extern unsafe MpStatus MpStatusOrPollerStatus(MpStatusOrPoller statusOrPoller);
-
-    [DllImport (MediapipeLibrary)]
-    private static extern unsafe MpOutputStreamPoller MpStatusOrPollerValue(MpStatusOrPoller statusOrPoller);
-
-
-    [DllImport (MediapipeLibrary)]
-    private static extern unsafe void MpStatusOrPollerDestroy(MpStatusOrPoller statusOrPoller);
-
-    #endregion
   }
 }

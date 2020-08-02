@@ -1,27 +1,28 @@
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-using MpImageFrame = System.IntPtr;
+using ImageFramePtr = System.IntPtr;
 
 namespace Mediapipe {
   public class ImageFrame {
-    private const string MediapipeLibrary = "mediapipe_c";
+    private ImageFramePtr imageFramePtr;
+    private GCHandle? pixelDataGcHandle = null;
 
-    private MpImageFrame mpImageFrame;
-    private GCHandle pixelDataGcHandle;
+    public ImageFrame(ImageFramePtr imageFramePtr) {
+      this.imageFramePtr = imageFramePtr;
+    }
 
     public ImageFrame(ImageFormat format, int width, int height, byte[] pixelData) {
       pixelDataGcHandle = GCHandle.Alloc(pixelData);
-      mpImageFrame = MpImageFrameCreate((int)format, width, height, pixelData);
+      imageFramePtr = UnsafeNativeMethods.MpImageFrameCreate((int)format, width, height, pixelData);
     }
 
     ~ImageFrame() {
-      pixelDataGcHandle.Free();
-      MpImageFrameDestroy(mpImageFrame);
+      pixelDataGcHandle?.Free();
     }
 
-    public MpImageFrame GetPtr() {
-      return mpImageFrame;
+    public ImageFramePtr GetPtr() {
+      return imageFramePtr;
     }
 
     public static ImageFrame BuildFromColor32Array(Color32[] colors, int width, int height) {
@@ -41,15 +42,5 @@ namespace Mediapipe {
 
       return new ImageFrame(ImageFormat.SRGB, width, height, pixelData);
     }
-
-    #region Externs
-
-    [DllImport (MediapipeLibrary)]
-    private static extern unsafe MpImageFrame MpImageFrameCreate(int formatCode, int width, int height, byte[] pixelData);
-
-    [DllImport (MediapipeLibrary)]
-    private static extern unsafe void MpImageFrameDestroy(MpImageFrame imageFrame);
-
-    #endregion
   }
 }

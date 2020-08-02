@@ -14,6 +14,7 @@
 //
 // A simple example to print out "Hello World!" from a MediaPipe graph.
 
+using Mediapipe;
 using UnityEngine;
 
 public class HelloWorld : MonoBehaviour {
@@ -51,10 +52,14 @@ public class HelloWorld : MonoBehaviour {
     }
 
     var outputStreamPoller = graph.outputStreamPoller;
+
     int count = 0;
 
-    while (outputStreamPoller.HasNextPacket()) {
-      Debug.Log($"#{++count} {outputStreamPoller.GetPacketValue()}");
+    while (true) {
+      (bool hasNext, string message) = outputStreamPoller.GetNextValue();
+
+      if (!hasNext) break;
+      Debug.Log($"#{++count} {message}");
     }
 
     status = graph.WaitUntilDone();

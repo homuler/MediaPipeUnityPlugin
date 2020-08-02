@@ -1,15 +1,11 @@
-using System.Runtime.InteropServices;
-
 using MpPacket = System.IntPtr;
 
 namespace Mediapipe {
-  public class Packet {
-    private const string MediapipeLibrary = "mediapipe_c";
-
+  public abstract class Packet<T> {
     private MpPacket mpPacket;
 
     public Packet() {
-      mpPacket = MpPacketCreate();
+      mpPacket = UnsafeNativeMethods.MpPacketCreate();
     }
 
     public Packet(MpPacket ptr) {
@@ -17,21 +13,13 @@ namespace Mediapipe {
     }
 
     ~Packet() {
-      MpPacketDestroy(mpPacket);
+      UnsafeNativeMethods.MpPacketDestroy(mpPacket);
     }
 
     public MpPacket GetPtr() {
       return mpPacket;
     }
 
-    #region Externs
-
-    [DllImport (MediapipeLibrary)]
-    private static extern unsafe MpPacket MpPacketCreate();
-
-    [DllImport (MediapipeLibrary)]
-    private static extern unsafe void MpPacketDestroy(MpPacket packet);
-
-    #endregion
+    public abstract T GetValue();
   }
 }

@@ -11,20 +11,20 @@ namespace Mediapipe {
     public MpCalculatorGraphConfig mpCalculatorGraphConfig;
 
     static CalculatorGraphConfig() {
-      SetProtobufLogHandler(Marshal.GetFunctionPointerForDelegate(protobufLogHandler));
+      UnsafeNativeMethods.SetProtobufLogHandler(Marshal.GetFunctionPointerForDelegate(protobufLogHandler));
     }
 
     public CalculatorGraphConfig(string configText) {
-      mpCalculatorGraphConfig = ParseMpCalculatorGraphConfig(configText);
+      mpCalculatorGraphConfig = UnsafeNativeMethods.ParseMpCalculatorGraphConfig(configText);
 
       if (mpCalculatorGraphConfig == System.IntPtr.Zero) {
-        // TODO: select an appropriate exception class
         throw new System.SystemException("Failed to parse the text as graph config");
       }
     }
 
     ~CalculatorGraphConfig() {
-      MpCalculatorGraphConfigDestroy(mpCalculatorGraphConfig);
+      // TODO: investigate whether it's OK.
+      UnsafeNativeMethods.MpCalculatorGraphConfigDestroy(mpCalculatorGraphConfig);
     }
 
     public MpCalculatorGraphConfig GetPtr() {
@@ -49,18 +49,5 @@ namespace Mediapipe {
         default: return "INFO";
       }
     }
-
-    #region Externs
-
-    [DllImport (MediapipeLibrary)]
-    private static extern unsafe MpCalculatorGraphConfig ParseMpCalculatorGraphConfig(string input);
-
-    [DllImport (MediapipeLibrary)]
-    private static extern unsafe void MpCalculatorGraphConfigDestroy(MpCalculatorGraphConfig config);
-
-    [DllImport (MediapipeLibrary)]
-    private static extern unsafe ProtobufLogHandlerPtr SetProtobufLogHandler([MarshalAs(UnmanagedType.FunctionPtr)]ProtobufLogHandlerPtr logHandler);
-
-    #endregion
   }
 }

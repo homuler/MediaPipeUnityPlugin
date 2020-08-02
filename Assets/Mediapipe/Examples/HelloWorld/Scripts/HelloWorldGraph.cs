@@ -12,14 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Mediapipe;
 using UnityEngine;
 
-public class HelloWorldGraph : Mediapipe.CalculatorGraph {
+public class HelloWorldGraph : CalculatorGraph {
   /// <Summary>
   ///   A simple example to print out "Hello World!" from a MediaPipe graph.
   ///   Original C++ source code is <see cref="https://github.com/google/mediapipe/blob/master/mediapipe/examples/desktop/hello_world/hello_world.cc">HERE</see>
   /// </Summary>
 
+  private const string inputStream = "in";
+  private const string outputStream = "out";
   private const string configText = @"
 input_stream: ""in""
 output_stream: ""out""
@@ -35,31 +38,35 @@ node {
 }
 ";
 
-  public readonly Mediapipe.OutputStreamPoller outputStreamPoller;
+  public readonly OutputStreamPoller<StringPacket, string> outputStreamPoller;
 
   public HelloWorldGraph() : base(configText) {
-    var statusOrPoller = AddOutputStreamPoller("out");
+    var statusOrPoller = AddOutputStreamPoller();
 
     if (!statusOrPoller.IsOk()) {
       Debug.Log("Failed to add output stream: out");
 
-      // TODO: select an appropriate exception class
       throw new System.SystemException(statusOrPoller.status.ToString());
     }
 
     outputStreamPoller = statusOrPoller.GetValue();
   }
 
-  public Mediapipe.Status StartRun() {
+  public Status StartRun() {
     return base.StartRun(new Mediapipe.SidePacket());
   }
 
-  public Mediapipe.Status AddStringToInputStream(string text, int timestamp) {
-    var packet = Mediapipe.StringPacket.BuildStringPacketAt(text, timestamp);
-    return base.AddPacketToInputStream("in", packet);
+  public StatusOrPoller<StringPacket, string> AddOutputStreamPoller() {
+    return new StatusOrPoller<StringPacket, string>(AddOutputStreamPoller(outputStream));
   }
 
-  public Mediapipe.Status CloseInputStream() {
-    return base.CloseInputStream("in");
+  public Status AddStringToInputStream(string text, int timestamp) {
+    var packet = Mediapipe.StringPacket.BuildAt(text, timestamp);
+
+    return base.AddPacketToInputStream(inputStream, packet.GetPtr());
+  }
+
+  public Status CloseInputStream() {
+    return base.CloseInputStream(inputStream);
   }
 }
