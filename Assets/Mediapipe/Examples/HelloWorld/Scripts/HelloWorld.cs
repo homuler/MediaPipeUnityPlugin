@@ -52,14 +52,12 @@ public class HelloWorld : MonoBehaviour {
     }
 
     var outputStreamPoller = graph.outputStreamPoller;
+    var packet = new StringPacket();
 
     int count = 0;
 
-    while (true) {
-      (bool hasNext, string message) = outputStreamPoller.GetNextValue();
-
-      if (!hasNext) break;
-      Debug.Log($"#{++count} {message}");
+    while (outputStreamPoller.Next(packet)) {
+      Debug.Log($"#{++count} {packet.GetValue()}");
     }
 
     status = graph.WaitUntilDone();

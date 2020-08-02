@@ -1,7 +1,7 @@
 using MpStatusOrPoller = System.IntPtr;
 
 namespace Mediapipe {
-  public class StatusOrPoller<S, T> : StatusOr<OutputStreamPoller<S, T>> where S : Packet<T>, new() {
+  public class StatusOrPoller<T> : StatusOr<OutputStreamPoller<T>> {
     public StatusOrPoller(MpStatusOrPoller ptr) : base(ptr) {
       status = new Status(UnsafeNativeMethods.MpStatusOrPollerStatus(GetPtr()));
     }
@@ -10,12 +10,12 @@ namespace Mediapipe {
       UnsafeNativeMethods.MpStatusOrPollerDestroy(GetPtr());
     }
 
-    public override OutputStreamPoller<S, T> GetValue() {
+    public override OutputStreamPoller<T> GetValue() {
       if (!IsOk()) return null;
 
       var mpOutputStreamPoller = UnsafeNativeMethods.MpStatusOrPollerValue(GetPtr());
 
-      return new OutputStreamPoller<S, T>(mpOutputStreamPoller);
+      return new OutputStreamPoller<T>(mpOutputStreamPoller);
     }
   }
 }

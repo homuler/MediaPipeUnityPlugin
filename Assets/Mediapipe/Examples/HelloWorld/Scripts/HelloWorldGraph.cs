@@ -38,7 +38,7 @@ node {
 }
 ";
 
-  public readonly OutputStreamPoller<StringPacket, string> outputStreamPoller;
+  public readonly OutputStreamPoller<string> outputStreamPoller;
 
   public HelloWorldGraph() : base(configText) {
     var statusOrPoller = AddOutputStreamPoller();
@@ -56,8 +56,8 @@ node {
     return base.StartRun(new Mediapipe.SidePacket());
   }
 
-  public StatusOrPoller<StringPacket, string> AddOutputStreamPoller() {
-    return new StatusOrPoller<StringPacket, string>(AddOutputStreamPoller(outputStream));
+  public StatusOrPoller<string> AddOutputStreamPoller() {
+    return new StatusOrPoller<string>(AddOutputStreamPoller(outputStream));
   }
 
   public Status AddStringToInputStream(string text, int timestamp) {
