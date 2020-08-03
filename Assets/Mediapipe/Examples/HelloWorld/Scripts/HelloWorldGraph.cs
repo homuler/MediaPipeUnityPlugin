@@ -56,10 +56,6 @@ node {
     return base.StartRun(new Mediapipe.SidePacket());
   }
 
-  public StatusOrPoller<string> AddOutputStreamPoller() {
-    return new StatusOrPoller<string>(AddOutputStreamPoller(outputStream));
-  }
-
   public Status AddStringToInputStream(string text, int timestamp) {
     var packet = Mediapipe.StringPacket.BuildAt(text, timestamp);
 
@@ -68,5 +64,9 @@ node {
 
   public Status CloseInputStream() {
     return base.CloseInputStream(inputStream);
+  }
+
+  private StatusOrPoller<string> AddOutputStreamPoller() {
+    return new StatusOrPoller<string>(AddOutputStreamPoller(outputStream));
   }
 }
