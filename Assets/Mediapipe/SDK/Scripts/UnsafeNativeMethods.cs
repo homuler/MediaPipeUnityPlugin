@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -9,6 +10,7 @@ using MpStatus = System.IntPtr;
 using MpStatusOrImageFrame = System.IntPtr;
 using MpStatusOrPoller = System.IntPtr;
 
+using ImageFrameMemoryHandlerPtr = System.IntPtr;
 using ImageFramePtr = System.IntPtr;
 using OutputStreamPollerPtr = System.IntPtr;
 using ProtobufLogHandlerPtr = System.IntPtr;
@@ -57,7 +59,10 @@ namespace Mediapipe {
 
     /// ImageFrame API
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe ImageFramePtr MpImageFrameCreate(int formatCode, int width, int height, byte[] pixelData);
+    public static extern unsafe ImageFramePtr MpImageFrameCreate(
+      int formatCode, int width, int height, int widthStep, IntPtr pixelData,
+      [MarshalAs(UnmanagedType.FunctionPtr)]ImageFrameMemoryHandlerPtr deleter
+    );
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe void MpStatusOrImageFrameDestroy(MpStatusOrImageFrame statusOrImageFrame);
@@ -66,7 +71,7 @@ namespace Mediapipe {
     public static extern unsafe MpStatus MpStatusOrImageFrameStatus(MpStatusOrImageFrame statusOrImageFrame);
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe ImageFramePtr MpStatusOrImageFrameValue(MpStatusOrImageFrame statusOrImageFrame);
+    public static extern unsafe ImageFramePtr MpStatusOrImageFrameConsumeValue(MpStatusOrImageFrame statusOrImageFrame);
 
 
     /// OutputStreamPoller API
@@ -77,7 +82,7 @@ namespace Mediapipe {
     public static extern unsafe MpStatus MpStatusOrPollerStatus(MpStatusOrPoller statusOrPoller);
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe OutputStreamPollerPtr MpStatusOrPollerValue(MpStatusOrPoller statusOrPoller);
+    public static extern unsafe OutputStreamPollerPtr MpStatusOrPollerConsumeValue(MpStatusOrPoller statusOrPoller);
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe bool MpOutputStreamPollerNext(OutputStreamPollerPtr outputStreamPollerPtr, MpPacket packet);

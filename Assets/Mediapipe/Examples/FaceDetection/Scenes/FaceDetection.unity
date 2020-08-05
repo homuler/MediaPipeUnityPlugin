@@ -150,6 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d03a4f951c2f566e0a7fdf0be871493b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  config: {fileID: 4900000, guid: 6a8da909a2f5ac07a80738ab4292a3aa, type: 3}
 --- !u!4 &195599630
 Transform:
   m_ObjectHideFlags: 0
@@ -536,6 +537,9 @@ MonoBehaviour:
   Height: 1920
   Width: 1080
   FPS: 30
+  OnFrameRender:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!64 &496037460
 MeshCollider:
   m_ObjectHideFlags: 0

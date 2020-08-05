@@ -21,7 +21,7 @@ namespace Mediapipe {
     public ImageFrame GetValue() {
       if (!IsOk()) return null;
 
-      var mpImageFrame = UnsafeNativeMethods.MpStatusOrImageFrameValue(mpStatusOrImageFrame);
+      var mpImageFrame = UnsafeNativeMethods.MpStatusOrImageFrameConsumeValue(mpStatusOrImageFrame);
 
       return new ImageFrame(mpImageFrame);
     }

@@ -49,15 +49,15 @@ node {
       throw new System.SystemException(statusOrPoller.status.ToString());
     }
 
-    outputStreamPoller = statusOrPoller.GetValue();
+    outputStreamPoller = statusOrPoller.ConsumeValue();
   }
 
   public Status StartRun() {
-    return base.StartRun(new Mediapipe.SidePacket());
+    return base.StartRun(new SidePacket());
   }
 
   public Status AddStringToInputStream(string text, int timestamp) {
-    var packet = Mediapipe.StringPacket.BuildAt(text, timestamp);
+    var packet = new StringPacket(text, timestamp);
 
     return base.AddPacketToInputStream(inputStream, packet.GetPtr());
   }

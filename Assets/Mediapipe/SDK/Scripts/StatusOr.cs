@@ -17,6 +17,6 @@ namespace Mediapipe {
       return mpStatusOr;
     }
 
-    public abstract T GetValue();
+    public abstract T ConsumeValue();
   }
 }

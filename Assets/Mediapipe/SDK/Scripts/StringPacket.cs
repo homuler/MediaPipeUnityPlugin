@@ -6,12 +6,10 @@ namespace Mediapipe {
 
     public StringPacket(MpPacket ptr) : base(ptr) {}
 
+    public StringPacket(string text, int timestamp) : base(UnsafeNativeMethods.MpMakeStringPacketAt(text, timestamp)) {}
+
     public override string GetValue() {
       return UnsafeNativeMethods.MpPacketGetString(GetPtr());
-    }
-
-    public static StringPacket BuildAt(string text, int timestamp) {
-      return new StringPacket(UnsafeNativeMethods.MpMakeStringPacketAt(text, timestamp));
     }
   }
 }

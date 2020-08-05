@@ -1,31 +1,50 @@
+using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
 using ImageFramePtr = System.IntPtr;
 
 namespace Mediapipe {
-  public class ImageFrame {
+  public class ImageFrame : IDisposable {
     private ImageFramePtr imageFramePtr;
-    private GCHandle? pixelDataGcHandle = null;
+    private GCHandle pixelDataGcHandle;
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    private delegate void ImageFrameMemoryHandler(IntPtr ptr);
+    private readonly ImageFrameMemoryHandler memoryHandler;
 
     public ImageFrame(ImageFramePtr imageFramePtr) {
       this.imageFramePtr = imageFramePtr;
     }
 
-    public ImageFrame(ImageFormat format, int width, int height, byte[] pixelData) {
-      pixelDataGcHandle = GCHandle.Alloc(pixelData);
-      imageFramePtr = UnsafeNativeMethods.MpImageFrameCreate((int)format, width, height, pixelData);
+    public ImageFrame(ImageFormat format, int width, int height, int widthStep, byte[] pixelData) {
+      pixelDataGcHandle = GCHandle.Alloc(pixelData, GCHandleType.Pinned);
+      memoryHandler = FreePixelData;
+      imageFramePtr = UnsafeNativeMethods.MpImageFrameCreate(
+        (int)format, width, height, widthStep, pixelDataGcHandle.AddrOfPinnedObject(),
+        Marshal.GetFunctionPointerForDelegate(memoryHandler)
+      );
     }
 
     ~ImageFrame() {
-      pixelDataGcHandle?.Free();
+      Dispose();
+    }
+
+    public void Dispose() {
+      if (pixelDataGcHandle != null) {
+        pixelDataGcHandle.Free();
+      }
     }
 
     public ImageFramePtr GetPtr() {
       return imageFramePtr;
     }
 
-    public static ImageFrame BuildFromColor32Array(Color32[] colors, int width, int height) {
+    public Color32[] GetPixelData() {
+      return null;
+    }
+
+    public static unsafe ImageFrame BuildFromColor32Array(Color32[] colors, int width, int height) {
       var pixelData = new byte[colors.Length * 3];
 
       for (var i = 0; i < height; i++) {
@@ -40,7 +59,14 @@ namespace Mediapipe {
         }
       }
 
-      return new ImageFrame(ImageFormat.SRGB, width, height, pixelData);
+      return new ImageFrame(ImageFormat.SRGB, width, height, 3 * width, pixelData);
+    }
+
+
+
+    private void FreePixelData(IntPtr ptr) {
+      // ignore the argument
+      Dispose();
     }
   }
 }

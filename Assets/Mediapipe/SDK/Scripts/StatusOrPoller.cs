@@ -10,10 +10,10 @@ namespace Mediapipe {
       UnsafeNativeMethods.MpStatusOrPollerDestroy(GetPtr());
     }
 
-    public override OutputStreamPoller<T> GetValue() {
+    public override OutputStreamPoller<T> ConsumeValue() {
       if (!IsOk()) return null;
 
-      var mpOutputStreamPoller = UnsafeNativeMethods.MpStatusOrPollerValue(GetPtr());
+      var mpOutputStreamPoller = UnsafeNativeMethods.MpStatusOrPollerConsumeValue(GetPtr());
 
       return new OutputStreamPoller<T>(mpOutputStreamPoller);
     }
