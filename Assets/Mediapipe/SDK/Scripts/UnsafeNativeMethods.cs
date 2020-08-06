@@ -60,9 +60,33 @@ namespace Mediapipe {
     /// ImageFrame API
     [DllImport (MediapipeLibrary)]
     public static extern unsafe ImageFramePtr MpImageFrameCreate(
-      int formatCode, int width, int height, int widthStep, IntPtr pixelData,
+      int formatCode, int width, int height, int widthStep, byte[] pixelData,
       [MarshalAs(UnmanagedType.FunctionPtr)]ImageFrameMemoryHandlerPtr deleter
     );
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe bool MpImageFrameIsEmpty(ImageFramePtr imageFramePtr);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe int MpImageFrameWidth(ImageFramePtr imageFramePtr);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe int MpImageFrameHeight(ImageFramePtr imageFramePtr);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe int MpImageFrameChannelSize(ImageFramePtr imageFramePtr);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe int MpImageFrameNumberOfChannels(ImageFramePtr imageFramePtr);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe int MpImageFrameByteDepth(ImageFramePtr imageFramePtr);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe int MpImageFrameWidthStep(ImageFramePtr imageFramePtr);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe IntPtr MpImageFramePixelData(ImageFramePtr imageFramePtr);
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe void MpStatusOrImageFrameDestroy(MpStatusOrImageFrame statusOrImageFrame);
@@ -105,7 +129,7 @@ namespace Mediapipe {
     public static extern unsafe MpPacket MpMakeImageFramePacketAt(ImageFramePtr imageFramePtr, int timestamp);
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe ImageFramePtr MpPacketConsumeImageFrame(MpPacket packet);
+    public static extern unsafe MpStatusOrImageFrame MpPacketConsumeImageFrame(MpPacket packet);
 
 
     /// SidePacket API
