@@ -43,5 +43,8 @@ public class Director : MonoBehaviour {
     var packet = new ImageFramePacket();
 
     if (!outputStreamPoller.Next(packet)) return;
+
+    // Color32[] colors = packet.GetValue().GetPixelData();
+    // webCamScreen.GetComponent<WebCamScreenController>().DrawScreen(colors);
   }
 }

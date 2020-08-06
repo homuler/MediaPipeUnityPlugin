@@ -35,11 +35,19 @@ public class WebCamScreenController : MonoBehaviour {
     if (device == null) return;
 
     webCamTexture = new WebCamTexture(device?.name, Height, Width, FPS);
-
-    Renderer renderer = GetComponent<Renderer>();
-    renderer.material.mainTexture = webCamTexture;
     webCamTexture.Play();
 
     pixelData = new Color32[webCamTexture.width * webCamTexture.height];
+  }
+
+  public void DrawScreen(Color32[] colors) {
+    // TODO: size assertion
+    Texture2D texture = new Texture2D(webCamTexture.width, webCamTexture.height);
+    Renderer renderer = GetComponent<Renderer>();
+
+    renderer.material.mainTexture = texture;
+
+    texture.SetPixels32(colors);
+    texture.Apply();
   }
 }
