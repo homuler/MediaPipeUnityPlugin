@@ -18,11 +18,10 @@ namespace Mediapipe {
     }
 
     public ImageFrame(ImageFormat format, int width, int height, int widthStep, byte[] pixelData) {
-      pixelDataGcHandle = GCHandle.Alloc(pixelData, GCHandleType.Pinned);
+      pixelDataGcHandle = GCHandle.Alloc(pixelData);
       memoryHandler = FreePixelData;
       imageFramePtr = UnsafeNativeMethods.MpImageFrameCreate(
-        (int)format, width, height, widthStep, pixelDataGcHandle.AddrOfPinnedObject(),
-        Marshal.GetFunctionPointerForDelegate(memoryHandler)
+        (int)format, width, height, widthStep, pixelData, Marshal.GetFunctionPointerForDelegate(memoryHandler)
       );
     }
 
