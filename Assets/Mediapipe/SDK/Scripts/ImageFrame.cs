@@ -40,8 +40,26 @@ namespace Mediapipe {
       return imageFramePtr;
     }
 
+
     public Color32[] GetPixelData() {
-      return null;
+      // TODO: calculate the pixel data length precisely.
+      int width = UnsafeNativeMethods.MpImageFrameWidth(GetPtr());
+      int height = UnsafeNativeMethods.MpImageFrameHeight(GetPtr());
+
+      var colors = new Color32[width * height];
+
+      unsafe {
+        byte* src = (byte*) UnsafeNativeMethods.MpImageFramePixelData(GetPtr()).ToPointer();
+
+        for (var i = 0; i < colors.Length; i++) {
+          byte r = *src++;
+          byte g = *src++;
+          byte b = *src++;
+          colors[i] = new Color32(r, g, b, 255);
+        }
+      }
+
+      return colors;
     }
 
     public static unsafe ImageFrame BuildFromColor32Array(Color32[] colors, int width, int height) {
