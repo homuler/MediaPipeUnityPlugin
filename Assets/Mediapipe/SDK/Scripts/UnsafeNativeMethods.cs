@@ -114,6 +114,9 @@ namespace Mediapipe {
     [DllImport (MediapipeLibrary)]
     public static extern unsafe bool MpOutputStreamPollerNext(OutputStreamPollerPtr outputStreamPollerPtr, MpPacket packet);
 
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe void MpOutputStreamPollerDestroy(OutputStreamPollerPtr outputStreamPollerPtr);
+
 
     /// Packet API
     [DllImport (MediapipeLibrary)]
