@@ -1,27 +1,34 @@
+using System;
 using MpStatus = System.IntPtr;
 
 namespace Mediapipe {
-  public class Status {
-    private MpStatus mpStatus;
+  public class Status : ResourceHandle {
+    private bool _disposed = false;
 
-    public Status(MpStatus ptr) {
-      mpStatus = ptr;
-    }
+    public Status(MpStatus ptr) : base(ptr) {}
 
-    ~Status() {
-      UnsafeNativeMethods.MpStatusDestroy(mpStatus);
+    protected override void Dispose(bool disposing) {
+      if (_disposed) return;
+
+      if (OwnsResource()) {
+        UnsafeNativeMethods.MpStatusDestroy(ptr);
+      }
+
+      ptr = IntPtr.Zero;
+
+      _disposed = true;
     }
 
     public bool IsOk() {
-      return UnsafeNativeMethods.MpStatusOk(mpStatus);
+      return UnsafeNativeMethods.MpStatusOk(ptr);
     }
 
     public int GetRawCode() {
-      return UnsafeNativeMethods.GetMpStatusRawCode(mpStatus);
+      return UnsafeNativeMethods.GetMpStatusRawCode(ptr);
     }
 
     public override string ToString() {
-      return UnsafeNativeMethods.MpStatusToString(mpStatus);
+      return UnsafeNativeMethods.MpStatusToString(ptr);
     }
 
     public static Status Build(int code, string message) {
