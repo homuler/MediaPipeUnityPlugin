@@ -11,5 +11,9 @@ namespace Mediapipe {
     public override string GetValue() {
       return UnsafeNativeMethods.MpPacketGetString(GetPtr());
     }
+
+    public override string ConsumeValue() {
+      throw new System.NotImplementedException();
+    }
   }
 }

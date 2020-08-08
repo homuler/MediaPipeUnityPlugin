@@ -65,6 +65,9 @@ namespace Mediapipe {
     );
 
     [DllImport (MediapipeLibrary)]
+    public static extern unsafe void MpImageFrameDestroy(ImageFramePtr imageFramePtr);
+
+    [DllImport (MediapipeLibrary)]
     public static extern unsafe bool MpImageFrameIsEmpty(ImageFramePtr imageFramePtr);
 
     [DllImport (MediapipeLibrary)]

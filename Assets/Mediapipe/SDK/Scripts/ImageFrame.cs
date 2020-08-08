@@ -5,85 +5,66 @@ using UnityEngine;
 using ImageFramePtr = System.IntPtr;
 
 namespace Mediapipe {
-  public class ImageFrame : IDisposable {
-    private ImageFramePtr imageFramePtr;
-    private GCHandle pixelDataGcHandle;
+  public class ImageFrame : ResourceHandle {
+    private bool _disposed;
+    private GCHandle pixelDataHandle;
+    private GCHandle freePixelDataHandle;
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    private delegate void ImageFrameMemoryHandler(IntPtr ptr);
-    private readonly ImageFrameMemoryHandler memoryHandler;
+    private delegate void FreeMemoryHandler(IntPtr ptr);
+    private readonly FreeMemoryHandler memoryHandler;
 
-    public ImageFrame(ImageFramePtr imageFramePtr) {
-      this.imageFramePtr = imageFramePtr;
-    }
+    public ImageFrame(ImageFramePtr imageFramePtr) : base(imageFramePtr) {}
 
     public ImageFrame(ImageFormat format, int width, int height, int widthStep, byte[] pixelData) {
-      pixelDataGcHandle = GCHandle.Alloc(pixelData);
       memoryHandler = FreePixelData;
-      imageFramePtr = UnsafeNativeMethods.MpImageFrameCreate(
+      freePixelDataHandle = GCHandle.Alloc(memoryHandler, GCHandleType.Pinned);
+      pixelDataHandle = GCHandle.Alloc(pixelData, GCHandleType.Pinned);
+
+      ptr = UnsafeNativeMethods.MpImageFrameCreate(
         (int)format, width, height, widthStep, pixelData, Marshal.GetFunctionPointerForDelegate(memoryHandler)
       );
     }
 
-    ~ImageFrame() {
-      Dispose();
-    }
+    protected override void Dispose(bool disposing) {
+      if (_disposed) return;
 
-    public void Dispose() {
-      if (pixelDataGcHandle != null) {
-        pixelDataGcHandle.Free();
+      if (OwnsResource()) {
+        // NOTE: Below line will call FreePixelData if neccessary.
+        UnsafeNativeMethods.MpImageFrameDestroy(ptr);
       }
+
+      if (freePixelDataHandle != null && freePixelDataHandle.IsAllocated) {
+        freePixelDataHandle.Free();
+      }
+
+      if (pixelDataHandle != null && pixelDataHandle.IsAllocated) {
+        // NOTE: Below line will not be executed.
+        pixelDataHandle.Free();
+      }
+
+      ptr = IntPtr.Zero;
+
+      _disposed = true;
     }
 
-    public ImageFramePtr GetPtr() {
-      return imageFramePtr;
-    }
-
-
-    public Color32[] GetPixelData() {
+    public Color32[] GetColor32s() {
       // TODO: calculate the pixel data length precisely.
       int width = UnsafeNativeMethods.MpImageFrameWidth(GetPtr());
       int height = UnsafeNativeMethods.MpImageFrameHeight(GetPtr());
 
-      var colors = new Color32[width * height];
-
-      unsafe {
-        byte* src = (byte*) UnsafeNativeMethods.MpImageFramePixelData(GetPtr()).ToPointer();
-
-        for (var i = 0; i < colors.Length; i++) {
-          byte r = *src++;
-          byte g = *src++;
-          byte b = *src++;
-          colors[i] = new Color32(r, g, b, 255);
-        }
-      }
-
-      return colors;
+      return Format.FromBytePtr(UnsafeNativeMethods.MpImageFramePixelData(ptr), width, height);
     }
 
-    public static unsafe ImageFrame BuildFromColor32Array(Color32[] colors, int width, int height) {
-      var pixelData = new byte[colors.Length * 3];
-
-      for (var i = 0; i < height; i++) {
-        for (var j = 0; j < width; j++) {
-          var index = width * i + j;
-          var color = colors[index];
-          var offset = 3 * index;
-
-          pixelData[offset++] = color.r;
-          pixelData[offset++] = color.g;
-          pixelData[offset++] = color.b;
-        }
-      }
-
-      return new ImageFrame(ImageFormat.SRGB, width, height, 3 * width, pixelData);
+    public static unsafe ImageFrame FromPixels32(Color32[] colors, int width, int height) {
+      return new ImageFrame(ImageFormat.SRGB, width, height, 3 * width, Format.FromPixels32(colors));
     }
-
-
 
     private void FreePixelData(IntPtr ptr) {
       // ignore the argument
-      Dispose();
+      if (pixelDataHandle != null && pixelDataHandle.IsAllocated) {
+        pixelDataHandle.Free();
+      }
     }
   }
 }

@@ -1,29 +1,36 @@
 namespace Mediapipe {
   public class ImageFramePacket : Packet<ImageFrame> {
-    private ImageFrame imageFrame;
-
     public ImageFramePacket() : base() {}
 
     public ImageFramePacket(ImageFrame imageFrame, int timestamp) :
-      base(UnsafeNativeMethods.MpMakeImageFramePacketAt(imageFrame.GetPtr(), timestamp))
-    {
-      this.imageFrame = imageFrame;
-    }
-
-    ~ImageFramePacket() {
-      if (imageFrame != null) {
-        imageFrame.Dispose();
-      }
-    }
+      base(UnsafeNativeMethods.MpMakeImageFramePacketAt(imageFrame.GetPtr(), timestamp), imageFrame) {}
 
     public override ImageFrame GetValue() {
+      throw new System.NotImplementedException();
+    }
+
+    public override ImageFrame ConsumeValue() {
       var statusOrImageFrame = new StatusOrImageFrame(UnsafeNativeMethods.MpPacketConsumeImageFrame(GetPtr()));
 
       if (!statusOrImageFrame.IsOk()) {
         throw new System.SystemException(statusOrImageFrame.status.ToString());
       }
 
-      return imageFrame = statusOrImageFrame.GetValue();
+      ReleaseValue();
+
+      return statusOrImageFrame.GetValue();
+    }
+
+    public override void Release() {
+      ReleaseValue();
+      base.Release();
+    }
+
+    private void ReleaseValue() {
+      if (valueHandle.IsAllocated) {
+        var imageFrame = (ImageFrame)valueHandle.Target;
+        imageFrame.Release();
+      }
     }
   }
 }
