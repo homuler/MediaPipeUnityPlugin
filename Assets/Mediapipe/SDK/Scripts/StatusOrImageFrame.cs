@@ -1,27 +1,30 @@
+using System;
 using MpStatusOrImageFrame = System.IntPtr;
 
 namespace Mediapipe {
-  public class StatusOrImageFrame {
-    public Status status;
-    private MpStatusOrImageFrame mpStatusOrImageFrame;
+  public class StatusOrImageFrame : StatusOr<ImageFrame>{
+    private bool _disposed = false;
 
-    public StatusOrImageFrame(MpStatusOrImageFrame ptr) {
-      mpStatusOrImageFrame = ptr;
-      status = new Status(UnsafeNativeMethods.MpStatusOrImageFrameStatus(mpStatusOrImageFrame));
+    public StatusOrImageFrame(MpStatusOrImageFrame ptr) : base(ptr) {
+      status = new Status(UnsafeNativeMethods.MpStatusOrImageFrameStatus(ptr));
     }
 
-    ~StatusOrImageFrame() {
-      UnsafeNativeMethods.MpStatusOrImageFrameDestroy(mpStatusOrImageFrame);
+    protected override void Dispose(bool disposing) {
+      if (_disposed) return;
+
+      if (OwnsResource()) {
+        UnsafeNativeMethods.MpStatusOrImageFrameDestroy(ptr);
+      }
+
+      ptr = IntPtr.Zero;
+
+      _disposed = true;
     }
 
-    public bool IsOk() {
-      return status.IsOk();
-    }
-
-    public ImageFrame GetValue() {
+    public override ImageFrame ConsumeValue() {
       if (!IsOk()) return null;
 
-      var mpImageFrame = UnsafeNativeMethods.MpStatusOrImageFrameConsumeValue(mpStatusOrImageFrame);
+      var mpImageFrame = UnsafeNativeMethods.MpStatusOrImageFrameConsumeValue(ptr);
 
       return new ImageFrame(mpImageFrame);
     }

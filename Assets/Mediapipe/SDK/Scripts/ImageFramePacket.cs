@@ -18,7 +18,7 @@ namespace Mediapipe {
 
       ReleaseValue();
 
-      return statusOrImageFrame.GetValue();
+      return statusOrImageFrame.ConsumeValue();
     }
 
     public override void Release() {

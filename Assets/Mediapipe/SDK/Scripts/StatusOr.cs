@@ -1,20 +1,17 @@
 using MpStatusOr = System.IntPtr;
 
 namespace Mediapipe {
-  public abstract class StatusOr<T> {
+  public abstract class StatusOr<T> : ResourceHandle {
     public Status status;
-    private MpStatusOr mpStatusOr;
 
-    public StatusOr(MpStatusOr ptr) {
-      mpStatusOr = ptr;
-    }
+    public StatusOr(MpStatusOr ptr) : base(ptr) {}
 
     public bool IsOk() {
-      return status.IsOk();
-    }
+      if (status == null) {
+        throw new System.SystemException("Status is not initialized");
+      }
 
-    protected MpStatusOr GetPtr() {
-      return mpStatusOr;
+      return status.IsOk();
     }
 
     public abstract T ConsumeValue();
