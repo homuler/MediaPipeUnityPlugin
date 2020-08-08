@@ -1,6 +1,5 @@
 using Mediapipe;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Director : MonoBehaviour {
   private GameObject deviceSelector;
