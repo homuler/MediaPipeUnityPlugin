@@ -1,23 +1,24 @@
+using System;
 using MpSidePacket = System.IntPtr;
 
 namespace Mediapipe {
-  public class SidePacket {
-    private MpSidePacket mpSidePacket;
+  public class SidePacket : ResourceHandle {
+    private bool _disposed = false;
 
-    public SidePacket() {
-      mpSidePacket = UnsafeNativeMethods.MpSidePacketCreate();
-    }
+    public SidePacket() : base(UnsafeNativeMethods.MpSidePacketCreate()) {}
 
-    public SidePacket(MpSidePacket ptr) {
-      mpSidePacket = ptr;
-    }
+    public SidePacket(MpSidePacket ptr) : base(ptr) {}
 
-    ~SidePacket() {
-      UnsafeNativeMethods.MpSidePacketDestroy(mpSidePacket);
-    }
+    protected override void Dispose(bool disposing) {
+      if (_disposed) return;
 
-    public MpSidePacket GetPtr() {
-      return mpSidePacket;
+      if (OwnsResource()) {
+        UnsafeNativeMethods.MpSidePacketDestroy(ptr);
+      }
+
+      ptr = IntPtr.Zero;
+
+      _disposed = true;
     }
   }
 }
