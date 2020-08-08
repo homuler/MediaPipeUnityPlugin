@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
@@ -5,30 +6,30 @@ using MpCalculatorGraphConfig = System.IntPtr;
 using ProtobufLogHandlerPtr = System.IntPtr;
 
 namespace Mediapipe {
-  public class CalculatorGraphConfig {
-    private const string MediapipeLibrary = "mediapipe_c";
-
+  public class CalculatorGraphConfig : ResourceHandle {
+    private bool _disposed = false;
     public MpCalculatorGraphConfig mpCalculatorGraphConfig;
 
     static CalculatorGraphConfig() {
       UnsafeNativeMethods.SetProtobufLogHandler(Marshal.GetFunctionPointerForDelegate(protobufLogHandler));
     }
 
-    public CalculatorGraphConfig(string configText) {
-      mpCalculatorGraphConfig = UnsafeNativeMethods.ParseMpCalculatorGraphConfig(configText);
-
-      if (mpCalculatorGraphConfig == System.IntPtr.Zero) {
+    public CalculatorGraphConfig(string configText) : base(UnsafeNativeMethods.ParseMpCalculatorGraphConfig(configText)) {
+      if (ptr == IntPtr.Zero) {
         throw new System.SystemException("Failed to parse the text as graph config");
       }
     }
 
-    ~CalculatorGraphConfig() {
-      // TODO: investigate whether it's OK.
-      UnsafeNativeMethods.MpCalculatorGraphConfigDestroy(mpCalculatorGraphConfig);
-    }
+    protected override void Dispose(bool disposing) {
+      if (_disposed) return;
 
-    public MpCalculatorGraphConfig GetPtr() {
-      return mpCalculatorGraphConfig;
+      if (OwnsResource()) {
+        UnsafeNativeMethods.MpCalculatorGraphConfigDestroy(ptr);
+      }
+
+      ptr = IntPtr.Zero;
+
+      _disposed = true;
     }
 
     // Protobuf Logger
