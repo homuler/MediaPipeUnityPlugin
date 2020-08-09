@@ -21,7 +21,7 @@ namespace Mediapipe {
       freePixelDataHandle = GCHandle.Alloc(memoryHandler, GCHandleType.Pinned);
       pixelDataHandle = GCHandle.Alloc(pixelData, GCHandleType.Pinned);
 
-      ptr = UnsafeNativeMethods.MpImageFrameCreate(
+      ptr = UnsafeNativeMethods.MpImageFrameCreateWithPixelData(
         (int)format, width, height, widthStep, pixelData, Marshal.GetFunctionPointerForDelegate(memoryHandler)
       );
     }
