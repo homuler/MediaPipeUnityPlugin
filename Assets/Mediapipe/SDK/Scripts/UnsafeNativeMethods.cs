@@ -5,6 +5,7 @@ using System.Security;
 using MpCalculatorGraph = System.IntPtr;
 using MpCalculatorGraphConfig = System.IntPtr;
 using MpGlCalculatorHelper = System.IntPtr;
+using MpGlContext = System.IntPtr;
 using MpGpuBuffer = System.IntPtr;
 using MpGpuResources = System.IntPtr;
 using MpPacket = System.IntPtr;
@@ -15,6 +16,7 @@ using MpStatusOrGpuResources = System.IntPtr;
 using MpStatusOrImageFrame = System.IntPtr;
 using MpStatusOrPoller = System.IntPtr;
 
+using GlContextPtr = System.IntPtr;
 using GlTexturePtr = System.IntPtr;
 using GlTextureInfoPtr = System.IntPtr;
 using GlStatusFunctionPtr = System.IntPtr;
@@ -95,6 +97,17 @@ namespace Mediapipe {
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe void MpGlCalculatorHelperBindFramebuffer(MpGlCalculatorHelper gpuHelper, GlTexturePtr glTexture);
+
+
+    /// GlContext API
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe MpGlContext MpGlContextGetCurrent();
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe GlContextPtr MpGlContextGet(MpGlContext glContext);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe UInt32 EglGetCurrentContext();
 
 
     /// GlTexture API
@@ -287,5 +300,13 @@ namespace Mediapipe {
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe void MpStatusDestroy(MpStatus status);
+
+
+    /// Glog API
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe void InitGoogleLogging(string program, string logDir);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe void ShutdownGoogleLogging();
   }
 }
