@@ -48,6 +48,9 @@ namespace Mediapipe {
     public static extern unsafe MpStatus MpCalculatorGraphWaitUntilDone(MpCalculatorGraph graph);
 
     [DllImport (MediapipeLibrary)]
+    public static extern unsafe MpGpuResources MpCalculatorGraphGetGpuResources(MpCalculatorGraph graph);
+
+    [DllImport (MediapipeLibrary)]
     public static extern unsafe MpStatus MpCalculatorGraphSetGpuResources(MpCalculatorGraph graph, MpGpuResources gpuResources);
 
     [DllImport (MediapipeLibrary)]
@@ -87,7 +90,7 @@ namespace Mediapipe {
     public static extern unsafe void MpGlCalculatorHelperDestroy(MpGlCalculatorHelper gpuHelper);
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe void MpGlCalculatorHelperInitializeForTest(MpGlCalculatorHelper gpuHelper, MpGpuResources gpuResources);
+    public static extern unsafe void MpGlCalculatorHelperInitializeForTest(MpGlCalculatorHelper gpuHelper, GpuResourcesPtr gpuResources);
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe MpStatus MpGlCalculatorHelperRunInGlContext(MpGlCalculatorHelper gpuHelper, [MarshalAs(UnmanagedType.FunctionPtr)]GlStatusFunctionPtr glFunc);

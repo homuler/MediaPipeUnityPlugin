@@ -53,6 +53,10 @@ namespace Mediapipe {
       return new Status(UnsafeNativeMethods.MpCalculatorGraphAddPacketToInputStream(ptr, name, packetPtr));
     }
 
+    public GpuResources GetGpuResources() {
+      return new GpuResources(UnsafeNativeMethods.MpCalculatorGraphGetGpuResources(ptr));
+    }
+
     public Status SetGpuResources(GpuResources gpuResources) {
       return new Status(UnsafeNativeMethods.MpCalculatorGraphSetGpuResources(ptr, gpuResources.GetPtr()));
     }
