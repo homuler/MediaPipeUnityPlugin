@@ -21,15 +21,15 @@ namespace Mediapipe {
       return statusOrImageFrame.ConsumeValue();
     }
 
-    public override void Release() {
+    public override void ReleasePtr() {
       ReleaseValue();
-      base.Release();
+      base.ReleasePtr();
     }
 
     private void ReleaseValue() {
       if (valueHandle.IsAllocated) {
         var imageFrame = (ImageFrame)valueHandle.Target;
-        imageFrame.Release();
+        imageFrame.ReleasePtr();
       }
     }
   }
