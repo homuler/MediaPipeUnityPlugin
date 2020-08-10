@@ -23,6 +23,12 @@ namespace Mediapipe {
       return UnsafeNativeMethods.MpStatusOk(ptr);
     }
 
+    public void AssertOk() {
+      if (!IsOk()) {
+        throw new InternalException(ToString());
+      }
+    }
+
     public int GetRawCode() {
       return UnsafeNativeMethods.GetMpStatusRawCode(ptr);
     }

@@ -38,19 +38,9 @@ node {
 }
 ";
 
-  public readonly OutputStreamPoller<string> outputStreamPoller;
+  public OutputStreamPoller<string> outputStreamPoller;
 
-  public HelloWorldGraph() : base(configText) {
-    var statusOrPoller = AddOutputStreamPoller();
-
-    if (!statusOrPoller.IsOk()) {
-      Debug.Log("Failed to add output stream: out");
-
-      throw new System.SystemException(statusOrPoller.status.ToString());
-    }
-
-    outputStreamPoller = statusOrPoller.ConsumeValue();
-  }
+  public HelloWorldGraph() : base(configText) {}
 
   public Status StartRun() {
     return base.StartRun(new SidePacket());
@@ -66,7 +56,7 @@ node {
     return base.CloseInputStream(inputStream);
   }
 
-  private StatusOrPoller<string> AddOutputStreamPoller() {
-    return new StatusOrPoller<string>(AddOutputStreamPoller(outputStream));
+  public void InitOutputStreamPoller() {
+    outputStreamPoller = new StatusOrPoller<string>(AddOutputStreamPoller(outputStream)).ConsumeValue();
   }
 }

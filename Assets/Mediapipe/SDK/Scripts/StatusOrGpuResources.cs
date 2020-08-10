@@ -24,7 +24,7 @@ namespace Mediapipe {
     }
 
     public override GpuResources ConsumeValue() {
-      if (!IsOk()) return null;
+      AssertOk();
 
       var mpGpuResources = UnsafeNativeMethods.MpStatusOrGpuResourcesConsumeValue(ptr);
 

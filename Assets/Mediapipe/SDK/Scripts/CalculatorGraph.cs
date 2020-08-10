@@ -13,9 +13,7 @@ namespace Mediapipe {
 
       var status = Initialize(graphConfig);
 
-      if (!status.IsOk()) {
-        throw new System.SystemException(status.ToString());
-      }
+      status.AssertOk();
     }
 
     protected override void Dispose(bool disposing) {

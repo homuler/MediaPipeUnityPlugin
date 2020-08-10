@@ -1,3 +1,4 @@
+using System;
 using MpStatusOr = System.IntPtr;
 
 namespace Mediapipe {
@@ -8,10 +9,14 @@ namespace Mediapipe {
 
     public bool IsOk() {
       if (status == null) {
-        throw new System.SystemException("Status is not initialized");
+        throw new InvalidOperationException("Status is not initialized yet");
       }
 
       return status.IsOk();
+    }
+
+    public void AssertOk() {
+      status.AssertOk();
     }
 
     public abstract T ConsumeValue();

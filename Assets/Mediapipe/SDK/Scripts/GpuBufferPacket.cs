@@ -1,3 +1,5 @@
+using System;
+
 namespace Mediapipe {
   public class GpuBufferPacket : Packet<GpuBuffer> {
     public GpuBufferPacket() : base() {}
@@ -6,19 +8,15 @@ namespace Mediapipe {
       base(UnsafeNativeMethods.MpMakeGpuBufferPacketAt(gpuBuffer.GetPtr(), timestamp), gpuBuffer) {}
 
     public override GpuBuffer GetValue() {
-      throw new System.NotImplementedException();
+      throw new NotSupportedException();
     }
 
     public override GpuBuffer ConsumeValue() {
-      var statusOrGpuBuffer = new StatusOrGpuBuffer(UnsafeNativeMethods.MpPacketConsumeGpuBuffer(GetPtr()));
-
-      if (!statusOrGpuBuffer.IsOk()) {
-        throw new System.SystemException(statusOrGpuBuffer.status.ToString());
-      }
+      var gpuBuffer = new StatusOrGpuBuffer(UnsafeNativeMethods.MpPacketConsumeGpuBuffer(GetPtr())).ConsumeValue();
 
       ReleaseValue();
 
-      return statusOrGpuBuffer.ConsumeValue();
+      return gpuBuffer;
     }
 
     public override void ReleasePtr() {

@@ -22,7 +22,7 @@ namespace Mediapipe {
     }
 
     public override GpuBuffer ConsumeValue() {
-      if (!IsOk()) return null;
+      AssertOk();
 
       var mpGpuBuffer = UnsafeNativeMethods.MpStatusOrGpuBufferConsumeValue(ptr);
 

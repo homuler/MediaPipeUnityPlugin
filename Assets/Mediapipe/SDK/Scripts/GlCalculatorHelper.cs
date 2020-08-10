@@ -26,7 +26,7 @@ namespace Mediapipe {
     }
 
     public void InitializeForTest(GpuResources gpuResources) {
-      UnsafeNativeMethods.MpGlCalculatorHelperInitializeForTest(ptr, gpuResources.GetPtr());
+      UnsafeNativeMethods.MpGlCalculatorHelperInitializeForTest(ptr, gpuResources.GetRawPtr());
     }
 
     public Status RunInGlContext(GlStatusFunction glStatusFunction) {

@@ -1,3 +1,4 @@
+using System;
 using MpPacket = System.IntPtr;
 
 namespace Mediapipe {
@@ -13,7 +14,7 @@ namespace Mediapipe {
     }
 
     public override string ConsumeValue() {
-      throw new System.NotImplementedException();
+      throw new NotSupportedException();
     }
   }
 }

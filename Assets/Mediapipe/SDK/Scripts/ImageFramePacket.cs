@@ -1,3 +1,5 @@
+using System;
+
 namespace Mediapipe {
   public class ImageFramePacket : Packet<ImageFrame> {
     public ImageFramePacket() : base() {}
@@ -6,19 +8,15 @@ namespace Mediapipe {
       base(UnsafeNativeMethods.MpMakeImageFramePacketAt(imageFrame.GetPtr(), timestamp), imageFrame) {}
 
     public override ImageFrame GetValue() {
-      throw new System.NotImplementedException();
+      throw new NotSupportedException();
     }
 
     public override ImageFrame ConsumeValue() {
-      var statusOrImageFrame = new StatusOrImageFrame(UnsafeNativeMethods.MpPacketConsumeImageFrame(GetPtr()));
-
-      if (!statusOrImageFrame.IsOk()) {
-        throw new System.SystemException(statusOrImageFrame.status.ToString());
-      }
+      var imageFrame = new StatusOrImageFrame(UnsafeNativeMethods.MpPacketConsumeImageFrame(GetPtr())).ConsumeValue();
 
       ReleaseValue();
 
-      return statusOrImageFrame.ConsumeValue();
+      return imageFrame;
     }
 
     public override void ReleasePtr() {

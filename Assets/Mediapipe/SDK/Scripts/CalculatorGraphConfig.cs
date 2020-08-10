@@ -16,7 +16,7 @@ namespace Mediapipe {
 
     public CalculatorGraphConfig(string configText) : base(UnsafeNativeMethods.ParseMpCalculatorGraphConfig(configText)) {
       if (ptr == IntPtr.Zero) {
-        throw new System.SystemException("Failed to parse the text as graph config");
+        throw new FormatException("Failed to parse the text as graph config");
       }
     }
 

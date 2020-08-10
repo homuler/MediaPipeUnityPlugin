@@ -27,41 +27,23 @@ public class HelloWorld : MonoBehaviour {
 
   void Start () {
     graph = new HelloWorldGraph();
-
-    var status = graph.StartRun();
-
-    if (!status.IsOk()) {
-      Debug.Log(status);
-      return;
-    }
+    graph.InitOutputStreamPoller();
+    graph.StartRun().AssertOk();
 
     for (int i = 0; i < 10; i++) {
-      status = graph.AddStringToInputStream("Hello World!", i);
-
-      if (!status.IsOk()) {
-        Debug.Log(status);
-        return;
-      }
+      graph.AddStringToInputStream("Hello World!", i).AssertOk();
     }
 
-    status = graph.CloseInputStream();
-
-    if (!status.IsOk()) {
-      Debug.Log(status);
-      return;
-    }
+    graph.CloseInputStream().AssertOk();
 
     var outputStreamPoller = graph.outputStreamPoller;
     var packet = new StringPacket();
-
     int count = 0;
 
     while (outputStreamPoller.Next(packet)) {
       Debug.Log($"#{++count} {packet.GetValue()}");
     }
 
-    status = graph.WaitUntilDone();
-
-    Debug.Log(status);
+    graph.WaitUntilDone().AssertOk();
   }
 }

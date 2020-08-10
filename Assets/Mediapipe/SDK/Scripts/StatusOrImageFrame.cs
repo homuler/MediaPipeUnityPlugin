@@ -22,7 +22,7 @@ namespace Mediapipe {
     }
 
     public override ImageFrame ConsumeValue() {
-      if (!IsOk()) return null;
+      AssertOk();
 
       var mpImageFrame = UnsafeNativeMethods.MpStatusOrImageFrameConsumeValue(ptr);
 
