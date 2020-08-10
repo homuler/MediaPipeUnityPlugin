@@ -54,7 +54,7 @@ namespace Mediapipe {
     }
 
     public Status SetGpuResources(GpuResources gpuResources) {
-      return new Status(UnsafeNativeMethods.MpCalculatorGraphSetGpuResources(gpuResources.GetPtr()));
+      return new Status(UnsafeNativeMethods.MpCalculatorGraphSetGpuResources(ptr, gpuResources.GetPtr()));
     }
   }
 }

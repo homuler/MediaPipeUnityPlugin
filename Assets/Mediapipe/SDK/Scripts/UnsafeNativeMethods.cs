@@ -46,7 +46,7 @@ namespace Mediapipe {
     public static extern unsafe MpStatus MpCalculatorGraphWaitUntilDone(MpCalculatorGraph graph);
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe MpStatus MpCalculatorGraphSetGpuResources(MpGpuResources gpuResources);
+    public static extern unsafe MpStatus MpCalculatorGraphSetGpuResources(MpCalculatorGraph graph, MpGpuResources gpuResources);
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe MpStatusOrPoller MpCalculatorGraphAddOutputStreamPoller(MpCalculatorGraph graph, string name);
