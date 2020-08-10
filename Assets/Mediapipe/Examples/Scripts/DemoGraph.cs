@@ -4,19 +4,9 @@ using UnityEngine;
 public class DemoGraph : CalculatorGraph {
   public const string inputStream = "input_video"; 
   public const string outputStream = "output_video"; 
-  public readonly OutputStreamPoller<ImageFrame> outputStreamPoller;
+  public OutputStreamPoller<ImageFrame> outputStreamPoller;
 
-  public DemoGraph(string configText) : base(configText) {
-    var statusOrPoller = AddOutputStreamPoller();
-
-    if (!statusOrPoller.IsOk()) {
-      Debug.Log($"Failed to add output stream: {outputStream}");
-
-      throw new System.SystemException(statusOrPoller.status.ToString());
-    }
-
-    outputStreamPoller = statusOrPoller.ConsumeValue();
-  }
+  public DemoGraph(string configText) : base(configText) {}
 
   public Status StartRun() {
     return base.StartRun(new SidePacket());
@@ -33,7 +23,7 @@ public class DemoGraph : CalculatorGraph {
     return base.CloseInputStream(inputStream);
   }
 
-  private StatusOrPoller<ImageFrame> AddOutputStreamPoller() {
-    return new StatusOrPoller<ImageFrame>(AddOutputStreamPoller(outputStream));
+  public void InitOutputStreamPoller() {
+    outputStreamPoller = new StatusOrPoller<ImageFrame>(AddOutputStreamPoller(outputStream)).ConsumeValue();
   }
 }
