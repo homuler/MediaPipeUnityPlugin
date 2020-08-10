@@ -51,8 +51,12 @@ namespace Mediapipe {
       return UnsafeNativeMethods.MpCalculatorGraphAddOutputStreamPoller(ptr, name);
     }
 
-    protected Status AddPacketToInputStream(string name, MpPacket packetPtr) {
+    public Status AddPacketToInputStream(string name, MpPacket packetPtr) {
       return new Status(UnsafeNativeMethods.MpCalculatorGraphAddPacketToInputStream(ptr, name, packetPtr));
+    }
+
+    public Status SetGpuResources(GpuResources gpuResources) {
+      return new Status(UnsafeNativeMethods.MpCalculatorGraphSetGpuResources(gpuResources.GetPtr()));
     }
   }
 }
