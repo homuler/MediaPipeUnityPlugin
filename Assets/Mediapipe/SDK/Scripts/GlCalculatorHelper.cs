@@ -9,7 +9,8 @@ namespace Mediapipe {
     private bool _disposed = false;
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate MpStatus GlStatusFunction();
+    private delegate MpStatus MpGlStatusFunction();
+    public delegate Status GlStatusFunction();
 
     public GlCalculatorHelper() : base(UnsafeNativeMethods.MpGlCalculatorHelperCreate()) {}
 
@@ -29,12 +30,13 @@ namespace Mediapipe {
       UnsafeNativeMethods.MpGlCalculatorHelperInitializeForTest(ptr, gpuResources.GetRawPtr());
     }
 
-    public Status RunInGlContext(GlStatusFunction glStatusFunction) {
-      GCHandle glStatusFunctionHandle = GCHandle.Alloc(glStatusFunction);
+    public Status RunInGlContext(GlStatusFunction glStatusFunc) {
+      MpGlStatusFunction mpGlStatusFunc = () => { return glStatusFunc().GetPtr(); };
+      GCHandle mpGlStatusFuncHandle = GCHandle.Alloc(mpGlStatusFunc);
 
-      var statusPtr = UnsafeNativeMethods.MpGlCalculatorHelperRunInGlContext(ptr, Marshal.GetFunctionPointerForDelegate(glStatusFunction));
+      var statusPtr = UnsafeNativeMethods.MpGlCalculatorHelperRunInGlContext(ptr, Marshal.GetFunctionPointerForDelegate(mpGlStatusFunc));
 
-      glStatusFunctionHandle.Free();
+      mpGlStatusFuncHandle.Free();
 
       return new Status(statusPtr);
     }

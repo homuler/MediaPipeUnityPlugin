@@ -37,9 +37,13 @@ namespace Mediapipe {
       return UnsafeNativeMethods.MpStatusToString(ptr);
     }
 
-    public static Status Build(int code, string message) {
+    public static Status Build(int code = 0, string message = "") {
       var ptr = UnsafeNativeMethods.MpStatusCreate(code, message);
       return new Status(ptr);
+    }
+
+    public static Status OkStatus() {
+      return Status.Build();
     }
   }
 }
