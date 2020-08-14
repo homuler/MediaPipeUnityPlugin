@@ -24,9 +24,9 @@ namespace Mediapipe {
     public override GpuBuffer ConsumeValue() {
       AssertOk();
 
-      var mpGpuBuffer = UnsafeNativeMethods.MpStatusOrGpuBufferConsumeValue(ptr);
+      var gpuBufferPtr = UnsafeNativeMethods.MpStatusOrGpuBufferConsumeValue(ptr);
 
-      return new GpuBuffer(mpGpuBuffer);
+      return new GpuBuffer(gpuBufferPtr);
     }
   }
 }

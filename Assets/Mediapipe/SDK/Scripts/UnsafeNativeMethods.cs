@@ -6,7 +6,6 @@ using MpCalculatorGraph = System.IntPtr;
 using MpCalculatorGraphConfig = System.IntPtr;
 using MpGlCalculatorHelper = System.IntPtr;
 using MpGlContext = System.IntPtr;
-using MpGpuBuffer = System.IntPtr;
 using MpGpuResources = System.IntPtr;
 using MpPacket = System.IntPtr;
 using MpSidePacket = System.IntPtr;
@@ -20,6 +19,7 @@ using GlContextPtr = System.IntPtr;
 using GlTexturePtr = System.IntPtr;
 using GlTextureInfoPtr = System.IntPtr;
 using GlStatusFunctionPtr = System.IntPtr;
+using GpuBufferPtr = System.IntPtr;
 using GpuResourcesPtr = System.IntPtr;
 using ImageFrameMemoryHandlerPtr = System.IntPtr;
 using ImageFramePtr = System.IntPtr;
@@ -109,9 +109,6 @@ namespace Mediapipe {
     [DllImport (MediapipeLibrary)]
     public static extern unsafe GlContextPtr MpGlContextGet(MpGlContext glContext);
 
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe UInt32 EglGetCurrentContext();
-
 
     /// GlTexture API
     [DllImport (MediapipeLibrary)]
@@ -121,7 +118,7 @@ namespace Mediapipe {
     public static extern unsafe void MpGlTextureRelease(GlTexturePtr glTexture);
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe MpGpuBuffer MpGlTextureGetGpuBufferFrame(GlTexturePtr glTexture);
+    public static extern unsafe GpuBufferPtr MpGlTextureGetGpuBufferFrame(GlTexturePtr glTexture);
 
 
     /// GlTextureInfo API
@@ -143,19 +140,19 @@ namespace Mediapipe {
 
     /// GpuBuffer API
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe void MpGpuBufferDestroy(MpGpuBuffer gpuBuffer);
+    public static extern unsafe void MpGpuBufferDestroy(GpuBufferPtr gpuBuffer);
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe UInt32 MpGpuBufferFormat(MpGpuBuffer gpuBuffer);
+    public static extern unsafe UInt32 MpGpuBufferFormat(GpuBufferPtr gpuBuffer);
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe int MpGpuBufferWidth(MpGpuBuffer gpuBuffer);
+    public static extern unsafe int MpGpuBufferWidth(GpuBufferPtr gpuBuffer);
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe int MpGpuBufferHeight(MpGpuBuffer gpuBuffer);
+    public static extern unsafe int MpGpuBufferHeight(GpuBufferPtr gpuBuffer);
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe MpPacket MpMakeGpuBufferPacketAt(MpGpuBuffer gpuBuffer, int timestamp);
+    public static extern unsafe MpPacket MpMakeGpuBufferPacketAt(GpuBufferPtr gpuBuffer, int timestamp);
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe MpStatusOrGpuBuffer MpPacketConsumeGpuBuffer(MpPacket packet);
@@ -167,7 +164,7 @@ namespace Mediapipe {
     public static extern unsafe MpStatus MpStatusOrGpuBufferStatus(MpStatusOrGpuBuffer gpuBuffer);
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe MpGpuBuffer MpStatusOrGpuBufferConsumeValue(MpStatusOrGpuBuffer gpuBuffer);
+    public static extern unsafe GpuBufferPtr MpStatusOrGpuBufferConsumeValue(MpStatusOrGpuBuffer gpuBuffer);
 
 
     /// GpuBufferFormat API

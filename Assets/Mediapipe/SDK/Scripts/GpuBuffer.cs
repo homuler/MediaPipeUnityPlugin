@@ -1,12 +1,12 @@
 using System;
 
-using MpGpuBuffer = System.IntPtr;
+using GpuBufferPtr = System.IntPtr;
 
 namespace Mediapipe {
   public class GpuBuffer : ResourceHandle {
     private bool _disposed = false;
  
-    public GpuBuffer(MpGpuBuffer ptr) : base(ptr) {}
+    public GpuBuffer(GpuBufferPtr ptr) : base(ptr) {}
 
     protected override void Dispose(bool disposing) {
       if (_disposed) return;
