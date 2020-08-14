@@ -1,34 +1,40 @@
 using System;
+using System.Runtime.InteropServices;
 
 namespace Mediapipe {
   public class GpuBufferPacket : Packet<GpuBuffer> {
+    private bool _disposed = false;
+    private GCHandle valueHandle;
     public GpuBufferPacket() : base() {}
 
     public GpuBufferPacket(GpuBuffer gpuBuffer, int timestamp) :
-      base(UnsafeNativeMethods.MpMakeGpuBufferPacketAt(gpuBuffer.GetPtr(), timestamp), gpuBuffer) {}
+        base(UnsafeNativeMethods.MpMakeGpuBufferPacketAt(gpuBuffer.GetPtr(), timestamp)) {
+      gpuBuffer.ReleaseOwnership();
+      valueHandle = GCHandle.Alloc(gpuBuffer);
+    }
+
+    protected override void Dispose(bool disposing) {
+      if (_disposed) return;
+
+      base.Dispose(disposing);
+
+      if (valueHandle != null && valueHandle.IsAllocated) {
+        valueHandle.Free();
+      }
+
+      _disposed = true;
+    }
 
     public override GpuBuffer GetValue() {
       throw new NotSupportedException();
     }
 
     public override GpuBuffer ConsumeValue() {
-      var gpuBuffer = new StatusOrGpuBuffer(UnsafeNativeMethods.MpPacketConsumeGpuBuffer(GetPtr())).ConsumeValue();
-
-      ReleaseValue();
-
-      return gpuBuffer;
-    }
-
-    public override IntPtr ReleasePtr() {
-      ReleaseValue();
-      return base.ReleasePtr();
-    }
-
-    private void ReleaseValue() {
-      if (valueHandle.IsAllocated) {
-        var gpuBuffer = (GpuBuffer)valueHandle.Target;
-        gpuBuffer.ReleasePtr();
+      if (!OwnsResource()) {
+        throw new InvalidOperationException("Not owns resouces to be consumed");
       }
+
+      return new StatusOrGpuBuffer(UnsafeNativeMethods.MpPacketConsumeGpuBuffer(GetPtr())).ConsumeValue();
     }
   }
 }

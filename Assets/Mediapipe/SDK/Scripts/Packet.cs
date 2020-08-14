@@ -1,20 +1,14 @@
 using System;
-using System.Runtime.InteropServices;
 
 using MpPacket = System.IntPtr;
 
 namespace Mediapipe {
   public abstract class Packet<T> : ResourceHandle {
     private bool _disposed = false;
-    protected GCHandle valueHandle;
 
     public Packet() : base(UnsafeNativeMethods.MpPacketCreate(), true) {}
 
     public Packet(MpPacket ptr, bool isOwner = true) : base(ptr, isOwner) {}
-
-    public Packet(MpPacket ptr, T value) : this(ptr) {
-      valueHandle = GCHandle.Alloc(value);
-    }
 
     public abstract T GetValue();
 
@@ -28,11 +22,6 @@ namespace Mediapipe {
       }
 
       ptr = IntPtr.Zero;
-
-      if (valueHandle != null && valueHandle.IsAllocated) {
-        valueHandle.Free();
-      }
-
       _disposed = true;
     }
   }
