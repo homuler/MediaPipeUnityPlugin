@@ -19,9 +19,9 @@ namespace Mediapipe {
       return imageFrame;
     }
 
-    public override void ReleasePtr() {
+    public override IntPtr ReleasePtr() {
       ReleaseValue();
-      base.ReleasePtr();
+      return base.ReleasePtr();
     }
 
     private void ReleaseValue() {

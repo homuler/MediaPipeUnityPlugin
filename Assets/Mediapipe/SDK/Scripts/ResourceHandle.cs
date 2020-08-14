@@ -25,9 +25,13 @@ namespace Mediapipe {
       return ptr;
     }
 
-    public virtual void ReleasePtr() {
+    public virtual IntPtr ReleasePtr() {
       isOwner = false;
+
+      var ret = ptr;
       ptr = IntPtr.Zero;
+
+      return ret;
     }
 
     protected bool OwnsResource() {
