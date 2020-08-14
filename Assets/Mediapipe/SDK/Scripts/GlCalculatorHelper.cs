@@ -40,10 +40,14 @@ namespace Mediapipe {
     }
 
     public GlTexture CreateSourceTexture(ImageFrame imageFrame) {
-      return new GlTexture(UnsafeNativeMethods.MpGlCalculatorHelperCreateSourceTexture(ptr, imageFrame.GetPtr()));
+      return new GlTexture(UnsafeNativeMethods.MpGlCalculatorHelperCreateSourceTextureForImageFrame(ptr, imageFrame.GetPtr()));
     }
 
-    private void BindFramebuffer(GlTexture glTexture) {
+    public GlTexture CreateSourceTexture(GpuBuffer gpuBuffer) {
+      return new GlTexture(UnsafeNativeMethods.MpGlCalculatorHelperCreateSourceTextureForGpuBuffer(ptr, gpuBuffer.GetPtr()));
+    }
+
+    public void BindFramebuffer(GlTexture glTexture) {
       UnsafeNativeMethods.MpGlCalculatorHelperBindFramebuffer(ptr, glTexture.GetPtr());
     }
   }

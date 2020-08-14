@@ -96,7 +96,10 @@ namespace Mediapipe {
     public static extern unsafe MpStatus MpGlCalculatorHelperRunInGlContext(MpGlCalculatorHelper gpuHelper, [MarshalAs(UnmanagedType.FunctionPtr)]GlStatusFunctionPtr glFunc);
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe GlTexturePtr MpGlCalculatorHelperCreateSourceTexture(MpGlCalculatorHelper gpuHelper, ImageFramePtr imageFrame);
+    public static extern unsafe GlTexturePtr MpGlCalculatorHelperCreateSourceTextureForImageFrame(MpGlCalculatorHelper gpuHelper, ImageFramePtr imageFrame);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe GlTexturePtr MpGlCalculatorHelperCreateSourceTextureForGpuBuffer(MpGlCalculatorHelper gpuHelper, GpuBufferPtr gpu_buffer);
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe void MpGlCalculatorHelperBindFramebuffer(MpGlCalculatorHelper gpuHelper, GlTexturePtr glTexture);
