@@ -1,5 +1,6 @@
 using System;
 
+using MpCalculatorGraph = System.IntPtr;
 using MpPacket = System.IntPtr;
 using MpStatusOrPoller = System.IntPtr;
 
@@ -7,6 +8,8 @@ namespace Mediapipe {
   public class CalculatorGraph : ResourceHandle {
     private bool _disposed = false;
     private CalculatorGraphConfig graphConfig;
+
+    public CalculatorGraph(MpCalculatorGraph ptr) : base(ptr) {}
 
     public CalculatorGraph(string configText) : base(UnsafeNativeMethods.MpCalculatorGraphCreate()) {
       graphConfig = new CalculatorGraphConfig(configText);
