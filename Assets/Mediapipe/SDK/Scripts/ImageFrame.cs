@@ -12,7 +12,7 @@ namespace Mediapipe {
     public static readonly uint kDefaultAlignmentBoundary = 16;
     public static readonly uint kGlDefaultAlignmentBoundary = 4;
 
-    private bool _disposed;
+    private bool _disposed = false;
     private GCHandle pixelDataHandle;
     private GCHandle freePixelDataHandle;
 
@@ -35,6 +35,7 @@ namespace Mediapipe {
       ptr = UnsafeNativeMethods.MpImageFrameCreateWithPixelData(
         (int)format, width, height, widthStep, pixelData, Marshal.GetFunctionPointerForDelegate(memoryHandler)
       );
+      isOwner = true;
     }
 
     protected override void Dispose(bool disposing) {
@@ -59,12 +60,36 @@ namespace Mediapipe {
       _disposed = true;
     }
 
-    public Color32[] GetColor32s() {
-      // TODO: calculate the pixel data length precisely.
-      int width = UnsafeNativeMethods.MpImageFrameWidth(GetPtr());
-      int height = UnsafeNativeMethods.MpImageFrameHeight(GetPtr());
+    public ImageFormat Format() {
+      return (ImageFormat)UnsafeNativeMethods.MpImageFrameFormat(ptr);
+    }
 
-      return Format.FromBytePtr(PixelDataPtr(), width, height);
+    public int Width() {
+      return UnsafeNativeMethods.MpImageFrameWidth(ptr);
+    }
+
+    public int Height() {
+      return UnsafeNativeMethods.MpImageFrameHeight(ptr);
+    }
+
+    public int ChannelSize() {
+      return UnsafeNativeMethods.MpImageFrameChannelSize(ptr);
+    }
+
+    public int NumberOfChannels() {
+      return UnsafeNativeMethods.MpImageFrameNumberOfChannels(ptr);
+    }
+
+    public int ByteDepth() {
+      return UnsafeNativeMethods.MpImageFrameByteDepth(ptr);
+    }
+
+    public int WidthStep() {
+      return UnsafeNativeMethods.MpImageFrameWidthStep(ptr);
+    }
+
+    public Color32[] GetColor32s() {
+      return Mediapipe.Format.FromBytePtr(PixelDataPtr(), Format(), Width(), Height(), WidthStep());
     }
 
     public IntPtr PixelDataPtr() {
@@ -72,7 +97,7 @@ namespace Mediapipe {
     }
 
     public static unsafe ImageFrame FromPixels32(Color32[] colors, int width, int height) {
-      return new ImageFrame(ImageFormat.SRGB, width, height, 3 * width, Format.FromPixels32(colors));
+      return new ImageFrame(ImageFormat.SRGB, width, height, 3 * width, Mediapipe.Format.FromPixels32(colors));
     }
 
     private void FreePixelData(IntPtr ptr) {

@@ -206,7 +206,7 @@ namespace Mediapipe {
 
     /// ImageFrame API
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe ImageFramePtr MpImageFrameCreate(int formatCode, int width, int height, UInt32 alignmentBoundary);
+    public static extern unsafe ImageFramePtr MpImageFrameCreate(int formatCode, int width, int height, uint alignmentBoundary);
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe ImageFramePtr MpImageFrameCreateDefault();
@@ -219,6 +219,9 @@ namespace Mediapipe {
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe bool MpImageFrameIsEmpty(ImageFramePtr imageFramePtr);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe int MpImageFrameFormat(ImageFramePtr imageFramePtr);
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe int MpImageFrameWidth(ImageFramePtr imageFramePtr);

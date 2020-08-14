@@ -38,12 +38,9 @@ public class DirectorOnGPU : Director {
       UnsafeNativeMethods.GlFlush();
       texture.Release();
 
-      calculatorGraph.AddPacketToInputStream(new GpuBufferPacket(gpuFrame, timestamp)).AssertOk();
-
-      return Status.OkStatus();
+      return calculatorGraph.AddPacketToInputStream(new GpuBufferPacket(gpuFrame, timestamp));
     }).AssertOk();
 
-/**
     var outputStreamPoller = calculatorGraph.outputStreamPoller;
     var packet = new GpuBufferPacket();
     ImageFrame outputFrame = null;
@@ -52,11 +49,13 @@ public class DirectorOnGPU : Director {
 
     glCalculatorHelper.RunInGlContext(() => {
       var gpuFrame = packet.ConsumeValue();
+
       var gpuFrameFormat = gpuFrame.Format();
       var texture = glCalculatorHelper.CreateSourceTexture(gpuFrame);
 
       outputFrame = new ImageFrame(
         gpuFrameFormat.ImageFormatFor(), gpuFrame.Width(), gpuFrame.Height(), ImageFrame.kGlDefaultAlignmentBoundary);
+
 
       glCalculatorHelper.BindFramebuffer(texture);
       var info = gpuFrameFormat.GlTextureInfoFor(0);
@@ -65,11 +64,12 @@ public class DirectorOnGPU : Director {
       UnsafeNativeMethods.GlFlush();
 
       texture.Release();
+
       return Status.OkStatus();
     }).AssertOk();
 
     Color32[] colors = outputFrame.GetColor32s();
-*/
-    webCamScreen.GetComponent<WebCamScreenController>().DrawScreen(pixelData);
+
+    webCamScreen.GetComponent<WebCamScreenController>().DrawScreen(colors);
   }
 }
