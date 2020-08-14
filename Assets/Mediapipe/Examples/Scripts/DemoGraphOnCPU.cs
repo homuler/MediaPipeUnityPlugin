@@ -1,12 +1,12 @@
 using Mediapipe;
 using UnityEngine;
 
-public class DemoGraph : CalculatorGraph {
+public class DemoGraphOnCPU : CalculatorGraph {
   public const string inputStream = "input_video"; 
   public const string outputStream = "output_video"; 
   public OutputStreamPoller<ImageFrame> outputStreamPoller;
 
-  public DemoGraph(string configText) : base(configText) {}
+  public DemoGraphOnCPU(string configText) : base(configText) {}
 
   public Status StartRun() {
     return base.StartRun(new SidePacket());

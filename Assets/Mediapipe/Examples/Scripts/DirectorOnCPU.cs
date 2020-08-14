@@ -2,14 +2,14 @@ using Mediapipe;
 using UnityEngine;
 
 public class DirectorOnCPU : Director {
-  private DemoGraph calculatorGraph;
+  private DemoGraphOnCPU calculatorGraph;
 
   [SerializeField] TextAsset config;
 
   protected override void Start() {
     base.Start();
 
-    calculatorGraph = new DemoGraph(config.text);
+    calculatorGraph = new DemoGraphOnCPU(config.text);
     calculatorGraph.InitOutputStreamPoller();
     calculatorGraph.StartRun().AssertOk();
 
