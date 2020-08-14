@@ -6,6 +6,12 @@ using ImageFramePtr = System.IntPtr;
 
 namespace Mediapipe {
   public class ImageFrame : ResourceHandle {
+    /**
+    * Constants (TODO: read from ddl)
+    */
+    public static readonly uint kDefaultAlignmentBoundary = 16;
+    public static readonly uint kGlDefaultAlignmentBoundary = 4;
+
     private bool _disposed;
     private GCHandle pixelDataHandle;
     private GCHandle freePixelDataHandle;
@@ -14,7 +20,12 @@ namespace Mediapipe {
     private delegate void FreeMemoryHandler(IntPtr ptr);
     private readonly FreeMemoryHandler memoryHandler;
 
+    public ImageFrame() : base(UnsafeNativeMethods.MpImageFrameCreateDefault()) {}
+
     public ImageFrame(ImageFramePtr imageFramePtr) : base(imageFramePtr) {}
+
+    public ImageFrame(ImageFormat format, int width, int height, uint alignmentBoundary) :
+      base(UnsafeNativeMethods.MpImageFrameCreate((int)format, width, height, alignmentBoundary)) {}
 
     public ImageFrame(ImageFormat format, int width, int height, int widthStep, byte[] pixelData) {
       memoryHandler = FreePixelData;
@@ -53,7 +64,11 @@ namespace Mediapipe {
       int width = UnsafeNativeMethods.MpImageFrameWidth(GetPtr());
       int height = UnsafeNativeMethods.MpImageFrameHeight(GetPtr());
 
-      return Format.FromBytePtr(UnsafeNativeMethods.MpImageFramePixelData(ptr), width, height);
+      return Format.FromBytePtr(PixelDataPtr(), width, height);
+    }
+
+    public IntPtr PixelDataPtr() {
+      return UnsafeNativeMethods.MpImageFramePixelData(ptr);
     }
 
     public static unsafe ImageFrame FromPixels32(Color32[] colors, int width, int height) {

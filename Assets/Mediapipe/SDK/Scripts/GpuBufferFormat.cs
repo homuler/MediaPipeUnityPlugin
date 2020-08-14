@@ -18,8 +18,8 @@ namespace Mediapipe {
   }
 
   static class GpuBufferFormatExtension {
-    public static int ImageFormatFor(this GpuBufferFormat gpuBufferFormat) {
-      return UnsafeNativeMethods.MpImageFormatForGpuBufferFormat((UInt32)gpuBufferFormat);
+    public static ImageFormat ImageFormatFor(this GpuBufferFormat gpuBufferFormat) {
+      return (ImageFormat)UnsafeNativeMethods.MpImageFormatForGpuBufferFormat((UInt32)gpuBufferFormat);
     }
 
     public static GlTextureInfo GlTextureInfoFor(this GpuBufferFormat gpuBufferFormat, int plane) {
