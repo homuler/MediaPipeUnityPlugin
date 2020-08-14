@@ -20,6 +20,14 @@ namespace Mediapipe {
       _disposed = true;
     }
 
+    public int Width() {
+      return UnsafeNativeMethods.MpGlTextureWidth(ptr);
+    }
+
+    public int Height() {
+      return UnsafeNativeMethods.MpGlTextureHeight(ptr);
+    }
+
     public void Release() {
       UnsafeNativeMethods.MpGlTextureRelease(ptr);
     }

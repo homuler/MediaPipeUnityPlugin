@@ -118,6 +118,12 @@ namespace Mediapipe {
     public static extern unsafe void MpGlTextureDestroy(GlTexturePtr glTexture);
 
     [DllImport (MediapipeLibrary)]
+    public static extern unsafe int MpGlTextureWidth(GlTexturePtr glTexture);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe int MpGlTextureHeight(GlTexturePtr glTexture);
+
+    [DllImport (MediapipeLibrary)]
     public static extern unsafe void MpGlTextureRelease(GlTexturePtr glTexture);
 
     [DllImport (MediapipeLibrary)]
