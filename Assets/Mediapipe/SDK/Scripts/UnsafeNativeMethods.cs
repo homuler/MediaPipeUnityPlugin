@@ -79,7 +79,7 @@ namespace Mediapipe {
     public static extern unsafe void GlFlush();
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe void GlReadPixels(int x, int y, int width, int height, UInt32 glFormat, UInt32 glType, byte[] pixels);
+    public static extern unsafe void GlReadPixels(int x, int y, int width, int height, UInt32 glFormat, UInt32 glType, IntPtr pixels);
 
 
     /// GlCalculatorHelper API
