@@ -35,7 +35,8 @@ namespace Mediapipe {
       ptr = UnsafeNativeMethods.MpImageFrameCreateWithPixelData(
         (int)format, width, height, widthStep, pixelData, Marshal.GetFunctionPointerForDelegate(memoryHandler)
       );
-      isOwner = true;
+
+      base.TakeOwnership(ptr);
     }
 
     protected override void Dispose(bool disposing) {

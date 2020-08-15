@@ -25,6 +25,15 @@ namespace Mediapipe {
       return ptr;
     }
 
+    public void TakeOwnership(IntPtr ptr) {
+      if (OwnsResource()) {
+        throw new InvalidOperationException("Already owns another resource");
+      }
+
+      this.ptr = ptr;
+      this.isOwner = true;
+    }
+
     public void ReleaseOwnership() {
       isOwner = false;
     }
