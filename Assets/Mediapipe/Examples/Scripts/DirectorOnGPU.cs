@@ -41,6 +41,8 @@ public class DirectorOnGPU : Director {
       return calculatorGraph.AddPacketToInputStream(new GpuBufferPacket(gpuFrame, timestamp));
     }).AssertOk();
 
+    imageFrame.Dispose();
+
     var outputStreamPoller = calculatorGraph.outputStreamPoller;
     var packet = new GpuBufferPacket();
     ImageFrame outputFrame = null;

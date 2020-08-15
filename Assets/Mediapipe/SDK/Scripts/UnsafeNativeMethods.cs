@@ -212,7 +212,7 @@ namespace Mediapipe {
     public static extern unsafe ImageFramePtr MpImageFrameCreateDefault();
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe ImageFramePtr MpImageFrameCreateWithPixelData(int formatCode, int width, int height, int widthStep, byte[] pixelData, [MarshalAs(UnmanagedType.FunctionPtr)]ImageFrameMemoryHandlerPtr deleter);
+    public static extern unsafe ImageFramePtr MpImageFrameCreateWithPixelData(int formatCode, int width, int height, int widthStep, IntPtr pixelData, [MarshalAs(UnmanagedType.FunctionPtr)]ImageFrameMemoryHandlerPtr deleter);
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe void MpImageFrameDestroy(ImageFramePtr imageFramePtr);

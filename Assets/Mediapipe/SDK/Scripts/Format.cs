@@ -1,24 +1,24 @@
 using System;
+using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 namespace Mediapipe {
   public class Format {
-    public static byte[] FromPixels32(Color32[] colors) {
-      var pixelData = new byte[colors.Length * 3];
+    public static NativeArray<byte> FromPixels32(Color32[] colors) {
+      var pixelData = new NativeArray<byte>(colors.Length * 3, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
 
       unsafe {
         fixed (Color32* src = colors) {
           Color32* pSrc = src;
 
-          fixed (byte* dest = pixelData) {
-            byte* pDest = dest;
+          byte* pDest = (byte*)NativeArrayUnsafeUtility.GetUnsafePtr(pixelData);
 
-            for (var i = 0; i < colors.Length; i++) {
-              *pDest++ = pSrc->r;
-              *pDest++ = pSrc->g;
-              *pDest++ = pSrc->b;
-              pSrc++;
-            }
+          for (var i = 0; i < colors.Length; i++) {
+            *pDest++ = pSrc->r;
+            *pDest++ = pSrc->g;
+            *pDest++ = pSrc->b;
+            pSrc++;
           }
         }
       }
