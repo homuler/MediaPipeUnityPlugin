@@ -48,8 +48,8 @@ namespace Mediapipe {
       return new Status(UnsafeNativeMethods.MpCalculatorGraphInitialize(ptr, config.GetPtr()));
     }
 
-    protected MpStatusOrPoller AddOutputStreamPoller(string name) {
-      return UnsafeNativeMethods.MpCalculatorGraphAddOutputStreamPoller(ptr, name);
+    public StatusOrPoller<T> AddOutputStreamPoller<T>(string name) {
+      return new StatusOrPoller<T>(UnsafeNativeMethods.MpCalculatorGraphAddOutputStreamPoller(ptr, name));
     }
 
     public Status AddPacketToInputStream(string name, MpPacket packetPtr) {

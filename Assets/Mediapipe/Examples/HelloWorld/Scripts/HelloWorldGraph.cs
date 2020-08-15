@@ -57,6 +57,6 @@ node {
   }
 
   public void InitOutputStreamPoller() {
-    outputStreamPoller = new StatusOrPoller<string>(AddOutputStreamPoller(outputStream)).ConsumeValue();
+    outputStreamPoller = AddOutputStreamPoller<string>(outputStream).ConsumeValue();
   }
 }

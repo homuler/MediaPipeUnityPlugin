@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace Mediapipe {
   public class Format {
-    public static NativeArray<byte> FromPixels32(Color32[] colors) {
-      var pixelData = new NativeArray<byte>(colors.Length * 3, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
+    public static NativeArray<byte> FromPixels32(Color32[] colors, Allocator allocator = Allocator.Temp) {
+      var pixelData = new NativeArray<byte>(colors.Length * 3, allocator, NativeArrayOptions.UninitializedMemory);
 
       unsafe {
         fixed (Color32* src = colors) {

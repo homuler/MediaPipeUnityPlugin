@@ -1,29 +1,45 @@
 using Mediapipe;
+using System;
 using UnityEngine;
 
-public class DemoGraphOnCPU : CalculatorGraph {
-  public const string inputStream = "input_video"; 
-  public const string outputStream = "output_video"; 
-  public OutputStreamPoller<ImageFrame> outputStreamPoller;
+public class DemoGraphOnCPU : MonoBehaviour, IDemoGraph {
+  [SerializeField] TextAsset config = null;
 
-  public DemoGraphOnCPU(string configText) : base(configText) {}
+  private const string inputStream = "input_video";
+  private const string outputStream = "output_video";
 
-  public Status StartRun() {
-    return base.StartRun(new SidePacket());
+  private CalculatorGraph graph;
+  private OutputStreamPoller<ImageFrame> outputStreamPoller;
+  private ImageFramePacket outputPacket;
+
+  public void Start() {
+    if (config == null) {
+      throw new InvalidOperationException("config is missing");
+    }
+
+    graph = new CalculatorGraph(config.text);
+
+    outputStreamPoller = graph.AddOutputStreamPoller<ImageFrame>(outputStream).ConsumeValue();
+    outputPacket = new ImageFramePacket();
+
+    graph.StartRun(new SidePacket());
   }
 
-  public Status AddPixelDataToInputStream(Color32[] pixelData, int width, int height, int timestamp) {
-    var imageFrame = ImageFrame.FromPixels32(pixelData, width, height);
+  public Status PushColor32(Color32[] colors, int width, int height) {
+    int timestamp = System.Environment.TickCount & System.Int32.MaxValue;
+    var imageFrame = ImageFrame.FromPixels32(colors, width, height);
     var packet = new ImageFramePacket(imageFrame, timestamp);
 
-    return base.AddPacketToInputStream(inputStream, packet.GetPtr());
-  }
+    var status = graph.AddPacketToInputStream(inputStream, packet.GetPtr());
 
-  public Status CloseInputStream() {
-    return base.CloseInputStream(inputStream);
+    return status;
   }
+  public Color32[] FetchOutput() {
+    if (!outputStreamPoller.Next(outputPacket)) {
+      return null;
+    }
 
-  public void InitOutputStreamPoller() {
-    outputStreamPoller = new StatusOrPoller<ImageFrame>(AddOutputStreamPoller(outputStream)).ConsumeValue();
+    // TODO: catch exception
+    return outputPacket.ConsumeValue().GetColor32s();
   }
 }
