@@ -27,10 +27,9 @@ For example, if your graph depends on `face_detection_front.tflite`, then you ca
 
 ## Example Scenes
 - Hello World!
-- Face Detection (on CPU)
+- Face Detection (on CPU/GPU)
 
 ### TODO
-- [ ] Face Detection (on GPU)
 - [ ] Face Mesh (on CPU/GPU)
 - [ ] Iris (on CPU/GPU)
 - [ ] Hands (on CPU/GPU)
