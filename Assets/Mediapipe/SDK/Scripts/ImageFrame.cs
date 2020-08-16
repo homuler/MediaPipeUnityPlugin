@@ -22,7 +22,7 @@ namespace Mediapipe {
 
     public ImageFrame() : base(UnsafeNativeMethods.MpImageFrameCreateDefault()) {}
 
-    public ImageFrame(ImageFramePtr imageFramePtr) : base(imageFramePtr) {}
+    public ImageFrame(ImageFramePtr imageFramePtr, bool isOwner = true) : base(imageFramePtr, isOwner) {}
 
     public ImageFrame(ImageFormat format, int width, int height, uint alignmentBoundary) :
       base(UnsafeNativeMethods.MpImageFrameCreate((int)format, width, height, alignmentBoundary)) {}

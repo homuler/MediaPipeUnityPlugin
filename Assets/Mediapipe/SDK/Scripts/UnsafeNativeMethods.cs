@@ -288,6 +288,9 @@ namespace Mediapipe {
     public static extern unsafe MpPacket MpMakeImageFramePacketAt(ImageFramePtr imageFramePtr, int timestamp);
 
     [DllImport (MediapipeLibrary)]
+    public static extern unsafe ImageFramePtr MpPacketGetImageFrame(MpPacket packet);
+
+    [DllImport (MediapipeLibrary)]
     public static extern unsafe MpStatusOrImageFrame MpPacketConsumeImageFrame(MpPacket packet);
 
 

@@ -27,7 +27,7 @@ namespace Mediapipe {
     }
 
     public override ImageFrame GetValue() {
-      throw new NotSupportedException();
+      return new ImageFrame(UnsafeNativeMethods.MpPacketGetImageFrame(ptr), false);
     }
 
     public override ImageFrame ConsumeValue() {

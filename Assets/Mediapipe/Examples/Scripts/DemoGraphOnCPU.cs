@@ -40,6 +40,6 @@ public class DemoGraphOnCPU : MonoBehaviour, IDemoGraph {
     }
 
     // TODO: catch exception
-    return outputPacket.ConsumeValue().GetColor32s();
+    return outputPacket.GetValue().GetColor32s();
   }
 }
