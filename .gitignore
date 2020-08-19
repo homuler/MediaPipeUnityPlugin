@@ -7,6 +7,7 @@ obj/
 *.csproj
 *.sln
 
+bazel-*
 *.so
 *.so.meta
 

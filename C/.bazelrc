@@ -1,0 +1,12 @@
+# Tensorflow needs remote repo
+common --experimental_repo_remote_exec
+
+# Basic build settings
+build --jobs 128
+build --define='absl=1'
+build --enable_platform_specific_config
+
+# Linux
+build:linux --cxxopt=-std=c++14
+build:linux --host_cxxopt=-std=c++14
+build:linux --copt=-w
