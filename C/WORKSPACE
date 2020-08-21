@@ -18,7 +18,7 @@ http_archive(
   sha256 = "af73f5ee3b4d0378ada7678a79863c42a099358d810e54ea24e7b0a52bdecec4",
   strip_prefix = "mediapipe-0.7.8",
   patches = [
-      "@//third_party:linux_opencv_path.diff",
+      "@//third_party:linux_opencv_path.diff", # for ArchLinux
   ],
   patch_args = [
       "-p1",
