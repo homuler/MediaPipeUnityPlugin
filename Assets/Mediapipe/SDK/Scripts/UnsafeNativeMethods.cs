@@ -164,6 +164,9 @@ namespace Mediapipe {
     public static extern unsafe MpPacket MpMakeGpuBufferPacketAt(GpuBufferPtr gpuBuffer, int timestamp);
 
     [DllImport (MediapipeLibrary)]
+    public static extern unsafe GpuBufferPtr MpPacketGetGpuBuffer(MpPacket packet);
+
+    [DllImport (MediapipeLibrary)]
     public static extern unsafe MpStatusOrGpuBuffer MpPacketConsumeGpuBuffer(MpPacket packet);
 
     [DllImport (MediapipeLibrary)]

@@ -44,6 +44,7 @@ MP_CAPI_EXPORT extern int MpGpuBufferWidth(mediapipe::GpuBuffer* gpu_buffer);
 MP_CAPI_EXPORT extern int MpGpuBufferHeight(mediapipe::GpuBuffer* gpu_buffer);
 
 MP_CAPI_EXPORT extern MpPacket* MpMakeGpuBufferPacketAt(mediapipe::GpuBuffer* gpu_buffer, int timestamp);
+MP_CAPI_EXPORT extern mediapipe::GpuBuffer* MpPacketGetGpuBuffer(MpPacket* packet);
 MP_CAPI_EXPORT extern MpStatusOrGpuBuffer* MpPacketConsumeGpuBuffer(MpPacket* packet);
 MP_CAPI_EXPORT extern void MpStatusOrGpuBufferDestroy(MpStatusOrGpuBuffer* status_or_gpu_buffer);
 MP_CAPI_EXPORT extern MpStatus* MpStatusOrGpuBufferStatus(MpStatusOrGpuBuffer* status_or_gpu_buffer);

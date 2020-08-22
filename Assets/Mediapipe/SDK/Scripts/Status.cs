@@ -5,7 +5,7 @@ namespace Mediapipe {
   public class Status : ResourceHandle {
     private bool _disposed = false;
 
-    public Status(MpStatus ptr) : base(ptr) {}
+    public Status(MpStatus ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
     protected override void Dispose(bool disposing) {
       if (_disposed) return;
@@ -37,13 +37,17 @@ namespace Mediapipe {
       return UnsafeNativeMethods.MpStatusToString(ptr);
     }
 
-    public static Status Build(int code = 0, string message = "") {
+    public static Status Build(int code, string message, bool isOwner = true) {
       var ptr = UnsafeNativeMethods.MpStatusCreate(code, message);
-      return new Status(ptr);
+      return new Status(ptr, isOwner);
     }
 
-    public static Status OkStatus() {
-      return Status.Build();
+    public static Status Ok(bool isOwner = true) {
+      return Status.Build(0, "", isOwner);
+    }
+
+    public static Status FailedPrecondition(string message = "", bool isOwner = true) {
+      return Status.Build(9, message, isOwner);
     }
   }
 }

@@ -52,14 +52,14 @@ public class DemoGraphOnGPU : MonoBehaviour, IDemoGraph {
   }
 
   public Color32[] FetchOutput() {
-    if (!outputStreamPoller.Next(outputPacket)) {
+    if (!outputStreamPoller.Next(outputPacket)) { // blocks
       return null;
     }
 
     ImageFrame outputFrame = null;
 
     var status = gpuHelper.RunInGlContext(() => {
-      var gpuFrame = outputPacket.ConsumeValue();
+      var gpuFrame = outputPacket.GetValue();
       var gpuFrameFormat = gpuFrame.Format();
       var texture = gpuHelper.CreateSourceTexture(gpuFrame);
 
@@ -75,7 +75,7 @@ public class DemoGraphOnGPU : MonoBehaviour, IDemoGraph {
 
       texture.Release();
 
-      return Status.OkStatus();
+      return Status.Ok(false);
     });
 
     if (!status.IsOk()) {

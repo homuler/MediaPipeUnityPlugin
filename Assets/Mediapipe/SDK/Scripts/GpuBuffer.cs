@@ -6,7 +6,7 @@ namespace Mediapipe {
   public class GpuBuffer : ResourceHandle {
     private bool _disposed = false;
  
-    public GpuBuffer(GpuBufferPtr ptr) : base(ptr) {}
+    public GpuBuffer(GpuBufferPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
     protected override void Dispose(bool disposing) {
       if (_disposed) return;

@@ -26,7 +26,7 @@ namespace Mediapipe {
     }
 
     public override GpuBuffer GetValue() {
-      throw new NotSupportedException();
+      return new GpuBuffer(UnsafeNativeMethods.MpPacketGetGpuBuffer(ptr), false);
     }
 
     public override GpuBuffer ConsumeValue() {

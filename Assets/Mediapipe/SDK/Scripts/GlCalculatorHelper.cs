@@ -30,8 +30,17 @@ namespace Mediapipe {
       UnsafeNativeMethods.MpGlCalculatorHelperInitializeForTest(ptr, gpuResources.GetRawPtr());
     }
 
+    /// <summary>
+    ///   <remarks>ATTENTION!: The status returned by <paramref name="glStatusFunc" /> must not be the resource owner</remarks>
+    /// </summary>
     public Status RunInGlContext(GlStatusFunction glStatusFunc) {
-      MpGlStatusFunction mpGlStatusFunc = () => { return glStatusFunc().GetPtr(); };
+      MpGlStatusFunction mpGlStatusFunc = () => {
+        try {
+          return glStatusFunc().GetPtr();
+        } catch (Exception e) {
+          return Status.FailedPrecondition(e.Message, false).GetPtr();
+        }
+      };
       GCHandle mpGlStatusFuncHandle = GCHandle.Alloc(mpGlStatusFunc);
 
       var statusPtr = UnsafeNativeMethods.MpGlCalculatorHelperRunInGlContext(ptr, Marshal.GetFunctionPointerForDelegate(mpGlStatusFunc));

@@ -79,6 +79,12 @@ MpPacket* MpMakeGpuBufferPacketAt(mediapipe::GpuBuffer* gpu_buffer, int timestam
   return new MpPacket { std::move(packet) };
 }
 
+mediapipe::GpuBuffer* MpPacketGetGpuBuffer(MpPacket* packet) {
+  auto holder = static_cast<const UnsafePacketHolder<mediapipe::GpuBuffer>*>(mediapipe::packet_internal::GetHolder(*packet->impl));
+
+  return holder->Get();
+}
+
 MpStatusOrGpuBuffer* MpPacketConsumeGpuBuffer(MpPacket* packet) {
   auto status_or_gpu_buffer = packet->impl->Consume<mediapipe::GpuBuffer>();
 

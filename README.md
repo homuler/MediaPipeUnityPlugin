@@ -32,16 +32,23 @@ If neccessary, you can also change the model paths for subgraphs (e.g. FaceDetec
 ## Example Scenes
 - Hello World!
 - Face Detection (on CPU/GPU)
-- Face Mesh (on CPU)
+- Face Mesh (on CPU/GPU)
+
+### Troubleshooting
+If you encounter an error like below and you use OpenGL Core as the Unity's graphics APIs, please try Vulkan.
+
+```txt
+InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000_mediapipe/mediapipe/gpu/gl_context_egl.cc:261)
+```
 
 ### TODO
-- [ ] Face Mesh (on GPU)
 - [ ] Iris (on CPU/GPU)
 - [ ] Hands (on CPU/GPU)
 - [ ] Hair Segmentation (on CPU/GPU)
 - [ ] Object Detection (on CPU/GPU)
 - [ ] Box Tracking (on CPU/GPU)
 - [ ] AutoFlip (on CPU/GPU)
+- [ ] Render landmarks on Unity
 
 ## LICENSE
 MIT

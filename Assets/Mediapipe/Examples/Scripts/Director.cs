@@ -11,6 +11,7 @@ public class Director : MonoBehaviour {
   private WebCamDevice? webCamDevice;
   private IDemoGraph graph;
   private Coroutine graphRunner;
+  private const int MaxWaitFrame = 5;
 
   void OnEnable() {
     var nameForGlog = Path.Combine(Application.dataPath, "MediapipePlugin");
@@ -52,15 +53,25 @@ public class Director : MonoBehaviour {
         break;
       }
 
-      var pixelData = webCamScreenController.GetPixels32();
-      var width = webCamScreenController.Width();
-      var height = webCamScreenController.Height();
-
-      graph.PushColor32(pixelData, width, height);
-
       Color32[] output = null;
+      var waitFrame = 0;
 
-      yield return new WaitWhile(() => { return (output = graph.FetchOutput()) == null; });
+      yield return new WaitUntil(() => {
+        var pixelData = webCamScreenController.GetPixels32();
+        var width = webCamScreenController.Width();
+        var height = webCamScreenController.Height();
+
+        graph.PushColor32(pixelData, width, height);
+        output = graph.FetchOutput();
+        waitFrame++;
+
+        return output != null || waitFrame > MaxWaitFrame;
+      });
+
+      if (output == null) {
+        Debug.LogWarning($"No output is returned within {MaxWaitFrame} frames");
+        break;
+      }
 
       webCamScreenController.DrawScreen(output);
     }
