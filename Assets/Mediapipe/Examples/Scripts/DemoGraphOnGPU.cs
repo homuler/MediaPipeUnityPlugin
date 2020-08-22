@@ -29,7 +29,7 @@ public class DemoGraphOnGPU : MonoBehaviour, IDemoGraph {
     outputStreamPoller = graph.AddOutputStreamPoller<GpuBuffer>(outputStream).ConsumeValue();
     outputPacket = new GpuBufferPacket();
 
-    graph.StartRun(new SidePacket());
+    graph.StartRun(new SidePacket()).AssertOk();
   }
 
   public Status PushColor32(Color32[] colors, int width, int height) {

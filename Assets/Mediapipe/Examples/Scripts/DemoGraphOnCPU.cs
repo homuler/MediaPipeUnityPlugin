@@ -22,7 +22,7 @@ public class DemoGraphOnCPU : MonoBehaviour, IDemoGraph {
     outputStreamPoller = graph.AddOutputStreamPoller<ImageFrame>(outputStream).ConsumeValue();
     outputPacket = new ImageFramePacket();
 
-    graph.StartRun(new SidePacket());
+    graph.StartRun(new SidePacket()).AssertOk();
   }
 
   public Status PushColor32(Color32[] colors, int width, int height) {
