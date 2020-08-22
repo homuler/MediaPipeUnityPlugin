@@ -29,7 +29,6 @@ cc_library(
     hdrs = ["packet.h"],
     deps = [
         "@com_google_mediapipe//mediapipe/framework:packet",
- #       "@com_google_mediapipe//mediapipe/framework/format:image_frame",
         "//mediapipe_api:common",
     ],
     alwayslink = True,

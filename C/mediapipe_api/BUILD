@@ -4,6 +4,7 @@ cc_binary(
         ":calculators",
         ":protobuf",
         "//mediapipe_api/framework:calculator_graph",
+        "//mediapipe_api/framework/formats:image_frame",
         "//mediapipe_api/framework/port:logging",
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [],
