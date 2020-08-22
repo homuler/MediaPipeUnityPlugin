@@ -19,6 +19,7 @@ http_archive(
   strip_prefix = "mediapipe-0.7.8",
   patches = [
       "@//third_party:linux_opencv_path.diff", # for ArchLinux
+      "@//third_party:mediapipe_model_path.diff",
   ],
   patch_args = [
       "-p1",
