@@ -1,7 +1,12 @@
 # Hello World! on Desktop
 
-## Build
-```sh
-# Don't forget to include "//mediapipe/calculators/core:pass_through_calculator".
-bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 //mediapipe/apis:mediapipe_c
+## Dependent Calculators
+Please include those calculators when building a shared object file.
+
+```txt
+# CPU only
+@com_google_mediapipe//mediapipe/calculators/core:pass_through_calculator
 ```
+
+## Dependent Models
+Nothing
