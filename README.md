@@ -33,6 +33,7 @@ If neccessary, you can also change the model paths for subgraphs (e.g. FaceDetec
 - Hello World!
 - Face Detection (on CPU/GPU)
 - Face Mesh (on CPU/GPU)
+- Iris Tracking (on CPU)
 
 ### Troubleshooting
 If you encounter an error like below and you use OpenGL Core as the Unity's graphics APIs, please try Vulkan.
@@ -42,7 +43,7 @@ InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000_mediapipe/
 ```
 
 ### TODO
-- [ ] Iris (on CPU/GPU)
+- [ ] Iris Tracking (on GPU)
 - [ ] Hands (on CPU/GPU)
 - [ ] Hair Segmentation (on CPU/GPU)
 - [ ] Object Detection (on CPU/GPU)

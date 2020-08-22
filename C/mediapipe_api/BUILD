@@ -30,10 +30,12 @@ cc_library(
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [
             "@com_google_mediapipe//mediapipe/graphs/face_detection:desktop_tflite_calculators",
             "@com_google_mediapipe//mediapipe/graphs/face_mesh:desktop_live_calculators",
+            "@com_google_mediapipe//mediapipe/graphs/iris_tracking:iris_tracking_cpu_deps",
         ],
         "//conditions:default": [
             "@com_google_mediapipe//mediapipe/graphs/face_detection:mobile_calculators",
             "@com_google_mediapipe//mediapipe/graphs/face_mesh:desktop_live_gpu_calculators",
+            "@com_google_mediapipe//mediapipe/graphs/iris_tracking:iris_tracking_gpu_deps",
         ],
     }),
 )
