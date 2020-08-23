@@ -282,6 +282,12 @@ namespace Mediapipe {
     public static extern unsafe void MpPacketDestroy(MpPacket packet);
 
     [DllImport (MediapipeLibrary)]
+    public static extern unsafe MpPacket MpMakeFloatPacket(float value);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe float MpPacketGetFloat(MpPacket packet);
+
+    [DllImport (MediapipeLibrary)]
     public static extern unsafe MpPacket MpMakeStringPacketAt(string text, int timestamp);
 
     [DllImport (MediapipeLibrary)]
@@ -303,7 +309,10 @@ namespace Mediapipe {
     public static extern unsafe MpSidePacket MpSidePacketCreate();
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe void MpSidePacketDestroy(MpSidePacket packet);
+    public static extern unsafe void MpSidePacketDestroy(MpSidePacket sidePacket);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe void MpSidePacketInsert(MpSidePacket sidePacket, string key, MpPacket packet);
 
 
     /// Status API

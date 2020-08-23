@@ -12,7 +12,7 @@ public class DemoGraphOnCPU : MonoBehaviour, IDemoGraph {
   private OutputStreamPoller<ImageFrame> outputStreamPoller;
   private ImageFramePacket outputPacket;
 
-  public void Start() {
+  public Status StartRun(SidePacket sidePacket) {
     if (config == null) {
       throw new InvalidOperationException("config is missing");
     }
@@ -22,7 +22,7 @@ public class DemoGraphOnCPU : MonoBehaviour, IDemoGraph {
     outputStreamPoller = graph.AddOutputStreamPoller<ImageFrame>(outputStream).ConsumeValue();
     outputPacket = new ImageFramePacket();
 
-    graph.StartRun(new SidePacket()).AssertOk();
+    return graph.StartRun(sidePacket);
   }
 
   public Status PushColor32(Color32[] colors, int width, int height) {

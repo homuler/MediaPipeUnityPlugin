@@ -13,7 +13,7 @@ public class DemoGraphOnGPU : MonoBehaviour, IDemoGraph {
   private OutputStreamPoller<GpuBuffer> outputStreamPoller;
   private GpuBufferPacket outputPacket;
 
-  public void Start() {
+  public Status StartRun(SidePacket sidePacket) {
     if (config == null) {
       throw new InvalidOperationException("config is missing");
     }
@@ -29,7 +29,7 @@ public class DemoGraphOnGPU : MonoBehaviour, IDemoGraph {
     outputStreamPoller = graph.AddOutputStreamPoller<GpuBuffer>(outputStream).ConsumeValue();
     outputPacket = new GpuBufferPacket();
 
-    graph.StartRun(new SidePacket()).AssertOk();
+    return graph.StartRun(sidePacket);
   }
 
   public Status PushColor32(Color32[] colors, int width, int height) {

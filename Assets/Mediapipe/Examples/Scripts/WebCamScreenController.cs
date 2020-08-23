@@ -9,6 +9,7 @@ public class WebCamScreenController : MonoBehaviour {
   [SerializeField] int DefaultHeight = 1920;
   [SerializeField] int DefaultWidth = 1080;
   [SerializeField] int FPS = 30;
+  [SerializeField] float focalLengthPx = 6.0f;
 
   private WebCamTexture webCamTexture;
   private Texture2D outputTexture;
@@ -42,6 +43,10 @@ public class WebCamScreenController : MonoBehaviour {
 
   public int Width() {
     return isPlaying() ? webCamTexture.width : 0;
+  }
+
+  public float FocalLengthPx() {
+    return isPlaying() ? focalLengthPx : 0;
   }
 
   public Color32[] GetPixels32() {

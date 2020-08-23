@@ -2,7 +2,6 @@ using System.IO;
 using System.Collections;
 
 using Mediapipe;
-
 using UnityEngine;
 
 public class Director : MonoBehaviour {
@@ -10,6 +9,7 @@ public class Director : MonoBehaviour {
   private GameObject webCamScreen;
   private WebCamDevice? webCamDevice;
   private IDemoGraph graph;
+  private SidePacket sidePacket;
   private Coroutine graphRunner;
   private const int MaxWaitFrame = 5;
 
@@ -43,10 +43,15 @@ public class Director : MonoBehaviour {
   }
 
   private IEnumerator RunGraph() {
+    var webCamScreenController = webCamScreen.GetComponent<WebCamScreenController>();
+
+    sidePacket = new SidePacket();
+    sidePacket.Insert("focal_length_pixel", new FloatPacket(webCamScreenController.FocalLengthPx()));
+
+    graph.StartRun(sidePacket).AssertOk();
+
     while (true) {
       yield return new WaitForEndOfFrame();
-
-      var webCamScreenController = webCamScreen.GetComponent<WebCamScreenController>();
 
       if (!webCamScreenController.isPlaying()) {
         Debug.LogWarning("WebCam is not working");

@@ -20,5 +20,9 @@ namespace Mediapipe {
 
       _disposed = true;
     }
+
+    public void Insert<T>(string key, Packet<T> packet) {
+      UnsafeNativeMethods.MpSidePacketInsert(ptr, key, packet.GetPtr());
+    }
   }
 }
