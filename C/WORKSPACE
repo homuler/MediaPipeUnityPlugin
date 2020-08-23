@@ -15,16 +15,17 @@ versions.check(minimum_bazel_version = "2.0.0")
 # mediapipe
 http_archive(
   name = "com_google_mediapipe",
-  sha256 = "af73f5ee3b4d0378ada7678a79863c42a099358d810e54ea24e7b0a52bdecec4",
-  strip_prefix = "mediapipe-0.7.8",
+  sha256 = "67f4b98f837ef74f72014d25d3ede23d06518104cd9160f6e5938df4f6adf906",
+  strip_prefix = "mediapipe-0.7.9",
   patches = [
       "@//third_party:linux_opencv_path.diff", # for ArchLinux
+      "@//third_party:mediapipe_debug.diff",
       "@//third_party:mediapipe_model_path.diff",
   ],
   patch_args = [
       "-p1",
   ],
-  urls = ["https://github.com/google/mediapipe/archive/v0.7.8.tar.gz"],
+  urls = ["https://github.com/google/mediapipe/archive/v0.7.9.tar.gz"],
 )
 
 # ABSL cpp library lts_2020_02_25
