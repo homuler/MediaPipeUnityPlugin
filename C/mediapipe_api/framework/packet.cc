@@ -10,6 +10,16 @@ void MpPacketDestroy(MpPacket* packet) {
   delete packet;
 }
 
+MpPacket* MpMakeFloatPacket(float value) {
+  auto packet = mediapipe::MakePacket<float>(value);
+
+  return new MpPacket { std::move(packet) };
+}
+
+float MpPacketGetDouble(MpPacket* packet) {
+  return packet->impl->Get<float>();
+}
+
 MpPacket* MpMakeStringPacketAt(const char* string, int timestamp) {
   auto packet = mediapipe::MakePacket<std::string>(std::string(string)).At(mediapipe::Timestamp(timestamp));
 

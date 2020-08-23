@@ -37,6 +37,10 @@ typedef struct MpSidePacket {
 MP_CAPI_EXPORT extern MpPacket* MpPacketCreate();
 MP_CAPI_EXPORT extern void MpPacketDestroy(MpPacket* packet);
 
+// Float
+MP_CAPI_EXPORT extern MpPacket* MpMakeFloatPacket(float value);
+MP_CAPI_EXPORT extern float MpPacketGetFloat(MpPacket* packet);
+
 // String
 MP_CAPI_EXPORT extern MpPacket* MpMakeStringPacketAt(const char* str, int timestamp);
 MP_CAPI_EXPORT extern const char* MpPacketGetString(MpPacket* packet);
@@ -44,7 +48,7 @@ MP_CAPI_EXPORT extern const char* MpPacketGetString(MpPacket* packet);
 /** SidePacket API */
 MP_CAPI_EXPORT extern MpSidePacket* MpSidePacketCreate();
 MP_CAPI_EXPORT extern void MpSidePacketDestroy(MpSidePacket* side_packet);
-MP_CAPI_EXPORT extern void MpSidePacketInsert(const char* key, MpPacket* packet);
+MP_CAPI_EXPORT extern void MpSidePacketInsert(MpSidePacket* side_packet, const char* key, MpPacket* packet);
 
 }  // extern "C"
 
