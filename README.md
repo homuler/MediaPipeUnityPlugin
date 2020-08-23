@@ -35,6 +35,7 @@ If neccessary, you can also change the model paths for subgraphs (e.g. FaceDetec
 - Face Mesh (on CPU/GPU)
 - Iris Tracking (on CPU/GPU)
 - Hand Tracking (on CPU/GPU)
+- Pose Tracking (on CPU/GPU)
 
 ### Troubleshooting
 If you encounter an error like below and you use OpenGL Core as the Unity's graphics APIs, please try Vulkan.
