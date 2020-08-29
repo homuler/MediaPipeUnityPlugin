@@ -15,3 +15,15 @@ cc_library(
     ],
     alwayslink = True,
 )
+
+cc_library(
+    name = "landmark",
+    srcs = ["landmark.cc"],
+    hdrs = ["landmark.h"],
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework/formats:landmark_cc_proto",
+        "//mediapipe_api:common",
+        "//mediapipe_api/framework:packet",
+    ],
+    alwayslink = True,
+)

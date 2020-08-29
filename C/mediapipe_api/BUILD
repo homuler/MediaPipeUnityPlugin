@@ -5,6 +5,7 @@ cc_binary(
         ":protobuf",
         "//mediapipe_api/framework:calculator_graph",
         "//mediapipe_api/framework/formats:image_frame",
+        "//mediapipe_api/framework/formats:landmark",
         "//mediapipe_api/framework/port:logging",
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [],
@@ -26,6 +27,7 @@ cc_library(
     name = "calculators",
     deps = [
         "@com_google_mediapipe//mediapipe/calculators/core:pass_through_calculator",
+        "@com_google_mediapipe//mediapipe/calculators/core:packet_presence_calculator",
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [
             "@com_google_mediapipe//mediapipe/graphs/face_detection:desktop_tflite_calculators",

@@ -10,6 +10,16 @@ void MpPacketDestroy(MpPacket* packet) {
   delete packet;
 }
 
+MpPacket* MpMakeBoolPacket(bool value) {
+  auto packet = mediapipe::MakePacket<bool>(value);
+
+  return new MpPacket { std::move(packet) };
+}
+
+bool MpPacketGetBool(MpPacket* packet) {
+  return packet->impl->Get<bool>();
+}
+
 MpPacket* MpMakeFloatPacket(float value) {
   auto packet = mediapipe::MakePacket<float>(value);
 

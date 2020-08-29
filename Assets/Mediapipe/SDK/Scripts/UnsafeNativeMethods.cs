@@ -7,6 +7,8 @@ using MpCalculatorGraphConfig = System.IntPtr;
 using MpGlCalculatorHelper = System.IntPtr;
 using MpGlContext = System.IntPtr;
 using MpGpuResources = System.IntPtr;
+using MpLandmark = System.IntPtr;
+using MpLandmarkList = System.IntPtr;
 using MpPacket = System.IntPtr;
 using MpSidePacket = System.IntPtr;
 using MpStatus = System.IntPtr;
@@ -248,6 +250,15 @@ namespace Mediapipe {
     public static extern unsafe IntPtr MpImageFramePixelData(ImageFramePtr imageFramePtr);
 
     [DllImport (MediapipeLibrary)]
+    public static extern unsafe MpPacket MpMakeImageFramePacketAt(ImageFramePtr imageFramePtr, int timestamp);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe ImageFramePtr MpPacketGetImageFrame(MpPacket packet);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe MpStatusOrImageFrame MpPacketConsumeImageFrame(MpPacket packet);
+
+    [DllImport (MediapipeLibrary)]
     public static extern unsafe void MpStatusOrImageFrameDestroy(MpStatusOrImageFrame statusOrImageFrame);
 
     [DllImport (MediapipeLibrary)]
@@ -255,6 +266,23 @@ namespace Mediapipe {
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe ImageFramePtr MpStatusOrImageFrameConsumeValue(MpStatusOrImageFrame statusOrImageFrame);
+
+
+    /// Landmark API
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe void MpLandmarkListDestroy(MpLandmarkList landmarkList);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe MpLandmark MpLandmarkListLandmarks(MpLandmarkList landmarkList);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe IntPtr MpLandmarkListSizeList(MpLandmarkList landmarkList);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe int MpLandmarkListSize(MpLandmarkList landmarkList);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe MpLandmarkList MpPacketGetNormalizedLandmarkList(MpPacket packet);
 
 
     /// OutputStreamPoller API
@@ -282,6 +310,12 @@ namespace Mediapipe {
     public static extern unsafe void MpPacketDestroy(MpPacket packet);
 
     [DllImport (MediapipeLibrary)]
+    public static extern unsafe MpPacket MpMakeBoolPacket(bool value);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe bool MpPacketGetBool(MpPacket packet);
+
+    [DllImport (MediapipeLibrary)]
     public static extern unsafe MpPacket MpMakeFloatPacket(float value);
 
     [DllImport (MediapipeLibrary)]
@@ -292,15 +326,6 @@ namespace Mediapipe {
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe string MpPacketGetString(MpPacket packet);
-
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe MpPacket MpMakeImageFramePacketAt(ImageFramePtr imageFramePtr, int timestamp);
-
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe ImageFramePtr MpPacketGetImageFrame(MpPacket packet);
-
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe MpStatusOrImageFrame MpPacketConsumeImageFrame(MpPacket packet);
 
 
     /// SidePacket API

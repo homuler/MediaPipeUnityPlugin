@@ -37,6 +37,10 @@ typedef struct MpSidePacket {
 MP_CAPI_EXPORT extern MpPacket* MpPacketCreate();
 MP_CAPI_EXPORT extern void MpPacketDestroy(MpPacket* packet);
 
+// Boolean
+MP_CAPI_EXPORT extern MpPacket* MpMakeBoolPacket(bool value);
+MP_CAPI_EXPORT extern bool MpPacketGetBool(MpPacket* packet);
+
 // Float
 MP_CAPI_EXPORT extern MpPacket* MpMakeFloatPacket(float value);
 MP_CAPI_EXPORT extern float MpPacketGetFloat(MpPacket* packet);
