@@ -2,7 +2,6 @@ using System;
 
 using MpCalculatorGraph = System.IntPtr;
 using MpPacket = System.IntPtr;
-using MpStatusOrPoller = System.IntPtr;
 
 namespace Mediapipe {
   public class CalculatorGraph : ResourceHandle {
