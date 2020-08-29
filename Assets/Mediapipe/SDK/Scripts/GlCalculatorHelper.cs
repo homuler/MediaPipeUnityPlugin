@@ -31,7 +31,7 @@ namespace Mediapipe {
     }
 
     /// <summary>
-    ///   <remarks>ATTENTION!: The status returned by <paramref name="glStatusFunc" /> must not be the resource owner</remarks>
+    ///   <remarks>ATTENTION!: The Status object returned by <paramref name="glStatusFunc" /> must not be the resource owner</remarks>
     /// </summary>
     public Status RunInGlContext(GlStatusFunction glStatusFunc) {
       MpGlStatusFunction mpGlStatusFunc = () => {
