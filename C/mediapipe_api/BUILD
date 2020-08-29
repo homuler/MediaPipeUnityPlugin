@@ -33,6 +33,9 @@ cc_library(
             "@com_google_mediapipe//mediapipe/graphs/iris_tracking:iris_tracking_cpu_deps",
             "@com_google_mediapipe//mediapipe/graphs/hand_tracking:desktop_tflite_calculators",
             "@com_google_mediapipe//mediapipe/graphs/hand_tracking:multi_hand_desktop_tflite_calculators",
+            "@com_google_mediapipe//mediapipe/graphs/pose_tracking:upper_body_pose_tracking_cpu_deps",
+            # "@com_google_mediapipe//mediapipe/graphs/hair_segmentation:desktop_calculators",
+            "@com_google_mediapipe//mediapipe/graphs/object_detection:desktop_tflite_calculators",
         ],
         "//conditions:default": [
             "@com_google_mediapipe//mediapipe/graphs/face_detection:mobile_calculators",
@@ -40,6 +43,9 @@ cc_library(
             "@com_google_mediapipe//mediapipe/graphs/iris_tracking:iris_tracking_gpu_deps",
             "@com_google_mediapipe//mediapipe/graphs/hand_tracking:mobile_calculators",
             "@com_google_mediapipe//mediapipe/graphs/hand_tracking:multi_hand_mobile_calculators",
+            "@com_google_mediapipe//mediapipe/graphs/pose_tracking:upper_body_pose_tracking_gpu_deps",
+            "@com_google_mediapipe//mediapipe/graphs/hair_segmentation:mobile_calculators",
+            "@com_google_mediapipe//mediapipe/graphs/object_detection:mobile_calculators",
         ],
     }),
 )
