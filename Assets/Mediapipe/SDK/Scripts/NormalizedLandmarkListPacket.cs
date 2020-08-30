@@ -2,21 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-using MpLandmarkList = System.IntPtr;
+using MpLandmarkListVector = System.IntPtr;
 
 namespace Mediapipe {
-  public class NormalizedLandmarkListPacket : Packet<List<Landmark[]>> {
-    public NormalizedLandmarkListPacket() : base() {}
+  public class NormalizedLandmarkListVectorPacket : Packet<List<Landmark[]>> {
+    public NormalizedLandmarkListVectorPacket() : base() {}
 
     public override List<Landmark[]> GetValue() {
-      MpLandmarkList landmarkList = UnsafeNativeMethods.MpPacketGetNormalizedLandmarkList(ptr);
-      int size = UnsafeNativeMethods.MpLandmarkListSize(landmarkList);
+      MpLandmarkListVector landmarkListVector = UnsafeNativeMethods.MpPacketGetNormalizedLandmarkListVector(ptr);
+      int size = UnsafeNativeMethods.MpLandmarkListVectorSize(landmarkListVector);
 
       var landmarks = new List<Landmark[]>(size);
 
       unsafe {
-        int* sizeListPtr = (int*)UnsafeNativeMethods.MpLandmarkListSizeList(landmarkList);
-        Landmark* landmarkListPtr = (Landmark*)UnsafeNativeMethods.MpLandmarkListLandmarks(landmarkList);
+        int* sizeListPtr = (int*)UnsafeNativeMethods.MpLandmarkListVectorSizeList(landmarkListVector);
+        Landmark* landmarkListPtr = (Landmark*)UnsafeNativeMethods.MpLandmarkListVectorLandmarks(landmarkListVector);
 
         for (var i = 0; i < size; i++) {
           int landmarkSize = *sizeListPtr;
@@ -30,7 +30,7 @@ namespace Mediapipe {
         }
       }
 
-      UnsafeNativeMethods.MpLandmarkListDestroy(landmarkList);
+      UnsafeNativeMethods.MpLandmarkListVectorDestroy(landmarkListVector);
 
       return landmarks;
     }

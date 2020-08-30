@@ -1,22 +1,23 @@
+#include <vector>
 #include "mediapipe_api/framework/formats/landmark.h"
 
-void MpLandmarkListDestroy(MpLandmarkList* landmark_list) {
-  delete landmark_list;
+void MpLandmarkListVectorDestroy(MpLandmarkListVector* landmark_list_vec) {
+  delete landmark_list_vec;
 }
 
-MpLandmark* MpLandmarkListLandmarks(MpLandmarkList* landmark_list) {
-  return landmark_list->landmarks;
+MpLandmark* MpLandmarkListVectorLandmarks(MpLandmarkListVector* landmark_list_vec) {
+  return landmark_list_vec->landmarks;
 }
 
-int* MpLandmarkListSizeList(MpLandmarkList* landmark_list) {
-  return landmark_list->size_list;
+int* MpLandmarkListVectorSizeList(MpLandmarkListVector* landmark_list_vec) {
+  return landmark_list_vec->size_list;
 }
 
-int MpLandmarkListSize(MpLandmarkList* landmark_list) {
-  return landmark_list->size;
+int MpLandmarkListVectorSize(MpLandmarkListVector* landmark_list_vec) {
+  return landmark_list_vec->size;
 }
 
-MpLandmarkList* MpPacketGetNormalizedLandmarkList(MpPacket* packet) {
+MpLandmarkListVector* MpPacketGetNormalizedLandmarkListVector(MpPacket* packet) {
   auto& landmark_list_vec = packet->impl->Get<std::vector<mediapipe::NormalizedLandmarkList>>();
   int size = landmark_list_vec.size();
   int* size_list = new int[size];
@@ -39,7 +40,7 @@ MpLandmarkList* MpPacketGetNormalizedLandmarkList(MpPacket* packet) {
     }
   }
 
-  return new MpLandmarkList {
+  return new MpLandmarkListVector {
     landmarks,
     size_list,
     size,

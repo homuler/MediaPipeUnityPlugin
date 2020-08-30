@@ -10,14 +10,14 @@ public class FaceMeshGraph : DemoGraph {
 
   private OutputStreamPoller<List<Landmark[]>> landmarkStreamPoller;
   private OutputStreamPoller<bool> landmarkPresenceStreamPoller;
-  private NormalizedLandmarkListPacket landmarkListPacket;
+  private NormalizedLandmarkListVectorPacket landmarkListPacket;
   private BoolPacket landmarkPresencePacket;
 
   public override Status StartRun(SidePacket sidePacket) {
     landmarkStreamPoller = graph.AddOutputStreamPoller<List<Landmark[]>>(landmarkStream).ConsumeValue();
     landmarkPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(landmarkPresenceStream).ConsumeValue();
 
-    landmarkListPacket = new NormalizedLandmarkListPacket();
+    landmarkListPacket = new NormalizedLandmarkListVectorPacket();
     landmarkPresencePacket = new BoolPacket();
 
     return graph.StartRun(sidePacket);

@@ -8,7 +8,7 @@ using MpGlCalculatorHelper = System.IntPtr;
 using MpGlContext = System.IntPtr;
 using MpGpuResources = System.IntPtr;
 using MpLandmark = System.IntPtr;
-using MpLandmarkList = System.IntPtr;
+using MpLandmarkListVector = System.IntPtr;
 using MpPacket = System.IntPtr;
 using MpSidePacket = System.IntPtr;
 using MpStatus = System.IntPtr;
@@ -270,19 +270,19 @@ namespace Mediapipe {
 
     /// Landmark API
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe void MpLandmarkListDestroy(MpLandmarkList landmarkList);
+    public static extern unsafe void MpLandmarkListVectorDestroy(MpLandmarkListVector landmarkListVector);
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe MpLandmark MpLandmarkListLandmarks(MpLandmarkList landmarkList);
+    public static extern unsafe MpLandmark MpLandmarkListVectorLandmarks(MpLandmarkListVector landmarkListVector);
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe IntPtr MpLandmarkListSizeList(MpLandmarkList landmarkList);
+    public static extern unsafe IntPtr MpLandmarkListVectorSizeList(MpLandmarkListVector landmarkListVector);
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe int MpLandmarkListSize(MpLandmarkList landmarkList);
+    public static extern unsafe int MpLandmarkListVectorSize(MpLandmarkListVector landmarkListVector);
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe MpLandmarkList MpPacketGetNormalizedLandmarkList(MpPacket packet);
+    public static extern unsafe MpLandmarkListVector MpPacketGetNormalizedLandmarkListVector(MpPacket packet);
 
 
     /// OutputStreamPoller API
