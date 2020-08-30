@@ -3,17 +3,17 @@ using System;
 using UnityEngine;
 
 public class DemoGraphOnGPU : MonoBehaviour, IDemoGraph {
-  [SerializeField] TextAsset config = null;
+  [SerializeField] protected TextAsset config = null;
 
-  private const string inputStream = "input_video";
-  private const string outputStream = "output_video";
+  protected const string inputStream = "input_video";
+  protected const string outputStream = "output_video";
 
-  private CalculatorGraph graph;
-  private GlCalculatorHelper gpuHelper;
-  private OutputStreamPoller<GpuBuffer> outputStreamPoller;
-  private GpuBufferPacket outputPacket;
+  protected CalculatorGraph graph;
+  protected GlCalculatorHelper gpuHelper;
+  protected OutputStreamPoller<GpuBuffer> outputStreamPoller;
+  protected GpuBufferPacket outputPacket;
 
-  public Status StartRun(SidePacket sidePacket) {
+  public virtual Status StartRun(SidePacket sidePacket) {
     if (config == null) {
       throw new InvalidOperationException("config is missing");
     }
@@ -51,7 +51,7 @@ public class DemoGraphOnGPU : MonoBehaviour, IDemoGraph {
     return status;
   }
 
-  public Color32[] FetchOutput() {
+  public virtual Color32[] FetchOutput() {
     if (!outputStreamPoller.Next(outputPacket)) { // blocks
       return null;
     }
@@ -86,7 +86,7 @@ public class DemoGraphOnGPU : MonoBehaviour, IDemoGraph {
     return outputFrame.GetColor32s();
   }
 
-  public Color32[] FromPacket<T>(Packet<T> packet) {
-    throw new NotSupportedException();
+  public virtual void RenderOutput(Texture2D texture, Color32[] pixelData) {
+    throw new NotImplementedException();
   }
 }

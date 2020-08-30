@@ -5,12 +5,12 @@ using Mediapipe;
 using UnityEngine;
 
 public class Director : MonoBehaviour {
-  private GameObject deviceSelector;
-  private GameObject webCamScreen;
-  private WebCamDevice? webCamDevice;
-  private IDemoGraph graph;
-  private SidePacket sidePacket;
-  private Coroutine graphRunner;
+  protected GameObject deviceSelector;
+  protected GameObject webCamScreen;
+  protected WebCamDevice? webCamDevice;
+  protected IDemoGraph graph;
+  protected SidePacket sidePacket;
+  protected Coroutine graphRunner;
   private const int MaxWaitFrame = 5;
 
   void OnEnable() {
@@ -42,7 +42,7 @@ public class Director : MonoBehaviour {
     graphRunner = StartCoroutine(RunGraph());
   }
 
-  private IEnumerator RunGraph() {
+  protected virtual IEnumerator RunGraph() {
     var webCamScreenController = webCamScreen.GetComponent<WebCamScreenController>();
 
     sidePacket = new SidePacket();

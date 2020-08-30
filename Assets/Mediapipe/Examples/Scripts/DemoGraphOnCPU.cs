@@ -42,4 +42,8 @@ public class DemoGraphOnCPU : MonoBehaviour, IDemoGraph {
     // TODO: catch exception
     return outputPacket.GetValue().GetColor32s();
   }
+
+  public virtual void RenderOutput(Texture2D texture, Color32[] pixelData) {
+    throw new NotImplementedException();
+  }
 }

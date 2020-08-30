@@ -5,4 +5,5 @@ public interface IDemoGraph {
   Status StartRun(SidePacket sidePacket);
   Status PushColor32(Color32[] colors, int width, int height);
   Color32[] FetchOutput();
+  void RenderOutput(Texture2D texture, Color32[] pixelData);
 }
