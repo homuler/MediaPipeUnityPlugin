@@ -536,6 +536,7 @@ MonoBehaviour:
   DefaultHeight: 1920
   DefaultWidth: 1080
   FPS: 30
+  focalLengthPx: 6
 --- !u!64 &496037460
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -911,7 +912,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 994475724}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5f7dfca78ce3be82b28b2a0553599a2, type: 3}
+  m_Script: {fileID: 11500000, guid: 21893f3cd88c5cc5787eec55c54ade8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   config: {fileID: 4900000, guid: 23327b545d02c42ddbe2324475a6d828, type: 3}

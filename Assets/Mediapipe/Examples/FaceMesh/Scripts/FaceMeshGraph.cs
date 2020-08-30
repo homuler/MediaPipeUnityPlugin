@@ -1,30 +1,19 @@
 using Mediapipe;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FaceMeshGraphOnGPU : DemoGraphOnGPU {
-  protected const string landmarkStream = "multi_face_landmarks";
-  protected const string landmarkPresenceStream = "face_landmarks_presence";
+public class FaceMeshGraph : DemoGraph {
+  [SerializeField] private bool useGPU = true;
 
-  protected OutputStreamPoller<List<Landmark[]>> landmarkStreamPoller;
-  protected OutputStreamPoller<bool> landmarkPresenceStreamPoller;
-  protected NormalizedLandmarkListPacket landmarkListPacket;
-  protected BoolPacket landmarkPresencePacket;
+  private const string landmarkStream = "multi_face_landmarks";
+  private const string landmarkPresenceStream = "face_landmarks_presence";
+
+  private OutputStreamPoller<List<Landmark[]>> landmarkStreamPoller;
+  private OutputStreamPoller<bool> landmarkPresenceStreamPoller;
+  private NormalizedLandmarkListPacket landmarkListPacket;
+  private BoolPacket landmarkPresencePacket;
 
   public override Status StartRun(SidePacket sidePacket) {
-    if (config == null) {
-      throw new InvalidOperationException("config is missing");
-    }
-
-    graph = new CalculatorGraph(config.text);
-
-    var gpuResources = new StatusOrGpuResources().ConsumeValue();
-    graph.SetGpuResources(gpuResources).AssertOk();
-
-    gpuHelper = new GlCalculatorHelper();
-    gpuHelper.InitializeForTest(graph.GetGpuResources());
-
     landmarkStreamPoller = graph.AddOutputStreamPoller<List<Landmark[]>>(landmarkStream).ConsumeValue();
     landmarkPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(landmarkPresenceStream).ConsumeValue();
 
@@ -70,5 +59,9 @@ public class FaceMeshGraphOnGPU : DemoGraphOnGPU {
   private Color GetLandmarkColor(int index) {
     // TODO: change color according to the index
     return Color.green;
+  }
+
+  public override bool shouldUseGPU() {
+    return useGPU;
   }
 }
