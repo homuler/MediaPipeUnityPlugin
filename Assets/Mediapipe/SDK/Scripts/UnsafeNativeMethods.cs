@@ -4,6 +4,8 @@ using System.Security;
 
 using MpCalculatorGraph = System.IntPtr;
 using MpCalculatorGraphConfig = System.IntPtr;
+using MpClassification = System.IntPtr;
+using MpClassificationList = System.IntPtr;
 using MpGlCalculatorHelper = System.IntPtr;
 using MpGlContext = System.IntPtr;
 using MpGpuResources = System.IntPtr;
@@ -74,6 +76,20 @@ namespace Mediapipe {
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe ProtobufLogHandlerPtr SetProtobufLogHandler([MarshalAs(UnmanagedType.FunctionPtr)]ProtobufLogHandlerPtr logHandler);
+
+
+    /// Classification API
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe void MpClassificationListDestroy(MpClassificationList classificationList);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe MpClassification MpClassificationListClassifications(MpClassificationList classificationList);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe int MpClassificationListSize(MpClassificationList classificationList);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe MpClassificationList MpPacketGetClassificationList(MpPacket packet);
 
 
     /// Gl API

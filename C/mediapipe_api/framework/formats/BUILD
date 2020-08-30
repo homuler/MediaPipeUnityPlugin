@@ -3,6 +3,18 @@ package(
 )
 
 cc_library(
+    name = "classification",
+    srcs = ["classification.cc"],
+    hdrs = ["classification.h"],
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework/formats:classification_cc_proto",
+        "//mediapipe_api:common",
+        "//mediapipe_api/framework:packet",
+    ],
+    alwayslink = True,
+)
+
+cc_library(
     name = "image_frame",
     srcs = ["image_frame.cc"],
     hdrs = ["image_frame.h"],
