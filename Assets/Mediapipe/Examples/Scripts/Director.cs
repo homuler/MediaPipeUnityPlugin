@@ -45,6 +45,8 @@ public class Director : MonoBehaviour {
   protected virtual IEnumerator RunGraph() {
     var webCamScreenController = webCamScreen.GetComponent<WebCamScreenController>();
 
+    graph.Initialize();
+
     sidePacket = new SidePacket();
     sidePacket.Insert("focal_length_pixel", new FloatPacket(webCamScreenController.FocalLengthPx()));
 

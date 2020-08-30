@@ -13,7 +13,7 @@ public class DemoGraphOnGPU : MonoBehaviour, IDemoGraph {
   protected OutputStreamPoller<GpuBuffer> outputStreamPoller;
   protected GpuBufferPacket outputPacket;
 
-  public virtual Status StartRun(SidePacket sidePacket) {
+  public void Initialize() {
     if (config == null) {
       throw new InvalidOperationException("config is missing");
     }
@@ -25,7 +25,9 @@ public class DemoGraphOnGPU : MonoBehaviour, IDemoGraph {
 
     gpuHelper = new GlCalculatorHelper();
     gpuHelper.InitializeForTest(graph.GetGpuResources());
+  }
 
+  public virtual Status StartRun(SidePacket sidePacket) {
     outputStreamPoller = graph.AddOutputStreamPoller<GpuBuffer>(outputStream).ConsumeValue();
     outputPacket = new GpuBufferPacket();
 

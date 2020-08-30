@@ -12,13 +12,15 @@ public class DemoGraphOnCPU : MonoBehaviour, IDemoGraph {
   private OutputStreamPoller<ImageFrame> outputStreamPoller;
   private ImageFramePacket outputPacket;
 
-  public Status StartRun(SidePacket sidePacket) {
+  public void Initialize() {
     if (config == null) {
       throw new InvalidOperationException("config is missing");
     }
 
     graph = new CalculatorGraph(config.text);
+  }
 
+  public Status StartRun(SidePacket sidePacket) {
     outputStreamPoller = graph.AddOutputStreamPoller<ImageFrame>(outputStream).ConsumeValue();
     outputPacket = new ImageFramePacket();
 
