@@ -7,6 +7,7 @@ cc_binary(
         "//mediapipe_api/framework/formats:classification",
         "//mediapipe_api/framework/formats:image_frame",
         "//mediapipe_api/framework/formats:landmark",
+        "//mediapipe_api/framework/formats:rect",
         "//mediapipe_api/framework/port:logging",
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [],

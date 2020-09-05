@@ -39,3 +39,15 @@ cc_library(
     ],
     alwayslink = True,
 )
+
+cc_library(
+    name = "rect",
+    srcs = ["rect.cc"],
+    hdrs = ["rect.h"],
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework/formats:rect_cc_proto",
+        "//mediapipe_api:common",
+        "//mediapipe_api/framework:packet",
+    ],
+    alwayslink = True,
+)
