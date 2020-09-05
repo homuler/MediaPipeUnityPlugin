@@ -40,13 +40,8 @@ typedef MpRectVectorBase<MpNormalizedRect> MpNormalizedRectVector;
 
 MP_CAPI_EXPORT extern void MpRectDestroy(MpRect* rect);
 MP_CAPI_EXPORT extern void MpRectVectorDestroy(MpRectVector* rect_vec);
-MP_CAPI_EXPORT extern MpRect* MpRectVectorRects(MpRectVector* rect_vec);
-MP_CAPI_EXPORT extern int MpRectVectorSize(MpRectVector* rect_vec);
-
 MP_CAPI_EXPORT extern void MpNormalizedRectDestroy(MpNormalizedRect* rect);
 MP_CAPI_EXPORT extern void MpNormalizedRectVectorDestroy(MpNormalizedRectVector* rect_vec);
-MP_CAPI_EXPORT extern MpNormalizedRect* MpNormalizedRectVectorRects(MpNormalizedRectVector* rect_vec);
-MP_CAPI_EXPORT extern int MpNormalizedRectVectorSize(MpNormalizedRectVector* rect_vec);
 
 MP_CAPI_EXPORT extern MpRect* MpPacketGetRect(MpPacket* packet);
 MP_CAPI_EXPORT extern MpRectVector* MpPacketGetRectVector(MpPacket* packet);

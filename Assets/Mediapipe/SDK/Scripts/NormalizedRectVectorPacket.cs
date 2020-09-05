@@ -8,10 +8,7 @@ namespace Mediapipe {
 
     public override NormalizedRect[] GetValue() {
       MpRectVector rectVector = UnsafeNativeMethods.MpPacketGetNormalizedRectVector(ptr);
-      IntPtr rectPtr = UnsafeNativeMethods.MpNormalizedRectVectorRects(rectVector);
-      int size = UnsafeNativeMethods.MpNormalizedRectVectorSize(rectVector);
-
-      NormalizedRect[] rects = NormalizedRect.PtrToRectArray(rectPtr, size);
+      var rects = NormalizedRectVector.PtrToRectArray(rectVector);
 
       UnsafeNativeMethods.MpNormalizedRectVectorDestroy(rectVector);
 

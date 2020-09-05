@@ -14,6 +14,15 @@ typedef struct {
   float visibility;
 } MpLandmark;
 
+typedef struct MpLandmarkList {
+  MpLandmark* landmarks;
+  int size;
+
+  ~MpLandmarkList() {
+    delete[] landmarks;
+  }
+} MpLandmarkList;
+
 typedef struct MpLandmarkListVector {
   MpLandmark* landmarks;
   int* size_list;
@@ -25,11 +34,10 @@ typedef struct MpLandmarkListVector {
   }
 } MpLandmarkListVector;
 
-MP_CAPI_EXPORT extern void MpLandmarkListVectorDestroy(MpLandmarkListVector* landmark_list);
-MP_CAPI_EXPORT extern MpLandmark* MpLandmarkListVectorLandmarks(MpLandmarkListVector* landmark_list);
-MP_CAPI_EXPORT extern int* MpLandmarkListVectorSizeList(MpLandmarkListVector* landmark_list);
-MP_CAPI_EXPORT extern int MpLandmarkListVectorSize(MpLandmarkListVector* landmark_list);
+MP_CAPI_EXPORT extern void MpLandmarkListDestroy(MpLandmarkList* landmark_list);
+MP_CAPI_EXPORT extern void MpLandmarkListVectorDestroy(MpLandmarkListVector* landmark_list_vec);
 
+MP_CAPI_EXPORT extern MpLandmarkList* MpPacketGetNormalizedLandmarkList(MpPacket* packet);
 MP_CAPI_EXPORT extern MpLandmarkListVector* MpPacketGetNormalizedLandmarkListVector(MpPacket* packet);
 
 }  // extern "C"

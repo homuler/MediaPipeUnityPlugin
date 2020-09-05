@@ -9,7 +9,7 @@ using MpClassificationList = System.IntPtr;
 using MpGlCalculatorHelper = System.IntPtr;
 using MpGlContext = System.IntPtr;
 using MpGpuResources = System.IntPtr;
-using MpLandmark = System.IntPtr;
+using MpLandmarkList = System.IntPtr;
 using MpLandmarkListVector = System.IntPtr;
 using MpNormalizedRect = System.IntPtr;
 using MpNormalizedRectVector = System.IntPtr;
@@ -290,16 +290,13 @@ namespace Mediapipe {
 
     /// Landmark API
     [DllImport (MediapipeLibrary)]
+    public static extern unsafe void MpLandmarkListDestroy(MpLandmarkList landmarkList);
+
+    [DllImport (MediapipeLibrary)]
     public static extern unsafe void MpLandmarkListVectorDestroy(MpLandmarkListVector landmarkListVector);
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe MpLandmark MpLandmarkListVectorLandmarks(MpLandmarkListVector landmarkListVector);
-
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe IntPtr MpLandmarkListVectorSizeList(MpLandmarkListVector landmarkListVector);
-
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe int MpLandmarkListVectorSize(MpLandmarkListVector landmarkListVector);
+    public static extern unsafe MpLandmarkList MpPacketGetNormalizedLandmarkList(MpPacket packet);
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe MpLandmarkListVector MpPacketGetNormalizedLandmarkListVector(MpPacket packet);
@@ -356,22 +353,10 @@ namespace Mediapipe {
     public static extern unsafe void MpRectVectorDestroy(MpRectVector rectVector);
 
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe MpRect MpRectVectorRects(MpRectVector rectVector);
-
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe int MpRectVectorSize(MpRectVector rectVector);
-
-    [DllImport (MediapipeLibrary)]
     public static extern unsafe void MpNormalizedRectDestroy(MpNormalizedRect rect);
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe void MpNormalizedRectVectorDestroy(MpNormalizedRectVector rectVector);
-
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe MpNormalizedRect MpNormalizedRectVectorRects(MpNormalizedRectVector rectVector);
-
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe int MpNormalizedRectVectorSize(MpNormalizedRectVector rectVector);
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe MpRect MpPacketGetRect(MpPacket packet);

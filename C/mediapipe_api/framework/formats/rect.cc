@@ -9,28 +9,12 @@ void MpRectVectorDestroy(MpRectVector* rect_vector) {
   delete rect_vector;
 }
 
-MpRect* MpRectVectorRects(MpRectVector* rect_vector) {
-  return rect_vector->rects;
-}
-
-int MpRectVectorSize(MpRectVector* rect_vector) {
-  return rect_vector->size;
-}
-
 void MpNormalizedRectDestroy(MpNormalizedRect* rect) {
   delete rect;
 }
 
 void MpNormalizedRectVectorDestroy(MpNormalizedRectVector* rect_vec) {
   delete rect_vec;
-}
-
-MpNormalizedRect* MpNormalizedRectVectorRects(MpNormalizedRectVector* rect_vec) {
-  return rect_vec->rects;
-}
-
-int MpNormalizedRectVectorSize(MpNormalizedRectVector* rect_vec) {
-  return rect_vec->size;
 }
 
 template <typename T, class Rect>

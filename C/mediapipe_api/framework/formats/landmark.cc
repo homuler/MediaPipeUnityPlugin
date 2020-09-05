@@ -1,20 +1,26 @@
 #include <vector>
 #include "mediapipe_api/framework/formats/landmark.h"
 
+void MpLandmarkListDestroy(MpLandmarkList* landmark_list) {
+  delete landmark_list;
+}
+
 void MpLandmarkListVectorDestroy(MpLandmarkListVector* landmark_list_vec) {
   delete landmark_list_vec;
 }
 
-MpLandmark* MpLandmarkListVectorLandmarks(MpLandmarkListVector* landmark_list_vec) {
-  return landmark_list_vec->landmarks;
-}
+MpLandmarkList* MpPacketGetNormalizedLandmarkList(MpPacket* packet) {
+  auto& landmark_list = packet->impl->Get<mediapipe::NormalizedLandmarkList>();
+  int size = landmark_list.landmark_size();
 
-int* MpLandmarkListVectorSizeList(MpLandmarkListVector* landmark_list_vec) {
-  return landmark_list_vec->size_list;
-}
+  MpLandmark* landmarks = new MpLandmark[size];
 
-int MpLandmarkListVectorSize(MpLandmarkListVector* landmark_list_vec) {
-  return landmark_list_vec->size;
+  for (int i = 0; i < size; ++i) {
+    const auto& landmark = landmark_list.landmark(i);
+    landmarks[i] = MpLandmark { landmark.x(), landmark.y(), landmark.z(), landmark.visibility() };
+  }
+
+  return new MpLandmarkList { landmarks, size };
 }
 
 MpLandmarkListVector* MpPacketGetNormalizedLandmarkListVector(MpPacket* packet) {
