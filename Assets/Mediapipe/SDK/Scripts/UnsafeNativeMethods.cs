@@ -6,6 +6,7 @@ using MpCalculatorGraph = System.IntPtr;
 using MpCalculatorGraphConfig = System.IntPtr;
 using MpClassification = System.IntPtr;
 using MpClassificationList = System.IntPtr;
+using MpDetectionVector = System.IntPtr;
 using MpGlCalculatorHelper = System.IntPtr;
 using MpGlContext = System.IntPtr;
 using MpGpuResources = System.IntPtr;
@@ -94,6 +95,14 @@ namespace Mediapipe {
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe MpClassificationList MpPacketGetClassificationList(MpPacket packet);
+
+
+    /// Detection API
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe void MpDetectionVectorDestroy(MpDetectionVector detectionVector);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe MpDetectionVector MpPacketGetDetectionVector(MpPacket packet);
 
 
     /// Gl API

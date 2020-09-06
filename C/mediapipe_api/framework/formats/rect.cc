@@ -18,7 +18,7 @@ void MpNormalizedRectVectorDestroy(MpNormalizedRectVector* rect_vec) {
 }
 
 template <typename T, class Rect>
-T* MpPacketGetRectImpl(MpPacket* packet) {
+inline T* MpPacketGetRectImpl(MpPacket* packet) {
   auto& rect = packet->impl->Get<Rect>();
 
   return new T {
@@ -40,7 +40,7 @@ MpNormalizedRect* MpPacketGetNormalizedRect(MpPacket* packet) {
 }
 
 template <typename Vec, typename Elem, class Rect>
-Vec* MpPacketGetRectVectorImpl(MpPacket* packet) {
+inline Vec* MpPacketGetRectVectorImpl(MpPacket* packet) {
   auto& rect_vec = packet->impl->Get<std::vector<Rect>>();
   int size = rect_vec.size();
 
@@ -61,10 +61,10 @@ Vec* MpPacketGetRectVectorImpl(MpPacket* packet) {
   return new Vec { rects, size };
 }
 
-inline MpRectVector* MpPacketGetRectVector(MpPacket* packet) {
+MpRectVector* MpPacketGetRectVector(MpPacket* packet) {
   return MpPacketGetRectVectorImpl<MpRectVector, MpRect, mediapipe::Rect>(packet);
 }
 
-inline MpNormalizedRectVector* MpPacketGetNormalizedRectVector(MpPacket* packet) {
+MpNormalizedRectVector* MpPacketGetNormalizedRectVector(MpPacket* packet) {
   return MpPacketGetRectVectorImpl<MpNormalizedRectVector, MpNormalizedRect, mediapipe::NormalizedRect>(packet);
 }

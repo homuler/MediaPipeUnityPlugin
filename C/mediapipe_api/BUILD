@@ -5,6 +5,7 @@ cc_binary(
         ":protobuf",
         "//mediapipe_api/framework:calculator_graph",
         "//mediapipe_api/framework/formats:classification",
+        "//mediapipe_api/framework/formats:detection",
         "//mediapipe_api/framework/formats:image_frame",
         "//mediapipe_api/framework/formats:landmark",
         "//mediapipe_api/framework/formats:rect",
