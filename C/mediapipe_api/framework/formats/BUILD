@@ -19,7 +19,6 @@ cc_library(
     srcs = ["detection.cc"],
     hdrs = ["detection.h"],
     deps = [
-        ":location_data",
         "@com_google_mediapipe//mediapipe/framework/formats:detection_cc_proto",
         "//mediapipe_api:common",
         "//mediapipe_api/framework:packet",
@@ -49,17 +48,6 @@ cc_library(
         "@com_google_mediapipe//mediapipe/framework/formats:landmark_cc_proto",
         "//mediapipe_api:common",
         "//mediapipe_api/framework:packet",
-    ],
-    alwayslink = True,
-)
-
-cc_library(
-    name = "location_data",
-    hdrs = ["location_data.h"],
-    deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats:location_data_cc_proto",
-        "//mediapipe_api:common",
-        "//mediapipe_api/framework/formats/annotation:rasterization",
     ],
     alwayslink = True,
 )
