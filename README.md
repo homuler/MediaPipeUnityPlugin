@@ -4,23 +4,21 @@ This is a sample Unity (2019.3.12f1) Plugin to use Mediapipe (only tested on Lin
 
 ## Prerequisites
 ### Build
-Please build the native mediapipe plugins...
+Please build the native mediapipe plugins and place them under `Assets/Mediapipe/SDK/Plugins`.
 
 ```sh
 git clone https://github.com/homuler/MediapipeUnityPlugin.git
-cd MediapipeUnityPlugin/C
-
-# Running on CPU
-bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 //mediapipe_api:mediapipe_c
+cd MediapipeUnityPlugin
 
 # Running on GPU
-bazel build -c opt --copt -DMESA_EGL_NO_X11_HEADERS --copt -DEGL_NO_X11 //mediapipe_api:mediapipe_c
+make
+
+# Running on CPU
+make MODE=cpu
 ```
 
-and place the generated shared object (e.g. `libmediapipe_c.so`) in Assets/Mediapipe/SDK/Plugins/.
-
 #### ATTENTION!
-You should edit BUILD file before building so as to only include necessary calculators.
+You may want to edit BUILD file before building so as to only include necessary calculators to reduce the library size.
 For more information, please see the README of each scenes and the [BUILD file](https://github.com/homuler/MediapipeUnityPlugin/blob/master/C/mediapipe_api/BUILD).
 
 ### Models
