@@ -8,8 +8,7 @@ obj/
 *.sln
 
 bazel-*
-*.so
-*.so.meta
 
 Assets/Mediapipe/SDK/Models/*
 !Assets/Mediapipe/SDK/Models/.gitkeep
+Assets/Mediapipe/SDK/Plugins/*
