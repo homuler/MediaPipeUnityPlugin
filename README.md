@@ -46,8 +46,10 @@ InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000_mediapipe/
 
 ### TODO
 - [ ] Box Tracking (on CPU/GPU)
-- [ ] AutoFlip (on CPU/GPU)
-- [ ] Render landmarks on Unity
+- [ ] Render annotations on Unity
+- [ ] Android
+- [ ] iOS
+- [ ] Windows
 
 ## LICENSE
 MIT
