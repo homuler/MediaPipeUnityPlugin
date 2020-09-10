@@ -1,19 +1,26 @@
 # Mediapipe Unity Plugin
-
 This is a sample Unity (2019.3.12f1) Plugin to use Mediapipe (only tested on Linux).
 
 ## Prerequisites
+### MediaPipe
+Please be sure to install required packages and check if you can run the official demos on your machine.
+
+### OpenCV
+By default, it is assumed that you use OpenCV 3 and it is installed under `/usr`.
+If your version or path is different, please edit `C/third_party/opencv_linux.BUILD` or `C/WORKSPACE`.
+
 ### Build
-Please build the native mediapipe plugins and place them under `Assets/Mediapipe/SDK/Plugins`.
+Please build native plugins(mediapiie, protobuf) and place them under `Assets/Mediapipe/SDK/Plugins`.
+You can do that by running `make`.
 
 ```sh
 git clone https://github.com/homuler/MediapipeUnityPlugin.git
 cd MediapipeUnityPlugin
 
-# Running on GPU
+# build libraries to run models on GPU
 make
 
-# Running on CPU
+# or to run models on CPU
 make MODE=cpu
 ```
 
