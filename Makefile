@@ -11,7 +11,7 @@ plugindir := Assets/Mediapipe/SDK/Plugins
 protobuf_version := 3.13.0
 protobuf_tarball := protobuf-$(protobuf_version).tar.gz
 
-all: $(plugindir)/libmediapipe_api.so $(plugindir)/Google.Protobuf.dll
+all: $(plugindir)/Google.Protobuf.dll $(plugindir)/libmediapipe_api.so
 
 $(plugindir)/libmediapipe_api.so:
 	cd C && bazel build ${BAZELFLAGS} //mediapipe_api:mediapipe_c && cd .. && mv -f C/bazel-bin/mediapipe_api/libmediapipe_c.so $(plugindir)
