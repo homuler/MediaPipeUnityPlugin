@@ -4,6 +4,8 @@ using System.Collections;
 using Mediapipe;
 using UnityEngine;
 
+using Directory = UnityEngine.Windows.Directory;
+
 public class Director : MonoBehaviour {
   protected GameObject deviceSelector;
   protected GameObject webCamScreen;
@@ -15,6 +17,10 @@ public class Director : MonoBehaviour {
   void OnEnable() {
     var nameForGlog = Path.Combine(Application.dataPath, "MediapipePlugin");
     var logDir = Path.Combine(Application.dataPath.Replace("/Assets", ""), "Logs", "Mediapipe");
+
+    if (!Directory.Exists(logDir)) {
+      Directory.CreateDirectory(logDir);
+    }
 
     UnsafeNativeMethods.InitGoogleLogging(nameForGlog, logDir);
   }
