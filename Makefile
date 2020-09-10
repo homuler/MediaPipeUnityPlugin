@@ -20,7 +20,7 @@ $(plugindir)/Google.Protobuf.dll: Temp/$(protobuf_tarball)
 	cd Temp/protobuf-$(protobuf_version)/csharp && ./buildall.sh && mv src/Google.Protobuf/bin/Release/net45/* ../../../$(plugindir)
 
 Temp/$(protobuf_tarball):
-	cd Temp && curl -L https://github.com/protocolbuffers/protobuf/archive/v3.13.0.tar.gz -o $(protobuf_tarball) && tar xf $(protobuf_tarball)
+	mkdir -p Temp && cd Temp && curl -L https://github.com/protocolbuffers/protobuf/archive/v3.13.0.tar.gz -o $(protobuf_tarball) && tar xf $(protobuf_tarball)
 
 clean:
 	rm $(plugindir)/*.dll $(plugindir)/*.so $(plugindir)/*.pdb
