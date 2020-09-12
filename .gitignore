@@ -1,15 +1,15 @@
 .vscode/
 
 Temp/
+Logs/
 Library/
 obj/
+.build/
 *.csproj
 *.sln
 
 bazel-*
 
-Logs/
-!Logs/Mediapipe/.gitkeep
 
 Assets/Mediapipe/SDK/Models/*
 !Assets/Mediapipe/SDK/Models/.gitkeep

@@ -17,11 +17,13 @@ You can do that by running `make`.
 git clone https://github.com/homuler/MediapipeUnityPlugin.git
 cd MediapipeUnityPlugin
 
-# build libraries to run models on GPU
+### build libraries
+# for GPU
 make
+# for CPU
+# make MODE=cpu
 
-# or to run models on CPU
-make MODE=cpu
+make install
 ```
 
 #### ATTENTION!
