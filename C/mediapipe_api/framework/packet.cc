@@ -39,10 +39,7 @@ MpPacket* MpMakeStringPacketAt(const char* string, int timestamp) {
 const char* MpPacketGetString(MpPacket* packet) {
   auto text = packet->impl->Get<std::string>();
 
-  char* result = new char[text.size() + 1];
-  snprintf(result, text.size() + 1, text.c_str());
-
-  return result;
+  return strcpy_to_heap(text);
 }
 
 MpSidePacket* MpSidePacketCreate() {
