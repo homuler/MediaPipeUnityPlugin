@@ -1,22 +1,20 @@
 using System;
 using System.Collections.Generic;
 
-using MpLandmarkListVector = System.IntPtr;
-
 namespace Mediapipe {
-  public class NormalizedLandmarkListVectorPacket : Packet<List<Landmark[]>> {
+  public class NormalizedLandmarkListVectorPacket : Packet<List<NormalizedLandmarkList>> {
     public NormalizedLandmarkListVectorPacket() : base() {}
 
-    public override List<Landmark[]> GetValue() {
-      MpLandmarkListVector landmarkListVector = UnsafeNativeMethods.MpPacketGetNormalizedLandmarkListVector(ptr);
-      var landmarks = LandmarkListVector.PtrToLandmarkArrayList(landmarkListVector);
+    public override List<NormalizedLandmarkList> GetValue() {
+      var landmarkListVecPtr = UnsafeNativeMethods.MpPacketGetNormalizedLandmarkListVector(ptr);
+      var rects = SerializedProtoVector.FromPtr<NormalizedLandmarkList>(landmarkListVecPtr, NormalizedLandmarkList.Parser);
 
-      UnsafeNativeMethods.MpLandmarkListVectorDestroy(landmarkListVector);
+      UnsafeNativeMethods.MpSerializedProtoVectorDestroy(landmarkListVecPtr);
 
-      return landmarks;
+      return rects;
     }
 
-    public override List<Landmark[]> ConsumeValue() {
+    public override List<NormalizedLandmarkList> ConsumeValue() {
       throw new NotSupportedException();
     }
   }

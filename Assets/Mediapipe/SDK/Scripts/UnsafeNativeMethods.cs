@@ -4,7 +4,6 @@ using System.Security;
 
 using MpCalculatorGraph = System.IntPtr;
 using MpCalculatorGraphConfig = System.IntPtr;
-using MpClassification = System.IntPtr;
 using MpClassificationList = System.IntPtr;
 using MpDetectionVector = System.IntPtr;
 using MpGlCalculatorHelper = System.IntPtr;
@@ -17,6 +16,8 @@ using MpNormalizedRectVector = System.IntPtr;
 using MpPacket = System.IntPtr;
 using MpRect = System.IntPtr;
 using MpRectVector = System.IntPtr;
+using MpSerializedProto = System.IntPtr;
+using MpSerializedProtoVector = System.IntPtr;
 using MpSidePacket = System.IntPtr;
 using MpStatus = System.IntPtr;
 using MpStatusOrGpuBuffer = System.IntPtr;
@@ -79,28 +80,13 @@ namespace Mediapipe {
     [DllImport (MediapipeLibrary)]
     public static extern unsafe void MpCalculatorGraphConfigDestroy(MpCalculatorGraphConfig config);
 
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe ProtobufLogHandlerPtr SetProtobufLogHandler([MarshalAs(UnmanagedType.FunctionPtr)]ProtobufLogHandlerPtr logHandler);
-
 
     /// Classification API
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe void MpClassificationListDestroy(MpClassificationList classificationList);
-
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe MpClassification MpClassificationListClassifications(MpClassificationList classificationList);
-
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe int MpClassificationListSize(MpClassificationList classificationList);
-
     [DllImport (MediapipeLibrary)]
     public static extern unsafe MpClassificationList MpPacketGetClassificationList(MpPacket packet);
 
 
     /// Detection API
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe void MpDetectionVectorDestroy(MpDetectionVector detectionVector);
-
     [DllImport (MediapipeLibrary)]
     public static extern unsafe MpDetectionVector MpPacketGetDetectionVector(MpPacket packet);
 
@@ -299,12 +285,6 @@ namespace Mediapipe {
 
     /// Landmark API
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe void MpLandmarkListDestroy(MpLandmarkList landmarkList);
-
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe void MpLandmarkListVectorDestroy(MpLandmarkListVector landmarkListVector);
-
-    [DllImport (MediapipeLibrary)]
     public static extern unsafe MpLandmarkList MpPacketGetNormalizedLandmarkList(MpPacket packet);
 
     [DllImport (MediapipeLibrary)]
@@ -356,18 +336,6 @@ namespace Mediapipe {
 
     /// Rect API
     [DllImport (MediapipeLibrary)]
-    public static extern unsafe void MpRectDestroy(MpRect rect);
-
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe void MpRectVectorDestroy(MpRectVector rectVector);
-
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe void MpNormalizedRectDestroy(MpNormalizedRect rect);
-
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe void MpNormalizedRectVectorDestroy(MpNormalizedRectVector rectVector);
-
-    [DllImport (MediapipeLibrary)]
     public static extern unsafe MpRect MpPacketGetRect(MpPacket packet);
 
     [DllImport (MediapipeLibrary)]
@@ -407,6 +375,17 @@ namespace Mediapipe {
 
     [DllImport (MediapipeLibrary)]
     public static extern unsafe void MpStatusDestroy(MpStatus status);
+
+
+    /// Protobuf API
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe void MpSerializedProtoDestroy(MpSerializedProto proto);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe void MpSerializedProtoVectorDestroy(MpSerializedProtoVector protoVec);
+
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe ProtobufLogHandlerPtr SetProtobufLogHandler([MarshalAs(UnmanagedType.FunctionPtr)]ProtobufLogHandlerPtr logHandler);
 
 
     /// Glog API

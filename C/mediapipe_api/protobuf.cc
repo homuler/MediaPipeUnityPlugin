@@ -17,3 +17,11 @@ google::protobuf::LogHandler* SetProtobufLogHandler(LogHandler* lh) {
 
   return google::protobuf::SetLogHandler(&HandleProtobufLog);
 }
+
+void MpSerializedProtoDestroy(MpSerializedProto* proto) {
+  delete proto;
+}
+
+void MpSerializedProtoVectorDestroy(MpSerializedProtoVector* proto_vec) {
+  delete proto_vec;
+}

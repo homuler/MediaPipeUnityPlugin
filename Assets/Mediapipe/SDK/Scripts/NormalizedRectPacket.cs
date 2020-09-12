@@ -1,16 +1,16 @@
 using System;
-using System.Runtime.InteropServices;
-
-using MpNormalizedRect = System.IntPtr;
 
 namespace Mediapipe {
   public class NormalizedRectPacket : Packet<NormalizedRect> {
     public NormalizedRectPacket() : base() {}
 
     public override NormalizedRect GetValue() {
-      MpNormalizedRect rect = UnsafeNativeMethods.MpPacketGetNormalizedRect(ptr);
+      var rectPtr = UnsafeNativeMethods.MpPacketGetNormalizedRect(ptr);
+      var rect = SerializedProto.FromPtr<NormalizedRect>(rectPtr, NormalizedRect.Parser);
 
-      return Marshal.PtrToStructure<NormalizedRect>(rect);
+      UnsafeNativeMethods.MpSerializedProtoDestroy(rectPtr);
+
+      return rect;
     }
 
     public override NormalizedRect ConsumeValue() {

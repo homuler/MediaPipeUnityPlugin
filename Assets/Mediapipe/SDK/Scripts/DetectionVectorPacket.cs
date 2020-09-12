@@ -1,21 +1,20 @@
 using System;
-
-using MpDetectionVector = System.IntPtr;
+using System.Collections.Generic;
 
 namespace Mediapipe {
-  public class DetectionVectorPacket : Packet<Detection[]> {
+  public class DetectionVectorPacket : Packet<List<Detection>> {
     public DetectionVectorPacket() : base() {}
 
-    public override Detection[] GetValue() {
-      MpDetectionVector detectionVector = UnsafeNativeMethods.MpPacketGetDetectionVector(ptr);
-      var detections = DetectionVector.PtrToDetectionArray(detectionVector);
+    public override List<Detection> GetValue() {
+      var detectionVecPtr = UnsafeNativeMethods.MpPacketGetDetectionVector(ptr);
+      var detections = SerializedProtoVector.FromPtr<Detection>(detectionVecPtr, Detection.Parser);
 
-      UnsafeNativeMethods.MpDetectionVectorDestroy(detectionVector);
+      UnsafeNativeMethods.MpSerializedProtoVectorDestroy(detectionVecPtr);
 
       return detections;
     }
 
-    public override Detection[] ConsumeValue() {
+    public override List<Detection> ConsumeValue() {
       throw new NotSupportedException();
     }
   }

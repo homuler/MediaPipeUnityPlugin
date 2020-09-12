@@ -10,7 +10,8 @@ obj/
 
 bazel-*
 
-
 Assets/Mediapipe/SDK/Models/*
 !Assets/Mediapipe/SDK/Models/.gitkeep
 Assets/Mediapipe/SDK/Plugins/*
+
+Assets/Mediapipe/SDK/Scripts/Protobuf/**/*.cs

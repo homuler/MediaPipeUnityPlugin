@@ -1,21 +1,20 @@
 using System;
-
-using MpRectVector = System.IntPtr;
+using System.Collections.Generic;
 
 namespace Mediapipe {
-  public class NormalizedRectVectorPacket : Packet<NormalizedRect[]> {
+  public class NormalizedRectVectorPacket : Packet<List<NormalizedRect>> {
     public NormalizedRectVectorPacket() : base() {}
 
-    public override NormalizedRect[] GetValue() {
-      MpRectVector rectVector = UnsafeNativeMethods.MpPacketGetNormalizedRectVector(ptr);
-      var rects = NormalizedRectVector.PtrToRectArray(rectVector);
+    public override List<NormalizedRect> GetValue() {
+      var rectVecPtr = UnsafeNativeMethods.MpPacketGetNormalizedRectVector(ptr);
+      var rects = SerializedProtoVector.FromPtr<NormalizedRect>(rectVecPtr, NormalizedRect.Parser);
 
-      UnsafeNativeMethods.MpNormalizedRectVectorDestroy(rectVector);
+      UnsafeNativeMethods.MpSerializedProtoVectorDestroy(rectVecPtr);
 
       return rects;
     }
 
-    public override NormalizedRect[] ConsumeValue() {
+    public override List<NormalizedRect> ConsumeValue() {
       throw new NotSupportedException();
     }
   }

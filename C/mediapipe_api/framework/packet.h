@@ -5,8 +5,10 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <vector>
 #include "mediapipe/framework/packet.h"
 #include "mediapipe_api/common.h"
+#include "mediapipe_api/protobuf.h"
 
 template <typename T>
 class UnsafePacketHolder : public mediapipe::packet_internal::Holder<T> {
@@ -55,5 +57,19 @@ MP_CAPI_EXPORT extern void MpSidePacketDestroy(MpSidePacket* side_packet);
 MP_CAPI_EXPORT extern void MpSidePacketInsert(MpSidePacket* side_packet, const char* key, MpPacket* packet);
 
 }  // extern "C"
+
+template <class T>
+inline MpSerializedProto* MpPacketGetProto(MpPacket* packet) {
+  auto proto = packet->impl->Get<T>();
+
+  return MpSerializedProtoInitialize(proto);
+}
+
+template <class T>
+inline MpSerializedProtoVector* MpPacketGetProtoVector(MpPacket* packet) {
+  auto proto_vec = packet->impl->Get<std::vector<T>>();
+
+  return MpSerializedProtoVectorInitialize(proto_vec);
+}
 
 #endif  // C_MEDIAPIPE_API_FRAMEWORK_PACKET_H_

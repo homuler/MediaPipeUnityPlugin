@@ -1,21 +1,19 @@
 using System;
 
-using MpLandmarkList = System.IntPtr;
-
 namespace Mediapipe {
-  public class NormalizedLandmarkListPacket : Packet<Landmark[]> {
+  public class NormalizedLandmarkListPacket : Packet<NormalizedLandmarkList> {
     public NormalizedLandmarkListPacket() : base() {}
 
-    public override Landmark[] GetValue() {
-      MpLandmarkList landmarkList = UnsafeNativeMethods.MpPacketGetNormalizedLandmarkList(ptr);
-      var landmarks = LandmarkList.PtrToLandmarkArray(landmarkList);
+    public override NormalizedLandmarkList GetValue() {
+      var landmarkListPtr = UnsafeNativeMethods.MpPacketGetNormalizedLandmarkList(ptr);
+      var rect = SerializedProto.FromPtr<NormalizedLandmarkList>(landmarkListPtr, NormalizedLandmarkList.Parser);
 
-      UnsafeNativeMethods.MpLandmarkListDestroy(landmarkList);
+      UnsafeNativeMethods.MpSerializedProtoDestroy(landmarkListPtr);
 
-      return landmarks;
+      return rect;
     }
 
-    public override Landmark[] ConsumeValue() {
+    public override NormalizedLandmarkList ConsumeValue() {
       throw new NotSupportedException();
     }
   }

@@ -71,6 +71,7 @@ cc_library(
         "@com_google_protobuf//:protobuf",
         ":common",
     ],
+    visibility = ["//visibility:public"],
     alwayslink = True,
 )
 

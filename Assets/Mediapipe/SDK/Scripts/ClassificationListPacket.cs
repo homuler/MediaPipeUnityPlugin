@@ -1,32 +1,19 @@
 using System;
-using System.Runtime.InteropServices;
-
-using MpClassificationList = System.IntPtr;
 
 namespace Mediapipe {
-  public class ClassificationListPacket : Packet<Classification[]> {
+  public class ClassificationListPacket : Packet<ClassificationList> {
     public ClassificationListPacket() : base() {}
 
-    public override Classification[] GetValue() {
-      MpClassificationList classificationList = UnsafeNativeMethods.MpPacketGetClassificationList(ptr);
-      int size = UnsafeNativeMethods.MpClassificationListSize(classificationList);
+    public override ClassificationList GetValue() {
+      var classificationListPtr = UnsafeNativeMethods.MpPacketGetClassificationList(ptr);
+      var rect = SerializedProto.FromPtr<ClassificationList>(classificationListPtr, ClassificationList.Parser);
 
-      var classifications = new Classification[size];
+      UnsafeNativeMethods.MpSerializedProtoDestroy(classificationListPtr);
 
-      unsafe {
-        ClassificationInner* classificationPtr = (ClassificationInner*)UnsafeNativeMethods.MpClassificationListClassifications(classificationList);
-
-        for (var i = 0; i < size; i++) {
-          classifications[i] = new Classification((IntPtr)classificationPtr++);
-        }
-      }
-
-      UnsafeNativeMethods.MpClassificationListDestroy(classificationList);
-
-      return classifications;
+      return rect;
     }
 
-    public override Classification[] ConsumeValue() {
+    public override ClassificationList ConsumeValue() {
       throw new NotSupportedException();
     }
   }

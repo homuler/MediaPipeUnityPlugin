@@ -9,6 +9,7 @@ cc_library(
     deps = [
         "@com_google_mediapipe//mediapipe/framework/formats:classification_cc_proto",
         "//mediapipe_api:common",
+        "//mediapipe_api:protobuf",
         "//mediapipe_api/framework:packet",
     ],
     alwayslink = True,
@@ -21,6 +22,7 @@ cc_library(
     deps = [
         "@com_google_mediapipe//mediapipe/framework/formats:detection_cc_proto",
         "//mediapipe_api:common",
+        "//mediapipe_api:protobuf",
         "//mediapipe_api/framework:packet",
     ],
     alwayslink = True,
@@ -47,6 +49,7 @@ cc_library(
     deps = [
         "@com_google_mediapipe//mediapipe/framework/formats:landmark_cc_proto",
         "//mediapipe_api:common",
+        "//mediapipe_api:protobuf",
         "//mediapipe_api/framework:packet",
     ],
     alwayslink = True,
@@ -59,6 +62,7 @@ cc_library(
     deps = [
         "@com_google_mediapipe//mediapipe/framework/formats:rect_cc_proto",
         "//mediapipe_api:common",
+        "//mediapipe_api:protobuf",
         "//mediapipe_api/framework:packet",
     ],
     alwayslink = True,
