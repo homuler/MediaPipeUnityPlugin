@@ -5,52 +5,57 @@ using UnityEngine;
 public class FaceMeshGraph : DemoGraph {
   [SerializeField] private bool useGPU = true;
 
-  private const string landmarkStream = "multi_face_landmarks";
-  private const string landmarkPresenceStream = "face_landmarks_presence";
+  private const string landmarksStream = "multi_face_landmarks";
+  private const string landmarksPresenceStream = "face_landmarks_presence";
 
-  private OutputStreamPoller<List<Landmark[]>> landmarkStreamPoller;
-  private OutputStreamPoller<bool> landmarkPresenceStreamPoller;
+  private OutputStreamPoller<List<NormalizedLandmarkList>> landmarksStreamPoller;
+  private OutputStreamPoller<bool> landmarksPresenceStreamPoller;
   private NormalizedLandmarkListVectorPacket landmarkListPacket;
-  private BoolPacket landmarkPresencePacket;
+  private BoolPacket landmarksPresencePacket;
 
   public override Status StartRun(SidePacket sidePacket) {
-    landmarkStreamPoller = graph.AddOutputStreamPoller<List<Landmark[]>>(landmarkStream).ConsumeValue();
-    landmarkPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(landmarkPresenceStream).ConsumeValue();
+    landmarksStreamPoller = graph.AddOutputStreamPoller<List<NormalizedLandmarkList>>(landmarksStream).ConsumeValue();
+    landmarksPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(landmarksPresenceStream).ConsumeValue();
 
     landmarkListPacket = new NormalizedLandmarkListVectorPacket();
-    landmarkPresencePacket = new BoolPacket();
+    landmarksPresencePacket = new BoolPacket();
 
     return graph.StartRun(sidePacket);
   }
 
   public override void RenderOutput(Texture2D texture, Color32[] pixelData) {
-    List<Landmark[]> landmarkList = FetchNextLandmarks();
-
     texture.SetPixels32(pixelData);
 
-    for (var i = 0; i < landmarkList.Count; i++) {
-      Color color = GetLandmarkColor(i);
-      foreach (var landmark in landmarkList[i]) {
-        landmark.Draw(texture, color);
+    List<NormalizedLandmarkList> landmarkListVec = FetchNextLandmarks();
+
+    if (landmarkListVec != null) {
+      for (var i = 0; i < landmarkListVec.Count; i++) {
+        Color color = GetLandmarkColor(i);
+
+        foreach (var landmark in landmarkListVec[i].Landmark) {
+          landmark.Draw(texture, color);
+        }
       }
     }
 
     texture.Apply();
   }
 
-  private List<Landmark[]> FetchNextLandmarks() {
-    if (!landmarkPresenceStreamPoller.Next(landmarkPresencePacket)) { // blocks
-      return new List<Landmark[]>();
+  private List<NormalizedLandmarkList> FetchNextLandmarks() {
+    if (!landmarksPresenceStreamPoller.Next(landmarksPresencePacket)) { // blocks
+    Debug.LogWarning($"Failed to fetch next packet from {landmarksPresenceStream}");
+      return null;
     }
 
-    bool isLandmarkPresent = landmarkPresencePacket.GetValue();
+    bool isLandmarkPresent = landmarksPresencePacket.GetValue();
 
     if (!isLandmarkPresent) {
-      return new List<Landmark[]>();
+      return null;
     }
 
-    if (!landmarkStreamPoller.Next(landmarkListPacket)) {
-      return new List<Landmark[]>();
+    if (!landmarksStreamPoller.Next(landmarkListPacket)) {
+      Debug.LogWarning($"Failed to fetch next packet from {landmarksStream}");
+      return null;
     }
 
     return landmarkListPacket.GetValue();
