@@ -1,3 +1,5 @@
+load("@rules_pkg//:pkg.bzl", "pkg_zip")
+
 cc_binary(
     name = "mediapipe_c",
     deps = [
@@ -23,7 +25,6 @@ cc_binary(
     visibility = None,
     linkshared = True,
 )
-
 
 # It is recommended that you include only neccessary calculators.
 cc_library(
@@ -71,4 +72,23 @@ cc_library(
         ":common",
     ],
     alwayslink = True,
+)
+
+pkg_zip(
+    name = "mediapipe_models",
+    srcs = [
+        "@com_google_mediapipe//mediapipe/models:face_detection_front.tflite",
+        "@com_google_mediapipe//mediapipe/models:face_detection_front_labelmap.txt",
+        "@com_google_mediapipe//mediapipe/models:face_landmark.tflite",
+        "@com_google_mediapipe//mediapipe/models:hair_segmentation.tflite",
+        "@com_google_mediapipe//mediapipe/models:hand_landmark.tflite",
+        "@com_google_mediapipe//mediapipe/models:handedness.txt",
+        "@com_google_mediapipe//mediapipe/models:iris_landmark.tflite",
+        "@com_google_mediapipe//mediapipe/models:palm_detection.tflite",
+        "@com_google_mediapipe//mediapipe/models:palm_detection_labelmap.txt",
+        "@com_google_mediapipe//mediapipe/models:ssdlite_object_detection.tflite",
+        "@com_google_mediapipe//mediapipe/models:ssdlite_object_detection_labelmap.txt",
+        "@com_google_mediapipe//mediapipe/modules/pose_detection:pose_detection.tflite",
+        "@com_google_mediapipe//mediapipe/modules/pose_landmark:pose_landmark_upper_body.tflite",
+    ],
 )

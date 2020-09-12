@@ -2,7 +2,9 @@ BUILD := default
 MODE := gpu
 
 builddir := .build
-plugindir := Assets/Mediapipe/SDK/Plugins
+sdkdir := Assets/Mediapipe/SDK
+plugindir := $(sdkdir)/Plugins
+modeldir := $(sdkdir)/Models
 
 bazelflags.default := -c opt
 bazelflags.debug := --compilation_mode=dbg
@@ -19,10 +21,10 @@ protobuf_dll := $(protobuf_bindir)/Google.Protobuf.dll
 
 .PHONY: all mediapipe_api clean
 
-all: mediapipe_api | $(protobuf_dll)
+all: $(protobuf_dll) mediapipe_api
 
 mediapipe_api:
-	cd C && bazel build ${BAZELFLAGS} //mediapipe_api:mediapipe_c
+	cd C && bazel build ${BAZELFLAGS} //mediapipe_api:mediapipe_c //mediapipe_api:mediapipe_models
 
 $(plugindir)/Google.Protobuf.dll: Temp/$(protobuf_tarball)
 	cd Temp/protobuf-$(protobuf_version)/csharp && ./buildall.sh && mv src/Google.Protobuf/bin/Release/net45/* ../../../$(plugindir)
@@ -39,9 +41,16 @@ $(protobuf_tarball): | $(builddir)
 $(builddir):
 	mkdir -p $@
 
-install: $(plugindir)/Protobuf
-	cp $(protobuf_bindir)/* $(plugindir)/Protobuf && \
+install: install-protobuf install-mediapipe_c install-models
+
+install-protobuf: | $(plugindir)/Protobuf
+	cp $(protobuf_bindir)/* $(plugindir)/Protobuf
+
+install-mediapipe_c:
 	cp -f C/bazel-bin/mediapipe_api/libmediapipe_c.so $(plugindir)
+
+install-models:
+	unzip C/bazel-bin/mediapipe_api/mediapipe_models.zip -d $(modeldir)
 
 $(plugindir)/Protobuf:
 	mkdir -p $@
