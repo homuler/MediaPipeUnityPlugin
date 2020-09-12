@@ -9,10 +9,11 @@ Please be sure to install required packages and check if you can run the officia
 By default, it is assumed that you use OpenCV 3 and it is installed under `/usr`.
 If your version or path is different, please edit `C/third_party/opencv_linux.BUILD` or `C/WORKSPACE`.
 
-### Build
-Please build native plugins(mediapiie, protobuf) and place them under `Assets/Mediapipe/SDK/Plugins`.
-You can do that by running `make`.
+### Protocol Buffer
+The protocol buffer compiler is required.
+It is also necessary to install .NET Core SDK(3.x) and .NET Core runtime 2.1 to build `Google.Protobuf.dll`.
 
+### Build
 ```sh
 git clone https://github.com/homuler/MediapipeUnityPlugin.git
 cd MediapipeUnityPlugin
@@ -26,7 +27,6 @@ make
 make install
 ```
 
-#### ATTENTION!
 You may want to edit BUILD file before building so as to only include necessary calculators to reduce the library size.
 For more information, please see the README of each scenes and the [BUILD file](https://github.com/homuler/MediapipeUnityPlugin/blob/master/C/mediapipe_api/BUILD).
 
