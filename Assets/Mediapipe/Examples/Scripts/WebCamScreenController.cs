@@ -1,9 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.Events;
-
-[System.Serializable]
-public class FrameEvent : UnityEvent<Color32[], int, int>{}
 
 public class WebCamScreenController : MonoBehaviour {
   [SerializeField] int DefaultHeight = 640;

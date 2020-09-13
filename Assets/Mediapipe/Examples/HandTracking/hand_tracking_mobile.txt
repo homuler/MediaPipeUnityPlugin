@@ -13,12 +13,16 @@
 # limitations under the License.
 
 # MediaPipe graph that performs hand tracking with TensorFlow Lite on GPU.
-# Used in the examples in
-# mediapipe/examples/android/src/java/com/mediapipe/apps/handtrackinggpu and
-# mediapipe/examples/ios/handtrackinggpu.
 
 # Images coming into and out of the graph.
 input_stream: "input_video"
+
+output_stream: "palm_detections"
+output_stream: "hand_landmarks"
+output_stream: "hand_rect"
+output_stream: "handedness"
+output_stream: "hand_presence"
+output_stream: "palm_detections_presence"
 output_stream: "output_video"
 
 # Throttles the images flowing downstream for flow control. It passes through
@@ -126,11 +130,17 @@ node {
   output_stream: "hand_rect"
 }
 
+node {
+  calculator: "PacketPresenceCalculator"
+  input_stream: "PACKET:palm_detections"
+  output_stream: "PRESENCE:palm_detections_presence"
+}
+
 # Subgraph that renders annotations and overlays them on top of the input
-# images (see renderer_gpu.pbtxt).
+# images (see renderer_cpu.pbtxt).
 node {
   calculator: "RendererSubgraph"
-  input_stream: "IMAGE:throttled_input_video"
+  input_stream: "IMAGE:input_video"
   input_stream: "LANDMARKS:hand_landmarks"
   input_stream: "NORM_RECT:hand_rect"
   input_stream: "DETECTIONS:palm_detections"

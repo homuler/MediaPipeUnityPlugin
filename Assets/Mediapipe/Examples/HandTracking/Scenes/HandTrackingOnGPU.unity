@@ -829,10 +829,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 925659076}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21893f3cd88c5cc5787eec55c54ade8a, type: 3}
+  m_Script: {fileID: 11500000, guid: f52857899a14754edac864727619f5d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   config: {fileID: 4900000, guid: 25d031e0ec16443199a6986b78a86ee1, type: 3}
+  useGPU: 1
 --- !u!4 &925659078
 Transform:
   m_ObjectHideFlags: 0
