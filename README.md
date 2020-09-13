@@ -1,5 +1,5 @@
 # Mediapipe Unity Plugin
-This is a sample Unity (2019.3.12f1) Plugin to use Mediapipe (only tested on Linux).
+This is a sample Unity (2019.4.10f1) Plugin to use Mediapipe (only tested on Linux).
 
 ## Prerequisites
 ### MediaPipe
