@@ -7,7 +7,7 @@ Please be sure to install required packages and check if you can run the officia
 
 ### OpenCV
 By default, it is assumed that you use OpenCV 3 and it is installed under `/usr`.
-If your version or path is different, please edit `C/third_party/opencv_linux.BUILD` or `C/WORKSPACE`.
+If your version or path is different, please edit `C/third_party/opencv_linux.BUILD` and `C/WORKSPACE`.
 
 ### Protocol Buffer
 The protocol buffer compiler is required.
