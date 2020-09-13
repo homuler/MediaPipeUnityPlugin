@@ -96,7 +96,7 @@ namespace Mediapipe {
     }
 
     public static unsafe ImageFrame FromPixels32(Color32[] colors, int width, int height) {
-      return new ImageFrame(ImageFormat.SRGB, width, height, 3 * width, Mediapipe.Format.FromPixels32(colors));
+      return new ImageFrame(ImageFormat.SRGB, width, height, 3 * width, Mediapipe.Format.FromPixels32(colors, width, height));
     }
   }
 }
