@@ -9,7 +9,7 @@ modeldir := $(sdkdir)/Models
 bazelflags.default := -c opt
 bazelflags.debug := --compilation_mode=dbg
 bazelflags.gpu := --copt -DMESA_EGL_NO_X11_HEADERS --copt -DEGL_NO_X11
-bazelflags.cpu := --define MEDIAPIE_DISABLE_GPU=1
+bazelflags.cpu := --define MEDIAPIPE_DISABLE_GPU=1
 BAZELFLAGS := ${bazelflags.${BUILD}} ${bazelflags.${MODE}}
 
 proto_srcdir := $(sdkdir)/Scripts

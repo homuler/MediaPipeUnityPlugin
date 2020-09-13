@@ -6,10 +6,10 @@ using UnityEngine.Events;
 public class FrameEvent : UnityEvent<Color32[], int, int>{}
 
 public class WebCamScreenController : MonoBehaviour {
-  [SerializeField] int DefaultHeight = 1920;
-  [SerializeField] int DefaultWidth = 1080;
+  [SerializeField] int DefaultHeight = 640;
+  [SerializeField] int DefaultWidth = 480;
   [SerializeField] int FPS = 30;
-  [SerializeField] float focalLengthPx = 6.0f;
+  [SerializeField] float focalLengthPx = 2.0f;
 
   private WebCamTexture webCamTexture;
   private Texture2D outputTexture;
