@@ -533,10 +533,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 842caaa3595af5affbad9424323d3133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DefaultHeight: 1920
-  DefaultWidth: 1080
+  DefaultHeight: 640
+  DefaultWidth: 480
   FPS: 30
-  focalLengthPx: 6
+  focalLengthPx: 2
 --- !u!64 &496037460
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -605,13 +605,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 496037458}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 100}
-  m_LocalScale: {x: 16, y: 1, z: 9}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: -0.7071068, w: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 20}
+  m_LocalScale: {x: 4, y: 1, z: 3}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 180, z: 0}
 --- !u!1 &624144232
 GameObject:
   m_ObjectHideFlags: 0
