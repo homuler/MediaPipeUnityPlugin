@@ -9,7 +9,8 @@ public class RectAnnotationController : MonoBehaviour {
   }
 
   public void Clear() {
-    Destroy(gameObject);
+    var emptyPositions = new Vector3[] { Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero };
+    gameObject.GetComponent<LineRenderer>().SetPositions(emptyPositions);
   }
 
   /// <summary>

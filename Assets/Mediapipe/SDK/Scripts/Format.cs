@@ -12,22 +12,34 @@ namespace Mediapipe {
     ///   In <paramref name="colors" />, pixels are laid out left to right, bottom to top,
     ///   but in the returned array, left to right, top to bottom.
     /// </remarks>
-    public static NativeArray<byte> FromPixels32(Color32[] colors, int width, int height, Allocator allocator = Allocator.Temp) {
+    public static NativeArray<byte> FromPixels32(Color32[] colors, int width, int height, bool isFlipped = false, Allocator allocator = Allocator.Temp) {
       var pixelData = new NativeArray<byte>(colors.Length * 3, allocator, NativeArrayOptions.UninitializedMemory);
 
       unsafe {
         fixed (Color32* src = colors) {
-          Color32* pSrc = src;
           byte* pDest = (byte*)NativeArrayUnsafeUtility.GetUnsafePtr(pixelData);
 
-          for (var i = 0; i < height; i++) {
-            Color32* pRowSrc = pSrc + width * (height - 1 - i);
+          if (isFlipped) {
+            Color32* pSrc = src + colors.Length - 1;
 
-            for (var j = 0; j < width; j++) {
-              *pDest++ = pRowSrc->r;
-              *pDest++ = pRowSrc->g;
-              *pDest++ = pRowSrc->b;
-              pRowSrc++;
+            for (var i = 0; i < colors.Length; i++) {
+              *pDest++ = pSrc->r;
+              *pDest++ = pSrc->g;
+              *pDest++ = pSrc->b;
+              pSrc--;
+            }
+          } else {
+            Color32* pSrc = src;
+
+            for (var i = 0; i < height; i++) {
+              Color32* pRowSrc = pSrc + width * (height - 1 - i);
+
+              for (var j = 0; j < width; j++) {
+                *pDest++ = pRowSrc->r;
+                *pDest++ = pRowSrc->g;
+                *pDest++ = pRowSrc->b;
+                pRowSrc++;
+              }
             }
           }
         }
@@ -62,18 +74,18 @@ namespace Mediapipe {
       unsafe {
         fixed (Color32* dest = colors) {
           byte* pSrc = (byte*)ptr.ToPointer();
-          Color32 *pDest = dest;
 
           for (var i = 0; i < height; i++) {
-            byte* pRowSrc = pSrc + widthStep * (height - 1 - i);
+            Color32 *pRowDest = dest + width * (height - 1 - i);
 
             for (var j = 0; j < width; j++) {
-              byte r = *pRowSrc++;
-              byte g = *pRowSrc++;
-              byte b = *pRowSrc++;
-              byte a = format == ImageFormat.SRGB ? (byte)255 : (*pRowSrc++);
-              *pDest++ = new Color32(r, g, b, a);
+              byte r = *pSrc++;
+              byte g = *pSrc++;
+              byte b = *pSrc++;
+              byte a = format == ImageFormat.SRGB ? (byte)255 : (*pSrc++);
+              *pRowDest++ = new Color32(r, g, b, a);
             }
+            pSrc += padding;
           }
         }
       }

@@ -9,7 +9,7 @@ public class ClassificationAnnotationController : MonoBehaviour {
   }
 
   public void Clear() {
-    Destroy(gameObject);
+    gameObject.GetComponent<TextMesh>().text = "";
   }
 
   public void Draw(ClassificationList classificationList) {
@@ -20,5 +20,9 @@ public class ClassificationAnnotationController : MonoBehaviour {
     }
 
     gameObject.GetComponent<TextMesh>().text = arr[0].Label;
+
+    var transform = webCamScreen.transform;
+    // TODO: change position
+    gameObject.transform.position = transform.position;
   }
 }

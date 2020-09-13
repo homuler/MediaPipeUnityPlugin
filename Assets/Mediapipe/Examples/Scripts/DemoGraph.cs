@@ -42,7 +42,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph {
   /// </summary>
   public Status PushColor32(Color32[] colors, int width, int height) {
     int timestamp = System.Environment.TickCount & System.Int32.MaxValue;
-    var imageFrame = ImageFrame.FromPixels32(colors, width, height);
+    var imageFrame = ImageFrame.FromPixels32(colors, width, height, true);
 
     if (!shouldUseGPU()) {
       var packet = new ImageFramePacket(imageFrame, timestamp);
