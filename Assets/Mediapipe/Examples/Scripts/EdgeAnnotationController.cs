@@ -10,23 +10,33 @@ public class EdgeAnnotationController : MonoBehaviour {
 
   /// <summary>
   ///   Renders a line on a screen.
-  ///   It is assumed that the rotation of the screen is (90, 180, 0).
+  ///   It is assumed that the screen vertical to terrain and not inverted.
   /// </summary>
+  /// <param name="isFlipped">
+  ///   if true, x axis is oriented from right to left (top-right point is (0, 0) and bottom-left is (1, 1))
+  /// </param>
   /// <remarks>
-  ///   In <paramref name="a" /> and <paramref name="b" />, the coordinate of the left-top point is (0, 0).
-  ///   Their z values will be ignored.
+  ///   In <paramref name="point" />, y-axis is oriented from top to bottom.
   /// </remarks>
-  public void Draw(WebCamScreenController screenController, NormalizedLandmark a, NormalizedLandmark b) {
+  public void Draw(WebCamScreenController screenController, NormalizedLandmark a, NormalizedLandmark b, bool isFlipped = false) {
     var transform = screenController.transform;
     var localScale = transform.localScale;
     var scale = new Vector3(10 * localScale.x, 10 * localScale.z, 1);
 
-    var src = Vector3.Scale(new Vector3(a.X - 0.5f, 0.5f - a.Y, 0), scale) + transform.position;
-    var dst = Vector3.Scale(new Vector3(b.X - 0.5f, 0.5f - b.Y, 0), scale) + transform.position;
+    var srcX = isFlipped ? 0.5f - a.X : a.X - 0.5f;
+    var srcY = 0.5f - a.Y;
+    var dstX = isFlipped ? 0.5f - b.X : b.X - 0.5f;
+    var dstY = 0.5f - b.Y;
+    var src = Vector3.Scale(new Vector3(srcX, srcY, 0), scale) + transform.position;
+    var dst = Vector3.Scale(new Vector3(dstX, dstY, 0), scale) + transform.position;
 
     Draw(screenController, src, dst);
   }
 
+  /// <summary>
+  ///   Renders a line joining <paramref name="a" /> and <paramref name="b" /> on a screen.
+  ///   It is assumed that the screen vertical to terrain and not inverted.
+  /// </summary>
   public void Draw(WebCamScreenController screenController, GameObject a, GameObject b) {
     Draw(screenController, a.transform.position, b.transform.position);
   }
