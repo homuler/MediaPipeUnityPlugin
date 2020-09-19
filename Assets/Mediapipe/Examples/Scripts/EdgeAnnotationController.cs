@@ -18,30 +18,29 @@ public class EdgeAnnotationController : MonoBehaviour {
   /// <remarks>
   ///   In <paramref name="point" />, y-axis is oriented from top to bottom.
   /// </remarks>
-  public void Draw(WebCamScreenController screenController, NormalizedLandmark a, NormalizedLandmark b, bool isFlipped = false) {
-    var transform = screenController.transform;
-    var localScale = transform.localScale;
+  public void Draw(Transform screenTransform, NormalizedLandmark a, NormalizedLandmark b, bool isFlipped = false) {
+    var localScale = screenTransform.localScale;
     var scale = new Vector3(10 * localScale.x, 10 * localScale.z, 1);
 
     var srcX = isFlipped ? 0.5f - a.X : a.X - 0.5f;
     var srcY = 0.5f - a.Y;
     var dstX = isFlipped ? 0.5f - b.X : b.X - 0.5f;
     var dstY = 0.5f - b.Y;
-    var src = Vector3.Scale(new Vector3(srcX, srcY, 0), scale) + transform.position;
-    var dst = Vector3.Scale(new Vector3(dstX, dstY, 0), scale) + transform.position;
+    var src = Vector3.Scale(new Vector3(srcX, srcY, 0), scale) + screenTransform.position;
+    var dst = Vector3.Scale(new Vector3(dstX, dstY, 0), scale) + screenTransform.position;
 
-    Draw(screenController, src, dst);
+    Draw(screenTransform, src, dst);
   }
 
   /// <summary>
   ///   Renders a line joining <paramref name="a" /> and <paramref name="b" /> on a screen.
   ///   It is assumed that the screen vertical to terrain and not inverted.
   /// </summary>
-  public void Draw(WebCamScreenController screenController, GameObject a, GameObject b) {
-    Draw(screenController, a.transform.position, b.transform.position);
+  public void Draw(Transform screenTransform, GameObject a, GameObject b) {
+    Draw(screenTransform, a.transform.position, b.transform.position);
   }
 
-  private void Draw(WebCamScreenController screenController, Vector3 src, Vector3 dst) {
+  private void Draw(Transform screenTransform, Vector3 src, Vector3 dst) {
     var positions = new Vector3[] { src, dst };
 
     gameObject.GetComponent<LineRenderer>().SetPositions(positions);

@@ -69,21 +69,20 @@ public class HandLandmarkAnnotationController : MonoBehaviour {
   /// <remarks>
   ///   In <paramref name="landmarkList" />, y-axis is oriented from top to bottom.
   /// </remarks>
-  public void Draw(WebCamScreenController screenController, NormalizedLandmarkList landmarkList, bool isFlipped = false) {
+  public void Draw(Transform screenTransform, NormalizedLandmarkList landmarkList, bool isFlipped = false) {
     if (isEmpty(landmarkList)) {
       Clear();
       return;
     }
 
-    var transform = screenController.transform;
-    var localScale = transform.localScale;
+    var localScale = screenTransform.localScale;
     var scale = new Vector3(10 * localScale.x, 10 * localScale.z, 1);
 
     for (var i = 0; i < NodeSize; i++) {
       var landmark = landmarkList.Landmark[i];
       var node = nodes[i];
 
-      node.GetComponent<NodeAnnotationController>().Draw(screenController, landmark, isFlipped);
+      node.GetComponent<NodeAnnotationController>().Draw(screenTransform, landmark, isFlipped);
     }
 
     for (var i = 0; i < EdgeSize; i++) {
@@ -93,7 +92,7 @@ public class HandLandmarkAnnotationController : MonoBehaviour {
       var a = nodes[connection.Item1];
       var b = nodes[connection.Item2];
 
-      edge.GetComponent<EdgeAnnotationController>().Draw(screenController, a, b);
+      edge.GetComponent<EdgeAnnotationController>().Draw(screenTransform, a, b);
     }
   }
 

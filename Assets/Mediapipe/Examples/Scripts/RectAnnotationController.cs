@@ -18,14 +18,13 @@ public class RectAnnotationController : MonoBehaviour {
   /// <remarks>
   ///   In <paramref name="rect" />, y-axis is oriented from top to bottom.
   /// </remarks>
-  public void Draw(WebCamScreenController screenController, NormalizedRect rect, bool isFlipped = false) {
-    var transform = screenController.transform;
-    var localScale = transform.localScale;
+  public void Draw(Transform screenTransform, NormalizedRect rect, bool isFlipped = false) {
+    var localScale = screenTransform.localScale;
     var scale = new Vector3(10 * localScale.x, 10 * localScale.z, 1);
 
     var centerX = isFlipped ? 0.5f - rect.XCenter : rect.XCenter - 0.5f;
     var centerY = 0.5f - rect.YCenter;
-    var center = Vector3.Scale(new Vector3(centerX, centerY, 0), scale) + transform.position;
+    var center = Vector3.Scale(new Vector3(centerX, centerY, 0), scale) + screenTransform.position;
     var rotation = Quaternion.Euler(0, 0, -Mathf.Rad2Deg * rect.Rotation); // counterclockwise
 
     var topRel1 = rotation * Vector3.Scale(new Vector3(-rect.Width / 2, rect.Height / 2, 0), scale);

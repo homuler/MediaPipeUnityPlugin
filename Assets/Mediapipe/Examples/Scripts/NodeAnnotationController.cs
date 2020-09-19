@@ -16,15 +16,14 @@ public class NodeAnnotationController : MonoBehaviour {
   /// <remarks>
   ///   In <paramref name="point" />, y-axis is oriented from top to bottom.
   /// </remarks>
-  public void Draw(WebCamScreenController screenController, NormalizedLandmark point, bool isFlipped = false, float scale = 0.5f) {
-    var transform = screenController.transform;
-    var localScale = transform.localScale;
+  public void Draw(Transform screenTransform, NormalizedLandmark point, bool isFlipped = false, float scale = 0.5f) {
+    var localScale = screenTransform.localScale;
     var scaleVec = new Vector3(10 * localScale.x, 10 * localScale.z, 1);
 
     var x = isFlipped ? 0.5f - point.X : point.X - 0.5f;
     var y = 0.5f - point.Y;
 
-    gameObject.transform.position = Vector3.Scale(new Vector3(x, y, 0), scaleVec) + transform.position;
+    gameObject.transform.position = Vector3.Scale(new Vector3(x, y, 0), scaleVec) + screenTransform.position;
     gameObject.transform.localScale = scale * Vector3.one;
   }
 }

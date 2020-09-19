@@ -118,7 +118,7 @@ public class HandTrackingGraph : DemoGraph {
   {
     var annotator = gameObject.GetComponent<HandTrackingAnnotator>();
     // NOTE: input image is flipped
-    annotator.Draw(screenController, isHandPresent, handedness, handRect, handLandmarks, palmDetections, true);
+    annotator.Draw(screenController.transform, isHandPresent, handedness, handRect, handLandmarks, palmDetections, true);
   }
 
   public override bool shouldUseGPU() {

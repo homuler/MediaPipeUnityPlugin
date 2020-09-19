@@ -15,19 +15,19 @@ public class HandTrackingAnnotator : MonoBehaviour {
     }
   }
 
-  public void Draw(WebCamScreenController screenController, bool isHandPresent, ClassificationList handedness,
+  public void Draw(Transform screenTransform, bool isHandPresent, ClassificationList handedness,
       NormalizedRect handRect, NormalizedLandmarkList handLandmarks, List<Detection> palmDetections, bool isFlipped = false)
   {
-    Draw(screenController, handRect, isFlipped);
-    Draw(screenController, handLandmarks, isFlipped);
+    Draw(screenTransform, handRect, isFlipped);
+    Draw(screenTransform, handLandmarks, isFlipped);
   }
 
-  private void Draw(WebCamScreenController screenController, NormalizedRect rect, bool isFlipped = false) {
-    HandRectAnnotation().GetComponent<RectAnnotationController>().Draw(screenController, rect, isFlipped);
+  private void Draw(Transform screenTransform, NormalizedRect rect, bool isFlipped = false) {
+    HandRectAnnotation().GetComponent<RectAnnotationController>().Draw(screenTransform, rect, isFlipped);
   }
 
-  private void Draw(WebCamScreenController screenController, NormalizedLandmarkList landmarks, bool isFlipped = false) {
-    HandLandmarkAnnotation().GetComponent<HandLandmarkAnnotationController>().Draw(screenController, landmarks, isFlipped);
+  private void Draw(Transform screenTransform, NormalizedLandmarkList landmarks, bool isFlipped = false) {
+    HandLandmarkAnnotation().GetComponent<HandLandmarkAnnotationController>().Draw(screenTransform, landmarks, isFlipped);
   }
 
   private GameObject HandRectAnnotation() {
