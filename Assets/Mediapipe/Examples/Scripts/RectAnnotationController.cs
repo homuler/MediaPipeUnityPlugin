@@ -13,7 +13,7 @@ public class RectAnnotationController : MonoBehaviour {
   ///   It is assumed that the rotation of the screen is (90, 180, 0).
   /// </summary>
   /// <remarks>
-  ///   In <paramref name="rect" />, the coordinate of the left-top point is (0, 1).
+  ///   In <paramref name="rect" />, the coordinate of the left-top point is (0, 0).
   ///   If the rect is not found, its height and width will be zero.
   /// </remarks>
   public void Draw(WebCamScreenController screenController, NormalizedRect rect) {

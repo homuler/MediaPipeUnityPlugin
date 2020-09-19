@@ -13,7 +13,7 @@ public class EdgeAnnotationController : MonoBehaviour {
   ///   It is assumed that the rotation of the screen is (90, 180, 0).
   /// </summary>
   /// <remarks>
-  ///   In <paramref name="a" /> and <paramref name="b" />, the coordinate of the left-top point is (0, 1).
+  ///   In <paramref name="a" /> and <paramref name="b" />, the coordinate of the left-top point is (0, 0).
   ///   Their z values will be ignored.
   /// </remarks>
   public void Draw(WebCamScreenController screenController, NormalizedLandmark a, NormalizedLandmark b) {

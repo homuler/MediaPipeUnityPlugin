@@ -11,7 +11,7 @@ public class NodeAnnotationController : MonoBehaviour {
   ///   It is assumed that the rotation of the screen is (90, 180, 0).
   /// </summary>
   /// <remarks>
-  ///   In <paramref name="point" />, the coordinate of the left-top point is (0, 1).
+  ///   In <paramref name="point" />, the coordinate of the left-top point is (0, 0).
   ///   Its z value will be ignored.
   /// </remarks>
   public void Draw(WebCamScreenController screenController, NormalizedLandmark point, float scale = 0.5f) {
