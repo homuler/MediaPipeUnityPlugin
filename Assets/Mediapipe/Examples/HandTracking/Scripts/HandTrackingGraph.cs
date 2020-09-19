@@ -86,12 +86,17 @@ public class HandTrackingGraph : DemoGraph {
 
     texture.Apply();
 
+  public override void RenderOutput(WebCamScreenController screenController, Color32[] pixelData) {
     // Fetch other outputs
     var isHandPresent = FetchNextHandPresence();
     var handedness = FetchNextHandedness();
     var rect = FetchNextRect();
     var landmarks = FetchNextHandLandmarkList();
     var palmDetections = FetchNextPalmDetections();
+
+    var texture = screenController.GetScreen();
+    texture.SetPixels32(pixelData);
+    texture.Apply();
   }
 
   private bool FetchNextHandPresence() {

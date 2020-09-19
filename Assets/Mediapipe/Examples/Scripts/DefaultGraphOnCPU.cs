@@ -14,7 +14,9 @@ public class DefaultGraphOnCPU : DemoGraph {
     return graph.StartRun(sidePacket);
   }
 
-  public override void RenderOutput(Texture2D texture, Color32[] pixelData) {
+  public override void RenderOutput(WebCamScreenController screenController, Color32[] pixelData) {
+    var texture = screenController.GetScreen();
+
     if (!outputStreamPoller.Next(outputPacket)) {
       Debug.LogWarning("Failed to fetch an output packet, rendering the input image");
       texture.SetPixels32(pixelData);

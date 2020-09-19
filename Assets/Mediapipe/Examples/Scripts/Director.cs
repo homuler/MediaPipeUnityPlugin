@@ -70,7 +70,7 @@ public class Director : MonoBehaviour {
       var height = webCamScreenController.Height();
 
       graph.PushColor32(pixelData, width, height);
-      graph.RenderOutput(webCamScreenController.GetScreen(), pixelData);
+      graph.RenderOutput(webCamScreenController, pixelData);
     }
   }
 }

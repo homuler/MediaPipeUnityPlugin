@@ -68,12 +68,12 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph {
   /// <summary>
   ///   Fetch output packets and render the result. 
   /// </summary>
-  /// <param name="texture">Texture to be used as a WebCam screen</param>
+  /// <param name="screenController">Controller of the screen where the result is rendered</param>
   /// <param name="pixelData">
   ///   Input pixel data that is already sent to an input stream.
   ///   Its timestamp should correspond to that of the next output packet (if exists).
   ///  </param>
-  public abstract void RenderOutput(Texture2D texture, Color32[] pixelData);
+  public abstract void RenderOutput(WebCamScreenController screenController, Color32[] pixelData);
 
   public abstract bool shouldUseGPU();
 }

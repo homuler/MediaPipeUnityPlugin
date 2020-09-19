@@ -23,7 +23,8 @@ public class FaceMeshGraph : DemoGraph {
     return graph.StartRun(sidePacket);
   }
 
-  public override void RenderOutput(Texture2D texture, Color32[] pixelData) {
+  public override void RenderOutput(WebCamScreenController screenController, Color32[] pixelData) {
+    var texture = screenController.GetScreen();
     texture.SetPixels32(pixelData);
 
     List<NormalizedLandmarkList> landmarkListVec = FetchNextLandmarks();
