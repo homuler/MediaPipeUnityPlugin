@@ -861,6 +861,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62acb76d36ae4229c851677e86711f32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  handednessPrefab: {fileID: 5340126888248019913, guid: 3144fd50b7773ed768c77b259a74dbe6,
+    type: 3}
   handRectPrefab: {fileID: 1405412484651109527, guid: c5c846cc7bbefdfa7af64f9d29912b70,
     type: 3}
   handLandmarkPrefab: {fileID: 3100741085041498678, guid: 4eb3a6d7cfea73afdb656b7166ae1a8d,
