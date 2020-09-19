@@ -813,6 +813,7 @@ GameObject:
   m_Component:
   - component: {fileID: 925659078}
   - component: {fileID: 925659077}
+  - component: {fileID: 925659079}
   m_Layer: 0
   m_Name: MediapipeGraph
   m_TagString: Untagged
@@ -848,6 +849,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &925659079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 925659076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62acb76d36ae4229c851677e86711f32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handRectPrefab: {fileID: 1405412484651109527, guid: c5c846cc7bbefdfa7af64f9d29912b70,
+    type: 3}
+  handLandmarkPrefab: {fileID: 3100741085041498678, guid: 4eb3a6d7cfea73afdb656b7166ae1a8d,
+    type: 3}
 --- !u!1 &985747842
 GameObject:
   m_ObjectHideFlags: 0
