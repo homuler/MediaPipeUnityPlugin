@@ -17,11 +17,10 @@
 # Images coming into and out of the graph.
 input_stream: "input_video"
 
-output_stream: "palm_detections"
+output_stream: "handedness"
 output_stream: "hand_landmarks"
 output_stream: "hand_rect"
-output_stream: "handedness"
-output_stream: "hand_presence"
+output_stream: "palm_detections"
 output_stream: "palm_detections_presence"
 
 # Throttles the images flowing downstream for flow control. It passes through
