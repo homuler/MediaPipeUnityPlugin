@@ -25,21 +25,25 @@ namespace Mediapipe {
       var scale = new Vector3(10 * localScale.x, 10 * localScale.z, 1);
       var box = detection.LocationData.RelativeBoundingBox;
 
-      var minX = isFlipped ? 0.5f - box.Xmin : box.Xmin - 0.5f;
-      var minY = 0.5f - box.Ymin;
-      var min = Vector3.Scale(new Vector3(minX, minY, 0), scale) + screenTransform.position;
-      var max = min + Vector3.Scale(new Vector3(box.Width / 2, box.Height / 2, 0), scale);
+      var center = screenTransform.position;
+      var normalizedBottom = 0.5f - box.Ymin - box.Height;
+      var normalizedLeft = isFlipped ? 0.5f - box.Xmin - box.Width : box.Xmin - 0.5f;
+      var bottomLeftRel = Vector3.Scale(new Vector3(normalizedLeft, normalizedBottom, 0), scale);
+      var topRightRel = bottomLeftRel + Vector3.Scale(new Vector3(box.Width, box.Height, 0), scale);
+      var topLeftRel = new Vector3(bottomLeftRel.x, topRightRel.y, 0);
+      var bottomRightRel = new Vector3(topRightRel.x, bottomLeftRel.y, 0);
 
       var positions = new Vector3[] {
-        min,
-        new Vector3(min.x, max.y, 0),
-        max,
-        new Vector3(max.x, min.y, 0),
+        bottomLeftRel + center,
+        topLeftRel + center,
+        topRightRel + center,
+        bottomRightRel + center,
       };
 
       gameObject.GetComponent<LineRenderer>().SetPositions(positions);
-      gameObject.GetComponent<TextMesh>().text = $"{detection.Label}, {detection.Score}";
-      gameObject.transform.position = min;
+      // TODO: change font size
+      gameObject.GetComponent<TextMesh>().text = $" {detection.Label[0]}, {detection.Score[0]:G3}";
+      gameObject.transform.position = topLeftRel + center;
     }
   }
 }

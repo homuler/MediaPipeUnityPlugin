@@ -22,10 +22,10 @@ namespace Mediapipe {
       var localScale = screenTransform.localScale;
       var scale = new Vector3(10 * localScale.x, 10 * localScale.z, 1);
 
-      var centerX = isFlipped ? 0.5f - rect.XCenter : rect.XCenter - 0.5f;
+      var centerX = (isFlipped ? -1 : 1) * (rect.XCenter - 0.5f);
       var centerY = 0.5f - rect.YCenter;
       var center = Vector3.Scale(new Vector3(centerX, centerY, 0), scale) + screenTransform.position;
-      var rotation = isFlipped ? Mathf.Rad2Deg * rect.Rotation : -Mathf.Rad2Deg * rect.Rotation;
+      var rotation = (isFlipped ? 1 : -1) * Mathf.Rad2Deg * rect.Rotation;
       var quaternion = Quaternion.Euler(0, 0, rotation);
 
       var topRel1 = quaternion * Vector3.Scale(new Vector3(-rect.Width / 2, rect.Height / 2, 0), scale);
