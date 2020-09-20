@@ -28,7 +28,7 @@ public class HandTrackingGraph : DemoGraph {
   private GameObject annotation;
 
   void Awake() {
-    annotation = GameObject.Find("Annotation");
+    annotation = GameObject.Find("HandTrackingAnnotation");
   }
 
   public override Status StartRun(SidePacket sidePacket) {

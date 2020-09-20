@@ -28,7 +28,7 @@ public class FaceMeshGraph : DemoGraph {
   private GameObject annotation;
 
   void Awake() {
-    annotation = GameObject.Find("Annotation");
+    annotation = GameObject.Find("FaceMeshAnnotation");
   }
 
   public override Status StartRun(SidePacket sidePacket) {
