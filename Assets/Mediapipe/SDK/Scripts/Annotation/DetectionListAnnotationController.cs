@@ -42,7 +42,7 @@ namespace Mediapipe {
 
     /// <summary>
     ///   Renders bounding boxes on a screen.
-    ///   It is assumed that the screen vertical to terrain and not inverted.
+    ///   It is assumed that the screen is vertical to terrain and not inverted.
     /// </summary>
     /// <param name="isFlipped">
     ///   if true, x axis is oriented from right to left (top-right point is (0, 0) and bottom-left is (1, 1))

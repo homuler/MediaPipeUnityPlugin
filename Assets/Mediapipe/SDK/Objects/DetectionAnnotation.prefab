@@ -206,3 +206,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e79617274f27e76e8d9d337e9facd09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  relativeKeypointPrefab: {fileID: 7638123175053154722, guid: e1df7e6227ecccfa18d2734713bb8d89,
+    type: 3}

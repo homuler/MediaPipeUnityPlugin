@@ -8,7 +8,7 @@ namespace Mediapipe {
 
     /// <summary>
     ///   Renders a text on a screen.
-    ///   It is assumed that the screen vertical to terrain and not inverted.
+    ///   It is assumed that the screen is vertical to terrain and not inverted.
     /// </summary>
     public void Draw(Transform screenTransform, ClassificationList classificationList) {
       var arr = classificationList.Classification;

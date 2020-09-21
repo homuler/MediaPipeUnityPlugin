@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace Mediapipe {
-  public class NodeAnnotationController : MonoBehaviour {
+  public class RelativeKeypointAnnotationController : MonoBehaviour {
     public void Clear() {
       gameObject.transform.localScale = Vector3.zero;
     }
@@ -16,7 +16,7 @@ namespace Mediapipe {
     /// <remarks>
     ///   In <paramref name="point" />, y-axis is oriented from top to bottom.
     /// </remarks>
-    public void Draw(Transform screenTransform, NormalizedLandmark point, bool isFlipped = false, float scale = 0.5f) {
+    public void Draw(Transform screenTransform, LocationData.Types.RelativeKeypoint point, bool isFlipped = false, float scale = 0.3f) {
       var localScale = screenTransform.localScale;
       var scaleVec = new Vector3(10 * localScale.x, 10 * localScale.z, 1);
 
