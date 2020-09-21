@@ -47,3 +47,4 @@ MonoBehaviour:
     type: 3}
   edgePrefab: {fileID: 2337397722188664932, guid: adc32798eaf923fb1acefc96eb3dbc5c,
     type: 3}
+  NodeScale: 0.3
