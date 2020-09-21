@@ -1,10 +1,10 @@
 using UnityEngine;
 
 namespace Mediapipe {
-  public class RectAnnotationController : MonoBehaviour {
+  public class RectAnnotationController : AnnotationController {
     private readonly Vector3[] emptyPositions = new Vector3[] { Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero };
 
-    public void Clear() {
+    public override void Clear() {
       gameObject.GetComponent<LineRenderer>().SetPositions(emptyPositions);
     }
 
@@ -19,24 +19,7 @@ namespace Mediapipe {
     ///   In <paramref name="rect" />, y-axis is oriented from top to bottom.
     /// </remarks>
     public void Draw(Transform screenTransform, NormalizedRect rect, bool isFlipped = false) {
-      var localScale = screenTransform.localScale;
-      var scale = new Vector3(10 * localScale.x, 10 * localScale.z, 1);
-
-      var centerX = (isFlipped ? -1 : 1) * (rect.XCenter - 0.5f);
-      var centerY = 0.5f - rect.YCenter;
-      var center = Vector3.Scale(new Vector3(centerX, centerY, 0), scale) + screenTransform.position;
-      var rotation = (isFlipped ? 1 : -1) * Mathf.Rad2Deg * rect.Rotation;
-      var quaternion = Quaternion.Euler(0, 0, rotation);
-
-      var topRel1 = quaternion * Vector3.Scale(new Vector3(-rect.Width / 2, rect.Height / 2, 0), scale);
-      var topRel2 = quaternion * Vector3.Scale(new Vector3(rect.Width / 2, rect.Height / 2, 0), scale);
-
-      var positions = new Vector3[] {
-        center + topRel1,
-        center + topRel2,
-        center - topRel1,
-        center - topRel2,
-      };
+      var positions = GetPositions(screenTransform, rect, isFlipped);
 
       gameObject.GetComponent<LineRenderer>().SetPositions(positions);
     }

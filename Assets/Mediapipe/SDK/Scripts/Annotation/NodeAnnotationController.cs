@@ -1,8 +1,8 @@
 using UnityEngine;
 
 namespace Mediapipe {
-  public class NodeAnnotationController : MonoBehaviour {
-    public void Clear() {
+  public class NodeAnnotationController : AnnotationController {
+    public override void Clear() {
       gameObject.transform.localScale = Vector3.zero;
     }
 
@@ -17,13 +17,7 @@ namespace Mediapipe {
     ///   In <paramref name="point" />, y-axis is oriented from top to bottom.
     /// </remarks>
     public void Draw(Transform screenTransform, NormalizedLandmark point, bool isFlipped = false, float scale = 0.5f) {
-      var localScale = screenTransform.localScale;
-      var scaleVec = new Vector3(10 * localScale.x, 10 * localScale.z, 1);
-
-      var x = isFlipped ? 0.5f - point.X : point.X - 0.5f;
-      var y = 0.5f - point.Y;
-
-      gameObject.transform.position = Vector3.Scale(new Vector3(x, y, 0), scaleVec) + screenTransform.position;
+      gameObject.transform.position = GetPosition(screenTransform, point, isFlipped);
       gameObject.transform.localScale = scale * Vector3.one;
     }
   }

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe {
-  public class DetectionListAnnotationController : MonoBehaviour {
+  public class DetectionListAnnotationController : AnnotationController {
     [SerializeField] GameObject detectionPrefab = null;
     [SerializeField] int DefaultMaxSize = 1;
 
@@ -34,7 +34,7 @@ namespace Mediapipe {
       this.MaxSize = MaxSize;
     }
 
-    public void Clear() {
+    public override void Clear() {
       foreach (var detection in detections) {
         detection.GetComponent<DetectionAnnotationController>().Clear();
       }

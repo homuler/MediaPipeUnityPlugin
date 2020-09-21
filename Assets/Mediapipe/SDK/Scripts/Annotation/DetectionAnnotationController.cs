@@ -5,7 +5,7 @@ using pbc = global::Google.Protobuf.Collections;
 using mplt = global::Mediapipe.LocationData.Types;
 
 namespace Mediapipe {
-  public class DetectionAnnotationController : MonoBehaviour {
+  public class DetectionAnnotationController : AnnotationController {
     [SerializeField] protected GameObject relativeKeypointPrefab = null;
 
     private List<GameObject> Keypoints;
@@ -15,7 +15,7 @@ namespace Mediapipe {
       Keypoints = new List<GameObject>();
     }
 
-    public void Clear() {
+    public override void Clear() {
       gameObject.GetComponent<LineRenderer>().SetPositions(emptyPositions);
       gameObject.GetComponent<TextMesh>().text = "";
 
@@ -41,29 +41,15 @@ namespace Mediapipe {
     }
 
     private void DrawRectAndLabel(Transform screenTransform, Detection detection, bool isFlipped = false) {
-      var localScale = screenTransform.localScale;
-      var scale = new Vector3(10 * localScale.x, 10 * localScale.z, 1);
-      var box = detection.LocationData.RelativeBoundingBox;
-
-      var center = screenTransform.position;
-      var normalizedBottom = 0.5f - box.Ymin - box.Height;
-      var normalizedLeft = isFlipped ? 0.5f - box.Xmin - box.Width : box.Xmin - 0.5f;
-      var bottomLeftRel = Vector3.Scale(new Vector3(normalizedLeft, normalizedBottom, 0), scale);
-      var topRightRel = bottomLeftRel + Vector3.Scale(new Vector3(box.Width, box.Height, 0), scale);
-      var topLeftRel = new Vector3(bottomLeftRel.x, topRightRel.y, 0);
-      var bottomRightRel = new Vector3(topRightRel.x, bottomLeftRel.y, 0);
-
-      var positions = new Vector3[] {
-        bottomLeftRel + center,
-        topLeftRel + center,
-        topRightRel + center,
-        bottomRightRel + center,
-      };
+      var positions = GetPositions(screenTransform, detection.LocationData.RelativeBoundingBox, isFlipped);
 
       gameObject.GetComponent<LineRenderer>().SetPositions(positions);
-      // TODO: change font size
-      gameObject.GetComponent<TextMesh>().text = $" {detection.Label[0]}, {detection.Score[0]:G3}";
-      gameObject.transform.position = topLeftRel + center;
+
+      if (detection.Label.Count > 0) {
+        // TODO: change font size
+        gameObject.GetComponent<TextMesh>().text = $" {detection.Label[0]}, {detection.Score[0]:G3}";
+        gameObject.transform.position = positions[0];
+      }
     }
 
     private void DrawRelativeKeypoints(Transform screenTransform, pbc.RepeatedField<mplt.RelativeKeypoint> keypoints, bool isFlipped = false) {

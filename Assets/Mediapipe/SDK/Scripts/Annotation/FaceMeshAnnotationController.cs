@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe {
-  public class FaceMeshAnnotationController : MonoBehaviour {
+  public class FaceMeshAnnotationController : AnnotationController {
     [SerializeField] GameObject faceLandmarksPrefab = null;
     [SerializeField] GameObject faceRectPrefab = null;
     [SerializeField] GameObject faceDetectionPrefab = null;
@@ -15,6 +15,12 @@ namespace Mediapipe {
       faceLandmarksAnnotation = Instantiate(faceLandmarksPrefab);
       faceRectAnnotation = Instantiate(faceRectPrefab);
       faceDetectionAnnotation = Instantiate(faceDetectionPrefab);
+    }
+
+    public override void Clear() {
+      ClearFaceLandmarks();
+      ClearFaceRect();
+      ClearFaceDetection();
     }
 
     public void Draw(Transform screenTransform, List<NormalizedLandmarkList> faceLandmarkListVec,
@@ -32,13 +38,11 @@ namespace Mediapipe {
         ClearFaceRect();
       }
 
-      /**
       if (faceDetectionVec.Count > 0) {
         DrawFaceDetection(screenTransform, faceDetectionVec[0], isFlipped);
       } else {
         ClearFaceDetection();
       }
-      */
     }
 
     private void DrawFaceLandmarks(Transform screenTransform, NormalizedLandmarkList faceLandmarkList, bool isFlipped = false) {

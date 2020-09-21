@@ -5,7 +5,7 @@ using UnityEngine;
 using Edge = System.Tuple<int ,int>;
 
 namespace Mediapipe {
-  public abstract class LandmarkListAnnotationController : MonoBehaviour {
+  public abstract class LandmarkListAnnotationController : AnnotationController {
     [SerializeField] protected GameObject nodePrefab = null;
     [SerializeField] protected GameObject edgePrefab = null;
     [SerializeField] protected float NodeScale = 0.5f;
@@ -25,7 +25,7 @@ namespace Mediapipe {
       }
     }
 
-    public void Clear() {
+    public override void Clear() {
       foreach (var landmark in Nodes) {
         landmark.GetComponent<NodeAnnotationController>().Clear();
       }

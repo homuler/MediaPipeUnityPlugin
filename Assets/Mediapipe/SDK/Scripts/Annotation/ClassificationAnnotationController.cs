@@ -20,7 +20,6 @@ namespace Mediapipe {
       gameObject.GetComponent<TextMesh>().text = arr[0].Label;
 
       var localScale = screenTransform.localScale;
-      var scaleVec = new Vector3(10 * localScale.x, 10 * localScale.z, 1);
 
       gameObject.transform.position = new Vector3(-10 * localScale.x / 2, 10 * localScale.z / 2, screenTransform.position.z);
     }
