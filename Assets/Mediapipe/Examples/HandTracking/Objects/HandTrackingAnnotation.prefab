@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2932505624942913497
+--- !u!1 &5332837622525476687
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2932505624942913511}
-  - component: {fileID: 2932505624942913510}
+  - component: {fileID: 5332837622525476685}
+  - component: {fileID: 5332837622525476684}
   m_Layer: 0
-  m_Name: FaceMeshAnnotation
+  m_Name: HandTrackingAnnotation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2932505624942913511
+--- !u!4 &5332837622525476685
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2932505624942913497}
+  m_GameObject: {fileID: 5332837622525476687}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,21 +31,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2932505624942913510
+--- !u!114 &5332837622525476684
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2932505624942913497}
+  m_GameObject: {fileID: 5332837622525476687}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1c659cc38b889870865718dc0cbfa97, type: 3}
+  m_Script: {fileID: 11500000, guid: d8082593da04f2420974527dc1b29c06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  faceLandmarksPrefab: {fileID: 2250723881323860951, guid: 570a388dca04100b8b491a9bc4ef1d51,
+  handednessPrefab: {fileID: 5340126888248019913, guid: 3144fd50b7773ed768c77b259a74dbe6,
     type: 3}
-  faceRectPrefab: {fileID: 1405412484651109527, guid: c5c846cc7bbefdfa7af64f9d29912b70,
+  handLandmarkListPrefab: {fileID: 3100741085041498678, guid: 4eb3a6d7cfea73afdb656b7166ae1a8d,
     type: 3}
-  faceDetectionPrefab: {fileID: 1405412484651109527, guid: 3779864e7ead10e31b03fc362f4746de,
+  handRectPrefab: {fileID: 1405412484651109527, guid: c5c846cc7bbefdfa7af64f9d29912b70,
+    type: 3}
+  palmDetectionsPrefab: {fileID: 6957250898008990224, guid: 8d335567a8544a10e98a42b234b64b13,
     type: 3}

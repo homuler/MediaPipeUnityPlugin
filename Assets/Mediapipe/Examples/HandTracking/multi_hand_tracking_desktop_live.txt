@@ -17,9 +17,12 @@
 # Used in the example in
 # mediapipie/examples/desktop/hand_tracking:multi_hand_tracking_cpu.
 
-# Images coming into and out of the graph.
 input_stream: "input_video"
-output_stream: "output_video"
+
+output_stream: "multi_hand_landmarks"
+output_stream: "multi_palm_detections"
+output_stream: "multi_palm_rects"
+output_stream: "multi_palm_detections_presence"
 
 # Determines if an input vector of NormalizedRect has a size greater than or
 # equal to the provided min_size.
@@ -114,4 +117,10 @@ node {
   input_stream: "NORM_RECTS:0:multi_palm_rects"
   input_stream: "NORM_RECTS:1:multi_hand_rects"
   output_stream: "IMAGE:output_video"
+}
+
+node {
+  calculator: "PacketPresenceCalculator"
+  input_stream: "PACKET:multi_palm_detections"
+  output_stream: "PRESENCE:multi_palm_detections_presence"
 }

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7638123175053154720}
   - component: {fileID: 7638123175053154721}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: RelativeKeypointAnnotation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -103,6 +103,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 7638123175053154722}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ae5e00c213c72dc5a74303c9c7150da, type: 3}
+  m_Script: {fileID: 11500000, guid: 1b7a9ce79bd426aa6b6b8ad42f69b7da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

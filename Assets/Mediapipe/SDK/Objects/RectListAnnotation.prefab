@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5332837622525476687
+--- !u!1 &7813225621568144509
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,46 +8,41 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5332837622525476685}
-  - component: {fileID: 5332837622525476684}
+  - component: {fileID: 7813225621568144511}
+  - component: {fileID: 7813225621568144508}
   m_Layer: 0
-  m_Name: HandTrackingAnnotation
+  m_Name: RectListAnnotation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5332837622525476685
+--- !u!4 &7813225621568144511
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5332837622525476687}
+  m_GameObject: {fileID: 7813225621568144509}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -20}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5332837622525476684
+--- !u!114 &7813225621568144508
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5332837622525476687}
+  m_GameObject: {fileID: 7813225621568144509}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21c15943b42cd6ab083c5394b624022e, type: 3}
+  m_Script: {fileID: 11500000, guid: c3c7ee213c39c9730b3c4859f955e513, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handednessPrefab: {fileID: 5340126888248019913, guid: 3144fd50b7773ed768c77b259a74dbe6,
+  annotationPrefab: {fileID: 1405412484651109527, guid: c5c846cc7bbefdfa7af64f9d29912b70,
     type: 3}
-  handRectPrefab: {fileID: 1405412484651109527, guid: c5c846cc7bbefdfa7af64f9d29912b70,
-    type: 3}
-  handLandmarkListPrefab: {fileID: 3100741085041498678, guid: 4eb3a6d7cfea73afdb656b7166ae1a8d,
-    type: 3}
-  palmDetectionPrefab: {fileID: 1405412484651109527, guid: 3779864e7ead10e31b03fc362f4746de,
-    type: 3}
+  DefaultMaxSize: 1

@@ -20,7 +20,7 @@ namespace Mediapipe {
       gameObject.GetComponent<TextMesh>().text = "";
 
       foreach (var keypoint in Keypoints) {
-        keypoint.GetComponent<RelativeKeypointAnnotationController>().Clear();
+        keypoint.GetComponent<NodeAnnotationController>().Clear();
       }
     }
 
@@ -58,11 +58,11 @@ namespace Mediapipe {
       }
 
       for (var i = 0; i < keypoints.Count; i++) {
-        Keypoints[i].GetComponent<RelativeKeypointAnnotationController>().Draw(screenTransform, keypoints[i], isFlipped);
+        Keypoints[i].GetComponent<NodeAnnotationController>().Draw(screenTransform, keypoints[i], isFlipped);
       }
 
       for (var i = keypoints.Count; i < Keypoints.Count; i++) {
-        Keypoints[i].GetComponent<RelativeKeypointAnnotationController>().Clear();
+        Keypoints[i].GetComponent<NodeAnnotationController>().Clear();
       }
     }
   }

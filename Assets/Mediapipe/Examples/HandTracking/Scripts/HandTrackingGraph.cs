@@ -51,7 +51,6 @@ public class HandTrackingGraph : DemoGraph {
   }
 
   public override void RenderOutput(WebCamScreenController screenController, Color32[] pixelData) {
-    // Fetch other outputs
     var handTrackingValue = FetchNextHandTrackingValue();
     RenderAnnotation(screenController, handTrackingValue);
 
@@ -120,8 +119,7 @@ public class HandTrackingGraph : DemoGraph {
     return palmDetectionsPacket.GetValue();
   }
 
-  private void RenderAnnotation(WebCamScreenController screenController, HandTrackingValue value)
-  {
+  private void RenderAnnotation(WebCamScreenController screenController, HandTrackingValue value) {
     // NOTE: input image is flipped
     annotation.GetComponent<HandTrackingAnnotationController>().Draw(
       screenController.transform, value.Handedness, value.HandLandmarkList, value.HandRect, value.PalmDetections, true);

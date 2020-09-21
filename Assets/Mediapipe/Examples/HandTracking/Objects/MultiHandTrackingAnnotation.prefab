@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6957250898008990224
+--- !u!1 &1653354676429395804
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,41 +8,44 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6957250898008990226}
-  - component: {fileID: 6957250898008990225}
+  - component: {fileID: 1653354676429395802}
+  - component: {fileID: 1653354676429395803}
   m_Layer: 0
-  m_Name: DetectionListAnnotation
+  m_Name: MultiHandTrackingAnnotation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6957250898008990226
+--- !u!4 &1653354676429395802
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6957250898008990224}
+  m_GameObject: {fileID: 1653354676429395804}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6957250898008990225
+--- !u!114 &1653354676429395803
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6957250898008990224}
+  m_GameObject: {fileID: 1653354676429395804}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab3c6e30699452d519c7962cd9b9cb7b, type: 3}
+  m_Script: {fileID: 11500000, guid: 52378be1b2ebb49b294c6e5d2fcf0a25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  annotationPrefab: {fileID: 1405412484651109527, guid: 3779864e7ead10e31b03fc362f4746de,
+  handLandmarkListsPrefab: {fileID: 2737917561592217227, guid: 2aac8e2b0b4f821fbbccc5cebab7bceb,
     type: 3}
-  DefaultMaxSize: 1
+  palmDetectionsPrefab: {fileID: 5670327508126957478, guid: 324d403c9690c972abca928f3e614afc,
+    type: 3}
+  palmRectsPrefab: {fileID: 3702375667864819085, guid: 38f44807158015f02bddcfcc8dfe65b7,
+    type: 3}
