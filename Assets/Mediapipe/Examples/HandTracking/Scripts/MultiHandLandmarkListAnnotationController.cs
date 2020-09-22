@@ -7,7 +7,7 @@ class MultiHandLandmarkListAnnotationController : ListAnnotationController<HandL
     var drawingCount = Mathf.Min(landmarkLists.Count, MaxSize);
 
     for (var i = 0; i < drawingCount; i++) {
-      GetAnnotationController(i).Draw(screenTransform, landmarkLists[i], isFlipped);
+      GetAnnotationControllerAt(i).Draw(screenTransform, landmarkLists[i], isFlipped);
     }
 
     ClearAll(drawingCount);

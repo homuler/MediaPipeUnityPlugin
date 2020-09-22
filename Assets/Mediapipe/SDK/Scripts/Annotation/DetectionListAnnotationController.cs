@@ -17,7 +17,7 @@ namespace Mediapipe {
       var drawingCount = Mathf.Min(detections.Count, MaxSize);
 
       for (var i = 0; i < drawingCount; i++) {
-        GetAnnotationController(i).Draw(screenTransform, detections[i], isFlipped);
+        GetAnnotationControllerAt(i).Draw(screenTransform, detections[i], isFlipped);
       }
 
       ClearAll(drawingCount);

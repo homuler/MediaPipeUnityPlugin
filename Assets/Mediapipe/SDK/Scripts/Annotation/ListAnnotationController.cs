@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Mediapipe {
@@ -51,16 +50,12 @@ namespace Mediapipe {
       this.MaxSize = MaxSize;
     }
 
-    public T GetAnnotationController(int index) {
+    public GameObject GetAnnotationAt(int index) {
+      return Annotations[index];
+    }
+
+    public T GetAnnotationControllerAt(int index) {
       return Annotations[index].GetComponent<T>();
-    }
-
-    public IEnumerable<T> GetAnnotationControllers() {
-      return Annotations.Select(annotation => annotation.GetComponent<T>());
-    }
-
-    public IEnumerable<T> GetAnnotationControllers(int count) {
-      return GetAnnotationControllers().Take(count);
     }
   }
 }
