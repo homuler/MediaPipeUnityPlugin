@@ -5,6 +5,7 @@ using System.Security;
 using MpCalculatorGraph = System.IntPtr;
 using MpCalculatorGraphConfig = System.IntPtr;
 using MpClassificationList = System.IntPtr;
+using MpDetection = System.IntPtr;
 using MpDetectionVector = System.IntPtr;
 using MpGlCalculatorHelper = System.IntPtr;
 using MpGlContext = System.IntPtr;
@@ -87,6 +88,9 @@ namespace Mediapipe {
 
 
     /// Detection API
+    [DllImport (MediapipeLibrary)]
+    public static extern unsafe MpDetection MpPacketGetDetection(MpPacket packet);
+
     [DllImport (MediapipeLibrary)]
     public static extern unsafe MpDetectionVector MpPacketGetDetectionVector(MpPacket packet);
 

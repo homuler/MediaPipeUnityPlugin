@@ -8,6 +8,7 @@
 
 extern "C" {
 
+MP_CAPI_EXPORT MpSerializedProto* MpPacketGetDetection(MpPacket* packet);
 MP_CAPI_EXPORT MpSerializedProtoVector* MpPacketGetDetectionVector(MpPacket* packet);
 
 }  // extern "C"
