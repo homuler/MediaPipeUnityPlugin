@@ -1,6 +1,8 @@
 using Mediapipe;
 using UnityEngine;
 
+using GL = Mediapipe.GL;
+
 public class DefaultGraphOnGPU : DemoGraph {
   private const string outputStream = "output_video";
 
@@ -37,8 +39,8 @@ public class DefaultGraphOnGPU : DemoGraph {
       gpuHelper.BindFramebuffer(sourceTexture);
       var info = gpuFrameFormat.GlTextureInfoFor(0);
 
-      UnsafeNativeMethods.GlReadPixels(0, 0, sourceTexture.Width(), sourceTexture.Height(), info.glFormat, info.glType, outputFrame.PixelDataPtr());
-      UnsafeNativeMethods.GlFlush();
+      GL.ReadPixels(0, 0, sourceTexture.Width(), sourceTexture.Height(), info.glFormat, info.glType, outputFrame.PixelDataPtr());
+      GL.Flush();
 
       sourceTexture.Release();
 
