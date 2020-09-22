@@ -222,14 +222,14 @@ http_archive(
     url = "https://github.com/opencv/opencv/releases/download/3.2.0/opencv-3.2.0-ios-framework.zip",
 )
 
-# You may run setup_android.sh to install Android SDK and NDK.
-android_ndk_repository(
-    name = "androidndk",
-)
+# # You may run setup_android.sh to install Android SDK and NDK.
+# android_ndk_repository(
+#    name = "androidndk",
+# )
 
-android_sdk_repository(
-    name = "androidsdk",
-)
+# android_sdk_repository(
+#     name = "androidsdk",
+# )
 
 # iOS basic build deps.
 
