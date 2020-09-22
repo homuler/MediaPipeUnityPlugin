@@ -36,12 +36,7 @@ public class FaceDetectionGraph : DemoGraph {
   }
 
   private List<Detection> FetchNextOutputDetections() {
-    if (!outputDetectionsStreamPoller.Next(outputDetectionsPacket)) { // blocks
-      Debug.LogWarning($"Failed to fetch next packet from {outputDetectionsStream}");
-      return new List<Detection>();
-    }
-
-    return outputDetectionsPacket.GetValue();
+    return FetchNextVector<Detection>(outputDetectionsStreamPoller, outputDetectionsPacket, outputDetectionsStream);
   }
 
   private void RenderAnnotation(WebCamScreenController screenController, List<Detection> detections) {

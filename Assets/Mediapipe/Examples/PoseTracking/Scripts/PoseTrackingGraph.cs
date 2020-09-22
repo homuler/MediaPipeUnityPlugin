@@ -70,39 +70,19 @@ public class PoseTrackingGraph : DemoGraph {
   }
 
   private NormalizedLandmarkList FetchNextPoseLandmarks() {
-    if (!poseLandmarksStreamPoller.Next(poseLandmarksPacket)) {
-      Debug.LogWarning($"Failed to fetch next packet from {poseLandmarksStream}");
-      return null;
-    }
-
-    return poseLandmarksPacket.GetValue();
+    return FetchNext(poseLandmarksStreamPoller, poseLandmarksPacket, poseLandmarksStream);
   }
 
   private Detection FetchNextPoseDetection() {
-    if (!poseDetectionStreamPoller.Next(poseDetectionPacket)) {
-      Debug.LogWarning($"Failed to fetch next packet from {poseDetectionStream}");
-      return null;
-    }
-
-    return poseDetectionPacket.GetValue();
+    return FetchNext(poseDetectionStreamPoller, poseDetectionPacket, poseDetectionStream);
   }
 
   private bool FetchNextPoseLandmarksPresence() {
-    if (!poseLandmarksPresenceStreamPoller.Next(poseLandmarksPresencePacket)) {
-      Debug.LogWarning($"Failed to fetch next packet from {poseLandmarksPresenceStream}");
-      return false;
-    }
-
-    return poseLandmarksPresencePacket.GetValue();
+    return FetchNext(poseLandmarksPresenceStreamPoller, poseLandmarksPresencePacket, poseLandmarksPresenceStream);
   }
 
   private bool FetchNextPoseDetectionPresence() {
-    if (!poseDetectionPresenceStreamPoller.Next(poseDetectionPresencePacket)) {
-      Debug.LogWarning($"Failed to fetch next packet from {poseDetectionPresenceStream}");
-      return false;
-    }
-
-    return poseDetectionPresencePacket.GetValue();
+    return FetchNext(poseDetectionPresenceStreamPoller, poseDetectionPresencePacket, poseDetectionPresenceStream);
   }
 
   private void RenderAnnotation(WebCamScreenController screenController, PoseTrackingValue value) {

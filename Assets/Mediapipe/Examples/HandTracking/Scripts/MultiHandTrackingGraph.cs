@@ -67,39 +67,19 @@ public class MultiHandTrackingGraph : DemoGraph {
   }
 
   private List<NormalizedLandmarkList> FetchNextMultiHandLandmarks() {
-    if (!multiHandLandmarksStreamPoller.Next(multiHandLandmarksPacket)) {
-      Debug.LogWarning($"Failed to fetch next packet from {multiHandLandmarksStream}");
-      return new List<NormalizedLandmarkList>();
-    }
-
-    return multiHandLandmarksPacket.GetValue();
+    return FetchNextVector(multiHandLandmarksStreamPoller, multiHandLandmarksPacket, multiHandLandmarksStream);
   }
 
   private List<Detection> FetchNextMultiPalmDetections() {
-    if (!multiPalmDetectionsStreamPoller.Next(multiPalmDetectionsPacket)) {
-      Debug.LogWarning($"Failed to fetch next packet from {multiPalmDetectionsStream}");
-      return new List<Detection>();
-    }
-
-    return multiPalmDetectionsPacket.GetValue();
+    return FetchNextVector(multiPalmDetectionsStreamPoller, multiPalmDetectionsPacket, multiPalmDetectionsStream);
   }
 
   private List<NormalizedRect> FetchNextMultiPalmRects() {
-    if (!multiPalmRectsStreamPoller.Next(multiPalmRectsPacket)) {
-      Debug.LogWarning($"Failed to fetch next packet from {multiPalmRectsStream}");
-      return new List<NormalizedRect>();
-    }
-
-    return multiPalmRectsPacket.GetValue();
+    return FetchNextVector(multiPalmRectsStreamPoller, multiPalmRectsPacket, multiPalmRectsStream);
   }
 
   private bool FetchNextMultiPalmDetectionsPresence() {
-    if (!multiPalmDetectionsPresenceStreamPoller.Next(multiPalmDetectionsPresencePacket)) {
-      Debug.LogWarning($"Failed to fetch next packet from {multiPalmDetectionsPresenceStream}");
-      return false;
-    }
-
-    return multiPalmDetectionsPresencePacket.GetValue();
+    return FetchNext(multiPalmDetectionsPresenceStreamPoller, multiPalmDetectionsPresencePacket, multiPalmDetectionsPresenceStream);
   }
 
   private void RenderAnnotation(WebCamScreenController screenController, MultiHandTrackingValue value) {

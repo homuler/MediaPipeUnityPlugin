@@ -1,5 +1,6 @@
 using Mediapipe;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class DemoGraph : MonoBehaviour, IDemoGraph {
@@ -72,8 +73,38 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph {
   /// <param name="pixelData">
   ///   Input pixel data that is already sent to an input stream.
   ///   Its timestamp should correspond to that of the next output packet (if exists).
-  ///  </param>
+  /// </param>
   public abstract void RenderOutput(WebCamScreenController screenController, Color32[] pixelData);
+
+  /// <summary>
+  ///   Fetch next value from <paramref name="poller" />.
+  ///   Note that this method blocks the thread till the next value is fetched.
+  ///   If the next value is empty, this method never returns.
+  /// </summary>
+  public T FetchNext<T>(OutputStreamPoller<T> poller, Packet<T> packet, string streamName = null, T failedValue = default(T)) {
+    if (!poller.Next(packet)) { // blocks
+      if (streamName != null) {
+        Debug.LogWarning($"Failed to fetch next packet from {streamName}");
+      }
+
+      return failedValue;
+    }
+
+    return packet.GetValue();
+  }
+
+  /// <summary>
+  ///   Fetch next vector value from <paramref name="poller" />.
+  /// </summary>
+  /// <returns>
+  ///   Fetched vector or an empty List when failed.
+  /// </returns>
+  /// <seealso cref="FetchNext" />
+  public List<T> FetchNextVector<T>(OutputStreamPoller<List<T>> poller, Packet<List<T>> packet, string streamName = null) {
+    var nextValue = FetchNext<List<T>>(poller, packet, streamName);
+
+    return nextValue == null ? new List<T>() : nextValue;
+  }
 
   public abstract bool shouldUseGPU();
 }

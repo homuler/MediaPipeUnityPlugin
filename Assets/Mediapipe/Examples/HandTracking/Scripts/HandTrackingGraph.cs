@@ -75,48 +75,23 @@ public class HandTrackingGraph : DemoGraph {
   }
 
   private ClassificationList FetchNextHandedness() {
-    if (!handednessStreamPoller.Next(handednessPacket)) {
-      Debug.LogWarning($"Failed to fetch next packet from {handednessStream}");
-      return null;
-    }
-
-    return handednessPacket.GetValue();
+    return FetchNext(handednessStreamPoller, handednessPacket, handednessStream);
   }
 
   private NormalizedRect FetchNextHandRect() {
-    if (!handRectStreamPoller.Next(handRectPacket)) {
-      Debug.LogWarning($"Failed to fetch next packet from {handRectStream}");
-      return null;
-    }
-
-    return handRectPacket.GetValue();
+    return FetchNext(handRectStreamPoller, handRectPacket, handRectStream);
   }
 
   private NormalizedLandmarkList FetchNextHandLandmarks() {
-    if (!handLandmarksStreamPoller.Next(handLandmarksPacket)) {
-      Debug.LogWarning($"Failed to fetch next packet from {handLandmarksStream}");
-      return null;
-    }
-
-    return handLandmarksPacket.GetValue();
+    return FetchNext(handLandmarksStreamPoller, handLandmarksPacket, handLandmarksStream);
   }
 
   private bool FetchNextPalmDetectionsPresence() {
-    if (!palmDetectionsPresenceStreamPoller.Next(palmDetectionsPresencePacket)) {
-      Debug.LogWarning($"Failed to fetch next packet from {palmDetectionsPresenceStream}");
-      return false;
-    }
-
-    return palmDetectionsPresencePacket.GetValue();
+    return FetchNext(palmDetectionsPresenceStreamPoller, palmDetectionsPresencePacket, palmDetectionsPresenceStream);
   }
 
   private List<Detection> FetchNextPalmDetections() {
-    if (!palmDetectionsStreamPoller.Next(palmDetectionsPacket)) {
-      Debug.LogWarning($"Failed to fetch next packet from {palmDetectionsStream}");
-      return new List<Detection>();
-    }
-
-    return palmDetectionsPacket.GetValue();
+    return FetchNextVector(palmDetectionsStreamPoller, palmDetectionsPacket, palmDetectionsStream);
   }
 
   private void RenderAnnotation(WebCamScreenController screenController, HandTrackingValue value) {

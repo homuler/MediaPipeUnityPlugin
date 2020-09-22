@@ -78,48 +78,23 @@ public class FaceMeshGraph : DemoGraph {
   }
 
   private bool FetchNextMultiFaceLandmarksPresence() {
-    if (!multiFacelandmarksPresenceStreamPoller.Next(multiFaceLandmarksPresencePacket)) { // blocks
-      Debug.LogWarning($"Failed to fetch next packet from {multiFaceLandmarksPresenceStream}");
-      return false;
-    }
-
-    return multiFaceLandmarksPresencePacket.GetValue();
+    return FetchNext(multiFacelandmarksPresenceStreamPoller, multiFaceLandmarksPresencePacket, multiFaceLandmarksPresenceStream);
   }
 
   private List<NormalizedLandmarkList> FetchNextMultiFaceLandmarks() {
-    if (!multiFaceLandmarksStreamPoller.Next(multiFaceLandmarksPacket)) { // blocks
-      Debug.LogWarning($"Failed to fetch next packet from {multiFaceLandmarksStream}");
-      return new List<NormalizedLandmarkList>();
-    }
-
-    return multiFaceLandmarksPacket.GetValue();
+    return FetchNextVector(multiFaceLandmarksStreamPoller, multiFaceLandmarksPacket, multiFaceLandmarksStream);
   }
 
   private List<NormalizedRect> FetchNextFaceRectsFromLandmarks() {
-    if (!faceRectsFromLandmarksStreamPoller.Next(faceRectsFromLandmarksPacket)) { // blocks
-      Debug.LogWarning($"Failed to fetch next packet from {faceRectsFromLandmarksStream}");
-      return new List<NormalizedRect>();
-    }
-
-    return faceRectsFromLandmarksPacket.GetValue();
+    return FetchNextVector(faceRectsFromLandmarksStreamPoller, faceRectsFromLandmarksPacket, faceRectsFromLandmarksStream);
   }
 
   private bool FetchNextFaceDetectionsPresence() {
-    if (!faceDetectionsPresenceStreamPoller.Next(faceDetectionsPresencePacket)) { // blocks
-      Debug.LogWarning($"Failed to fetch next packet from {faceDetectionsPresenceStream}");
-      return false;
-    }
-
-    return faceDetectionsPresencePacket.GetValue();
+    return FetchNext(faceDetectionsPresenceStreamPoller, faceDetectionsPresencePacket, faceDetectionsPresenceStream);
   }
 
   private List<Detection> FetchNextFaceDetections() {
-    if (!faceDetectionsStreamPoller.Next(faceDetectionsPacket)) { // blocks
-      Debug.LogWarning($"Failed to fetch next packet from {faceDetectionsStream}");
-      return new List<Detection>();
-    }
-
-    return faceDetectionsPacket.GetValue();
+    return FetchNextVector(faceDetectionsStreamPoller, faceDetectionsPacket, faceDetectionsStream);
   }
 
   private void RenderAnnotation(WebCamScreenController screenController, FaceMeshValue value) {
