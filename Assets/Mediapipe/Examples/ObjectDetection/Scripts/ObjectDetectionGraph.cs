@@ -2,7 +2,7 @@ using Mediapipe;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FaceDetectionGraph : DemoGraph {
+public class ObjectDetectionGraph : DemoGraph {
   [SerializeField] private bool useGPU = true;
 
   private const string outputDetectionsStream = "output_detections";
