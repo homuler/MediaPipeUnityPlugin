@@ -14,13 +14,12 @@
 
 # MediaPipe graph that performs upper-body pose tracking with TensorFlow Lite on GPU.
 
-# GPU buffer. (GpuBuffer)
 input_stream: "input_video"
 
-# Output image with rendered results. (GpuBuffer)
-output_stream: "output_video"
-# Pose landmarks. (NormalizedLandmarkList)
-output_stream: "pose_landmarks"
+output_stream: "pose_landmarks_smoothed"
+output_stream: "pose_detection"
+output_stream: "pose_landmarks_smoothed_presence"
+output_stream: "pose_detection_stream"
 
 # Throttles the images flowing downstream for flow control. It passes through
 # the very first incoming image unaltered, and waits for downstream nodes
@@ -35,7 +34,7 @@ output_stream: "pose_landmarks"
 node {
   calculator: "FlowLimiterCalculator"
   input_stream: "input_video"
-  input_stream: "FINISHED:output_video"
+  input_stream: "FINISHED:pose_landmarks_smoothed_presence"
   input_stream_info: {
     tag_index: "FINISHED"
     back_edge: true
@@ -75,12 +74,14 @@ node {
   }
 }
 
-# Subgraph that renders pose-landmark annotation onto the input image.
 node {
-  calculator: "UpperBodyPoseRendererGpu"
-  input_stream: "IMAGE:throttled_input_video"
-  input_stream: "LANDMARKS:pose_landmarks_smoothed"
-  input_stream: "ROI:roi_from_landmarks"
-  input_stream: "DETECTION:pose_detection"
-  output_stream: "IMAGE:output_video"
+  calculator: "PacketPresenceCalculator"
+  input_stream: "PACKET:pose_landmarks_smoothed"
+  output_stream: "PRESENCE:pose_landmarks_smoothed_presence"
+}
+
+node {
+  calculator: "PacketPresenceCalculator"
+  input_stream: "PACKET:pose_detection"
+  output_stream: "PRESENCE:pose_detection_presence"
 }

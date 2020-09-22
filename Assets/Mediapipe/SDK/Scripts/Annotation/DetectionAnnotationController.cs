@@ -36,6 +36,11 @@ namespace Mediapipe {
     ///   Its location data is represented by relative bounding box.
     /// </remarks>
     public void Draw(Transform screenTransform, Detection detection, bool isFlipped = false) {
+      if (detection.LocationData == null) {
+        Clear();
+        return;
+      }
+
       DrawRectAndLabel(screenTransform, detection, isFlipped);
       DrawRelativeKeypoints(screenTransform, detection.LocationData.RelativeKeypoints, isFlipped);
     }
