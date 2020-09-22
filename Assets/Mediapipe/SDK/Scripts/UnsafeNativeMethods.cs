@@ -155,18 +155,6 @@ namespace Mediapipe {
     [DllImport (MediapipeLibrary)]
     public static extern unsafe int MpGlTextureInfoDestroy(GlTextureInfoPtr glTextureInfo);
 
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe int MpGlTextureInfoGlInternalFormat(GlTextureInfoPtr glTextureInfo);
-
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe UInt32 MpGlTextureInfoGlFormat(GlTextureInfoPtr glTextureInfo);
-
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe UInt32 MpGlTextureInfoGlType(GlTextureInfoPtr glTextureInfo);
-
-    [DllImport (MediapipeLibrary)]
-    public static extern unsafe int MpGlTextureInfoDownscale(GlTextureInfoPtr glTextureInfo);
-
 
     /// GpuBuffer API
     [DllImport (MediapipeLibrary)]

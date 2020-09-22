@@ -12,10 +12,6 @@ MP_CAPI_EXPORT extern mediapipe::GlTextureInfo* MpGlTextureInfoForGpuBufferForma
 
 /** GlTextureInfo API */
 MP_CAPI_EXPORT extern void MpGlTextureInfoDestroy(mediapipe::GlTextureInfo* gl_texture_info);
-MP_CAPI_EXPORT extern GLint MpGlTextureInfoGlInternalFormat(mediapipe::GlTextureInfo* gl_texture_info);
-MP_CAPI_EXPORT extern GLenum MpGlTextureInfoGlFormat(mediapipe::GlTextureInfo* gl_texture_info);
-MP_CAPI_EXPORT extern GLenum MpGlTextureInfoGlType(mediapipe::GlTextureInfo* gl_texture_info);
-MP_CAPI_EXPORT extern int MpGlTextureInfoDownscale(mediapipe::GlTextureInfo* gl_texture_info);
 
 }  // extern "C"
 

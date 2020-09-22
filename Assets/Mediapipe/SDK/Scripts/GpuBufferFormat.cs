@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 
 namespace Mediapipe {
   public enum GpuBufferFormat : UInt32 {
@@ -23,7 +24,12 @@ namespace Mediapipe {
     }
 
     public static GlTextureInfo GlTextureInfoFor(this GpuBufferFormat gpuBufferFormat, int plane) {
-      return new GlTextureInfo(UnsafeNativeMethods.MpGlTextureInfoForGpuBufferFormat((UInt32)gpuBufferFormat, plane));
+      var ptr = UnsafeNativeMethods.MpGlTextureInfoForGpuBufferFormat((UInt32)gpuBufferFormat, plane);
+      var info = Marshal.PtrToStructure<GlTextureInfo>(ptr);
+
+      UnsafeNativeMethods.MpGlTextureInfoDestroy(ptr);
+
+      return info;
     }
   }
 }

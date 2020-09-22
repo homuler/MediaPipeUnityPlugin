@@ -37,7 +37,7 @@ public class DefaultGraphOnGPU : DemoGraph {
       gpuHelper.BindFramebuffer(sourceTexture);
       var info = gpuFrameFormat.GlTextureInfoFor(0);
 
-      UnsafeNativeMethods.GlReadPixels(0, 0, sourceTexture.Width(), sourceTexture.Height(), info.GlFormat(), info.GlType(), outputFrame.PixelDataPtr());
+      UnsafeNativeMethods.GlReadPixels(0, 0, sourceTexture.Width(), sourceTexture.Height(), info.glFormat, info.glType, outputFrame.PixelDataPtr());
       UnsafeNativeMethods.GlFlush();
 
       sourceTexture.Release();

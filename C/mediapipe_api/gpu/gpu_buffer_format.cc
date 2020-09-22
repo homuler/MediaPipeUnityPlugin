@@ -15,19 +15,3 @@ mediapipe::GlTextureInfo* MpGlTextureInfoForGpuBufferFormat(uint32_t gpu_format_
 
   return new mediapipe::GlTextureInfo { mediapipe::GlTextureInfoForGpuBufferFormat(gpu_format, plane) };
 }
-
-GLint MpGlTextureInfoGlInternalFormat(mediapipe::GlTextureInfo* gl_texture_info) {
-  return gl_texture_info->gl_internal_format;
-}
-
-GLenum MpGlTextureInfoGlFormat(mediapipe::GlTextureInfo* gl_texture_info) {
-  return gl_texture_info->gl_format;
-}
-
-GLenum MpGlTextureInfoGlType(mediapipe::GlTextureInfo* gl_texture_info) {
-  return gl_texture_info->gl_type;
-}
-
-int MpGlTextureInfoDownscale(mediapipe::GlTextureInfo* gl_texture_info) {
-  return gl_texture_info->downscale;
-}
