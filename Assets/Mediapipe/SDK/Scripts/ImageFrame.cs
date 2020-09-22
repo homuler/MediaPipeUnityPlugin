@@ -87,8 +87,8 @@ namespace Mediapipe {
       return UnsafeNativeMethods.MpImageFrameWidthStep(ptr);
     }
 
-    public Color32[] GetColor32s() {
-      return Mediapipe.Format.FromBytePtr(PixelDataPtr(), Format(), Width(), Height(), WidthStep());
+    public Color32[] GetColor32s(bool isFlipped = false) {
+      return Mediapipe.Format.FromBytePtr(PixelDataPtr(), Format(), Width(), Height(), WidthStep(), isFlipped);
     }
 
     public IntPtr PixelDataPtr() {
