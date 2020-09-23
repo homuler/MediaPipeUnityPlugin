@@ -6,8 +6,8 @@ This is a sample Unity (2019.4.10f1) Plugin to use Mediapipe (only tested on Lin
 Please be sure to install required packages and check if you can run the official demos on your machine.
 
 ### OpenCV
-By default, it is assumed that you use OpenCV 3 and it is installed under `/usr`.
-If your version or path is different, please edit `C/third_party/opencv_linux.BUILD` and `C/WORKSPACE`.
+By default, it is assumed that you use OpenCV 3 and it is installed under `/usr` (e.g. `/usr/lib/libopencv_core.so`).
+If your version or path is different, please edit [C/third_party/opencv_linux.BUILD](https://github.com/homuler/MediapipeUnityPlugin/blob/master/C/third_party/opencv_linux.BUILD) and [C/WORKSPACE](https://github.com/homuler/MediapipeUnityPlugin/blob/master/C/WORKSPACE).
 
 ### Protocol Buffer
 The protocol buffer compiler is required.
@@ -49,6 +49,12 @@ If neccessary, you can also change the model paths for subgraphs (e.g. FaceDetec
 - Object Detection (on CPU/GPU)
 
 ### Troubleshooting
+#### DllNotFoundException: mediapipe_c
+[OpenCV's path](https://github.com/homuler/MediapipeUnityPlugin#opencv) may be not configured properly.\
+If not so, please check **Load on startup** checkbox in the plugin inspector, click Apply button, and restart Unity Editor.
+Some helpful logs will be output in the console.
+
+#### InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000
 If you encounter an error like below and you use OpenGL Core as the Unity's graphics APIs, please try Vulkan.
 
 ```txt
