@@ -4,7 +4,7 @@ using System.Collections;
 using Mediapipe;
 using UnityEngine;
 
-using Directory = UnityEngine.Windows.Directory;
+using Directory = System.IO.Directory;
 
 public class Director : MonoBehaviour {
   protected GameObject deviceSelector;

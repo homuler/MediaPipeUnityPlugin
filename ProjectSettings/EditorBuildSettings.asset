@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Mediapipe/Examples/PoseTracking/Scenes/PoseTrackingOnGPU.unity
+    guid: 0b3fe43c47e9be53589aa7c8a61eb89c
   m_configObjects: {}
