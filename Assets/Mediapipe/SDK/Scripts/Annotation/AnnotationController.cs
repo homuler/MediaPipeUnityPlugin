@@ -69,5 +69,12 @@ namespace Mediapipe {
 
       return GetPositionsFromNormalizedRect(screenTransform, centerX, centerY, box.Width, box.Height, 0, isFlipped);
     }
+
+    protected float GetDistance(Transform screenTransform, NormalizedLandmark a, NormalizedLandmark b) {
+      var aPos = GetPosition(screenTransform, a, false);
+      var bPos = GetPosition(screenTransform, b, false);
+
+      return Vector3.Distance(aPos, bPos);
+    }
   }
 }

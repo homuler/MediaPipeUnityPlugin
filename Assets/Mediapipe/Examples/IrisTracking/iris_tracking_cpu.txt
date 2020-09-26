@@ -20,10 +20,11 @@
 # CPU image. (ImageFrame)
 input_stream: "input_video"
 
-# CPU image. (ImageFrame)
-output_stream: "output_video"
-# Face landmarks with iris. (NormalizedLandmarkList)
 output_stream: "face_landmarks_with_iris"
+output_stream: "face_rect"
+output_stream: "face_detections"
+output_stream: "face_landmarks_with_iris_presence"
+output_stream: "face_detections_presence"
 
 # Defines how many faces to detect. Iris tracking currently only handles one
 # face (left and right eye), and therefore this should always be set to 1.
@@ -131,21 +132,12 @@ node {
   output_stream: "UPDATED_FACE_LANDMARKS:updated_face_landmarks"
 }
 
-# Renders annotations and overlays them on top of the input images.
+# Concatenate iris landmarks from both eyes.
 node {
-  calculator: "IrisRendererCpu"
-  input_stream: "IMAGE:input_video"
-  input_stream: "FACE_LANDMARKS:updated_face_landmarks"
-  input_stream: "EYE_LANDMARKS_LEFT:left_eye_contour_landmarks"
-  input_stream: "EYE_LANDMARKS_RIGHT:right_eye_contour_landmarks"
-  input_stream: "IRIS_LANDMARKS_LEFT:left_iris_landmarks"
-  input_stream: "IRIS_LANDMARKS_RIGHT:right_iris_landmarks"
-  input_stream: "NORM_RECT:face_rect"
-  input_stream: "LEFT_EYE_RECT:left_eye_rect_from_landmarks"
-  input_stream: "RIGHT_EYE_RECT:right_eye_rect_from_landmarks"
-  input_stream: "DETECTIONS:face_detections"
-  output_stream: "IRIS_LANDMARKS:iris_landmarks"
-  output_stream: "IMAGE:output_video"
+  calculator: "ConcatenateNormalizedLandmarkListCalculator"
+  input_stream: "left_iris_landmarks"
+  input_stream: "right_iris_landmarks"
+  output_stream: "iris_landmarks"
 }
 
 node {
@@ -153,4 +145,16 @@ node {
   input_stream: "updated_face_landmarks"
   input_stream: "iris_landmarks"
   output_stream: "face_landmarks_with_iris"
+}
+
+node {
+  calculator: "PacketPresenceCalculator"
+  input_stream: "PACKET:face_landmarks_with_iris"
+  output_stream: "PRESENCE:face_landmarks_with_iris_presence"
+}
+
+node {
+  calculator: "PacketPresenceCalculator"
+  input_stream: "PACKET:face_detections"
+  output_stream: "PRESENCE:face_detections_presence"
 }
