@@ -18,11 +18,11 @@ It is also necessary to install .NET Core SDK(3.x) and .NET Core runtime 2.1 to 
 git clone https://github.com/homuler/MediapipeUnityPlugin.git
 cd MediapipeUnityPlugin
 
-### build libraries
-# for GPU
+# build libraries
 make
-# for CPU
-# make MODE=cpu
+
+# Or if you prefer to run graphs on CPU
+#    make MODE=cpu
 
 make install
 ```
@@ -63,7 +63,6 @@ InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000_mediapipe/
 
 ### TODO
 - [ ] Box Tracking (on CPU/GPU)
-- [ ] Render annotations on Unity
 - [ ] Android
 - [ ] iOS
 - [ ] Windows
