@@ -3,18 +3,17 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class DemoGraph : MonoBehaviour, IDemoGraph {
+public abstract class DemoGraph : MonoBehaviour, IDemoGraph<PixelData> {
   [SerializeField] protected TextAsset config = null;
 
   protected const string inputStream = "input_video";
   protected CalculatorGraph graph;
   protected GlCalculatorHelper gpuHelper;
 
-  /// <summary>
-  ///   This method must be called (only) once before calling StartRun.
-  ///   <see cref="graph" /> is initialized here.
-  ///   If the config is invalid, it throws an error.
-  /// </summary>
+  void OnDestroy() {
+    Stop();
+  }
+
   public void Initialize() {
     if (config == null) {
       throw new InvalidOperationException("config is missing");
@@ -23,9 +22,6 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph {
     graph = new CalculatorGraph(config.text);
   }
 
-  /// <summary>
-  ///   Initialize the graph with GPU enabled.
-  /// </summary>
   public void Initialize(GpuResources gpuResources, GlCalculatorHelper gpuHelper) {
     this.Initialize();
 
@@ -33,19 +29,14 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph {
     this.gpuHelper = gpuHelper;
   }
 
-  /// <summary>
-  ///   This method must be called (only) once before starting to process images.
-  ///   At least, `graph.StartRun` must be called here.
-  ///   It is also necessary to initialize OutputStreamPollers.
-  /// </summary>
   public abstract Status StartRun(SidePacket sidePacket);
 
   /// <summary>
   ///   Convert <paramref name="colors" /> to a packet and send it to the input stream.
   /// </summary>
-  public Status PushColor32(Color32[] colors, int width, int height) {
+  public Status PushInput(PixelData pixelData) {
     int timestamp = System.Environment.TickCount & System.Int32.MaxValue;
-    var imageFrame = ImageFrame.FromPixels32(colors, width, height, true);
+    var imageFrame = ImageFrame.FromPixels32(pixelData.Colors, pixelData.Width, pixelData.Height, true);
 
     if (!IsGpuEnabled()) {
       var packet = new ImageFramePacket(imageFrame, timestamp);
@@ -68,15 +59,14 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph {
     return status;
   }
 
-  /// <summary>
-  ///   Fetch output packets and render the result. 
-  /// </summary>
-  /// <param name="screenController">Controller of the screen where the result is rendered</param>
-  /// <param name="pixelData">
-  ///   Input pixel data that is already sent to an input stream.
-  ///   Its timestamp should correspond to that of the next output packet (if exists).
-  /// </param>
-  public abstract void RenderOutput(WebCamScreenController screenController, Color32[] pixelData);
+  public abstract void RenderOutput(WebCamScreenController screenController, PixelData pixelData);
+
+  public void Stop() {
+    if (graph != null) {
+      graph.CloseInputStream(inputStream).AssertOk();
+      graph.WaitUntilDone().AssertOk();
+    }
+  }
 
   /// <summary>
   ///   Fetch next value from <paramref name="poller" />.

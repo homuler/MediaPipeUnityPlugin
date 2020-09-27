@@ -9,13 +9,18 @@
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific l
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 using Mediapipe;
 using UnityEngine;
 
 /// <summary>
-///   This class is a translated version of `demo_run_graph_main.cc` in the official repository.
+///   This class is a translated version of
+///   <see href="https://github.com/google/mediapipe/blob/v0.7.10/mediapipe/examples/desktop/demo_run_graph_main.cc">
+///     demo_run_graph_main.cc
+///   </see>
+///   in the official repository.
 /// </summary>
 public class DefaultGraphOnCPU : DemoGraph {
   private const string outputStream = "output_video";
@@ -30,12 +35,12 @@ public class DefaultGraphOnCPU : DemoGraph {
     return graph.StartRun(sidePacket);
   }
 
-  public override void RenderOutput(WebCamScreenController screenController, Color32[] pixelData) {
+  public override void RenderOutput(WebCamScreenController screenController, PixelData pixelData) {
     var texture = screenController.GetScreen();
 
     if (!outputStreamPoller.Next(outputPacket)) {
       Debug.LogWarning("Failed to fetch an output packet, rendering the input image");
-      texture.SetPixels32(pixelData);
+      texture.SetPixels32(pixelData.Colors);
     } else {
       texture.SetPixels32(outputPacket.GetValue().GetColor32s());
     }

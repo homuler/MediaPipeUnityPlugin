@@ -109,7 +109,7 @@ public class SceneDirector : MonoBehaviour {
     }
 
     graphContainer = Instantiate(graphPrefab);
-    var graph = graphContainer.GetComponent<IDemoGraph>();
+    var graph = graphContainer.GetComponent<IDemoGraph<PixelData>>();
 
     if (useGPU) {
       graph.Initialize(gpuResources, gpuHelper);
@@ -128,11 +128,12 @@ public class SceneDirector : MonoBehaviour {
         break;
       }
 
-      var pixelData = webCamScreenController.GetPixels32();
+      var colors = webCamScreenController.GetPixels32();
       var width = webCamScreenController.Width();
       var height = webCamScreenController.Height();
+      var pixelData = new PixelData(colors, width, height);
 
-      graph.PushColor32(pixelData, width, height);
+      graph.PushInput(pixelData);
       graph.RenderOutput(webCamScreenController, pixelData);
     }
   }

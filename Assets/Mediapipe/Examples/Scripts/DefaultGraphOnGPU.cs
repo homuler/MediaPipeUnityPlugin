@@ -18,7 +18,11 @@ using UnityEngine;
 using GL = Mediapipe.GL;
 
 /// <summary>
-///   This class is a translated version of `demo_run_graph_main_gpu.cc` in the official repository.
+///   This class is a translated version of
+///   <see href="https://github.com/google/mediapipe/blob/v0.7.10/mediapipe/examples/desktop/demo_run_graph_main_gpu.cc">
+///     demo_run_graph_main_gpu.cc
+///   </see>
+///   in the official repository.
 /// </summary>
 public class DefaultGraphOnGPU : DemoGraph {
   private const string outputStream = "output_video";
@@ -33,12 +37,12 @@ public class DefaultGraphOnGPU : DemoGraph {
     return graph.StartRun(sidePacket);
   }
 
-  public override void RenderOutput(WebCamScreenController screenController, Color32[] pixelData) {
+  public override void RenderOutput(WebCamScreenController screenController, PixelData pixelData) {
     var texture = screenController.GetScreen();
 
     if (!outputStreamPoller.Next(outputPacket)) {
       Debug.LogWarning("Failed to fetch an output packet, rendering the input image");
-      texture.SetPixels32(pixelData);
+      texture.SetPixels32(pixelData.Colors);
       texture.Apply();
       return;
     }
@@ -68,7 +72,7 @@ public class DefaultGraphOnGPU : DemoGraph {
       texture.SetPixels32(outputFrame.GetColor32s());
     } else {
       Debug.LogError(status.ToString());
-      texture.SetPixels32(pixelData);
+      texture.SetPixels32(pixelData.Colors);
     }
 
     texture.Apply();
