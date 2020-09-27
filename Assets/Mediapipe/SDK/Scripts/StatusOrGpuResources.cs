@@ -5,9 +5,6 @@ namespace Mediapipe {
   public class StatusOrGpuResources : StatusOr<GpuResources>{
     private bool _disposed = false;
 
-    // TODO: implement in GpuResources
-    public StatusOrGpuResources() : this(UnsafeNativeMethods.MpGpuResourcesCreate()) {}
-
     public StatusOrGpuResources(MpStatusOrGpuResources ptr) : base(ptr) {
       status = new Status(UnsafeNativeMethods.MpStatusOrGpuResourcesStatus(ptr));
     }

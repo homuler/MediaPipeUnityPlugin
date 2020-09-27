@@ -24,5 +24,11 @@ namespace Mediapipe {
     public GpuResourcesPtr GetRawPtr() {
       return UnsafeNativeMethods.MpGpuResourcesGet(ptr);
     }
+
+    public static StatusOrGpuResources Create() {
+      var ptr = UnsafeNativeMethods.MpGpuResourcesCreate();
+
+      return new StatusOrGpuResources(ptr);
+    }
   }
 }
