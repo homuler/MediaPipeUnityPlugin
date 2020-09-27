@@ -41,7 +41,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<PixelData> {
     if (!IsGpuEnabled()) {
       var packet = new ImageFramePacket(imageFrame, timestamp);
 
-      return graph.AddPacketToInputStream(inputStream, packet.GetPtr());
+      return graph.AddPacketToInputStream(inputStream, packet);
     }
 
     var status = gpuHelper.RunInGlContext(() => {
@@ -51,7 +51,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<PixelData> {
       UnsafeNativeMethods.GlFlush();
       texture.Release();
 
-      return graph.AddPacketToInputStream(inputStream, new GpuBufferPacket(gpuFrame, timestamp).GetPtr());
+      return graph.AddPacketToInputStream(inputStream, new GpuBufferPacket(gpuFrame, timestamp));
     });
 
     imageFrame.Dispose();

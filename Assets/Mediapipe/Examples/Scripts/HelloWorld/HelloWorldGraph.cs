@@ -64,7 +64,7 @@ node {
     int timestamp = System.Environment.TickCount & System.Int32.MaxValue;
     var packet = new StringPacket(text, timestamp);
 
-    return graph.AddPacketToInputStream(inputStream, packet.GetPtr());
+    return graph.AddPacketToInputStream(inputStream, packet);
   }
 
   public void RenderOutput(WebCamScreenController screenController, string input) {
