@@ -13,6 +13,12 @@ namespace Mediapipe {
 
     private List<GameObject> Annotations;
 
+    void OnDestroy() {
+      foreach (var annotation in Annotations) {
+        Destroy(annotation);
+      }
+    }
+
     public override void Clear() {
       foreach (var annotation in Annotations) {
         annotation.GetComponent<T>().Clear();

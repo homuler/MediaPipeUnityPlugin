@@ -1,8 +1,8 @@
 using UnityEngine;
 
 namespace Mediapipe {
-  public class ClassificationAnnotationController : MonoBehaviour {
-    public void Clear() {
+  public class ClassificationAnnotationController : AnnotationController {
+    public override void Clear() {
       gameObject.GetComponent<TextMesh>().text = "";
     }
 

@@ -12,8 +12,8 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph {
 
   /// <summary>
   ///   This method must be called (only) once before calling StartRun.
-  ///   `graph` and `gpuHelper` (if useGPU is true) are initialized here.
-  ///    If the config is invalid, it throws an error.
+  ///   <see cref="graph" /> is initialized here.
+  ///   If the config is invalid, it throws an error.
   /// </summary>
   public void Initialize() {
     if (config == null) {
@@ -21,14 +21,16 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph {
     }
 
     graph = new CalculatorGraph(config.text);
+  }
 
-    if (shouldUseGPU()) {
-      var gpuResources = new StatusOrGpuResources().ConsumeValue();
-      graph.SetGpuResources(gpuResources).AssertOk();
+  /// <summary>
+  ///   Initialize the graph with GPU enabled.
+  /// </summary>
+  public void Initialize(GpuResources gpuResources, GlCalculatorHelper gpuHelper) {
+    this.Initialize();
 
-      gpuHelper = new GlCalculatorHelper();
-      gpuHelper.InitializeForTest(graph.GetGpuResources());
-    }
+    graph.SetGpuResources(gpuResources).AssertOk();
+    this.gpuHelper = gpuHelper;
   }
 
   /// <summary>
@@ -45,7 +47,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph {
     int timestamp = System.Environment.TickCount & System.Int32.MaxValue;
     var imageFrame = ImageFrame.FromPixels32(colors, width, height, true);
 
-    if (!shouldUseGPU()) {
+    if (!IsGpuEnabled()) {
       var packet = new ImageFramePacket(imageFrame, timestamp);
 
       return graph.AddPacketToInputStream(inputStream, packet.GetPtr());
@@ -106,5 +108,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph {
     return nextValue == null ? new List<T>() : nextValue;
   }
 
-  public abstract bool shouldUseGPU();
+  protected bool IsGpuEnabled() {
+    return gpuHelper != null;
+  }
 }

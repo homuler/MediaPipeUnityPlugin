@@ -15,6 +15,12 @@ namespace Mediapipe {
       Keypoints = new List<GameObject>();
     }
 
+    void OnDestroy() {
+      foreach (var keypoint in Keypoints) {
+        Destroy(keypoint);
+      }
+    }
+
     public override void Clear() {
       gameObject.GetComponent<LineRenderer>().SetPositions(emptyPositions);
       gameObject.GetComponent<TextMesh>().text = "";

@@ -25,6 +25,16 @@ namespace Mediapipe {
       }
     }
 
+    void OnDestroy() {
+      foreach (var landmark in Nodes) {
+        Destroy(landmark);
+      }
+
+      foreach (var line in Edges) {
+        Destroy(line);
+      }
+    }
+
     public override void Clear() {
       foreach (var landmark in Nodes) {
         landmark.GetComponent<NodeAnnotationController>().Clear();

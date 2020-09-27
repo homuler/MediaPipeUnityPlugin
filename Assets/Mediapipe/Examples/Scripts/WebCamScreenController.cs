@@ -35,24 +35,24 @@ public class WebCamScreenController : MonoBehaviour {
     pixelData = new Color32[webCamTexture.width * webCamTexture.height];
   }
 
-  public bool isPlaying() {
+  public bool IsPlaying() {
     return webCamTexture == null ? false : webCamTexture.isPlaying;
   }
 
   public int Height() {
-    return isPlaying() ? webCamTexture.height : 0;
+    return IsPlaying() ? webCamTexture.height : 0;
   }
 
   public int Width() {
-    return isPlaying() ? webCamTexture.width : 0;
+    return IsPlaying() ? webCamTexture.width : 0;
   }
 
   public float FocalLengthPx() {
-    return isPlaying() ? focalLengthPx : 0;
+    return IsPlaying() ? focalLengthPx : 0;
   }
 
   public Color32[] GetPixels32() {
-    return isPlaying() ? webCamTexture.GetPixels32(pixelData) : null;
+    return IsPlaying() ? webCamTexture.GetPixels32(pixelData) : null;
   }
 
   public Texture2D GetScreen() {
