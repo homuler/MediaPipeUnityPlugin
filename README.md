@@ -28,7 +28,7 @@ make install
 ```
 
 You may want to edit BUILD file before building so as to only include necessary calculators to reduce the library size.
-For more information, please see the README of each scenes and the [BUILD file](https://github.com/homuler/MediapipeUnityPlugin/blob/master/C/mediapipe_api/BUILD).
+For more information, please see the [BUILD file](https://github.com/homuler/MediapipeUnityPlugin/blob/master/C/mediapipe_api/BUILD).
 
 ### Models
 The models used in example scenes are copied under `Assets/Mediapipe/SDK/Models` by running `make install`.
@@ -50,8 +50,9 @@ If neccessary, you can also change the model paths for subgraphs (e.g. FaceDetec
 
 ### Troubleshooting
 #### DllNotFoundException: mediapipe_c
-[OpenCV's path](https://github.com/homuler/MediapipeUnityPlugin#opencv) may be not configured properly.\
-If not so, please check **Load on startup** checkbox in the plugin inspector, click Apply button, and restart Unity Editor.
+[OpenCV's path](https://github.com/homuler/MediapipeUnityPlugin#opencv) may not be configured properly.\
+
+If you're sure the path is correct, please check on **Load on startup** in the plugin inspector, click **Apply** button, and restart Unity Editor.
 Some helpful logs will be output in the console.
 
 #### InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000
@@ -62,6 +63,7 @@ InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000_mediapipe/
 ```
 
 ### TODO
+- [ ] Prepare API Documents
 - [ ] Box Tracking (on CPU/GPU)
 - [ ] Android
 - [ ] iOS
