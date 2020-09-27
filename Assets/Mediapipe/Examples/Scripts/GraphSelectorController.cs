@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class GraphSelectorController : MonoBehaviour {
-  [SerializeField] GameObject helloWorldGraph = null;
   [SerializeField] GameObject faceDetectionGraph = null;
   [SerializeField] GameObject faceMeshGraph = null;
   [SerializeField] GameObject irisTrackingGraph = null;
@@ -30,7 +29,6 @@ public class GraphSelectorController : MonoBehaviour {
   void InitializeOptions() {
     graphs = new Dictionary<string, GameObject>();
 
-    AddGraph("Hello World!", helloWorldGraph);
     AddGraph("Face Detection", faceDetectionGraph);
     AddGraph("Face Mesh", faceMeshGraph);
     AddGraph("Iris Tracking", irisTrackingGraph);
