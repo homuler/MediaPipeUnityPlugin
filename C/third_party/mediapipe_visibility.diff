@@ -1,0 +1,68 @@
+diff --git a/mediapipe/framework/BUILD b/mediapipe/framework/BUILD
+index a6e5fb0..75b9942 100644
+--- a/mediapipe/framework/BUILD
++++ b/mediapipe/framework/BUILD
+@@ -1619,5 +1619,5 @@ cc_test(
+ filegroup(
+     name = "protos_src",
+     srcs = glob(["*.proto"]),
+-    visibility = ["//mediapipe:__subpackages__"],
++    visibility = ["//visibility:public"],
+ )
+diff --git a/mediapipe/framework/formats/BUILD b/mediapipe/framework/formats/BUILD
+index 266a059..624e4b0 100644
+--- a/mediapipe/framework/formats/BUILD
++++ b/mediapipe/framework/formats/BUILD
+@@ -239,7 +239,7 @@ mediapipe_register_type(
+ filegroup(
+     name = "protos_src",
+     srcs = glob(["*.proto"]),
+-    visibility = ["//mediapipe:__subpackages__"],
++    visibility = ["//visibility:public"],
+ )
+ 
+ cc_library(
+diff --git a/mediapipe/framework/formats/annotation/BUILD b/mediapipe/framework/formats/annotation/BUILD
+index a74b488..1d3c699 100644
+--- a/mediapipe/framework/formats/annotation/BUILD
++++ b/mediapipe/framework/formats/annotation/BUILD
+@@ -40,5 +40,5 @@ mediapipe_proto_library(
+ filegroup(
+     name = "protos_src",
+     srcs = glob(["*.proto"]),
+-    visibility = ["//mediapipe:__subpackages__"],
++    visibility = ["//visibility:public"],
+ )
+diff --git a/mediapipe/java/com/google/mediapipe/components/BUILD b/mediapipe/java/com/google/mediapipe/components/BUILD
+index dcbdd3b..5dce33c 100644
+--- a/mediapipe/java/com/google/mediapipe/components/BUILD
++++ b/mediapipe/java/com/google/mediapipe/components/BUILD
+@@ -77,5 +77,5 @@ android_library(
+ filegroup(
+     name = "java_src",
+     srcs = glob(["*.java"]),
+-    visibility = ["//mediapipe:__subpackages__"],
++    visibility = ["//visibility:public"],
+ )
+diff --git a/mediapipe/java/com/google/mediapipe/framework/BUILD b/mediapipe/java/com/google/mediapipe/framework/BUILD
+index dd5ae2e..1a26cc2 100644
+--- a/mediapipe/java/com/google/mediapipe/framework/BUILD
++++ b/mediapipe/java/com/google/mediapipe/framework/BUILD
+@@ -140,5 +140,5 @@ filegroup(
+         ["*.java"],
+         exclude = ["TypeNameRegistryFull.java"],
+     ),
+-    visibility = ["//mediapipe:__subpackages__"],
++    visibility = ["//visibility:public"],
+ )
+diff --git a/mediapipe/java/com/google/mediapipe/glutil/BUILD b/mediapipe/java/com/google/mediapipe/glutil/BUILD
+index b1c8924..cd10475 100644
+--- a/mediapipe/java/com/google/mediapipe/glutil/BUILD
++++ b/mediapipe/java/com/google/mediapipe/glutil/BUILD
+@@ -35,5 +35,5 @@ android_library(
+ filegroup(
+     name = "java_src",
+     srcs = glob(["**/*.java"]),
+-    visibility = ["//mediapipe:__subpackages__"],
++    visibility = ["//visibility:public"],
+ )

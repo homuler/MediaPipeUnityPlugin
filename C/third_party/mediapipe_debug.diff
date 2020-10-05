@@ -1,0 +1,12 @@
+diff --git a/mediapipe/framework/calculator_graph.cc b/mediapipe/framework/calculator_graph.cc
+index 7dad637..6976b38 100644
+--- a/mediapipe/framework/calculator_graph.cc
++++ b/mediapipe/framework/calculator_graph.cc
+@@ -937,6 +937,7 @@ void CalculatorGraph::RecordError(const ::mediapipe::Status& error) {
+   {
+     absl::MutexLock lock(&error_mutex_);
+     errors_.push_back(error);
++    LOG(WARNING) << error;
+     has_error_ = true;
+     scheduler_.SetHasError(true);
+     for (const auto& stream : graph_output_streams_) {

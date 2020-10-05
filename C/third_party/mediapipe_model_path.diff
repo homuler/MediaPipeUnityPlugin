@@ -86,28 +86,6 @@ index 2dfb0c5..0d5a404 100644
      }
    }
  }
-diff --git a/mediapipe/examples/desktop/autoflip/subgraph/front_face_detection_subgraph.pbtxt b/mediapipe/examples/desktop/autoflip/subgraph/front_face_detection_subgraph.pbtxt
-index b88ea0c..4f0a44a 100644
---- a/mediapipe/examples/desktop/autoflip/subgraph/front_face_detection_subgraph.pbtxt
-+++ b/mediapipe/examples/desktop/autoflip/subgraph/front_face_detection_subgraph.pbtxt
-@@ -37,7 +37,7 @@ node {
-   output_stream: "TENSORS:detection_tensors"
-   options: {
-     [mediapipe.TfLiteInferenceCalculatorOptions.ext] {
--      model_path: "mediapipe/models/face_detection_front.tflite"
-+      model_path: "Assets/Mediapipe/SDK/Models/face_detection_front.tflite"
-     }
-   }
- }
-@@ -118,7 +118,7 @@ node {
-   output_stream: "labeled_detections"
-   options: {
-     [mediapipe.DetectionLabelIdToTextCalculatorOptions.ext] {
--      label_map_path: "mediapipe/models/face_detection_front_labelmap.txt"
-+      label_map_path: "Assets/Mediapipe/SDK/Models/face_detection_front_labelmap.txt"
-     }
-   }
- }
 diff --git a/mediapipe/graphs/face_detection/face_detection_back_desktop_live.pbtxt b/mediapipe/graphs/face_detection/face_detection_back_desktop_live.pbtxt
 index daccc27..aa2e757 100644
 --- a/mediapipe/graphs/face_detection/face_detection_back_desktop_live.pbtxt

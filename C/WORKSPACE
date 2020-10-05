@@ -1,5 +1,12 @@
 workspace(name = "mediapipe_api")
 
+# This file is almost the same as mediapipe's WORKSPACE file, but there exist some differences between the two.
+#
+# - com_google_mediapipe dependency
+# - @//third_party -> @com_google_mediapipe//third_party
+#    - exception: opencv_android, opencv_linux
+# - android_opencv sha256 is added
+
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 skylib_version = "0.9.0"
@@ -21,17 +28,26 @@ rules_pkg_dependencies()
 
 versions.check(minimum_bazel_version = "2.0.0")
 
+new_local_repository(
+    name = "unity",
+    build_file = "@//third_party:unity.BUILD",
+    path = "/path/to/unity/2019.4.10f1",
+)
+
 # mediapipe
 http_archive(
   name = "com_google_mediapipe",
-  strip_prefix = "mediapipe-0.7.10",
+  sha256 = "99915c8d5049a6d03771821b271366257b0a4109f1d357b30f0e740fe50d2bd2",
+  strip_prefix = "mediapipe-0.7.11",
   patches = [
+      "@//third_party:mediapipe_visibility.diff",
       "@//third_party:mediapipe_model_path.diff",
+      # "@//third_party:mediapipe_debug.diff",
   ],
   patch_args = [
       "-p1",
   ],
-  urls = ["https://github.com/google/mediapipe/archive/v0.7.10.tar.gz"],
+  urls = ["https://github.com/google/mediapipe/archive/v0.7.11.tar.gz"],
 )
 
 # ABSL cpp library lts_2020_02_25
@@ -241,6 +257,7 @@ new_local_repository(
 
 http_archive(
     name = "android_opencv",
+    sha256 = "cdb0e190c3734edd4052a3535d9e4310af912a9f70a421b1621711942a1028d5",
     build_file = "@com_google_mediapipe//third_party:opencv_android.BUILD",
     strip_prefix = "OpenCV-android-sdk",
     type = "zip",
@@ -259,14 +276,14 @@ http_archive(
     url = "https://github.com/opencv/opencv/releases/download/3.2.0/opencv-3.2.0-ios-framework.zip",
 )
 
-# # You may run setup_android.sh to install Android SDK and NDK.
-# android_ndk_repository(
-#     name = "androidndk",
-# )
+# You may run setup_android.sh to install Android SDK and NDK.
+android_ndk_repository(
+    name = "androidndk",
+)
 
-# android_sdk_repository(
-#     name = "androidsdk",
-# )
+android_sdk_repository(
+    name = "androidsdk",
+)
 
 # iOS basic build deps.
 
@@ -383,13 +400,12 @@ http_archive(
 )
 
 #Tensorflow repo should always go after the other external dependencies.
-# 2020-05-11
-_TENSORFLOW_GIT_COMMIT = "7c09d15f9fcc14343343c247ebf5b8e0afe3e4aa"
-_TENSORFLOW_SHA256= "673d00cbd2676ae43df1993e0d28c10b5ffbe96d9e2ab29f88a77b43c0211299"
+# 2020-08-30
+_TENSORFLOW_GIT_COMMIT = "57b009e31e59bd1a7ae85ef8c0232ed86c9b71db"
+_TENSORFLOW_SHA256= "de7f5f06204e057383028c7e53f3b352cdf85b3a40981b1a770c9a415a792c0e"
 http_archive(
     name = "org_tensorflow",
     urls = [
-      "https://mirror.bazel.build/github.com/tensorflow/tensorflow/archive/%s.tar.gz" % _TENSORFLOW_GIT_COMMIT,
       "https://github.com/tensorflow/tensorflow/archive/%s.tar.gz" % _TENSORFLOW_GIT_COMMIT,
     ],
     patches = [
