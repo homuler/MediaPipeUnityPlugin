@@ -40,7 +40,11 @@ using ProtobufLogHandlerPtr = System.IntPtr;
 namespace Mediapipe {
   [SuppressUnmanagedCodeSecurityAttribute] 
   internal static class UnsafeNativeMethods {
-    private const string MediapipeLibrary = "mediapipe_c";
+    #if UNITY_ANDROID
+      private const string MediapipeLibrary = "mediapipe_jni";
+    #else
+      private const string MediapipeLibrary = "mediapipe_c";
+    #endif
 
     /// CalculatorGraph API
     [DllImport (MediapipeLibrary)]

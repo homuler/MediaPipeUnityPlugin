@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- sample AndroidManifest.xml -->
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.homuler.mediapipe.unity"
+    xmlns:tools="http://schemas.android.com/tools">
+    <application>
+        <activity android:name="org.homuler.mediapipe.unity.MediaPipeUnityPlayerActivity"
+                  android:label="@string/app_name"
+                  android:theme="@style/UnityThemeSelector">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data android:name="unityplayer.UnityActivity" android:value="true" />
+        </activity>
+    </application>
+</manifest>

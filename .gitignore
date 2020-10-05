@@ -8,10 +8,14 @@ obj/
 *.csproj
 *.sln
 
+*.dll
+*.so
+*.aar
+
 bazel-*
 
 Assets/Mediapipe/SDK/Models/*
 !Assets/Mediapipe/SDK/Models/.gitkeep
-Assets/Mediapipe/SDK/Plugins/*
+Assets/Mediapipe/SDK/Plugins/Protobuf*
 
 Assets/Mediapipe/SDK/Scripts/Protobuf/**/*.cs

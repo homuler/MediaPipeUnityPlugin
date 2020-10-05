@@ -22,7 +22,12 @@ public class SceneDirector : MonoBehaviour {
 
   void OnEnable() {
     var nameForGlog = Path.Combine(Application.dataPath, "MediapipePlugin");
-    var logDir = Path.Combine(Application.dataPath.Replace("/Assets", ""), "Logs", "Mediapipe");
+
+    #if UNITY_EDITOR || UNITY_STANDALONE
+      var logDir = Path.Combine(Application.dataPath.Replace("/Assets", ""), "Logs", "Mediapipe");
+    #else
+      var logDir = Path.Combine(Application.persistentDataPath, "Logs", "Mediapipe");
+    #endif
 
     if (!Directory.Exists(logDir)) {
       Directory.CreateDirectory(logDir);
