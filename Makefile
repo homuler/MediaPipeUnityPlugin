@@ -29,7 +29,7 @@ all: $(protobuf_dll) mediapipe_protos mediapipe_api
 
 # build
 mediapipe_api:
-	cd C && bazel build ${BAZELFLAGS} //mediapipe_api:mediapipe_c //mediapipe_api:mediapipe_models
+	cd C && bazel build ${BAZELFLAGS} //mediapipe_api:libmediapipe_c.so //mediapipe_api:mediapipe_models
 
 mediapipe_protos:
 	# TODO build all the .proto files and output to the same directories

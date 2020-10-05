@@ -46,7 +46,7 @@ extern inline MpSerializedProto* MpSerializedProtoInitialize(const T& proto) {
   auto bytes = new char[length];
   memcpy(bytes, str.c_str(), length);
 
-  return new MpSerializedProto { bytes, length };
+  return new MpSerializedProto { bytes, static_cast<int>(length) };
 }
 
 template<class T>
@@ -58,7 +58,7 @@ extern inline MpSerializedProtoVector* MpSerializedProtoVectorInitialize(const s
     data[i] = MpSerializedProtoInitialize(proto_vec[i]);
   }
 
-  return new MpSerializedProtoVector { data, size };
+  return new MpSerializedProtoVector { data, static_cast<int>(size) };
 }
 
 #endif  // C_MEDIAPIPE_API_PROTOBUF_H_

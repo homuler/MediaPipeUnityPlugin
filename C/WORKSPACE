@@ -4,8 +4,9 @@ workspace(name = "mediapipe_api")
 #
 # - com_google_mediapipe dependency
 # - @//third_party -> @com_google_mediapipe//third_party
-#    - exception: opencv_android, opencv_linux
+#    - exception: opencv_linux
 # - android_opencv sha256 is added
+# - unity dependency
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 

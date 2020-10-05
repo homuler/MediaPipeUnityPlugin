@@ -1,6 +1,6 @@
 load("@rules_pkg//:pkg.bzl", "pkg_zip")
 
-cc_binary(
+cc_library(
     name = "mediapipe_c",
     deps = [
         ":calculators",
@@ -22,8 +22,16 @@ cc_binary(
             "//mediapipe_api/gpu:gpu_shared_data_internal",
         ],
     }),
-    visibility = None,
+    visibility = ["//visibility:public"],
+    alwayslink = True,
+)
+
+cc_binary(
+    name = "libmediapipe_c.so",
+    deps = [":mediapipe_c"],
     linkshared = True,
+    linkstatic = True,
+    visibility = ["//visibility:public"],
 )
 
 # It is recommended that you include only neccessary calculators.
