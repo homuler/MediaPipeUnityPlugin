@@ -22,19 +22,13 @@ public class SceneDirector : MonoBehaviour {
 
   void OnEnable() {
     var nameForGlog = Path.Combine(Application.dataPath, "MediaPipePlugin");
-
-    #if UNITY_EDITOR || UNITY_STANDALONE
-      var logDir = Path.Combine(Application.dataPath.Replace("/Assets", ""), "Logs", "MediaPipe");
-    #else
-      var logDir = Path.Combine(Application.persistentDataPath, "Logs", "MediaPipe");
-    #endif
+    var logDir = Path.Combine(Application.persistentDataPath, "Logs", "MediaPipe");
 
     if (!Directory.Exists(logDir)) {
       Directory.CreateDirectory(logDir);
     }
 
     UnsafeNativeMethods.InitGoogleLogging(nameForGlog, logDir);
-    ResourceUtil.SetResourceRootPath(Application.streamingAssetsPath);
   }
 
   void Start() {
@@ -46,6 +40,10 @@ public class SceneDirector : MonoBehaviour {
       gpuHelper = new GlCalculatorHelper();
       gpuHelper.InitializeForTest(gpuResources);
     }
+    #if UNITY_EDITOR || UNITY_STANDALONE
+      DemoAssetManager.Instance.LoadAllAssetsAsync();
+      ResourceUtil.InitializeAssetManager(DemoAssetManager.Instance);
+    #endif
   }
 
   void OnDisable() {
