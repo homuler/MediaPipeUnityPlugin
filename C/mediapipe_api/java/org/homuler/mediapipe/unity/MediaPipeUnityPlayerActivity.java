@@ -14,10 +14,8 @@ public class MediaPipeUnityPlayerActivity extends UnityPlayerActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    Log.d("MediaPipeUnityPlayerActivity", "onCreate called!");
     // Initialize asset manager so that MediaPipe native libraries can access the app assets, e.g.,
     // binary graphs.
     boolean res = AndroidAssetUtil.initializeNativeAssetManager(this);
-    Log.d("MediaPipeUnityPalyerActivity", "Asset Manager Initialized: " + res);
   }
 }
