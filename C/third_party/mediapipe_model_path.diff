@@ -1,8 +1,21 @@
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
-index 9347fc0..a346675 100644
+index 9347fc0..b42c20e 100644
 --- a/mediapipe/util/BUILD
 +++ b/mediapipe/util/BUILD
-@@ -149,7 +149,7 @@ cc_library(
+@@ -146,10 +146,20 @@ cc_library(
+     ],
+ )
+ 
++cc_library(
++    name = "asset_manager",
++    hdrs = ["asset_manager.h"],
++    deps = [
++        "//mediapipe/framework/port:singleton",
++        "//mediapipe/framework/port:statusor",
++    ],
++    visibility = ["//visibility:public"],
++)
++
  cc_library(
      name = "resource_util",
      srcs = select({
@@ -11,35 +24,20 @@ index 9347fc0..a346675 100644
          "//mediapipe:android": ["resource_util_android.cc"],
          "//mediapipe:ios": ["resource_util_apple.cc"],
          "//mediapipe:macos": ["resource_util.cc"],
-@@ -164,7 +164,7 @@ cc_library(
-         "//mediapipe:macos": [],
-     }),
-     visibility = [
--        "//mediapipe/framework:mediapipe_internal",
-+        "//visibility:public",
-     ],
-     deps = [
-         "//mediapipe/framework/port:ret_check",
-diff --git a/mediapipe/util/resource_util.h b/mediapipe/util/resource_util.h
-index d55706a..b7d9b39 100644
---- a/mediapipe/util/resource_util.h
-+++ b/mediapipe/util/resource_util.h
-@@ -22,6 +22,9 @@
- 
- namespace mediapipe {
- 
-+const char* GetResourceRootPath();
-+void SetResourceRootPath(const std::string& path);
-+
- // Given a path to a resource, this function attempts to provide an absolute
- // path with which it can be accessed as a file.
- // - If the input path is an absolute path, it is returned as-is.
-diff --git a/mediapipe/util/resource_util_unity.cc b/mediapipe/util/resource_util_unity.cc
+@@ -173,6 +183,7 @@ cc_library(
+         "@com_google_absl//absl/strings",
+     ] + select({
+         "//conditions:default": [
++            ":asset_manager",
+             "//mediapipe/framework/deps:file_path",
+             "//mediapipe/framework/port:file_helpers",
+             "@com_google_absl//absl/flags:flag",
+diff --git a/mediapipe/util/asset_manager.h b/mediapipe/util/asset_manager.h
 new file mode 100644
-index 0000000..f9523fe
+index 0000000..bd47f39
 --- /dev/null
-+++ b/mediapipe/util/resource_util_unity.cc
-@@ -0,0 +1,93 @@
++++ b/mediapipe/util/asset_manager.h
+@@ -0,0 +1,46 @@
 +// Copyright 2019 The MediaPipe Authors.
 +//
 +// Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,82 +52,61 @@ index 0000000..f9523fe
 +// See the License for the specific language governing permissions and
 +// limitations under the License.
 +
-+// `PathToResourceAsFile` is based on mediapipe/util/resource_util_android.cc and
-+// `GetResourceContents' is copied from mediapipe/util/resource_util.cc
++#ifndef MEDIAPIPE_UTIL_ASSET_MANAGER_H_
++#define MEDIAPIPE_UTIL_ASSET_MANAGER_H_
 +
++#include <string>
++#include <vector>
++
++#include "mediapipe/framework/port/singleton.h"
++#include "mediapipe/framework/port/statusor.h"
++
++namespace mediapipe {
++
++// see mediapipe/util/android/asset_manager_util.h
++class AssetManager {
++ public:
++  AssetManager(const AssetManager&) = delete;
++  AssetManager& operator=(const AssetManager&) = delete;
++
++  // Reads a file into output. Returns true on success, false otherwise.
++  bool ReadFile(const std::string& filename, std::string* output);
++
++  ::mediapipe::StatusOr<std::string> CachedFileFromAsset(const std::string& asset_path);
++
++ private:
++  // Private constructor since this class is meant to be a singleton.
++  AssetManager() = default;
++
++  friend class Singleton<AssetManager>;
++};
++
++}  // namespace mediapipe
++
++#endif  // MEDIAPIPE_UTIL_ASSET_MANAGER_H_
+diff --git a/mediapipe/util/resource_util_unity.cc b/mediapipe/util/resource_util_unity.cc
+new file mode 100644
+index 0000000..62544ed
+--- /dev/null
++++ b/mediapipe/util/resource_util_unity.cc
+@@ -0,0 +1,20 @@
++#include "mediapipe/util/asset_manager.h"
 +#include "mediapipe/util/resource_util.h"
-+
-+#include "absl/flags/flag.h"
-+#include "absl/strings/str_split.h"
-+#include "mediapipe/framework/deps/file_path.h"
-+#include "mediapipe/framework/port/file_helpers.h"
++#include "mediapipe/framework/port/singleton.h"
 +#include "mediapipe/framework/port/ret_check.h"
 +
 +namespace mediapipe {
 +
-+namespace {
-+const char* resourceRootPath;
-+
-+::mediapipe::StatusOr<std::string> PathToResourceAsFileInternal(const std::string& path) {
-+  RET_CHECK_OK(mediapipe::file::Exists(path));
-+
-+  return path;
-+}
-+}
-+
-+const char* GetResourceRootPath() {
-+  if (resourceRootPath == nullptr) {
-+    return "";
-+  }
-+
-+  return resourceRootPath;
-+}
-+
-+void SetResourceRootPath(const std::string& path) {
-+  auto str_ptr = new char[path.length() + 1];
-+  snprintf(str_ptr, path.length() + 1, path.c_str());
-+
-+  if (resourceRootPath != nullptr) {
-+    delete[] resourceRootPath;
-+  }
-+
-+  resourceRootPath = str_ptr;
-+}
-+
 +::mediapipe::StatusOr<std::string> PathToResourceAsFile(
 +    const std::string& path) {
-+
-+  if (absl::StartsWith(path, "/")) {
-+    return path;
-+  }
-+
-+  LOG(INFO) << "Path: " << path;
-+
-+  // Try to load a relative path
-+  {
-+    auto resource_path = mediapipe::file::JoinPath(GetResourceRootPath(), path);
-+    auto status_or_path = PathToResourceAsFileInternal(resource_path);
-+    if (status_or_path.ok()) {
-+      LOG(INFO) << "Successfully loaded: " << path;
-+      return status_or_path;
-+    }
-+  }
-+
-+  // If that fails, assume it was a relative path, and try just the base name.
-+  {
-+    const size_t last_slash_idx = path.find_last_of("\\/");
-+    CHECK_NE(last_slash_idx, std::string::npos);  // Make sure it's a path.
-+    auto base_name = path.substr(last_slash_idx + 1);
-+    auto asset_path = mediapipe::file::JoinPath(GetResourceRootPath(), base_name);
-+    auto status_or_path = PathToResourceAsFileInternal(asset_path);
-+    if (status_or_path.ok()) LOG(INFO) << "Successfully loaded: " << asset_path;
-+    return status_or_path;
-+  }
++  return Singleton<AssetManager>::get()->CachedFileFromAsset(path);
 +}
 +
 +::mediapipe::Status GetResourceContents(const std::string& path,
 +                                        std::string* output) {
-+  return mediapipe::file::GetContents(path, output);
++  RET_CHECK(Singleton<AssetManager>::get()->ReadFile(path, output))
++    << "could not read asset: " << path;
++  return mediapipe::OkStatus();
 +}
 +
 +}  // namespace mediapipe

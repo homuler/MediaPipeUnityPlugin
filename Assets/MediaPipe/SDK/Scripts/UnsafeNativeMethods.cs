@@ -26,6 +26,7 @@ using MpStatusOrGpuResources = System.IntPtr;
 using MpStatusOrImageFrame = System.IntPtr;
 using MpStatusOrPoller = System.IntPtr;
 
+using CacheFilePathResolverPtr = System.IntPtr;
 using GlContextPtr = System.IntPtr;
 using GlTexturePtr = System.IntPtr;
 using GlTextureInfoPtr = System.IntPtr;
@@ -36,6 +37,7 @@ using ImageFrameMemoryHandlerPtr = System.IntPtr;
 using ImageFramePtr = System.IntPtr;
 using OutputStreamPollerPtr = System.IntPtr;
 using ProtobufLogHandlerPtr = System.IntPtr;
+using ReadFileHandlerPtr = System.IntPtr;
 
 namespace Mediapipe {
   [SuppressUnmanagedCodeSecurityAttribute] 
@@ -344,10 +346,14 @@ namespace Mediapipe {
     public static extern unsafe MpNormalizedRectVector MpPacketGetNormalizedRectVector(MpPacket packet);
 
 
+  #if UNITY_EDITOR || UNITY_STANDALONE
     /// Resource Util API
     [DllImport (MediaPipeLibrary)]
-    public static extern unsafe void MpSetResourceRootPath(string path);
+    public static extern unsafe void MpAssetManagerInitialize([MarshalAs(UnmanagedType.FunctionPtr)]CacheFilePathResolverPtr resolver,[MarshalAs(UnmanagedType.FunctionPtr)]ReadFileHandlerPtr handler);
 
+    [DllImport (MediaPipeLibrary)]
+    public static extern unsafe void MpStringCopy(IntPtr dest, byte[] src, int size);
+  #endif
 
     /// SidePacket API
 

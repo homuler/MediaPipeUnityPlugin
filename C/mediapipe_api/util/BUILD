@@ -1,9 +1,12 @@
 cc_library(
-    name = "resource_util",
-    srcs = ["resource_util.cc"],
-    hdrs = ["resource_util.h"],
+    name = "asset_manager",
+    srcs = ["asset_manager.cc"],
+    hdrs = ["asset_manager.h"],
     deps = [
-      "@com_google_mediapipe//mediapipe/util:resource_util",
+      "@com_google_mediapipe//mediapipe/framework/port:logging",
+      "@com_google_mediapipe//mediapipe/framework/port:ret_check",
+      "@com_google_mediapipe//mediapipe/framework/port:status",
+      "@com_google_mediapipe//mediapipe/util:asset_manager",
       "//mediapipe_api:common",
     ],
     visibility = ["//visibility:public"],
