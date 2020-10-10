@@ -344,6 +344,11 @@ namespace Mediapipe {
     public static extern unsafe MpNormalizedRectVector MpPacketGetNormalizedRectVector(MpPacket packet);
 
 
+    /// Resource Util API
+    [DllImport (MediaPipeLibrary)]
+    public static extern unsafe void MpSetResourceRootPath(string path);
+
+
     /// SidePacket API
 
     [DllImport (MediaPipeLibrary)]

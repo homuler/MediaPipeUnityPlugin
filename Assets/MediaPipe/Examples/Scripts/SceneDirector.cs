@@ -34,6 +34,7 @@ public class SceneDirector : MonoBehaviour {
     }
 
     UnsafeNativeMethods.InitGoogleLogging(nameForGlog, logDir);
+    ResourceUtil.SetResourceRootPath(Application.streamingAssetsPath);
   }
 
   void Start() {

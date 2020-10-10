@@ -12,6 +12,7 @@ cc_library(
         "//mediapipe_api/framework/formats:landmark",
         "//mediapipe_api/framework/formats:rect",
         "//mediapipe_api/framework/port:logging",
+        "//mediapipe_api/util:resource_util",
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [],
         "//conditions:default": [

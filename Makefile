@@ -4,7 +4,7 @@ MODE := gpu
 builddir := .build
 sdkdir := Assets/MediaPipe/SDK
 plugindir := $(sdkdir)/Plugins
-modeldir := $(sdkdir)/Models
+modeldir := Assets/StreamingAssets
 
 bazelflags.default := -c opt
 bazelflags.debug := --compilation_mode=dbg
@@ -57,7 +57,7 @@ install-protobuf: | $(plugindir)/Protobuf
 install-mediapipe_c:
 	cp -f C/bazel-bin/mediapipe_api/libmediapipe_c.so $(plugindir)
 
-install-models:
+install-models: | $(modeldir)
 	unzip C/bazel-bin/mediapipe_api/mediapipe_models.zip -d $(modeldir)
 
 uninstall: uninstall-models uninstall-mediapipe_c uninstall-protobuf
@@ -76,6 +76,9 @@ $(builddir):
 	mkdir -p $@
 
 $(plugindir)/Protobuf:
+	mkdir -p $@
+
+$(modeldir):
 	mkdir -p $@
 
 # sources

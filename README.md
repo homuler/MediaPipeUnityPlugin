@@ -37,10 +37,10 @@ You may want to edit BUILD file before building so as to only include necessary 
 For more information, please see the [BUILD file](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/mediapipe_api/BUILD).
 
 ### Models
-The models used in example scenes are copied under `Assets/MediaPipe/SDK/Models` by running `make install`.
+The models used in example scenes are copied under `Assets/StreamingAssets` by running `make install`.
 
 If you'd like to use other models, you should place them so that Unity can read.
-For example, if your graph depends on `face_detection_front.tflite`, then you can place the model file under `Assets/MediaPipe/SDK/Models/` and set the path to the `model_path` value in your config file.
+For example, if your graph depends on `face_detection_front.tflite`, then you can place the model file under `Assets/StreamingAssets/` and set the path to the `model_path` value in your config file.
 
 If neccessary, you can also change the model paths for subgraphs (e.g. FaceDetectionFrontCpu) by updating [mediapipe_model_path.diff](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/third_party/mediapipe_model_path.diff).
 

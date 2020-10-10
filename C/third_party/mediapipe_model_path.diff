@@ -1,741 +1,135 @@
-diff --git a/mediapipe/examples/coral/graphs/face_detection_desktop_live.pbtxt b/mediapipe/examples/coral/graphs/face_detection_desktop_live.pbtxt
-index 5532128..af88d15 100644
---- a/mediapipe/examples/coral/graphs/face_detection_desktop_live.pbtxt
-+++ b/mediapipe/examples/coral/graphs/face_detection_desktop_live.pbtxt
-@@ -69,7 +69,7 @@ node {
-   output_stream: "TENSORS:detection_tensors"
-   options: {
-     [mediapipe.TfLiteInferenceCalculatorOptions.ext] {
--      model_path: "mediapipe/examples/coral/models/face-detector-quantized_edgetpu.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/face-detector-quantized_edgetpu.tflite"
-     }
-   }
- }
-@@ -150,7 +150,7 @@ node {
-   output_stream: "labeled_detections"
-   options: {
-     [mediapipe.DetectionLabelIdToTextCalculatorOptions.ext] {
--      label_map_path: "mediapipe/models/face_detection_front_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/face_detection_front_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/examples/coral/graphs/object_detection_desktop_live.pbtxt b/mediapipe/examples/coral/graphs/object_detection_desktop_live.pbtxt
-index 03bc9e1..1fe1eda 100644
---- a/mediapipe/examples/coral/graphs/object_detection_desktop_live.pbtxt
-+++ b/mediapipe/examples/coral/graphs/object_detection_desktop_live.pbtxt
-@@ -69,7 +69,7 @@ node {
-   output_stream: "TENSORS:detection_tensors"
-   options: {
-     [mediapipe.TfLiteInferenceCalculatorOptions.ext] {
--      model_path: "mediapipe/examples/coral/models/object-detector-quantized_edgetpu.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/object-detector-quantized_edgetpu.tflite"
-     }
-   }
- }
-@@ -152,7 +152,7 @@ node {
-   output_stream: "output_detections"
-   options: {
-     [mediapipe.DetectionLabelIdToTextCalculatorOptions.ext] {
--      label_map_path: "mediapipe/examples/coral/models/object_detection_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/object_detection_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/examples/desktop/autoflip/subgraph/autoflip_object_detection_subgraph.pbtxt b/mediapipe/examples/desktop/autoflip/subgraph/autoflip_object_detection_subgraph.pbtxt
-index bd2e7a7..20f0188 100644
---- a/mediapipe/examples/desktop/autoflip/subgraph/autoflip_object_detection_subgraph.pbtxt
-+++ b/mediapipe/examples/desktop/autoflip/subgraph/autoflip_object_detection_subgraph.pbtxt
-@@ -37,7 +37,7 @@ node {
-   output_stream: "TENSORS:detection_tensors"
-   options: {
-     [mediapipe.TfLiteInferenceCalculatorOptions.ext] {
--      model_path: "mediapipe/models/ssdlite_object_detection.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/ssdlite_object_detection.tflite"
-     }
-   }
- }
-@@ -120,7 +120,7 @@ node {
-   output_stream: "output_detections"
-   options: {
-     [mediapipe.DetectionLabelIdToTextCalculatorOptions.ext] {
--      label_map_path: "mediapipe/models/ssdlite_object_detection_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/ssdlite_object_detection_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/examples/desktop/autoflip/subgraph/face_detection_subgraph.pbtxt b/mediapipe/examples/desktop/autoflip/subgraph/face_detection_subgraph.pbtxt
-index 2dfb0c5..c9a32df 100644
---- a/mediapipe/examples/desktop/autoflip/subgraph/face_detection_subgraph.pbtxt
-+++ b/mediapipe/examples/desktop/autoflip/subgraph/face_detection_subgraph.pbtxt
-@@ -38,7 +38,7 @@ node {
-   output_stream: "TENSORS:detection_tensors"
-   options: {
-     [mediapipe.TfLiteInferenceCalculatorOptions.ext] {
--      model_path: "mediapipe/models/face_detection_back.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/face_detection_back.tflite"
-     }
-   }
- }
-@@ -119,7 +119,7 @@ node {
-   output_stream: "labeled_detections"
-   options: {
-     [mediapipe.DetectionLabelIdToTextCalculatorOptions.ext] {
--      label_map_path: "mediapipe/models/face_detection_back_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/face_detection_back_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/face_detection/face_detection_back_desktop_live.pbtxt b/mediapipe/graphs/face_detection/face_detection_back_desktop_live.pbtxt
-index daccc27..465a6af 100644
---- a/mediapipe/graphs/face_detection/face_detection_back_desktop_live.pbtxt
-+++ b/mediapipe/graphs/face_detection/face_detection_back_desktop_live.pbtxt
-@@ -64,7 +64,7 @@ node {
-   output_stream: "TENSORS:detection_tensors"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/face_detection_back.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/face_detection_back.tflite"
-     }
-   }
- }
-@@ -145,7 +145,7 @@ node {
-   output_stream: "labeled_detections"
-   node_options: {
-     [type.googleapis.com/mediapipe.DetectionLabelIdToTextCalculatorOptions] {
--      label_map_path: "mediapipe/models/face_detection_back_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/face_detection_back_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/face_detection/face_detection_back_mobile_gpu.pbtxt b/mediapipe/graphs/face_detection/face_detection_back_mobile_gpu.pbtxt
-index 669b4b9..2d5f4b4 100644
---- a/mediapipe/graphs/face_detection/face_detection_back_mobile_gpu.pbtxt
-+++ b/mediapipe/graphs/face_detection/face_detection_back_mobile_gpu.pbtxt
-@@ -65,7 +65,7 @@ node {
-   output_stream: "TENSORS_GPU:detection_tensors"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/face_detection_back.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/face_detection_back.tflite"
-     }
-   }
- }
-@@ -146,7 +146,7 @@ node {
-   output_stream: "labeled_detections"
-   node_options: {
-     [type.googleapis.com/mediapipe.DetectionLabelIdToTextCalculatorOptions] {
--      label_map_path: "mediapipe/models/face_detection_back_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/face_detection_back_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/face_detection/face_detection_desktop_live.pbtxt b/mediapipe/graphs/face_detection/face_detection_desktop_live.pbtxt
-index dd29961..d11d8e5 100644
---- a/mediapipe/graphs/face_detection/face_detection_desktop_live.pbtxt
-+++ b/mediapipe/graphs/face_detection/face_detection_desktop_live.pbtxt
-@@ -64,7 +64,7 @@ node {
-   output_stream: "TENSORS:detection_tensors"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/face_detection_front.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/face_detection_front.tflite"
-     }
-   }
- }
-@@ -145,7 +145,7 @@ node {
-   output_stream: "labeled_detections"
-   node_options: {
-     [type.googleapis.com/mediapipe.DetectionLabelIdToTextCalculatorOptions] {
--      label_map_path: "mediapipe/models/face_detection_front_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/face_detection_front_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/face_detection/face_detection_mobile_cpu.pbtxt b/mediapipe/graphs/face_detection/face_detection_mobile_cpu.pbtxt
-index f3ae28b..32d8896 100644
---- a/mediapipe/graphs/face_detection/face_detection_mobile_cpu.pbtxt
-+++ b/mediapipe/graphs/face_detection/face_detection_mobile_cpu.pbtxt
-@@ -75,7 +75,7 @@ node {
-   output_stream: "TENSORS:detection_tensors"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/face_detection_front.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/face_detection_front.tflite"
-     }
-   }
- }
-@@ -156,7 +156,7 @@ node {
-   output_stream: "labeled_detections"
-   node_options: {
-     [type.googleapis.com/mediapipe.DetectionLabelIdToTextCalculatorOptions] {
--      label_map_path: "mediapipe/models/face_detection_front_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/face_detection_front_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/face_detection/face_detection_mobile_gpu.pbtxt b/mediapipe/graphs/face_detection/face_detection_mobile_gpu.pbtxt
-index 8c79a6c..6ae01cd 100644
---- a/mediapipe/graphs/face_detection/face_detection_mobile_gpu.pbtxt
-+++ b/mediapipe/graphs/face_detection/face_detection_mobile_gpu.pbtxt
-@@ -65,7 +65,7 @@ node {
-   output_stream: "TENSORS_GPU:detection_tensors"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/face_detection_front.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/face_detection_front.tflite"
-     }
-   }
- }
-@@ -146,7 +146,7 @@ node {
-   output_stream: "labeled_detections"
-   node_options: {
-     [type.googleapis.com/mediapipe.DetectionLabelIdToTextCalculatorOptions] {
--      label_map_path: "mediapipe/models/face_detection_front_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/face_detection_front_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/hair_segmentation/hair_segmentation_desktop_live.pbtxt b/mediapipe/graphs/hair_segmentation/hair_segmentation_desktop_live.pbtxt
-index 36c6970..8674e3a 100644
---- a/mediapipe/graphs/hair_segmentation/hair_segmentation_desktop_live.pbtxt
-+++ b/mediapipe/graphs/hair_segmentation/hair_segmentation_desktop_live.pbtxt
-@@ -111,7 +111,7 @@ node {
-   input_side_packet: "CUSTOM_OP_RESOLVER:op_resolver"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/hair_segmentation.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/hair_segmentation.tflite"
-       use_gpu: false
-     }
-   }
-diff --git a/mediapipe/graphs/hair_segmentation/hair_segmentation_mobile_gpu.pbtxt b/mediapipe/graphs/hair_segmentation/hair_segmentation_mobile_gpu.pbtxt
-index c8db44d..f9c5df0 100644
---- a/mediapipe/graphs/hair_segmentation/hair_segmentation_mobile_gpu.pbtxt
-+++ b/mediapipe/graphs/hair_segmentation/hair_segmentation_mobile_gpu.pbtxt
-@@ -111,7 +111,7 @@ node {
-   input_side_packet: "CUSTOM_OP_RESOLVER:op_resolver"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/hair_segmentation.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/hair_segmentation.tflite"
-       use_gpu: true
-     }
-   }
-diff --git a/mediapipe/graphs/hand_tracking/subgraphs/hand_detection_cpu.pbtxt b/mediapipe/graphs/hand_tracking/subgraphs/hand_detection_cpu.pbtxt
-index 65c7d16..37bf95f 100644
---- a/mediapipe/graphs/hand_tracking/subgraphs/hand_detection_cpu.pbtxt
-+++ b/mediapipe/graphs/hand_tracking/subgraphs/hand_detection_cpu.pbtxt
-@@ -49,7 +49,7 @@ node {
-   input_side_packet: "CUSTOM_OP_RESOLVER:op_resolver"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/palm_detection.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/palm_detection.tflite"
-     }
-   }
- }
-@@ -133,7 +133,7 @@ node {
-   output_stream: "labeled_detections"
-   node_options: {
-     [type.googleapis.com/mediapipe.DetectionLabelIdToTextCalculatorOptions] {
--      label_map_path: "mediapipe/models/palm_detection_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/palm_detection_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/hand_tracking/subgraphs/hand_detection_gpu.pbtxt b/mediapipe/graphs/hand_tracking/subgraphs/hand_detection_gpu.pbtxt
-index 8332860..7310a50 100644
---- a/mediapipe/graphs/hand_tracking/subgraphs/hand_detection_gpu.pbtxt
-+++ b/mediapipe/graphs/hand_tracking/subgraphs/hand_detection_gpu.pbtxt
-@@ -53,7 +53,7 @@ node {
-   input_side_packet: "CUSTOM_OP_RESOLVER:opresolver"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/palm_detection.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/palm_detection.tflite"
-       use_gpu: true
-     }
-   }
-@@ -137,7 +137,7 @@ node {
-   output_stream: "labeled_detections"
-   node_options: {
-     [type.googleapis.com/mediapipe.DetectionLabelIdToTextCalculatorOptions] {
--      label_map_path: "mediapipe/models/palm_detection_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/palm_detection_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/hand_tracking/subgraphs/hand_landmark_cpu.pbtxt b/mediapipe/graphs/hand_tracking/subgraphs/hand_landmark_cpu.pbtxt
-index 9d42ddf..c3d40d7 100644
---- a/mediapipe/graphs/hand_tracking/subgraphs/hand_landmark_cpu.pbtxt
-+++ b/mediapipe/graphs/hand_tracking/subgraphs/hand_landmark_cpu.pbtxt
-@@ -71,7 +71,7 @@ node {
-   input_side_packet: "CUSTOM_OP_RESOLVER:op_resolver"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/hand_landmark.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/hand_landmark.tflite"
-     }
-   }
- }
-@@ -110,7 +110,7 @@ node {
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteTensorsToClassificationCalculatorOptions] {
-       top_k: 1
--      label_map_path: "mediapipe/models/handedness.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/handedness.txt"
-       binary_classification: true
-     }
-   }
-diff --git a/mediapipe/graphs/hand_tracking/subgraphs/hand_landmark_gpu.pbtxt b/mediapipe/graphs/hand_tracking/subgraphs/hand_landmark_gpu.pbtxt
-index b3f316a..54aa817 100644
---- a/mediapipe/graphs/hand_tracking/subgraphs/hand_landmark_gpu.pbtxt
-+++ b/mediapipe/graphs/hand_tracking/subgraphs/hand_landmark_gpu.pbtxt
-@@ -75,7 +75,7 @@ node {
-   input_side_packet: "CUSTOM_OP_RESOLVER:op_resolver"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/hand_landmark.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/hand_landmark.tflite"
-       use_gpu: true
-     }
-   }
-@@ -114,7 +114,7 @@ node {
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteTensorsToClassificationCalculatorOptions] {
-       top_k: 1
--      label_map_path: "mediapipe/models/handedness.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/handedness.txt"
-       binary_classification: true
-     }
-   }
-diff --git a/mediapipe/graphs/hand_tracking/subgraphs/multi_hand_detection_cpu.pbtxt b/mediapipe/graphs/hand_tracking/subgraphs/multi_hand_detection_cpu.pbtxt
-index 928e752..23323f9 100644
---- a/mediapipe/graphs/hand_tracking/subgraphs/multi_hand_detection_cpu.pbtxt
-+++ b/mediapipe/graphs/hand_tracking/subgraphs/multi_hand_detection_cpu.pbtxt
-@@ -49,7 +49,7 @@ node {
-   input_side_packet: "CUSTOM_OP_RESOLVER:opresolver"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/palm_detection.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/palm_detection.tflite"
-     }
-   }
- }
-@@ -132,7 +132,7 @@ node {
-   output_stream: "labeled_detections"
-   node_options: {
-     [type.googleapis.com/mediapipe.DetectionLabelIdToTextCalculatorOptions] {
--      label_map_path: "mediapipe/models/palm_detection_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/palm_detection_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/hand_tracking/subgraphs/multi_hand_detection_gpu.pbtxt b/mediapipe/graphs/hand_tracking/subgraphs/multi_hand_detection_gpu.pbtxt
-index afd1fd1..0d6c6a8 100644
---- a/mediapipe/graphs/hand_tracking/subgraphs/multi_hand_detection_gpu.pbtxt
-+++ b/mediapipe/graphs/hand_tracking/subgraphs/multi_hand_detection_gpu.pbtxt
-@@ -53,7 +53,7 @@ node {
-   input_side_packet: "CUSTOM_OP_RESOLVER:opresolver"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/palm_detection.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/palm_detection.tflite"
-       use_gpu: true
-     }
-   }
-@@ -137,7 +137,7 @@ node {
-   output_stream: "labeled_detections"
-   node_options: {
-     [type.googleapis.com/mediapipe.DetectionLabelIdToTextCalculatorOptions] {
--      label_map_path: "mediapipe/models/palm_detection_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/palm_detection_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/object_detection/object_detection_desktop_live.pbtxt b/mediapipe/graphs/object_detection/object_detection_desktop_live.pbtxt
-index 98b9fab..e1c5b0d 100644
---- a/mediapipe/graphs/object_detection/object_detection_desktop_live.pbtxt
-+++ b/mediapipe/graphs/object_detection/object_detection_desktop_live.pbtxt
-@@ -64,7 +64,7 @@ node {
-   output_stream: "TENSORS:detection_tensors"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/ssdlite_object_detection.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/ssdlite_object_detection.tflite"
-     }
-   }
- }
-@@ -147,7 +147,7 @@ node {
-   output_stream: "output_detections"
-   node_options: {
-     [type.googleapis.com/mediapipe.DetectionLabelIdToTextCalculatorOptions] {
--      label_map_path: "mediapipe/models/ssdlite_object_detection_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/ssdlite_object_detection_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/object_detection/object_detection_desktop_tensorflow_graph.pbtxt b/mediapipe/graphs/object_detection/object_detection_desktop_tensorflow_graph.pbtxt
-index f12eeb6..aafad8b 100644
---- a/mediapipe/graphs/object_detection/object_detection_desktop_tensorflow_graph.pbtxt
-+++ b/mediapipe/graphs/object_detection/object_detection_desktop_tensorflow_graph.pbtxt
-@@ -27,7 +27,7 @@ node {
-   output_side_packet: "SESSION:object_detection_session"
-   node_options: {
-     [type.googleapis.com/mediapipe.TensorFlowSessionFromSavedModelCalculatorOptions]: {
--      saved_model_path: "mediapipe/models/object_detection_saved_model"
-+      saved_model_path: "Assets/MediaPipe/SDK/Models/object_detection_saved_model"
-     }
-   }
- }
-@@ -88,7 +88,7 @@ node {
-   output_stream: "output_detections"
-   node_options: {
-     [type.googleapis.com/mediapipe.DetectionLabelIdToTextCalculatorOptions] {
--      label_map_path: "mediapipe/models/ssdlite_object_detection_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/ssdlite_object_detection_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/object_detection/object_detection_desktop_tflite_graph.pbtxt b/mediapipe/graphs/object_detection/object_detection_desktop_tflite_graph.pbtxt
-index 15aa2cd..7568c21 100644
---- a/mediapipe/graphs/object_detection/object_detection_desktop_tflite_graph.pbtxt
-+++ b/mediapipe/graphs/object_detection/object_detection_desktop_tflite_graph.pbtxt
-@@ -56,7 +56,7 @@ node {
-   output_stream: "TENSORS:detection_tensors"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/ssdlite_object_detection.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/ssdlite_object_detection.tflite"
-     }
-   }
- }
-@@ -138,7 +138,7 @@ node {
-   output_stream: "output_detections"
-   node_options: {
-     [type.googleapis.com/mediapipe.DetectionLabelIdToTextCalculatorOptions] {
--      label_map_path: "mediapipe/models/ssdlite_object_detection_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/ssdlite_object_detection_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/object_detection/object_detection_mobile_cpu.pbtxt b/mediapipe/graphs/object_detection/object_detection_mobile_cpu.pbtxt
-index 8256179..2353fbd 100644
---- a/mediapipe/graphs/object_detection/object_detection_mobile_cpu.pbtxt
-+++ b/mediapipe/graphs/object_detection/object_detection_mobile_cpu.pbtxt
-@@ -75,7 +75,7 @@ node {
-   output_stream: "TENSORS:detection_tensors"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/ssdlite_object_detection.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/ssdlite_object_detection.tflite"
-     }
-   }
- }
-@@ -158,7 +158,7 @@ node {
-   output_stream: "output_detections"
-   node_options: {
-     [type.googleapis.com/mediapipe.DetectionLabelIdToTextCalculatorOptions] {
--      label_map_path: "mediapipe/models/ssdlite_object_detection_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/ssdlite_object_detection_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/object_detection/object_detection_mobile_gpu.pbtxt b/mediapipe/graphs/object_detection/object_detection_mobile_gpu.pbtxt
-index 1ed66e8..f71a2db 100644
---- a/mediapipe/graphs/object_detection/object_detection_mobile_gpu.pbtxt
-+++ b/mediapipe/graphs/object_detection/object_detection_mobile_gpu.pbtxt
-@@ -65,7 +65,7 @@ node {
-   output_stream: "TENSORS_GPU:detection_tensors"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/ssdlite_object_detection.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/ssdlite_object_detection.tflite"
-     }
-   }
- }
-@@ -148,7 +148,7 @@ node {
-   output_stream: "output_detections"
-   node_options: {
-     [type.googleapis.com/mediapipe.DetectionLabelIdToTextCalculatorOptions] {
--      label_map_path: "mediapipe/models/ssdlite_object_detection_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/ssdlite_object_detection_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/template_matching/index_building.pbtxt b/mediapipe/graphs/template_matching/index_building.pbtxt
-index 8228139..ea64087 100644
---- a/mediapipe/graphs/template_matching/index_building.pbtxt
-+++ b/mediapipe/graphs/template_matching/index_building.pbtxt
-@@ -63,7 +63,7 @@ node {
-   }
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/knift_float_400.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/knift_float_400.tflite"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/template_matching/template_matching_desktop.pbtxt b/mediapipe/graphs/template_matching/template_matching_desktop.pbtxt
-index d44a7e5..7edc657 100644
---- a/mediapipe/graphs/template_matching/template_matching_desktop.pbtxt
-+++ b/mediapipe/graphs/template_matching/template_matching_desktop.pbtxt
-@@ -52,7 +52,7 @@ node {
-   output_stream: "TENSORS:knift_feature_tensors"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/knift_float.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/knift_float.tflite"
-     }
-   }
- }
-@@ -76,7 +76,7 @@ node {
-         index_type: OPENCV_BF
-         detect_every_n_frame: 1
-       }
--      index_proto_filename: "mediapipe/models/knift_index.pb"
-+      index_proto_filename: "Assets/MediaPipe/SDK/Models/knift_index.pb"
-     }
-   }
- }
-@@ -87,7 +87,7 @@ node {
-   output_stream: "labeled_detections"
-   node_options: {
-     [type.googleapis.com/mediapipe.TimedBoxListIdToLabelCalculatorOptions] {
--      label_map_path: "mediapipe/models/knift_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/knift_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/template_matching/template_matching_mobile_cpu.pbtxt b/mediapipe/graphs/template_matching/template_matching_mobile_cpu.pbtxt
-index 2eceacb..09112e3 100644
---- a/mediapipe/graphs/template_matching/template_matching_mobile_cpu.pbtxt
-+++ b/mediapipe/graphs/template_matching/template_matching_mobile_cpu.pbtxt
-@@ -62,7 +62,7 @@ node {
-   output_stream: "TENSORS:knift_feature_tensors"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/knift_float.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/knift_float.tflite"
-       delegate { xnnpack {} }
-     }
-   }
-@@ -87,7 +87,7 @@ node {
-         index_type: OPENCV_BF
-         detect_every_n_frame: 1
-       }
--      index_proto_filename: "mediapipe/models/knift_index.pb"
-+      index_proto_filename: "Assets/MediaPipe/SDK/Models/knift_index.pb"
-     }
-   }
- }
-@@ -98,7 +98,7 @@ node {
-   output_stream: "labeled_detections"
-   node_options: {
-     [type.googleapis.com/mediapipe.TimedBoxListIdToLabelCalculatorOptions] {
--      label_map_path: "mediapipe/models/knift_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/knift_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/tracking/subgraphs/object_detection_cpu.pbtxt b/mediapipe/graphs/tracking/subgraphs/object_detection_cpu.pbtxt
-index 54d6af3..0569760 100644
---- a/mediapipe/graphs/tracking/subgraphs/object_detection_cpu.pbtxt
-+++ b/mediapipe/graphs/tracking/subgraphs/object_detection_cpu.pbtxt
-@@ -39,7 +39,7 @@ node {
-   output_stream: "TENSORS:detection_tensors"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/ssdlite_object_detection.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/ssdlite_object_detection.tflite"
-     }
-   }
- }
-@@ -122,7 +122,7 @@ node {
-   output_stream: "output_detections"
-   node_options: {
-     [type.googleapis.com/mediapipe.DetectionLabelIdToTextCalculatorOptions] {
--      label_map_path: "mediapipe/models/ssdlite_object_detection_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/ssdlite_object_detection_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/tracking/subgraphs/object_detection_gpu.pbtxt b/mediapipe/graphs/tracking/subgraphs/object_detection_gpu.pbtxt
-index f3cc2c8..3d3111d 100644
---- a/mediapipe/graphs/tracking/subgraphs/object_detection_gpu.pbtxt
-+++ b/mediapipe/graphs/tracking/subgraphs/object_detection_gpu.pbtxt
-@@ -39,7 +39,7 @@ node {
-   output_stream: "TENSORS_GPU:detection_tensors"
-   node_options: {
-     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
--      model_path: "mediapipe/models/ssdlite_object_detection.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/ssdlite_object_detection.tflite"
-     }
-   }
- }
-@@ -122,7 +122,7 @@ node {
-   output_stream: "output_detections"
-   node_options: {
-     [type.googleapis.com/mediapipe.DetectionLabelIdToTextCalculatorOptions] {
--      label_map_path: "mediapipe/models/ssdlite_object_detection_labelmap.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/ssdlite_object_detection_labelmap.txt"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/youtube8m/local_video_model_inference.pbtxt b/mediapipe/graphs/youtube8m/local_video_model_inference.pbtxt
-index 12ed2cb..1d1ddf2 100644
---- a/mediapipe/graphs/youtube8m/local_video_model_inference.pbtxt
-+++ b/mediapipe/graphs/youtube8m/local_video_model_inference.pbtxt
-@@ -118,7 +118,7 @@ node {
-   node_options: {
-     [type.googleapis.com/mediapipe.TopKScoresCalculatorOptions]: {
-       top_k: 3
--      label_map_path: "mediapipe/graphs/youtube8m/label_map.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/youtube8m_label_map.txt"
-     }
-   }
- }
-diff --git a/mediapipe/graphs/youtube8m/yt8m_dataset_model_inference.pbtxt b/mediapipe/graphs/youtube8m/yt8m_dataset_model_inference.pbtxt
-index 38a0257..0dd38bc 100644
---- a/mediapipe/graphs/youtube8m/yt8m_dataset_model_inference.pbtxt
-+++ b/mediapipe/graphs/youtube8m/yt8m_dataset_model_inference.pbtxt
-@@ -133,7 +133,7 @@ node {
-   node_options: {
-     [type.googleapis.com/mediapipe.TopKScoresCalculatorOptions]: {
-       top_k: 9
--      label_map_path: "mediapipe/graphs/youtube8m/label_map.txt"
-+      label_map_path: "Assets/MediaPipe/SDK/Models/youtube8m_label_map.txt"
-     }
-   }
- }
-diff --git a/mediapipe/modules/face_detection/face_detection_front_cpu.pbtxt b/mediapipe/modules/face_detection/face_detection_front_cpu.pbtxt
-index fda86fc..049b9d7 100644
---- a/mediapipe/modules/face_detection/face_detection_front_cpu.pbtxt
-+++ b/mediapipe/modules/face_detection/face_detection_front_cpu.pbtxt
-@@ -59,7 +59,7 @@ node {
-   output_stream: "TENSORS:detection_tensors"
-   options: {
-     [mediapipe.TfLiteInferenceCalculatorOptions.ext] {
--      model_path: "mediapipe/modules/face_detection/face_detection_front.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/face_detection_front.tflite"
-       delegate { xnnpack {} }
-     }
-   }
-diff --git a/mediapipe/modules/face_detection/face_detection_front_gpu.pbtxt b/mediapipe/modules/face_detection/face_detection_front_gpu.pbtxt
-index 74bc46d..e8f6153 100644
---- a/mediapipe/modules/face_detection/face_detection_front_gpu.pbtxt
-+++ b/mediapipe/modules/face_detection/face_detection_front_gpu.pbtxt
-@@ -59,7 +59,7 @@ node {
-   output_stream: "TENSORS_GPU:detection_tensors"
-   options: {
-     [mediapipe.TfLiteInferenceCalculatorOptions.ext] {
--      model_path: "mediapipe/modules/face_detection/face_detection_front.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/face_detection_front.tflite"
-     }
-   }
- }
-diff --git a/mediapipe/modules/face_landmark/face_landmark_cpu.pbtxt b/mediapipe/modules/face_landmark/face_landmark_cpu.pbtxt
-index 66ecf60..e9157d9 100644
---- a/mediapipe/modules/face_landmark/face_landmark_cpu.pbtxt
-+++ b/mediapipe/modules/face_landmark/face_landmark_cpu.pbtxt
-@@ -73,7 +73,7 @@ node {
-   output_stream: "TENSORS:output_tensors"
-   options: {
-     [mediapipe.TfLiteInferenceCalculatorOptions.ext] {
--      model_path: "mediapipe/modules/face_landmark/face_landmark.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/face_landmark.tflite"
-       delegate { xnnpack {} }
-     }
-   }
-diff --git a/mediapipe/modules/face_landmark/face_landmark_gpu.pbtxt b/mediapipe/modules/face_landmark/face_landmark_gpu.pbtxt
-index 3460d76..c00e82a 100644
---- a/mediapipe/modules/face_landmark/face_landmark_gpu.pbtxt
-+++ b/mediapipe/modules/face_landmark/face_landmark_gpu.pbtxt
-@@ -73,7 +73,7 @@ node {
-   output_stream: "TENSORS:output_tensors"
-   options: {
-     [mediapipe.TfLiteInferenceCalculatorOptions.ext] {
--      model_path: "mediapipe/modules/face_landmark/face_landmark.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/face_landmark.tflite"
-     }
-   }
- }
-diff --git a/mediapipe/modules/iris_landmark/iris_landmark_cpu.pbtxt b/mediapipe/modules/iris_landmark/iris_landmark_cpu.pbtxt
-index f2c4b04..3bf45ab 100644
---- a/mediapipe/modules/iris_landmark/iris_landmark_cpu.pbtxt
-+++ b/mediapipe/modules/iris_landmark/iris_landmark_cpu.pbtxt
-@@ -81,7 +81,7 @@ node {
-   output_stream: "TENSORS:output_tensors"
-   options: {
-     [mediapipe.TfLiteInferenceCalculatorOptions.ext] {
--      model_path: "mediapipe/modules/iris_landmark/iris_landmark.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/iris_landmark.tflite"
-       delegate { xnnpack {} }
-     }
-   }
-diff --git a/mediapipe/modules/iris_landmark/iris_landmark_gpu.pbtxt b/mediapipe/modules/iris_landmark/iris_landmark_gpu.pbtxt
-index 9fb7898..810808d 100644
---- a/mediapipe/modules/iris_landmark/iris_landmark_gpu.pbtxt
-+++ b/mediapipe/modules/iris_landmark/iris_landmark_gpu.pbtxt
-@@ -88,7 +88,7 @@ node {
-   output_stream: "TENSORS:output_tensors"
-   options: {
-     [mediapipe.TfLiteInferenceCalculatorOptions.ext] {
--      model_path: "mediapipe/modules/iris_landmark/iris_landmark.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/iris_landmark.tflite"
-     }
-   }
- }
-diff --git a/mediapipe/modules/pose_detection/pose_detection_cpu.pbtxt b/mediapipe/modules/pose_detection/pose_detection_cpu.pbtxt
-index a0e6a15..3f25790 100644
---- a/mediapipe/modules/pose_detection/pose_detection_cpu.pbtxt
-+++ b/mediapipe/modules/pose_detection/pose_detection_cpu.pbtxt
-@@ -70,7 +70,7 @@ node {
-   output_stream: "TENSORS:detection_tensors"
-   options: {
-     [mediapipe.TfLiteInferenceCalculatorOptions.ext] {
--      model_path: "mediapipe/modules/pose_detection/pose_detection.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/pose_detection.tflite"
-       delegate { xnnpack {} }
-     }
-   }
-diff --git a/mediapipe/modules/pose_detection/pose_detection_gpu.pbtxt b/mediapipe/modules/pose_detection/pose_detection_gpu.pbtxt
-index b75397b..2ce62a8 100644
---- a/mediapipe/modules/pose_detection/pose_detection_gpu.pbtxt
-+++ b/mediapipe/modules/pose_detection/pose_detection_gpu.pbtxt
-@@ -71,7 +71,7 @@ node {
-   output_stream: "TENSORS:detection_tensors"
-   options: {
-     [mediapipe.TfLiteInferenceCalculatorOptions.ext] {
--      model_path: "mediapipe/modules/pose_detection/pose_detection.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/pose_detection.tflite"
-     }
-   }
- }
-diff --git a/mediapipe/modules/pose_landmark/pose_landmark_upper_body_by_roi_cpu.pbtxt b/mediapipe/modules/pose_landmark/pose_landmark_upper_body_by_roi_cpu.pbtxt
-index 6a557ae..35d366f 100644
---- a/mediapipe/modules/pose_landmark/pose_landmark_upper_body_by_roi_cpu.pbtxt
-+++ b/mediapipe/modules/pose_landmark/pose_landmark_upper_body_by_roi_cpu.pbtxt
-@@ -108,7 +108,7 @@ node {
-   output_stream: "TENSORS:output_tensors"
-   options: {
-     [mediapipe.TfLiteInferenceCalculatorOptions.ext] {
--      model_path: "mediapipe/modules/pose_landmark/pose_landmark_upper_body.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/pose_landmark_upper_body.tflite"
-       delegate { xnnpack {} }
-     }
-   }
-diff --git a/mediapipe/modules/pose_landmark/pose_landmark_upper_body_by_roi_gpu.pbtxt b/mediapipe/modules/pose_landmark/pose_landmark_upper_body_by_roi_gpu.pbtxt
-index aadbd18..fb82cbd 100644
---- a/mediapipe/modules/pose_landmark/pose_landmark_upper_body_by_roi_gpu.pbtxt
-+++ b/mediapipe/modules/pose_landmark/pose_landmark_upper_body_by_roi_gpu.pbtxt
-@@ -108,7 +108,7 @@ node {
-   output_stream: "TENSORS:output_tensors"
-   options: {
-     [mediapipe.TfLiteInferenceCalculatorOptions.ext] {
--      model_path: "mediapipe/modules/pose_landmark/pose_landmark_upper_body.tflite"
-+      model_path: "Assets/MediaPipe/SDK/Models/pose_landmark_upper_body.tflite"
-     }
-   }
- }
+diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
+index 9347fc0..a346675 100644
+--- a/mediapipe/util/BUILD
++++ b/mediapipe/util/BUILD
+@@ -149,7 +149,7 @@ cc_library(
+ cc_library(
+     name = "resource_util",
+     srcs = select({
+-        "//conditions:default": ["resource_util.cc"],
++        "//conditions:default": ["resource_util_unity.cc"],
+         "//mediapipe:android": ["resource_util_android.cc"],
+         "//mediapipe:ios": ["resource_util_apple.cc"],
+         "//mediapipe:macos": ["resource_util.cc"],
+@@ -164,7 +164,7 @@ cc_library(
+         "//mediapipe:macos": [],
+     }),
+     visibility = [
+-        "//mediapipe/framework:mediapipe_internal",
++        "//visibility:public",
+     ],
+     deps = [
+         "//mediapipe/framework/port:ret_check",
+diff --git a/mediapipe/util/resource_util.h b/mediapipe/util/resource_util.h
+index d55706a..b7d9b39 100644
+--- a/mediapipe/util/resource_util.h
++++ b/mediapipe/util/resource_util.h
+@@ -22,6 +22,9 @@
+ 
+ namespace mediapipe {
+ 
++const char* GetResourceRootPath();
++void SetResourceRootPath(const std::string& path);
++
+ // Given a path to a resource, this function attempts to provide an absolute
+ // path with which it can be accessed as a file.
+ // - If the input path is an absolute path, it is returned as-is.
+diff --git a/mediapipe/util/resource_util_unity.cc b/mediapipe/util/resource_util_unity.cc
+new file mode 100644
+index 0000000..f9523fe
+--- /dev/null
++++ b/mediapipe/util/resource_util_unity.cc
+@@ -0,0 +1,93 @@
++// Copyright 2019 The MediaPipe Authors.
++//
++// Licensed under the Apache License, Version 2.0 (the "License");
++// you may not use this file except in compliance with the License.
++// You may obtain a copy of the License at
++//
++//      http://www.apache.org/licenses/LICENSE-2.0
++//
++// Unless required by applicable law or agreed to in writing, software
++// distributed under the License is distributed on an "AS IS" BASIS,
++// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++// See the License for the specific language governing permissions and
++// limitations under the License.
++
++// `PathToResourceAsFile` is based on mediapipe/util/resource_util_android.cc and
++// `GetResourceContents' is copied from mediapipe/util/resource_util.cc
++
++#include "mediapipe/util/resource_util.h"
++
++#include "absl/flags/flag.h"
++#include "absl/strings/str_split.h"
++#include "mediapipe/framework/deps/file_path.h"
++#include "mediapipe/framework/port/file_helpers.h"
++#include "mediapipe/framework/port/ret_check.h"
++
++namespace mediapipe {
++
++namespace {
++const char* resourceRootPath;
++
++::mediapipe::StatusOr<std::string> PathToResourceAsFileInternal(const std::string& path) {
++  RET_CHECK_OK(mediapipe::file::Exists(path));
++
++  return path;
++}
++}
++
++const char* GetResourceRootPath() {
++  if (resourceRootPath == nullptr) {
++    return "";
++  }
++
++  return resourceRootPath;
++}
++
++void SetResourceRootPath(const std::string& path) {
++  auto str_ptr = new char[path.length() + 1];
++  snprintf(str_ptr, path.length() + 1, path.c_str());
++
++  if (resourceRootPath != nullptr) {
++    delete[] resourceRootPath;
++  }
++
++  resourceRootPath = str_ptr;
++}
++
++::mediapipe::StatusOr<std::string> PathToResourceAsFile(
++    const std::string& path) {
++
++  if (absl::StartsWith(path, "/")) {
++    return path;
++  }
++
++  LOG(INFO) << "Path: " << path;
++
++  // Try to load a relative path
++  {
++    auto resource_path = mediapipe::file::JoinPath(GetResourceRootPath(), path);
++    auto status_or_path = PathToResourceAsFileInternal(resource_path);
++    if (status_or_path.ok()) {
++      LOG(INFO) << "Successfully loaded: " << path;
++      return status_or_path;
++    }
++  }
++
++  // If that fails, assume it was a relative path, and try just the base name.
++  {
++    const size_t last_slash_idx = path.find_last_of("\\/");
++    CHECK_NE(last_slash_idx, std::string::npos);  // Make sure it's a path.
++    auto base_name = path.substr(last_slash_idx + 1);
++    auto asset_path = mediapipe::file::JoinPath(GetResourceRootPath(), base_name);
++    auto status_or_path = PathToResourceAsFileInternal(asset_path);
++    if (status_or_path.ok()) LOG(INFO) << "Successfully loaded: " << asset_path;
++    return status_or_path;
++  }
++}
++
++::mediapipe::Status GetResourceContents(const std::string& path,
++                                        std::string* output) {
++  return mediapipe::file::GetContents(path, output);
++}
++
++}  // namespace mediapipe

@@ -14,8 +14,6 @@ obj/
 
 bazel-*
 
-Assets/MediaPipe/SDK/Models/*
-!Assets/MediaPipe/SDK/Models/.gitkeep
+Assets/StreamingAssets*
 Assets/MediaPipe/SDK/Plugins/Protobuf*
-
 Assets/MediaPipe/SDK/Scripts/Protobuf/**/*.cs
