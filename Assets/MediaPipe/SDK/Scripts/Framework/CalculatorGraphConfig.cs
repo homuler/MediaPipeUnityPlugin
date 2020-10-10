@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 
 using MpCalculatorGraphConfig = System.IntPtr;
-using ProtobufLogHandlerPtr = System.IntPtr;
 
 namespace Mediapipe {
   public class CalculatorGraphConfig : ResourceHandle {
@@ -36,7 +35,6 @@ namespace Mediapipe {
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     private delegate void ProtobufLogHandler(int level, string filename, int line, string message);
     private static readonly ProtobufLogHandler protobufLogHandler = LogProtobufMessage;
-    private static ProtobufLogHandlerPtr protobufLogHandlerPtr;
 
     private static void LogProtobufMessage(int level, string filename, int line, string message) {
       Debug.Log($"[libprotobuf {FormatProtobufLogLevel(level)} {filename}:{line}] {message}");
