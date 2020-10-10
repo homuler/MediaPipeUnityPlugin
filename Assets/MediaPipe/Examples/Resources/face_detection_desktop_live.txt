@@ -12,10 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# MediaPipe graph that performs object detection with TensorFlow Lite on CPU.
-# Used in the examples in
-# mediapipe/examples/desktop/object_detection:object_detection_cpu.
-
 input_stream: "input_video"
 output_stream: "output_detections"
 
@@ -43,19 +39,19 @@ node {
   output_stream: "throttled_input_video"
 }
 
-# Transforms the input image on CPU to a 320x320 image. To scale the image, by
-# default it uses the STRETCH scale mode that maps the entire input image to the
-# entire transformed image. As a result, image aspect ratio may be changed and
-# objects in the image may be deformed (stretched or squeezed), but the object
-# detection model used in this graph is agnostic to that deformation.
+# Transforms the input image on CPU to a 128x128 image. To scale the input
+# image, the scale_mode option is set to FIT to preserve the aspect ratio,
+# resulting in potential letterboxing in the transformed image.
 node: {
   calculator: "ImageTransformationCalculator"
   input_stream: "IMAGE:throttled_input_video"
-  output_stream: "IMAGE:transformed_input_video"
+  output_stream: "IMAGE:transformed_input_video_cpu"
+  output_stream: "LETTERBOX_PADDING:letterbox_padding"
   node_options: {
     [type.googleapis.com/mediapipe.ImageTransformationCalculatorOptions] {
-      output_width: 320
-      output_height: 320
+      output_width: 128
+      output_height: 128
+      scale_mode: FIT
     }
   }
 }
@@ -64,7 +60,7 @@ node: {
 # TfLiteTensor.
 node {
   calculator: "TfLiteConverterCalculator"
-  input_stream: "IMAGE:transformed_input_video"
+  input_stream: "IMAGE:transformed_input_video_cpu"
   output_stream: "TENSORS:image_tensor"
 }
 
@@ -77,7 +73,7 @@ node {
   output_stream: "TENSORS:detection_tensors"
   node_options: {
     [type.googleapis.com/mediapipe.TfLiteInferenceCalculatorOptions] {
-      model_path: "Assets/Mediapipe/SDK/Models/ssdlite_object_detection.tflite"
+      model_path: "Assets/MediaPipe/SDK/Models/face_detection_front.tflite"
     }
   }
 }
@@ -89,25 +85,19 @@ node {
   output_side_packet: "anchors"
   node_options: {
     [type.googleapis.com/mediapipe.SsdAnchorsCalculatorOptions] {
-      num_layers: 6
-      min_scale: 0.2
-      max_scale: 0.95
-      input_size_height: 320
-      input_size_width: 320
+      num_layers: 4
+      min_scale: 0.1484375
+      max_scale: 0.75
+      input_size_height: 128
+      input_size_width: 128
       anchor_offset_x: 0.5
       anchor_offset_y: 0.5
+      strides: 8
       strides: 16
-      strides: 32
-      strides: 64
-      strides: 128
-      strides: 256
-      strides: 512
+      strides: 16
+      strides: 16
       aspect_ratios: 1.0
-      aspect_ratios: 2.0
-      aspect_ratios: 0.5
-      aspect_ratios: 3.0
-      aspect_ratios: 0.3333
-      reduce_boxes_in_lowest_layer: true
+      fixed_anchor_size: true
     }
   }
 }
@@ -122,17 +112,21 @@ node {
   output_stream: "DETECTIONS:detections"
   node_options: {
     [type.googleapis.com/mediapipe.TfLiteTensorsToDetectionsCalculatorOptions] {
-      num_classes: 91
-      num_boxes: 2034
-      num_coords: 4
-      ignore_classes: 0
+      num_classes: 1
+      num_boxes: 896
+      num_coords: 16
+      box_coord_offset: 0
+      keypoint_coord_offset: 4
+      num_keypoints: 6
+      num_values_per_keypoint: 2
       sigmoid_score: true
-      apply_exponential_on_box_size: true
-      x_scale: 10.0
-      y_scale: 10.0
-      h_scale: 5.0
-      w_scale: 5.0
-      min_score_thresh: 0.6
+      score_clipping_thresh: 100.0
+      reverse_output_order: true
+      x_scale: 128.0
+      y_scale: 128.0
+      h_scale: 128.0
+      w_scale: 128.0
+      min_score_thresh: 0.5
     }
   }
 }
@@ -144,23 +138,34 @@ node {
   output_stream: "filtered_detections"
   node_options: {
     [type.googleapis.com/mediapipe.NonMaxSuppressionCalculatorOptions] {
-      min_suppression_threshold: 0.4
-      max_num_detections: 3
+      min_suppression_threshold: 0.3
       overlap_type: INTERSECTION_OVER_UNION
+      algorithm: WEIGHTED
       return_empty_detections: true
     }
   }
 }
 
-# Maps detection label IDs to the corresponding label text. The label map is
-# provided in the label_map_path option.
+# Maps detection label IDs to the corresponding label text ("Face"). The label
+# map is provided in the label_map_path option.
 node {
   calculator: "DetectionLabelIdToTextCalculator"
   input_stream: "filtered_detections"
-  output_stream: "output_detections"
+  output_stream: "labeled_detections"
   node_options: {
     [type.googleapis.com/mediapipe.DetectionLabelIdToTextCalculatorOptions] {
-      label_map_path: "Assets/Mediapipe/SDK/Models/ssdlite_object_detection_labelmap.txt"
+      label_map_path: "Assets/MediaPipe/SDK/Models/face_detection_front_labelmap.txt"
     }
   }
+}
+
+# Adjusts detection locations (already normalized to [0.f, 1.f]) on the
+# letterboxed image (after image transformation with the FIT scale mode) to the
+# corresponding locations on the same image with the letterbox removed (the
+# input image to the graph before image transformation).
+node {
+  calculator: "DetectionLetterboxRemovalCalculator"
+  input_stream: "DETECTIONS:labeled_detections"
+  input_stream: "LETTERBOX_PADDING:letterbox_padding"
+  output_stream: "DETECTIONS:output_detections"
 }

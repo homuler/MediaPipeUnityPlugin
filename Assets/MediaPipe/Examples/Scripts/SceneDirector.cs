@@ -21,12 +21,12 @@ public class SceneDirector : MonoBehaviour {
   const int MAX_WAIT_FRAME = 50;
 
   void OnEnable() {
-    var nameForGlog = Path.Combine(Application.dataPath, "MediapipePlugin");
+    var nameForGlog = Path.Combine(Application.dataPath, "MediaPipePlugin");
 
     #if UNITY_EDITOR || UNITY_STANDALONE
-      var logDir = Path.Combine(Application.dataPath.Replace("/Assets", ""), "Logs", "Mediapipe");
+      var logDir = Path.Combine(Application.dataPath.Replace("/Assets", ""), "Logs", "MediaPipe");
     #else
-      var logDir = Path.Combine(Application.persistentDataPath, "Logs", "Mediapipe");
+      var logDir = Path.Combine(Application.persistentDataPath, "Logs", "MediaPipe");
     #endif
 
     if (!Directory.Exists(logDir)) {

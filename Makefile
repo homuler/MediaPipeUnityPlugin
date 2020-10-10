@@ -2,7 +2,7 @@ BUILD := default
 MODE := gpu
 
 builddir := .build
-sdkdir := Assets/Mediapipe/SDK
+sdkdir := Assets/MediaPipe/SDK
 plugindir := $(sdkdir)/Plugins
 modeldir := $(sdkdir)/Models
 

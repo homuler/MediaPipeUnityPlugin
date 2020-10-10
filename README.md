@@ -1,5 +1,5 @@
-# Mediapipe Unity Plugin
-This is a sample Unity (2019.4.10f1) Plugin to use Mediapipe.
+# MediaPipe Unity Plugin
+This is a sample Unity (2019.4.10f1) Plugin to use MediaPipe.
 
 ## Platforms
 - [x] Linux Desktop (tested on ArchLinux)
@@ -13,7 +13,7 @@ Please be sure to install required packages and check if you can run the officia
 
 ### OpenCV
 By default, it is assumed that you use OpenCV 3 and it is installed under `/usr` (e.g. `/usr/lib/libopencv_core.so`).
-If your version or path is different, please edit [C/third_party/opencv_linux.BUILD](https://github.com/homuler/MediapipeUnityPlugin/blob/master/C/third_party/opencv_linux.BUILD) and [C/WORKSPACE](https://github.com/homuler/MediapipeUnityPlugin/blob/master/C/WORKSPACE).
+If your version or path is different, please edit [C/third_party/opencv_linux.BUILD](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/third_party/opencv_linux.BUILD) and [C/WORKSPACE](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/WORKSPACE).
 
 ### Protocol Buffer
 The protocol buffer compiler is required.
@@ -21,8 +21,8 @@ It is also necessary to install .NET Core SDK(3.x) and .NET Core runtime 2.1 to 
 
 ### Build
 ```sh
-git clone https://github.com/homuler/MediapipeUnityPlugin.git
-cd MediapipeUnityPlugin
+git clone https://github.com/homuler/MediaPipeUnityPlugin.git
+cd MediaPipeUnityPlugin
 
 # build libraries
 make
@@ -34,15 +34,15 @@ make install
 ```
 
 You may want to edit BUILD file before building so as to only include necessary calculators to reduce the library size.
-For more information, please see the [BUILD file](https://github.com/homuler/MediapipeUnityPlugin/blob/master/C/mediapipe_api/BUILD).
+For more information, please see the [BUILD file](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/mediapipe_api/BUILD).
 
 ### Models
-The models used in example scenes are copied under `Assets/Mediapipe/SDK/Models` by running `make install`.
+The models used in example scenes are copied under `Assets/MediaPipe/SDK/Models` by running `make install`.
 
 If you'd like to use other models, you should place them so that Unity can read.
-For example, if your graph depends on `face_detection_front.tflite`, then you can place the model file under `Assets/Mediapipe/SDK/Models/` and set the path to the `model_path` value in your config file.
+For example, if your graph depends on `face_detection_front.tflite`, then you can place the model file under `Assets/MediaPipe/SDK/Models/` and set the path to the `model_path` value in your config file.
 
-If neccessary, you can also change the model paths for subgraphs (e.g. FaceDetectionFrontCpu) by updating [mediapipe_model_path.diff](https://github.com/homuler/MediapipeUnityPlugin/blob/master/C/third_party/mediapipe_model_path.diff).
+If neccessary, you can also change the model paths for subgraphs (e.g. FaceDetectionFrontCpu) by updating [mediapipe_model_path.diff](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/third_party/mediapipe_model_path.diff).
 
 ## Example Scenes
 - Hello World!
@@ -56,7 +56,7 @@ If neccessary, you can also change the model paths for subgraphs (e.g. FaceDetec
 
 ### Troubleshooting
 #### DllNotFoundException: mediapipe_c
-[OpenCV's path](https://github.com/homuler/MediapipeUnityPlugin#opencv) may not be configured properly.\
+[OpenCV's path](https://github.com/homuler/MediaPipeUnityPlugin#opencv) may not be configured properly.\
 
 If you're sure the path is correct, please check on **Load on startup** in the plugin inspector, click **Apply** button, and restart Unity Editor.
 Some helpful logs will be output in the console.

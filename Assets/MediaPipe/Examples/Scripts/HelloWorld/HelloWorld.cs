@@ -14,8 +14,8 @@ public class HelloWorld : MonoBehaviour {
   private Coroutine graphRunner;
 
   void OnEnable() {
-    var nameForGlog = Path.Combine(Application.dataPath, "MediapipePlugin");
-    var logDir = Path.Combine(Application.dataPath.Replace("/Assets", ""), "Logs", "Mediapipe");
+    var nameForGlog = Path.Combine(Application.dataPath, "MediaPipePlugin");
+    var logDir = Path.Combine(Application.dataPath.Replace("/Assets", ""), "Logs", "MediaPipe");
 
     if (!Directory.Exists(logDir)) {
       Directory.CreateDirectory(logDir);
