@@ -40,10 +40,9 @@ public class SceneDirector : MonoBehaviour {
       gpuHelper = new GlCalculatorHelper();
       gpuHelper.InitializeForTest(gpuResources);
     }
-    #if UNITY_EDITOR || UNITY_STANDALONE
-      DemoAssetManager.Instance.LoadAllAssetsAsync();
-      ResourceUtil.InitializeAssetManager(DemoAssetManager.Instance);
-    #endif
+
+    DemoAssetManager.Instance.LoadAllAssetsAsync();
+    ResourceUtil.InitializeResourceManager(DemoAssetManager.Instance);
   }
 
   void OnDisable() {

@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.mediapipe.framework.AndroidAssetUtil;
 import com.unity3d.player.UnityPlayerActivity;
 
+// An example extending UnityPlayerActivity
 public class MediaPipeUnityPlayerActivity extends UnityPlayerActivity {
   static {
     // Load all native libraries needed by the app.

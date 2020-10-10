@@ -346,14 +346,12 @@ namespace Mediapipe {
     public static extern unsafe MpNormalizedRectVector MpPacketGetNormalizedRectVector(MpPacket packet);
 
 
-  #if UNITY_EDITOR || UNITY_STANDALONE
     /// Resource Util API
     [DllImport (MediaPipeLibrary)]
-    public static extern unsafe void MpAssetManagerInitialize([MarshalAs(UnmanagedType.FunctionPtr)]CacheFilePathResolverPtr resolver,[MarshalAs(UnmanagedType.FunctionPtr)]ReadFileHandlerPtr handler);
+    public static extern unsafe void MpResourceManagerInitialize([MarshalAs(UnmanagedType.FunctionPtr)]CacheFilePathResolverPtr resolver,[MarshalAs(UnmanagedType.FunctionPtr)]ReadFileHandlerPtr handler);
 
     [DllImport (MediaPipeLibrary)]
     public static extern unsafe void MpStringCopy(IntPtr dest, byte[] src, int size);
-  #endif
 
     /// SidePacket API
 

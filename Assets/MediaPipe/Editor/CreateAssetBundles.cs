@@ -14,6 +14,6 @@ public class CreateAssetBundles
         }
         BuildPipeline.BuildAssetBundles(assetBundleDirectory,
                                         BuildAssetBundleOptions.None,
-                                        BuildTarget.StandaloneWindows);
+                                        EditorUserBuildSettings.activeBuildTarget);
     }
 }

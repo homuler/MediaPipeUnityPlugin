@@ -2,8 +2,8 @@ using System;
 
 namespace Mediapipe {
   public class ResourceUtil {
-    public static void InitializeAssetManager(AssetManager assetManager) {
-      UnsafeNativeMethods.MpAssetManagerInitialize(assetManager.GetCacheFilePathResolverPtr(), assetManager.GetReadFileHandlerPtr());
+    public static void InitializeResourceManager(AssetManager assetManager) {
+      UnsafeNativeMethods.MpResourceManagerInitialize(assetManager.GetCacheFilePathResolverPtr(), assetManager.GetReadFileHandlerPtr());
     }
 
     public static void CopyBytes(IntPtr dst, byte[] src) {

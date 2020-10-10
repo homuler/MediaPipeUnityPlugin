@@ -1,14 +1,14 @@
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
-index 9347fc0..b42c20e 100644
+index 9347fc0..0829d76 100644
 --- a/mediapipe/util/BUILD
 +++ b/mediapipe/util/BUILD
-@@ -146,10 +146,20 @@ cc_library(
+@@ -146,11 +146,20 @@ cc_library(
      ],
  )
  
 +cc_library(
-+    name = "asset_manager",
-+    hdrs = ["asset_manager.h"],
++    name = "resource_manager",
++    hdrs = ["resource_manager.h"],
 +    deps = [
 +        "//mediapipe/framework/port:singleton",
 +        "//mediapipe/framework/port:statusor",
@@ -20,23 +20,31 @@ index 9347fc0..b42c20e 100644
      name = "resource_util",
      srcs = select({
 -        "//conditions:default": ["resource_util.cc"],
+-        "//mediapipe:android": ["resource_util_android.cc"],
 +        "//conditions:default": ["resource_util_unity.cc"],
-         "//mediapipe:android": ["resource_util_android.cc"],
          "//mediapipe:ios": ["resource_util_apple.cc"],
          "//mediapipe:macos": ["resource_util.cc"],
-@@ -173,6 +183,7 @@ cc_library(
+     }),
+@@ -173,13 +182,7 @@ cc_library(
          "@com_google_absl//absl/strings",
      ] + select({
          "//conditions:default": [
-+            ":asset_manager",
-             "//mediapipe/framework/deps:file_path",
-             "//mediapipe/framework/port:file_helpers",
-             "@com_google_absl//absl/flags:flag",
-diff --git a/mediapipe/util/asset_manager.h b/mediapipe/util/asset_manager.h
+-            "//mediapipe/framework/deps:file_path",
+-            "//mediapipe/framework/port:file_helpers",
+-            "@com_google_absl//absl/flags:flag",
+-        ],
+-        "//mediapipe:android": [
+-            "//mediapipe/util/android:asset_manager_util",
+-            "//mediapipe/util/android/file/base",
++            ":resource_manager",
+         ],
+         "//mediapipe:ios": [],
+         "//mediapipe:macos": [
+diff --git a/mediapipe/util/resource_manager.h b/mediapipe/util/resource_manager.h
 new file mode 100644
-index 0000000..bd47f39
+index 0000000..ffe126f
 --- /dev/null
-+++ b/mediapipe/util/asset_manager.h
++++ b/mediapipe/util/resource_manager.h
 @@ -0,0 +1,46 @@
 +// Copyright 2019 The MediaPipe Authors.
 +//
@@ -52,8 +60,8 @@ index 0000000..bd47f39
 +// See the License for the specific language governing permissions and
 +// limitations under the License.
 +
-+#ifndef MEDIAPIPE_UTIL_ASSET_MANAGER_H_
-+#define MEDIAPIPE_UTIL_ASSET_MANAGER_H_
++#ifndef MEDIAPIPE_UTIL_RESOURCE_MANAGER_H_
++#define MEDIAPIPE_UTIL_RESOURCE_MANAGER_H_
 +
 +#include <string>
 +#include <vector>
@@ -64,10 +72,10 @@ index 0000000..bd47f39
 +namespace mediapipe {
 +
 +// see mediapipe/util/android/asset_manager_util.h
-+class AssetManager {
++class ResourceManager {
 + public:
-+  AssetManager(const AssetManager&) = delete;
-+  AssetManager& operator=(const AssetManager&) = delete;
++  ResourceManager(const ResourceManager&) = delete;
++  ResourceManager& operator=(const ResourceManager&) = delete;
 +
 +  // Reads a file into output. Returns true on success, false otherwise.
 +  bool ReadFile(const std::string& filename, std::string* output);
@@ -76,21 +84,21 @@ index 0000000..bd47f39
 +
 + private:
 +  // Private constructor since this class is meant to be a singleton.
-+  AssetManager() = default;
++  ResourceManager() = default;
 +
-+  friend class Singleton<AssetManager>;
++  friend class Singleton<ResourceManager>;
 +};
 +
 +}  // namespace mediapipe
 +
-+#endif  // MEDIAPIPE_UTIL_ASSET_MANAGER_H_
++#endif  // MEDIAPIPE_UTIL_RESOURCE_MANAGER_H_
 diff --git a/mediapipe/util/resource_util_unity.cc b/mediapipe/util/resource_util_unity.cc
 new file mode 100644
-index 0000000..62544ed
+index 0000000..6ddbefa
 --- /dev/null
 +++ b/mediapipe/util/resource_util_unity.cc
 @@ -0,0 +1,20 @@
-+#include "mediapipe/util/asset_manager.h"
++#include "mediapipe/util/resource_manager.h"
 +#include "mediapipe/util/resource_util.h"
 +#include "mediapipe/framework/port/singleton.h"
 +#include "mediapipe/framework/port/ret_check.h"
@@ -99,12 +107,12 @@ index 0000000..62544ed
 +
 +::mediapipe::StatusOr<std::string> PathToResourceAsFile(
 +    const std::string& path) {
-+  return Singleton<AssetManager>::get()->CachedFileFromAsset(path);
++  return Singleton<ResourceManager>::get()->CachedFileFromAsset(path);
 +}
 +
 +::mediapipe::Status GetResourceContents(const std::string& path,
 +                                        std::string* output) {
-+  RET_CHECK(Singleton<AssetManager>::get()->ReadFile(path, output))
++  RET_CHECK(Singleton<ResourceManager>::get()->ReadFile(path, output))
 +    << "could not read asset: " << path;
 +  return mediapipe::OkStatus();
 +}
