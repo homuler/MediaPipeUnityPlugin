@@ -4,7 +4,7 @@ MODE := gpu
 builddir := .build
 sdkdir := Assets/MediaPipe/SDK
 plugindir := $(sdkdir)/Plugins
-modeldir := Assets/StreamingAssets
+modeldir := $(sdkdir)/Models
 
 bazelflags.default := -c opt
 bazelflags.debug := --compilation_mode=dbg

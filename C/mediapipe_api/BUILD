@@ -1,4 +1,4 @@
-load("@rules_pkg//:pkg.bzl", "pkg_zip")
+load("//mediapipe_api:import_model.bzl", "pkg_model")
 
 cc_library(
     name = "mediapipe_c",
@@ -84,7 +84,7 @@ cc_library(
     alwayslink = True,
 )
 
-pkg_zip(
+pkg_model(
     name = "mediapipe_models",
     srcs = [
         "@com_google_mediapipe//mediapipe/models:face_detection_front.tflite",
