@@ -45,10 +45,16 @@ public class SceneDirector : MonoBehaviour {
       gpuHelper.InitializeForTest(gpuResources);
     }
 
-    ResourceUtil.InitializeResourceManager(AssetBundleManager.Instance);
+    #if UNITY_EDITOR
+      var resourceManager = LocalAssetManager.Instance;
+    #else
+      var resourceManager = AssetBundleManager.Instance;
+    #endif
+
+    ResourceUtil.InitializeResourceManager(resourceManager);
 
     try {
-      await AssetBundleManager.Instance.LoadAllAssetsAsync();
+      await resourceManager.LoadAllAssetsAsync();
       IsAssetLoaded = true;
     } catch (Exception e) {
       Debug.LogError(e);

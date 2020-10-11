@@ -1,0 +1,51 @@
+using Mediapipe;
+using System;
+using System.IO;
+using System.Threading.Tasks;
+using UnityEngine;
+
+/// <summary>
+///   Sample implementation of ResourceManager, that reads files from local filesystem.
+///   This class is used in UnityEditor environment.
+/// </summary>
+public sealed class LocalAssetManager : ResourceManager {
+  private static readonly Lazy<LocalAssetManager> lazy = new Lazy<LocalAssetManager>(() => new LocalAssetManager());
+  public static LocalAssetManager Instance { get { return lazy.Value; } }
+  private readonly static string ModelRootPath = Path.Combine(Application.dataPath, "MediaPipe", "SDK", "Models");
+
+  private LocalAssetManager() : base() {}
+
+  /// <summary>dummy method</summary>
+  public async Task LoadAllAssetsAsync() {
+    await Task.CompletedTask;
+  }
+
+  protected override string CacheFileFromAsset(string assetPath) {
+    var assetName = GetAssetName(assetPath);
+    var localPath = GetLocalFilePath(assetName);
+
+    if (File.Exists(localPath)) {
+      return localPath;
+    }
+
+    return null;
+  }
+
+  protected override bool ReadFile(string path, IntPtr dst) {
+    var localPath = CacheFileFromAsset(path);
+    var asset = File.ReadAllBytes(localPath);
+    ResourceUtil.CopyBytes(dst, asset);
+    return true;
+  }
+
+  private string GetAssetName(string assetPath) {
+    var assetName = Path.GetFileNameWithoutExtension(assetPath);
+    var extension = Path.GetExtension(assetPath);
+
+    return extension == ".tflite" ? $"{assetName}.bytes" : $"{assetName}.txt";
+  }
+
+  private string GetLocalFilePath(string assetName) {
+    return Path.Combine(ModelRootPath, assetName);
+  }
+}
