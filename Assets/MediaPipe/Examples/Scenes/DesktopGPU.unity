@@ -684,7 +684,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 20}
+  m_SizeDelta: {x: 0, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &299591418
 MonoBehaviour:
@@ -1087,7 +1087,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 300, y: 30}
+  m_SizeDelta: {x: 300, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &863921821
 MonoBehaviour:
@@ -1192,7 +1192,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fda073a1f847adffae1d745c3f44b31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  helloWorldGraph: {fileID: 0}
   faceDetectionGraph: {fileID: 5680418270291803701, guid: 1ea96a89d69586893965c51002760135,
     type: 3}
   faceMeshGraph: {fileID: 7004806987071314289, guid: 07b21bf89eb5b04bf805c2b5f1e06e9c,
@@ -1401,7 +1400,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 20}
+  m_SizeDelta: {x: 0, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &972049759
 MonoBehaviour:
@@ -1945,8 +1944,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -150, y: -15}
-  m_SizeDelta: {x: 300, y: 30}
+  m_AnchoredPosition: {x: -150, y: -25}
+  m_SizeDelta: {x: 300, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1208954760
 MonoBehaviour:
