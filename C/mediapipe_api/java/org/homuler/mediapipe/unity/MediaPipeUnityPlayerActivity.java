@@ -5,7 +5,6 @@ import android.util.Log;
 import com.google.mediapipe.framework.AndroidAssetUtil;
 import com.unity3d.player.UnityPlayerActivity;
 
-// An example extending UnityPlayerActivity
 public class MediaPipeUnityPlayerActivity extends UnityPlayerActivity {
   static {
     // Load all native libraries needed by the app.
@@ -15,8 +14,7 @@ public class MediaPipeUnityPlayerActivity extends UnityPlayerActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    // Initialize asset manager so that MediaPipe native libraries can access the app assets, e.g.,
-    // binary graphs.
+    // Initialize asset manager so that MediaPipe native libraries can access the app assets, e.g., binary graphs.
     boolean res = AndroidAssetUtil.initializeNativeAssetManager(this);
   }
 }

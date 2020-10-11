@@ -3,7 +3,7 @@ This is a sample Unity (2019.4.10f1) Plugin to use MediaPipe.
 
 ## Platforms
 - [x] Linux Desktop (tested on ArchLinux)
-- [ ] Android (under construction)
+- [x] Android (ARM v7)
 - [ ] OS X
 - [ ] iOS
 
@@ -19,30 +19,59 @@ If your version or path is different, please edit [C/third_party/opencv_linux.BU
 The protocol buffer compiler is required.
 It is also necessary to install .NET Core SDK(3.x) and .NET Core runtime 2.1 to build `Google.Protobuf.dll`.
 
-### Build
+## Build
+### Libraries
+1. Clone the repository
 ```sh
 git clone https://github.com/homuler/MediaPipeUnityPlugin.git
 cd MediaPipeUnityPlugin
+```
 
-# build libraries
-make
+2. Build native libraries
+```sh
+# For Desktop GPU
+make gpu
 
-# Or if you prefer to run graphs on CPU
-#    make MODE=cpu
+# For Desktop CPU
+make cpu
 
+# For Android
+make android_arm
+```
+
+3. Copy the libraries and model files under `Assets`
+```sh
 make install
 ```
 
-You may want to edit BUILD file before building so as to only include necessary calculators to reduce the library size.
-For more information, please see the [BUILD file](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/mediapipe_api/BUILD).
+Note that you cannot build libraries for multiple platforms at the same time,
+because the built result will be overwritten.\
+If you'd like to build `libmediapipe_c.so` and `mediapipe_android.aar`, please `make` them individually.
+```sh
+make gpu
+make install
+
+make android_arm
+make install
+```
 
 ### Models
-The models used in example scenes are copied under `Assets/StreamingAssets` by running `make install`.
+The models used in example scenes are copied under `Assets/MediaPipe/SDK/Models` by running `make install`.
 
-If you'd like to use other models, you should place them so that Unity can read.
-For example, if your graph depends on `face_detection_front.tflite`, then you can place the model file under `Assets/StreamingAssets/` and set the path to the `model_path` value in your config file.
+## Run example scenes
+### UnityEditor
+In UnityEditor, you can run examples after running `make gpu/cpu` and `make install`.
 
-If neccessary, you can also change the model paths for subgraphs (e.g. FaceDetectionFrontCpu) by updating [mediapipe_model_path.diff](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/third_party/mediapipe_model_path.diff).
+### Desktop
+To make models files to be included, it is neccessary to build an AssetBundle before.
+You can build it by clicking **Assets > Build AssetBundles** from the menu.\
+The AssetBundle file will be created under `Assets/StreamingAssets`.
+
+### Android
+See [Desktop](#Desktop).\
+Example scenes for mobile device is not implemented yet, but `DesktopGPU` scene can be run on Android device.
+
+Model files can be included in `mediapipe_android.aar` instead, and in that case, skip the AssetBundle build step.
 
 ## Example Scenes
 - Hello World!
@@ -56,7 +85,7 @@ If neccessary, you can also change the model paths for subgraphs (e.g. FaceDetec
 
 ### Troubleshooting
 #### DllNotFoundException: mediapipe_c
-[OpenCV's path](https://github.com/homuler/MediaPipeUnityPlugin#opencv) may not be configured properly.\
+[OpenCV's path](https://github.com/homuler/MediaPipeUnityPlugin#opencv) may not be configured properly.
 
 If you're sure the path is correct, please check on **Load on startup** in the plugin inspector, click **Apply** button, and restart Unity Editor.
 Some helpful logs will be output in the console.
@@ -71,7 +100,6 @@ InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000_mediapipe/
 ### TODO
 - [ ] Prepare API Documents
 - [ ] Box Tracking (on CPU/GPU)
-- [ ] Android
 - [ ] iOS
 - [ ] Windows
 
