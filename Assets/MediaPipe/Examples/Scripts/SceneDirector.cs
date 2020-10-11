@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Collections;
 
@@ -20,6 +21,9 @@ public class SceneDirector : MonoBehaviour {
 
   const int MAX_WAIT_FRAME = 50;
 
+  bool IsAssetLoaded = false;
+  bool IsAssetLoadFailed = false;
+
   void OnEnable() {
     var nameForGlog = Path.Combine(Application.dataPath, "MediaPipePlugin");
     var logDir = Path.Combine(Application.persistentDataPath, "Logs", "MediaPipe");
@@ -31,7 +35,7 @@ public class SceneDirector : MonoBehaviour {
     UnsafeNativeMethods.InitGoogleLogging(nameForGlog, logDir);
   }
 
-  void Start() {
+  async void Start() {
     webCamScreen = GameObject.Find("WebCamScreen");
 
     if (useGPU) {
@@ -41,8 +45,15 @@ public class SceneDirector : MonoBehaviour {
       gpuHelper.InitializeForTest(gpuResources);
     }
 
-    DemoAssetManager.Instance.LoadAllAssetsAsync();
-    ResourceUtil.InitializeResourceManager(DemoAssetManager.Instance);
+    ResourceUtil.InitializeResourceManager(AssetBundleManager.Instance);
+
+    try {
+      await AssetBundleManager.Instance.LoadAllAssetsAsync();
+      IsAssetLoaded = true;
+    } catch (Exception e) {
+      Debug.LogError(e);
+      IsAssetLoadFailed = true;
+    }
   }
 
   void OnDisable() {
@@ -108,6 +119,17 @@ public class SceneDirector : MonoBehaviour {
     
     if (!webCamScreenController.IsPlaying()) {
       Debug.LogWarning("WebCamDevice is not working. Stopping...");
+      yield break;
+    }
+
+    if (!IsAssetLoaded && !IsAssetLoadFailed) {
+      Debug.Log("Waiting for assets to be loaded...");
+    }
+
+    yield return new WaitUntil(() => IsAssetLoaded || IsAssetLoadFailed);
+
+    if (IsAssetLoadFailed) {
+      Debug.LogError("Failed to load assets. Stopping...");
       yield break;
     }
 

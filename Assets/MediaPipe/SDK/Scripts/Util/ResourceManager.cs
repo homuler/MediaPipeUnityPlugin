@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 
 namespace Mediapipe {
-  public abstract class AssetManager {
+  public abstract class ResourceManager {
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     private delegate string CacheFilePathResolver(string path);
     private readonly CacheFilePathResolver cacheFilePathResolver;
@@ -11,7 +11,7 @@ namespace Mediapipe {
     private delegate bool ReadFileHandler(string path, IntPtr dst);
     private readonly ReadFileHandler readFileHandler;
 
-    protected AssetManager() {
+    protected ResourceManager() {
       cacheFilePathResolver = CacheFileFromAsset;
       readFileHandler = ReadFile;
     }
@@ -24,8 +24,8 @@ namespace Mediapipe {
       return Marshal.GetFunctionPointerForDelegate(readFileHandler);
     }
 
-    public abstract string CacheFileFromAsset(string assetPath);
+    protected abstract string CacheFileFromAsset(string assetPath);
 
-    public abstract bool ReadFile(string path, IntPtr dst);
+    protected abstract bool ReadFile(string path, IntPtr dst);
   }
 }
