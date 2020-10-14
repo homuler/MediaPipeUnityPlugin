@@ -1,5 +1,5 @@
 # MediaPipe Unity Plugin
-This is a sample Unity (2019.4.10f1) Plugin to use MediaPipe.
+This is a Unity (2019.4.10f1) Plugin to use MediaPipe.
 
 ## Platforms
 - [x] Linux Desktop (tested on ArchLinux)
@@ -12,37 +12,39 @@ This is a sample Unity (2019.4.10f1) Plugin to use MediaPipe.
 Please be sure to install required packages and check if you can run the official demos on your machine.
 
 ### OpenCV
-By default, it is assumed that you use OpenCV 3 and it is installed under `/usr` (e.g. `/usr/lib/libopencv_core.so`).
+By default, it is assumed that OpenCV 3 is installed under `/usr` (e.g. `/usr/lib/libopencv_core.so`).
 If your version or path is different, please edit [C/third_party/opencv_linux.BUILD](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/third_party/opencv_linux.BUILD) and [C/WORKSPACE](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/WORKSPACE).
 
 ### Protocol Buffer
-The protocol buffer compiler is required.
+The protocol buffer compiler (`protoc` command) is required.
 It is also necessary to install .NET Core SDK(3.x) and .NET Core runtime 2.1 to build `Google.Protobuf.dll`.
 
 ## Build
 ### Libraries
 1. Clone the repository
-```sh
-git clone https://github.com/homuler/MediaPipeUnityPlugin.git
-cd MediaPipeUnityPlugin
-```
+    ```sh
+    git clone https://github.com/homuler/MediaPipeUnityPlugin.git
+    cd MediaPipeUnityPlugin
+    ```
 
 2. Build native libraries
-```sh
-# For Desktop GPU
-make gpu
+    ```sh
+    # For Desktop GPU
+    make gpu
 
-# For Desktop CPU
-make cpu
+    # For Desktop CPU
+    make cpu
 
-# For Android
-make android_arm
-```
+    # For Android
+    make android_arm
+    ```
 
 3. Copy the libraries and model files under `Assets`
-```sh
-make install
-```
+    ```sh
+    # Copy libraries to `Assets/MediaPipe/SDK/Plugins` and
+    # model files to `Assets/MediaPipe/SDK/Models`
+    make install
+    ```
 
 Note that you cannot build libraries for multiple platforms at the same time,
 because the built result will be overwritten.\
@@ -55,23 +57,20 @@ make android_arm
 make install
 ```
 
-### Models
-The models used in example scenes are copied under `Assets/MediaPipe/SDK/Models` by running `make install`.
-
 ## Run example scenes
 ### UnityEditor
-In UnityEditor, you can run examples after running `make gpu/cpu` and `make install`.
+In UnityEditor, you can run example scenes after running `make gpu/cpu` and `make install`.
 
 ### Desktop
-To make models files to be included, it is neccessary to build an AssetBundle before.
+To include model files in the package, it is neccessary to build an AssetBundle before building the app.
 You can build it by clicking **Assets > Build AssetBundles** from the menu.\
 The AssetBundle file will be created under `Assets/StreamingAssets`.
 
 ### Android
-See [Desktop](#Desktop).\
-Example scenes for mobile device is not implemented yet, but `DesktopGPU` scene can be run on Android device.
+See [Desktop](#Desktop) to build AssetBundles.\
+Example scenes for mobile device is not implemented yet, but `DesktopGPU` scene can be run on Android devices.
 
-Model files can be included in `mediapipe_android.aar` instead, and in that case, skip the AssetBundle build step.
+If you prefer, model files can be included in `mediapipe_android.aar` instead, and in that case, skip the AssetBundle build step.
 
 ## Example Scenes
 - Hello World!
@@ -105,3 +104,6 @@ InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000_mediapipe/
 
 ## LICENSE
 MIT
+
+Note that some files are distributed under other licenses.
+- MediaPipe ([Apache Licence 2.0](https://github.com/google/mediapipe/blob/master/LICENSE))
