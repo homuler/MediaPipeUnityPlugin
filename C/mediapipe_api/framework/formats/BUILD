@@ -2,6 +2,8 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
+load("//mediapipe_api:csharp_proto_src.bzl", "csharp_proto_src")
+
 cc_library(
     name = "classification",
     srcs = ["classification.cc"],
@@ -66,4 +68,59 @@ cc_library(
         "//mediapipe_api/framework:packet",
     ],
     alwayslink = True,
+)
+
+csharp_proto_src(
+    name = "classification_cs",
+    proto_src = "mediapipe/framework/formats/classification.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+        "@com_google_mediapipe//mediapipe/framework/formats/annotation:protos_src",
+    ],
+)
+
+csharp_proto_src(
+    name = "detection_cs",
+    proto_src = "mediapipe/framework/formats/detection.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+        "@com_google_mediapipe//mediapipe/framework/formats/annotation:protos_src",
+    ],
+)
+
+csharp_proto_src(
+    name = "landmark_cs",
+    proto_src = "mediapipe/framework/formats/landmark.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+        "@com_google_mediapipe//mediapipe/framework/formats/annotation:protos_src",
+    ],
+)
+
+csharp_proto_src(
+    name = "location_data_cs",
+    proto_src = "mediapipe/framework/formats/location_data.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+        "@com_google_mediapipe//mediapipe/framework/formats/annotation:protos_src",
+    ],
+)
+
+csharp_proto_src(
+    name = "rect_cs",
+    proto_src = "mediapipe/framework/formats/rect.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+        "@com_google_mediapipe//mediapipe/framework/formats/annotation:protos_src",
+    ],
+)
+
+csharp_proto_src(
+    name = "rasterization_cs",
+    proto_src = "mediapipe/framework/formats/annotation/rasterization.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+        "@com_google_mediapipe//mediapipe/framework/formats/annotation:protos_src",
+    ],
+    import_prefix = "Annotation",
 )

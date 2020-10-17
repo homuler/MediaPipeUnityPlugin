@@ -22,25 +22,23 @@ protobuf_bindir := $(protobuf_csharpdir)/src/Google.Protobuf/bin/Release/net45
 protobuf_dll := $(protobuf_bindir)/Google.Protobuf.dll
 
 bazel_root := C/bazel-bin/mediapipe_api
+bazel_models_target := //mediapipe_api:mediapipe_models
+bazel_protos_target := //mediapipe_api:mediapipe_proto_srcs
+bazel_common_target := $(bazel_models_target) $(bazel_protos_target)
 
-.PHONY: all gpu cpu android_arm mediapipe_protos clean \
+.PHONY: all gpu cpu android_arm clean \
 	install install-protobuf install-mediapipe_c install-mediapipe_android install-models \
 	uninstall uninstall-protobuf uninstall-mediapipe_c uninstall-mediapipe_android uninstall-models
 
 # build
-gpu: | $(protobuf_dll) mediapipe_protos
-	cd C && bazel build -c opt ${bazelflags.gpu} //mediapipe_api:libmediapipe_c.so //mediapipe_api:mediapipe_models
+gpu: | $(protobuf_dll)
+	cd C && bazel build -c opt ${bazelflags.gpu} //mediapipe_api:libmediapipe_c.so $(bazel_common_target)
 
-cpu: | $(protobuf_dll) mediapipe_protos
-	cd C && bazel build -c opt ${bazelflags.cpu} //mediapipe_api:libmediapipe_c.so //mediapipe_api:mediapipe_models
+cpu: | $(protobuf_dll)
+	cd C && bazel build -c opt ${bazelflags.cpu} //mediapipe_api:libmediapipe_c.so $(bazel_common_target)
 
-android_arm: | $(protobuf_dll) mediapipe_protos
-	cd C && bazel build -c opt ${bazelflags.android_arm} //mediapipe_api/java/org/homuler/mediapipe/unity:mediapipe_android //mediapipe_api:mediapipe_models
-
-mediapipe_protos:
-	# TODO build all the .proto files and output to the same directories
-	protoc --proto_path=$(scriptdir) --csharp_out=$(proto_srcdir) $(proto_srcdir)/*.proto && \
-	protoc --proto_path=$(scriptdir) --csharp_out=$(proto_srcdir)/Annotation $(proto_srcdir)/Annotation/*.proto
+android_arm: | $(protobuf_dll)
+	cd C && bazel build -c opt ${bazelflags.android_arm} //mediapipe_api/java/org/homuler/mediapipe/unity:mediapipe_android $(bazel_common_target)
 
 $(plugindir)/Google.Protobuf.dll: Temp/$(protobuf_tarball)
 	cd Temp/protobuf-$(protobuf_version)/csharp && ./buildall.sh && mv src/Google.Protobuf/bin/Release/net45/* ../../../$(plugindir)
@@ -50,14 +48,11 @@ $(protobuf_dll): | $(protobuf_root)
 
 clean:
 	rm -r $(builddir) && \
-	rm $(modeldir)/*.bytes && \
-	rm $(modeldir)/*.txt && \
-	rm $(proto_srcdir)/**/*.cs && \
 	cd C && \
 	bazel clean
 
 # install
-install: install-protobuf install-mediapipe_c install-mediapipe_android install-models
+install: install-protobuf install-mediapipe_c install-mediapipe_android install-models install-protos
 
 install-protobuf: | $(plugindir)/Protobuf
 	cp $(protobuf_bindir)/* $(plugindir)/Protobuf
@@ -83,6 +78,13 @@ else
 	echo "skip installing models"
 endif
 
+install-protos: | $(proto_srcdir)
+ifneq ("$(wildcard $(bazel_root)/mediapipe_proto_srcs.zip)", "")
+	unzip $(bazel_root)/mediapipe_proto_srcs.zip -d $(proto_srcdir)
+else
+	echo "skip installing proto sources"
+endif
+
 uninstall: uninstall-models uninstall-mediapipe_android uninstall-mediapipe_c uninstall-protobuf
 
 uninstall-protobuf:
@@ -95,8 +97,7 @@ uninstall-mediapipe_android:
 	rm -f $(plugindir)/Android/mediapipe_android.aar
 
 uninstall-models:
-	rm $(modeldir)/*.bytes && \
-	rm $(modeldir)/*.txt
+	rm -rf $(modeldir)
 
 # create directories
 $(builddir):

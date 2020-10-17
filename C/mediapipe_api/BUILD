@@ -1,3 +1,4 @@
+load("@rules_pkg//:pkg.bzl", "pkg_zip")
 load("//mediapipe_api:import_model.bzl", "pkg_model")
 
 cc_library(
@@ -101,4 +102,17 @@ pkg_model(
         "@com_google_mediapipe//mediapipe/modules/pose_detection:pose_detection.tflite",
         "@com_google_mediapipe//mediapipe/modules/pose_landmark:pose_landmark_upper_body.tflite",
     ],
+)
+
+pkg_zip(
+    name = "mediapipe_proto_srcs",
+    srcs = [
+        "//mediapipe_api/framework/formats:classification_cs",
+        "//mediapipe_api/framework/formats:detection_cs",
+        "//mediapipe_api/framework/formats:landmark_cs",
+        "//mediapipe_api/framework/formats:location_data_cs",
+        "//mediapipe_api/framework/formats:rasterization_cs",
+        "//mediapipe_api/framework/formats:rect_cs",
+    ],
+    # TODO: keep directory structure
 )
