@@ -9,6 +9,7 @@ using MpDetection = System.IntPtr;
 using MpDetectionVector = System.IntPtr;
 using MpGlCalculatorHelper = System.IntPtr;
 using MpGlContext = System.IntPtr;
+using MpGlSyncToken = System.IntPtr;
 using MpGpuResources = System.IntPtr;
 using MpLandmarkList = System.IntPtr;
 using MpLandmarkListVector = System.IntPtr;
@@ -138,6 +139,23 @@ namespace Mediapipe {
 
     [DllImport (MediaPipeLibrary)]
     public static extern unsafe GlContextPtr MpGlContextGet(MpGlContext glContext);
+
+
+    /// GlSyncToken API
+    [DllImport (MediaPipeLibrary)]
+    public static extern unsafe MpGlContext MpGlSyncTokenDestroy(MpGlSyncToken glSyncToken);
+
+    [DllImport (MediaPipeLibrary)]
+    public static extern unsafe void MpGlSyncTokenWait(MpGlSyncToken glSyncToken);
+
+    [DllImport (MediaPipeLibrary)]
+    public static extern unsafe void MpGlSyncTokenWaitOnGpu(MpGlSyncToken glSyncToken);
+
+    [DllImport (MediaPipeLibrary)]
+    public static extern unsafe bool MpGlSyncTokenIsReady(MpGlSyncToken glSyncToken);
+
+    [DllImport (MediaPipeLibrary)]
+    public static extern unsafe MpGlContext MpGlSyncTokenGetContext(MpGlSyncToken glSyncToken);
 
 
     /// GlTexture API
@@ -353,8 +371,8 @@ namespace Mediapipe {
     [DllImport (MediaPipeLibrary)]
     public static extern unsafe void MpStringCopy(IntPtr dest, byte[] src, int size);
 
-    /// SidePacket API
 
+    /// SidePacket API
     [DllImport (MediaPipeLibrary)]
     public static extern unsafe MpSidePacket MpSidePacketCreate();
 
