@@ -4,9 +4,7 @@
 #include <memory>
 #include "mediapipe/gpu/gl_calculator_helper.h"
 #include "mediapipe_api/common.h"
-#include "mediapipe_api/framework/packet.h"
 #include "mediapipe_api/framework/port/status.h"
-#include "mediapipe_api/framework/port/statusor.h"
 
 extern "C" {
 
@@ -16,7 +14,6 @@ typedef struct MpGlCalculatorHelper {
   MpGlCalculatorHelper() : impl { std::make_unique<mediapipe::GlCalculatorHelper>() } {}
 } MpGlCalculatorHelper;
 
-typedef MpStatusOrValue<std::unique_ptr<mediapipe::GpuBuffer>> MpStatusOrGpuBuffer;
 typedef MpStatus* MpGlStatusFunction();
 
 /** GlCalculatorHelper API */
@@ -36,19 +33,6 @@ MP_CAPI_EXPORT extern int MpGlTextureWidth(mediapipe::GlTexture* gl_texture);
 MP_CAPI_EXPORT extern int MpGlTextureHeight(mediapipe::GlTexture* gl_texture);
 MP_CAPI_EXPORT extern void MpGlTextureRelease(mediapipe::GlTexture* gl_texture);
 MP_CAPI_EXPORT extern mediapipe::GpuBuffer* MpGlTextureGetGpuBufferFrame(mediapipe::GlTexture* gl_texture);
-
-/** GpuBuffer API */
-MP_CAPI_EXPORT extern void MpGpuBufferDestroy(mediapipe::GpuBuffer* gpu_buffer);
-MP_CAPI_EXPORT extern uint32_t MpGpuBufferFormat(mediapipe::GpuBuffer* gpu_buffer);
-MP_CAPI_EXPORT extern int MpGpuBufferWidth(mediapipe::GpuBuffer* gpu_buffer);
-MP_CAPI_EXPORT extern int MpGpuBufferHeight(mediapipe::GpuBuffer* gpu_buffer);
-
-MP_CAPI_EXPORT extern MpPacket* MpMakeGpuBufferPacketAt(mediapipe::GpuBuffer* gpu_buffer, int timestamp);
-MP_CAPI_EXPORT extern mediapipe::GpuBuffer* MpPacketGetGpuBuffer(MpPacket* packet);
-MP_CAPI_EXPORT extern MpStatusOrGpuBuffer* MpPacketConsumeGpuBuffer(MpPacket* packet);
-MP_CAPI_EXPORT extern void MpStatusOrGpuBufferDestroy(MpStatusOrGpuBuffer* status_or_gpu_buffer);
-MP_CAPI_EXPORT extern MpStatus* MpStatusOrGpuBufferStatus(MpStatusOrGpuBuffer* status_or_gpu_buffer);
-MP_CAPI_EXPORT extern mediapipe::GpuBuffer* MpStatusOrGpuBufferConsumeValue(MpStatusOrGpuBuffer* status_or_gpu_buffer);
 
 }  // extern "C"
 

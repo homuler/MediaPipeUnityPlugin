@@ -10,6 +10,7 @@ using MpDetectionVector = System.IntPtr;
 using MpGlCalculatorHelper = System.IntPtr;
 using MpGlContext = System.IntPtr;
 using MpGlSyncToken = System.IntPtr;
+using MpGlTextureBuffer = System.IntPtr;
 using MpGpuResources = System.IntPtr;
 using MpLandmarkList = System.IntPtr;
 using MpLandmarkListVector = System.IntPtr;
@@ -30,6 +31,7 @@ using MpStatusOrPoller = System.IntPtr;
 using CacheFilePathResolverPtr = System.IntPtr;
 using GlContextPtr = System.IntPtr;
 using GlTexturePtr = System.IntPtr;
+using GlTextureBufferDeletionCallbackPtr = System.IntPtr;
 using GlTextureInfoPtr = System.IntPtr;
 using GlStatusFunctionPtr = System.IntPtr;
 using GpuBufferPtr = System.IntPtr;
@@ -175,12 +177,24 @@ namespace Mediapipe {
     public static extern unsafe GpuBufferPtr MpGlTextureGetGpuBufferFrame(GlTexturePtr glTexture);
 
 
+    /// GlTextureBuffer API
+    [DllImport (MediaPipeLibrary)]
+    public static extern unsafe MpGlTextureBuffer MpGlTextureBufferCreate(UInt32 target, UInt32 name, int width, int height, UInt32 formatCode,
+        [MarshalAs(UnmanagedType.FunctionPtr)]GlTextureBufferDeletionCallbackPtr callbackPtr, MpGlContext producerContext);
+
+    [DllImport (MediaPipeLibrary)]
+    public static extern unsafe void MpGlTextureBufferDestroy(MpGlTextureBuffer glTextureBuffer);
+
+
     /// GlTextureInfo API
     [DllImport (MediaPipeLibrary)]
     public static extern unsafe int MpGlTextureInfoDestroy(GlTextureInfoPtr glTextureInfo);
 
 
     /// GpuBuffer API
+    [DllImport (MediaPipeLibrary)]
+    public static extern unsafe GpuBufferPtr MpGpuBufferCreate(MpGlTextureBuffer glTextureBuffer);
+
     [DllImport (MediaPipeLibrary)]
     public static extern unsafe void MpGpuBufferDestroy(GpuBufferPtr gpuBuffer);
 
