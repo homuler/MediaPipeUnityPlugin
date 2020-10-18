@@ -3,19 +3,18 @@ using System.Runtime.InteropServices;
 
 namespace Mediapipe {
   public enum GpuBufferFormat : UInt32 {
-    UNKNOWN = 0,
-    SRGB = 1,
-    SRGBA = 2,
-    GRAY8 = 3,
-    GRAY16 = 4,
-    YCBCR420P = 5,
-    YCBCR420P10 = 6,
-    SRGB48 = 7,
-    SRGBA64 = 8,
-    VEC32F1 = 9,
-    LAB8 = 10,
-    SBGRA = 11,
-    VEC32F2 = 12,
+    kUnknown = 0,
+    kBGRA32 = ('B' << 24) + ('G' << 16) + ('R' << 8) + ('A'),
+    kGrayFloat32 = ('L' << 24) + ('0' << 16) + ('0' << 8) + ('f'),
+    kGrayHalf16 = ('L' << 24) + ('0' << 16) + ('0' << 8) + ('h'),
+    kOneComponent8 = ('L' << 24) + ('0' << 16) + ('0' << 8) + ('8'),
+    kTwoComponentHalf16 = ('2' << 24) + ('C' << 16) + ('0' << 8) + ('h'),
+    kTwoComponentFloat32 = ('2' << 24) + ('C' << 16) + ('0' << 8) + ('f'),
+    kBiPlanar420YpCbCr8VideoRange = ('4' << 24) + ('2' << 16) + ('0' << 8) + ('v'),
+    kBiPlanar420YpCbCr8FullRange = ('4' << 24) + ('2' << 16) + ('0' << 8) + ('f'),
+    kRGB24 = 0x00000018,  // Note: prefer BGRA32 whenever possible.
+    kRGBAHalf64 = ('R' << 24) + ('G' << 16) + ('h' << 8) + ('A'),
+    kRGBAFloat128 = ('R' << 24) + ('G' << 16) + ('f' << 8) + ('A'),
   }
 
   static class GpuBufferFormatExtension {
