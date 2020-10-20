@@ -20,6 +20,8 @@ cc_library(
             "//mediapipe_api/gpu:gl_base",
             "//mediapipe_api/gpu:gl_context",
             "//mediapipe_api/gpu:gl_calculator_helper",
+            "//mediapipe_api/gpu:gl_texture_buffer",
+            "//mediapipe_api/gpu:gpu_buffer",
             "//mediapipe_api/gpu:gpu_buffer_format",
             "//mediapipe_api/gpu:gpu_shared_data_internal",
         ],
