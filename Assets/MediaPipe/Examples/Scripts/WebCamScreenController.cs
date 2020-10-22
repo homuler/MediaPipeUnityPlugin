@@ -24,7 +24,7 @@ public class WebCamScreenController : MonoBehaviour {
     try {
       webCamTexture.Play();
     } catch (Exception e) {
-      Debug.LogWarning(e.Message);
+      Debug.LogWarning(e.ToString());
       return;
     }
 

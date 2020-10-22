@@ -38,7 +38,7 @@ namespace Mediapipe {
         try {
           return glStatusFunc().GetPtr();
         } catch (Exception e) {
-          return Status.FailedPrecondition(e.Message, false).GetPtr();
+          return Status.FailedPrecondition(e.ToString(), false).GetPtr();
         }
       };
       GCHandle mpGlStatusFuncHandle = GCHandle.Alloc(mpGlStatusFunc);
