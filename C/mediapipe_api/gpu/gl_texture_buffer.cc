@@ -3,7 +3,8 @@
 MpGlTextureBuffer* MpGlTextureBufferCreate(GLenum target, GLuint name, int width, int height,
     uint32_t format_code, MpDeletionCallback* deletion_callback, mediapipe::GlContext* producer_context /* =nullptr */) {
   auto callback = [&deletion_callback](mediapipe::GlSyncToken token) -> void {
-    deletion_callback(token.get());
+    auto mpToken = new MpGlSyncToken { token };
+    deletion_callback(mpToken);
   };
   auto buffer = std::make_shared<mediapipe::GlTextureBuffer>(
     GL_TEXTURE_2D,

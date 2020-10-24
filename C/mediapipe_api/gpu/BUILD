@@ -41,6 +41,7 @@ cc_library(
     srcs = ["gl_texture_buffer.cc"],
     hdrs = ["gl_texture_buffer.h"],
     deps = [
+        ":gl_context",
         "//mediapipe_api:common",
         "@com_google_mediapipe//mediapipe/gpu:gl_texture_buffer",
     ],

@@ -137,6 +137,9 @@ namespace Mediapipe {
 
     /// GlContext API
     [DllImport (MediaPipeLibrary)]
+    public static extern unsafe void MpGlContextDestroy(MpGlContext glContext);
+
+    [DllImport (MediaPipeLibrary)]
     public static extern unsafe MpGlContext MpGlContextGetCurrent();
 
     [DllImport (MediaPipeLibrary)]

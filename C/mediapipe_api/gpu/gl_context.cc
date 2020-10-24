@@ -1,5 +1,9 @@
 #include "mediapipe_api/gpu/gl_context.h"
 
+void MpGlContextDestroy(MpGlContext* gl_context) {
+  delete gl_context;
+}
+
 MpGlContext* MpGlContextGetCurrent() {
   return new MpGlContext { mediapipe::GlContext::GetCurrent() };
 }

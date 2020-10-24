@@ -16,6 +16,7 @@ typedef struct MpGlSyncToken {
   std::shared_ptr<mediapipe::GlSyncPoint> impl;
 } MpGlSyncToken;
 
+MP_CAPI_EXPORT extern void MpGlContextDestroy(MpGlContext* gl_context);
 MP_CAPI_EXPORT extern MpGlContext* MpGlContextGetCurrent();
 MP_CAPI_EXPORT extern mediapipe::GlContext* MpGlContextGet(MpGlContext* gl_context);
 
