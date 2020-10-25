@@ -13,11 +13,11 @@ public class HairSegmentationGraph : DemoGraph {
     return graph.StartRun();
   }
 
-  public override void RenderOutput(WebCamScreenController screenController, PixelData pixelData) {
+  public override void RenderOutput(WebCamScreenController screenController, TextureFrame textureFrame) {
     var hairMask = FetchNextHairMask();
     var texture = screenController.GetScreen();
 
-    texture.SetPixels32(pixelData.Colors);
+    texture.SetPixels32(textureFrame.GetPixels32());
     RenderAnnotation(screenController, hairMask);
 
     texture.Apply();

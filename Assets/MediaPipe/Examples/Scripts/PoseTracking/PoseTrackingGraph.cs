@@ -34,12 +34,12 @@ public class PoseTrackingGraph : DemoGraph {
     return graph.StartRun();
   }
 
-  public override void RenderOutput(WebCamScreenController screenController, PixelData pixelData) {
+  public override void RenderOutput(WebCamScreenController screenController, TextureFrame textureFrame) {
     var poseTrackingValue = FetchNextPoseTrackingValue();
     RenderAnnotation(screenController, poseTrackingValue);
 
     var texture = screenController.GetScreen();
-    texture.SetPixels32(pixelData.Colors);
+    texture.SetPixels32(textureFrame.GetPixels32());
 
     texture.Apply();
   }

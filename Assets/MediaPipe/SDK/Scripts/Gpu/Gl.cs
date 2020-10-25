@@ -11,9 +11,5 @@ namespace Mediapipe {
     public static void ReadPixels(int x, int y, int width, int height, UInt32 glFormat, UInt32 glType, IntPtr pixels) {
       UnsafeNativeMethods.glReadPixels(x, y, width, height, glFormat, glType, pixels);
     }
-
-    public static IntPtr getCurrentContext() {
-      return UnsafeNativeMethods.eglGetCurrentContext();
-    }
   }
 }

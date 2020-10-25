@@ -42,12 +42,12 @@ public class IrisTrackingGraph : DemoGraph {
     return graph.StartRun();
   }
 
-  public override void RenderOutput(WebCamScreenController screenController, PixelData pixelData) {
+  public override void RenderOutput(WebCamScreenController screenController, TextureFrame textureFrame) {
     var faceMeshValue = FetchNextIrisTrackingValue();
     RenderAnnotation(screenController, faceMeshValue);
 
     var texture = screenController.GetScreen();
-    texture.SetPixels32(pixelData.Colors);
+    texture.SetPixels32(textureFrame.GetPixels32());
     texture.Apply();
   }
 

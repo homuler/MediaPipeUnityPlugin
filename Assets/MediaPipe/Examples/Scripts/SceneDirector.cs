@@ -11,7 +11,6 @@ public class SceneDirector : MonoBehaviour {
   [SerializeField] bool useGPU = true;
 
   GameObject webCamScreen;
-  WebCamDevice? webCamDevice;
   GameObject graphPrefab;
   GameObject graphContainer;
   Coroutine graphRunner;
@@ -38,8 +37,7 @@ public class SceneDirector : MonoBehaviour {
     webCamScreen = GameObject.Find("WebCamScreen");
 
     if (useGPU) {
-      gpuResources = GpuResources.Create().ConsumeValueOrDie();
-
+      gpuResources = GpuResources.Create(Egl.getCurrentContext()).ConsumeValueOrDie();
       gpuHelper = new GlCalculatorHelper();
       gpuHelper.InitializeForTest(gpuResources);
     }
@@ -66,8 +64,6 @@ public class SceneDirector : MonoBehaviour {
   }
 
   public void ChangeWebCamDevice(WebCamDevice? webCamDevice) {
-    this.webCamDevice = webCamDevice;
-
     webCamScreen.GetComponent<WebCamScreenController>().ResetScreen(webCamDevice);
   }
 
@@ -104,7 +100,7 @@ public class SceneDirector : MonoBehaviour {
       waitFrame--;
 
       var isGraphPrefabPresent = graphPrefab != null;
-      var isWebCamPlaying = webCamScreenController.IsPlaying();
+      var isWebCamPlaying = webCamScreenController.isPlaying;
 
       if (!isGraphPrefabPresent && waitFrame % 10 == 0) {
         Debug.Log($"Waiting for a graph");
@@ -121,8 +117,8 @@ public class SceneDirector : MonoBehaviour {
       Debug.LogWarning("No graph is set. Stopping...");
       yield break;
     }
-
-    if (!webCamScreenController.IsPlaying()) {
+    
+    if (!webCamScreenController.isPlaying) {
       Debug.LogWarning("WebCamDevice is not working. Stopping...");
       yield break;
     }
@@ -141,7 +137,7 @@ public class SceneDirector : MonoBehaviour {
     }
 
     graphContainer = Instantiate(graphPrefab);
-    var graph = graphContainer.GetComponent<IDemoGraph<PixelData>>();
+    var graph = graphContainer.GetComponent<IDemoGraph<TextureFrame>>();
 
     if (useGPU) {
       graph.Initialize(gpuResources, gpuHelper);
@@ -154,15 +150,20 @@ public class SceneDirector : MonoBehaviour {
     while (true) {
       yield return new WaitForEndOfFrame();
 
-      if (!webCamScreenController.IsPlaying()) {
+      if (!webCamScreenController.isPlaying) {
         Debug.LogWarning("WebCam is not working");
         break;
       }
 
-      var pixelData = webCamScreenController.GetPixelData();
+      var nextFrameRequest = webCamScreenController.RequestNextFrame();
+      yield return nextFrameRequest;
 
-      graph.PushInput(pixelData).AssertOk();
-      graph.RenderOutput(webCamScreenController, pixelData);
+      var nextFrame = nextFrameRequest.textureFrame;
+
+      graph.PushInput(nextFrame).AssertOk();
+      graph.RenderOutput(webCamScreenController, nextFrame);
+
+      webCamScreenController.OnReleaseFrame(nextFrame);
     }
   }
 }

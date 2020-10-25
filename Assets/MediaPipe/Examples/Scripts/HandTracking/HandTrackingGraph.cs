@@ -53,12 +53,12 @@ public class HandTrackingGraph : DemoGraph {
     return graph.StartRun(sidePacket);
   }
 
-  public override void RenderOutput(WebCamScreenController screenController, PixelData pixelData) {
+  public override void RenderOutput(WebCamScreenController screenController, TextureFrame textureFrame) {
     var handTrackingValue = FetchNextHandTrackingValue();
     RenderAnnotation(screenController, handTrackingValue);
 
     var texture = screenController.GetScreen();
-    texture.SetPixels32(pixelData.Colors);
+    texture.SetPixels32(textureFrame.GetPixels32());
 
     texture.Apply();
   }

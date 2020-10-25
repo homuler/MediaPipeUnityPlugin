@@ -8,8 +8,5 @@ namespace Mediapipe {
 
     [DllImport (MediaPipeLibrary)]
     public static extern void glReadPixels(int x, int y, int width, int height, UInt32 glFormat, UInt32 glType, IntPtr pixels);
-
-    [DllImport (MediaPipeLibrary)]
-    public static extern IntPtr eglGetCurrentContext();
   }
 }

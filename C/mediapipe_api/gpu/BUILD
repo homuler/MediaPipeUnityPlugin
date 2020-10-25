@@ -79,6 +79,7 @@ cc_library(
     srcs = ["gpu_shared_data_internal.cc"],
     hdrs = ["gpu_shared_data_internal.h"],
     deps = [
+        ":gl_context",
         "//mediapipe_api:common",
         "//mediapipe_api/framework/port:status",
         "//mediapipe_api/framework/port:statusor",

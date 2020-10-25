@@ -20,13 +20,11 @@ public class FaceDetectionGraph : DemoGraph {
     return graph.StartRun();
   }
 
-  public override void RenderOutput(WebCamScreenController screenController, PixelData pixelData) {
-    var detections =  FetchNextFaceDetectionsPresence() ? FetchNextFaceDetections() : new List<Detection>();
+  public override void RenderOutput(WebCamScreenController screenController, TextureFrame textureFrame) {
+    var detections = FetchNextFaceDetectionsPresence() ? FetchNextFaceDetections() : new List<Detection>();
     RenderAnnotation(screenController, detections);
 
-    var texture = screenController.GetScreen();
-    texture.SetPixels32(pixelData.Colors);
-    texture.Apply();
+    screenController.DrawScreen(textureFrame);
   }
 
   private bool FetchNextFaceDetectionsPresence() {

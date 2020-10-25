@@ -3,8 +3,6 @@ using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-using MpGlSyncToken = System.IntPtr;
-
 public class TextureFrame {
   private Texture2D texture;
   private GCHandle releaseCallbackHandle;
@@ -52,10 +50,9 @@ public class TextureFrame {
     }
   }
 
-  public void OnRelease(MpGlSyncToken ptr) {
+  public void OnRelease(IntPtr ptr) {
+    var token = new GlSyncPoint(ptr);
     Debug.Log("OnRelease");
-    var glSyncToken = new GlSyncToken(ptr);
-
-    glSyncToken.Wait();
+    token.Wait();
   }
 }
