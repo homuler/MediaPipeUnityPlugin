@@ -71,7 +71,9 @@ cc_library(
 cc_library(
     name = "common",
     hdrs = ["common.h"],
-    deps = [],
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework/port:logging",
+    ],
     visibility = ["//visibility:public"],
 )
 

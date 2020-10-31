@@ -56,6 +56,18 @@ namespace Mediapipe {
     public static extern unsafe MpCalculatorGraph MpCalculatorGraphCreate();
 
     [DllImport (MediaPipeLibrary)]
+    public static extern unsafe MpReturnCode mp_CalculatorGraph__(out IntPtr graph);
+
+    [DllImport (MediaPipeLibrary)]
+    public static extern unsafe MpReturnCode mp_CalculatorGraphConfig__ParseFromString(string input, out IntPtr config);
+
+    [DllImport (MediaPipeLibrary)]
+    public static extern unsafe MpReturnCode mp_CalculatorGraphConfig__delete(IntPtr config);
+
+    [DllImport (MediaPipeLibrary)]
+    public static extern unsafe MpReturnCode mp_CalculatorGraph__Initialize_configR(IntPtr graph, IntPtr config, out IntPtr status);
+
+    [DllImport (MediaPipeLibrary)]
     public static extern unsafe void MpCalculatorGraphDestroy(MpCalculatorGraph graph);
 
     [DllImport (MediaPipeLibrary)]
@@ -402,19 +414,19 @@ namespace Mediapipe {
 
     /// Status API
     [DllImport (MediaPipeLibrary)]
-    public static extern unsafe MpStatus MpStatusCreate(int code, string message);
+    public static extern unsafe MpReturnCode mp_Status__i_PKc(int code, string message, out IntPtr status);
 
     [DllImport (MediaPipeLibrary)]
-    public static extern unsafe bool MpStatusOk(MpStatus status);
+    public static extern unsafe MpReturnCode mp_Status__delete(IntPtr status);
 
     [DllImport (MediaPipeLibrary)]
-    public static extern unsafe int GetMpStatusRawCode(MpStatus status);
+    public static extern unsafe bool mp_Status__ok(IntPtr status);
 
     [DllImport (MediaPipeLibrary)]
-    public static extern unsafe string MpStatusToString(MpStatus status);
+    public static extern unsafe MpReturnCode mp_Status__raw_code(IntPtr status, out int code);
 
     [DllImport (MediaPipeLibrary)]
-    public static extern unsafe void MpStatusDestroy(MpStatus status);
+    public static extern unsafe MpReturnCode mp_Status__ToString(IntPtr status, out IntPtr str);
 
 
     /// Protobuf API

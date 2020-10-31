@@ -14,11 +14,12 @@ typedef struct MpStatus {
   MpStatus(mediapipe::Status status) : impl { std::make_shared<mediapipe::Status>(std::move(status)) } {}
 } MpStatus;
 
-MP_CAPI_EXPORT extern MpStatus* MpStatusCreate(int code, const char* message);
-MP_CAPI_EXPORT extern void MpStatusDestroy(MpStatus* status);
-MP_CAPI_EXPORT extern bool MpStatusOk(MpStatus* status);
-MP_CAPI_EXPORT extern int GetMpStatusRawCode(MpStatus* status);
-MP_CAPI_EXPORT extern const char* MpStatusToString(MpStatus* status);
+MP_CAPI(MpReturnCode) mp_Status__i_PKc(int code, const char* message, mediapipe::Status** status_out);
+MP_CAPI(MpReturnCode) mp_Status__delete(mediapipe::Status* status);
+
+MP_CAPI(MpReturnCode) mp_Status__ToString(mediapipe::Status* status, const char** str_out);
+MP_CAPI(bool) mp_Status__ok(mediapipe::Status* status);
+MP_CAPI(MpReturnCode) mp_Status__raw_code(mediapipe::Status* status, int* code_out);
 
 }  // extern "C"
 

@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using MpStatus = System.IntPtr;
 
 namespace Mediapipe {
@@ -11,7 +12,7 @@ namespace Mediapipe {
       if (_disposed) return;
 
       if (OwnsResource()) {
-        UnsafeNativeMethods.MpStatusDestroy(ptr);
+        UnsafeNativeMethods.mp_Status__delete(ptr);
       }
 
       ptr = IntPtr.Zero;
@@ -20,7 +21,7 @@ namespace Mediapipe {
     }
 
     public bool IsOk() {
-      return UnsafeNativeMethods.MpStatusOk(ptr);
+      return UnsafeNativeMethods.mp_Status__ok(ptr);
     }
 
     public void AssertOk() {
@@ -30,15 +31,19 @@ namespace Mediapipe {
     }
 
     public int GetRawCode() {
-      return UnsafeNativeMethods.GetMpStatusRawCode(ptr);
+      UnsafeNativeMethods.mp_Status__raw_code(ptr, out var code);
+      return code;
     }
 
     public override string ToString() {
-      return UnsafeNativeMethods.MpStatusToString(ptr);
+      UnsafeNativeMethods.mp_Status__ToString(ptr, out var strPtr); // MEMORY LEAK!!
+      var str = Marshal.PtrToStringAnsi(strPtr);
+
+      return str;
     }
 
     public static Status Build(int code, string message, bool isOwner = true) {
-      var ptr = UnsafeNativeMethods.MpStatusCreate(code, message);
+      UnsafeNativeMethods.mp_Status__i_PKc(code, message, out var ptr);
       return new Status(ptr, isOwner);
     }
 

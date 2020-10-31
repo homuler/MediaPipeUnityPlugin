@@ -8,6 +8,7 @@
 #endif
 
 #include <string>
+#include "mediapipe/framework/port/logging.h"
 
 extern inline const char* strcpy_to_heap(const std::string& str) {
   if (str.empty()) { return nullptr; }
@@ -18,4 +19,23 @@ extern inline const char* strcpy_to_heap(const std::string& str) {
   return str_ptr;
 }
 
+
+enum class MpReturnCode : int {
+  Success = 0,
+  StandardError = 1,
+  UnknownError = 2
+};
+
+#define TRY try
+#define CATCH_ALL catch (std::exception& e) {\
+                    LOG(ERROR) << e.what();\
+                    google::FlushLogFiles(google::ERROR);\
+                    return MpReturnCode::StandardError;\
+                  } catch (...) {\
+                    LOG(ERROR) << "Unknown exception";\
+                    google::FlushLogFiles(google::ERROR);\
+                    return MpReturnCode::UnknownError;\
+                  }
+
+#define MP_CAPI(rettype) MP_CAPI_EXPORT extern rettype
 #endif  // C_MEDIAPIPE_API_COMMON_H_
