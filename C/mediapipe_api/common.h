@@ -19,7 +19,6 @@ extern inline const char* strcpy_to_heap(const std::string& str) {
   return str_ptr;
 }
 
-
 enum class MpReturnCode : int {
   Success = 0,
   StandardError = 1,

@@ -8,6 +8,22 @@ using Mediapipe;
 
 namespace Tests {
   public class StatusTest {
+    #region #code
+    [Test]
+    public void code_ShouldReturnStatusCode_When_StatusIsOk() {
+      var status = Status.Ok();
+
+      Assert.AreEqual(status.code, Status.StatusCode.Ok);
+    }
+
+    [Test]
+    public void code_ShouldReturnStatusCode_When_StatusIsFailedPrecondition() {
+      var status = Status.FailedPrecondition();
+
+      Assert.AreEqual(status.code, Status.StatusCode.FailedPrecondition);
+    }
+    #endregion
+
     #region #rawCode
     [Test]
     public void rawCode_ShouldReturnRawCode_When_StatusIsOk() {
@@ -31,15 +47,30 @@ namespace Tests {
 
       Assert.True(status.IsOk());
     }
+
+    [Test]
+    public void IsOk_ShouldReturnFalse_When_StatusIsFailedPrecondition() {
+      var status = Status.FailedPrecondition();
+
+      Assert.False(status.IsOk());
+    }
     #endregion
 
-    // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-    // `yield return null;` to skip a frame.
-    [UnityTest]
-    public IEnumerator NewTestScriptWithEnumeratorPasses() {
-      // Use the Assert class to test conditions.
-      // Use yield to skip a frame.
-      yield return null;
+    #region #ToString
+    [Test]
+    public void ToString_ShouldReturnMessage_When_StatusIsOk() {
+      var status = Status.Ok();
+
+      Assert.AreEqual(status.ToString(), "OK");
     }
+
+    [Test]
+    public void ToString_ShouldReturnMessage_When_StatusIsFailedPrecondition() {
+      var message = "Some error";
+      var status = Status.FailedPrecondition(message);
+
+      Assert.AreEqual(status.ToString(), $"FAILED_PRECONDITION: {message}");
+    }
+    #endregion
   }
 }

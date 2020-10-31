@@ -6,6 +6,7 @@ cc_library(
     deps = [
         ":calculators",
         ":protobuf",
+        ":stdlib",
         "//mediapipe_api/framework:calculator_graph",
         "//mediapipe_api/framework/formats:classification",
         "//mediapipe_api/framework/formats:detection",
@@ -83,6 +84,17 @@ cc_library(
     hdrs = ["protobuf.h"],
     deps = [
         "@com_google_protobuf//:protobuf",
+        ":common",
+    ],
+    visibility = ["//visibility:public"],
+    alwayslink = True,
+)
+
+cc_library(
+    name = "stdlib",
+    srcs = ["stdlib.cc"],
+    hdrs = ["stdlib.h"],
+    deps = [
         ":common",
     ],
     visibility = ["//visibility:public"],

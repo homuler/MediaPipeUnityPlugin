@@ -50,6 +50,10 @@ namespace Mediapipe {
       }
     }
 
+    public StatusCode code {
+      get { return (StatusCode)rawCode; }
+    }
+
     public int rawCode {
       get {
         SafeNativeMethods.mp_Status__raw_code(ptr, out var code);
@@ -58,8 +62,9 @@ namespace Mediapipe {
     }
 
     public override string ToString() {
-      UnsafeNativeMethods.mp_Status__ToString(ptr, out var strPtr); // MEMORY LEAK!!
+      UnsafeNativeMethods.mp_Status__ToString(ptr, out var strPtr);
       var str = Marshal.PtrToStringAnsi(strPtr);
+      UnsafeNativeMethods.delete_array__PKc(strPtr);
 
       return str;
     }

@@ -7,7 +7,7 @@ namespace Mediapipe {
     public static extern MpReturnCode mp_Status__i_PKc(int code, string message, out IntPtr status);
 
     [DllImport (MediaPipeLibrary)]
-    public static extern MpReturnCode mp_Status__delete(IntPtr status);
+    public static extern void mp_Status__delete(IntPtr status);
 
     [DllImport (MediaPipeLibrary)]
     public static extern unsafe MpReturnCode mp_Status__ToString(IntPtr status, out IntPtr str);

@@ -9,11 +9,8 @@ MpReturnCode mp_Status__i_PKc(int code, const char* message, mediapipe::Status**
   } CATCH_ALL
 }
 
-MpReturnCode mp_Status__delete(mediapipe::Status* status) {
-  TRY {
-    delete status;
-    return MpReturnCode::Success;
-  } CATCH_ALL
+void mp_Status__delete(mediapipe::Status* status) {
+  delete status;
 }
 
 MpReturnCode mp_Status__ToString(mediapipe::Status* status, const char** str_out) {
