@@ -65,8 +65,8 @@ else
 endif
 
 install-mediapipe_android:
-ifneq ("$(wildcard $(bazel_root)/java/mediapipe_android.aar)", "")
-	cp -f $(bazel_root)/java/mediapipe_android.aar $(plugindir)/Android
+ifneq ("$(wildcard $(bazel_root)/java/org/homuler/mediapipe/unity/mediapipe_android.aar)", "")
+	cp -f $(bazel_root)/java/org/homuler/mediapipe/unity/mediapipe_android.aar $(plugindir)/Android
 else
 	echo "skip installing mediapipe_android.aar"
 endif
