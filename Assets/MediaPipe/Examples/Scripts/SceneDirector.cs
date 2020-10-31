@@ -32,7 +32,7 @@ public class SceneDirector : MonoBehaviour {
       Directory.CreateDirectory(logDir);
     }
 
-    UnsafeNativeMethods.InitGoogleLogging(nameForGlog, logDir);
+    Glog.Initialize(nameForGlog, logDir);
   }
 
   async void Start() {
@@ -63,7 +63,7 @@ public class SceneDirector : MonoBehaviour {
   }
 
   void OnDisable() {
-    UnsafeNativeMethods.ShutdownGoogleLogging();
+    Glog.Shutdown();
   }
 
   public void ChangeWebCamDevice(WebCamDevice? webCamDevice) {

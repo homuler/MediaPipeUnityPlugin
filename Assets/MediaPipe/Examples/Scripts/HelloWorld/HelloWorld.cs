@@ -21,7 +21,7 @@ public class HelloWorld : MonoBehaviour {
       Directory.CreateDirectory(logDir);
     }
 
-    UnsafeNativeMethods.InitGoogleLogging(nameForGlog, logDir);
+    Glog.Initialize(nameForGlog, logDir);
   }
 
   void OnDestroy() {
@@ -29,7 +29,7 @@ public class HelloWorld : MonoBehaviour {
   }
 
   void OnDisable() {
-    UnsafeNativeMethods.ShutdownGoogleLogging();
+    Glog.Shutdown();
   }
 
   void Start () {

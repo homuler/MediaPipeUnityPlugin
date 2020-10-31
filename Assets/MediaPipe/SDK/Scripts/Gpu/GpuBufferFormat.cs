@@ -17,7 +17,7 @@ namespace Mediapipe {
     kRGBAFloat128 = ('R' << 24) + ('G' << 16) + ('f' << 8) + ('A'),
   }
 
-  static class GpuBufferFormatExtension {
+  public static class GpuBufferFormatExtension {
     public static ImageFormat ImageFormatFor(this GpuBufferFormat gpuBufferFormat) {
       return (ImageFormat)UnsafeNativeMethods.MpImageFormatForGpuBufferFormat((UInt32)gpuBufferFormat);
     }
