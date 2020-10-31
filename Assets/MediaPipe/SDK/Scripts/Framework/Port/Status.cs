@@ -4,6 +4,26 @@ using MpStatus = System.IntPtr;
 
 namespace Mediapipe {
   public class Status : ResourceHandle {
+    public enum StatusCode : int {
+      Ok = 0,
+      Cancelled = 1,
+      Unknown = 2,
+      InvalidArgument = 3,
+      DeadlineExceeded = 4,
+      NotFound = 5,
+      AlreadyExists = 6,
+      PermissionDenied = 7,
+      ResourceExhausted = 8,
+      FailedPrecondition = 9,
+      Aborted = 10,
+      OutOfRange = 11,
+      Unimplemented = 12,
+      Internal = 13,
+      Unavailable = 14,
+      DataLoss = 15,
+      Unauthenticated = 16,
+    }
+
     private bool _disposed = false;
 
     public Status(MpStatus ptr, bool isOwner = true) : base(ptr, isOwner) {}
@@ -30,9 +50,11 @@ namespace Mediapipe {
       }
     }
 
-    public int GetRawCode() {
-      SafeNativeMethods.mp_Status__raw_code(ptr, out var code);
-      return code;
+    public int rawCode {
+      get {
+        SafeNativeMethods.mp_Status__raw_code(ptr, out var code);
+        return code;
+      }
     }
 
     public override string ToString() {
@@ -42,17 +64,17 @@ namespace Mediapipe {
       return str;
     }
 
-    public static Status Build(int code, string message, bool isOwner = true) {
-      UnsafeNativeMethods.mp_Status__i_PKc(code, message, out var ptr);
+    public static Status Build(StatusCode code, string message, bool isOwner = true) {
+      UnsafeNativeMethods.mp_Status__i_PKc((int)code, message, out var ptr);
       return new Status(ptr, isOwner);
     }
 
     public static Status Ok(bool isOwner = true) {
-      return Status.Build(0, "", isOwner);
+      return Status.Build(StatusCode.Ok, "", isOwner);
     }
 
     public static Status FailedPrecondition(string message = "", bool isOwner = true) {
-      return Status.Build(9, message, isOwner);
+      return Status.Build(StatusCode.FailedPrecondition, message, isOwner);
     }
   }
 }
