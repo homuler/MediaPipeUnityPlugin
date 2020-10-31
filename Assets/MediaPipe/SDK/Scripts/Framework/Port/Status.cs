@@ -21,7 +21,7 @@ namespace Mediapipe {
     }
 
     public bool IsOk() {
-      return UnsafeNativeMethods.mp_Status__ok(ptr);
+      return SafeNativeMethods.mp_Status__ok(ptr);
     }
 
     public void AssertOk() {
@@ -31,7 +31,7 @@ namespace Mediapipe {
     }
 
     public int GetRawCode() {
-      UnsafeNativeMethods.mp_Status__raw_code(ptr, out var code);
+      SafeNativeMethods.mp_Status__raw_code(ptr, out var code);
       return code;
     }
 

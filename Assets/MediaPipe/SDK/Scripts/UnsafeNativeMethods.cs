@@ -44,13 +44,7 @@ using ReadFileHandlerPtr = System.IntPtr;
 
 namespace Mediapipe {
   [SuppressUnmanagedCodeSecurityAttribute] 
-  internal static class UnsafeNativeMethods {
-    #if UNITY_ANDROID
-      private const string MediaPipeLibrary = "mediapipe_jni";
-    #else
-      private const string MediaPipeLibrary = "mediapipe_c";
-    #endif
-
+  internal static partial class UnsafeNativeMethods {
     /// CalculatorGraph API
     [DllImport (MediaPipeLibrary)]
     public static extern unsafe MpCalculatorGraph MpCalculatorGraphCreate();
@@ -410,23 +404,6 @@ namespace Mediapipe {
 
     [DllImport (MediaPipeLibrary)]
     public static extern unsafe void MpSidePacketInsert(MpSidePacket sidePacket, string key, MpPacket packet);
-
-
-    /// Status API
-    [DllImport (MediaPipeLibrary)]
-    public static extern unsafe MpReturnCode mp_Status__i_PKc(int code, string message, out IntPtr status);
-
-    [DllImport (MediaPipeLibrary)]
-    public static extern unsafe MpReturnCode mp_Status__delete(IntPtr status);
-
-    [DllImport (MediaPipeLibrary)]
-    public static extern unsafe bool mp_Status__ok(IntPtr status);
-
-    [DllImport (MediaPipeLibrary)]
-    public static extern unsafe MpReturnCode mp_Status__raw_code(IntPtr status, out int code);
-
-    [DllImport (MediaPipeLibrary)]
-    public static extern unsafe MpReturnCode mp_Status__ToString(IntPtr status, out IntPtr str);
 
 
     /// Protobuf API
