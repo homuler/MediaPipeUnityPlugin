@@ -7,6 +7,7 @@ cc_library(
         ":calculators",
         "//mediapipe_api/external:protobuf",
         "//mediapipe_api/external:stdlib",
+        "//mediapipe_api/framework:calculator",
         "//mediapipe_api/framework:calculator_graph",
         "//mediapipe_api/framework/formats:classification",
         "//mediapipe_api/framework/formats:detection",

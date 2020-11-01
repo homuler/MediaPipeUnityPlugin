@@ -89,14 +89,6 @@ namespace Mediapipe {
     public static extern unsafe MpStatus MpCalculatorGraphCloseInputStream(MpCalculatorGraph graph, string name);
 
 
-    /// CalculatorGraphConfig API
-    [DllImport (MediaPipeLibrary)]
-    public static extern unsafe MpCalculatorGraphConfig ParseMpCalculatorGraphConfig(string input);
-
-    [DllImport (MediaPipeLibrary)]
-    public static extern unsafe void MpCalculatorGraphConfigDestroy(MpCalculatorGraphConfig config);
-
-
     /// Classification API
     [DllImport (MediaPipeLibrary)]
     public static extern unsafe MpClassificationList MpPacketGetClassificationList(MpPacket packet);
@@ -412,9 +404,6 @@ namespace Mediapipe {
 
     [DllImport (MediaPipeLibrary)]
     public static extern unsafe void MpSerializedProtoVectorDestroy(MpSerializedProtoVector protoVec);
-
-    [DllImport (MediaPipeLibrary)]
-    public static extern unsafe ProtobufLogHandlerPtr SetProtobufLogHandler([MarshalAs(UnmanagedType.FunctionPtr)]ProtobufLogHandlerPtr logHandler);
 
 
     /// Glog API

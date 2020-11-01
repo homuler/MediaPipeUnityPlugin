@@ -31,7 +31,7 @@ typedef struct MpSerializedProtoVector {
 
 typedef void LogHandler(int level, const char* filename, int line, const char* message);
 
-MP_CAPI_EXPORT extern google::protobuf::LogHandler* SetProtobufLogHandler(LogHandler* handler);
+MP_CAPI(MpReturnCode) google_protobuf__SetLogHandler__PF(LogHandler* handler);
 
 MP_CAPI_EXPORT extern void MpSerializedProtoDestroy(MpSerializedProto* proto);
 MP_CAPI_EXPORT extern void MpSerializedProtoVectorDestroy(MpSerializedProtoVector* proto_vec);

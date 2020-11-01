@@ -1,20 +1,7 @@
 #include <string>
 #include <utility>
-#include "mediapipe/framework/calculator.pb.h"
-#include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe_api/framework/calculator_graph.h"
 
-MpCalculatorGraphConfig* ParseMpCalculatorGraphConfig(const char* input) {
-  auto config = new mediapipe::CalculatorGraphConfig {};
-  auto result = google::protobuf::TextFormat::ParseFromString(input, config);
-
-  if (!result) return nullptr;
-
-  return new MpCalculatorGraphConfig { std::unique_ptr<mediapipe::CalculatorGraphConfig> { std::move(config) } };
-}
-
-void MpCalculatorGraphConfigDestroy(MpCalculatorGraphConfig* config) {
-  delete config;
 }
 
 MpCalculatorGraph* MpCalculatorGraphCreate() {

@@ -29,8 +29,6 @@ typedef struct MpCalculatorGraph {
 typedef MpStatusOrValue<std::unique_ptr<mediapipe::OutputStreamPoller>> MpStatusOrPoller;
 
 /** mediapipe::CalculatorGraph API */
-MP_CAPI_EXPORT extern MpCalculatorGraphConfig* ParseMpCalculatorGraphConfig(const char* input);
-MP_CAPI_EXPORT extern void MpCalculatorGraphConfigDestroy(MpCalculatorGraphConfig* config);
 
 MP_CAPI_EXPORT extern MpCalculatorGraph* MpCalculatorGraphCreate();
 MP_CAPI_EXPORT extern void MpCalculatorGraphDestroy(MpCalculatorGraph* graph);
