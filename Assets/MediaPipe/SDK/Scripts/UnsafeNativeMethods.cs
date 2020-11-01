@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 using System.Security;
 
 using MpCalculatorGraph = System.IntPtr;
-using MpCalculatorGraphConfig = System.IntPtr;
 using MpClassificationList = System.IntPtr;
 using MpDetection = System.IntPtr;
 using MpDetectionVector = System.IntPtr;

@@ -15,8 +15,7 @@ void mp_Status__delete(mediapipe::Status* status) {
 
 MpReturnCode mp_Status__ToString(mediapipe::Status* status, const char** str_out) {
   TRY {
-    auto message = status->ToString();
-    *str_out = strcpy_to_heap(message);
+    *str_out = strcpy_to_heap(status->ToString());
     return MpReturnCode::Success;
   } CATCH_ALL
 }
@@ -25,9 +24,6 @@ bool mp_Status__ok(mediapipe::Status* status) {
   return status->ok();
 }
 
-MpReturnCode mp_Status__raw_code(mediapipe::Status* status, int* code_out) {
-  TRY {
-    *code_out = status->raw_code();
-    return MpReturnCode::Success;
-  } CATCH_ALL
+int mp_Status__raw_code(mediapipe::Status* status) {
+  return status->raw_code();
 }

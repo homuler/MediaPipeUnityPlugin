@@ -9,9 +9,10 @@ namespace Mediapipe {
     }
 
     protected override void DisposeUnmanaged() {
-      if (isOwner) {
+      if (OwnsResource()) {
         UnsafeNativeMethods.mp_CalculatorGraphConfig__delete(ptr);
       }
+      base.DisposeUnmanaged();
     }
   }
 }

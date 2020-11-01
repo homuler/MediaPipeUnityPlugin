@@ -10,11 +10,6 @@ namespace Mediapipe {
       this.ptr = ptr;
     }
 
-    protected override void DisposeUnmanaged() {
-      ptr = IntPtr.Zero;
-      base.DisposeUnmanaged();
-    }
-
     public IntPtr ReleaseMpPtr() {
       var retPtr = mpPtr;
       ptr = IntPtr.Zero;
@@ -27,6 +22,15 @@ namespace Mediapipe {
         ThrowIfDisposed();
         return ptr;
       }
+    }
+
+    protected override void DisposeUnmanaged() {
+      ptr = IntPtr.Zero;
+      base.DisposeUnmanaged();
+    }
+
+    protected bool OwnsResource() {
+      return isOwner && ptr != IntPtr.Zero;
     }
   }
 }

@@ -12,6 +12,14 @@ namespace Tests {
       Assert.AreEqual(status.code, Status.StatusCode.Ok);
     }
 
+    [Test]
+    public void code_ShouldReturnStatusCode_When_StatusIsFailedPrecondition() {
+      var status = Status.FailedPrecondition();
+
+      Assert.AreEqual(status.code, Status.StatusCode.FailedPrecondition);
+    }
+    #endregion
+
     #region #isDisposed
     [Test]
     public void isDisposed_ShouldReturnFalse_When_NotDisposedYet() {
@@ -26,14 +34,6 @@ namespace Tests {
       status.Dispose();
 
       Assert.True(status.isDisposed);
-    }
-    #endregion
-
-    [Test]
-    public void code_ShouldReturnStatusCode_When_StatusIsFailedPrecondition() {
-      var status = Status.FailedPrecondition();
-
-      Assert.AreEqual(status.code, Status.StatusCode.FailedPrecondition);
     }
     #endregion
 

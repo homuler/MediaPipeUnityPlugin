@@ -1,7 +1,6 @@
 /// based on [OpenCvSharp](https://github.com/shimat/opencvsharp/blob/9a5f9828a74cfa3995562a06716e177705cde038/src/OpenCvSharp/Fundamentals/DisposableObject.cs)
 
 using System;
-using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace Mediapipe {
@@ -9,7 +8,7 @@ namespace Mediapipe {
     private volatile int disposeSignaled = 0;
 
     public bool isDisposed { get; protected set; }
-    public bool isOwner { get; private set; }
+    protected bool isOwner { get; private set; }
 
     protected DisposableObject() : this(true) {}
 

@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 namespace Mediapipe {
   internal static partial class UnsafeNativeMethods {
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_Status__i_PKc(int code, string message, out IntPtr status);
+    public static extern MpReturnCode mp_Packet__(out IntPtr packet);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern void mp_Status__delete(IntPtr status);
+    public static extern void mp_Packet__delete(IntPtr packet);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern unsafe MpReturnCode mp_Status__ToString(IntPtr status, out IntPtr str);
+    public static extern MpReturnCode mp__MakeBoolPacket__b([MarshalAs(UnmanagedType.I1)] bool value, out IntPtr packet);
   }
 }

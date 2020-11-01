@@ -19,7 +19,7 @@ MP_CAPI(void) mp_Status__delete(mediapipe::Status* status);
 
 MP_CAPI(MpReturnCode) mp_Status__ToString(mediapipe::Status* status, const char** str_out);
 MP_CAPI(bool) mp_Status__ok(mediapipe::Status* status);
-MP_CAPI(MpReturnCode) mp_Status__raw_code(mediapipe::Status* status, int* code_out);
+MP_CAPI(int) mp_Status__raw_code(mediapipe::Status* status);
 
 }  // extern "C"
 

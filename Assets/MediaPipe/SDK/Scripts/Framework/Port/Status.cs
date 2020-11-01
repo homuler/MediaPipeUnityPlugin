@@ -27,7 +27,7 @@ namespace Mediapipe {
     public Status(MpStatus ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
     protected override void DisposeUnmanaged() {
-      if (isOwner) {
+      if (OwnsResource()) {
         UnsafeNativeMethods.mp_Status__delete(ptr);
       }
       base.DisposeUnmanaged();
@@ -48,16 +48,11 @@ namespace Mediapipe {
     }
 
     public int rawCode {
-      get {
-        SafeNativeMethods.mp_Status__raw_code(mpPtr, out var code).Assert();
-
-        GC.KeepAlive(this);
-        return code;
-      }
+      get { return SafeNativeMethods.mp_Status__raw_code(mpPtr); }
     }
 
     public override string ToString() {
-      UnsafeNativeMethods.mp_Status__ToString(ptr, out var strPtr);
+      UnsafeNativeMethods.mp_Status__ToString(ptr, out var strPtr).Assert();
       var str = Marshal.PtrToStringAnsi(strPtr);
       UnsafeNativeMethods.delete_array__PKc(strPtr);
 
@@ -66,7 +61,7 @@ namespace Mediapipe {
     }
 
     public static Status Build(StatusCode code, string message, bool isOwner = true) {
-      UnsafeNativeMethods.mp_Status__i_PKc((int)code, message, out var ptr);
+      UnsafeNativeMethods.mp_Status__i_PKc((int)code, message, out var ptr).Assert();
 
       return new Status(ptr, isOwner);
     }
