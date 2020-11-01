@@ -51,3 +51,14 @@ cc_library(
     ],
     alwayslink = True,
 )
+
+cc_library(
+    name = "timestamp",
+    srcs = ["timestamp.cc"],
+    hdrs = ["timestamp.h"],
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework:timestamp",
+        "//mediapipe_api:common",
+    ],
+    alwayslink = True,
+)
