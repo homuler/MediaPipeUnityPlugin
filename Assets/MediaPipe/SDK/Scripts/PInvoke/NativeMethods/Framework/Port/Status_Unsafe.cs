@@ -8,5 +8,8 @@ namespace Mediapipe {
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern void mp_Status__delete(IntPtr status);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Status__ToString(IntPtr status, out IntPtr str);
   }
 }
