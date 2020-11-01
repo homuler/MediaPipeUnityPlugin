@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using MpStatus = System.IntPtr;
 
 namespace Mediapipe {
-  public class Status : ResourceHandle {
+  public class Status : MpResourceHandle {
     public enum StatusCode : int {
       Ok = 0,
       Cancelled = 1,
@@ -24,24 +24,17 @@ namespace Mediapipe {
       Unauthenticated = 16,
     }
 
-    private bool _disposed = false;
-
     public Status(MpStatus ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
-    protected override void Dispose(bool disposing) {
-      if (_disposed) return;
-
-      if (OwnsResource()) {
+    protected override void DisposeUnmanaged() {
+      if (isOwner) {
         UnsafeNativeMethods.mp_Status__delete(ptr);
       }
-
-      ptr = IntPtr.Zero;
-
-      _disposed = true;
+      base.DisposeUnmanaged();
     }
 
     public bool IsOk() {
-      return SafeNativeMethods.mp_Status__ok(ptr);
+      return SafeNativeMethods.mp_Status__ok(mpPtr);
     }
 
     public void AssertOk() {
@@ -56,7 +49,9 @@ namespace Mediapipe {
 
     public int rawCode {
       get {
-        SafeNativeMethods.mp_Status__raw_code(ptr, out var code);
+        SafeNativeMethods.mp_Status__raw_code(mpPtr, out var code).Assert();
+
+        GC.KeepAlive(this);
         return code;
       }
     }
@@ -66,11 +61,13 @@ namespace Mediapipe {
       var str = Marshal.PtrToStringAnsi(strPtr);
       UnsafeNativeMethods.delete_array__PKc(strPtr);
 
+      GC.KeepAlive(this);
       return str;
     }
 
     public static Status Build(StatusCode code, string message, bool isOwner = true) {
       UnsafeNativeMethods.mp_Status__i_PKc((int)code, message, out var ptr);
+
       return new Status(ptr, isOwner);
     }
 
@@ -80,6 +77,11 @@ namespace Mediapipe {
 
     public static Status FailedPrecondition(string message = "", bool isOwner = true) {
       return Status.Build(StatusCode.FailedPrecondition, message, isOwner);
+    }
+
+    [Obsolete("GetPtr is deprecated, use mpPtr")]
+    public IntPtr GetPtr() {
+      return mpPtr;
     }
   }
 }
