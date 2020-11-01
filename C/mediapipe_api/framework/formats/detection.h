@@ -3,7 +3,7 @@
 
 #include "mediapipe/framework/formats/detection.pb.h"
 #include "mediapipe_api/common.h"
-#include "mediapipe_api/protobuf.h"
+#include "mediapipe_api/external/protobuf.h"
 #include "mediapipe_api/framework/packet.h"
 
 extern "C" {

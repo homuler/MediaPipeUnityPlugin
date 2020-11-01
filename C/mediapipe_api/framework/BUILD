@@ -30,7 +30,7 @@ cc_library(
     deps = [
         "@com_google_mediapipe//mediapipe/framework:packet",
         "//mediapipe_api:common",
-        "//mediapipe_api:protobuf",
+        "//mediapipe_api/external:protobuf",
     ],
     alwayslink = True,
 )

@@ -1,5 +1,5 @@
-#ifndef C_MEDIAPIPE_API_PROTOBUF_H_
-#define C_MEDIAPIPE_API_PROTOBUF_H_
+#ifndef C_MEDIAPIPE_API_EXTERNAL_PROTOBUF_H_
+#define C_MEDIAPIPE_API_EXTERNAL_PROTOBUF_H_
 
 #include <vector>
 #include "mediapipe_api/common.h"
@@ -61,4 +61,4 @@ extern inline MpSerializedProtoVector* MpSerializedProtoVectorInitialize(const s
   return new MpSerializedProtoVector { data, static_cast<int>(size) };
 }
 
-#endif  // C_MEDIAPIPE_API_PROTOBUF_H_
+#endif  // C_MEDIAPIPE_API_EXTERNAL_PROTOBUF_H_

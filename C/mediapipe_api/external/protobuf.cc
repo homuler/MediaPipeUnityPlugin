@@ -1,6 +1,6 @@
 #include <functional>
 #include <string>
-#include "mediapipe_api/protobuf.h"
+#include "mediapipe_api/external/protobuf.h"
 
 using google::protobuf::LogLevel;
 

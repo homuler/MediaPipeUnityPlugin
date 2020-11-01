@@ -5,8 +5,8 @@ cc_library(
     name = "mediapipe_c",
     deps = [
         ":calculators",
-        ":protobuf",
-        ":stdlib",
+        "//mediapipe_api/external:protobuf",
+        "//mediapipe_api/external:stdlib",
         "//mediapipe_api/framework:calculator_graph",
         "//mediapipe_api/framework/formats:classification",
         "//mediapipe_api/framework/formats:detection",
@@ -76,29 +76,6 @@ cc_library(
         "@com_google_mediapipe//mediapipe/framework/port:logging",
     ],
     visibility = ["//visibility:public"],
-)
-
-cc_library(
-    name = "protobuf",
-    srcs = ["protobuf.cc"],
-    hdrs = ["protobuf.h"],
-    deps = [
-        "@com_google_protobuf//:protobuf",
-        ":common",
-    ],
-    visibility = ["//visibility:public"],
-    alwayslink = True,
-)
-
-cc_library(
-    name = "stdlib",
-    srcs = ["stdlib.cc"],
-    hdrs = ["stdlib.h"],
-    deps = [
-        ":common",
-    ],
-    visibility = ["//visibility:public"],
-    alwayslink = True,
 )
 
 pkg_model(

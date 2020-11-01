@@ -8,7 +8,7 @@
 #include <vector>
 #include "mediapipe/framework/packet.h"
 #include "mediapipe_api/common.h"
-#include "mediapipe_api/protobuf.h"
+#include "mediapipe_api/external/protobuf.h"
 
 template <typename T>
 class UnsafePacketHolder : public mediapipe::packet_internal::Holder<T> {
