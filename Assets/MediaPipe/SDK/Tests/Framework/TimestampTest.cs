@@ -137,6 +137,13 @@ namespace Tests {
 
       Assert.AreEqual(timestamp.DebugString(), "1");
     }
+
+    [Test]
+    public void DebugString_ShouldReturnDebugString_When_TimestampIsUnset() {
+      var timestamp = Timestamp.Unset();
+
+      Assert.AreEqual(timestamp.DebugString(), "Timestamp::Unset()");
+    }
     #endregion
 
     #region #NextAllowedInStream
@@ -153,7 +160,7 @@ namespace Tests {
       var timestamp = Timestamp.PostStream();
       var nextTimestamp = timestamp.NextAllowedInStream();
 
-      Assert.AreEqual(nextTimestamp.Microseconds(), Timestamp.OneOverPostStream().Microseconds());
+      Assert.AreEqual(nextTimestamp, Timestamp.OneOverPostStream());
     }
     #endregion
 
@@ -171,7 +178,7 @@ namespace Tests {
       var timestamp = Timestamp.PreStream();
       var nextTimestamp = timestamp.PreviousAllowedInStream();
 
-      Assert.AreEqual(nextTimestamp.Microseconds(), Timestamp.Unstarted().Microseconds());
+      Assert.AreEqual(nextTimestamp, Timestamp.Unstarted());
     }
     #endregion
 

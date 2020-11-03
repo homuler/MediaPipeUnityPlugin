@@ -1,8 +1,7 @@
 using System;
-using System.Runtime.InteropServices;
 
 namespace Mediapipe {
-  public class Timestamp : MpResourceHandle {
+  public class Timestamp : MpResourceHandle, IEquatable<Timestamp> {
     public Timestamp(IntPtr ptr) : base(ptr) {}
 
     public Timestamp(Int64 value) : base() {
@@ -16,6 +15,40 @@ namespace Mediapipe {
       }
       base.DisposeUnmanaged();
     }
+
+    #region IEquatable<Timestamp>
+    public bool Equals(Timestamp other) {
+      if (other == null) { return false; }
+
+      return Microseconds() == other.Microseconds();
+    }
+
+    public override bool Equals(Object obj) {
+      Timestamp timestampObj = obj == null ? null : (obj as Timestamp);
+
+      return timestampObj != null && Equals(timestampObj);
+    }
+
+    public static bool operator ==(Timestamp x, Timestamp y) {
+      if (((object)x) == null || ((object)y) == null) {
+        return Object.Equals(x, y);
+      }
+
+      return x.Equals(y);
+    }
+
+    public static bool operator !=(Timestamp x, Timestamp y) {
+      if (((object)x) == null || ((object)y) == null) {
+        return !Object.Equals(x, y);
+      }
+
+      return !(x.Equals(y));
+    }
+
+    public override int GetHashCode() {
+      return this.Microseconds().GetHashCode();
+    }
+    #endregion
 
     public Int64 Value() {
       return SafeNativeMethods.mp_Timestamp__Value(mpPtr);
@@ -70,6 +103,7 @@ namespace Mediapipe {
       return new Timestamp(ptr);
     }
 
+    #region SpecialValues
     public static Timestamp Unset() {
       UnsafeNativeMethods.mp_Timestamp_Unset(out var ptr).Assert();
 
@@ -117,5 +151,6 @@ namespace Mediapipe {
 
       return new Timestamp(ptr);
     }
+    #endregion
   }
 }
