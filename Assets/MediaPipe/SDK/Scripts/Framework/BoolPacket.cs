@@ -16,7 +16,6 @@ namespace Mediapipe {
       this.ptr = ptr;
     }
 
-    /// <exception cref="MediaPipeException">Thrown when the value is not set</exception>
     public override bool Get() {
       UnsafeNativeMethods.mp_Packet__GetBool(mpPtr, out var value).Assert();
 

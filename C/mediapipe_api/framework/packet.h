@@ -48,18 +48,28 @@ MP_CAPI(MpReturnCode) mp_Packet__GetBool(mediapipe::Packet* packet, bool* value_
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsBool(mediapipe::Packet* packet, mediapipe::Status** status_out);
 
 // Float
-MP_CAPI(MpReturnCode) mp__MakeFloatPacket__b(float value, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeFloatPacket__f(float value, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeFloatPacket_At__f_Rtimestamp(float value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetFloat(mediapipe::Packet* packet, float* value_out);
+MP_CAPI(MpReturnCode) mp_Packet__ValidateAsFloat(mediapipe::Packet* packet, mediapipe::Status** status_out);
 
 // String
-MP_CAPI(MpReturnCode)  mp__MakeStringPacket__PKc(const char* str, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode)  mp__MakeStringPacketAt__PKc_i(const char* str, int timestamp, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode)  MpPacketGetString(mediapipe::Packet* packet, const char** value_out);
+MP_CAPI(MpReturnCode) mp__MakeStringPacket__PKc(const char* str, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeStringPacket_At__PKc_Rtimestamp(const char* str,
+                                                              mediapipe::Timestamp* timestamp,
+                                                              mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetString(mediapipe::Packet* packet, const char** value_out);
+MP_CAPI(MpReturnCode) mp_Packet__ConsumeString(mediapipe::Packet* packet, const char** value_out);
+MP_CAPI(MpReturnCode) mp_Packet__ValidateAsString(mediapipe::Packet* packet, mediapipe::Status** status_out);
 
 /** SidePacket API */
 MP_CAPI(MpReturnCode) mp_SidePacket__(SidePacket** side_packet_out);
 MP_CAPI(void) mp_SidePacket__delete(SidePacket* side_packet);
-MP_CAPI(MpReturnCode) mp_SidePacket__emplace(SidePacket* side_packet, const char* key, mediapipe::Packet* packet);
+MP_CAPI(MpReturnCode) mp_SidePacket__emplace__PKc_Rpacket(SidePacket* side_packet, const char* key, mediapipe::Packet* packet);
+MP_CAPI(MpReturnCode) mp_SidePacket__at__PKc(SidePacket* side_packet, const char* key, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp_SidePacket__erase__PKc(SidePacket* side_packet, const char* key, int* count_out);
+MP_CAPI(void) mp_SidePacket__clear(SidePacket* side_packet);
+MP_CAPI(int) mp_SidePacket__size(SidePacket* side_packet);
 
 }  // extern "C"
 

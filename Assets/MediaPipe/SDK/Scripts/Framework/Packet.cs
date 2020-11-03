@@ -9,6 +9,7 @@ namespace Mediapipe {
 
     public Packet(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
+    /// <exception cref="MediaPipeException">Thrown when the value is not set</exception>
     public abstract T Get();
 
     [Obsolete("GetValue() is deprecated, use Get()")]

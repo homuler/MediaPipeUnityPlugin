@@ -56,6 +56,7 @@ MpReturnCode mp_Packet__DebugTypeName(mediapipe::Packet* packet, const char** st
   } CATCH_EXCEPTION
 }
 
+/** BoolPacket */
 MpReturnCode mp__MakeBoolPacket__b(bool value, mediapipe::Packet** packet_out) {
   TRY {
     *packet_out = new mediapipe::Packet { mediapipe::MakePacket<bool>(value) };
@@ -84,29 +85,65 @@ MpReturnCode mp_Packet__ValidateAsBool(mediapipe::Packet* packet, mediapipe::Sta
   } CATCH_EXCEPTION
 }
 
-MpPacket* MpMakeFloatPacket(float value) {
-  auto packet = mediapipe::MakePacket<float>(value);
-
-  return new MpPacket { std::move(packet) };
+/** FloatPacket */
+MpReturnCode mp__MakeFloatPacket__f(float value, mediapipe::Packet** packet_out) {
+  TRY {
+    *packet_out = new mediapipe::Packet { mediapipe::MakePacket<float>(value) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
-float MpPacketGetDouble(MpPacket* packet) {
-  return packet->impl->Get<float>();
+MpReturnCode mp__MakeFloatPacket_At__f_Rtimestamp(float value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
+  TRY {
+    *packet_out = new mediapipe::Packet { mediapipe::MakePacket<float>(value).At(*timestamp) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
-MpPacket* MpMakeStringPacketAt(const char* string, int timestamp) {
-  auto packet = mediapipe::MakePacket<std::string>(std::string(string)).At(mediapipe::Timestamp(timestamp));
-
-  return new MpPacket { std::move(packet) };
+MpReturnCode mp_Packet__GetFloat(mediapipe::Packet* packet, float* value_out) {
+  TRY_ALL {
+    *value_out = packet->Get<float>();
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
 }
 
-const char* MpPacketGetString(MpPacket* packet) {
-  auto text = packet->impl->Get<std::string>();
-
-  return strcpy_to_heap(text);
+MpReturnCode mp_Packet__ValidateAsFloat(mediapipe::Packet* packet, mediapipe::Status** status_out) {
+  TRY {
+    *status_out = new mediapipe::Status { packet->ValidateAsType<float>() };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
-/** SidePacket API */
+/** StringPacket */
+MpReturnCode mp__MakeStringPacket__PKc(const char* str, mediapipe::Packet** packet_out) {
+  TRY {
+    *packet_out = new mediapipe::Packet { mediapipe::MakePacket<std::string>(std::string(str)) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+MpReturnCode mp__MakeStringPacket_At__PKc_Rtimestamp(const char* str, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
+  TRY {
+    *packet_out = new mediapipe::Packet { mediapipe::MakePacket<std::string>(std::string(str)).At(*timestamp) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+MpReturnCode mp_Packet__GetString(mediapipe::Packet* packet, const char** value_out) {
+  TRY_ALL {
+    *value_out = strcpy_to_heap(packet->Get<std::string>());
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
+}
+
+MpReturnCode mp_Packet__ValidateAsString(mediapipe::Packet* packet, mediapipe::Status** status_out) {
+  TRY {
+    *status_out = new mediapipe::Status { packet->ValidateAsType<std::string>() };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+/** SidePacket */
 MpReturnCode mp_SidePacket__(SidePacket** side_packet_out) {
   TRY {
     *side_packet_out = new SidePacket();
@@ -118,9 +155,38 @@ void mp_SidePacket__delete(SidePacket* side_packet) {
   delete side_packet;
 }
 
-MpReturnCode mp_SidePacket__emplace(SidePacket* side_packet, const char* key, mediapipe::Packet* packet) {
+MpReturnCode mp_SidePacket__emplace__PKc_Rpacket(SidePacket* side_packet, const char* key, mediapipe::Packet* packet) {
   TRY {
-    side_packet->emplace(std::string(key), *packet);
+    side_packet->emplace(std::string(key), std::move(*packet));
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
+}
+
+MpReturnCode mp_SidePacket__at__PKc(SidePacket* side_packet, const char* key, mediapipe::Packet** packet_out) {
+  TRY {
+    try {
+      auto packet = side_packet->at(std::string(key));
+      // copy
+      *packet_out = new mediapipe::Packet { packet };
+      RETURN_CODE(MpReturnCode::Success);
+    } catch (std::out_of_range&) {
+      *packet_out = nullptr;
+      RETURN_CODE(MpReturnCode::Success);
+    }
+  } CATCH_EXCEPTION
+}
+
+MpReturnCode mp_SidePacket__erase__PKc(SidePacket* side_packet, const char* key, int* count_out) {
+  TRY {
+    *count_out = side_packet->erase(std::string(key));
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+void mp_SidePacket__clear(SidePacket* side_packet) {
+  side_packet->clear();
+}
+
+int mp_SidePacket__size(SidePacket* side_packet) {
+  return side_packet->size();
 }

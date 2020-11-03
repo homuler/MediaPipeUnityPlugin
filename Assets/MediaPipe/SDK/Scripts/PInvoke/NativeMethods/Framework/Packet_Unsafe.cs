@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Mediapipe {
   internal static partial class UnsafeNativeMethods {
+    #region common
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__(out IntPtr packet);
 
@@ -11,9 +12,6 @@ namespace Mediapipe {
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__At__Rtimestamp(IntPtr packet, IntPtr timestamp, out IntPtr newPacket);
-
-    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_Packet__ValidateAsBool(IntPtr packet, out IntPtr status);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__ValidateAsProtoMessageLite(IntPtr packet, out IntPtr status);
@@ -29,7 +27,9 @@ namespace Mediapipe {
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__DebugTypeName(IntPtr packet, out IntPtr str);
+    #endregion
 
+    #region Bool
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp__MakeBoolPacket__b([MarshalAs(UnmanagedType.I1)] bool value, out IntPtr packet);
 
@@ -38,5 +38,37 @@ namespace Mediapipe {
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__GetBool(IntPtr packet, [MarshalAs(UnmanagedType.I1)]out bool value);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__ValidateAsBool(IntPtr packet, out IntPtr status);
+    #endregion
+
+    #region Float
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeFloatPacket__f(float value, out IntPtr packet);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeFloatPacket_At__f_Rtimestamp(float value, IntPtr timestamp, out IntPtr packet);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__GetFloat(IntPtr packet, out float value);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__ValidateAsFloat(IntPtr packet, out IntPtr status);
+    #endregion
+
+    #region String
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeStringPacket__PKc(string value, out IntPtr packet);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeStringPacket_At__PKc_Rtimestamp(string value, IntPtr timestamp, out IntPtr packet);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__GetString(IntPtr packet, out IntPtr value);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__ValidateAsString(IntPtr packet, out IntPtr status);
+    #endregion
   }
 }

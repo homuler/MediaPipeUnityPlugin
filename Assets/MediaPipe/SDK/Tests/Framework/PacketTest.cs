@@ -15,7 +15,7 @@ namespace Tests {
       var newTimestamp = new Timestamp(2);
       var newPacket = packet.At(newTimestamp);
 
-      Assert.True(newPacket is BoolPacket);
+      Assert.IsInstanceOf<BoolPacket>(newPacket);
       Assert.True(newPacket.Get());
       Assert.AreEqual(newPacket.Timestamp(), newTimestamp);
 
