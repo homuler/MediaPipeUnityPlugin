@@ -5,7 +5,7 @@ namespace Mediapipe {
   public class RectVectorPacket : Packet<List<Rect>> {
     public RectVectorPacket() : base() {}
 
-    public override List<Rect> GetValue() {
+    public override List<Rect> Get() {
       var rectVecPtr = UnsafeNativeMethods.MpPacketGetRectVector(ptr);
       var rects = SerializedProtoVector.FromPtr<Rect>(rectVecPtr, Rect.Parser);
 
@@ -14,7 +14,7 @@ namespace Mediapipe {
       return rects;
     }
 
-    public override List<Rect> ConsumeValue() {
+    public override List<Rect> Consume() {
       throw new NotSupportedException();
     }
   }

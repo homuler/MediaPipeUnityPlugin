@@ -1,19 +1,18 @@
 using System;
-using MpPacket = System.IntPtr;
 
 namespace Mediapipe {
   public class FloatPacket : Packet<float> {
     public FloatPacket() : base() {}
 
-    public FloatPacket(MpPacket ptr) : base(ptr) {}
+    public FloatPacket(float value) {
+      // TODO: implement
+    }
 
-    public FloatPacket(float value) : base(UnsafeNativeMethods.MpMakeFloatPacket(value)) {}
-
-    public override float GetValue() {
+    public override float Get() {
       return UnsafeNativeMethods.MpPacketGetFloat(ptr);
     }
 
-    public override float ConsumeValue() {
+    public override float Consume() {
       throw new NotSupportedException();
     }
   }

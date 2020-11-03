@@ -1,19 +1,18 @@
 using System;
-using MpPacket = System.IntPtr;
 
 namespace Mediapipe {
   public class StringPacket : Packet<string> {
     public StringPacket() : base() {}
 
-    public StringPacket(MpPacket ptr) : base(ptr) {}
-
-    public StringPacket(string text, int timestamp) : base(UnsafeNativeMethods.MpMakeStringPacketAt(text, timestamp)) {}
-
-    public override string GetValue() {
-      return UnsafeNativeMethods.MpPacketGetString(GetPtr());
+    public StringPacket(string text, int timestamp) {
+      // TODO: implement
     }
 
-    public override string ConsumeValue() {
+    public override string Get() {
+      return UnsafeNativeMethods.MpPacketGetString(mpPtr);
+    }
+
+    public override string Consume() {
       throw new NotSupportedException();
     }
   }

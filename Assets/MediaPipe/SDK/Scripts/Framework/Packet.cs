@@ -1,28 +1,71 @@
 using System;
 
-using MpPacket = System.IntPtr;
-
 namespace Mediapipe {
-  public abstract class Packet<T> : ResourceHandle {
-    private bool _disposed = false;
+  public abstract class Packet<T> : MpResourceHandle {
+    public Packet() : base() {
+      UnsafeNativeMethods.mp_Packet__(out var ptr).Assert();
+      this.ptr = ptr;
+    }
 
-    public Packet() : base(UnsafeNativeMethods.MpPacketCreate(), true) {}
+    public Packet(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
-    public Packet(MpPacket ptr, bool isOwner = true) : base(ptr, isOwner) {}
+    public abstract T Get();
 
-    public abstract T GetValue();
+    [Obsolete("GetValue() is deprecated, use Get()")]
+    public T GetValue() { return Get(); }
 
-    public abstract T ConsumeValue();
+    public abstract T Consume();
 
-    protected override void Dispose(bool disposing) {
-      if (_disposed) return;
+    [Obsolete("ConsumeValue() is deprecated, use Consume()")]
+    public T ConsumeValue() { return Consume(); }
 
+    /// <remarks>To avoid copying the value, instantiate the packet with timestamp</remarks>
+    /// <returns>New packet with the given timestamp and the copied value</returns>
+    public Packet<T> At(Timestamp timestamp) {
+      UnsafeNativeMethods.mp_Packet__At__Rtimestamp(mpPtr, timestamp.mpPtr, out var packetPtr).Assert();
+
+      GC.KeepAlive(timestamp);
+      return (Packet<T>)Activator.CreateInstance(this.GetType(), packetPtr, true);
+    }
+
+    public Status ValidateAsProtoMessageLite() {
+      UnsafeNativeMethods.mp_Packet__ValidateAsProtoMessageLite(mpPtr, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      return new Status(statusPtr);
+    }
+
+    // TODO: declare as abstract
+    public virtual Status ValidateAsType() {
+      throw new NotImplementedException();
+    }
+
+    public Timestamp Timestamp() {
+      UnsafeNativeMethods.mp_Packet__Timestamp(mpPtr, out var timestampPtr).Assert();
+
+      GC.KeepAlive(this);
+      return new Timestamp(timestampPtr);
+    }
+
+    public string DebugString() {
+      return MarshalStringFromNative(UnsafeNativeMethods.mp_Packet__DebugString);
+    }
+
+    public string RegisteredTypeName() {
+      var typeName = MarshalStringFromNative(UnsafeNativeMethods.mp_Packet__RegisteredTypeName);
+
+      return typeName == null ? "" : typeName;
+    }
+
+    public string DebugTypeName() {
+      return MarshalStringFromNative(UnsafeNativeMethods.mp_Packet__DebugTypeName);
+    }
+
+    protected override void DisposeUnmanaged() {
       if (OwnsResource()) {
-        UnsafeNativeMethods.MpPacketDestroy(ptr);
+        UnsafeNativeMethods.mp_Packet__delete(ptr);
       }
-
-      ptr = IntPtr.Zero;
-      _disposed = true;
+      base.DisposeUnmanaged();
     }
   }
 }

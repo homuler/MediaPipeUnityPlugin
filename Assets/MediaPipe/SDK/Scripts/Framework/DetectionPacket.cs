@@ -5,7 +5,7 @@ namespace Mediapipe {
   public class DetectionPacket : Packet<Detection> {
     public DetectionPacket() : base() {}
 
-    public override Detection GetValue() {
+    public override Detection Get() {
       var detectionPtr = UnsafeNativeMethods.MpPacketGetDetection(ptr);
       var detection = SerializedProto.FromPtr<Detection>(detectionPtr, Detection.Parser);
 
@@ -14,7 +14,7 @@ namespace Mediapipe {
       return detection;
     }
 
-    public override Detection ConsumeValue() {
+    public override Detection Consume() {
       throw new NotSupportedException();
     }
   }

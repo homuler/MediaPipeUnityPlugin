@@ -4,7 +4,7 @@ namespace Mediapipe {
   public class NormalizedLandmarkListPacket : Packet<NormalizedLandmarkList> {
     public NormalizedLandmarkListPacket() : base() {}
 
-    public override NormalizedLandmarkList GetValue() {
+    public override NormalizedLandmarkList Get() {
       var landmarkListPtr = UnsafeNativeMethods.MpPacketGetNormalizedLandmarkList(ptr);
       var rect = SerializedProto.FromPtr<NormalizedLandmarkList>(landmarkListPtr, NormalizedLandmarkList.Parser);
 
@@ -13,7 +13,7 @@ namespace Mediapipe {
       return rect;
     }
 
-    public override NormalizedLandmarkList ConsumeValue() {
+    public override NormalizedLandmarkList Consume() {
       throw new NotSupportedException();
     }
   }

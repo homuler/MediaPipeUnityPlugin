@@ -29,32 +29,36 @@ typedef struct MpPacket {
   MpPacket(mediapipe::Packet packet) : impl { std::make_unique<mediapipe::Packet>(std::move(packet)) } {}
 } MpPacket;
 
-typedef struct MpSidePacket {
-  std::shared_ptr<std::map<std::string, mediapipe::Packet>> impl;
-
-  MpSidePacket() : impl { std::make_shared<std::map<std::string, mediapipe::Packet>>() } {}
-} MpSidePacket;
+typedef std::map<std::string, mediapipe::Packet> SidePacket;
 
 /** mediapipe::Packet API */
-MP_CAPI_EXPORT extern MpPacket* MpPacketCreate();
-MP_CAPI_EXPORT extern void MpPacketDestroy(MpPacket* packet);
+MP_CAPI(MpReturnCode) mp_Packet__(mediapipe::Packet** packet_out);
+MP_CAPI(void) mp_Packet__delete(mediapipe::Packet* packet);
+MP_CAPI(MpReturnCode) mp_Packet__At__Rtimestamp(mediapipe::Packet* packet, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp_Packet__ValidateAsProtoMessageLite(mediapipe::Packet* packet, mediapipe::Status** status_out);
+MP_CAPI(MpReturnCode) mp_Packet__Timestamp(mediapipe::Packet* packet, mediapipe::Timestamp** timestamp_out);
+MP_CAPI(MpReturnCode) mp_Packet__DebugString(mediapipe::Packet* packet, const char** str_out);
+MP_CAPI(MpReturnCode) mp_Packet__RegisteredTypeName(mediapipe::Packet* packet, const char** str_out);
+MP_CAPI(MpReturnCode) mp_Packet__DebugTypeName(mediapipe::Packet* packet, const char** str_out);
 
 // Boolean
-MP_CAPI_EXPORT extern MpPacket* MpMakeBoolPacket(bool value);
-MP_CAPI_EXPORT extern bool MpPacketGetBool(MpPacket* packet);
+MP_CAPI(MpReturnCode) mp__MakeBoolPacket__b(bool value, mediapipe::Packet** packet_out);
+MP_CAPI(bool) mp_Packet__GetBool(mediapipe::Packet* packet);
+MP_CAPI(MpReturnCode) mp_Packet__ValidateAsBool(mediapipe::Packet* packet, mediapipe::Status** status_out);
 
 // Float
-MP_CAPI_EXPORT extern MpPacket* MpMakeFloatPacket(float value);
-MP_CAPI_EXPORT extern float MpPacketGetFloat(MpPacket* packet);
+MP_CAPI(MpReturnCode) mp__MakeFloatPacket__b(float value, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetFloat(mediapipe::Packet* packet, float* value_out);
 
 // String
-MP_CAPI_EXPORT extern MpPacket* MpMakeStringPacketAt(const char* str, int timestamp);
-MP_CAPI_EXPORT extern const char* MpPacketGetString(MpPacket* packet);
+MP_CAPI(MpReturnCode)  mp__MakeStringPacket__PKc(const char* str, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode)  mp__MakeStringPacketAt__PKc_i(const char* str, int timestamp, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode)  MpPacketGetString(mediapipe::Packet* packet, const char** value_out);
 
 /** SidePacket API */
-MP_CAPI_EXPORT extern MpSidePacket* MpSidePacketCreate();
-MP_CAPI_EXPORT extern void MpSidePacketDestroy(MpSidePacket* side_packet);
-MP_CAPI_EXPORT extern void MpSidePacketInsert(MpSidePacket* side_packet, const char* key, MpPacket* packet);
+MP_CAPI(MpReturnCode) mp_SidePacket__(SidePacket** side_packet_out);
+MP_CAPI(void) mp_SidePacket__delete(SidePacket* side_packet);
+MP_CAPI(MpReturnCode) mp_SidePacket__emplace(SidePacket* side_packet, const char* key, mediapipe::Packet* packet);
 
 }  // extern "C"
 

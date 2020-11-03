@@ -7,11 +7,12 @@ namespace Mediapipe {
     private GCHandle valueHandle;
     public ImageFramePacket() : base() {}
 
-    public ImageFramePacket(ImageFrame imageFrame, int timestamp) :
-        base(UnsafeNativeMethods.MpMakeImageFramePacketAt(imageFrame.GetPtr(), timestamp)) {
-      imageFrame.ReleaseOwnership();
-      // to pin the pixelData
-      valueHandle = GCHandle.Alloc(imageFrame);
+    public ImageFramePacket(ImageFrame imageFrame, int timestamp) {
+      // TODO: implement
+      // base(UnsafeNativeMethods.MpMakeImageFramePacketAt(imageFrame.GetPtr(), timestamp)) {
+      // imageFrame.ReleaseOwnership();
+      // // to pin the pixelData
+      // valueHandle = GCHandle.Alloc(imageFrame);
     }
 
     protected override void Dispose(bool disposing) {
@@ -26,16 +27,16 @@ namespace Mediapipe {
       _disposed = true;
     }
 
-    public override ImageFrame GetValue() {
+    public override ImageFrame Get() {
       return new ImageFrame(UnsafeNativeMethods.MpPacketGetImageFrame(ptr), false);
     }
 
-    public override ImageFrame ConsumeValue() {
+    public override ImageFrame Consume() {
       if (!OwnsResource()) {
         throw new InvalidOperationException("Not owns resouces to be consumed");
       }
 
-      return new StatusOrImageFrame(UnsafeNativeMethods.MpPacketConsumeImageFrame(GetPtr())).ConsumeValue();
+      return new StatusOrImageFrame(UnsafeNativeMethods.MpPacketConsumeImageFrame(mpPtr)).ConsumeValue();
     }
   }
 }

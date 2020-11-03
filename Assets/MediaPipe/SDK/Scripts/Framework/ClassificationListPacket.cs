@@ -4,7 +4,7 @@ namespace Mediapipe {
   public class ClassificationListPacket : Packet<ClassificationList> {
     public ClassificationListPacket() : base() {}
 
-    public override ClassificationList GetValue() {
+    public override ClassificationList Get() {
       var classificationListPtr = UnsafeNativeMethods.MpPacketGetClassificationList(ptr);
       var rect = SerializedProto.FromPtr<ClassificationList>(classificationListPtr, ClassificationList.Parser);
 
@@ -13,7 +13,7 @@ namespace Mediapipe {
       return rect;
     }
 
-    public override ClassificationList ConsumeValue() {
+    public override ClassificationList Consume() {
       throw new NotSupportedException();
     }
   }
