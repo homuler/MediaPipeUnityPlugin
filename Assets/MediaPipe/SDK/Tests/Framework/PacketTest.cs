@@ -9,17 +9,17 @@ namespace Tests {
       var timestamp = new Timestamp(1);
       var packet = new BoolPacket(true).At(timestamp);
 
-      Assert.True(packet.GetValue());
+      Assert.True(packet.Get());
       Assert.AreEqual(packet.Timestamp(), timestamp);
 
       var newTimestamp = new Timestamp(2);
       var newPacket = packet.At(newTimestamp);
 
       Assert.True(newPacket is BoolPacket);
-      Assert.True(newPacket.GetValue());
+      Assert.True(newPacket.Get());
       Assert.AreEqual(newPacket.Timestamp(), newTimestamp);
 
-      Assert.True(packet.GetValue());
+      Assert.True(packet.Get());
       Assert.AreEqual(packet.Timestamp(), timestamp);
     }
     #endregion
@@ -44,7 +44,7 @@ namespace Tests {
 
     #region #RegisteredTypeName
     [Test]
-    public void RegisteredTypeName_ShouldReturnEmptyString_When_ValueIsNotSet() {
+    public void RegisteredTypeName_ShouldReturnEmptyString() {
       var packet = new BoolPacket();
 
       Assert.AreEqual(packet.RegisteredTypeName(), "");

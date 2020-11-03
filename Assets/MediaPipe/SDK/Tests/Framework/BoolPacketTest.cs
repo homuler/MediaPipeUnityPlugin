@@ -4,6 +4,45 @@ using System;
 
 namespace Tests {
   public class BoolPacketTest {
+    #region Constructor
+    [Test]
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithNoArguments() {
+      var packet = new BoolPacket();
+
+      Assert.AreEqual(packet.ValidateAsType().code, Status.StatusCode.Internal);
+      Assert.Throws<MediaPipeException>(() => { packet.Get(); });
+      Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
+    }
+
+    [Test]
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithTrue() {
+      var packet = new BoolPacket(true);
+
+      Assert.True(packet.ValidateAsType().IsOk());
+      Assert.True(packet.Get());
+      Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
+    }
+
+    [Test]
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithFalse() {
+      var packet = new BoolPacket(false);
+
+      Assert.True(packet.ValidateAsType().IsOk());
+      Assert.False(packet.Get());
+      Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
+    }
+
+    [Test]
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithValueAndTimestamp() {
+      var timestamp = new Timestamp(1);
+      var packet = new BoolPacket(true, timestamp);
+
+      Assert.True(packet.ValidateAsType().IsOk());
+      Assert.True(packet.Get());
+      Assert.AreEqual(packet.Timestamp(), timestamp);
+    }
+    #endregion
+
     #region #isDisposed
     [Test]
     public void isDisposed_ShouldReturnFalse_When_NotDisposedYet() {
@@ -21,28 +60,21 @@ namespace Tests {
     }
     #endregion
 
-    #region #ConsumeValue
+    #region #Consume
     [Test]
-    public void ConsumeValue_ShouldThrowNotSupportedException() {
+    public void Consume_ShouldThrowNotSupportedException() {
       var packet = new BoolPacket();
 
-      Assert.Throws<NotSupportedException>(() => { packet.ConsumeValue(); });
+      Assert.Throws<NotSupportedException>(() => { packet.Consume(); });
     }
     #endregion
 
-    #region #GetValue
+    #region #DebugTypeName
     [Test]
-    public void GetValue_ShouldReturnTrue_When_ValueIsTrue() {
+    public void DebugTypeName_ShouldReturnBool_When_ValueIsSet() {
       var packet = new BoolPacket(true);
 
-      Assert.True(packet.GetValue());
-    }
-
-    [Test]
-    public void GetValue_ShouldReturnFalse_When_ValueIsFalse() {
-      var packet = new BoolPacket(false);
-
-      Assert.False(packet.GetValue());
+      Assert.AreEqual(packet.DebugTypeName(), "bool");
     }
     #endregion
   }
