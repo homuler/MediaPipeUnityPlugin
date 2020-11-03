@@ -16,8 +16,8 @@ MpReturnCode google_protobuf__SetLogHandler__PF(LogHandler* handler) {
   TRY {
     logHandler = handler;
     google::protobuf::SetLogHandler(&HandleProtobufLog);
-    return MpReturnCode::Success;
-  } CATCH_ALL
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
 void MpSerializedProtoDestroy(MpSerializedProto* proto) {

@@ -8,8 +8,8 @@ MpReturnCode google_protobuf_TextFormat__ParseFromStringAsCalculatorGraphConfig_
     auto result = google::protobuf::TextFormat::ParseFromString(input, config);
 
     *config_out = result ? config : nullptr;
-    return MpReturnCode::Success;
-  } CATCH_ALL
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
 void mp_CalculatorGraphConfig__delete(mediapipe::CalculatorGraphConfig* config) {

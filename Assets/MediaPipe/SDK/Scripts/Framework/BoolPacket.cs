@@ -11,8 +11,16 @@ namespace Mediapipe {
       this.ptr = ptr;
     }
 
+    public BoolPacket(bool value, Timestamp timestamp) : base() {
+      UnsafeNativeMethods.mp__MakeBoolPacket_At__b_Rtimestamp(value, timestamp.mpPtr, out var ptr).Assert();
+      this.ptr = ptr;
+    }
+
     public override bool Get() {
-      return SafeNativeMethods.mp_Packet__GetBool(ptr);
+      UnsafeNativeMethods.mp_Packet__GetBool(mpPtr, out var value).Assert();
+
+      GC.KeepAlive(this);
+      return value;
     }
 
     public override bool Consume() {

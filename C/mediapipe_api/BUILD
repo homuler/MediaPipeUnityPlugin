@@ -73,11 +73,13 @@ cc_library(
 
 cc_library(
     name = "common",
+    srcs = ["common.cc"],
     hdrs = ["common.h"],
     deps = [
         "@com_google_mediapipe//mediapipe/framework/port:logging",
     ],
     visibility = ["//visibility:public"],
+    alwayslink = True,
 )
 
 pkg_model(

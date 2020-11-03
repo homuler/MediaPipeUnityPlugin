@@ -5,8 +5,8 @@ MpReturnCode mp_Status__i_PKc(int code, const char* message, mediapipe::Status**
   TRY {
     auto status_code = static_cast<mediapipe::StatusCode>(code);
     *status_out = new mediapipe::Status { status_code, message };
-    return MpReturnCode::Success;
-  } CATCH_ALL
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
 void mp_Status__delete(mediapipe::Status* status) {
@@ -16,8 +16,8 @@ void mp_Status__delete(mediapipe::Status* status) {
 MpReturnCode mp_Status__ToString(mediapipe::Status* status, const char** str_out) {
   TRY {
     *str_out = strcpy_to_heap(status->ToString());
-    return MpReturnCode::Success;
-  } CATCH_ALL
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
 bool mp_Status__ok(mediapipe::Status* status) {
