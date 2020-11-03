@@ -1,6 +1,4 @@
 using System;
-using System.Runtime.InteropServices;
-using MpStatus = System.IntPtr;
 
 namespace Mediapipe {
   public class Status : MpResourceHandle {
@@ -24,7 +22,7 @@ namespace Mediapipe {
       Unauthenticated = 16,
     }
 
-    public Status(MpStatus ptr, bool isOwner = true) : base(ptr, isOwner) {}
+    public Status(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
     protected override void DisposeUnmanaged() {
       if (OwnsResource()) {
@@ -52,12 +50,7 @@ namespace Mediapipe {
     }
 
     public override string ToString() {
-      UnsafeNativeMethods.mp_Status__ToString(ptr, out var strPtr).Assert();
-      var str = Marshal.PtrToStringAnsi(strPtr);
-      UnsafeNativeMethods.delete_array__PKc(strPtr);
-
-      GC.KeepAlive(this);
-      return str;
+      return MarshalStringFromNative(UnsafeNativeMethods.mp_Status__ToString);
     }
 
     public static Status Build(StatusCode code, string message, bool isOwner = true) {

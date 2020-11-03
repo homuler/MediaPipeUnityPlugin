@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 
 namespace Mediapipe {
   public abstract class MpResourceHandle : DisposableObject, IMpResourceHandle {
@@ -31,6 +32,16 @@ namespace Mediapipe {
 
     protected bool OwnsResource() {
       return isOwner && ptr != IntPtr.Zero;
+    }
+
+    protected delegate MpReturnCode StringOutFunc(IntPtr ptr, out IntPtr strPtr);
+    protected string MarshalStringFromNative(StringOutFunc f) {
+      f(mpPtr, out var strPtr).Assert();
+      var str = Marshal.PtrToStringAnsi(strPtr);
+      UnsafeNativeMethods.delete_array__PKc(strPtr);
+
+      GC.KeepAlive(this);
+      return str;
     }
   }
 }

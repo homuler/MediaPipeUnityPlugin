@@ -75,12 +75,7 @@ namespace Mediapipe {
     }
 
     public string DebugString() {
-      UnsafeNativeMethods.mp_Timestamp__DebugString(mpPtr, out var strPtr).Assert();
-      var str = Marshal.PtrToStringAnsi(strPtr);
-      UnsafeNativeMethods.delete_array__PKc(strPtr);
-
-      GC.KeepAlive(this);
-      return str;
+      return MarshalStringFromNative(UnsafeNativeMethods.mp_Timestamp__DebugString);
     }
 
     public Timestamp NextAllowedInStream() {
