@@ -4,7 +4,6 @@
 #include <map>
 #include <memory>
 #include <string>
-#include <utility>
 #include "mediapipe/framework/calculator_graph.h"
 #include "mediapipe_api/common.h"
 #include "mediapipe_api/framework/packet.h"
@@ -17,12 +16,6 @@
 #endif  // !defined(MEDIAPIPE_DISABLE_GPU)
 
 extern "C" {
-
-typedef struct MpCalculatorGraph {
-  std::unique_ptr<mediapipe::CalculatorGraph> impl;
-
-  MpCalculatorGraph() : impl { std::make_unique<mediapipe::CalculatorGraph>() } {}
-} MpCalculatorGraph;
 
 typedef std::map<std::string, mediapipe::Packet> SidePackets;
 
@@ -51,8 +44,11 @@ MP_CAPI(MpReturnCode) mp_CalculatorGraph__AddOutputStreamPoller__PKc(mediapipe::
                                                                      mediapipe::StatusOrPoller** status_or_poller_out);
 
 #ifndef MEDIAPIPE_DISABLE_GPU
-MP_CAPI_EXPORT extern MpGpuResources* MpCalculatorGraphGetGpuResources(MpCalculatorGraph* graph);
-MP_CAPI_EXPORT extern MpStatus* MpCalculatorGraphSetGpuResources(MpCalculatorGraph* graph, MpGpuResources* gpu_resources);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__GetGpuResources(mediapipe::CalculatorGraph* graph,
+                                                          std::shared_ptr<mediapipe::GpuResources>** gpu_resources_out);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__SetGpuResources__SPgpu(mediapipe::CalculatorGraph* graph,
+                                                                 std::shared_ptr<mediapipe::GpuResources>* gpu_resources,
+                                                                 mediapipe::Status** status_out);
 #endif  // !defined(MEDIAPIPE_DISABLE_GPU)
 
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__AddPacketToInputStream__PKc_Ppacket(mediapipe::CalculatorGraph* graph,

@@ -12,7 +12,7 @@ namespace Mediapipe {
     }
 
     public bool Next(Packet<T> packet) {
-      UnsafeNativeMethods.mp_OutputStreamPoller__Next_Ppacket(mpPtr, packet.mpPtr, out var result);
+      UnsafeNativeMethods.mp_OutputStreamPoller__Next_Ppacket(mpPtr, packet.mpPtr, out var result).Assert();
 
       GC.KeepAlive(this);
       return result;

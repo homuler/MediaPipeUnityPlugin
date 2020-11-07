@@ -64,32 +64,39 @@ namespace Mediapipe {
     }
 
     public Status CloseInputStream(string name) {
-      UnsafeNativeMethods.mp_CalculatorGraph__CloseInputStream__PKc(mpPtr, name, out var statusPtr);
+      UnsafeNativeMethods.mp_CalculatorGraph__CloseInputStream__PKc(mpPtr, name, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       return new Status(statusPtr);
     }
 
     public StatusOrPoller<T> AddOutputStreamPoller<T>(string name) {
-      UnsafeNativeMethods.mp_CalculatorGraph__AddOutputStreamPoller__PKc(mpPtr, name, out var statusOrPollerPtr);
+      UnsafeNativeMethods.mp_CalculatorGraph__AddOutputStreamPoller__PKc(mpPtr, name, out var statusOrPollerPtr).Assert();
 
       GC.KeepAlive(this);
       return new StatusOrPoller<T>(statusOrPollerPtr);
     }
 
     public Status AddPacketToInputStream<T>(string name, Packet<T> packet) {
-      UnsafeNativeMethods.mp_CalculatorGraph__AddPacketToInputStream__PKc_Ppacket(mpPtr, name, packet.mpPtr, out var statusPtr);
+      UnsafeNativeMethods.mp_CalculatorGraph__AddPacketToInputStream__PKc_Ppacket(mpPtr, name, packet.mpPtr, out var statusPtr).Assert();
+      packet.Dispose(); // respect move semantics
 
       GC.KeepAlive(this);
       return new Status(statusPtr);
     }
 
     public GpuResources GetGpuResources() {
-      return new GpuResources(UnsafeNativeMethods.MpCalculatorGraphGetGpuResources(ptr));
+      UnsafeNativeMethods.mp_CalculatorGraph__GetGpuResources(mpPtr, out var gpuResourcesPtr).Assert();
+
+      GC.KeepAlive(this);
+      return new GpuResources(gpuResourcesPtr);
     }
 
     public Status SetGpuResources(GpuResources gpuResources) {
-      return new Status(UnsafeNativeMethods.MpCalculatorGraphSetGpuResources(ptr, gpuResources.GetPtr()));
+      UnsafeNativeMethods.mp_CalculatorGraph__SetGpuResources__SPgpu(mpPtr, gpuResources.GetPtr(), out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      return new Status(statusPtr);
     }
   }
 }

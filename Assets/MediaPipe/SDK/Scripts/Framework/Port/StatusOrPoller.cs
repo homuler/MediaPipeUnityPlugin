@@ -18,7 +18,7 @@ namespace Mediapipe {
 
     public override Status status {
       get {
-        UnsafeNativeMethods.mp_StatusOrPoller__status(mpPtr, out var statusPtr);
+        UnsafeNativeMethods.mp_StatusOrPoller__status(mpPtr, out var statusPtr).Assert();
 
         GC.KeepAlive(this);
         return new Status(statusPtr);
@@ -27,7 +27,7 @@ namespace Mediapipe {
 
     public override OutputStreamPoller<T> ConsumeValueOrDie() {
       EnsureOk();
-      UnsafeNativeMethods.mp_StatusOrPoller__ConsumeValueOrDie(mpPtr, out var pollerPtr);
+      UnsafeNativeMethods.mp_StatusOrPoller__ConsumeValueOrDie(mpPtr, out var pollerPtr).Assert();
       Dispose();
 
       GC.KeepAlive(this);

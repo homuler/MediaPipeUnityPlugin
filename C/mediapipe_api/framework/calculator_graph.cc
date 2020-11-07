@@ -1,3 +1,4 @@
+#include <utility>
 #include "mediapipe_api/framework/calculator_graph.h"
 
 MpReturnCode mp_CalculatorGraph__(mediapipe::CalculatorGraph** graph_out) {
@@ -64,12 +65,22 @@ MpReturnCode mp_CalculatorGraph__WaitUntilDone(mediapipe::CalculatorGraph* graph
 }
 
 #ifndef MEDIAPIPE_DISABLE_GPU
-MpGpuResources* MpCalculatorGraphGetGpuResources(MpCalculatorGraph* graph) {
-  return new MpGpuResources { graph->impl->GetGpuResources() };
+MpReturnCode mp_CalculatorGraph__GetGpuResources(mediapipe::CalculatorGraph* graph,
+                                                 std::shared_ptr<mediapipe::GpuResources>** gpu_resources_out) {
+  TRY {
+    auto gpu_resources = graph->GetGpuResources();
+    *gpu_resources_out = new std::shared_ptr<mediapipe::GpuResources> { gpu_resources };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
-MpStatus* MpCalculatorGraphSetGpuResources(MpCalculatorGraph* graph, MpGpuResources* gpu_resources) {
-  return new MpStatus { graph->impl->SetGpuResources(gpu_resources->impl) };
+MpReturnCode mp_CalculatorGraph__SetGpuResources__SPgpu(mediapipe::CalculatorGraph* graph,
+                                                        std::shared_ptr<mediapipe::GpuResources>* gpu_resources,
+                                                        mediapipe::Status** status_out) {
+  TRY_ALL {
+    *status_out = new mediapipe::Status { graph->SetGpuResources(*gpu_resources) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
 }
 #endif  // !defined(MEDIAPIPE_DISABLE_GPU)
 
