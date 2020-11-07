@@ -1,26 +1,21 @@
 using System;
-using OutputStreamPollerPtr = System.IntPtr;
 
 namespace Mediapipe {
-  public class OutputStreamPoller<T> : ResourceHandle {
-    private bool _disposed = false;
+  public class OutputStreamPoller<T> : MpResourceHandle {
+    public OutputStreamPoller(IntPtr ptr) : base(ptr) {}
 
-    public OutputStreamPoller(OutputStreamPollerPtr ptr) : base(ptr) {}
-
-    protected override void Dispose(bool disposing) {
-      if (_disposed) return;
-
+    protected override void DisposeUnmanaged() {
       if (OwnsResource()) {
-        UnsafeNativeMethods.MpOutputStreamPollerDestroy(ptr);
+        UnsafeNativeMethods.mp_OutputStreamPoller__delete(ptr);
       }
-
-      ptr = IntPtr.Zero;
-
-      _disposed = true;
+      base.DisposeUnmanaged();
     }
 
     public bool Next(Packet<T> packet) {
-      return UnsafeNativeMethods.MpOutputStreamPollerNext(ptr, packet.GetPtr());
+      UnsafeNativeMethods.mp_OutputStreamPoller__Next_Ppacket(mpPtr, packet.mpPtr, out var result);
+
+      GC.KeepAlive(this);
+      return result;
     }
   }
 }
