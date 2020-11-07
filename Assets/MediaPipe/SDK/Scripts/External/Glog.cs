@@ -1,11 +1,11 @@
 namespace Mediapipe {
   public class Glog {
     public static void Initialize(string name, string dir) {
-      UnsafeNativeMethods.InitGoogleLogging(name, dir);
+      UnsafeNativeMethods.google_InitGoogleLogging__PKc(name, dir).Assert();
     }
 
     public static void Shutdown() {
-      UnsafeNativeMethods.ShutdownGoogleLogging();
+      UnsafeNativeMethods.google_ShutdownGoogleLogging().Assert();
     }
   }
 }

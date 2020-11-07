@@ -1,22 +1,23 @@
-#include <string>
 #include "mediapipe_api/framework/port/logging.h"
 
 namespace {
-  static const char* argv;
+  const char* argv;
 }
 
-void InitGoogleLogging(const char* name, const char* log_dir) {
-  std::string text = std::string(name);
-
-  // TODO: caller should manage `name`
-  argv = strcpy_to_heap(text);
-
-  FLAGS_log_dir = log_dir;
-  google::InitGoogleLogging(argv);
+MpReturnCode google_InitGoogleLogging__PKc(const char* name, const char* log_dir) {
+  TRY_ALL {
+    argv = strcpy_to_heap(name);
+    FLAGS_log_dir = log_dir;
+    google::InitGoogleLogging(argv);
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
 }
 
-void ShutdownGoogleLogging() {
-  google::ShutdownGoogleLogging();
-  FLAGS_log_dir = "";
-  delete argv;
+MpReturnCode google_ShutdownGoogleLogging() {
+  TRY_ALL {
+    google::ShutdownGoogleLogging();
+    FLAGS_log_dir = "";
+    delete[] argv;
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
 }
