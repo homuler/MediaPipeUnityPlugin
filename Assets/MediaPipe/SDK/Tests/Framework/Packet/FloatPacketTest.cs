@@ -5,7 +5,7 @@ using System;
 namespace Tests {
   public class FloatPacketTest {
     #region Constructor
-    [Test]
+    [Test, Undebuggable]
     public void Ctor_ShouldInstantiatePacket_When_CalledWithNoArguments() {
       var packet = new FloatPacket();
 
