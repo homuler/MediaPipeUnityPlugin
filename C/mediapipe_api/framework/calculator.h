@@ -14,6 +14,10 @@ MP_CAPI(MpReturnCode) google_protobuf_TextFormat__ParseFromStringAsCalculatorGra
 
 MP_CAPI(void) mp_CalculatorGraphConfig__delete(mediapipe::CalculatorGraphConfig* config);
 
+MP_CAPI(int) mp_CalculatorGraphConfig__ByteSizeLong(mediapipe::CalculatorGraphConfig* config);
+MP_CAPI(MpReturnCode) mp_CalculatorGraphConfig__SerializeAsString(mediapipe::CalculatorGraphConfig* config, const char** str_out);
+MP_CAPI(MpReturnCode) mp_CalculatorGraphConfig__DebugString(mediapipe::CalculatorGraphConfig* config, const char** str_out);
+
 }  // extern "C"
 
 #endif  // C_MEDIAPIPE_API_FRAMEWORK_CALCULATOR_H_

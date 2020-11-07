@@ -14,5 +14,24 @@ namespace Mediapipe {
       }
       base.DisposeUnmanaged();
     }
+
+    public int byteSizeLong {
+      get { return UnsafeNativeMethods.mp_CalculatorGraphConfig__ByteSizeLong(mpPtr); }
+    }
+
+    /// <exception cref="InvalidOperationException">Thrown when some required fields are not set</exception>
+    public string SerializeAsString() {
+      var str = MarshalStringFromNative(UnsafeNativeMethods.mp_CalculatorGraphConfig__SerializeAsString);
+
+      if (str == null) {
+        throw new InvalidOperationException("All the required fields must be set");
+      }
+
+      return str;
+    }
+
+    public string DebugString() {
+      return MarshalStringFromNative(UnsafeNativeMethods.mp_CalculatorGraphConfig__DebugString);
+    }
   }
 }

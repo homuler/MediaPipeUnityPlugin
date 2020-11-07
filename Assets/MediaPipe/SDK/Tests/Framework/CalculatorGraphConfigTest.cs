@@ -1,13 +1,10 @@
-using NUnit.Framework;
-
 using Mediapipe;
+using NUnit.Framework;
+using System.Linq;
 
 namespace Tests {
   public class CalculatorGraphConfigTest {
-    private static string validConfigText = @"
-input_stream: ""in""
-output_stream: ""out""
-node {
+    private static string validConfigText = @"node {
   calculator: ""PassThroughCalculator""
   input_stream: ""in""
   output_stream: ""out1""
@@ -17,6 +14,8 @@ node {
   input_stream: ""out1""
   output_stream: ""out""
 }
+input_stream: ""in""
+output_stream: ""out""
 ";
 
     private static string invalidConfigText = "Invalid";
@@ -24,7 +23,9 @@ node {
     #region .ParseFromString
     [Test]
     public void ParseFromString_ShouldReturnCalculatorGraphConfig_When_ConfigIsValid() {
-      Assert.DoesNotThrow(() => { CalculatorGraphConfig.ParseFromString(validConfigText); });
+      var config = CalculatorGraphConfig.ParseFromString(validConfigText);
+
+      Assert.AreEqual(config.DebugString(), validConfigText);
     }
 
     public void ParseFromString_ShouldThrowFormatException_When_ConfigIsInvalid() {
@@ -46,6 +47,15 @@ node {
       config.Dispose();
 
       Assert.True(config.isDisposed);
+    }
+    #endregion
+
+    #region #SerializeAsString
+    [Test]
+    public void SerializeAsString_ShouldReturnString() {
+      var config = CalculatorGraphConfig.ParseFromString(validConfigText);
+
+      Assert.AreEqual(config.SerializeAsString().Length, config.byteSizeLong);
     }
     #endregion
   }
