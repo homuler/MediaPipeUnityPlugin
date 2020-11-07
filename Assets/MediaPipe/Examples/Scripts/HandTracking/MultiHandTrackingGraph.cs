@@ -20,16 +20,16 @@ public class MultiHandTrackingGraph : DemoGraph {
   private BoolPacket multiPalmDetectionsPresencePacket;
 
   public override Status StartRun(SidePacket sidePacket) {
-    multiHandLandmarksStreamPoller = graph.AddOutputStreamPoller<List<NormalizedLandmarkList>>(multiHandLandmarksStream).ConsumeValue();
+    multiHandLandmarksStreamPoller = graph.AddOutputStreamPoller<List<NormalizedLandmarkList>>(multiHandLandmarksStream).ConsumeValueOrDie();
     multiHandLandmarksPacket = new NormalizedLandmarkListVectorPacket();
 
-    multiPalmDetectionsStreamPoller = graph.AddOutputStreamPoller<List<Detection>>(multiPalmDetectionsStream).ConsumeValue();
+    multiPalmDetectionsStreamPoller = graph.AddOutputStreamPoller<List<Detection>>(multiPalmDetectionsStream).ConsumeValueOrDie();
     multiPalmDetectionsPacket = new DetectionVectorPacket();
 
-    multiPalmRectsStreamPoller = graph.AddOutputStreamPoller<List<NormalizedRect>>(multiPalmRectsStream).ConsumeValue();
+    multiPalmRectsStreamPoller = graph.AddOutputStreamPoller<List<NormalizedRect>>(multiPalmRectsStream).ConsumeValueOrDie();
     multiPalmRectsPacket = new NormalizedRectVectorPacket();
 
-    multiPalmDetectionsPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(multiPalmDetectionsPresenceStream).ConsumeValue();
+    multiPalmDetectionsPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(multiPalmDetectionsPresenceStream).ConsumeValueOrDie();
     multiPalmDetectionsPresencePacket = new BoolPacket();
 
     return graph.StartRun(sidePacket);

@@ -3,30 +3,35 @@ using MpStatusOrPoller = System.IntPtr;
 
 namespace Mediapipe {
   public class StatusOrPoller<T> : StatusOr<OutputStreamPoller<T>> {
-    private bool _disposed = false;
+    public StatusOrPoller(MpStatusOrPoller ptr) : base(ptr) {}
 
-    public StatusOrPoller(MpStatusOrPoller ptr) : base(ptr) {
-      status = new Status(UnsafeNativeMethods.MpStatusOrPollerStatus(GetPtr()));
-    }
-
-    protected override void Dispose(bool disposing) {
-      if (_disposed) return;
-
+    protected override void DisposeUnmanaged() {
       if (OwnsResource()) {
-        UnsafeNativeMethods.MpStatusOrPollerDestroy(ptr);
+        UnsafeNativeMethods.mp_StatusOrPoller__delete(ptr);
       }
-
-      ptr = IntPtr.Zero;
-
-      _disposed = true;
+      base.DisposeUnmanaged();
     }
 
-    public override OutputStreamPoller<T> ConsumeValue() {
-      AssertOk();
+    public override bool ok {
+      get { return SafeNativeMethods.mp_StatusOrPoller__ok(mpPtr); }
+    }
 
-      var mpOutputStreamPoller = UnsafeNativeMethods.MpStatusOrPollerConsumeValue(GetPtr());
+    public override Status status {
+      get {
+        UnsafeNativeMethods.mp_StatusOrPoller__status(mpPtr, out var statusPtr);
 
-      return new OutputStreamPoller<T>(mpOutputStreamPoller);
+        GC.KeepAlive(this);
+        return new Status(statusPtr);
+      }
+    }
+
+    public override OutputStreamPoller<T> ConsumeValueOrDie() {
+      EnsureOk();
+      UnsafeNativeMethods.mp_StatusOrPoller__ConsumeValueOrDie(mpPtr, out var pollerPtr);
+      Dispose();
+
+      GC.KeepAlive(this);
+      return new OutputStreamPoller<T>(pollerPtr);
     }
   }
 }

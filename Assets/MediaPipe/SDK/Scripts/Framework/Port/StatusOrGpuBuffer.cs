@@ -1,28 +1,26 @@
 using System;
-using MpStatusOrGpuBuffer = System.IntPtr;
 
 namespace Mediapipe {
   public class StatusOrGpuBuffer : StatusOr<GpuBuffer>{
-    private bool _disposed = false;
+    public StatusOrGpuBuffer(IntPtr ptr) : base(ptr) {}
 
-    public StatusOrGpuBuffer(MpStatusOrGpuBuffer ptr) : base(ptr) {
-      status = new Status(UnsafeNativeMethods.MpStatusOrGpuBufferStatus(ptr));
-    }
-
-    protected override void Dispose(bool disposing) {
-      if (_disposed) return;
-
+    protected override void DisposeUnmanaged() {
       if (OwnsResource()) {
         UnsafeNativeMethods.MpStatusOrGpuBufferDestroy(ptr);
       }
-
-      ptr = IntPtr.Zero;
-
-      _disposed = true;
+      base.DisposeUnmanaged();
     }
 
-    public override GpuBuffer ConsumeValue() {
-      AssertOk();
+    public override bool ok {
+      get { return true; }
+    }
+
+    public override Status status {
+      get { return Status.Ok(); }
+    }
+
+    public override GpuBuffer ConsumeValueOrDie() {
+      EnsureOk();
 
       var gpuBufferPtr = UnsafeNativeMethods.MpStatusOrGpuBufferConsumeValue(ptr);
 

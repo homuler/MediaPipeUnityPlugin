@@ -9,7 +9,7 @@ public class HairSegmentationGraph : DemoGraph {
   private GpuBufferPacket hairMaskPacket;
 
   public override Status StartRun(SidePacket sidePacket) {
-    hairMaskStreamPoller = graph.AddOutputStreamPoller<GpuBuffer>(hairMaskStream).ConsumeValue();
+    hairMaskStreamPoller = graph.AddOutputStreamPoller<GpuBuffer>(hairMaskStream).ConsumeValueOrDie();
     hairMaskPacket = new GpuBufferPacket();
 
     return graph.StartRun(sidePacket);

@@ -31,7 +31,7 @@ public class DefaultGraphOnGPU : DemoGraph {
   private GpuBufferPacket outputPacket;
 
   public override Status StartRun(SidePacket sidePacket) {
-    outputStreamPoller = graph.AddOutputStreamPoller<GpuBuffer>(outputStream).ConsumeValue();
+    outputStreamPoller = graph.AddOutputStreamPoller<GpuBuffer>(outputStream).ConsumeValueOrDie();
     outputPacket = new GpuBufferPacket();
 
     return graph.StartRun(sidePacket);

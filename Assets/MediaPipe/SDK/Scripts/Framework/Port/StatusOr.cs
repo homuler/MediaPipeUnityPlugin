@@ -1,24 +1,26 @@
 using System;
-using MpStatusOr = System.IntPtr;
 
 namespace Mediapipe {
-  public abstract class StatusOr<T> : ResourceHandle {
-    public Status status;
+  public abstract class StatusOr<T> : MpResourceHandle {
+    public StatusOr(IntPtr ptr) : base(ptr) {}
 
-    public StatusOr(MpStatusOr ptr) : base(ptr) {}
+    public abstract bool ok { get; }
+    public abstract Status status { get; }
 
-    public bool IsOk() {
-      if (status == null) {
-        throw new InvalidOperationException("Status is not initialized yet");
+    /// <exception cref="InternalException">Thrown when status is not ok</exception>
+    public virtual T ValueOrDie() {
+      throw new NotSupportedException();
+    }
+
+    /// <exception cref="InternalException">Thrown when status is not ok</exception>
+    public virtual T ConsumeValueOrDie() {
+      throw new NotSupportedException();
+    }
+
+    protected void EnsureOk() {
+      if (!ok) {
+        throw new InternalException("Status is not ok");
       }
-
-      return status.IsOk();
     }
-
-    public void AssertOk() {
-      status.AssertOk();
-    }
-
-    public abstract T ConsumeValue();
   }
 }

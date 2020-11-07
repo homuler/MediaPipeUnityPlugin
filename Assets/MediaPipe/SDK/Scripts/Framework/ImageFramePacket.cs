@@ -36,7 +36,7 @@ namespace Mediapipe {
         throw new InvalidOperationException("Not owns resouces to be consumed");
       }
 
-      return new StatusOrImageFrame(UnsafeNativeMethods.MpPacketConsumeImageFrame(mpPtr)).ConsumeValue();
+      return new StatusOrImageFrame(UnsafeNativeMethods.MpPacketConsumeImageFrame(mpPtr)).ConsumeValueOrDie();
     }
   }
 }

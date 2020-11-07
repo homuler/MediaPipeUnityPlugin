@@ -43,7 +43,7 @@ node {
 
   private CalculatorGraph graph;
   private OutputStreamPoller<string> outputStreamPoller;
-  private StringPacket  outputPacket;
+  private StringPacket outputPacket;
 
   public void Initialize() {
     graph = new CalculatorGraph(configText);
@@ -54,7 +54,7 @@ node {
   }
 
   public Status StartRun(SidePacket sidePacket) {
-    outputStreamPoller = graph.AddOutputStreamPoller<string>(outputStream).ConsumeValue();
+    outputStreamPoller = graph.AddOutputStreamPoller<string>(outputStream).ConsumeValueOrDie();
     outputPacket = new StringPacket();
 
     return graph.StartRun(sidePacket);
@@ -62,14 +62,14 @@ node {
 
   public Status PushInput(string text) {
     int timestamp = System.Environment.TickCount & System.Int32.MaxValue;
-    var packet = new StringPacket(text, timestamp);
+    var packet = new StringPacket(text, new Timestamp(timestamp));
 
     return graph.AddPacketToInputStream(inputStream, packet);
   }
 
   public void RenderOutput(WebCamScreenController screenController, string input) {
     if (outputStreamPoller.Next(outputPacket)) {
-      Debug.Log($"{outputPacket.GetValue()}");
+      Debug.Log($"{outputPacket.Get()}");
     }
   }
 

@@ -41,6 +41,18 @@ cc_library(
 )
 
 cc_library(
+    name = "output_stream_poller",
+    srcs = ["output_stream_poller.cc"],
+    hdrs = ["output_stream_poller.h"],
+    deps = [
+        "//mediapipe_api:common",
+        "//mediapipe_api/framework/port:statusor",
+        "@com_google_mediapipe//mediapipe/framework:calculator_framework",
+    ],
+    alwayslink = True,
+)
+
+cc_library(
     name = "packet",
     srcs = ["packet.cc"],
     hdrs = ["packet.h"],

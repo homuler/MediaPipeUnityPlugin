@@ -24,19 +24,19 @@ public class FaceMeshGraph : DemoGraph {
   private BoolPacket faceDetectionsPresencePacket;
 
   public override Status StartRun(SidePacket sidePacket) {
-    multiFaceLandmarksStreamPoller = graph.AddOutputStreamPoller<List<NormalizedLandmarkList>>(multiFaceLandmarksStream).ConsumeValue();
+    multiFaceLandmarksStreamPoller = graph.AddOutputStreamPoller<List<NormalizedLandmarkList>>(multiFaceLandmarksStream).ConsumeValueOrDie();
     multiFaceLandmarksPacket = new NormalizedLandmarkListVectorPacket();
 
-    faceRectsFromLandmarksStreamPoller = graph.AddOutputStreamPoller<List<NormalizedRect>>(faceRectsFromLandmarksStream).ConsumeValue();
+    faceRectsFromLandmarksStreamPoller = graph.AddOutputStreamPoller<List<NormalizedRect>>(faceRectsFromLandmarksStream).ConsumeValueOrDie();
     faceRectsFromLandmarksPacket = new NormalizedRectVectorPacket();
 
-    faceDetectionsStreamPoller = graph.AddOutputStreamPoller<List<Detection>>(faceDetectionsStream).ConsumeValue();
+    faceDetectionsStreamPoller = graph.AddOutputStreamPoller<List<Detection>>(faceDetectionsStream).ConsumeValueOrDie();
     faceDetectionsPacket = new DetectionVectorPacket();
 
-    multiFacelandmarksPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(multiFaceLandmarksPresenceStream).ConsumeValue();
+    multiFacelandmarksPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(multiFaceLandmarksPresenceStream).ConsumeValueOrDie();
     multiFaceLandmarksPresencePacket = new BoolPacket();
 
-    faceDetectionsPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(faceDetectionsPresenceStream).ConsumeValue();
+    faceDetectionsPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(faceDetectionsPresenceStream).ConsumeValueOrDie();
     faceDetectionsPresencePacket = new BoolPacket();
 
     return graph.StartRun(sidePacket);

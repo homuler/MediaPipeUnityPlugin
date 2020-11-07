@@ -29,7 +29,7 @@ public class DefaultGraphOnCPU : DemoGraph {
   private ImageFramePacket outputPacket;
 
   public override Status StartRun(SidePacket sidePacket) {
-    outputStreamPoller = graph.AddOutputStreamPoller<ImageFrame>(outputStream).ConsumeValue();
+    outputStreamPoller = graph.AddOutputStreamPoller<ImageFrame>(outputStream).ConsumeValueOrDie();
     outputPacket = new ImageFramePacket();
 
     return graph.StartRun(sidePacket);

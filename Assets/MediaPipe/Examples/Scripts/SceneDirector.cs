@@ -39,7 +39,7 @@ public class SceneDirector : MonoBehaviour {
     webCamScreen = GameObject.Find("WebCamScreen");
 
     if (useGPU) {
-      gpuResources = GpuResources.Create().ConsumeValue();
+      gpuResources = GpuResources.Create().ConsumeValueOrDie();
 
       gpuHelper = new GlCalculatorHelper();
       gpuHelper.InitializeForTest(gpuResources);

@@ -19,16 +19,16 @@ public class PoseTrackingGraph : DemoGraph {
   private BoolPacket poseDetectionPresencePacket;
 
   public override Status StartRun(SidePacket sidePacket) {
-    poseLandmarksStreamPoller = graph.AddOutputStreamPoller<NormalizedLandmarkList>(poseLandmarksStream).ConsumeValue();
+    poseLandmarksStreamPoller = graph.AddOutputStreamPoller<NormalizedLandmarkList>(poseLandmarksStream).ConsumeValueOrDie();
     poseLandmarksPacket = new NormalizedLandmarkListPacket();
 
-    poseDetectionStreamPoller = graph.AddOutputStreamPoller<Detection>(poseDetectionStream).ConsumeValue();
+    poseDetectionStreamPoller = graph.AddOutputStreamPoller<Detection>(poseDetectionStream).ConsumeValueOrDie();
     poseDetectionPacket = new DetectionPacket();
 
-    poseLandmarksPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(poseLandmarksPresenceStream).ConsumeValue();
+    poseLandmarksPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(poseLandmarksPresenceStream).ConsumeValueOrDie();
     poseLandmarksPresencePacket = new BoolPacket();
 
-    poseDetectionPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(poseDetectionPresenceStream).ConsumeValue();
+    poseDetectionPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(poseDetectionPresenceStream).ConsumeValueOrDie();
     poseDetectionPresencePacket = new BoolPacket();
 
     return graph.StartRun(sidePacket);

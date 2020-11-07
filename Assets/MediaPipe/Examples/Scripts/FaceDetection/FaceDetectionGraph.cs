@@ -8,7 +8,7 @@ public class FaceDetectionGraph : DemoGraph {
   private DetectionVectorPacket outputDetectionsPacket;
 
   public override Status StartRun(SidePacket sidePacket) {
-    outputDetectionsStreamPoller = graph.AddOutputStreamPoller<List<Detection>>(outputDetectionsStream).ConsumeValue();
+    outputDetectionsStreamPoller = graph.AddOutputStreamPoller<List<Detection>>(outputDetectionsStream).ConsumeValueOrDie();
     outputDetectionsPacket = new DetectionVectorPacket();
 
     return graph.StartRun(sidePacket);
