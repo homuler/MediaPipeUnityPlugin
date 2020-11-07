@@ -1,34 +1,66 @@
-#include <string>
-#include <utility>
 #include "mediapipe_api/framework/calculator_graph.h"
 
+MpReturnCode mp_CalculatorGraph__(mediapipe::CalculatorGraph** graph_out) {
+  TRY {
+    *graph_out = new mediapipe::CalculatorGraph();
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
-MpCalculatorGraph* MpCalculatorGraphCreate() {
-  return new MpCalculatorGraph();
-}
-
-void MpCalculatorGraphDestroy(MpCalculatorGraph* graph) {
+void mp_CalculatorGraph__delete(mediapipe::CalculatorGraph* graph) {
   delete graph;
 }
 
-MpStatus* MpCalculatorGraphInitialize(MpCalculatorGraph* graph, MpCalculatorGraphConfig* config) {
-  auto status = graph->impl->Initialize(*config->impl);
-
-  return new MpStatus { std::move(status) };
+MpReturnCode mp_CalculatorGraph__Rconfig(mediapipe::CalculatorGraphConfig* config, mediapipe::CalculatorGraph** graph_out) {
+  TRY_ALL {
+    *graph_out = new mediapipe::CalculatorGraph(*config);
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
 }
 
-MpStatus* MpCalculatorGraphStartRun(MpCalculatorGraph* graph, MpSidePacket* mp_side_packet) {
-  auto side_packet = mp_side_packet->impl;
-  auto status = graph->impl->StartRun(*side_packet);
-
-  return new MpStatus { std::move(status) };
+MpReturnCode mp_CalculatorGraph__Initialize__Rconfig(mediapipe::CalculatorGraph* graph,
+                                                     mediapipe::CalculatorGraphConfig* config,
+                                                     mediapipe::Status** status_out) {
+  TRY_ALL {
+    *status_out = new mediapipe::Status { graph->Initialize(*config) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
 }
 
-MpStatus* MpCalculatorGraphWaitUntilDone(MpCalculatorGraph* graph) {
-  auto status = graph->impl->WaitUntilDone();
+MpReturnCode mp_CalculatorGraph__Initialize__Rconfig_Rsp(
+    mediapipe::CalculatorGraph* graph,
+    mediapipe::CalculatorGraphConfig* config,
+    SidePackets* side_packets,
+    mediapipe::Status** status_out) {
+  TRY_ALL {
+    *status_out = new mediapipe::Status { graph->Initialize(*config, *side_packets) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
+}
 
-  return new MpStatus { std::move(status) };
+MpReturnCode mp_CalculatorGraph__Config(mediapipe::CalculatorGraph* graph, mediapipe::CalculatorGraphConfig** config_out) {
+  TRY_ALL {
+    *config_out = new mediapipe::CalculatorGraphConfig { graph->Config() };  // Crashes if graph has no config
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
+}
+
+MpReturnCode mp_CalculatorGraph__StartRun__Rsp(mediapipe::CalculatorGraph* graph,
+                                               SidePackets* side_packets,
+                                               mediapipe::Status** status_out) {
+  TRY {
+    auto status = graph->StartRun(*side_packets);
+    *status_out = new mediapipe::Status { std::move(status) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+MpReturnCode mp_CalculatorGraph__WaitUntilDone(mediapipe::CalculatorGraph* graph, mediapipe::Status** status_out) {
+  TRY {
+    auto status = graph->WaitUntilDone();
+    *status_out = new mediapipe::Status { std::move(status) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
 #ifndef MEDIAPIPE_DISABLE_GPU
@@ -41,45 +73,31 @@ MpStatus* MpCalculatorGraphSetGpuResources(MpCalculatorGraph* graph, MpGpuResour
 }
 #endif  // !defined(MEDIAPIPE_DISABLE_GPU)
 
-MpStatusOrPoller* MpCalculatorGraphAddOutputStreamPoller(MpCalculatorGraph* graph, const char* name) {
-  auto status_or_value = graph->impl->AddOutputStreamPoller(std::string(name));
 
-  return new MpStatusOrPoller {
-    status_or_value.status(),
-    std::make_unique<mediapipe::OutputStreamPoller>(status_or_value.ConsumeValueOrDie())
-  };
+MpReturnCode mp_CalculatorGraph__AddOutputStreamPoller__PKc(mediapipe::CalculatorGraph* graph,
+                                                            const char* name,
+                                                            mediapipe::StatusOrPoller** status_or_poller_out) {
+  TRY {
+    *status_or_poller_out = new mediapipe::StatusOrPoller { graph->AddOutputStreamPoller(name) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
-bool MpOutputStreamPollerNext(mediapipe::OutputStreamPoller* poller, MpPacket* packet) {
-  return poller->Next(packet->impl.get());
+MpReturnCode mp_CalculatorGraph__AddPacketToInputStream__PKc_Ppacket(mediapipe::CalculatorGraph* graph,
+                                                                     const char* name,
+                                                                     mediapipe::Packet* packet,
+                                                                     mediapipe::Status** status_out) {
+  TRY_ALL {
+    *status_out = new mediapipe::Status { graph->AddPacketToInputStream(name, std::move(*packet)) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
 }
 
-MpStatus* MpCalculatorGraphAddPacketToInputStream(MpCalculatorGraph* graph, const char* name, MpPacket* packet) {
-  auto status = graph->impl->AddPacketToInputStream(std::string(name), *packet->impl);
-
-  return new MpStatus { std::move(status) };
-}
-
-MpStatus* MpCalculatorGraphCloseInputStream(MpCalculatorGraph* graph, const char* name) {
-  auto status = graph->impl->CloseInputStream(std::string(name));
-
-  return new MpStatus { std::move(status) };
-}
-
-MpStatus* MpStatusOrPollerStatus(MpStatusOrPoller* status_or_poller) {
-  mediapipe::Status status { *status_or_poller->status };
-
-  return new MpStatus { std::move(status) };
-}
-
-mediapipe::OutputStreamPoller* MpStatusOrPollerConsumeValue(MpStatusOrPoller* status_or_poller) {
-  return status_or_poller->value.release();
-}
-
-void MpStatusOrPollerDestroy(MpStatusOrPoller* status_or_poller) {
-  delete status_or_poller;
-}
-
-void MpOutputStreamPollerDestroy(mediapipe::OutputStreamPoller* poller) {
-  delete poller;
+MpReturnCode mp_CalculatorGraph__CloseInputStream__PKc(mediapipe::CalculatorGraph* graph,
+                                                       const char* name,
+                                                       mediapipe::Status** status_out) {
+  TRY_ALL {
+    *status_out = new mediapipe::Status { graph->CloseInputStream(name) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
 }

@@ -1,7 +1,9 @@
 #ifndef C_MEDIAPIPE_API_FRAMEWORK_CALCULATOR_GRAPH_H_
 #define C_MEDIAPIPE_API_FRAMEWORK_CALCULATOR_GRAPH_H_
 
+#include <map>
 #include <memory>
+#include <string>
 #include <utility>
 #include "mediapipe/framework/calculator_graph.h"
 #include "mediapipe_api/common.h"
@@ -16,44 +18,50 @@
 
 extern "C" {
 
-typedef struct MpCalculatorGraphConfig {
-  std::unique_ptr<mediapipe::CalculatorGraphConfig> impl;
-} MpCalculatorGraphConfig;
-
 typedef struct MpCalculatorGraph {
   std::unique_ptr<mediapipe::CalculatorGraph> impl;
 
   MpCalculatorGraph() : impl { std::make_unique<mediapipe::CalculatorGraph>() } {}
 } MpCalculatorGraph;
 
-typedef MpStatusOrValue<std::unique_ptr<mediapipe::OutputStreamPoller>> MpStatusOrPoller;
+typedef std::map<std::string, mediapipe::Packet> SidePackets;
 
-/** mediapipe::CalculatorGraph API */
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__(mediapipe::CalculatorGraph** graph_out);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__Rconfig(mediapipe::CalculatorGraphConfig* config, mediapipe::CalculatorGraph** graph_out);
+MP_CAPI(void) mp_CalculatorGraph__delete(mediapipe::CalculatorGraph* graph);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__Initialize__Rconfig(mediapipe::CalculatorGraph* graph,
+                                                              mediapipe::CalculatorGraphConfig* config,
+                                                              mediapipe::Status** status_out);
 
-MP_CAPI_EXPORT extern MpCalculatorGraph* MpCalculatorGraphCreate();
-MP_CAPI_EXPORT extern void MpCalculatorGraphDestroy(MpCalculatorGraph* graph);
-MP_CAPI_EXPORT extern MpStatus* MpCalculatorGraphInitialize(MpCalculatorGraph* graph, MpCalculatorGraphConfig* input_config);
-MP_CAPI_EXPORT extern MpStatus* MpCalculatorGraphStartRun(MpCalculatorGraph* graph, MpSidePacket* side_packet);
-MP_CAPI_EXPORT extern MpStatus* MpCalculatorGraphWaitUntilDone(MpCalculatorGraph* graph);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__Initialize__Rconfig_Rsp(
+    mediapipe::CalculatorGraph* graph,
+    mediapipe::CalculatorGraphConfig* config,
+    SidePackets* side_packets,
+    mediapipe::Status** status_out);
+
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__Config(mediapipe::CalculatorGraph* graph, mediapipe::CalculatorGraphConfig** config_out);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__StartRun__Rsp(mediapipe::CalculatorGraph* graph,
+                                                        SidePackets* side_packets,
+                                                        mediapipe::Status** status_out);
+
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__WaitUntilDone(mediapipe::CalculatorGraph* graph, mediapipe::Status** status_out);
+
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__AddOutputStreamPoller__PKc(mediapipe::CalculatorGraph* graph,
+                                                                     const char* name,
+                                                                     mediapipe::StatusOrPoller** status_or_poller_out);
 
 #ifndef MEDIAPIPE_DISABLE_GPU
 MP_CAPI_EXPORT extern MpGpuResources* MpCalculatorGraphGetGpuResources(MpCalculatorGraph* graph);
 MP_CAPI_EXPORT extern MpStatus* MpCalculatorGraphSetGpuResources(MpCalculatorGraph* graph, MpGpuResources* gpu_resources);
 #endif  // !defined(MEDIAPIPE_DISABLE_GPU)
 
-/** mediapipe::OutputStreamPoller API */
-MP_CAPI_EXPORT extern MpStatusOrPoller* MpCalculatorGraphAddOutputStreamPoller(MpCalculatorGraph* graph, const char* name);
-MP_CAPI_EXPORT extern bool MpOutputStreamPollerNext(mediapipe::OutputStreamPoller* poller, MpPacket* packet);
-
-/** mediapipe::InputStream API */
-MP_CAPI_EXPORT extern MpStatus* MpCalculatorGraphAddPacketToInputStream(MpCalculatorGraph* graph, const char* name, MpPacket* packet);
-MP_CAPI_EXPORT extern MpStatus* MpCalculatorGraphCloseInputStream(MpCalculatorGraph* graph, const char* name);
-
-/** mediapipe::StatusOrPoller API */
-MP_CAPI_EXPORT extern void MpStatusOrPollerDestroy(MpStatusOrPoller* status_or_poller);
-MP_CAPI_EXPORT extern MpStatus* MpStatusOrPollerStatus(MpStatusOrPoller* status_or_poller);
-MP_CAPI_EXPORT extern mediapipe::OutputStreamPoller* MpStatusOrPollerConsumeValue(MpStatusOrPoller* status_or_poller);
-MP_CAPI_EXPORT extern void MpOutputStreamPollerDestroy(mediapipe::OutputStreamPoller* poller);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__AddPacketToInputStream__PKc_Ppacket(mediapipe::CalculatorGraph* graph,
+                                                                              const char* name,
+                                                                              mediapipe::Packet* packet,
+                                                                              mediapipe::Status** status_out);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__CloseInputStream__PKc(mediapipe::CalculatorGraph* graph,
+                                                                const char* name,
+                                                                mediapipe::Status** status_out);
 
 }  // extern "C"
 

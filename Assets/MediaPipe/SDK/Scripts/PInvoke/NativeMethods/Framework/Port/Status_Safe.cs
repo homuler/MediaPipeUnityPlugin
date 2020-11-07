@@ -9,8 +9,5 @@ namespace Mediapipe {
 
     [Pure, DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern int mp_Status__raw_code(IntPtr status);
-
-    [Pure, DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern IntPtr mp_Status__ToString(IntPtr status);
   }
 }

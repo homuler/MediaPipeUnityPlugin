@@ -16,13 +16,25 @@ namespace Mediapipe {
     public static extern MpReturnCode mp_CalculatorGraph__Initialize__Rconfig(IntPtr graph, IntPtr config, out IntPtr status);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_CalculatorGraph__Initialize__Rconfig_Rside_packets(
+    public static extern MpReturnCode mp_CalculatorGraph__Initialize__Rconfig_Rsp(
         IntPtr graph, IntPtr config, IntPtr sidePackets, out IntPtr status);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_CalculatorGraph__StartRun__Rside_packets(IntPtr graph, IntPtr sidePackets, out IntPtr status);
+    public static extern MpReturnCode mp_CalculatorGraph__Config(IntPtr graph, out IntPtr config);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_CalculatorGraph__StartRun__Rsp(IntPtr graph, IntPtr sidePackets, out IntPtr status);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_CalculatorGraph__WaitUntilDone(IntPtr graph, out IntPtr status);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_CalculatorGraph__AddOutputStreamPoller__PKc(IntPtr graph, string name, out IntPtr statusOrPoller);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_CalculatorGraph__AddPacketToInputStream__PKc_Ppacket(IntPtr graph, string name, IntPtr packet, out IntPtr status);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_CalculatorGraph__CloseInputStream__PKc(IntPtr graph, string name, out IntPtr status);
   }
 }
