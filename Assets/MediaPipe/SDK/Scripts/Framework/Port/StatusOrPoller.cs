@@ -30,7 +30,6 @@ namespace Mediapipe {
       UnsafeNativeMethods.mp_StatusOrPoller__ConsumeValueOrDie(mpPtr, out var pollerPtr).Assert();
       Dispose();
 
-      GC.KeepAlive(this);
       return new OutputStreamPoller<T>(pollerPtr);
     }
   }
