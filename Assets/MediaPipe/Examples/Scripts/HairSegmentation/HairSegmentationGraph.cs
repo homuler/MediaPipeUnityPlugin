@@ -44,7 +44,7 @@ public class HairSegmentationGraph : DemoGraph {
       gpuHelper.BindFramebuffer(sourceTexture);
       var info = gpuFrameFormat.GlTextureInfoFor(0);
 
-      GL.ReadPixels(0, 0, sourceTexture.Width(), sourceTexture.Height(), info.glFormat, info.glType, outputFrame.PixelDataPtr());
+      GL.ReadPixels(0, 0, sourceTexture.width, sourceTexture.height, info.glFormat, info.glType, outputFrame.PixelDataPtr());
       GL.Flush();
 
       sourceTexture.Release();

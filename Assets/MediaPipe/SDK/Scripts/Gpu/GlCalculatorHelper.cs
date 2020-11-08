@@ -59,7 +59,7 @@ namespace Mediapipe {
     }
 
     public void BindFramebuffer(GlTexture glTexture) {
-      UnsafeNativeMethods.MpGlCalculatorHelperBindFramebuffer(ptr, glTexture.GetPtr());
+      UnsafeNativeMethods.MpGlCalculatorHelperBindFramebuffer(ptr, glTexture.mpPtr);
     }
   }
 }

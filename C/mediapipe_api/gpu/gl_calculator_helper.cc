@@ -1,58 +1,131 @@
 #include <utility>
 #include "mediapipe_api/gpu/gl_calculator_helper.h"
 
-MpGlCalculatorHelper* MpGlCalculatorHelperCreate() {
-  return new MpGlCalculatorHelper();
+MpReturnCode mp_GlCalculatorHelper__(mediapipe::GlCalculatorHelper** gl_calculator_helper_out) {
+  TRY {
+    *gl_calculator_helper_out = new mediapipe::GlCalculatorHelper();
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
-void MpGlCalculatorHelperDestroy(MpGlCalculatorHelper* gpu_helper) {
-  delete gpu_helper;
+void mp_GlCalculatorHelper__delete(mediapipe::GlCalculatorHelper* gl_calculator_helper) {
+  delete gl_calculator_helper;
 }
 
-void MpGlCalculatorHelperInitializeForTest(MpGlCalculatorHelper* gpu_helper, mediapipe::GpuResources* gpu_resources) {
-  gpu_helper->impl->InitializeForTest(gpu_resources);
+MpReturnCode mp_GlCalculatorHelper__InitializeForTest__Pgr(mediapipe::GlCalculatorHelper* gl_calculator_helper,
+                                                           mediapipe::GpuResources* gpu_resources) {
+  TRY {
+    gl_calculator_helper->InitializeForTest(gpu_resources);
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
-MpStatus* MpGlCalculatorHelperRunInGlContext(MpGlCalculatorHelper* gpu_helper, MpGlStatusFunction* gl_func) {
-  auto status = gpu_helper->impl->RunInGlContext([&gl_func]() -> ::mediapipe::Status {
-    auto mp_status { (*gl_func)() };
-
-    return *mp_status->impl.get();
-  });
-
-  return new MpStatus { std::move(status) };
+MpReturnCode mp_GlCalculatorHelper__RunInGlContext__PF(mediapipe::GlCalculatorHelper* gl_calculator_helper,
+                                                       MpGlStatusFunction* gl_func,
+                                                       mediapipe::Status** status_out) {
+  TRY {
+    auto status = gl_calculator_helper->RunInGlContext([&gl_func]() -> ::mediapipe::Status {
+      return *(gl_func());
+    });
+    *status_out = new mediapipe::Status { status };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
-mediapipe::GlTexture* MpGlCalculatorHelperCreateSourceTextureForImageFrame(
-    MpGlCalculatorHelper* gpu_helper, mediapipe::ImageFrame* image_frame) {
-  return new mediapipe::GlTexture { gpu_helper->impl->CreateSourceTexture(*image_frame) };
+MpReturnCode mp_GlCalculatorHelper__CreateSourceTexture__Rif(mediapipe::GlCalculatorHelper* gl_calculator_helper,
+                                                             mediapipe::ImageFrame* image_frame,
+                                                             mediapipe::GlTexture** gl_texture_out) {
+  TRY {
+    *gl_texture_out = new mediapipe::GlTexture { gl_calculator_helper->CreateSourceTexture(std::move(*image_frame)) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
-mediapipe::GlTexture* MpGlCalculatorHelperCreateSourceTextureForGpuBuffer(
-    MpGlCalculatorHelper* gpu_helper, mediapipe::GpuBuffer* gpu_buffer) {
-  return new mediapipe::GlTexture { gpu_helper->impl->CreateSourceTexture(*gpu_buffer) };
+MpReturnCode mp_GlCalculatorHelper__CreateSourceTexture__Rgb(mediapipe::GlCalculatorHelper* gl_calculator_helper,
+                                                             mediapipe::GpuBuffer* gpu_buffer,
+                                                             mediapipe::GlTexture** gl_texture_out) {
+  TRY {
+    *gl_texture_out = new mediapipe::GlTexture { gl_calculator_helper->CreateSourceTexture(std::move(*gpu_buffer)) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
-void MpGlCalculatorHelperBindFramebuffer(MpGlCalculatorHelper* gpu_helper, mediapipe::GlTexture* gl_texture) {
-  gpu_helper->impl->BindFramebuffer(*gl_texture);
+MpReturnCode mp_GlCalculatorHelper__CreateDestinationTexture__i_i_ui(mediapipe::GlCalculatorHelper* gl_calculator_helper,
+                                                                              int output_width,
+                                                                              int output_height,
+                                                                              uint format_code,
+                                                                              mediapipe::GlTexture** gl_texture_out) {
+  TRY {
+    *gl_texture_out = new mediapipe::GlTexture {
+      gl_calculator_helper->CreateDestinationTexture(
+        output_width,
+        output_height,
+        static_cast<mediapipe::GpuBufferFormat>(format_code))
+    };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
-void MpGlTextureDestroy(mediapipe::GlTexture* gl_texture) {
+GLuint mp_GlCalculatorHelper__framebuffer(mediapipe::GlCalculatorHelper* gl_calculator_helper) {
+  return gl_calculator_helper->framebuffer();
+}
+
+MpReturnCode mp_GlCalculatorHelper__BindFrameBuffer_Rtexture(mediapipe::GlCalculatorHelper* gl_calculator_helper,
+                                                             mediapipe::GlTexture* gl_texture) {
+  TRY {
+    gl_calculator_helper->BindFramebuffer(std::move(*gl_texture));
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+bool mp_GlCalculatorHelper__Initialized(mediapipe::GlCalculatorHelper* gl_calculator_helper) {
+  return gl_calculator_helper->Initialized();
+}
+
+MpReturnCode mp_GlTexture__(mediapipe::GlTexture** gl_texture_out) {
+  TRY {
+    *gl_texture_out = new mediapipe::GlTexture();
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+MpReturnCode mp_GlTexture__ui_i_i(GLuint name, int width, int height, mediapipe::GlTexture** gl_texture_out) {
+  TRY {
+    *gl_texture_out = new mediapipe::GlTexture { name, width, height };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+void mp_GlTexture__delete(mediapipe::GlTexture* gl_texture) {
   delete gl_texture;
 }
 
-int MpGlTextureWidth(mediapipe::GlTexture* gl_texture) {
+int mp_GlTexture__width(mediapipe::GlTexture* gl_texture) {
   return gl_texture->width();
 }
 
-int MpGlTextureHeight(mediapipe::GlTexture* gl_texture) {
+int mp_GlTexture__height(mediapipe::GlTexture* gl_texture) {
   return gl_texture->height();
 }
 
-void MpGlTextureRelease(mediapipe::GlTexture* gl_texture) {
-  gl_texture->Release();
+GLenum mp_GlTexture__target(mediapipe::GlTexture* gl_texture) {
+  return gl_texture->target();
 }
 
-mediapipe::GpuBuffer* MpGlTextureGetGpuBufferFrame(mediapipe::GlTexture* gl_texture) {
-  return gl_texture->GetFrame<mediapipe::GpuBuffer>().release();
+GLuint mp_GlTexture__name(mediapipe::GlTexture* gl_texture) {
+  return gl_texture->name();
+}
+
+MpReturnCode mp_GlTexture__Release(mediapipe::GlTexture* gl_texture) {
+  TRY {
+    gl_texture->Release();
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+MpReturnCode mp_GlTexture__GetGpuBufferFrame(mediapipe::GlTexture* gl_texture, mediapipe::GpuBuffer** gpu_buffer_out) {
+  TRY {
+    *gpu_buffer_out = gl_texture->GetFrame<mediapipe::GpuBuffer>().release();
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }

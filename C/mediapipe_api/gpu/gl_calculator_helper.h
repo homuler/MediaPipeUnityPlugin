@@ -8,31 +8,42 @@
 
 extern "C" {
 
-typedef struct MpGlCalculatorHelper {
-  std::unique_ptr<mediapipe::GlCalculatorHelper> impl;
-
-  MpGlCalculatorHelper() : impl { std::make_unique<mediapipe::GlCalculatorHelper>() } {}
-} MpGlCalculatorHelper;
-
-typedef MpStatus* MpGlStatusFunction();
+typedef mediapipe::Status* MpGlStatusFunction();
 
 /** GlCalculatorHelper API */
-MP_CAPI_EXPORT extern MpGlCalculatorHelper* MpGlCalculatorHelperCreate();
-MP_CAPI_EXPORT extern void MpGlCalculatorHelperDestroy(MpGlCalculatorHelper* gpu_helper);
-MP_CAPI_EXPORT extern void MpGlCalculatorHelperInitializeForTest(MpGlCalculatorHelper* gpu_helper, mediapipe::GpuResources* gpu_resources);
-MP_CAPI_EXPORT extern MpStatus* MpGlCalculatorHelperRunInGlContext(MpGlCalculatorHelper* gpu_helper, MpGlStatusFunction* gl_func);
-MP_CAPI_EXPORT extern mediapipe::GlTexture* MpGlCalculatorHelperCreateSourceTextureForImageFrame(
-    MpGlCalculatorHelper* gpu_helper, mediapipe::ImageFrame* image_frame);
-MP_CAPI_EXPORT extern mediapipe::GlTexture* MpGlCalculatorHelperCreateSourceTextureForGpuBuffer(
-    MpGlCalculatorHelper* gpu_helper, mediapipe::GpuBuffer* gpu_buffer);
-MP_CAPI_EXPORT extern void MpGlCalculatorHelperBindFramebuffer(MpGlCalculatorHelper* gpu_helper, mediapipe::GlTexture* gl_texture);
+MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__(mediapipe::GlCalculatorHelper** gl_calculator_helper_out);
+MP_CAPI(void) mp_GlCalculatorHelper__delete(mediapipe::GlCalculatorHelper* gl_calculator_helper);
+MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__InitializeForTest__Pgr(mediapipe::GlCalculatorHelper* gl_calculator_helper,
+                                                                    mediapipe::GpuResources* gpu_resources);
+MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__RunInGlContext__PF(mediapipe::GlCalculatorHelper* gl_calculator_helper,
+                                                                MpGlStatusFunction* gl_func,
+                                                                mediapipe::Status** status_out);
+MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__CreateSourceTexture__Rif(mediapipe::GlCalculatorHelper* gl_calculator_helper,
+                                                                      mediapipe::ImageFrame* image_frame,
+                                                                      mediapipe::GlTexture** gl_texture_out);
+MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__CreateSourceTexture__Rgb(mediapipe::GlCalculatorHelper* gl_calculator_helper,
+                                                                      mediapipe::GpuBuffer* gpu_buffer,
+                                                                      mediapipe::GlTexture** gl_texture_out);
+MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__CreateDestinationTexture__i_i_ui(mediapipe::GlCalculatorHelper* gl_calculator_helper,
+                                                                              int output_width,
+                                                                              int output_height,
+                                                                              uint format_code,
+                                                                              mediapipe::GlTexture** gl_texture_out);
+MP_CAPI(GLuint) mp_GlCalculatorHelper__framebuffer(mediapipe::GlCalculatorHelper* gl_calculator_helper);
+MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__BindFrameBuffer_Rtexture(mediapipe::GlCalculatorHelper* gl_calculator_helper,
+                                                                      mediapipe::GlTexture* gl_texture);
+MP_CAPI(bool) mp_GlCalculatorHelper__Initialized(mediapipe::GlCalculatorHelper* gl_calculator_helper);
 
 /** GlTexture API */
-MP_CAPI_EXPORT extern void MpGlTextureDestroy(mediapipe::GlTexture* gl_texture);
-MP_CAPI_EXPORT extern int MpGlTextureWidth(mediapipe::GlTexture* gl_texture);
-MP_CAPI_EXPORT extern int MpGlTextureHeight(mediapipe::GlTexture* gl_texture);
-MP_CAPI_EXPORT extern void MpGlTextureRelease(mediapipe::GlTexture* gl_texture);
-MP_CAPI_EXPORT extern mediapipe::GpuBuffer* MpGlTextureGetGpuBufferFrame(mediapipe::GlTexture* gl_texture);
+MP_CAPI(MpReturnCode) mp_GlTexture__(mediapipe::GlTexture** gl_texture_out);
+MP_CAPI(MpReturnCode) mp_GlTexture__ui_i_i(GLuint name, int width, int height, mediapipe::GlTexture** gl_texture_out);
+MP_CAPI(void) mp_GlTexture__delete(mediapipe::GlTexture* gl_texture);
+MP_CAPI(int) mp_GlTexture__width(mediapipe::GlTexture* gl_texture);
+MP_CAPI(int) mp_GlTexture__height(mediapipe::GlTexture* gl_texture);
+MP_CAPI(GLenum) mp_GlTexture__target(mediapipe::GlTexture* gl_texture);
+MP_CAPI(GLuint) mp_GlTexture__name(mediapipe::GlTexture* gl_texture);
+MP_CAPI(MpReturnCode) mp_GlTexture__Release(mediapipe::GlTexture* gl_texture);
+MP_CAPI(MpReturnCode) mp_GlTexture__GetGpuBufferFrame(mediapipe::GlTexture* gl_texture, mediapipe::GpuBuffer** gpu_buffer_out);
 
 }  // extern "C"
 
