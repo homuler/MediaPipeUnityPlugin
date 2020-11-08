@@ -1,6 +1,5 @@
 using Mediapipe;
 using NUnit.Framework;
-using System;
 
 namespace Tests {
   public class GpuResourcesTest {
@@ -10,7 +9,6 @@ namespace Tests {
       var statusOrGpuResources = GpuResources.Create();
 
       Assert.True(statusOrGpuResources.ok);
-      Assert.AreEqual(statusOrGpuResources.status.code, Status.StatusCode.Ok);
     }
     #endregion
   }
