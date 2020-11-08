@@ -58,14 +58,14 @@ namespace Tests {
     public void IsOk_ShouldReturnTrue_When_StatusIsOk() {
       var status = Status.Ok();
 
-      Assert.True(status.IsOk());
+      Assert.True(status.ok);
     }
 
     [Test]
     public void IsOk_ShouldReturnFalse_When_StatusIsFailedPrecondition() {
       var status = Status.FailedPrecondition();
 
-      Assert.False(status.IsOk());
+      Assert.False(status.ok);
     }
     #endregion
 

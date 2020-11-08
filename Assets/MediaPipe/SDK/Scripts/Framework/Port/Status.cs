@@ -31,12 +31,15 @@ namespace Mediapipe {
       base.DisposeUnmanaged();
     }
 
-    public bool IsOk() {
-      return SafeNativeMethods.mp_Status__ok(mpPtr);
+    [Obsolete("IsOk() is deprecated, use ok")]
+    public bool IsOk() { return ok; }
+
+    public bool ok {
+      get { return SafeNativeMethods.mp_Status__ok(mpPtr); }
     }
 
     public void AssertOk() {
-      if (!IsOk()) {
+      if (!ok) {
         throw new InternalException(ToString());
       }
     }

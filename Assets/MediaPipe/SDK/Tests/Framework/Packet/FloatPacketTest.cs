@@ -18,7 +18,7 @@ namespace Tests {
     public void Ctor_ShouldInstantiatePacket_When_CalledWithValue() {
       var packet = new FloatPacket(0.01f);
 
-      Assert.True(packet.ValidateAsType().IsOk());
+      Assert.True(packet.ValidateAsType().ok);
       Assert.AreEqual(packet.Get(), 0.01f);
       Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
     }
@@ -28,7 +28,7 @@ namespace Tests {
       var timestamp = new Timestamp(1);
       var packet = new FloatPacket(0.01f, timestamp);
 
-      Assert.True(packet.ValidateAsType().IsOk());
+      Assert.True(packet.ValidateAsType().ok);
       Assert.AreEqual(packet.Get(), 0.01f);
       Assert.AreEqual(packet.Timestamp(), timestamp);
     }

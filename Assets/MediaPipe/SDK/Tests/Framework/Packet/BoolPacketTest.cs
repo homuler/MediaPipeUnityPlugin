@@ -18,7 +18,7 @@ namespace Tests {
     public void Ctor_ShouldInstantiatePacket_When_CalledWithTrue() {
       var packet = new BoolPacket(true);
 
-      Assert.True(packet.ValidateAsType().IsOk());
+      Assert.True(packet.ValidateAsType().ok);
       Assert.True(packet.Get());
       Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
     }
@@ -27,7 +27,7 @@ namespace Tests {
     public void Ctor_ShouldInstantiatePacket_When_CalledWithFalse() {
       var packet = new BoolPacket(false);
 
-      Assert.True(packet.ValidateAsType().IsOk());
+      Assert.True(packet.ValidateAsType().ok);
       Assert.False(packet.Get());
       Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
     }
@@ -37,7 +37,7 @@ namespace Tests {
       var timestamp = new Timestamp(1);
       var packet = new BoolPacket(true, timestamp);
 
-      Assert.True(packet.ValidateAsType().IsOk());
+      Assert.True(packet.ValidateAsType().ok);
       Assert.True(packet.Get());
       Assert.AreEqual(packet.Timestamp(), timestamp);
     }
