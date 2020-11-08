@@ -12,6 +12,23 @@ namespace Tests {
     }
     #endregion
 
+    #region #isDisposed
+    [Test]
+    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet() {
+      var statusOrGpuResources = GpuResources.Create();
+
+      Assert.False(statusOrGpuResources.isDisposed);
+    }
+
+    [Test]
+    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed() {
+      var statusOrGpuResources = GpuResources.Create();
+      statusOrGpuResources.Dispose();
+
+      Assert.True(statusOrGpuResources.isDisposed);
+    }
+    #endregion
+
     #region #ValueOrDie
     [Test, GpuOnly]
     public void ValueOrDie_ShouldReturnGpuResources_When_StatusIsOk() {
