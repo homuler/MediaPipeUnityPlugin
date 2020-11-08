@@ -6,25 +6,38 @@ namespace Mediapipe {
 
     protected override void DisposeUnmanaged() {
       if (OwnsResource()) {
-        UnsafeNativeMethods.MpStatusOrGpuResourcesDestroy(ptr);
+        UnsafeNativeMethods.mp_StatusOrGpuResources__delete(ptr);
       }
       base.DisposeUnmanaged();
     }
 
     public override bool ok {
-      get { return true; }
+      get { return SafeNativeMethods.mp_StatusOrGpuResources__ok(mpPtr); }
     }
 
     public override Status status {
-      get { return Status.Ok(); }
+      get {
+        UnsafeNativeMethods.mp_StatusOrGpuResources__status(mpPtr, out var statusPtr).Assert();
+
+        GC.KeepAlive(this);
+        return new Status(statusPtr);
+      }
+    }
+
+    public override GpuResources ValueOrDie() {
+      EnsureOk();
+      UnsafeNativeMethods.mp_StatusOrGpuResources__ValueOrDie(mpPtr, out var gpuResourcesPtr).Assert();
+
+      GC.KeepAlive(this);
+      return new GpuResources(gpuResourcesPtr);
     }
 
     public override GpuResources ConsumeValueOrDie() {
       EnsureOk();
+      UnsafeNativeMethods.mp_StatusOrGpuResources__ConsumeValueOrDie(mpPtr, out var gpuResourcesPtr).Assert();
+      Dispose();
 
-      var mpGpuResources = UnsafeNativeMethods.MpStatusOrGpuResourcesConsumeValue(ptr);
-
-      return new GpuResources(mpGpuResources);
+      return new GpuResources(gpuResourcesPtr);
     }
   }
 }

@@ -5,23 +5,25 @@
 #include <utility>
 #include "mediapipe/gpu/gpu_shared_data_internal.h"
 #include "mediapipe_api/common.h"
-#include "mediapipe_api/framework/port/status.h"
 #include "mediapipe_api/framework/port/statusor.h"
 
 extern "C" {
 
-typedef struct MpGpuResources {
-  std::shared_ptr<mediapipe::GpuResources> impl;
-} MpGpuResources;
-typedef MpStatusOrValue<std::unique_ptr<MpGpuResources>> MpStatusOrGpuResources;
+typedef std::shared_ptr<mediapipe::GpuResources> SharedGpuResources;
 
-MP_CAPI_EXPORT extern void MpGpuResourcesDestroy(MpGpuResources* gpu_resources);
-MP_CAPI_EXPORT extern mediapipe::GpuResources* MpGpuResourcesGet(MpGpuResources* gpu_resources);
+MP_CAPI(void) mp_SharedGpuResources__delete(SharedGpuResources* gpu_resources);
+MP_CAPI(mediapipe::GpuResources*) mp_SharedGpuResources__get(SharedGpuResources* gpu_resources);
+MP_CAPI(void) mp_SharedGpuResources__reset(SharedGpuResources* gpu_resources);
 
-MP_CAPI_EXPORT extern MpStatusOrGpuResources* MpGpuResourcesCreate();
-MP_CAPI_EXPORT extern void MpStatusOrGpuResourcesDestroy(MpStatusOrGpuResources* status_or_gpu_resources);
-MP_CAPI_EXPORT extern MpStatus* MpStatusOrGpuResourcesStatus(MpStatusOrGpuResources* status_or_gpu_resources);
-MP_CAPI_EXPORT extern MpGpuResources* MpStatusOrGpuResourcesConsumeValue(MpStatusOrGpuResources* status_or_gpu_resources);
+MP_CAPI(MpReturnCode) mp_GpuResources_Create(mediapipe::StatusOr<SharedGpuResources>** status_or_gpu_resources_out);
+MP_CAPI(void) mp_StatusOrGpuResources__delete(mediapipe::StatusOr<SharedGpuResources>* status_or_gpu_resources);
+MP_CAPI(bool) mp_StatusOrGpuResources__ok(mediapipe::StatusOr<SharedGpuResources>* status_or_gpu_resources);
+MP_CAPI(MpReturnCode) mp_StatusOrGpuResources__status(mediapipe::StatusOr<SharedGpuResources>* status_or_gpu_resources,
+                                                      mediapipe::Status** status_out);
+MP_CAPI(MpReturnCode) mp_StatusOrGpuResources__ValueOrDie(mediapipe::StatusOr<SharedGpuResources>* status_or_gpu_resources,
+                                                          SharedGpuResources** value_out);
+MP_CAPI(MpReturnCode) mp_StatusOrGpuResources__ConsumeValueOrDie(mediapipe::StatusOr<SharedGpuResources>* status_or_gpu_resources,
+                                                                 SharedGpuResources** value_out);
 
 }  // extern "C"
 

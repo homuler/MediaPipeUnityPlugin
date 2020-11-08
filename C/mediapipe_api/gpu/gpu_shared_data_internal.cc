@@ -1,29 +1,43 @@
 #include "mediapipe_api/gpu/gpu_shared_data_internal.h"
 
-void MpGpuResourcesDestroy(MpGpuResources* gpu_resources) {
+void mp_SharedGpuResources__delete(SharedGpuResources* gpu_resources) {
   delete gpu_resources;
 }
 
-mediapipe::GpuResources* MpGpuResourcesGet(MpGpuResources* gpu_resources) {
-  return gpu_resources->impl.get();
+mediapipe::GpuResources* mp_SharedGpuResources__get(SharedGpuResources* gpu_resources) {
+  return gpu_resources->get();
 }
 
-MpStatusOrGpuResources* MpGpuResourcesCreate() {
-  auto status_or_gpu_resources = mediapipe::GpuResources::Create();
-  auto status = status_or_gpu_resources.status();
-  auto gpu_resources = status.ok() ? new MpGpuResources { status_or_gpu_resources.ConsumeValueOrDie() } : nullptr;
-
-  return new MpStatusOrGpuResources { status, std::unique_ptr<MpGpuResources>(gpu_resources) };
+void mp_SharedGpuResources__reset(SharedGpuResources* gpu_resources) {
+  gpu_resources->reset();
 }
 
-void MpStatusOrGpuResourcesDestroy(MpStatusOrGpuResources* status_or_gpu_resources) {
+MpReturnCode mp_GpuResources_Create(mediapipe::StatusOr<SharedGpuResources>** status_or_gpu_resources_out) {
+  TRY {
+    *status_or_gpu_resources_out = new mediapipe::StatusOr<SharedGpuResources> { mediapipe::GpuResources::Create() };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+void mp_StatusOrGpuResources__delete(mediapipe::StatusOr<SharedGpuResources>* status_or_gpu_resources) {
   delete status_or_gpu_resources;
 }
 
-MpStatus* MpStatusOrGpuResourcesStatus(MpStatusOrGpuResources* status_or_gpu_resources) {
-  return new MpStatus { *status_or_gpu_resources->status };
+bool mp_StatusOrGpuResources__ok(mediapipe::StatusOr<SharedGpuResources>* status_or_gpu_resources) {
+  return mp_StatusOr__ok(status_or_gpu_resources);
 }
 
-MpGpuResources* MpStatusOrGpuResourcesConsumeValue(MpStatusOrGpuResources* status_or_gpu_resources) {
-  return status_or_gpu_resources->value.release();
+MpReturnCode mp_StatusOrGpuResources__status(mediapipe::StatusOr<SharedGpuResources>* status_or_gpu_resources,
+                                             mediapipe::Status** status_out) {
+  return mp_StatusOr__status(status_or_gpu_resources, status_out);
+}
+
+MpReturnCode mp_StatusOrGpuResources__ValueOrDie(mediapipe::StatusOr<SharedGpuResources>* status_or_gpu_resources,
+                                                 SharedGpuResources** value_out) {
+  return mp_StatusOr__ValueOrDie(status_or_gpu_resources, value_out);
+}
+
+MpReturnCode mp_StatusOrGpuResources__ConsumeValueOrDie(mediapipe::StatusOr<SharedGpuResources>* status_or_gpu_resources,
+                                                        SharedGpuResources** value_out) {
+  return mp_StatusOr__ConsumeValueOrDie(status_or_gpu_resources, value_out);
 }

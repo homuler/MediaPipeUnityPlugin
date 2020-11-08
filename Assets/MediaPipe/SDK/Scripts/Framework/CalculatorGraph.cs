@@ -93,8 +93,9 @@ namespace Mediapipe {
     }
 
     public Status SetGpuResources(GpuResources gpuResources) {
-      UnsafeNativeMethods.mp_CalculatorGraph__SetGpuResources__SPgpu(mpPtr, gpuResources.GetPtr(), out var statusPtr).Assert();
+      UnsafeNativeMethods.mp_CalculatorGraph__SetGpuResources__SPgpu(mpPtr, gpuResources.sharedPtr, out var statusPtr).Assert();
 
+      GC.KeepAlive(gpuResources);
       GC.KeepAlive(this);
       return new Status(statusPtr);
     }
