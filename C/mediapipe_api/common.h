@@ -29,31 +29,40 @@ enum class MpReturnCode : int {
   Aborted = 134,
 };
 
-bool sigabrt_is_not_received();
-void setup_sigaction();
-void restore_sigaction();
+namespace mp_api {
+  extern thread_local struct sigaction orig_act;
+  extern thread_local sigjmp_buf abrt_jbuf;
+
+  extern void sigabrt_handler(int sig);
+}
 
 // TODO(homuler): make code more readable
-#define TRY             auto _mp_return_code = MpReturnCode::Unset;\
+#define TRY             auto volatile _mp_return_code = MpReturnCode::Unset;\
                         try
 #define CATCH_EXCEPTION catch (std::exception& e) {\
                           LOG(ERROR) << e.what();\
                           google::FlushLogFiles(google::ERROR);\
                           _mp_return_code = MpReturnCode::StandardError;\
                         } catch (...) {\
-                          LOG(ERROR) << "Unknown exception";\
+                          LOG(ERROR) << "Unknown exception occured";\
                           google::FlushLogFiles(google::ERROR);\
                           _mp_return_code = MpReturnCode::UnknownError;\
                         }\
                         return _mp_return_code;
 
 #define TRY_ALL   TRY {\
-                    setup_sigaction();\
-                    if (sigabrt_is_not_received())
+                    struct sigaction act;\
+                    sigemptyset(&act.sa_mask);\
+                    act.sa_flags = 0;\
+                    act.sa_handler = mp_api::sigabrt_handler;\
+                    sigaction(SIGABRT, &act, &mp_api::orig_act);\
+                    if (sigsetjmp(mp_api::abrt_jbuf, 1) == 0)
 #define CATCH_ALL   else {\
+                      LOG(ERROR) << "Aborted";\
+                      google::FlushLogFiles(google::ERROR);\
                       _mp_return_code = MpReturnCode::Aborted;\
                     }\
-                    restore_sigaction();\
+                    sigaction(SIGABRT, &mp_api::orig_act, nullptr);\
                   } CATCH_EXCEPTION
 #define RETURN_CODE(code) _mp_return_code = code
 
