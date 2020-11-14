@@ -48,10 +48,10 @@ namespace Mediapipe {
       return pixelData;
     }
 
-    public static Color32[] FromBytePtr(IntPtr ptr, ImageFormat format, int width, int height, int widthStep, bool isFlipped = false) {
+    public static Color32[] FromBytePtr(IntPtr ptr, ImageFormat.Format format, int width, int height, int widthStep, bool isFlipped = false) {
       switch (format) {
-        case ImageFormat.SRGB:
-        case ImageFormat.SRGBA: {
+        case ImageFormat.Format.SRGB:
+        case ImageFormat.Format.SRGBA: {
           return FromSRGBOrSRGBA(ptr, format, width, height, widthStep, isFlipped);
         }
         default: {
@@ -67,9 +67,9 @@ namespace Mediapipe {
     ///   In the source array, pixels are laid out left to right, top to bottom,
     ///   but in the returned array, left to right, top to bottom.
     /// </remarks>
-    private static Color32[] FromSRGBOrSRGBA(IntPtr ptr, ImageFormat format, int width, int height, int widthStep, bool isFlipped) {
+    private static Color32[] FromSRGBOrSRGBA(IntPtr ptr, ImageFormat.Format format, int width, int height, int widthStep, bool isFlipped) {
       var colors = new Color32[width * height];
-      var padding = format == ImageFormat.SRGB ? (widthStep - 3 * width) : (widthStep - 4 * width);
+      var padding = format == ImageFormat.Format.SRGB ? (widthStep - 3 * width) : (widthStep - 4 * width);
 
       unsafe {
         fixed (Color32* dest = colors) {
@@ -82,7 +82,7 @@ namespace Mediapipe {
               byte r = *pSrc++;
               byte g = *pSrc++;
               byte b = *pSrc++;
-              byte a = format == ImageFormat.SRGB ? (byte)255 : (*pSrc++);
+              byte a = format == ImageFormat.Format.SRGB ? (byte)255 : (*pSrc++);
               *pDest-- = new Color32(r, g, b, a);
             }
           } else {
@@ -93,7 +93,7 @@ namespace Mediapipe {
                 byte r = *pSrc++;
                 byte g = *pSrc++;
                 byte b = *pSrc++;
-                byte a = format == ImageFormat.SRGB ? (byte)255 : (*pSrc++);
+                byte a = format == ImageFormat.Format.SRGB ? (byte)255 : (*pSrc++);
                 *pRowDest++ = new Color32(r, g, b, a);
               }
               pSrc += padding;

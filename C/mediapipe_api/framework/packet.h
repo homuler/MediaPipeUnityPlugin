@@ -59,7 +59,6 @@ MP_CAPI(MpReturnCode) mp__MakeStringPacket_At__PKc_Rtimestamp(const char* str,
                                                               mediapipe::Timestamp* timestamp,
                                                               mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetString(mediapipe::Packet* packet, const char** value_out);
-MP_CAPI(MpReturnCode) mp_Packet__ConsumeString(mediapipe::Packet* packet, const char** value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsString(mediapipe::Packet* packet, mediapipe::Status** status_out);
 
 /** SidePacket API */
@@ -72,6 +71,20 @@ MP_CAPI(void) mp_SidePacket__clear(SidePacket* side_packet);
 MP_CAPI(int) mp_SidePacket__size(SidePacket* side_packet);
 
 }  // extern "C"
+
+template <class T>
+inline MpReturnCode mp_Packet__Consume(mediapipe::Packet* packet, mediapipe::StatusOr<T>** status_or_value_out) {
+  TRY_ALL {
+    auto status_or_value = packet->Consume<T>();
+
+    if (status_or_value.ok()) {
+      *status_or_value_out = new mediapipe::StatusOr<T> { std::move(*status_or_value.ConsumeValueOrDie().release()) };
+    } else {
+      *status_or_value_out = new mediapipe::StatusOr<T> { status_or_value.status() };
+    }
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
+}
 
 template <class T>
 inline MpSerializedProto* MpPacketGetProto(MpPacket* packet) {

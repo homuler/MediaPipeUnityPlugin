@@ -4,99 +4,175 @@ using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
-using ImageFramePtr = System.IntPtr;
-
 namespace Mediapipe {
-  public class ImageFrame : ResourceHandle {
-    /**
-    * Constants (TODO: read from ddl)
-    */
+  public class ImageFrame : MpResourceHandle {
     public static readonly uint kDefaultAlignmentBoundary = 16;
     public static readonly uint kGlDefaultAlignmentBoundary = 4;
 
-    private bool _disposed = false;
-    private GCHandle freePixelDataHandle;
+    private GCHandle deleterHandle;
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    private delegate void FreeMemoryHandler(IntPtr ptr);
+    private delegate void Deleter(IntPtr ptr);
 
-    public ImageFrame() : base(UnsafeNativeMethods.MpImageFrameCreateDefault()) {}
+    public ImageFrame() : base() {
+      UnsafeNativeMethods.mp_ImageFrame__(out var ptr).Assert();
+      this.ptr = ptr;
+    }
 
-    public ImageFrame(ImageFramePtr imageFramePtr, bool isOwner = true) : base(imageFramePtr, isOwner) {}
+    public ImageFrame(IntPtr imageFramePtr, bool isOwner = true) : base(imageFramePtr, isOwner) {}
 
-    public ImageFrame(ImageFormat format, int width, int height, uint alignmentBoundary) :
-      base(UnsafeNativeMethods.MpImageFrameCreate((int)format, width, height, alignmentBoundary)) {}
+    public ImageFrame(ImageFormat.Format format, int width, int height) : this(format, width, height, kDefaultAlignmentBoundary) {}
 
-    public ImageFrame(ImageFormat format, int width, int height, int widthStep, NativeArray<byte> pixelData) {
-      FreeMemoryHandler memoryHandler = (IntPtr ptr) => { pixelData.Dispose(); };
-      freePixelDataHandle = GCHandle.Alloc(memoryHandler, GCHandleType.Pinned);
+    public ImageFrame(ImageFormat.Format format, int width, int height, uint alignmentBoundary) : base() {
+      UnsafeNativeMethods.mp_ImageFrame__ui_i_i_ui(format, width, height, alignmentBoundary, out var ptr).Assert();
+      this.ptr = ptr;
+    }
+
+    public ImageFrame(ImageFormat.Format format, int width, int height, int widthStep, NativeArray<byte> pixelData) {
+      Deleter deleter = (IntPtr ptr) => { pixelData.Dispose(); };
+      deleterHandle = GCHandle.Alloc(deleter, GCHandleType.Pinned);
 
       unsafe {
-        ptr = UnsafeNativeMethods.MpImageFrameCreateWithPixelData(
-          (int)format, width, height, widthStep,
+        UnsafeNativeMethods.mp_ImageFrame__ui_i_i_i_Pui8_PF(
+          format, width, height, widthStep,
           (IntPtr)NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(pixelData),
-          Marshal.GetFunctionPointerForDelegate(memoryHandler)
-        );
+          Marshal.GetFunctionPointerForDelegate(deleter),
+          out var ptr
+        ).Assert();
+        this.ptr = ptr;
       }
-
-      base.TakeOwnership(ptr);
     }
 
-    protected override void Dispose(bool disposing) {
-      if (_disposed) return;
-
+    protected override void DisposeUnmanaged() {
       if (OwnsResource()) {
-        // NOTE: Below line will call FreePixelData if neccessary.
-        UnsafeNativeMethods.MpImageFrameDestroy(ptr);
+        UnsafeNativeMethods.mp_ImageFrame__delete(ptr);
       }
 
-      if (freePixelDataHandle != null && freePixelDataHandle.IsAllocated) {
-        freePixelDataHandle.Free();
+      if (deleterHandle.IsAllocated) {
+        deleterHandle.Free();
       }
-
-      ptr = IntPtr.Zero;
-
-      _disposed = true;
+      base.DisposeUnmanaged();
     }
 
-    public ImageFormat Format() {
-      return (ImageFormat)UnsafeNativeMethods.MpImageFrameFormat(ptr);
+    public bool IsEmpty() {
+      return SafeNativeMethods.mp_ImageFrame__IsEmpty(mpPtr);
+    }
+
+    public bool IsContiguous() {
+      return SafeNativeMethods.mp_ImageFrame__IsContiguous(mpPtr);
+    }
+
+    public bool IsAligned(uint alignmentBoundary) {
+      SafeNativeMethods.mp_ImageFrame__IsAligned__ui(mpPtr, alignmentBoundary, out var value).Assert();
+
+      GC.KeepAlive(this);
+      return value;
+    }
+
+    public ImageFormat.Format Format() {
+      return SafeNativeMethods.mp_ImageFrame__Format(mpPtr);
     }
 
     public int Width() {
-      return UnsafeNativeMethods.MpImageFrameWidth(ptr);
+      return SafeNativeMethods.mp_ImageFrame__Width(mpPtr);
     }
 
     public int Height() {
-      return UnsafeNativeMethods.MpImageFrameHeight(ptr);
+      return SafeNativeMethods.mp_ImageFrame__Height(mpPtr);
     }
 
     public int ChannelSize() {
-      return UnsafeNativeMethods.MpImageFrameChannelSize(ptr);
+      var code = SafeNativeMethods.mp_ImageFrame__ChannelSize(mpPtr, out var value);
+
+      GC.KeepAlive(this);
+      return ValueOrFormatException(code, value);
     }
 
     public int NumberOfChannels() {
-      return UnsafeNativeMethods.MpImageFrameNumberOfChannels(ptr);
+      var code = SafeNativeMethods.mp_ImageFrame__NumberOfChannels(mpPtr, out var value);
+
+      GC.KeepAlive(this);
+      return ValueOrFormatException(code, value);
     }
 
     public int ByteDepth() {
-      return UnsafeNativeMethods.MpImageFrameByteDepth(ptr);
+      var code = SafeNativeMethods.mp_ImageFrame__ByteDepth(mpPtr, out var value);
+
+      GC.KeepAlive(this);
+      return ValueOrFormatException(code, value);
     }
 
     public int WidthStep() {
-      return UnsafeNativeMethods.MpImageFrameWidthStep(ptr);
+      return SafeNativeMethods.mp_ImageFrame__WidthStep(mpPtr);
+    }
+
+    public IntPtr MutablePixelData() {
+      return SafeNativeMethods.mp_ImageFrame__MutablePixelData(mpPtr);
+    }
+
+    public int PixelDataSize() {
+      return SafeNativeMethods.mp_ImageFrame__PixelDataSize(mpPtr);
+    }
+
+    public int PixelDataSizeStoredContiguously() {
+      var code = SafeNativeMethods.mp_ImageFrame__PixelDataSizeStoredContiguously(mpPtr, out var value);
+
+      GC.KeepAlive(this);
+      return ValueOrFormatException(code, value);
+    }
+
+    public void SetToZero() {
+      UnsafeNativeMethods.mp_ImageFrame__SetToZero(mpPtr).Assert();
+      GC.KeepAlive(this);
+    }
+
+    public void SetAlignmentPaddingAreas() {
+      UnsafeNativeMethods.mp_ImageFrame__SetAlignmentPaddingAreas(mpPtr).Assert();
+      GC.KeepAlive(this);
+    }
+
+    public byte[] CopyToByteBuffer(int bufferSize) {
+      return CopyToBuffer<byte>(UnsafeNativeMethods.mp_ImageFrame__CopyToBuffer__Pui8_i, bufferSize);
+    }
+
+    public ushort[] CopyToUshortBuffer(int bufferSize) {
+      return CopyToBuffer<ushort>(UnsafeNativeMethods.mp_ImageFrame__CopyToBuffer__Pui16_i, bufferSize);
+    }
+
+    public float[] CopyToFloatBuffer(int bufferSize) {
+      return CopyToBuffer<float>(UnsafeNativeMethods.mp_ImageFrame__CopyToBuffer__Pf_i, bufferSize);
     }
 
     public Color32[] GetColor32s(bool isFlipped = false) {
-      return Mediapipe.Format.FromBytePtr(PixelDataPtr(), Format(), Width(), Height(), WidthStep(), isFlipped);
+      return Mediapipe.Format.FromBytePtr(MutablePixelData(), Format(), Width(), Height(), WidthStep(), isFlipped);
     }
 
-    public IntPtr PixelDataPtr() {
-      return UnsafeNativeMethods.MpImageFramePixelData(ptr);
+    public static ImageFrame FromPixels32(Color32[] colors, int width, int height, bool isFlipped = false) {
+      return new ImageFrame(ImageFormat.Format.SRGB, width, height, 3 * width, Mediapipe.Format.FromPixels32(colors, width, height, isFlipped));
     }
 
-    public static unsafe ImageFrame FromPixels32(Color32[] colors, int width, int height, bool isFlipped = false) {
-      return new ImageFrame(ImageFormat.SRGB, width, height, 3 * width, Mediapipe.Format.FromPixels32(colors, width, height, isFlipped));
+    private delegate MpReturnCode CopyToBufferHandler(IntPtr ptr, IntPtr buffer, int bufferSize);
+
+    private T[] CopyToBuffer<T>(CopyToBufferHandler handler, int bufferSize) where T : unmanaged {
+      var buffer = new T[bufferSize];
+
+      unsafe {
+        fixed (T* bufferPtr = buffer) {
+          handler(mpPtr, (IntPtr)bufferPtr, bufferSize).Assert();
+        }
+      }
+
+      GC.KeepAlive(this);
+      return buffer;
+    }
+
+    private T ValueOrFormatException<T>(MpReturnCode code, T value) {
+      try {
+        code.Assert();
+        return value;
+      } catch (MediaPipeException) {
+        throw new FormatException($"Invalid image format: {Format()}");
+      }
     }
   }
 }
