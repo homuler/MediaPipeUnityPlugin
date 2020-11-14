@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 namespace Tests {
   public class StringPacketTest {
     #region Constructor
-    [Test, Undebuggable]
+    [Test]
     public void Ctor_ShouldInstantiatePacket_When_CalledWithNoArguments() {
       var packet = new StringPacket();
 
