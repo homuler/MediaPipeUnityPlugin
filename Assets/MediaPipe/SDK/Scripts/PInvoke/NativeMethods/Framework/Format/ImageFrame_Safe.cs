@@ -48,7 +48,8 @@ namespace Mediapipe {
 
     #region StatusOr
     [Pure, DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern int mp_StatusOrImageFrame__ok(IntPtr statusOrImageFrame);
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static extern bool mp_StatusOrImageFrame__ok(IntPtr statusOrImageFrame);
     #endregion
   }
 }

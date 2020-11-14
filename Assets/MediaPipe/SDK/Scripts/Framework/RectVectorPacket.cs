@@ -14,7 +14,7 @@ namespace Mediapipe {
       return rects;
     }
 
-    public override List<Rect> Consume() {
+    public override StatusOr<List<Rect>> Consume() {
       throw new NotSupportedException();
     }
   }

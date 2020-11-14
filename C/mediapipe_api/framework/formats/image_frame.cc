@@ -172,14 +172,6 @@ MpReturnCode mp__MakeImageFramePacket_At__Pif_Rtimestamp(mediapipe::ImageFrame* 
   } CATCH_EXCEPTION
 }
 
-MpReturnCode mp_Packet__GetImageFrame(mediapipe::Packet* packet, mediapipe::ImageFrame** value_out) {
-  TRY_ALL {
-    auto holder = static_cast<const UnsafePacketHolder<mediapipe::ImageFrame>*>(mediapipe::packet_internal::GetHolder(*packet));
-    *value_out = holder->Get();
-    RETURN_CODE(MpReturnCode::Success);
-  } CATCH_ALL
-}
-
 MpReturnCode mp_Packet__ConsumeImageFrame(mediapipe::Packet* packet, StatusOrImageFrame** status_or_value_out) {
   return mp_Packet__Consume(packet, status_or_value_out);
 }

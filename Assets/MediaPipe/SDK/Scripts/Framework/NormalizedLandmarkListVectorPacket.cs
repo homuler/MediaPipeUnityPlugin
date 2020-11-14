@@ -14,7 +14,7 @@ namespace Mediapipe {
       return rects;
     }
 
-    public override List<NormalizedLandmarkList> Consume() {
+    public override StatusOr<List<NormalizedLandmarkList>> Consume() {
       throw new NotSupportedException();
     }
   }

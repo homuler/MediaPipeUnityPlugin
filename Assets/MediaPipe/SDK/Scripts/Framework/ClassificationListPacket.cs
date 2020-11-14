@@ -13,7 +13,7 @@ namespace Mediapipe {
       return rect;
     }
 
-    public override ClassificationList Consume() {
+    public override StatusOr<ClassificationList> Consume() {
       throw new NotSupportedException();
     }
   }

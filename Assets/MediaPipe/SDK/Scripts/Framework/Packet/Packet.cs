@@ -15,10 +15,10 @@ namespace Mediapipe {
     [Obsolete("GetValue() is deprecated, use Get()")]
     public T GetValue() { return Get(); }
 
-    public abstract T Consume();
+    public abstract StatusOr<T> Consume();
 
     [Obsolete("ConsumeValue() is deprecated, use Consume()")]
-    public T ConsumeValue() { return Consume(); }
+    public T ConsumeValue() { return Consume().ConsumeValueOrDie(); }
 
     /// <remarks>To avoid copying the value, instantiate the packet with timestamp</remarks>
     /// <returns>New packet with the given timestamp and the copied value</returns>

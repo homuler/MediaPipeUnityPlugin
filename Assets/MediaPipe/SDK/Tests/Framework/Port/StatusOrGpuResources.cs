@@ -13,14 +13,14 @@ namespace Tests {
     #endregion
 
     #region #isDisposed
-    [Test]
+    [Test, GpuOnly]
     public void isDisposed_ShouldReturnFalse_When_NotDisposedYet() {
       var statusOrGpuResources = GpuResources.Create();
 
       Assert.False(statusOrGpuResources.isDisposed);
     }
 
-    [Test]
+    [Test, GpuOnly]
     public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed() {
       var statusOrGpuResources = GpuResources.Create();
       statusOrGpuResources.Dispose();

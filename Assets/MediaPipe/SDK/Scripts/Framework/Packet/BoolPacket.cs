@@ -13,6 +13,7 @@ namespace Mediapipe {
 
     public BoolPacket(bool value, Timestamp timestamp) : base() {
       UnsafeNativeMethods.mp__MakeBoolPacket_At__b_Rtimestamp(value, timestamp.mpPtr, out var ptr).Assert();
+      GC.KeepAlive(timestamp);
       this.ptr = ptr;
     }
 
@@ -23,12 +24,12 @@ namespace Mediapipe {
       return value;
     }
 
-    public override bool Consume() {
+    public override StatusOr<bool> Consume() {
       throw new NotSupportedException();
     }
 
     public override Status ValidateAsType() {
-      UnsafeNativeMethods.mp_Packet__ValidateAsBool(mpPtr, out var statusPtr);
+      UnsafeNativeMethods.mp_Packet__ValidateAsBool(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       return new Status(statusPtr);

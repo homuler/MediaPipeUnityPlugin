@@ -35,7 +35,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<PixelData> {
   ///   Convert <paramref name="colors" /> to a packet and send it to the input stream.
   /// </summary>
   public Status PushInput(PixelData pixelData) {
-    int timestamp = System.Environment.TickCount & System.Int32.MaxValue;
+    var timestamp = new Timestamp(System.Environment.TickCount & System.Int32.MaxValue);
     var imageFrame = ImageFrame.FromPixels32(pixelData.Colors, pixelData.Width, pixelData.Height, true);
 
     if (!IsGpuEnabled()) {

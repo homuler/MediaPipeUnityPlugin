@@ -7,7 +7,7 @@ namespace Mediapipe {
     private GCHandle valueHandle;
     public GpuBufferPacket() : base() {}
 
-    public GpuBufferPacket(GpuBuffer gpuBuffer, int timestamp) {
+    public GpuBufferPacket(GpuBuffer gpuBuffer, Timestamp timestamp) {
       // TODO: implement
       // base(UnsafeNativeMethods.MpMakeGpuBufferPacketAt(gpuBuffer.GetPtr(), timestamp)) {
       // gpuBuffer.ReleaseOwnership();
@@ -30,12 +30,12 @@ namespace Mediapipe {
       return new GpuBuffer(UnsafeNativeMethods.MpPacketGetGpuBuffer(ptr), false);
     }
 
-    public override GpuBuffer Consume() {
+    public override StatusOr<GpuBuffer> Consume() {
       if (!OwnsResource()) {
         throw new InvalidOperationException("Not owns resouces to be consumed");
       }
 
-      return new StatusOrGpuBuffer(UnsafeNativeMethods.MpPacketConsumeGpuBuffer(mpPtr)).ConsumeValueOrDie();
+      return new StatusOrGpuBuffer(UnsafeNativeMethods.MpPacketConsumeGpuBuffer(mpPtr));
     }
   }
 }

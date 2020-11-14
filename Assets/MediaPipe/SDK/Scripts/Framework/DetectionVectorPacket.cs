@@ -14,7 +14,7 @@ namespace Mediapipe {
       return detections;
     }
 
-    public override List<Detection> Consume() {
+    public override StatusOr<List<Detection>> Consume() {
       throw new NotSupportedException();
     }
   }

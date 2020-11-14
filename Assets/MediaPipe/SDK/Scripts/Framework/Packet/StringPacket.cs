@@ -13,6 +13,7 @@ namespace Mediapipe {
 
     public StringPacket(string value, Timestamp timestamp) : base() {
       UnsafeNativeMethods.mp__MakeStringPacket_At__PKc_Rtimestamp(value, timestamp.mpPtr, out var ptr).Assert();
+      GC.KeepAlive(timestamp);
       this.ptr = ptr;
     }
 
@@ -20,12 +21,12 @@ namespace Mediapipe {
       return MarshalStringFromNative(UnsafeNativeMethods.mp_Packet__GetString);
     }
 
-    public override string Consume() {
+    public override StatusOr<string> Consume() {
       throw new NotSupportedException();
     }
 
     public override Status ValidateAsType() {
-      UnsafeNativeMethods.mp_Packet__ValidateAsString(mpPtr, out var statusPtr);
+      UnsafeNativeMethods.mp_Packet__ValidateAsString(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       return new Status(statusPtr);

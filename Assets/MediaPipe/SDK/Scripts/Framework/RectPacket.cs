@@ -13,7 +13,7 @@ namespace Mediapipe {
       return rect;
     }
 
-    public override Rect Consume() {
+    public override StatusOr<Rect> Consume() {
       throw new NotSupportedException();
     }
   }

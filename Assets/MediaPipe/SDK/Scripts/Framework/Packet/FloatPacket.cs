@@ -13,6 +13,7 @@ namespace Mediapipe {
 
     public FloatPacket(float value, Timestamp timestamp) : base() {
       UnsafeNativeMethods.mp__MakeFloatPacket_At__f_Rtimestamp(value, timestamp.mpPtr, out var ptr).Assert();
+      GC.KeepAlive(timestamp);
       this.ptr = ptr;
     }
 
@@ -23,12 +24,12 @@ namespace Mediapipe {
       return value;
     }
 
-    public override float Consume() {
+    public override StatusOr<float> Consume() {
       throw new NotSupportedException();
     }
 
     public override Status ValidateAsType() {
-      UnsafeNativeMethods.mp_Packet__ValidateAsFloat(mpPtr, out var statusPtr);
+      UnsafeNativeMethods.mp_Packet__ValidateAsFloat(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       return new Status(statusPtr);

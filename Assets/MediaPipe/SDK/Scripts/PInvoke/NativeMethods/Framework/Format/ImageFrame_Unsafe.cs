@@ -46,16 +46,13 @@ namespace Mediapipe {
 
     #region Packet
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_MakeImageFramePacket__Pif(IntPtr imageFrame, out IntPtr packet);
+    public static extern MpReturnCode mp__MakeImageFramePacket__Pif(IntPtr imageFrame, out IntPtr packet);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_MakeImageFramePacket__Pif_Rtimestamp(IntPtr imageFrame, IntPtr timestamp, out IntPtr packet);
+    public static extern MpReturnCode mp__MakeImageFramePacket_At__Pif_Rtimestamp(IntPtr imageFrame, IntPtr timestamp, out IntPtr packet);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_Packet__GetImageFrame(IntPtr packet, out IntPtr imageFrame);
-
-    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_Packet__ConsumeImageFrame(IntPtr packet, out IntPtr imageFrame);
+    public static extern MpReturnCode mp_Packet__ConsumeImageFrame(IntPtr packet, out IntPtr statusOrImageFrame);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__ValidateAsImageFrame(IntPtr packet, out IntPtr status);
