@@ -12,7 +12,7 @@ namespace Mediapipe {
       this.ptr = ptr;
     }
 
-    public GlTexture(IntPtr ptr) : base(ptr) {}
+    public GlTexture(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
     protected override void DeleteMpPtr() {
       UnsafeNativeMethods.mp_GlTexture__delete(ptr);

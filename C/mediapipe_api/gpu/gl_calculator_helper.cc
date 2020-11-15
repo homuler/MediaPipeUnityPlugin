@@ -35,32 +35,32 @@ MpReturnCode mp_GlCalculatorHelper__RunInGlContext__PF(mediapipe::GlCalculatorHe
 MpReturnCode mp_GlCalculatorHelper__CreateSourceTexture__Rif(mediapipe::GlCalculatorHelper* gl_calculator_helper,
                                                              mediapipe::ImageFrame* image_frame,
                                                              mediapipe::GlTexture** gl_texture_out) {
-  TRY {
+  TRY_ALL {
     *gl_texture_out = new mediapipe::GlTexture { gl_calculator_helper->CreateSourceTexture(std::move(*image_frame)) };
     RETURN_CODE(MpReturnCode::Success);
-  } CATCH_EXCEPTION
+  } CATCH_ALL
 }
 
 MpReturnCode mp_GlCalculatorHelper__CreateSourceTexture__Rgb(mediapipe::GlCalculatorHelper* gl_calculator_helper,
                                                              mediapipe::GpuBuffer* gpu_buffer,
                                                              mediapipe::GlTexture** gl_texture_out) {
-  TRY {
+  TRY_ALL {
     *gl_texture_out = new mediapipe::GlTexture { gl_calculator_helper->CreateSourceTexture(std::move(*gpu_buffer)) };
     RETURN_CODE(MpReturnCode::Success);
-  } CATCH_EXCEPTION
+  } CATCH_ALL
 }
 
 MpReturnCode mp_GlCalculatorHelper__CreateDestinationTexture__i_i_ui(mediapipe::GlCalculatorHelper* gl_calculator_helper,
                                                                               int output_width,
                                                                               int output_height,
-                                                                              uint format_code,
+                                                                              mediapipe::GpuBufferFormat format,
                                                                               mediapipe::GlTexture** gl_texture_out) {
   TRY {
     *gl_texture_out = new mediapipe::GlTexture {
       gl_calculator_helper->CreateDestinationTexture(
         output_width,
         output_height,
-        static_cast<mediapipe::GpuBufferFormat>(format_code))
+        format)
     };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
@@ -70,7 +70,7 @@ GLuint mp_GlCalculatorHelper__framebuffer(mediapipe::GlCalculatorHelper* gl_calc
   return gl_calculator_helper->framebuffer();
 }
 
-MpReturnCode mp_GlCalculatorHelper__BindFrameBuffer_Rtexture(mediapipe::GlCalculatorHelper* gl_calculator_helper,
+MpReturnCode mp_GlCalculatorHelper__BindFrameBuffer__Rtexture(mediapipe::GlCalculatorHelper* gl_calculator_helper,
                                                              mediapipe::GlTexture* gl_texture) {
   TRY {
     gl_calculator_helper->BindFramebuffer(std::move(*gl_texture));

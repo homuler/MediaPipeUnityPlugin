@@ -1,65 +1,72 @@
 using System;
 using System.Runtime.InteropServices;
 
-using MpStatus = System.IntPtr;
-
 namespace Mediapipe {
 
-  public class GlCalculatorHelper : ResourceHandle {
-    private bool _disposed = false;
-
+  public class GlCalculatorHelper : MpResourceHandle {
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    private delegate MpStatus MpGlStatusFunction();
+    private delegate IntPtr MpGlStatusFunction();
     public delegate Status GlStatusFunction();
 
-    public GlCalculatorHelper() : base(UnsafeNativeMethods.MpGlCalculatorHelperCreate()) {}
+    public GlCalculatorHelper() : base() {
+      UnsafeNativeMethods.mp_GlCalculatorHelper__(out var ptr).Assert();
+      this.ptr = ptr;
+    }
 
-    protected override void Dispose(bool disposing) {
-      if (_disposed) return;
-
-      if (OwnsResource()) {
-        UnsafeNativeMethods.MpGlCalculatorHelperDestroy(ptr);
-      }
-
-      ptr = IntPtr.Zero;
-
-      _disposed = true;
+    protected override void DeleteMpPtr() {
+      UnsafeNativeMethods.mp_GlCalculatorHelper__delete(ptr);
     }
 
     public void InitializeForTest(GpuResources gpuResources) {
-      UnsafeNativeMethods.MpGlCalculatorHelperInitializeForTest(ptr, gpuResources.mpPtr);
+      UnsafeNativeMethods.mp_GlCalculatorHelper__InitializeForTest__Pgr(mpPtr, gpuResources.mpPtr).Assert();
+
+      GC.KeepAlive(gpuResources);
+      GC.KeepAlive(this);
     }
 
-    /// <summary>
-    ///   <remarks>ATTENTION!: The Status object returned by <paramref name="glStatusFunc" /> must not be the resource owner</remarks>
-    /// </summary>
     public Status RunInGlContext(GlStatusFunction glStatusFunc) {
       MpGlStatusFunction mpGlStatusFunc = () => {
         try {
-          return glStatusFunc().GetPtr();
+          return glStatusFunc().mpPtr;
         } catch (Exception e) {
-          return Status.FailedPrecondition(e.ToString(), false).GetPtr();
+          return Status.FailedPrecondition(e.ToString()).mpPtr;
         }
       };
       GCHandle mpGlStatusFuncHandle = GCHandle.Alloc(mpGlStatusFunc);
-
-      var statusPtr = UnsafeNativeMethods.MpGlCalculatorHelperRunInGlContext(ptr, Marshal.GetFunctionPointerForDelegate(mpGlStatusFunc));
-
+      UnsafeNativeMethods.mp_GlCalculatorHelper__RunInGlContext__PF(
+          mpPtr, Marshal.GetFunctionPointerForDelegate(mpGlStatusFunc), out var statusPtr).Assert();
       mpGlStatusFuncHandle.Free();
 
+      GC.KeepAlive(this);
       return new Status(statusPtr);
     }
 
     public GlTexture CreateSourceTexture(ImageFrame imageFrame) {
-      return new GlTexture(UnsafeNativeMethods.MpGlCalculatorHelperCreateSourceTextureForImageFrame(ptr, imageFrame.GetPtr()));
+      UnsafeNativeMethods.mp_GlCalculatorHelper__CreateSourceTexture__Rif(mpPtr, imageFrame.mpPtr, out var texturePtr).Assert();
+
+      GC.KeepAlive(this);
+      return new GlTexture(texturePtr);
     }
 
     public GlTexture CreateSourceTexture(GpuBuffer gpuBuffer) {
-      return new GlTexture(UnsafeNativeMethods.MpGlCalculatorHelperCreateSourceTextureForGpuBuffer(ptr, gpuBuffer.GetPtr()));
+      UnsafeNativeMethods.mp_GlCalculatorHelper__CreateSourceTexture__Rgb(mpPtr, gpuBuffer.GetPtr(), out var texturePtr).Assert();
+
+      GC.KeepAlive(this);
+      return new GlTexture(texturePtr);
+    }
+
+    public GlTexture CreateDestinationTexture(int width, int height, GpuBufferFormat format) {
+      UnsafeNativeMethods.mp_GlCalculatorHelper__CreateDestinationTexture__i_i_ui(mpPtr, width, height, format, out var texturePtr).Assert();
+
+      GC.KeepAlive(this);
+      return new GlTexture(texturePtr);
     }
 
     public void BindFramebuffer(GlTexture glTexture) {
-      UnsafeNativeMethods.MpGlCalculatorHelperBindFramebuffer(ptr, glTexture.mpPtr);
+      UnsafeNativeMethods.mp_GlCalculatorHelper__BindFrameBuffer__Rtexture(mpPtr, glTexture.mpPtr).Assert();
+
+      GC.KeepAlive(glTexture);
+      GC.KeepAlive(this);
     }
   }
 }

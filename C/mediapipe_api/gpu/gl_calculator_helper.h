@@ -27,10 +27,10 @@ MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__CreateSourceTexture__Rgb(mediapipe:
 MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__CreateDestinationTexture__i_i_ui(mediapipe::GlCalculatorHelper* gl_calculator_helper,
                                                                               int output_width,
                                                                               int output_height,
-                                                                              uint format_code,
+                                                                              mediapipe::GpuBufferFormat format,
                                                                               mediapipe::GlTexture** gl_texture_out);
 MP_CAPI(GLuint) mp_GlCalculatorHelper__framebuffer(mediapipe::GlCalculatorHelper* gl_calculator_helper);
-MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__BindFrameBuffer_Rtexture(mediapipe::GlCalculatorHelper* gl_calculator_helper,
+MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__BindFrameBuffer__Rtexture(mediapipe::GlCalculatorHelper* gl_calculator_helper,
                                                                       mediapipe::GlTexture* gl_texture);
 MP_CAPI(bool) mp_GlCalculatorHelper__Initialized(mediapipe::GlCalculatorHelper* gl_calculator_helper);
 
