@@ -29,7 +29,7 @@ namespace Mediapipe {
     }
 
     public ImageFrame(ImageFormat.Format format, int width, int height, int widthStep, NativeArray<byte> pixelData) {
-      Deleter deleter = (IntPtr ptr) => { pixelData.Dispose(); };
+      Deleter deleter = (IntPtr ptr) => { /** Do nothing (pixelData will be moved) */ };
       deleterHandle = GCHandle.Alloc(deleter, GCHandleType.Pinned);
 
       unsafe {

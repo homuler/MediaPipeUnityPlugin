@@ -37,7 +37,7 @@ namespace Mediapipe {
       var protos = new List<T>(serializedProtoVector.size);
 
       unsafe {
-        byte* protoPtr = (byte*)serializedProtoVector.data;
+        byte** protoPtr = (byte**)serializedProtoVector.data;
 
         for (var i = 0; i < serializedProtoVector.size; i++) {
           protos.Add(Protobuf.DeserializeProto<T>((IntPtr)(*protoPtr++), parser));
