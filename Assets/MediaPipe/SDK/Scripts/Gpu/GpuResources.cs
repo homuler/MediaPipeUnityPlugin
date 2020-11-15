@@ -7,7 +7,7 @@ namespace Mediapipe {
     /// <param name="ptr">Shared pointer of mediapipe::GpuResources</param>
     public GpuResources(IntPtr ptr) : base() {
       sharedPtrHandle = new SharedPtr(ptr);
-      ptr = sharedPtrHandle.Get();
+      this.ptr = sharedPtrHandle.Get();
     }
 
     protected override void DisposeManaged() {
