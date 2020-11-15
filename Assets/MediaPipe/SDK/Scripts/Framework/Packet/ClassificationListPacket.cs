@@ -5,10 +5,11 @@ namespace Mediapipe {
     public ClassificationListPacket() : base() {}
 
     public override ClassificationList Get() {
-      var classificationListPtr = UnsafeNativeMethods.MpPacketGetClassificationList(ptr);
-      var rect = SerializedProto.FromPtr<ClassificationList>(classificationListPtr, ClassificationList.Parser);
+      UnsafeNativeMethods.mp_Packet__GetClassificationList(mpPtr, out var serializedProtoPtr).Assert();
+      GC.KeepAlive(this);
 
-      UnsafeNativeMethods.MpSerializedProtoDestroy(classificationListPtr);
+      var rect = Protobuf.DeserializeProto<ClassificationList>(serializedProtoPtr, ClassificationList.Parser);
+      UnsafeNativeMethods.mp_api_SerializedProto__delete(serializedProtoPtr);
 
       return rect;
     }

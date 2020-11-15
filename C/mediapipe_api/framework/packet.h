@@ -87,17 +87,21 @@ inline MpReturnCode mp_Packet__Consume(mediapipe::Packet* packet, mediapipe::Sta
 }
 
 template <class T>
-inline MpSerializedProto* MpPacketGetProto(MpPacket* packet) {
-  auto proto = packet->impl->Get<T>();
-
-  return MpSerializedProtoInitialize(proto);
+inline MpReturnCode mp_Packet__GetSerializedProto(mediapipe::Packet* packet, mp_api::SerializedProto** value_out) {
+  TRY_ALL {
+    auto proto = packet->Get<T>();
+    *value_out = SerializeProto(proto);
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
 }
 
 template <class T>
-inline MpSerializedProtoVector* MpPacketGetProtoVector(MpPacket* packet) {
-  auto proto_vec = packet->impl->Get<std::vector<T>>();
-
-  return MpSerializedProtoVectorInitialize(proto_vec);
+inline MpReturnCode mp_Packet__GetSerializedProtoVector(mediapipe::Packet* packet, mp_api::SerializedProtoVector** value_out) {
+  TRY_ALL {
+    auto proto_vec = packet->Get<std::vector<T>>();
+    *value_out = SerializeProtoVector(proto_vec);
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
 }
 
 #endif  // C_MEDIAPIPE_API_FRAMEWORK_PACKET_H_

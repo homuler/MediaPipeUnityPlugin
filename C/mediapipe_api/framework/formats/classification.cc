@@ -1,5 +1,5 @@
 #include "mediapipe_api/framework/formats/classification.h"
 
-MpSerializedProto* MpPacketGetClassificationList(MpPacket* packet) {
-  return MpPacketGetProto<mediapipe::ClassificationList>(packet);
+MpReturnCode mp_Packet__GetClassificationList(mediapipe::Packet* packet, mp_api::SerializedProto** value_out) {
+  return mp_Packet__GetSerializedProto<mediapipe::ClassificationList>(packet, value_out);
 }

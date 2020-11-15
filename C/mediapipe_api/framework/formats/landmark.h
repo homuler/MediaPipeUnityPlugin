@@ -8,10 +8,10 @@
 
 extern "C" {
 
-MP_CAPI_EXPORT extern MpSerializedProto* MpPacketGetLandmarkList(MpPacket* packet);
-MP_CAPI_EXPORT extern MpSerializedProtoVector* MpPacketGetLandmarkListVector(MpPacket* packet);
-MP_CAPI_EXPORT extern MpSerializedProto* MpPacketGetNormalizedLandmarkList(MpPacket* packet);
-MP_CAPI_EXPORT extern MpSerializedProtoVector* MpPacketGetNormalizedLandmarkListVector(MpPacket* packet);
+MP_CAPI(MpReturnCode) mp_Packet__GetLandmarkList(mediapipe::Packet* packet, mp_api::SerializedProto** value_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetLandmarkListVector(mediapipe::Packet* packet, mp_api::SerializedProtoVector** value_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetNormalizedLandmarkList(mediapipe::Packet* packet, mp_api::SerializedProto** value_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetNormalizedLandmarkListVector(mediapipe::Packet* packet, mp_api::SerializedProtoVector** value_out);
 
 }  // extern "C"
 

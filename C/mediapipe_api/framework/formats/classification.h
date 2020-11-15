@@ -8,7 +8,7 @@
 
 extern "C" {
 
-MP_CAPI_EXPORT extern MpSerializedProto* MpPacketGetClassificationList(MpPacket* packet);
+MP_CAPI(MpReturnCode) mp_Packet__GetClassificationList(mediapipe::Packet* packet, mp_api::SerializedProto** value_out);
 
 }  // extern "C"
 

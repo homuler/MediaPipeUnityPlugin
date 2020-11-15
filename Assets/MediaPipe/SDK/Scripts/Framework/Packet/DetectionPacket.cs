@@ -1,15 +1,15 @@
 using System;
-using System.Collections.Generic;
 
 namespace Mediapipe {
   public class DetectionPacket : Packet<Detection> {
     public DetectionPacket() : base() {}
 
     public override Detection Get() {
-      var detectionPtr = UnsafeNativeMethods.MpPacketGetDetection(ptr);
-      var detection = SerializedProto.FromPtr<Detection>(detectionPtr, Detection.Parser);
+      UnsafeNativeMethods.mp_Packet__GetDetection(mpPtr, out var serializedProtoPtr).Assert();
+      GC.KeepAlive(this);
 
-      UnsafeNativeMethods.MpSerializedProtoDestroy(detectionPtr);
+      var detection = Protobuf.DeserializeProto<Detection>(serializedProtoPtr, Detection.Parser);
+      UnsafeNativeMethods.mp_api_SerializedProto__delete(serializedProtoPtr);
 
       return detection;
     }

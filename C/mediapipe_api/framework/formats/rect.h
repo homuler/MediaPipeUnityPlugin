@@ -8,10 +8,10 @@
 
 extern "C" {
 
-MP_CAPI_EXPORT extern MpSerializedProto* MpPacketGetRect(MpPacket* packet);
-MP_CAPI_EXPORT extern MpSerializedProtoVector* MpPacketGetRectVector(MpPacket* packet);
-MP_CAPI_EXPORT extern MpSerializedProto* MpPacketGetNormalizedRect(MpPacket* packet);
-MP_CAPI_EXPORT extern MpSerializedProtoVector* MpPacketGetNormalizedRectVector(MpPacket* packet);
+MP_CAPI(MpReturnCode) mp_Packet__GetRect(mediapipe::Packet* packet, mp_api::SerializedProto** value_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetRectVector(mediapipe::Packet* packet, mp_api::SerializedProtoVector** value_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetNormalizedRect(mediapipe::Packet* packet, mp_api::SerializedProto** value_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetNormalizedRectVector(mediapipe::Packet* packet, mp_api::SerializedProtoVector** value_out);
 
 }  // extern "C"
 

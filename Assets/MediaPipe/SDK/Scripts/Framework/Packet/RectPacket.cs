@@ -5,10 +5,11 @@ namespace Mediapipe {
     public RectPacket() : base() {}
 
     public override Rect Get() {
-      var rectPtr = UnsafeNativeMethods.MpPacketGetRect(ptr);
-      var rect = SerializedProto.FromPtr<Rect>(rectPtr, Rect.Parser);
+      UnsafeNativeMethods.mp_Packet__GetRect(mpPtr, out var serializedProtoPtr).Assert();
+      GC.KeepAlive(this);
 
-      UnsafeNativeMethods.MpSerializedProtoDestroy(rectPtr);
+      var rect = Protobuf.DeserializeProto<Rect>(serializedProtoPtr, Rect.Parser);
+      UnsafeNativeMethods.mp_api_SerializedProto__delete(serializedProtoPtr);
 
       return rect;
     }

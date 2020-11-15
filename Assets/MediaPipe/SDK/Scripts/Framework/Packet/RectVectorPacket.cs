@@ -6,10 +6,11 @@ namespace Mediapipe {
     public RectVectorPacket() : base() {}
 
     public override List<Rect> Get() {
-      var rectVecPtr = UnsafeNativeMethods.MpPacketGetRectVector(ptr);
-      var rects = SerializedProtoVector.FromPtr<Rect>(rectVecPtr, Rect.Parser);
+      UnsafeNativeMethods.mp_Packet__GetRectVector(mpPtr, out var serializedProtoVectorPtr).Assert();
+      GC.KeepAlive(this);
 
-      UnsafeNativeMethods.MpSerializedProtoVectorDestroy(rectVecPtr);
+      var rects = Protobuf.DeserializeProtoVector<Rect>(serializedProtoVectorPtr, Rect.Parser);
+      UnsafeNativeMethods.mp_api_SerializedProtoVector__delete(serializedProtoVectorPtr);
 
       return rects;
     }
