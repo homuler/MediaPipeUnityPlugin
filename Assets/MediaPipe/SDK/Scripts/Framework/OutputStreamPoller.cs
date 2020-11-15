@@ -4,11 +4,8 @@ namespace Mediapipe {
   public class OutputStreamPoller<T> : MpResourceHandle {
     public OutputStreamPoller(IntPtr ptr) : base(ptr) {}
 
-    protected override void DisposeUnmanaged() {
-      if (OwnsResource()) {
-        UnsafeNativeMethods.mp_OutputStreamPoller__delete(ptr);
-      }
-      base.DisposeUnmanaged();
+    protected override void DeleteMpPtr() {
+      UnsafeNativeMethods.mp_OutputStreamPoller__delete(ptr);
     }
 
     public bool Next(Packet<T> packet) {

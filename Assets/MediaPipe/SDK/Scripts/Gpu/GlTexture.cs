@@ -14,11 +14,8 @@ namespace Mediapipe {
 
     public GlTexture(IntPtr ptr) : base(ptr) {}
 
-    protected override void DisposeUnmanaged() {
-      if (OwnsResource()) {
-        UnsafeNativeMethods.mp_GlTexture__delete(ptr);
-      }
-      base.DisposeUnmanaged();
+    protected override void DeleteMpPtr() {
+      UnsafeNativeMethods.mp_GlTexture__delete(ptr);
     }
 
     public int width {

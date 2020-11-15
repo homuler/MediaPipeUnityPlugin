@@ -7,11 +7,8 @@ namespace Mediapipe {
       this.ptr = ptr;
     }
 
-    protected override void DisposeUnmanaged() {
-      if (isOwner) {
-        UnsafeNativeMethods.mp_SidePacket__delete(ptr);
-      }
-      base.DisposeUnmanaged();
+    protected override void DeleteMpPtr() {
+      UnsafeNativeMethods.mp_SidePacket__delete(ptr);
     }
 
     public int size {

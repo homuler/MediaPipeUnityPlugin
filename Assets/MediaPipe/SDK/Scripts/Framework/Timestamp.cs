@@ -9,11 +9,8 @@ namespace Mediapipe {
       this.ptr = ptr;
     }
 
-    protected override void DisposeUnmanaged() {
-      if (OwnsResource()) {
-        UnsafeNativeMethods.mp_Timestamp__delete(ptr);
-      }
-      base.DisposeUnmanaged();
+    protected override void DeleteMpPtr() {
+      UnsafeNativeMethods.mp_Timestamp__delete(ptr);
     }
 
     #region IEquatable<Timestamp>

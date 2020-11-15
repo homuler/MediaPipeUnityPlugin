@@ -18,6 +18,10 @@ namespace Mediapipe {
       base.DisposeManaged();
     }
 
+    protected override void DeleteMpPtr() {
+      // Do nothing
+    }
+
     public IntPtr sharedPtr {
       get { return sharedPtrHandle == null ? IntPtr.Zero : sharedPtrHandle.mpPtr; }
     }
@@ -31,11 +35,8 @@ namespace Mediapipe {
     private class SharedPtr : SharedPtrHandle {
       public SharedPtr(IntPtr ptr) : base(ptr) {}
 
-      protected override void DisposeUnmanaged() {
-        if (OwnsResource()) {
-          UnsafeNativeMethods.mp_SharedGpuResources__delete(ptr);
-        }
-        base.DisposeUnmanaged();
+      protected override void DeleteMpPtr() {
+        UnsafeNativeMethods.mp_SharedGpuResources__delete(ptr);
       }
 
       public override IntPtr Get() {

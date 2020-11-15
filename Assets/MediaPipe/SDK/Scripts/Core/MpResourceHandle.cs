@@ -11,13 +11,7 @@ namespace Mediapipe {
       this.ptr = ptr;
     }
 
-    public IntPtr ReleaseMpPtr() {
-      var retPtr = mpPtr;
-      ptr = IntPtr.Zero;
-
-      return retPtr;
-    }
-
+    #region IMpResourceHandle
     public IntPtr mpPtr {
       get {
         ThrowIfDisposed();
@@ -25,14 +19,39 @@ namespace Mediapipe {
       }
     }
 
+    public void ReleaseMpResource() {
+      if (OwnsResource()) {
+        DeleteMpPtr();
+      }
+      TransferOwnership();
+    }
+
+    public bool OwnsResource() {
+      return isOwner && ptr != IntPtr.Zero;
+    }
+    #endregion
+
     protected override void DisposeUnmanaged() {
-      ptr = IntPtr.Zero;
+      if (OwnsResource()) {
+        DeleteMpPtr();
+      }
+      ReleaseMpPtr();
       base.DisposeUnmanaged();
     }
 
-    protected bool OwnsResource() {
-      return isOwner && ptr != IntPtr.Zero;
+    /// <summary>
+    ///   Forgets the pointer address.
+    ///   After calling this method, <see ref="OwnsResource" /> will return false.
+    /// </summary>
+    protected void ReleaseMpPtr() {
+      ptr = IntPtr.Zero;
     }
+
+    /// <summary>
+    ///   Release the memory (call `delete` or `delete[]`) whether or not it owns it.
+    /// </summary>
+    /// <remarks>In most cases, this method should not be called directly</remarks>
+    protected abstract void DeleteMpPtr();
 
     protected delegate MpReturnCode StringOutFunc(IntPtr ptr, out IntPtr strPtr);
     protected string MarshalStringFromNative(StringOutFunc f) {

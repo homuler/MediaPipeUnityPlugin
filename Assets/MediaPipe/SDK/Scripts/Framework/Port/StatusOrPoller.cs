@@ -5,11 +5,8 @@ namespace Mediapipe {
   public class StatusOrPoller<T> : StatusOr<OutputStreamPoller<T>> {
     public StatusOrPoller(MpStatusOrPoller ptr) : base(ptr) {}
 
-    protected override void DisposeUnmanaged() {
-      if (OwnsResource()) {
-        UnsafeNativeMethods.mp_StatusOrPoller__delete(ptr);
-      }
-      base.DisposeUnmanaged();
+    protected override void DeleteMpPtr() {
+      UnsafeNativeMethods.mp_StatusOrPoller__delete(ptr);
     }
 
     public override bool ok {

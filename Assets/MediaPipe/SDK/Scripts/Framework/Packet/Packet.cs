@@ -62,11 +62,8 @@ namespace Mediapipe {
       return MarshalStringFromNative(UnsafeNativeMethods.mp_Packet__DebugTypeName);
     }
 
-    protected override void DisposeUnmanaged() {
-      if (OwnsResource()) {
-        UnsafeNativeMethods.mp_Packet__delete(ptr);
-      }
-      base.DisposeUnmanaged();
+    protected override void DeleteMpPtr() {
+      UnsafeNativeMethods.mp_Packet__delete(ptr);
     }
   }
 }

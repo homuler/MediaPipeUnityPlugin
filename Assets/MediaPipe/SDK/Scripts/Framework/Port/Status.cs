@@ -24,11 +24,8 @@ namespace Mediapipe {
 
     public Status(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
-    protected override void DisposeUnmanaged() {
-      if (OwnsResource()) {
-        UnsafeNativeMethods.mp_Status__delete(ptr);
-      }
-      base.DisposeUnmanaged();
+    protected override void DeleteMpPtr() {
+      UnsafeNativeMethods.mp_Status__delete(ptr);
     }
 
     [Obsolete("IsOk() is deprecated, use ok")]

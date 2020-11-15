@@ -4,11 +4,8 @@ namespace Mediapipe {
   public class StatusOrGpuResources : StatusOr<GpuResources>{
     public StatusOrGpuResources(IntPtr ptr) : base(ptr) {}
 
-    protected override void DisposeUnmanaged() {
-      if (OwnsResource()) {
-        UnsafeNativeMethods.mp_StatusOrGpuResources__delete(ptr);
-      }
-      base.DisposeUnmanaged();
+    protected override void DeleteMpPtr() {
+      UnsafeNativeMethods.mp_StatusOrGpuResources__delete(ptr);
     }
 
     public override bool ok {

@@ -4,11 +4,8 @@ namespace Mediapipe {
   public class StatusOrImageFrame : StatusOr<ImageFrame> {
     public StatusOrImageFrame(IntPtr ptr) : base(ptr) {}
 
-    protected override void DisposeUnmanaged() {
-      if (OwnsResource()) {
-        UnsafeNativeMethods.mp_StatusOrImageFrame__delete(ptr);
-      }
-      base.DisposeUnmanaged();
+    protected override void DeleteMpPtr() {
+      UnsafeNativeMethods.mp_StatusOrImageFrame__delete(ptr);
     }
 
     public override bool ok {

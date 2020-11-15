@@ -82,7 +82,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<PixelData> {
       return failedValue;
     }
 
-    return packet.GetValue();
+    return packet.Get();
   }
 
   /// <summary>

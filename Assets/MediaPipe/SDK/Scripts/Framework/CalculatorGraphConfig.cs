@@ -8,11 +8,8 @@ namespace Mediapipe {
       return Protobuf.ParseFromStringAsCalculatorGraphConfig(configText);
     }
 
-    protected override void DisposeUnmanaged() {
-      if (OwnsResource()) {
-        UnsafeNativeMethods.mp_CalculatorGraphConfig__delete(ptr);
-      }
-      base.DisposeUnmanaged();
+    protected override void DeleteMpPtr() {
+      UnsafeNativeMethods.mp_CalculatorGraphConfig__delete(ptr);
     }
 
     public int byteSizeLong {

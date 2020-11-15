@@ -9,13 +9,15 @@ namespace Mediapipe {
     public ImageFramePacket(ImageFrame imageFrame) : base() {
       UnsafeNativeMethods.mp__MakeImageFramePacket__Pif(imageFrame.mpPtr, out var ptr).Assert();
       imageFrame.Dispose(); // respect move semantics
+
       this.ptr = ptr;
     }
 
     public ImageFramePacket(ImageFrame imageFrame, Timestamp timestamp) : base() {
       UnsafeNativeMethods.mp__MakeImageFramePacket_At__Pif_Rtimestamp(imageFrame.mpPtr, timestamp.mpPtr, out var ptr).Assert();
-      GC.KeepAlive(timestamp); // respect move semantics
-      imageFrame.Dispose();
+      GC.KeepAlive(timestamp);
+      imageFrame.Dispose(); // respect move semantics
+
       this.ptr = ptr;
     }
 

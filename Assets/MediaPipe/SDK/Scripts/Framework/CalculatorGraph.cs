@@ -14,11 +14,8 @@ namespace Mediapipe {
       this.ptr = ptr;
     }
 
-    protected override void DisposeUnmanaged() {
-      if (OwnsResource()) {
-        UnsafeNativeMethods.mp_CalculatorGraph__delete(ptr);
-      }
-      base.DisposeUnmanaged();
+    protected override void DeleteMpPtr() {
+      UnsafeNativeMethods.mp_CalculatorGraph__delete(ptr);
     }
 
     public Status Initialize(CalculatorGraphConfig config) {

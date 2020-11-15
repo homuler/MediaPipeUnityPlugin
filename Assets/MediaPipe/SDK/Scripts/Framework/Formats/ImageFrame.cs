@@ -43,15 +43,16 @@ namespace Mediapipe {
       }
     }
 
+    protected override void DeleteMpPtr() {
+      UnsafeNativeMethods.mp_ImageFrame__delete(ptr);
+    }
+
     protected override void DisposeUnmanaged() {
-      if (OwnsResource()) {
-        UnsafeNativeMethods.mp_ImageFrame__delete(ptr);
-      }
+      base.DisposeUnmanaged();
 
       if (deleterHandle.IsAllocated) {
         deleterHandle.Free();
       }
-      base.DisposeUnmanaged();
     }
 
     public bool IsEmpty() {
