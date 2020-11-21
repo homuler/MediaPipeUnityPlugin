@@ -19,16 +19,15 @@ namespace Mediapipe {
 
   public static class GpuBufferFormatExtension {
     public static ImageFormat.Format ImageFormatFor(this GpuBufferFormat gpuBufferFormat) {
-      return (ImageFormat.Format)UnsafeNativeMethods.MpImageFormatForGpuBufferFormat((UInt32)gpuBufferFormat);
+      return SafeNativeMethods.mp__ImageFormatForGpuBufferFormat__ui(gpuBufferFormat);
     }
 
-    public static GlTextureInfo GlTextureInfoFor(this GpuBufferFormat gpuBufferFormat, int plane) {
-      var ptr = UnsafeNativeMethods.MpGlTextureInfoForGpuBufferFormat((UInt32)gpuBufferFormat, plane);
-      var info = Marshal.PtrToStructure<GlTextureInfo>(ptr);
+    public static GlTextureInfo GlTextureInfoFor(this GpuBufferFormat gpuBufferFormat, int plane, GlVersion glVersion = GlVersion.kGLES3) {
+      UnsafeNativeMethods.mp__GlTextureInfoForGpuBufferFormat__ui_i_ui(gpuBufferFormat, plane, glVersion, out var glTextureInfoPtr);
+      var glTextureInfo = Marshal.PtrToStructure<GlTextureInfo>(glTextureInfoPtr);
+      UnsafeNativeMethods.mp_GlTextureInfo__delete(glTextureInfoPtr);
 
-      UnsafeNativeMethods.MpGlTextureInfoDestroy(ptr);
-
-      return info;
+      return glTextureInfo;
     }
   }
 }
