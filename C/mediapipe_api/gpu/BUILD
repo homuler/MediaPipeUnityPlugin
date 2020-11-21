@@ -31,6 +31,7 @@ cc_library(
     hdrs = ["gl_context.h"],
     deps = [
         "//mediapipe_api:common",
+        "//mediapipe_api/framework/port:statusor",
         "@com_google_mediapipe//mediapipe/gpu:gl_context",
     ],
     alwayslink = True,

@@ -1,38 +1,30 @@
 using System;
 
-using GpuBufferPtr = System.IntPtr;
-
 namespace Mediapipe {
-  public class GpuBuffer : ResourceHandle {
+  public class GpuBuffer : MpResourceHandle {
     private bool _disposed = false;
  
-    public GpuBuffer(GpuBufferPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
+    public GpuBuffer(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
-    // TODO: investigate glTextureBuffer's state after initialization
-    public GpuBuffer(GlTextureBuffer glTextureBuffer) : base(UnsafeNativeMethods.MpGpuBufferCreate(glTextureBuffer.GetPtr())) {}
+    public GpuBuffer(GlTextureBuffer glTextureBuffer) : base() {
+      UnsafeNativeMethods.mp_GpuBuffer__PSgtb(glTextureBuffer.sharedPtr, out var ptr).Assert();
+      this.ptr = ptr;
+    }
 
-    protected override void Dispose(bool disposing) {
-      if (_disposed) return;
-
-      if (OwnsResource()) {
-        UnsafeNativeMethods.MpGpuBufferDestroy(ptr);
-      }
-
-      ptr = IntPtr.Zero;
-
-      _disposed = true;
+    protected override void DeleteMpPtr() {
+      UnsafeNativeMethods.mp_GpuBuffer__delete(ptr);
     }
 
     public GpuBufferFormat Format() {
-      return (GpuBufferFormat)UnsafeNativeMethods.MpGpuBufferFormat(ptr);
+      return SafeNativeMethods.mp_GpuBuffer__format(mpPtr);
     }
 
     public int Width() {
-      return UnsafeNativeMethods.MpGpuBufferWidth(ptr);
+      return SafeNativeMethods.mp_GpuBuffer__width(mpPtr);
     }
 
     public int Height() {
-      return UnsafeNativeMethods.MpGpuBufferHeight(ptr);
+      return SafeNativeMethods.mp_GpuBuffer__height(mpPtr);
     }
   }
 }

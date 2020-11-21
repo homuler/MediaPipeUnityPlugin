@@ -6,23 +6,6 @@
 #include "mediapipe/framework/port/statusor.h"
 #include "mediapipe_api/common.h"
 
-template <typename T>
-struct MpStatusOrValue {
-  std::shared_ptr<mediapipe::Status> status;
-  T value;
-
-  explicit MpStatusOrValue(mediapipe::StatusOr<T> status_or) :
-    status { std::make_shared<mediapipe::Status>(std::move(status_or.status())) }
-  {
-    if (status->ok()) {
-      value = status_or.ConsumeValueOrDie();
-    }
-  }
-
-  explicit MpStatusOrValue(mediapipe::Status status, T value) :
-    status { std::make_shared<mediapipe::Status>(std::move(status)) }, value { std::move(value) } {}
-};
-
 template <class T>
 inline bool mp_StatusOr__ok(mediapipe::StatusOr<T>* status_or) {
   return status_or->ok();

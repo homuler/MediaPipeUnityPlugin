@@ -1,52 +1,68 @@
 #include <utility>
 #include "mediapipe_api/gpu/gpu_buffer.h"
 
-mediapipe::GpuBuffer* MpGpuBufferCreate(MpGlTextureBuffer* gl_texture_buffer) {
-  return new mediapipe::GpuBuffer { gl_texture_buffer->impl };
+MpReturnCode mp_GpuBuffer__PSgtb(SharedGlTextureBuffer* gl_texture_buffer, mediapipe::GpuBuffer** gpu_buffer_out) {
+  TRY {
+    *gpu_buffer_out = new mediapipe::GpuBuffer { *gl_texture_buffer };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
-void MpGpuBufferDestroy(mediapipe::GpuBuffer* gpu_buffer) {
+void mp_GpuBuffer__delete(mediapipe::GpuBuffer* gpu_buffer) {
   delete gpu_buffer;
 }
 
-uint32_t MpGpuBufferFormat(mediapipe::GpuBuffer* gpu_buffer) {
-  return static_cast<uint32_t>(gpu_buffer->format());
-}
-
-int MpGpuBufferWidth(mediapipe::GpuBuffer* gpu_buffer) {
+int mp_GpuBuffer__width(mediapipe::GpuBuffer* gpu_buffer) {
   return gpu_buffer->width();
 }
 
-int MpGpuBufferHeight(mediapipe::GpuBuffer* gpu_buffer) {
+int mp_GpuBuffer__height(mediapipe::GpuBuffer* gpu_buffer) {
   return gpu_buffer->height();
 }
 
-MpPacket* MpMakeGpuBufferPacketAt(mediapipe::GpuBuffer* gpu_buffer, int timestamp) {
-  auto packet = mediapipe::Adopt(gpu_buffer).At(mediapipe::Timestamp(timestamp));
-
-  return new MpPacket { std::move(packet) };
+mediapipe::GpuBufferFormat mp_GpuBuffer__format(mediapipe::GpuBuffer* gpu_buffer) {
+  return gpu_buffer->format();
 }
 
-mediapipe::GpuBuffer* MpPacketGetGpuBuffer(MpPacket* packet) {
-  auto holder = static_cast<const UnsafePacketHolder<mediapipe::GpuBuffer>*>(mediapipe::packet_internal::GetHolder(*packet->impl));
-
-  return holder->Get();
-}
-
-MpStatusOrGpuBuffer* MpPacketConsumeGpuBuffer(MpPacket* packet) {
-  auto status_or_gpu_buffer = packet->impl->Consume<mediapipe::GpuBuffer>();
-
-  return new MpStatusOrGpuBuffer { std::move(status_or_gpu_buffer) };
-}
-
-void MpStatusOrGpuBufferDestroy(MpStatusOrGpuBuffer* status_or_gpu_buffer) {
+void mp_StatusOrGpuBuffer__delete(StatusOrGpuBuffer* status_or_gpu_buffer) {
   delete status_or_gpu_buffer;
 }
 
-MpStatus* MpStatusOrGpuBufferStatus(MpStatusOrGpuBuffer* status_or_gpu_buffer) {
-  return new MpStatus { *status_or_gpu_buffer->status };
+bool mp_StatusOrGpuBuffer__ok(StatusOrGpuBuffer* status_or_gpu_buffer) {
+  return mp_StatusOr__ok(status_or_gpu_buffer);
 }
 
-mediapipe::GpuBuffer* MpStatusOrGpuBufferConsumeValue(MpStatusOrGpuBuffer* gpu_buffer) {
-  return gpu_buffer->value.release();
+MpReturnCode mp_StatusOrGpuBuffer__status(StatusOrGpuBuffer* status_or_gpu_buffer, mediapipe::Status** status_out) {
+  return mp_StatusOr__status(status_or_gpu_buffer, status_out);
+}
+
+MpReturnCode mp_StatusOrGpuBuffer__ConsumeValueOrDie(StatusOrGpuBuffer* status_or_gpu_buffer, mediapipe::GpuBuffer** value_out) {
+  return mp_StatusOr__ConsumeValueOrDie(status_or_gpu_buffer, value_out);
+}
+
+MpReturnCode mp__MakeGpuBufferPacket__Rgb(mediapipe::GpuBuffer* gpu_buffer, mediapipe::Packet** packet_out) {
+  TRY {
+    *packet_out = new mediapipe::Packet { mediapipe::MakePacket<mediapipe::GpuBuffer>(std::move(*gpu_buffer)) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+MpReturnCode mp__MakeGpuBufferPacket_At__Rgb_Rts(mediapipe::GpuBuffer* gpu_buffer,
+                                                 mediapipe::Timestamp* timestamp,
+                                                 mediapipe::Packet** packet_out) {
+  TRY {
+    *packet_out = new mediapipe::Packet { mediapipe::MakePacket<mediapipe::GpuBuffer>(std::move(*gpu_buffer)).At(*timestamp) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+MpReturnCode mp_Packet__ConsumeGpuBuffer(mediapipe::Packet* packet, StatusOrGpuBuffer** status_or_value_out) {
+  return mp_Packet__Consume(packet, status_or_value_out);
+}
+
+MpReturnCode mp_Packet__ValidateAsGpuBuffer(mediapipe::Packet* packet, mediapipe::Status** status_out) {
+  TRY {
+    *status_out = new mediapipe::Status { packet->ValidateAsType<mediapipe::GpuBuffer>() };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }

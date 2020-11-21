@@ -11,20 +11,25 @@
 
 extern "C" {
 
-typedef MpStatusOrValue<std::unique_ptr<mediapipe::GpuBuffer>> MpStatusOrGpuBuffer;
+typedef mediapipe::StatusOr<mediapipe::GpuBuffer> StatusOrGpuBuffer;
 
-MP_CAPI_EXPORT extern mediapipe::GpuBuffer* MpGpuBufferCreate(MpGlTextureBuffer* gl_texture_buffer);
-MP_CAPI_EXPORT extern void MpGpuBufferDestroy(mediapipe::GpuBuffer* gpu_buffer);
-MP_CAPI_EXPORT extern uint32_t MpGpuBufferFormat(mediapipe::GpuBuffer* gpu_buffer);
-MP_CAPI_EXPORT extern int MpGpuBufferWidth(mediapipe::GpuBuffer* gpu_buffer);
-MP_CAPI_EXPORT extern int MpGpuBufferHeight(mediapipe::GpuBuffer* gpu_buffer);
+MP_CAPI(MpReturnCode) mp_GpuBuffer__PSgtb(SharedGlTextureBuffer* gl_texture_buffer, mediapipe::GpuBuffer** gpu_buffer_out);
+MP_CAPI(void) mp_GpuBuffer__delete(mediapipe::GpuBuffer* gpu_buffer);
+MP_CAPI(int) mp_GpuBuffer__width(mediapipe::GpuBuffer* gpu_buffer);
+MP_CAPI(int) mp_GpuBuffer__height(mediapipe::GpuBuffer* gpu_buffer);
+MP_CAPI(mediapipe::GpuBufferFormat) mp_GpuBuffer__format(mediapipe::GpuBuffer* gpu_buffer);
 
-MP_CAPI_EXPORT extern MpPacket* MpMakeGpuBufferPacketAt(mediapipe::GpuBuffer* gpu_buffer, int timestamp);
-MP_CAPI_EXPORT extern mediapipe::GpuBuffer* MpPacketGetGpuBuffer(MpPacket* packet);
-MP_CAPI_EXPORT extern MpStatusOrGpuBuffer* MpPacketConsumeGpuBuffer(MpPacket* packet);
-MP_CAPI_EXPORT extern void MpStatusOrGpuBufferDestroy(MpStatusOrGpuBuffer* status_or_gpu_buffer);
-MP_CAPI_EXPORT extern MpStatus* MpStatusOrGpuBufferStatus(MpStatusOrGpuBuffer* status_or_gpu_buffer);
-MP_CAPI_EXPORT extern mediapipe::GpuBuffer* MpStatusOrGpuBufferConsumeValue(MpStatusOrGpuBuffer* status_or_gpu_buffer);
+MP_CAPI(void) mp_StatusOrGpuBuffer__delete(StatusOrGpuBuffer* status_or_gpu_buffer);
+MP_CAPI(bool) mp_StatusOrGpuBuffer__ok(StatusOrGpuBuffer* status_or_gpu_buffer);
+MP_CAPI(MpReturnCode) mp_StatusOrGpuBuffer__status(StatusOrGpuBuffer* status_or_gpu_buffer, mediapipe::Status** status_out);
+MP_CAPI(MpReturnCode) mp_StatusOrGpuBuffer__ConsumeValueOrDie(StatusOrGpuBuffer* status_or_gpu_buffer, mediapipe::GpuBuffer** value_out);
+
+MP_CAPI(MpReturnCode) mp__MakeGpuBufferPacket__Rgb(mediapipe::GpuBuffer* gpu_buffer, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeGpuBufferPacket_At__Rgb_Rts(mediapipe::GpuBuffer* gpu_buffer,
+                                                          mediapipe::Timestamp* timestamp,
+                                                          mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp_Packet__ConsumeGpuBuffer(mediapipe::Packet* packet, StatusOrGpuBuffer** status_or_value_out);
+MP_CAPI(MpReturnCode) mp_Packet__ValidateAsGpuBuffer(mediapipe::Packet* packet, mediapipe::Status** status_out);
 
 }  // extern "C"
 

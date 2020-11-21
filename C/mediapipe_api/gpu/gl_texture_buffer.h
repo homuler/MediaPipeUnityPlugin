@@ -9,16 +9,21 @@
 
 extern "C" {
 
-typedef struct MpGlTextureBuffer {
-  std::shared_ptr<mediapipe::GlTextureBuffer> impl;
-} MpGlTextureBuffer;
+typedef std::shared_ptr<mediapipe::GlTextureBuffer> SharedGlTextureBuffer;
+typedef void GlTextureBufferDeletionCallback(std::shared_ptr<mediapipe::GlSyncPoint>* sync_token);
 
-typedef void MpDeletionCallback(MpGlSyncToken* gl_sync_token);
+MP_CAPI(void) mp_SharedGlTextureBuffer__delete(SharedGlTextureBuffer* gl_texture_buffer);
+MP_CAPI(mediapipe::GlTextureBuffer*) mp_SharedGlTextureBuffer__get(SharedGlTextureBuffer* gl_texture_buffer);
+MP_CAPI(void) mp_SharedGlTextureBuffer__reset(SharedGlTextureBuffer* gl_texture_buffer);
 
-MP_CAPI_EXPORT extern MpGlTextureBuffer* MpGlTextureBufferCreate(GLenum target, GLuint name, int width, int height,
-    uint32_t format_code, MpDeletionCallback* deletion_callback, mediapipe::GlContext* producer_context = nullptr);
-
-MP_CAPI_EXPORT extern void MpGlTextureBufferDestroy(MpGlTextureBuffer* gl_texture_buffer);
+MP_CAPI(MpReturnCode) mp_SharedGlTextureBuffer__ui_ui_i_i_ui_PF_PSgc(GLenum target,
+                                                                     GLuint name,
+                                                                     int width,
+                                                                     int height,
+                                                                     mediapipe::GpuBufferFormat format,
+                                                                     GlTextureBufferDeletionCallback* deletion_callback,
+                                                                     std::shared_ptr<mediapipe::GlContext>* producer_context,
+                                                                     SharedGlTextureBuffer** gl_texture_buffer_out);
 
 }  // extern "C"
 

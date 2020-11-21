@@ -28,6 +28,7 @@ namespace Mediapipe {
     public override StatusOr<ImageFrame> Consume() {
       UnsafeNativeMethods.mp_Packet__ConsumeImageFrame(mpPtr, out var statusOrImageFramePtr).Assert();
 
+      GC.KeepAlive(this);
       return new StatusOrImageFrame(statusOrImageFramePtr);
     }
 

@@ -1,41 +1,40 @@
 using System;
-using System.Runtime.InteropServices;
 
 namespace Mediapipe {
   public class GpuBufferPacket : Packet<GpuBuffer> {
-    private bool _disposed = false;
-    private GCHandle valueHandle;
     public GpuBufferPacket() : base() {}
 
-    public GpuBufferPacket(GpuBuffer gpuBuffer, Timestamp timestamp) {
-      // TODO: implement
-      // base(UnsafeNativeMethods.MpMakeGpuBufferPacketAt(gpuBuffer.GetPtr(), timestamp)) {
-      // gpuBuffer.ReleaseOwnership();
-      // valueHandle = GCHandle.Alloc(gpuBuffer);
+    public GpuBufferPacket(GpuBuffer gpuBuffer) : base() {
+      UnsafeNativeMethods.mp__MakeGpuBufferPacket__Rgb(gpuBuffer.mpPtr, out var ptr).Assert();
+      gpuBuffer.Dispose(); // respect move semantics
+
+      this.ptr = ptr;
     }
 
-    protected override void Dispose(bool disposing) {
-      if (_disposed) return;
+    public GpuBufferPacket(GpuBuffer gpuBuffer, Timestamp timestamp) {
+      UnsafeNativeMethods.mp__MakeGpuBufferPacket_At__Rgb_Rts(gpuBuffer.mpPtr, timestamp.mpPtr, out var ptr).Assert();
+      GC.KeepAlive(timestamp);
+      gpuBuffer.Dispose(); // respect move semantics
 
-      base.Dispose(disposing);
-
-      if (valueHandle != null && valueHandle.IsAllocated) {
-        valueHandle.Free();
-      }
-
-      _disposed = true;
+      this.ptr = ptr;
     }
 
     public override GpuBuffer Get() {
-      return new GpuBuffer(UnsafeNativeMethods.MpPacketGetGpuBuffer(ptr), false);
+      throw new NotSupportedException();
     }
 
     public override StatusOr<GpuBuffer> Consume() {
-      if (!OwnsResource()) {
-        throw new InvalidOperationException("Not owns resouces to be consumed");
-      }
+      UnsafeNativeMethods.mp_Packet__ConsumeGpuBuffer(mpPtr, out var statusOrGpuBufferPtr).Assert();
 
-      return new StatusOrGpuBuffer(UnsafeNativeMethods.MpPacketConsumeGpuBuffer(mpPtr));
+      GC.KeepAlive(this);
+      return new StatusOrGpuBuffer(statusOrGpuBufferPtr);
+    }
+
+    public override Status ValidateAsType() {
+      UnsafeNativeMethods.mp_Packet__ValidateAsGpuBuffer(mpPtr, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      return new Status(statusPtr);
     }
   }
 }

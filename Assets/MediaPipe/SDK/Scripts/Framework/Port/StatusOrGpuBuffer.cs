@@ -5,21 +5,26 @@ namespace Mediapipe {
     public StatusOrGpuBuffer(IntPtr ptr) : base(ptr) {}
 
     protected override void DeleteMpPtr() {
-      UnsafeNativeMethods.MpStatusOrGpuBufferDestroy(ptr);
+      UnsafeNativeMethods.mp_StatusOrGpuBuffer__delete(ptr);
     }
 
     public override bool ok {
-      get { return true; }
+      get { return SafeNativeMethods.mp_StatusOrGpuBuffer__ok(mpPtr); }
     }
 
     public override Status status {
-      get { return Status.Ok(); }
+      get {
+        UnsafeNativeMethods.mp_StatusOrGpuBuffer__status(mpPtr, out var statusPtr).Assert();
+
+        GC.KeepAlive(this);
+        return new Status(statusPtr);
+      }
     }
 
     public override GpuBuffer ConsumeValueOrDie() {
       EnsureOk();
-
-      var gpuBufferPtr = UnsafeNativeMethods.MpStatusOrGpuBufferConsumeValue(ptr);
+      UnsafeNativeMethods.mp_StatusOrGpuBuffer__ConsumeValueOrDie(mpPtr, out var gpuBufferPtr).Assert();
+      Dispose();
 
       return new GpuBuffer(gpuBufferPtr);
     }

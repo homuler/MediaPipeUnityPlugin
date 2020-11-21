@@ -1,35 +1,86 @@
 #include "mediapipe_api/gpu/gl_context.h"
 
-void MpGlContextDestroy(MpGlContext* gl_context) {
-  delete gl_context;
+void mp_SharedGlContext__delete(SharedGlContext* shared_gl_context) {
+  delete shared_gl_context;
 }
 
-MpGlContext* MpGlContextGetCurrent() {
-  return new MpGlContext { mediapipe::GlContext::GetCurrent() };
+mediapipe::GlContext* mp_SharedGlContext__get(SharedGlContext* shared_gl_context) {
+  return shared_gl_context->get();
 }
 
-mediapipe::GlContext* MpGlContextGet(MpGlContext* gl_context) {
-  return gl_context->impl.get();
+void mp_SharedGlContext__reset(SharedGlContext* shared_gl_context) {
+  shared_gl_context->reset();
 }
 
-void MpGlSyncTokenDestroy(MpGlSyncToken* token) {
-  delete token;
+MpReturnCode mp_GlContext_GetCurrent(SharedGlContext** shared_gl_context_out) {
+  TRY {
+    *shared_gl_context_out = new SharedGlContext { mediapipe::GlContext::GetCurrent() };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
-void MpGlSyncTokenWait(MpGlSyncToken* token) {
-  token->impl->Wait();
+MpReturnCode mp_GlContext_Create__p_b(bool create_thread, StatusOrSharedGlContext** status_or_shared_gl_context_out) {
+  TRY {
+    *status_or_shared_gl_context_out = new StatusOrSharedGlContext { mediapipe::GlContext::Create(nullptr, create_thread) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
-void MpGlSyncTokenWaitOnGpu(MpGlSyncToken* token) {
-  token->impl->WaitOnGpu();
+MpReturnCode mp_GlContext_Create__Rgc_b(mediapipe::GlContext* share_context,
+                                        bool create_thread,
+                                        StatusOrSharedGlContext** status_or_shared_gl_context_out) {
+  TRY {
+    *status_or_shared_gl_context_out = new StatusOrSharedGlContext { mediapipe::GlContext::Create(*share_context, create_thread) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
-bool MpGlSyncTokenIsReady(MpGlSyncToken* token) {
-  return token->impl->IsReady();
+MpReturnCode mp_GlContext_Create__ui_b(mediapipe::PlatformGlContext share_context,
+                                       bool create_thread,
+                                       StatusOrSharedGlContext** status_or_shared_gl_context_out) {
+  TRY {
+    *status_or_shared_gl_context_out = new StatusOrSharedGlContext { mediapipe::GlContext::Create(share_context, create_thread) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }
 
-MpGlContext* MpGlSyncTokenGetContext(MpGlSyncToken* token) {
-  auto context = token->impl->GetContext();
+// GlSyncToken API
+void mp_GlSyncToken__delete(mediapipe::GlSyncToken* gl_sync_token) {
+  delete gl_sync_token;
+}
 
-  return new MpGlContext { context };
+mediapipe::GlSyncPoint* mp_GlSyncToken__get(mediapipe::GlSyncToken* gl_sync_token) {
+  return gl_sync_token->get();
+}
+
+void mp_GlSyncToken__reset(mediapipe::GlSyncToken* gl_sync_token) {
+  gl_sync_token->reset();
+}
+
+MpReturnCode mp_GlSyncPoint__Wait(mediapipe::GlSyncPoint* gl_sync_point) {
+  TRY {
+    gl_sync_point->Wait();
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+MpReturnCode mp_GlSyncPoint__WaitOnGpu(mediapipe::GlSyncPoint* gl_sync_point) {
+  TRY {
+    gl_sync_point->WaitOnGpu();
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+MpReturnCode mp_GlSyncPoint__IsReady(mediapipe::GlSyncPoint* gl_sync_point, bool* value_out) {
+  TRY {
+    *value_out = gl_sync_point->IsReady();
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+MpReturnCode mp_GlSyncPoint__GetContext(mediapipe::GlSyncPoint* gl_sync_point, SharedGlContext** shared_gl_context_out) {
+  TRY {
+    *shared_gl_context_out = new SharedGlContext { gl_sync_point->GetContext() };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
 }

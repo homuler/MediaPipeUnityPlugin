@@ -13,7 +13,7 @@ MpReturnCode mp__GlTextureInfoForGpuBufferFormat__ui_i_ui(mediapipe::GpuBufferFo
                                                          mediapipe::GlVersion gl_version,
                                                          mediapipe::GlTextureInfo** gl_texture_info_out) {
   TRY {
-    *gl_texture_info = new mediapipe::GlTextureInfo { mediapipe::GlTextureInfoForGpuBufferFormat(format, plane, gl_version) };
+    *gl_texture_info_out = new mediapipe::GlTextureInfo { mediapipe::GlTextureInfoForGpuBufferFormat(format, plane, gl_version) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }

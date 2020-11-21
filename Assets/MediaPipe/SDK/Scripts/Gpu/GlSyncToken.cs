@@ -1,39 +1,66 @@
 using System;
 
-using MpGlSyncToken = System.IntPtr;
-
 namespace Mediapipe {
-  public class GlSyncToken : ResourceHandle {
-    private bool _disposed = false;
+  public class GlSyncPoint : MpResourceHandle {
+    private SharedPtrHandle sharedPtrHandle;
  
-    public GlSyncToken(MpGlSyncToken ptr, bool isOwner = true) : base(ptr, isOwner) {}
+    public GlSyncPoint(IntPtr ptr) : base(ptr) {
+      sharedPtrHandle = new SharedPtr(ptr);
+      this.ptr = sharedPtrHandle.Get();
+    }
 
-    protected override void Dispose(bool disposing) {
-      if (_disposed) return;
-
-      if (OwnsResource()) {
-        UnsafeNativeMethods.MpGlSyncTokenDestroy(ptr);
+    protected override void DisposeManaged() {
+      if (sharedPtrHandle != null) {
+        sharedPtrHandle.Dispose();
+        sharedPtrHandle = null;
       }
+      base.DisposeManaged();
+    }
 
-      ptr = IntPtr.Zero;
+    protected override void DeleteMpPtr() {
+      // Do nothing
+    }
 
-      _disposed = true;
+    public IntPtr sharedPtr {
+      get { return sharedPtrHandle == null ? IntPtr.Zero : sharedPtrHandle.mpPtr; }
     }
 
     public void Wait() {
-      UnsafeNativeMethods.MpGlSyncTokenWait(ptr);
+      UnsafeNativeMethods.mp_GlSyncPoint__Wait(mpPtr).Assert();
     }
 
     public void WaitOnGpu() {
-      UnsafeNativeMethods.MpGlSyncTokenWaitOnGpu(ptr);
+      UnsafeNativeMethods.mp_GlSyncPoint__WaitOnGpu(mpPtr).Assert();
     }
 
     public bool IsReady() {
-      return UnsafeNativeMethods.MpGlSyncTokenIsReady(ptr);
+      UnsafeNativeMethods.mp_GlSyncPoint__IsReady(mpPtr, out var value).Assert();
+
+      GC.KeepAlive(this);
+      return value;
     }
 
     public GlContext GetContext() {
-      return new GlContext(UnsafeNativeMethods.MpGlSyncTokenGetContext(ptr));
+      UnsafeNativeMethods.mp_GlSyncPoint__GetContext(mpPtr, out var sharedGlContextPtr).Assert();
+
+      GC.KeepAlive(this);
+      return new GlContext(sharedGlContextPtr);
+    }
+
+    private class SharedPtr : SharedPtrHandle {
+      public SharedPtr(IntPtr ptr) : base(ptr) {}
+
+      protected override void DeleteMpPtr() {
+        UnsafeNativeMethods.mp_GlSyncToken__delete(ptr);
+      }
+
+      public override IntPtr Get() {
+        return SafeNativeMethods.mp_GlSyncToken__get(mpPtr);
+      }
+
+      public override void Reset() {
+        UnsafeNativeMethods.mp_GlSyncToken__reset(mpPtr);
+      }
     }
   }
 }
