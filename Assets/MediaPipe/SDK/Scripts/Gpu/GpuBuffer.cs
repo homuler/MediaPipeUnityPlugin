@@ -2,8 +2,6 @@ using System;
 
 namespace Mediapipe {
   public class GpuBuffer : MpResourceHandle {
-    private bool _disposed = false;
- 
     public GpuBuffer(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
     public GpuBuffer(GlTextureBuffer glTextureBuffer) : base() {

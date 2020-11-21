@@ -8,12 +8,6 @@
 
 extern "C" {
 
-typedef struct MpStatus {
-  std::shared_ptr<mediapipe::Status> impl;
-
-  MpStatus(mediapipe::Status status) : impl { std::make_shared<mediapipe::Status>(std::move(status)) } {}
-} MpStatus;
-
 MP_CAPI(MpReturnCode) mp_Status__i_PKc(int code, const char* message, mediapipe::Status** status_out);
 MP_CAPI(void) mp_Status__delete(mediapipe::Status* status);
 

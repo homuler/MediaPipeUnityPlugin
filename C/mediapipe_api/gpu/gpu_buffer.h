@@ -29,6 +29,7 @@ MP_CAPI(MpReturnCode) mp__MakeGpuBufferPacket_At__Rgb_Rts(mediapipe::GpuBuffer* 
                                                           mediapipe::Timestamp* timestamp,
                                                           mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__ConsumeGpuBuffer(mediapipe::Packet* packet, StatusOrGpuBuffer** status_or_value_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetGpuBuffer(mediapipe::Packet* packet, const mediapipe::GpuBuffer** value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsGpuBuffer(mediapipe::Packet* packet, mediapipe::Status** status_out);
 
 }  // extern "C"

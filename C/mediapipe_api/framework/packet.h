@@ -15,19 +15,12 @@ class UnsafePacketHolder : public mediapipe::packet_internal::Holder<T> {
   using mediapipe::packet_internal::Holder<T>::ptr_;
 
  public:
-  T* Get() const {
-    return const_cast<T*>(ptr_);
+  const T* Get() const {
+    return ptr_;
   }
 };
 
 extern "C" {
-
-typedef struct MpPacket {
-  std::unique_ptr<mediapipe::Packet> impl;
-
-  MpPacket() : impl { std::make_unique<mediapipe::Packet>() } {}
-  MpPacket(mediapipe::Packet packet) : impl { std::make_unique<mediapipe::Packet>(std::move(packet)) } {}
-} MpPacket;
 
 typedef std::map<std::string, mediapipe::Packet> SidePacket;
 

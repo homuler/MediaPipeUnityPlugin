@@ -55,6 +55,9 @@ namespace Mediapipe {
     public static extern MpReturnCode mp_Packet__ConsumeImageFrame(IntPtr packet, out IntPtr statusOrImageFrame);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__GetImageFrame(IntPtr packet, out IntPtr imageFrame);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__ValidateAsImageFrame(IntPtr packet, out IntPtr status);
     #endregion
   }

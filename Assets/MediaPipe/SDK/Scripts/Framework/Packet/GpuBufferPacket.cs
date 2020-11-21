@@ -20,7 +20,10 @@ namespace Mediapipe {
     }
 
     public override GpuBuffer Get() {
-      throw new NotSupportedException();
+      UnsafeNativeMethods.mp_Packet__GetGpuBuffer(mpPtr, out var gpuBufferPtr).Assert();
+
+      GC.KeepAlive(this);
+      return new GpuBuffer(gpuBufferPtr, false);
     }
 
     public override StatusOr<GpuBuffer> Consume() {

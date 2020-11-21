@@ -60,6 +60,14 @@ MpReturnCode mp_Packet__ConsumeGpuBuffer(mediapipe::Packet* packet, StatusOrGpuB
   return mp_Packet__Consume(packet, status_or_value_out);
 }
 
+MpReturnCode mp_Packet__GetGpuBuffer(mediapipe::Packet* packet, const mediapipe::GpuBuffer** value_out) {
+  TRY {
+    auto unsafe_holder = static_cast<const UnsafePacketHolder<mediapipe::GpuBuffer>*>(mediapipe::packet_internal::GetHolder(*packet));
+    *value_out = unsafe_holder->Get();
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
 MpReturnCode mp_Packet__ValidateAsGpuBuffer(mediapipe::Packet* packet, mediapipe::Status** status_out) {
   TRY {
     *status_out = new mediapipe::Status { packet->ValidateAsType<mediapipe::GpuBuffer>() };

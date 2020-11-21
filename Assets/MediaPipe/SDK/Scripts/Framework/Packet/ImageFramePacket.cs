@@ -22,7 +22,10 @@ namespace Mediapipe {
     }
 
     public override ImageFrame Get() {
-      throw new NotSupportedException();
+      UnsafeNativeMethods.mp_Packet__GetImageFrame(mpPtr, out var imageFramePtr).Assert();
+
+      GC.KeepAlive(this);
+      return new ImageFrame(imageFramePtr, false);
     }
 
     public override StatusOr<ImageFrame> Consume() {
