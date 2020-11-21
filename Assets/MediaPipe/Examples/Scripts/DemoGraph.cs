@@ -48,7 +48,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<PixelData> {
       var texture = gpuHelper.CreateSourceTexture(imageFrame);
       var gpuFrame = texture.GetGpuBufferFrame();
 
-      Mediapipe.GL.Flush();
+      Gl.Flush();
       texture.Release();
 
       return graph.AddPacketToInputStream(inputStream, new GpuBufferPacket(gpuFrame, timestamp));

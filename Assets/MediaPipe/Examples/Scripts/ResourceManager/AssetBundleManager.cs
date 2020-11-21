@@ -57,7 +57,10 @@ public sealed class AssetBundleManager : ResourceManager {
     }
 
     var asset = File.ReadAllBytes(cachePath);
-    ResourceUtil.CopyBytes(dst, asset);
+    using (var srcStr = new StdString(asset)) {
+      srcStr.Swap(new StdString(dst, false));
+    }
+
     return true;
   }
 

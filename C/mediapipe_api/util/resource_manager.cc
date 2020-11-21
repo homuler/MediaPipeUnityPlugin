@@ -8,13 +8,9 @@ namespace {
   ReadFileHandler* read_file_handler_ = nullptr;
 }
 
-void MpResourceManagerInitialize(CacheFilePathResolver* resolver, ReadFileHandler* handler) {
+void mp_api__PrepareResourceManager(CacheFilePathResolver* resolver, ReadFileHandler* handler) {
   cache_file_path_resolver_ = resolver;
   read_file_handler_ = handler;
-}
-
-void MpStringCopy(std::string* dst, const char* src, int size) {
-  std::string(src, size).swap(*dst);
 }
 
 namespace mediapipe {

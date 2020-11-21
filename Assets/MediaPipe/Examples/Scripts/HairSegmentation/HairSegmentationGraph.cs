@@ -1,8 +1,6 @@
 using Mediapipe;
 using UnityEngine;
 
-using GL = Mediapipe.GL;
-
 public class HairSegmentationGraph : DemoGraph {
   private const string hairMaskStream = "hair_mask";
   private OutputStreamPoller<GpuBuffer> hairMaskStreamPoller;
@@ -44,8 +42,8 @@ public class HairSegmentationGraph : DemoGraph {
       gpuHelper.BindFramebuffer(sourceTexture);
       var info = gpuFrameFormat.GlTextureInfoFor(0);
 
-      GL.ReadPixels(0, 0, sourceTexture.width, sourceTexture.height, info.glFormat, info.glType, outputFrame.MutablePixelData());
-      GL.Flush();
+      Gl.ReadPixels(0, 0, sourceTexture.width, sourceTexture.height, info.glFormat, info.glType, outputFrame.MutablePixelData());
+      Gl.Flush();
 
       sourceTexture.Release();
 

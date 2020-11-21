@@ -15,8 +15,6 @@
 using Mediapipe;
 using UnityEngine;
 
-using GL = Mediapipe.GL;
-
 /// <summary>
 ///   This class is a translated version of
 ///   <see href="https://github.com/google/mediapipe/blob/v0.7.10/mediapipe/examples/desktop/demo_run_graph_main_gpu.cc">
@@ -60,8 +58,8 @@ public class DefaultGraphOnGPU : DemoGraph {
       gpuHelper.BindFramebuffer(sourceTexture);
       var info = gpuFrameFormat.GlTextureInfoFor(0);
 
-      GL.ReadPixels(0, 0, sourceTexture.width, sourceTexture.height, info.glFormat, info.glType, outputFrame.MutablePixelData());
-      GL.Flush();
+      Gl.ReadPixels(0, 0, sourceTexture.width, sourceTexture.height, info.glFormat, info.glType, outputFrame.MutablePixelData());
+      Gl.Flush();
 
       sourceTexture.Release();
 

@@ -10,8 +10,7 @@ extern "C" {
 typedef const char* CacheFilePathResolver(const char* path);
 typedef bool ReadFileHandler(const char* path, std::string* output);
 
-MP_CAPI_EXPORT extern void MpResourceManagerInitialize(CacheFilePathResolver* resolver, ReadFileHandler* handler);
-MP_CAPI_EXPORT extern void MpStringCopy(std::string* dst, const char* src, int size);
+MP_CAPI(void) mp_api__PrepareResourceManager(CacheFilePathResolver* resolver, ReadFileHandler* handler);
 
 }  // extern "C"
 

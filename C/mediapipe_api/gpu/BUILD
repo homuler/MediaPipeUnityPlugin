@@ -4,7 +4,6 @@ package(
 
 cc_library(
     name = "gl_base",
-    srcs = ["gl_base.cc"],
     hdrs = ["gl_base.h"],
     deps = [
         "//mediapipe_api:common",

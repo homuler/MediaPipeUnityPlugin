@@ -34,7 +34,11 @@ public sealed class LocalAssetManager : ResourceManager {
   protected override bool ReadFile(string path, IntPtr dst) {
     var localPath = CacheFileFromAsset(path);
     var asset = File.ReadAllBytes(localPath);
-    ResourceUtil.CopyBytes(dst, asset);
+
+    using (var srcStr = new StdString(asset)) {
+      srcStr.Swap(new StdString(dst, false));
+    }
+
     return true;
   }
 
