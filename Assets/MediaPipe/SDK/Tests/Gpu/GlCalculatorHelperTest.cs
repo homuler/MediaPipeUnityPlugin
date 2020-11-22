@@ -61,16 +61,37 @@ namespace Tests {
 
     #region #CreateSourceTexture
     [Test, GpuOnly]
-    [Ignore("Skip because MediaPipe aborts in test environment")]
     public void CreateSourceTexture_ShouldReturnGlTexture_When_CalledWithImageFrame() {
       var glCalculatorHelper = new GlCalculatorHelper();
       glCalculatorHelper.InitializeForTest(GpuResources.Create().ConsumeValueOrDie());
 
-      var imageFrame = new ImageFrame(ImageFormat.Format.SBGRA, 32, 24);
-      var texture = glCalculatorHelper.CreateSourceTexture(imageFrame);
+      var imageFrame = new ImageFrame(ImageFormat.Format.SRGBA, 32, 24);
+      var status = glCalculatorHelper.RunInGlContext(() => {
+        var texture = glCalculatorHelper.CreateSourceTexture(imageFrame);
 
-      Assert.AreEqual(texture.width, 32);
-      Assert.AreEqual(texture.height, 24);
+        Assert.AreEqual(texture.width, 32);
+        Assert.AreEqual(texture.height, 24);
+
+        texture.Dispose();
+        return Status.Ok();
+      });
+
+      Assert.AreEqual(status.code, Status.StatusCode.Ok);
+    }
+
+    [Test, GpuOnly]
+    public void CreateSourceTexture_ShouldFail_When_ImageFrameFormatIsInvalid() {
+      var glCalculatorHelper = new GlCalculatorHelper();
+      glCalculatorHelper.InitializeForTest(GpuResources.Create().ConsumeValueOrDie());
+
+      var imageFrame = new ImageFrame(ImageFormat.Format.SBGRA, 32, 24);
+      var status = glCalculatorHelper.RunInGlContext(() => {
+        var texture = glCalculatorHelper.CreateSourceTexture(imageFrame);
+        texture.Dispose();
+        return Status.Ok();
+      });
+
+      Assert.AreEqual(status.code, Status.StatusCode.FailedPrecondition);
     }
     #endregion
   }

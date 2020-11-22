@@ -45,6 +45,7 @@ namespace Mediapipe {
       UnsafeNativeMethods.mp_GlCalculatorHelper__CreateSourceTexture__Rif(mpPtr, imageFrame.mpPtr, out var texturePtr).Assert();
 
       GC.KeepAlive(this);
+      GC.KeepAlive(imageFrame);
       return new GlTexture(texturePtr);
     }
 
@@ -52,6 +53,7 @@ namespace Mediapipe {
       UnsafeNativeMethods.mp_GlCalculatorHelper__CreateSourceTexture__Rgb(mpPtr, gpuBuffer.mpPtr, out var texturePtr).Assert();
 
       GC.KeepAlive(this);
+      GC.KeepAlive(gpuBuffer);
       return new GlTexture(texturePtr);
     }
 
