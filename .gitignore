@@ -3,6 +3,7 @@
 Temp/
 Logs/
 Library/
+CodeCoverage/
 obj/
 .build/
 *.csproj
