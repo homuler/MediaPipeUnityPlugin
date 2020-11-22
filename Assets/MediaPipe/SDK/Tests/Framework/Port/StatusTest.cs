@@ -53,7 +53,7 @@ namespace Tests {
     }
     #endregion
 
-    #region #IsOk
+    #region #ok
     [Test]
     public void IsOk_ShouldReturnTrue_When_StatusIsOk() {
       var status = Status.Ok();
@@ -66,6 +66,21 @@ namespace Tests {
       var status = Status.FailedPrecondition();
 
       Assert.False(status.ok);
+    }
+    #endregion
+
+    #region #AssertOk
+    [Test]
+    public void AssertOk_ShouldNotThrow_When_StatusIsOk() {
+      var status = Status.Ok();
+
+      Assert.DoesNotThrow(() => { status.AssertOk(); });
+    }
+
+    public void AssertOk_ShouldThrow_When_StatusIsNotOk() {
+      var status = Status.FailedPrecondition();
+
+      Assert.Throws<MediaPipeException>(() => { status.AssertOk(); });
     }
     #endregion
 

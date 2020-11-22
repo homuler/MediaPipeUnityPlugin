@@ -37,7 +37,7 @@ namespace Mediapipe {
 
     public void AssertOk() {
       if (!ok) {
-        throw new InternalException(ToString());
+        throw new MediaPipeException(ToString());
       }
     }
 
