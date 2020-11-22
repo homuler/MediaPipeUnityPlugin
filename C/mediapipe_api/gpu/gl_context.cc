@@ -14,7 +14,13 @@ void mp_SharedGlContext__reset(SharedGlContext* shared_gl_context) {
 
 MpReturnCode mp_GlContext_GetCurrent(SharedGlContext** shared_gl_context_out) {
   TRY {
-    *shared_gl_context_out = new SharedGlContext { mediapipe::GlContext::GetCurrent() };
+    auto gl_context = mediapipe::GlContext::GetCurrent();
+
+    if (gl_context.get() == nullptr) {
+      *shared_gl_context_out = nullptr;
+    } else {
+      *shared_gl_context_out = new SharedGlContext { gl_context };
+    }
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }
@@ -42,6 +48,34 @@ MpReturnCode mp_GlContext_Create__ui_b(mediapipe::PlatformGlContext share_contex
     *status_or_shared_gl_context_out = new StatusOrSharedGlContext { mediapipe::GlContext::Create(share_context, create_thread) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
+}
+
+EGLDisplay mp_GlContext__egl_display(mediapipe::GlContext* gl_context) {
+  return gl_context->egl_display();
+}
+
+EGLConfig mp_GlContext__egl_config(mediapipe::GlContext* gl_context) {
+  return gl_context->egl_config();
+}
+
+EGLContext mp_GlContext__egl_context(mediapipe::GlContext* gl_context) {
+  return gl_context->egl_context();
+}
+
+bool mp_GlContext__IsCurrent(mediapipe::GlContext* gl_context) {
+  return gl_context->IsCurrent();
+}
+
+GLint mp_GlContext__gl_major_version(mediapipe::GlContext* gl_context) {
+  return gl_context->gl_major_version();
+}
+
+GLint mp_GlContext__gl_minor_version(mediapipe::GlContext* gl_context) {
+  return gl_context->gl_minor_version();
+}
+
+int64_t mp_GlContext__gl_finish_count(mediapipe::GlContext* gl_context) {
+  return gl_context->gl_finish_count();
 }
 
 // GlSyncToken API

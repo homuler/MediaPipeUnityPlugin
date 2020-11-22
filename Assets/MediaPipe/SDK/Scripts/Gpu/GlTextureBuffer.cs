@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace Mediapipe {
   public class GlTextureBuffer : MpResourceHandle {
-    private static UInt32 GL_TEXTURE_2D = 0x0DE1;
     private SharedPtrHandle sharedPtrHandle;
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -27,7 +26,7 @@ namespace Mediapipe {
     }
 
     public GlTextureBuffer(UInt32 name, int width, int height, GpuBufferFormat format, DeletionCallback callback, GlContext glContext = null) :
-        this(GL_TEXTURE_2D, name, width, height, format, callback, glContext) {}
+        this(Gl.GL_TEXTURE_2D, name, width, height, format, callback, glContext) {}
 
     protected override void DisposeManaged() {
       if (sharedPtrHandle != null) {

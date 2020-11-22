@@ -3,6 +3,12 @@ using System;
 namespace Mediapipe {
   public class GlContext : MpResourceHandle {
     private SharedPtrHandle sharedPtrHandle;
+
+    public static GlContext GetCurrent() {
+      UnsafeNativeMethods.mp_GlContext_GetCurrent(out var glContextPtr).Assert();
+
+      return glContextPtr == IntPtr.Zero ? null : new GlContext(glContextPtr);
+    }
  
     public GlContext(IntPtr ptr) : base(ptr) {
       sharedPtrHandle = new SharedPtr(ptr);
@@ -25,10 +31,32 @@ namespace Mediapipe {
       get { return sharedPtrHandle == null ? IntPtr.Zero : sharedPtrHandle.mpPtr; }
     }
 
-    public static GlContext GetCurrent() {
-      UnsafeNativeMethods.mp_GlContext_GetCurrent(out var glContextPtr).Assert();
+    public IntPtr eglDisplay {
+      get { return SafeNativeMethods.mp_GlContext__egl_display(mpPtr); }
+    }
 
-      return new GlContext(glContextPtr);
+    public IntPtr eglConfig {
+      get { return SafeNativeMethods.mp_GlContext__egl_config(mpPtr); }
+    }
+
+    public IntPtr eglContext {
+      get { return SafeNativeMethods.mp_GlContext__egl_context(mpPtr); }
+    }
+
+    public bool IsCurrent() {
+      return SafeNativeMethods.mp_GlContext__IsCurrent(mpPtr);
+    }
+
+    public int glMajorVersion {
+      get { return SafeNativeMethods.mp_GlContext__gl_major_version(mpPtr); }
+    }
+
+    public int glMinorVersion {
+      get { return SafeNativeMethods.mp_GlContext__gl_minor_version(mpPtr); }
+    }
+
+    public long glFinishCount {
+      get { return SafeNativeMethods.mp_GlContext__gl_finish_count(mpPtr); }
     }
 
     private class SharedPtr : SharedPtrHandle {

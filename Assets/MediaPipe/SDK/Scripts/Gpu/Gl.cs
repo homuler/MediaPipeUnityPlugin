@@ -2,6 +2,8 @@ using System;
 
 namespace Mediapipe {
   public class Gl {
+    public static UInt32 GL_TEXTURE_2D = 0x0DE1;
+
     public static void Flush() {
       UnsafeNativeMethods.glFlush();
     }

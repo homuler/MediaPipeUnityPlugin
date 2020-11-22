@@ -44,7 +44,7 @@ namespace Tests {
     public void target_ShouldReturnTarget() {
       var glTexture = new GlTexture();
 
-      Assert.AreNotEqual(glTexture.target, 0);
+      Assert.AreEqual(glTexture.target, Gl.GL_TEXTURE_2D);
     }
     #endregion
   }
