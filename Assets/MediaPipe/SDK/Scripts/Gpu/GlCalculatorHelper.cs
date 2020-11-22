@@ -64,11 +64,19 @@ namespace Mediapipe {
       return new GlTexture(texturePtr);
     }
 
+    public uint framebuffer {
+      get { return SafeNativeMethods.mp_GlCalculatorHelper__framebuffer(mpPtr); }
+    }
+
     public void BindFramebuffer(GlTexture glTexture) {
       UnsafeNativeMethods.mp_GlCalculatorHelper__BindFrameBuffer__Rtexture(mpPtr, glTexture.mpPtr).Assert();
 
       GC.KeepAlive(glTexture);
       GC.KeepAlive(this);
+    }
+
+    public bool Initialized() {
+      return SafeNativeMethods.mp_GlCalculatorHelper__Initialized(mpPtr);
     }
   }
 }

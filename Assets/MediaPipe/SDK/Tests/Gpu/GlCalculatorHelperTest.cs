@@ -30,6 +30,17 @@ namespace Tests {
     }
     #endregion
 
+    #region #InitializeForTest
+    [Test, GpuOnly]
+    public void InitializeForTest_ShouldInitialize() {
+      var glCalculatorHelper = new GlCalculatorHelper();
+
+      Assert.False(glCalculatorHelper.Initialized());
+      glCalculatorHelper.InitializeForTest(GpuResources.Create().ConsumeValueOrDie());
+      Assert.True(glCalculatorHelper.Initialized());
+    }
+    #endregion
+
     #region #RunInGlContext
     [Test, GpuOnly]
     public void RunInGlContext_ShouldReturnOk_When_FunctionReturnsOk() {
@@ -37,7 +48,7 @@ namespace Tests {
       glCalculatorHelper.InitializeForTest(GpuResources.Create().ConsumeValueOrDie());
 
       var status = glCalculatorHelper.RunInGlContext(() => { return Status.Ok(); });
-      Assert.AreEqual(status.code, Status.StatusCode.Ok);
+      Assert.True(status.ok);
     }
 
     [Test, GpuOnly]
@@ -76,7 +87,7 @@ namespace Tests {
         return Status.Ok();
       });
 
-      Assert.AreEqual(status.code, Status.StatusCode.Ok);
+      Assert.True(status.ok);
     }
 
     [Test, GpuOnly]
@@ -92,6 +103,35 @@ namespace Tests {
       });
 
       Assert.AreEqual(status.code, Status.StatusCode.FailedPrecondition);
+    }
+    #endregion
+
+    #region #CreateDestinationTexture
+    [Test, GpuOnly]
+    public void CreateDestinationTexture_ShouldReturnGlTexture_When_GpuBufferFormatIsValid() {
+      var glCalculatorHelper = new GlCalculatorHelper();
+      glCalculatorHelper.InitializeForTest(GpuResources.Create().ConsumeValueOrDie());
+
+      var status = glCalculatorHelper.RunInGlContext(() => {
+        var glTexture = glCalculatorHelper.CreateDestinationTexture(32, 24, GpuBufferFormat.kBGRA32);
+
+        Assert.AreEqual(glTexture.width, 32);
+        Assert.AreEqual(glTexture.height, 24);
+        return Status.Ok();
+      });
+
+      Assert.True(status.ok);
+    }
+    #endregion
+
+    #region #framebuffer
+    [Test, GpuOnly]
+    public void framebuffer_ShouldReturnGLName() {
+      var glCalculatorHelper = new GlCalculatorHelper();
+      glCalculatorHelper.InitializeForTest(GpuResources.Create().ConsumeValueOrDie());
+
+      // default frame buffer
+      Assert.AreEqual(glCalculatorHelper.framebuffer, 0);
     }
     #endregion
   }

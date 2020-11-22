@@ -9,6 +9,6 @@ namespace Mediapipe {
 
     [Pure, DllImport (MediaPipeLibrary, ExactSpelling = true)]
     [return: MarshalAs(UnmanagedType.I1)]
-    public static extern bool mpGlCalculatorHelper__Initialized(IntPtr glCalculatorHelper);
+    public static extern bool mp_GlCalculatorHelper__Initialized(IntPtr glCalculatorHelper);
   }
 }
