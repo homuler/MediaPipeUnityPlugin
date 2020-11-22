@@ -80,6 +80,21 @@ inline MpReturnCode mp_Packet__Consume(mediapipe::Packet* packet, mediapipe::Sta
 }
 
 template <class T>
+inline MpReturnCode mp_Packet__Get(mediapipe::Packet* packet, const T** value_out) {
+  TRY_ALL {
+    auto holder = packet->IsEmpty() ? nullptr : mediapipe::packet_internal::GetHolder(*packet)->As<T>();
+    auto unsafe_holder = static_cast<const UnsafePacketHolder<T>*>(holder);
+
+    if (unsafe_holder == nullptr) {
+      mediapipe::Status status = packet->ValidateAsType<T>();
+      LOG(FATAL) << "mp_Packet__Get() failed: " << status.message();
+    }
+    *value_out = unsafe_holder->Get();
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
+}
+
+template <class T>
 inline MpReturnCode mp_Packet__GetSerializedProto(mediapipe::Packet* packet, mp_api::SerializedProto** value_out) {
   TRY_ALL {
     auto proto = packet->Get<T>();

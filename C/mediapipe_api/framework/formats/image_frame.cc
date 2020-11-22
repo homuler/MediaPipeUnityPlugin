@@ -177,11 +177,7 @@ MpReturnCode mp_Packet__ConsumeImageFrame(mediapipe::Packet* packet, StatusOrIma
 }
 
 MpReturnCode mp_Packet__GetImageFrame(mediapipe::Packet* packet, const mediapipe::ImageFrame** value_out) {
-  TRY {
-    auto unsafe_holder = static_cast<const UnsafePacketHolder<mediapipe::ImageFrame>*>(mediapipe::packet_internal::GetHolder(*packet));
-    *value_out = unsafe_holder->Get();
-    RETURN_CODE(MpReturnCode::Success);
-  } CATCH_EXCEPTION
+  return mp_Packet__Get(packet, value_out);
 }
 
 MpReturnCode mp_Packet__ValidateAsImageFrame(mediapipe::Packet* packet, mediapipe::Status** status_out) {

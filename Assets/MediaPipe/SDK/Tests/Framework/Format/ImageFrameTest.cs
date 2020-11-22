@@ -7,7 +7,7 @@ using Unity.Collections;
 namespace Tests {
   public class ImageFrameTest {
     #region Constructor
-    [Test]
+    [Test, SignalAbort]
     public void Ctor_ShouldInstantiateImageFrame_When_CalledWithNoArguments() {
       var imageFrame = new ImageFrame();
 

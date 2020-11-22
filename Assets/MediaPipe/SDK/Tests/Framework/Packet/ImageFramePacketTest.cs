@@ -67,11 +67,20 @@ namespace Tests {
     #endregion
 
     #region #Get
-    [Test]
-    public void Get_ShouldThrowNotSupportedException() {
+    [Test, SignalAbort]
+    public void Get_ShouldThrowMediaPipeException_When_DataIsEmpty() {
+      var packet = new ImageFramePacket();
+
+      Assert.Throws<MediaPipeException>(() => { packet.Get(); });
+    }
+
+    public void Get_ShouldReturnImageFrame_When_DataIsNotEmpty() {
       var packet = new ImageFramePacket(new ImageFrame(ImageFormat.Format.SBGRA, 10, 10));
-      
-      Assert.Throws<NotSupportedException>(() => { packet.Get(); });
+      var imageFrame = packet.Get();
+
+      Assert.AreEqual(imageFrame.Format(), ImageFormat.Format.SBGRA);
+      Assert.AreEqual(imageFrame.Width(), 10);
+      Assert.AreEqual(imageFrame.Height(), 10);
     }
     #endregion
 

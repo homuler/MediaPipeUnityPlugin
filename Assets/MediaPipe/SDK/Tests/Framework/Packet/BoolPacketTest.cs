@@ -5,7 +5,7 @@ using System;
 namespace Tests {
   public class BoolPacketTest {
     #region Constructor
-    [Test]
+    [Test, SignalAbort]
     public void Ctor_ShouldInstantiatePacket_When_CalledWithNoArguments() {
       var packet = new BoolPacket();
 
