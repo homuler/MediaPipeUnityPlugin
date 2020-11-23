@@ -48,7 +48,7 @@ public class DefaultGraphOnGPU : DemoGraph {
     ImageFrame outputFrame = null;
 
     var status = gpuHelper.RunInGlContext(() => {
-      var gpuFrame = outputPacket.GetValue();
+      var gpuFrame = outputPacket.Get();
       var gpuFrameFormat = gpuFrame.Format();
       var sourceTexture = gpuHelper.CreateSourceTexture(gpuFrame);
 
@@ -66,7 +66,7 @@ public class DefaultGraphOnGPU : DemoGraph {
       return Status.Ok(false);
     });
 
-    if (status.IsOk()) {
+    if (status.ok) {
       texture.SetPixels32(outputFrame.GetColor32s());
     } else {
       Debug.LogError(status.ToString());

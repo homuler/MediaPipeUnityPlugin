@@ -32,7 +32,7 @@ public class HairSegmentationGraph : DemoGraph {
     ImageFrame outputFrame = null;
 
     var status = gpuHelper.RunInGlContext(() => {
-      var gpuFrame = hairMaskPacket.GetValue();
+      var gpuFrame = hairMaskPacket.Get();
       var gpuFrameFormat = gpuFrame.Format();
       var sourceTexture = gpuHelper.CreateSourceTexture(gpuFrame);
 
@@ -50,7 +50,7 @@ public class HairSegmentationGraph : DemoGraph {
       return Status.Ok(false);
     });
 
-    if (!status.IsOk()) {
+    if (!status.ok) {
       Debug.LogError(status.ToString());
     }
 

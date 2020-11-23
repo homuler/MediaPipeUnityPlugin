@@ -42,7 +42,7 @@ public class DefaultGraphOnCPU : DemoGraph {
       Debug.LogWarning("Failed to fetch an output packet, rendering the input image");
       texture.SetPixels32(pixelData.Colors);
     } else {
-      texture.SetPixels32(outputPacket.GetValue().GetColor32s());
+      texture.SetPixels32(outputPacket.Get().GetColor32s());
     }
 
     texture.Apply();
