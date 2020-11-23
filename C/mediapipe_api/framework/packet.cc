@@ -56,7 +56,7 @@ MpReturnCode mp_Packet__DebugTypeName(mediapipe::Packet* packet, const char** st
   } CATCH_EXCEPTION
 }
 
-/** BoolPacket */
+// BoolPacket
 MpReturnCode mp__MakeBoolPacket__b(bool value, mediapipe::Packet** packet_out) {
   TRY {
     *packet_out = new mediapipe::Packet { mediapipe::MakePacket<bool>(value) };
@@ -85,7 +85,7 @@ MpReturnCode mp_Packet__ValidateAsBool(mediapipe::Packet* packet, mediapipe::Sta
   } CATCH_EXCEPTION
 }
 
-/** FloatPacket */
+// FloatPacket
 MpReturnCode mp__MakeFloatPacket__f(float value, mediapipe::Packet** packet_out) {
   TRY {
     *packet_out = new mediapipe::Packet { mediapipe::MakePacket<float>(value) };
@@ -114,7 +114,36 @@ MpReturnCode mp_Packet__ValidateAsFloat(mediapipe::Packet* packet, mediapipe::St
   } CATCH_EXCEPTION
 }
 
-/** StringPacket */
+// IntPacket
+MpReturnCode mp__MakeIntPacket__i(int value, mediapipe::Packet** packet_out) {
+  TRY {
+    *packet_out = new mediapipe::Packet { mediapipe::MakePacket<int>(value) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+MpReturnCode mp__MakeIntPacket_At__i_Rtimestamp(int value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
+  TRY {
+    *packet_out = new mediapipe::Packet { mediapipe::MakePacket<int>(value).At(*timestamp) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+MpReturnCode mp_Packet__GetInt(mediapipe::Packet* packet, int* value_out) {
+  TRY_ALL {
+    *value_out = packet->Get<int>();
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
+}
+
+MpReturnCode mp_Packet__ValidateAsInt(mediapipe::Packet* packet, mediapipe::Status** status_out) {
+  TRY {
+    *status_out = new mediapipe::Status { packet->ValidateAsType<int>() };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+// StringPacket
 MpReturnCode mp__MakeStringPacket__PKc(const char* str, mediapipe::Packet** packet_out) {
   TRY {
     *packet_out = new mediapipe::Packet { mediapipe::MakePacket<std::string>(std::string(str)) };
