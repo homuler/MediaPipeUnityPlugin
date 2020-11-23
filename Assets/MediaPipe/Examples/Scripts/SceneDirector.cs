@@ -14,7 +14,6 @@ public class SceneDirector : MonoBehaviour {
   WebCamDevice? webCamDevice;
   GameObject graphPrefab;
   GameObject graphContainer;
-  SidePacket sidePacket;
   Coroutine graphRunner;
   GpuResources gpuResources;
   GlCalculatorHelper gpuHelper;
@@ -148,8 +147,7 @@ public class SceneDirector : MonoBehaviour {
       graph.Initialize();
     }
 
-    sidePacket = new SidePacket();
-    graph.StartRun(sidePacket).AssertOk();
+    graph.StartRun().AssertOk();
 
     while (true) {
       yield return new WaitForEndOfFrame();

@@ -23,7 +23,9 @@ public class FaceMeshGraph : DemoGraph {
   private OutputStreamPoller<bool> faceDetectionsPresenceStreamPoller;
   private BoolPacket faceDetectionsPresencePacket;
 
-  public override Status StartRun(SidePacket sidePacket) {
+  private SidePacket sidePacket;
+
+  public override Status StartRun() {
     multiFaceLandmarksStreamPoller = graph.AddOutputStreamPoller<List<NormalizedLandmarkList>>(multiFaceLandmarksStream).ConsumeValueOrDie();
     multiFaceLandmarksPacket = new NormalizedLandmarkListVectorPacket();
 
@@ -38,6 +40,8 @@ public class FaceMeshGraph : DemoGraph {
 
     faceDetectionsPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(faceDetectionsPresenceStream).ConsumeValueOrDie();
     faceDetectionsPresencePacket = new BoolPacket();
+
+    sidePacket = new SidePacket();
 
     return graph.StartRun(sidePacket);
   }

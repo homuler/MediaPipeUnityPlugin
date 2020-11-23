@@ -28,11 +28,11 @@ public class DefaultGraphOnCPU : DemoGraph {
   private OutputStreamPoller<ImageFrame> outputStreamPoller;
   private ImageFramePacket outputPacket;
 
-  public override Status StartRun(SidePacket sidePacket) {
+  public override Status StartRun() {
     outputStreamPoller = graph.AddOutputStreamPoller<ImageFrame>(outputStream).ConsumeValueOrDie();
     outputPacket = new ImageFramePacket();
 
-    return graph.StartRun(sidePacket);
+    return graph.StartRun();
   }
 
   public override void RenderOutput(WebCamScreenController screenController, PixelData pixelData) {

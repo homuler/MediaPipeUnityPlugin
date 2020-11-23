@@ -53,11 +53,11 @@ node {
     this.Initialize();
   }
 
-  public Status StartRun(SidePacket sidePacket) {
+  public Status StartRun() {
     outputStreamPoller = graph.AddOutputStreamPoller<string>(outputStream).ConsumeValueOrDie();
     outputPacket = new StringPacket();
 
-    return graph.StartRun(sidePacket);
+    return graph.StartRun();
   }
 
   public Status PushInput(string text) {

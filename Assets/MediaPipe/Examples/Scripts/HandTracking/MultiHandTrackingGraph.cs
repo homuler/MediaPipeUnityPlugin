@@ -19,7 +19,7 @@ public class MultiHandTrackingGraph : DemoGraph {
   private OutputStreamPoller<bool> multiPalmDetectionsPresenceStreamPoller;
   private BoolPacket multiPalmDetectionsPresencePacket;
 
-  public override Status StartRun(SidePacket sidePacket) {
+  public override Status StartRun() {
     multiHandLandmarksStreamPoller = graph.AddOutputStreamPoller<List<NormalizedLandmarkList>>(multiHandLandmarksStream).ConsumeValueOrDie();
     multiHandLandmarksPacket = new NormalizedLandmarkListVectorPacket();
 
@@ -32,7 +32,7 @@ public class MultiHandTrackingGraph : DemoGraph {
     multiPalmDetectionsPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(multiPalmDetectionsPresenceStream).ConsumeValueOrDie();
     multiPalmDetectionsPresencePacket = new BoolPacket();
 
-    return graph.StartRun(sidePacket);
+    return graph.StartRun();
   }
 
   public override void RenderOutput(WebCamScreenController screenController, PixelData pixelData) {

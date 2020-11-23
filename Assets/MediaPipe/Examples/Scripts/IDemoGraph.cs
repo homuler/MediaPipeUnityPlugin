@@ -17,7 +17,7 @@ public interface IDemoGraph<T> {
   ///   At least, `CalculatorGraph#StartRun` must be called here.
   ///   It is also necessary to initialize OutputStreamPollers.
   /// </summary>
-  Status StartRun(SidePacket sidePacket);
+  Status StartRun();
 
   Status PushInput(T input);
 

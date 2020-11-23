@@ -7,11 +7,11 @@ public class ObjectDetectionGraph : DemoGraph {
   private OutputStreamPoller<List<Detection>> outputDetectionsStreamPoller;
   private DetectionVectorPacket outputDetectionsPacket;
 
-  public override Status StartRun(SidePacket sidePacket) {
+  public override Status StartRun() {
     outputDetectionsStreamPoller = graph.AddOutputStreamPoller<List<Detection>>(outputDetectionsStream).ConsumeValueOrDie();
     outputDetectionsPacket = new DetectionVectorPacket();
 
-    return graph.StartRun(sidePacket);
+    return graph.StartRun();
   }
 
   public override void RenderOutput(WebCamScreenController screenController, PixelData pixelData) {

@@ -23,7 +23,7 @@ public class HandTrackingGraph : DemoGraph {
   private OutputStreamPoller<bool> palmDetectionsPresenceStreamPoller;
   private BoolPacket palmDetectionsPresencePacket;
 
-  public override Status StartRun(SidePacket sidePacket) {
+  public override Status StartRun() {
     handednessStreamPoller = graph.AddOutputStreamPoller<ClassificationList>(handednessStream).ConsumeValueOrDie();
     handednessPacket = new ClassificationListPacket();
 
@@ -39,7 +39,7 @@ public class HandTrackingGraph : DemoGraph {
     palmDetectionsPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(palmDetectionsPresenceStream).ConsumeValueOrDie();
     palmDetectionsPresencePacket = new BoolPacket();
 
-    return graph.StartRun(sidePacket);
+    return graph.StartRun();
   }
 
   public override void RenderOutput(WebCamScreenController screenController, PixelData pixelData) {

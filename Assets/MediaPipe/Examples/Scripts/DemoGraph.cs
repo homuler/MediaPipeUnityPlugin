@@ -29,7 +29,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<PixelData> {
     this.gpuHelper = gpuHelper;
   }
 
-  public abstract Status StartRun(SidePacket sidePacket);
+  public abstract Status StartRun();
 
   /// <summary>
   ///   Convert <paramref name="colors" /> to a packet and send it to the input stream.

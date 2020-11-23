@@ -6,11 +6,11 @@ public class HairSegmentationGraph : DemoGraph {
   private OutputStreamPoller<GpuBuffer> hairMaskStreamPoller;
   private GpuBufferPacket hairMaskPacket;
 
-  public override Status StartRun(SidePacket sidePacket) {
+  public override Status StartRun() {
     hairMaskStreamPoller = graph.AddOutputStreamPoller<GpuBuffer>(hairMaskStream).ConsumeValueOrDie();
     hairMaskPacket = new GpuBufferPacket();
 
-    return graph.StartRun(sidePacket);
+    return graph.StartRun();
   }
 
   public override void RenderOutput(WebCamScreenController screenController, PixelData pixelData) {

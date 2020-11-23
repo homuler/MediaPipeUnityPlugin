@@ -23,7 +23,7 @@ public class IrisTrackingGraph : DemoGraph {
   private OutputStreamPoller<bool> faceDetectionsPresenceStreamPoller;
   private BoolPacket faceDetectionsPresencePacket;
 
-  public override Status StartRun(SidePacket sidePacket) {
+  public override Status StartRun() {
     faceLandmarksWithIrisStreamPoller = graph.AddOutputStreamPoller<NormalizedLandmarkList>(faceLandmarksWithIrisStream).ConsumeValueOrDie();
     faceLandmarksWithIrisPacket = new NormalizedLandmarkListPacket();
 
@@ -39,7 +39,7 @@ public class IrisTrackingGraph : DemoGraph {
     faceDetectionsPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(faceDetectionsPresenceStream).ConsumeValueOrDie();
     faceDetectionsPresencePacket = new BoolPacket();
 
-    return graph.StartRun(sidePacket);
+    return graph.StartRun();
   }
 
   public override void RenderOutput(WebCamScreenController screenController, PixelData pixelData) {

@@ -18,7 +18,7 @@ public class PoseTrackingGraph : DemoGraph {
   private OutputStreamPoller<bool> poseDetectionPresenceStreamPoller;
   private BoolPacket poseDetectionPresencePacket;
 
-  public override Status StartRun(SidePacket sidePacket) {
+  public override Status StartRun() {
     poseLandmarksStreamPoller = graph.AddOutputStreamPoller<NormalizedLandmarkList>(poseLandmarksStream).ConsumeValueOrDie();
     poseLandmarksPacket = new NormalizedLandmarkListPacket();
 
@@ -31,7 +31,7 @@ public class PoseTrackingGraph : DemoGraph {
     poseDetectionPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(poseDetectionPresenceStream).ConsumeValueOrDie();
     poseDetectionPresencePacket = new BoolPacket();
 
-    return graph.StartRun(sidePacket);
+    return graph.StartRun();
   }
 
   public override void RenderOutput(WebCamScreenController screenController, PixelData pixelData) {

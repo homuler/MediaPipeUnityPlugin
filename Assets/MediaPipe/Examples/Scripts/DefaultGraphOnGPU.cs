@@ -28,11 +28,11 @@ public class DefaultGraphOnGPU : DemoGraph {
   private OutputStreamPoller<GpuBuffer> outputStreamPoller;
   private GpuBufferPacket outputPacket;
 
-  public override Status StartRun(SidePacket sidePacket) {
+  public override Status StartRun() {
     outputStreamPoller = graph.AddOutputStreamPoller<GpuBuffer>(outputStream).ConsumeValueOrDie();
     outputPacket = new GpuBufferPacket();
 
-    return graph.StartRun(sidePacket);
+    return graph.StartRun();
   }
 
   public override void RenderOutput(WebCamScreenController screenController, PixelData pixelData) {

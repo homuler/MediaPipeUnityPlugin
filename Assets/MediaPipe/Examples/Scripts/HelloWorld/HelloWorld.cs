@@ -40,8 +40,7 @@ public class HelloWorld : MonoBehaviour {
   IEnumerator RunGraph() {
     graph.Initialize();
 
-    sidePacket = new SidePacket();
-    graph.StartRun(sidePacket).AssertOk();
+    graph.StartRun().AssertOk();
 
     var i = 10;
 
