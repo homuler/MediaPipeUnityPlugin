@@ -1,6 +1,5 @@
 using Mediapipe;
 using NUnit.Framework;
-using System;
 
 namespace Tests {
   public class SidePacketTest {

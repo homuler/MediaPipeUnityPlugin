@@ -42,12 +42,39 @@ namespace Mediapipe {
       }
     }
 
+    public StatusOrPoller<T> AddOutputStreamPoller<T>(string streamName) {
+      UnsafeNativeMethods.mp_CalculatorGraph__AddOutputStreamPoller__PKc(mpPtr, streamName, out var statusOrPollerPtr).Assert();
+
+      GC.KeepAlive(this);
+      return new StatusOrPoller<T>(statusOrPollerPtr);
+    }
+
+    public Status Run() {
+      return Run(new SidePacket());
+    }
+
+    public Status Run(SidePacket sidePacket) {
+      UnsafeNativeMethods.mp_CalculatorGraph__Run__Rsp(mpPtr, sidePacket.mpPtr, out var statusPtr).Assert();
+
+      GC.KeepAlive(sidePacket);
+      GC.KeepAlive(this);
+      return new Status(statusPtr);
+    }
+
     public Status StartRun() {
       return StartRun(new SidePacket());
     }
 
     public Status StartRun(SidePacket sidePacket) {
       UnsafeNativeMethods.mp_CalculatorGraph__StartRun__Rsp(mpPtr, sidePacket.mpPtr, out var statusPtr).Assert();
+
+      GC.KeepAlive(sidePacket);
+      GC.KeepAlive(this);
+      return new Status(statusPtr);
+    }
+
+    public Status WaitUntilIdle() {
+      UnsafeNativeMethods.mp_CalculatorGraph__WaitUntilIdle(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       return new Status(statusPtr);
@@ -60,26 +87,54 @@ namespace Mediapipe {
       return new Status(statusPtr);
     }
 
-    public Status CloseInputStream(string name) {
-      UnsafeNativeMethods.mp_CalculatorGraph__CloseInputStream__PKc(mpPtr, name, out var statusPtr).Assert();
-
-      GC.KeepAlive(this);
-      return new Status(statusPtr);
+    public bool HasError() {
+      return SafeNativeMethods.mp_CalculatorGraph__HasError(mpPtr);
     }
 
-    public StatusOrPoller<T> AddOutputStreamPoller<T>(string name) {
-      UnsafeNativeMethods.mp_CalculatorGraph__AddOutputStreamPoller__PKc(mpPtr, name, out var statusOrPollerPtr).Assert();
-
-      GC.KeepAlive(this);
-      return new StatusOrPoller<T>(statusOrPollerPtr);
-    }
-
-    public Status AddPacketToInputStream<T>(string name, Packet<T> packet) {
-      UnsafeNativeMethods.mp_CalculatorGraph__AddPacketToInputStream__PKc_Ppacket(mpPtr, name, packet.mpPtr, out var statusPtr).Assert();
+    public Status AddPacketToInputStream<T>(string streamName, Packet<T> packet) {
+      UnsafeNativeMethods.mp_CalculatorGraph__AddPacketToInputStream__PKc_Ppacket(mpPtr, streamName, packet.mpPtr, out var statusPtr).Assert();
       packet.Dispose(); // respect move semantics
 
       GC.KeepAlive(this);
       return new Status(statusPtr);
+    }
+
+    public Status SetInputStreamMaxQueueSize(string streamName, int maxQueueSize) {
+      UnsafeNativeMethods.mp_CalculatorGraph__SetInputStreamMaxQueueSize__PKc_i(mpPtr, streamName, maxQueueSize, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      return new Status(statusPtr);
+    }
+
+    public Status CloseInputStream(string streamName) {
+      UnsafeNativeMethods.mp_CalculatorGraph__CloseInputStream__PKc(mpPtr, streamName, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      return new Status(statusPtr);
+    }
+
+    public Status CloseAllPacketSources() {
+      UnsafeNativeMethods.mp_CalculatorGraph__CloseAllPacketSources(mpPtr, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      return new Status(statusPtr);
+    }
+
+    public void Cancel() {
+      UnsafeNativeMethods.mp_CalculatorGraph__Cancel(mpPtr).Assert();
+      GC.KeepAlive(this);
+    }
+
+    public bool GraphInputStreamsClosed() {
+      return SafeNativeMethods.mp_CalculatorGraph__GraphInputStreamsClosed(mpPtr);
+    }
+
+    public bool IsNodeThrottled(int nodeId) {
+      return SafeNativeMethods.mp_CalculatorGraph__IsNodeThrottled__i(mpPtr, nodeId);
+    }
+
+    public bool UnthrottleSources() {
+      return SafeNativeMethods.mp_CalculatorGraph__UnthrottleSources(mpPtr);
     }
 
     public GpuResources GetGpuResources() {

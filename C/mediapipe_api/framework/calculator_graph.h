@@ -33,31 +33,50 @@ MP_CAPI(MpReturnCode) mp_CalculatorGraph__Initialize__Rconfig_Rsp(
     mediapipe::Status** status_out);
 
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__Config(mediapipe::CalculatorGraph* graph, mediapipe::CalculatorGraphConfig** config_out);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__AddOutputStreamPoller__PKc(mediapipe::CalculatorGraph* graph,
+                                                                     const char* stream_name,
+                                                                     mediapipe::StatusOrPoller** status_or_poller_out);
+
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__Run__Rsp(mediapipe::CalculatorGraph* graph,
+                                                    SidePackets* side_packets,
+                                                    mediapipe::Status** status_out);
+
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__StartRun__Rsp(mediapipe::CalculatorGraph* graph,
                                                         SidePackets* side_packets,
                                                         mediapipe::Status** status_out);
 
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__WaitUntilIdle(mediapipe::CalculatorGraph* graph, mediapipe::Status** status_out);
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__WaitUntilDone(mediapipe::CalculatorGraph* graph, mediapipe::Status** status_out);
+MP_CAPI(bool) mp_CalculatorGraph__HasError(mediapipe::CalculatorGraph* graph);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__AddPacketToInputStream__PKc_Ppacket(mediapipe::CalculatorGraph* graph,
+                                                                              const char* stream_name,
+                                                                              mediapipe::Packet* packet,
+                                                                              mediapipe::Status** status_out);
 
-MP_CAPI(MpReturnCode) mp_CalculatorGraph__AddOutputStreamPoller__PKc(mediapipe::CalculatorGraph* graph,
-                                                                     const char* name,
-                                                                     mediapipe::StatusOrPoller** status_or_poller_out);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__SetInputStreamMaxQueueSize__PKc_i(mediapipe::CalculatorGraph* graph,
+                                                                            const char* stream_name,
+                                                                            int max_queue_size,
+                                                                            mediapipe::Status** status_out);
+
+MP_CAPI(bool) mp_CalculatorGraph__HasInputStream__PKc(mediapipe::CalculatorGraph* graph, const char* name);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__CloseInputStream__PKc(mediapipe::CalculatorGraph* graph,
+                                                                const char* stream_name,
+                                                                mediapipe::Status** status_out);
+
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__CloseAllPacketSources(mediapipe::CalculatorGraph* graph, mediapipe::Status** status_out);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__Cancel(mediapipe::CalculatorGraph* graph);
+MP_CAPI(bool) mp_CalculatorGraph__GraphInputStreamsClosed(mediapipe::CalculatorGraph* graph);
+MP_CAPI(bool) mp_CalculatorGraph__IsNodeThrottled__i(mediapipe::CalculatorGraph* graph, int node_id);
+MP_CAPI(bool) mp_CalculatorGraph__UnthrottleSources(mediapipe::CalculatorGraph* graph);
 
 #ifndef MEDIAPIPE_DISABLE_GPU
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__GetGpuResources(mediapipe::CalculatorGraph* graph,
                                                           std::shared_ptr<mediapipe::GpuResources>** gpu_resources_out);
+
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__SetGpuResources__SPgpu(mediapipe::CalculatorGraph* graph,
                                                                  std::shared_ptr<mediapipe::GpuResources>* gpu_resources,
                                                                  mediapipe::Status** status_out);
 #endif  // !defined(MEDIAPIPE_DISABLE_GPU)
-
-MP_CAPI(MpReturnCode) mp_CalculatorGraph__AddPacketToInputStream__PKc_Ppacket(mediapipe::CalculatorGraph* graph,
-                                                                              const char* name,
-                                                                              mediapipe::Packet* packet,
-                                                                              mediapipe::Status** status_out);
-MP_CAPI(MpReturnCode) mp_CalculatorGraph__CloseInputStream__PKc(mediapipe::CalculatorGraph* graph,
-                                                                const char* name,
-                                                                mediapipe::Status** status_out);
 
 }  // extern "C"
 

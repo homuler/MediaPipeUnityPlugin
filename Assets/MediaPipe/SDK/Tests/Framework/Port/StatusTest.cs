@@ -1,6 +1,5 @@
-﻿using NUnit.Framework;
-
-using Mediapipe;
+﻿using Mediapipe;
+using NUnit.Framework;
 
 namespace Tests {
   public class StatusTest {

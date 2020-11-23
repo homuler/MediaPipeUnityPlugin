@@ -23,19 +23,36 @@ namespace Mediapipe {
     public static extern MpReturnCode mp_CalculatorGraph__Config(IntPtr graph, out IntPtr config);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_CalculatorGraph__AddOutputStreamPoller__PKc(IntPtr graph, string streamName, out IntPtr statusOrPoller);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_CalculatorGraph__Run__Rsp(IntPtr graph, IntPtr sidePackets, out IntPtr status);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_CalculatorGraph__StartRun__Rsp(IntPtr graph, IntPtr sidePackets, out IntPtr status);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_CalculatorGraph__WaitUntilIdle(IntPtr graph, out IntPtr status);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_CalculatorGraph__WaitUntilDone(IntPtr graph, out IntPtr status);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_CalculatorGraph__AddOutputStreamPoller__PKc(IntPtr graph, string name, out IntPtr statusOrPoller);
+    public static extern MpReturnCode mp_CalculatorGraph__AddPacketToInputStream__PKc_Ppacket(
+        IntPtr graph, string streamName, IntPtr packet, out IntPtr status);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_CalculatorGraph__AddPacketToInputStream__PKc_Ppacket(IntPtr graph, string name, IntPtr packet, out IntPtr status);
+    public static extern MpReturnCode mp_CalculatorGraph__SetInputStreamMaxQueueSize__PKc_i(
+        IntPtr graph, string streamName, int maxQueueSize, out IntPtr status);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_CalculatorGraph__CloseInputStream__PKc(IntPtr graph, string name, out IntPtr status);
+    public static extern MpReturnCode mp_CalculatorGraph__CloseInputStream__PKc(IntPtr graph, string streamName, out IntPtr status);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_CalculatorGraph__CloseAllPacketSources(IntPtr graph, out IntPtr status);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_CalculatorGraph__Cancel(IntPtr graph);
 
     #region GPU
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
