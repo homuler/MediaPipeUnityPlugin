@@ -1,21 +1,27 @@
 using Mediapipe;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class FaceDetectionGraph : DemoGraph {
-  private const string outputDetectionsStream = "output_detections";
-  private OutputStreamPoller<List<Detection>> outputDetectionsStreamPoller;
-  private DetectionVectorPacket outputDetectionsPacket;
+  private const string faceDetectionsStream = "face_detections";
+  private OutputStreamPoller<List<Detection>> faceDetectionsStreamPoller;
+  private DetectionVectorPacket faceDetectionsPacket;
 
-  public override Status StartRun(SidePacket sidePacket) {
-    outputDetectionsStreamPoller = graph.AddOutputStreamPoller<List<Detection>>(outputDetectionsStream).ConsumeValueOrDie();
-    outputDetectionsPacket = new DetectionVectorPacket();
+  private const string faceDetectionsPresenceStream = "face_detections_presence";
+  private OutputStreamPoller<bool> faceDetectionsPresenceStreamPoller;
+  private BoolPacket faceDetectionsPresencePacket;
 
-    return graph.StartRun(sidePacket);
+  public override Status StartRun() {
+    faceDetectionsStreamPoller = graph.AddOutputStreamPoller<List<Detection>>(faceDetectionsStream).ConsumeValueOrDie();
+    faceDetectionsPacket = new DetectionVectorPacket();
+
+    faceDetectionsPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(faceDetectionsPresenceStream).ConsumeValueOrDie();
+    faceDetectionsPresencePacket = new BoolPacket();
+
+    return graph.StartRun();
   }
 
   public override void RenderOutput(WebCamScreenController screenController, PixelData pixelData) {
-    var detections = FetchNextOutputDetections();
+    var detections =  FetchNextFaceDetectionsPresence() ? FetchNextFaceDetections() : new List<Detection>();
     RenderAnnotation(screenController, detections);
 
     var texture = screenController.GetScreen();
@@ -23,8 +29,12 @@ public class FaceDetectionGraph : DemoGraph {
     texture.Apply();
   }
 
-  private List<Detection> FetchNextOutputDetections() {
-    return FetchNextVector<Detection>(outputDetectionsStreamPoller, outputDetectionsPacket, outputDetectionsStream);
+  private bool FetchNextFaceDetectionsPresence() {
+    return FetchNext(faceDetectionsPresenceStreamPoller, faceDetectionsPresencePacket, faceDetectionsPresenceStream);
+  }
+
+  private List<Detection> FetchNextFaceDetections() {
+    return FetchNextVector<Detection>(faceDetectionsStreamPoller, faceDetectionsPacket, faceDetectionsStream);
   }
 
   private void RenderAnnotation(WebCamScreenController screenController, List<Detection> detections) {

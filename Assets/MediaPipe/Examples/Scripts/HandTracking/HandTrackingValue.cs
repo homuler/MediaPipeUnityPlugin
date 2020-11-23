@@ -2,18 +2,16 @@ using Mediapipe;
 using System.Collections.Generic;
 
 class HandTrackingValue {
-  public readonly ClassificationList Handedness;
-  public readonly NormalizedLandmarkList HandLandmarkList;
-  public readonly NormalizedRect HandRect;
+  public readonly List<NormalizedLandmarkList> HandLandmarkLists;
+  public readonly List<ClassificationList> Handednesses;
   public readonly List<Detection> PalmDetections;
+  public readonly List<NormalizedRect> PalmRects;
 
-  public HandTrackingValue(ClassificationList classificationList, NormalizedLandmarkList landmarkList, NormalizedRect rect, List<Detection> detections) {
-    Handedness = classificationList;
-    HandLandmarkList = landmarkList;
-    HandRect = rect;
+  public HandTrackingValue(List<NormalizedLandmarkList> landmarkLists, List<ClassificationList> classificationLists,
+                           List<Detection> detections, List<NormalizedRect> rects) {
+    HandLandmarkLists = landmarkLists;
+    Handednesses = classificationLists;
     PalmDetections = detections;
+    PalmRects = rects;
   }
-
-  public HandTrackingValue(ClassificationList classificationList, NormalizedLandmarkList landmarkList, NormalizedRect rect) :
-    this(classificationList, landmarkList, rect, new List<Detection>()) {}
 }

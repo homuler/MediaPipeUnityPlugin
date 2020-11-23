@@ -13,7 +13,7 @@ namespace Mediapipe {
     ///   but in the returned array, left to right, top to bottom.
     /// </remarks>
     public static NativeArray<byte> FromPixels32(Color32[] colors, int width, int height, bool isFlipped = false, Allocator allocator = Allocator.Temp) {
-      var pixelData = new NativeArray<byte>(colors.Length * 3, allocator, NativeArrayOptions.UninitializedMemory);
+      var pixelData = new NativeArray<byte>(colors.Length * 4, allocator, NativeArrayOptions.UninitializedMemory);
 
       unsafe {
         fixed (Color32* src = colors) {
@@ -26,6 +26,7 @@ namespace Mediapipe {
               *pDest++ = pSrc->r;
               *pDest++ = pSrc->g;
               *pDest++ = pSrc->b;
+              *pDest++ = pSrc->a;
               pSrc--;
             }
           } else {
@@ -38,6 +39,7 @@ namespace Mediapipe {
                 *pDest++ = pRowSrc->r;
                 *pDest++ = pRowSrc->g;
                 *pDest++ = pRowSrc->b;
+                *pDest++ = pRowSrc->a;
                 pRowSrc++;
               }
             }

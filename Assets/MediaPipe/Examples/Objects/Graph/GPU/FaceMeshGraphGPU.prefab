@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7004806987071314288}
   - component: {fileID: 7004806987071314290}
   m_Layer: 0
-  m_Name: FaceMeshGraph
+  m_Name: FaceMeshGraphGPU
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,7 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 860c2553189c962f597b1b7dc1ee4c82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  config: {fileID: 4900000, guid: 83097db0ae996a3ae8b65ad6b8db6444, type: 3}
+  config: {fileID: 4900000, guid: daf329e7d9e05b86e87226eba2dd3f32, type: 3}
+  numFaces: 3
 --- !u!114 &7004806987071314290
 MonoBehaviour:
   m_ObjectHideFlags: 0

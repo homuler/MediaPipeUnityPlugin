@@ -17,6 +17,9 @@ namespace Mediapipe {
     public static extern MpReturnCode mp_Packet__GetClassificationList(IntPtr packet, out IntPtr serializedProto);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__GetClassificationListVector(IntPtr packet, out IntPtr serializedProto);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__GetDetection(IntPtr packet, out IntPtr serializedProto);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]

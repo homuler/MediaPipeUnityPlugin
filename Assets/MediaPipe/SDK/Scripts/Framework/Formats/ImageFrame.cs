@@ -149,7 +149,7 @@ namespace Mediapipe {
     }
 
     public static ImageFrame FromPixels32(Color32[] colors, int width, int height, bool isFlipped = false) {
-      return new ImageFrame(ImageFormat.Format.SRGB, width, height, 3 * width, Mediapipe.Format.FromPixels32(colors, width, height, isFlipped));
+      return new ImageFrame(ImageFormat.Format.SRGBA, width, height, 4 * width, Mediapipe.Format.FromPixels32(colors, width, height, isFlipped));
     }
 
     private delegate MpReturnCode CopyToBufferHandler(IntPtr ptr, IntPtr buffer, int bufferSize);

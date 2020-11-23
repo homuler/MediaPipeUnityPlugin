@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class FaceMeshGraph : DemoGraph {
+  [SerializeField] int numFaces = 1;
+
   private const string multiFaceLandmarksStream = "multi_face_landmarks";
   private OutputStreamPoller<List<NormalizedLandmarkList>> multiFaceLandmarksStreamPoller;
   private NormalizedLandmarkListVectorPacket multiFaceLandmarksPacket;
@@ -42,6 +44,7 @@ public class FaceMeshGraph : DemoGraph {
     faceDetectionsPresencePacket = new BoolPacket();
 
     sidePacket = new SidePacket();
+    sidePacket.Emplace("num_faces", new IntPacket(numFaces));
 
     return graph.StartRun(sidePacket);
   }

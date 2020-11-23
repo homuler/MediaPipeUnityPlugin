@@ -1,45 +1,56 @@
 using Mediapipe;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class HandTrackingGraph : DemoGraph {
-  private const string handednessStream = "handedness";
-  private OutputStreamPoller<ClassificationList> handednessStreamPoller;
-  private ClassificationListPacket handednessPacket;
-
-  private const string handRectStream = "hand_rect";
-  private OutputStreamPoller<NormalizedRect> handRectStreamPoller;
-  private NormalizedRectPacket handRectPacket;
-
   private const string handLandmarksStream = "hand_landmarks";
-  private OutputStreamPoller<NormalizedLandmarkList> handLandmarksStreamPoller;
-  private NormalizedLandmarkListPacket handLandmarksPacket;
+  private OutputStreamPoller<List<NormalizedLandmarkList>> handLandmarksStreamPoller;
+  private NormalizedLandmarkListVectorPacket handLandmarksPacket;
+
+  private const string handednessStream = "handedness";
+  private OutputStreamPoller<List<ClassificationList>> handednessStreamPoller;
+  private ClassificationListVectorPacket handednessPacket;
 
   private const string palmDetectionsStream = "palm_detections";
   private OutputStreamPoller<List<Detection>> palmDetectionsStreamPoller;
   private DetectionVectorPacket palmDetectionsPacket;
 
+  private const string palmRectsStream = "hand_rects_from_palm_detections";
+  private OutputStreamPoller<List<NormalizedRect>> palmRectsStreamPoller;
+  private NormalizedRectVectorPacket palmRectsPacket;
+
+  private const string handLandmarksPresenceStream = "hand_landmarks_presence";
+  private OutputStreamPoller<bool> handLandmarksPresenceStreamPoller;
+  private BoolPacket handLandmarksPresencePacket;
+
   private const string palmDetectionsPresenceStream = "palm_detections_presence";
   private OutputStreamPoller<bool> palmDetectionsPresenceStreamPoller;
   private BoolPacket palmDetectionsPresencePacket;
 
+  private SidePacket sidePacket;
+
   public override Status StartRun() {
-    handednessStreamPoller = graph.AddOutputStreamPoller<ClassificationList>(handednessStream).ConsumeValueOrDie();
-    handednessPacket = new ClassificationListPacket();
+    handLandmarksStreamPoller = graph.AddOutputStreamPoller<List<NormalizedLandmarkList>>(handLandmarksStream).ConsumeValueOrDie();
+    handLandmarksPacket = new NormalizedLandmarkListVectorPacket();
 
-    handRectStreamPoller = graph.AddOutputStreamPoller<NormalizedRect>(handRectStream).ConsumeValueOrDie();
-    handRectPacket = new NormalizedRectPacket();
-
-    handLandmarksStreamPoller = graph.AddOutputStreamPoller<NormalizedLandmarkList>(handLandmarksStream).ConsumeValueOrDie();
-    handLandmarksPacket = new NormalizedLandmarkListPacket();
+    handednessStreamPoller = graph.AddOutputStreamPoller<List<ClassificationList>>(handednessStream).ConsumeValueOrDie();
+    handednessPacket = new ClassificationListVectorPacket();
 
     palmDetectionsStreamPoller = graph.AddOutputStreamPoller<List<Detection>>(palmDetectionsStream).ConsumeValueOrDie();
     palmDetectionsPacket = new DetectionVectorPacket();
 
+    palmRectsStreamPoller = graph.AddOutputStreamPoller<List<NormalizedRect>>(palmRectsStream).ConsumeValueOrDie();
+    palmRectsPacket = new NormalizedRectVectorPacket();
+
+    handLandmarksPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(handLandmarksPresenceStream).ConsumeValueOrDie();
+    handLandmarksPresencePacket = new BoolPacket();
+
     palmDetectionsPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(palmDetectionsPresenceStream).ConsumeValueOrDie();
     palmDetectionsPresencePacket = new BoolPacket();
 
-    return graph.StartRun();
+    sidePacket = new SidePacket();
+    sidePacket.Emplace("num_hands", new IntPacket(2));
+
+    return graph.StartRun(sidePacket);
   }
 
   public override void RenderOutput(WebCamScreenController screenController, PixelData pixelData) {
@@ -53,29 +64,31 @@ public class HandTrackingGraph : DemoGraph {
   }
 
   private HandTrackingValue FetchNextHandTrackingValue() {
-    var handedness = FetchNextHandedness();
-    var handLandmarks = FetchNextHandLandmarks();
-    var handRect = FetchNextHandRect();
+    var isPalmDetectionsPresent = FetchNextPalmDetectionsPresence();
+    var isHandLandmarksPresent = FetchNextHandLandmarksPresence();
 
-    if (!FetchNextPalmDetectionsPresence()) {
-      return new HandTrackingValue(handedness, handLandmarks, handRect);
-    }
+    var handLandmarks = isHandLandmarksPresent ? FetchNextHandLandmarks() : new List<NormalizedLandmarkList>();
+    var handednesses = isHandLandmarksPresent ? FetchNextHandednesses() : new List<ClassificationList>();
+    var palmDetections = isPalmDetectionsPresent ? FetchNextPalmDetections() : new List<Detection>();
+    var palmRects = isPalmDetectionsPresent ? FetchNextPalmRects() : new List<NormalizedRect>();
 
-    var palmDetections = FetchNextPalmDetections();
-
-    return new HandTrackingValue(handedness, handLandmarks, handRect, palmDetections);
+    return new HandTrackingValue(handLandmarks, handednesses, palmDetections, palmRects);
   }
 
-  private ClassificationList FetchNextHandedness() {
+  private List<ClassificationList> FetchNextHandednesses() {
     return FetchNext(handednessStreamPoller, handednessPacket, handednessStream);
   }
 
-  private NormalizedRect FetchNextHandRect() {
-    return FetchNext(handRectStreamPoller, handRectPacket, handRectStream);
+  private List<NormalizedRect> FetchNextPalmRects() {
+    return FetchNext(palmRectsStreamPoller, palmRectsPacket, palmRectsStream);
   }
 
-  private NormalizedLandmarkList FetchNextHandLandmarks() {
+  private List<NormalizedLandmarkList> FetchNextHandLandmarks() {
     return FetchNext(handLandmarksStreamPoller, handLandmarksPacket, handLandmarksStream);
+  }
+
+  private bool FetchNextHandLandmarksPresence() {
+    return FetchNext(handLandmarksPresenceStreamPoller, handLandmarksPresencePacket, handLandmarksPresenceStream);
   }
 
   private bool FetchNextPalmDetectionsPresence() {
@@ -89,6 +102,6 @@ public class HandTrackingGraph : DemoGraph {
   private void RenderAnnotation(WebCamScreenController screenController, HandTrackingValue value) {
     // NOTE: input image is flipped
     GetComponent<HandTrackingAnnotationController>().Draw(
-      screenController.transform, value.Handedness, value.HandLandmarkList, value.HandRect, value.PalmDetections, true);
+      screenController.transform, value.HandLandmarkLists, value.Handednesses, value.PalmDetections, value.PalmRects, true);
   }
 }

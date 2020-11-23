@@ -14,15 +14,28 @@
 
 # MediaPipe graph that performs face mesh with TensorFlow Lite on CPU.
 
+# Input image. (ImageFrame)
 input_stream: "input_video"
 
+# Collection of detected/processed faces, each represented as a list of
+# landmarks. (std::vector<NormalizedLandmarkList>)
 output_stream: "multi_face_landmarks"
+
 output_stream: "face_rects_from_landmarks"
 output_stream: "face_detections"
 output_stream: "multi_face_landmarks_presence"
 output_stream: "face_detections_presence"
 
-# Throttles the images flowing downstream for flow control.
+# Throttles the images flowing downstream for flow control. It passes through
+# the very first incoming image unaltered, and waits for downstream nodes
+# (calculators and subgraphs) in the graph to finish their tasks before it
+# passes through another image. All images that come in while waiting are
+# dropped, limiting the number of in-flight images in most part of the graph to
+# 1. This prevents the downstream nodes from queuing up incoming images and data
+# excessively, which leads to increased latency and memory usage, unwanted in
+# real-time mobile applications. It also eliminates unnecessarily computation,
+# e.g., the output produced by a node may get dropped downstream if the
+# subsequent nodes are still busy processing previous inputs.
 node {
   calculator: "FlowLimiterCalculator"
   input_stream: "input_video"
@@ -32,17 +45,6 @@ node {
     back_edge: true
   }
   output_stream: "throttled_input_video"
-}
-
-# Defines side packets for further use in the graph.
-node {
-  calculator: "ConstantSidePacketCalculator"
-  output_side_packet: "PACKET:num_faces"
-  node_options: {
-    [type.googleapis.com/mediapipe.ConstantSidePacketCalculatorOptions]: {
-      packet { int_value: 1 }
-    }
-  }
 }
 
 # Subgraph that detects faces and corresponding landmarks.
