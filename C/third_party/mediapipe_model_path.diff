@@ -1,8 +1,8 @@
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
-index 9347fc0..0829d76 100644
+index 9347fc0..45dcef5 100644
 --- a/mediapipe/util/BUILD
 +++ b/mediapipe/util/BUILD
-@@ -146,11 +146,20 @@ cc_library(
+@@ -146,13 +146,21 @@ cc_library(
      ],
  )
  
@@ -23,9 +23,11 @@ index 9347fc0..0829d76 100644
 -        "//mediapipe:android": ["resource_util_android.cc"],
 +        "//conditions:default": ["resource_util_unity.cc"],
          "//mediapipe:ios": ["resource_util_apple.cc"],
-         "//mediapipe:macos": ["resource_util.cc"],
+-        "//mediapipe:macos": ["resource_util.cc"],
      }),
-@@ -173,13 +182,7 @@ cc_library(
+     hdrs = ["resource_util.h"],
+     # We use Objective-C++ on iOS.
+@@ -173,13 +181,7 @@ cc_library(
          "@com_google_absl//absl/strings",
      ] + select({
          "//conditions:default": [
