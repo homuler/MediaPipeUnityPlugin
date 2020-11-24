@@ -1,5 +1,5 @@
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
-index 9347fc0..45dcef5 100644
+index 9347fc0..f452843 100644
 --- a/mediapipe/util/BUILD
 +++ b/mediapipe/util/BUILD
 @@ -146,13 +146,21 @@ cc_library(
@@ -27,7 +27,15 @@ index 9347fc0..45dcef5 100644
      }),
      hdrs = ["resource_util.h"],
      # We use Objective-C++ on iOS.
-@@ -173,13 +181,7 @@ cc_library(
+@@ -161,7 +169,6 @@ cc_library(
+         "//mediapipe:ios": [
+             "-ObjC++",
+         ],
+-        "//mediapipe:macos": [],
+     }),
+     visibility = [
+         "//mediapipe/framework:mediapipe_internal",
+@@ -173,20 +180,9 @@ cc_library(
          "@com_google_absl//absl/strings",
      ] + select({
          "//conditions:default": [
@@ -41,7 +49,14 @@ index 9347fc0..45dcef5 100644
 +            ":resource_manager",
          ],
          "//mediapipe:ios": [],
-         "//mediapipe:macos": [
+-        "//mediapipe:macos": [
+-            "//mediapipe/framework/deps:file_path",
+-            "//mediapipe/framework/port:file_helpers",
+-            "@com_google_absl//absl/flags:flag",
+-        ],
+     }),
+ )
+ 
 diff --git a/mediapipe/util/resource_manager.h b/mediapipe/util/resource_manager.h
 new file mode 100644
 index 0000000..ffe126f
