@@ -18,7 +18,7 @@ public class SceneDirector : MonoBehaviour {
   GpuResources gpuResources;
   GlCalculatorHelper gpuHelper;
 
-  const int MAX_WAIT_FRAME = 50;
+  const int MAX_WAIT_FRAME = 500;
 
   bool IsAssetLoaded = false;
   bool IsAssetLoadFailed = false;
@@ -126,6 +126,8 @@ public class SceneDirector : MonoBehaviour {
       Debug.LogWarning("WebCamDevice is not working. Stopping...");
       yield break;
     }
+
+    webCamScreenController.InitScreen();
 
     if (!IsAssetLoaded && !IsAssetLoadFailed) {
       Debug.Log("Waiting for assets to be loaded...");
