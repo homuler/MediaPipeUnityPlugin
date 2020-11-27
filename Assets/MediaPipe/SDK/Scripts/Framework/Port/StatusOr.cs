@@ -19,7 +19,7 @@ namespace Mediapipe {
 
     protected void EnsureOk() {
       if (!ok) {
-        throw new InternalException("Status is not ok");
+        throw new InternalException($"Status is not ok: {status.ToString()}");
       }
     }
   }
