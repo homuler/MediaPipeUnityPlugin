@@ -32,6 +32,12 @@ namespace Mediapipe {
       return new StatusOrGpuResources(statusOrGpuResourcesPtr);
     }
 
+    public static StatusOrGpuResources Create(IntPtr externalContext) {
+      UnsafeNativeMethods.mp_GpuResources_Create__Pv(externalContext, out var statusOrGpuResourcesPtr).Assert();
+
+      return new StatusOrGpuResources(statusOrGpuResourcesPtr);
+    }
+
     private class SharedPtr : SharedPtrHandle {
       public SharedPtr(IntPtr ptr) : base(ptr) {}
 

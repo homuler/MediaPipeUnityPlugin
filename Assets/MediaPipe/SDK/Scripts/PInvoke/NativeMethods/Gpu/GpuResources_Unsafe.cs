@@ -13,6 +13,9 @@ namespace Mediapipe {
     public static extern MpReturnCode mp_GpuResources_Create(out IntPtr statusOrGpuResources);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_GpuResources_Create__Pv(IntPtr externalContext, out IntPtr statusOrGpuResources);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern void mp_StatusOrGpuResources__delete(IntPtr statusOrGpuResources);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]

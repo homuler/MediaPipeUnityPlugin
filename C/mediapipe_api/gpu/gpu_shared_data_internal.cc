@@ -19,6 +19,14 @@ MpReturnCode mp_GpuResources_Create(mediapipe::StatusOr<SharedGpuResources>** st
   } CATCH_EXCEPTION
 }
 
+MP_CAPI(MpReturnCode) mp_GpuResources_Create__Pv(EGLContext external_context,
+                                                 mediapipe::StatusOr<SharedGpuResources>** status_or_gpu_resources_out) {
+  TRY {
+    *status_or_gpu_resources_out = new mediapipe::StatusOr<SharedGpuResources> { mediapipe::GpuResources::Create(external_context) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
 void mp_StatusOrGpuResources__delete(mediapipe::StatusOr<SharedGpuResources>* status_or_gpu_resources) {
   delete status_or_gpu_resources;
 }
