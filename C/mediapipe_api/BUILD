@@ -42,6 +42,14 @@ cc_binary(
     visibility = ["//visibility:public"],
 )
 
+cc_binary(
+    name = "libmediapipe_c.dylib",
+    deps = [":mediapipe_c"],
+    linkshared = True,
+    linkstatic = True,
+    visibility = ["//visibility:public"],
+)
+
 # It is recommended that you include only neccessary calculators.
 cc_library(
     name = "calculators",
