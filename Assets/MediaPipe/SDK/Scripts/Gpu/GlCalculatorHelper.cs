@@ -4,8 +4,7 @@ using System.Runtime.InteropServices;
 namespace Mediapipe {
 
   public class GlCalculatorHelper : MpResourceHandle {
-    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    private delegate IntPtr MpGlStatusFunction();
+    public delegate IntPtr NativeGlStatusFunction();
     public delegate Status GlStatusFunction();
 
     public GlCalculatorHelper() : base() {
@@ -25,19 +24,24 @@ namespace Mediapipe {
     }
 
     public Status RunInGlContext(GlStatusFunction glStatusFunc) {
-      MpGlStatusFunction mpGlStatusFunc = () => {
-        try {
-          return glStatusFunc().mpPtr;
-        } catch (Exception e) {
-          return Status.FailedPrecondition(e.ToString()).mpPtr;
-        }
-      };
-      GCHandle mpGlStatusFuncHandle = GCHandle.Alloc(mpGlStatusFunc);
-      UnsafeNativeMethods.mp_GlCalculatorHelper__RunInGlContext__PF(
-          mpPtr, Marshal.GetFunctionPointerForDelegate(mpGlStatusFunc), out var statusPtr).Assert();
-      mpGlStatusFuncHandle.Free();
+      Status status = null;
 
+      NativeGlStatusFunction nativeGlStatusFunc = () => {
+        try {
+          status = glStatusFunc();
+        } catch (Exception e) {
+          status = Status.FailedPrecondition(e.ToString());
+        }
+        return status.mpPtr;
+      };
+
+      GCHandle nativeGlStatusFuncHandle = GCHandle.Alloc(nativeGlStatusFunc, GCHandleType.Pinned);
+      UnsafeNativeMethods.mp_GlCalculatorHelper__RunInGlContext__PF(mpPtr, nativeGlStatusFunc, out var statusPtr).Assert();
       GC.KeepAlive(this);
+      nativeGlStatusFuncHandle.Free();
+
+      if (status != null) { status.Dispose(); }
+
       return new Status(statusPtr);
     }
 

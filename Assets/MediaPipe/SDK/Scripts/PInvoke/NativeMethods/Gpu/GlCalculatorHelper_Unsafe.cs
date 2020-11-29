@@ -14,7 +14,7 @@ namespace Mediapipe {
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_GlCalculatorHelper__RunInGlContext__PF(
-        IntPtr glCalculatorHelper, [MarshalAs(UnmanagedType.FunctionPtr)]IntPtr glFunc, out IntPtr status);
+        IntPtr glCalculatorHelper, [MarshalAs(UnmanagedType.FunctionPtr)]GlCalculatorHelper.NativeGlStatusFunction glFunc, out IntPtr status);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_GlCalculatorHelper__CreateSourceTexture__Rif(

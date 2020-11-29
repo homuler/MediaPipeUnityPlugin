@@ -5,7 +5,6 @@ namespace Mediapipe {
   public class GlTextureBuffer : MpResourceHandle {
     private SharedPtrHandle sharedPtrHandle;
 
-    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void DeletionCallback(IntPtr glSyncToken);
     private GCHandle deletionCallbackHandle;
 
@@ -20,7 +19,7 @@ namespace Mediapipe {
       deletionCallbackHandle = GCHandle.Alloc(callback, GCHandleType.Pinned);
       var sharedContextPtr = glContext == null ? IntPtr.Zero : glContext.sharedPtr;
       UnsafeNativeMethods.mp_SharedGlTextureBuffer__ui_ui_i_i_ui_PF_PSgc(
-          target, name, width, height, format, Marshal.GetFunctionPointerForDelegate(callback), sharedContextPtr, out var ptr).Assert();
+          target, name, width, height, format, callback, sharedContextPtr, out var ptr).Assert();
 
       this.ptr = ptr;
     }

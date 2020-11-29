@@ -8,7 +8,7 @@ using pb = global::Google.Protobuf;
 namespace Mediapipe {
   class Protobuf {
     static Protobuf() {
-      UnsafeNativeMethods.google_protobuf__SetLogHandler__PF(Marshal.GetFunctionPointerForDelegate(protobufLogHandler)).Assert();
+      UnsafeNativeMethods.google_protobuf__SetLogHandler__PF(protobufLogHandler).Assert();
     }
 
     /// <exception cref="MediaPipeException">Thrown when an error occured in unmanaged code</exception>
@@ -47,8 +47,7 @@ namespace Mediapipe {
       return protos;
     }
 
-    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    private delegate void ProtobufLogHandler(int level, string filename, int line, string message);
+    public delegate void ProtobufLogHandler(int level, string filename, int line, string message);
     private static readonly ProtobufLogHandler protobufLogHandler = LogProtobufMessage;
 
     private static void LogProtobufMessage(int level, string filename, int line, string message) {

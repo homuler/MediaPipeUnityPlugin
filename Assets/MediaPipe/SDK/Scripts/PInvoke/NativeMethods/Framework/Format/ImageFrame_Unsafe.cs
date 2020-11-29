@@ -13,7 +13,7 @@ namespace Mediapipe {
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_ImageFrame__ui_i_i_i_Pui8_PF(
         ImageFormat.Format format, int width, int height, int widthStep, IntPtr pixelData,
-        [MarshalAs(UnmanagedType.FunctionPtr)]IntPtr deleter, out IntPtr imageFrame);
+        [MarshalAs(UnmanagedType.FunctionPtr)]ImageFrame.Deleter deleter, out IntPtr imageFrame);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern void mp_ImageFrame__delete(IntPtr imageFrame);

@@ -9,10 +9,8 @@ namespace Mediapipe {
     public static readonly uint kDefaultAlignmentBoundary = 16;
     public static readonly uint kGlDefaultAlignmentBoundary = 4;
 
+    public delegate void Deleter(IntPtr ptr);
     private GCHandle deleterHandle;
-
-    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    private delegate void Deleter(IntPtr ptr);
 
     public ImageFrame() : base() {
       UnsafeNativeMethods.mp_ImageFrame__(out var ptr).Assert();
@@ -36,7 +34,7 @@ namespace Mediapipe {
         UnsafeNativeMethods.mp_ImageFrame__ui_i_i_i_Pui8_PF(
           format, width, height, widthStep,
           (IntPtr)NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(pixelData),
-          Marshal.GetFunctionPointerForDelegate(deleter),
+          deleter,
           out var ptr
         ).Assert();
         this.ptr = ptr;
