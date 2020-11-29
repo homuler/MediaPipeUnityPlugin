@@ -2,6 +2,8 @@ using System;
 
 namespace Mediapipe {
   public class CalculatorGraph : MpResourceHandle {
+    public delegate IntPtr PacketCallback(IntPtr packetPtr);
+
     public CalculatorGraph() : base() {
       UnsafeNativeMethods.mp_CalculatorGraph__(out var ptr).Assert();
       this.ptr = ptr;
@@ -40,6 +42,15 @@ namespace Mediapipe {
         GC.KeepAlive(this);
         return new CalculatorGraphConfig(configPtr);
       }
+    }
+
+    /// <param name="packetCallback">This recieves a packet pointer and returns a status pointer. It must be pinned</param>
+    public Status ObserveOutputStream(string streamName, PacketCallback packetCallback) {
+      UnsafeNativeMethods.mp_CalculatorGraph__ObserveOutputStream__PKc_PF(
+        mpPtr, streamName, packetCallback, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      return new Status(statusPtr);
     }
 
     public StatusOrPoller<T> AddOutputStreamPoller<T>(string streamName) {

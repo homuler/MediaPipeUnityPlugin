@@ -8,7 +8,7 @@
 
 extern "C" {
 
-typedef mediapipe::Status* MpGlStatusFunction();
+typedef mediapipe::Status* NativeGlStatusFunction();
 
 /** GlCalculatorHelper API */
 MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__(mediapipe::GlCalculatorHelper** gl_calculator_helper_out);
@@ -16,7 +16,7 @@ MP_CAPI(void) mp_GlCalculatorHelper__delete(mediapipe::GlCalculatorHelper* gl_ca
 MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__InitializeForTest__Pgr(mediapipe::GlCalculatorHelper* gl_calculator_helper,
                                                                     mediapipe::GpuResources* gpu_resources);
 MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__RunInGlContext__PF(mediapipe::GlCalculatorHelper* gl_calculator_helper,
-                                                                MpGlStatusFunction* gl_func,
+                                                                NativeGlStatusFunction* gl_func,
                                                                 mediapipe::Status** status_out);
 MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__CreateSourceTexture__Rif(mediapipe::GlCalculatorHelper* gl_calculator_helper,
                                                                       mediapipe::ImageFrame* image_frame,

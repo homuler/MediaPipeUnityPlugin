@@ -21,13 +21,13 @@ MpReturnCode mp_GlCalculatorHelper__InitializeForTest__Pgr(mediapipe::GlCalculat
 }
 
 MpReturnCode mp_GlCalculatorHelper__RunInGlContext__PF(mediapipe::GlCalculatorHelper* gl_calculator_helper,
-                                                       MpGlStatusFunction* gl_func,
+                                                       NativeGlStatusFunction* gl_func,
                                                        mediapipe::Status** status_out) {
   TRY {
     auto status = gl_calculator_helper->RunInGlContext([&gl_func]() -> ::mediapipe::Status {
-      return *(gl_func());
+      return mediapipe::Status { std::move(*(gl_func())) };
     });
-    *status_out = new mediapipe::Status { status };
+    *status_out = new mediapipe::Status { std::move(status) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }

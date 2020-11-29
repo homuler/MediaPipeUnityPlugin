@@ -18,6 +18,7 @@
 extern "C" {
 
 typedef std::map<std::string, mediapipe::Packet> SidePackets;
+typedef mediapipe::Status* PacketCallback(const mediapipe::Packet&);
 
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__(mediapipe::CalculatorGraph** graph_out);
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__Rconfig(mediapipe::CalculatorGraphConfig* config, mediapipe::CalculatorGraph** graph_out);
@@ -33,6 +34,11 @@ MP_CAPI(MpReturnCode) mp_CalculatorGraph__Initialize__Rconfig_Rsp(
     mediapipe::Status** status_out);
 
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__Config(mediapipe::CalculatorGraph* graph, mediapipe::CalculatorGraphConfig** config_out);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__ObserveOutputStream__PKc_PF(mediapipe::CalculatorGraph* graph,
+                                                                      const char* stream_name,
+                                                                      PacketCallback* packet_callback,
+                                                                      mediapipe::Status** status_out);
+
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__AddOutputStreamPoller__PKc(mediapipe::CalculatorGraph* graph,
                                                                      const char* stream_name,
                                                                      mediapipe::StatusOrPoller** status_or_poller_out);

@@ -21,7 +21,7 @@ MpReturnCode mp_SharedGlTextureBuffer__ui_ui_i_i_ui_PF_PSgc(GLenum target,
                                                             std::shared_ptr<mediapipe::GlContext>* producer_context,
                                                             SharedGlTextureBuffer** gl_texture_buffer_out) {
   TRY {
-    auto callback = [&deletion_callback](mediapipe::GlSyncToken token) -> void {
+    auto callback = [deletion_callback](mediapipe::GlSyncToken token) -> void {
       deletion_callback(new mediapipe::GlSyncToken { token });
     };
     *gl_texture_buffer_out = new SharedGlTextureBuffer {

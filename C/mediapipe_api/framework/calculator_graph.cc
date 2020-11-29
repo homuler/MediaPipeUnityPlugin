@@ -46,6 +46,19 @@ MpReturnCode mp_CalculatorGraph__Config(mediapipe::CalculatorGraph* graph, media
   } CATCH_ALL
 }
 
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__ObserveOutputStream__PKc_PF(mediapipe::CalculatorGraph* graph,
+                                                                      const char* stream_name,
+                                                                      PacketCallback* packet_callback,
+                                                                      mediapipe::Status** status_out) {
+  TRY {
+    auto status = graph->ObserveOutputStream(stream_name, [packet_callback](const mediapipe::Packet& packet) -> ::mediapipe::Status {
+      return mediapipe::Status { std::move(*packet_callback(packet)) };
+    });
+    *status_out = new mediapipe::Status { std::move(status) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
 MpReturnCode mp_CalculatorGraph__AddOutputStreamPoller__PKc(mediapipe::CalculatorGraph* graph,
                                                             const char* stream_name,
                                                             mediapipe::StatusOrPoller** status_or_poller_out) {
