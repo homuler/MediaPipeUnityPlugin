@@ -2,8 +2,8 @@ using System;
 using UnityEngine;
 
 public class WebCamScreenController : MonoBehaviour {
-  [SerializeField] int DefaultHeight = 640;
-  [SerializeField] int DefaultWidth = 480;
+  [SerializeField] int DefaultWidth = 640;
+  [SerializeField] int DefaultHeight = 480;
   [SerializeField] int FPS = 30;
   [SerializeField] float focalLengthPx = 2.0f;
 
@@ -19,7 +19,7 @@ public class WebCamScreenController : MonoBehaviour {
 
     if (device == null) return;
 
-    webCamTexture = new WebCamTexture(device?.name, DefaultHeight, DefaultWidth, FPS);
+    webCamTexture = new WebCamTexture(device?.name, DefaultWidth, DefaultHeight, FPS);
 
     try {
       webCamTexture.Play();

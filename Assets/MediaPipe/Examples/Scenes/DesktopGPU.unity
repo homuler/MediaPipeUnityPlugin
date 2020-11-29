@@ -843,8 +843,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 842caaa3595af5affbad9424323d3133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DefaultHeight: 640
-  DefaultWidth: 480
+  DefaultWidth: 640
+  DefaultHeight: 480
   FPS: 30
   focalLengthPx: 2
 --- !u!64 &496037460
@@ -1199,8 +1199,6 @@ MonoBehaviour:
   irisTrackingGraph: {fileID: 453346265376069447, guid: 1acb623a8e774d376b8cf304d860e534,
     type: 3}
   handTrackingGraph: {fileID: 6942115883526269425, guid: 731f293a753aacb7fb2a463e77999973,
-    type: 3}
-  multiHandTrackingGraph: {fileID: 2049382192924603273, guid: 0de25789197f23cdea7e3edb16daf326,
     type: 3}
   poseTrackingGraph: {fileID: 2128668153064451319, guid: 5d2913f213c90c73e8299fec12f0b535,
     type: 3}
