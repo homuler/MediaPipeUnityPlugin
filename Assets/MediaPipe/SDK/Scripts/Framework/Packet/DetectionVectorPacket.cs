@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace Mediapipe {
   public class DetectionVectorPacket : Packet<List<Detection>> {
     public DetectionVectorPacket() : base() {}
+    public DetectionVectorPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
     public override List<Detection> Get() {
       UnsafeNativeMethods.mp_Packet__GetDetectionVector(mpPtr, out var serializedProtoVectorPtr).Assert();

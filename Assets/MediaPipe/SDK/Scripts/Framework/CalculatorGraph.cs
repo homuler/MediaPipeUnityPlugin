@@ -1,8 +1,10 @@
 using System;
+using System.Runtime.InteropServices;
 
 namespace Mediapipe {
   public class CalculatorGraph : MpResourceHandle {
-    public delegate IntPtr PacketCallback(IntPtr packetPtr);
+    public delegate IntPtr NativePacketCallback(IntPtr packetPtr);
+    public delegate Status PacketCallback<T, U>(T packet) where T : Packet<U>;
 
     public CalculatorGraph() : base() {
       UnsafeNativeMethods.mp_CalculatorGraph__(out var ptr).Assert();
@@ -44,10 +46,20 @@ namespace Mediapipe {
       }
     }
 
-    /// <param name="packetCallback">This recieves a packet pointer and returns a status pointer. It must be pinned</param>
-    public Status ObserveOutputStream(string streamName, PacketCallback packetCallback) {
-      UnsafeNativeMethods.mp_CalculatorGraph__ObserveOutputStream__PKc_PF(
-        mpPtr, streamName, packetCallback, out var statusPtr).Assert();
+    public Status ObserveOutputStream<T, U>(string streamName, PacketCallback<T, U> packetCallback, out GCHandle callbackHandle) where T : Packet<U> {
+      NativePacketCallback nativePacketCallback = (IntPtr packetPtr) => {
+        Status status = null;
+        try {
+          T packet = (T)Activator.CreateInstance(typeof(T), packetPtr, false);
+          status = packetCallback(packet);
+        } catch (Exception e) {
+          status = Status.FailedPrecondition(e.ToString());
+        }
+        return status.mpPtr;
+      };
+      callbackHandle = GCHandle.Alloc(nativePacketCallback, GCHandleType.Pinned);
+
+      UnsafeNativeMethods.mp_CalculatorGraph__ObserveOutputStream__PKc_PF(mpPtr, streamName, nativePacketCallback, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       return new Status(statusPtr);

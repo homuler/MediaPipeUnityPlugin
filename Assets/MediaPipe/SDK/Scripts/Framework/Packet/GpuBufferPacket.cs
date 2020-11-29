@@ -3,6 +3,7 @@ using System;
 namespace Mediapipe {
   public class GpuBufferPacket : Packet<GpuBuffer> {
     public GpuBufferPacket() : base() {}
+    public GpuBufferPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
     public GpuBufferPacket(GpuBuffer gpuBuffer) : base() {
       UnsafeNativeMethods.mp__MakeGpuBufferPacket__Rgb(gpuBuffer.mpPtr, out var ptr).Assert();

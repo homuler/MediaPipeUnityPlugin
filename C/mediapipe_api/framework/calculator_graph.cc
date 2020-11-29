@@ -48,7 +48,7 @@ MpReturnCode mp_CalculatorGraph__Config(mediapipe::CalculatorGraph* graph, media
 
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__ObserveOutputStream__PKc_PF(mediapipe::CalculatorGraph* graph,
                                                                       const char* stream_name,
-                                                                      PacketCallback* packet_callback,
+                                                                      NativePacketCallback* packet_callback,
                                                                       mediapipe::Status** status_out) {
   TRY {
     auto status = graph->ObserveOutputStream(stream_name, [packet_callback](const mediapipe::Packet& packet) -> ::mediapipe::Status {

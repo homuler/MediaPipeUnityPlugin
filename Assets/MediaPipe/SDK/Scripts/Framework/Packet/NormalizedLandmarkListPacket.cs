@@ -3,6 +3,7 @@ using System;
 namespace Mediapipe {
   public class NormalizedLandmarkListPacket : Packet<NormalizedLandmarkList> {
     public NormalizedLandmarkListPacket() : base() {}
+    public NormalizedLandmarkListPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
     public override NormalizedLandmarkList Get() {
       UnsafeNativeMethods.mp_Packet__GetNormalizedLandmarkList(mpPtr, out var serializedProtoPtr).Assert();

@@ -24,7 +24,7 @@ namespace Mediapipe {
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_CalculatorGraph__ObserveOutputStream__PKc_PF(IntPtr graph, string streamName,
-        [MarshalAs(UnmanagedType.FunctionPtr)]CalculatorGraph.PacketCallback packetCallback, out IntPtr status);
+        [MarshalAs(UnmanagedType.FunctionPtr)]CalculatorGraph.NativePacketCallback packetCallback, out IntPtr status);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_CalculatorGraph__AddOutputStreamPoller__PKc(IntPtr graph, string streamName, out IntPtr statusOrPoller);

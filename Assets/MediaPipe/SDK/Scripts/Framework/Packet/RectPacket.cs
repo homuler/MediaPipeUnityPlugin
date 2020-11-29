@@ -3,6 +3,7 @@ using System;
 namespace Mediapipe {
   public class RectPacket : Packet<Rect> {
     public RectPacket() : base() {}
+    public RectPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
     public override Rect Get() {
       UnsafeNativeMethods.mp_Packet__GetRect(mpPtr, out var serializedProtoPtr).Assert();
