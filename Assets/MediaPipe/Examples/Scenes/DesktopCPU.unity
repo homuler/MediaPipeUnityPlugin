@@ -843,8 +843,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 842caaa3595af5affbad9424323d3133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DefaultHeight: 640
-  DefaultWidth: 480
+  DefaultWidth: 640
+  DefaultHeight: 480
   FPS: 30
   focalLengthPx: 2
 --- !u!64 &496037460
@@ -1192,7 +1192,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fda073a1f847adffae1d745c3f44b31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  helloWorldGraph: {fileID: 0}
   faceDetectionGraph: {fileID: 180253633339373783, guid: 234d91f7c8fa82a4a8e47b60023e8d57,
     type: 3}
   faceMeshGraph: {fileID: 5162072812703337941, guid: 99dbd193a1c29da7e97aa549bb5f64ff,
@@ -1200,8 +1199,6 @@ MonoBehaviour:
   irisTrackingGraph: {fileID: 7522495535138071849, guid: 03a48a0e6cd0693e6b7f9cc4c4caf3cb,
     type: 3}
   handTrackingGraph: {fileID: 675775105168490772, guid: 960ce8811f93477e38b461f05b8fa161,
-    type: 3}
-  multiHandTrackingGraph: {fileID: 7664826976962761858, guid: 50d43cff30debe51781e5c6df83865be,
     type: 3}
   poseTrackingGraph: {fileID: 2633288188356736957, guid: 47232e3cbf15f0dbf8323926a7d6b7eb,
     type: 3}

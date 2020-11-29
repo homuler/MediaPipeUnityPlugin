@@ -2,8 +2,8 @@ using System;
 using UnityEngine;
 
 public class WebCamScreenController : MonoBehaviour {
-  [SerializeField] int DefaultHeight = 640;
-  [SerializeField] int DefaultWidth = 480;
+  [SerializeField] int DefaultWidth = 640;
+  [SerializeField] int DefaultHeight = 480;
   [SerializeField] int FPS = 30;
   [SerializeField] float focalLengthPx = 2.0f;
 
