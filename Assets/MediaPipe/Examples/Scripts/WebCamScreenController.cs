@@ -55,6 +55,10 @@ public class WebCamScreenController : MonoBehaviour {
     return IsPlaying() ? webCamTexture.GetPixels32(pixelData) : null;
   }
 
+  public PixelData GetPixelData() {
+    return new PixelData(GetPixels32(), Width(), Height());
+  }
+
   public Texture2D GetScreen() {
     return outputTexture;
   }

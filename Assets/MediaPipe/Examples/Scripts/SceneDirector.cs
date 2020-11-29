@@ -157,10 +157,7 @@ public class SceneDirector : MonoBehaviour {
         break;
       }
 
-      var colors = webCamScreenController.GetPixels32();
-      var width = webCamScreenController.Width();
-      var height = webCamScreenController.Height();
-      var pixelData = new PixelData(colors, width, height);
+      var pixelData = webCamScreenController.GetPixelData();
 
       graph.PushInput(pixelData).AssertOk();
       graph.RenderOutput(webCamScreenController, pixelData);
