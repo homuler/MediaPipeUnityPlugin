@@ -24,7 +24,7 @@ protobuf_dll := $(protobuf_bindir)/Google.Protobuf.dll
 bazel_root := C/bazel-bin/mediapipe_api
 bazel_models_target := //mediapipe_api:mediapipe_models
 bazel_protos_target := //mediapipe_api:mediapipe_proto_srcs
-bazel_common_target := $(bazel_models_target) $(bazel_protos_target) --cxxopt='-std=c++14'
+bazel_common_target := $(bazel_models_target) $(bazel_protos_target)
 
 .PHONY: all gpu cpu android_arm clean \
 	install install-protobuf install-mediapipe_c install-mediapipe_android install-models \

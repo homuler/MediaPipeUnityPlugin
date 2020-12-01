@@ -11,6 +11,11 @@ build:linux --cxxopt=-std=c++14
 build:linux --host_cxxopt=-std=c++14
 build:linux --copt=-w
 
+# macOS
+build:macos --cxxopt=-std=c++14
+build:macos --host_cxxopt=-std=c++14
+build:macos --copt=-w
+
 # Android configs.
 # Note: the documentation tells us to use @androidndk//:default_crosstool, but
 # the automatic configuration transition uses //external:android/crosstool.
