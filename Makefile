@@ -104,7 +104,7 @@ uninstall-mediapipe_c:
 	rm -f $(plugindir)/libmediapipe_c.so
 
 uninstall-mediapipe_c_mac:
-	rm -f $(plugindir)/libmediapipe_c.bundle
+	rm -f $(plugindir)/libmediapipe_c.dylib
 
 uninstall-mediapipe_android:
 	rm -f $(plugindir)/Android/mediapipe_android.aar
