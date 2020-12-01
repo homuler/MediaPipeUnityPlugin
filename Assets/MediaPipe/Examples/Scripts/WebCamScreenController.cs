@@ -33,7 +33,7 @@ public class WebCamScreenController : MonoBehaviour {
   
   private bool IsWebCamTextureInitialized()
   {
-    //At least on OSX, at the beginning webCamTexture always has 16x16 size. So we must wait, until size will be correct 
+    //Some cameras may take time to be initialized, so wait here. (e.g. on MacBook Pro, the size of webCamTexture is 16x16 at the beginning.) 
     return webCamTexture != null && webCamTexture.width > TEXTURE_SIZE_THRESHOLD;
   }
 
