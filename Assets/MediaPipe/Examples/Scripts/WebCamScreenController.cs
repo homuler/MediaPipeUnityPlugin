@@ -29,8 +29,6 @@ public class WebCamScreenController : MonoBehaviour {
       Debug.LogWarning(e.ToString());
       return;
     }
-
-    pixelData = new Color32[DefaultWidth * DefaultHeight];
   }
   
   private bool IsWebCamTextureInitialized()
@@ -63,6 +61,8 @@ public class WebCamScreenController : MonoBehaviour {
     Renderer renderer = GetComponent<Renderer>();
     outputTexture = new Texture2D(webCamTexture.width, webCamTexture.height);
     renderer.material.mainTexture = outputTexture;
+    
+    pixelData = new Color32[webCamTexture.width * webCamTexture.height];
   }
   
   public Texture2D GetScreen() {
