@@ -37,6 +37,9 @@ gpu: | $(protobuf_dll)
 cpu: | $(protobuf_dll)
 	cd C && bazel build -c opt ${bazelflags.cpu} //mediapipe_api:libmediapipe_c.so $(bazel_common_target)
 
+mac_cpu: | $(protobuf_dll)
+	cd C && bazel build -c opt ${bazelflags.cpu} //mediapipe_api:libmediapipe_c.dylib $(bazel_common_target)
+
 android_arm: | $(protobuf_dll)
 	cd C && bazel build -c opt ${bazelflags.android_arm} //mediapipe_api/java/org/homuler/mediapipe/unity:mediapipe_android $(bazel_common_target)
 
@@ -52,7 +55,7 @@ clean:
 	bazel clean
 
 # install
-install: install-protobuf install-mediapipe_c install-mediapipe_android install-models install-protos
+install: install-protobuf install-mediapipe_c install-mediapipe_android install-mediapipe_mac install-models install-protos 
 
 install-protobuf: | $(plugindir)/Protobuf
 	cp $(protobuf_bindir)/* $(plugindir)/Protobuf
@@ -62,6 +65,13 @@ ifneq ("$(wildcard $(bazel_root)/libmediapipe_c.so)", "")
 	cp -f $(bazel_root)/libmediapipe_c.so $(plugindir)
 else
 	echo "skip installing libmediapipe_c.so"
+endif
+
+install-mediapipe_mac:
+ifneq ("$(wildcard $(bazel_root)/libmediapipe_c.dylib)", "")
+	cp -f $(bazel_root)/libmediapipe_c.dylib $(plugindir)
+else
+	echo "skip installing libmediapipe_c.dylib"
 endif
 
 install-mediapipe_android:
@@ -85,13 +95,16 @@ else
 	echo "skip installing proto sources"
 endif
 
-uninstall: uninstall-models uninstall-mediapipe_android uninstall-mediapipe_c uninstall-protobuf
+uninstall: uninstall-models uninstall-mediapipe_android uninstall-mediapipe_c uninstall-protobuf uninstall-mediapipe_c_mac
 
 uninstall-protobuf:
 	rm -r $(plugindir)/Protobuf
 
 uninstall-mediapipe_c:
 	rm -f $(plugindir)/libmediapipe_c.so
+
+uninstall-mediapipe_c_mac:
+	rm -f $(plugindir)/libmediapipe_c.dylib
 
 uninstall-mediapipe_android:
 	rm -f $(plugindir)/Android/mediapipe_android.aar

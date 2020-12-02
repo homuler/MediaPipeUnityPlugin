@@ -2,15 +2,17 @@ using System;
 using UnityEngine;
 
 public class WebCamScreenController : MonoBehaviour {
-  [SerializeField] int DefaultHeight = 640;
-  [SerializeField] int DefaultWidth = 480;
+  [SerializeField] int DefaultWidth = 640;
+  [SerializeField] int DefaultHeight = 480;
   [SerializeField] int FPS = 30;
   [SerializeField] float focalLengthPx = 2.0f;
 
   private WebCamTexture webCamTexture;
   private Texture2D outputTexture;
   private Color32[] pixelData;
-
+  
+  const int TEXTURE_SIZE_THRESHOLD = 50;
+  
   public void ResetScreen(WebCamDevice? device) {
     if (webCamTexture != null && webCamTexture.isPlaying) {
       webCamTexture.Stop();
@@ -19,7 +21,7 @@ public class WebCamScreenController : MonoBehaviour {
 
     if (device == null) return;
 
-    webCamTexture = new WebCamTexture(device?.name, DefaultHeight, DefaultWidth, FPS);
+    webCamTexture = new WebCamTexture(device?.name, DefaultWidth, DefaultHeight, FPS);
 
     try {
       webCamTexture.Play();
@@ -27,16 +29,16 @@ public class WebCamScreenController : MonoBehaviour {
       Debug.LogWarning(e.ToString());
       return;
     }
-
-    Renderer renderer = GetComponent<Renderer>();
-    outputTexture = new Texture2D(webCamTexture.width, webCamTexture.height);
-    renderer.material.mainTexture = outputTexture;
-
-    pixelData = new Color32[webCamTexture.width * webCamTexture.height];
+  }
+  
+  private bool IsWebCamTextureInitialized()
+  {
+    //Some cameras may take time to be initialized, so wait here. (e.g. on MacBook Pro, the size of webCamTexture is 16x16 at the beginning.) 
+    return webCamTexture != null && webCamTexture.width > TEXTURE_SIZE_THRESHOLD;
   }
 
   public bool IsPlaying() {
-    return webCamTexture == null ? false : webCamTexture.isPlaying;
+    return IsWebCamTextureInitialized() && webCamTexture.isPlaying;
   }
 
   public int Height() {
@@ -55,6 +57,14 @@ public class WebCamScreenController : MonoBehaviour {
     return IsPlaying() ? webCamTexture.GetPixels32(pixelData) : null;
   }
 
+  public void InitScreen() {
+    Renderer renderer = GetComponent<Renderer>();
+    outputTexture = new Texture2D(webCamTexture.width, webCamTexture.height);
+    renderer.material.mainTexture = outputTexture;
+    
+    pixelData = new Color32[webCamTexture.width * webCamTexture.height];
+  }
+  
   public Texture2D GetScreen() {
     return outputTexture;
   }
