@@ -10,9 +10,9 @@ public class WebCamScreenController : MonoBehaviour {
   private WebCamTexture webCamTexture;
   private Texture2D outputTexture;
   private Color32[] pixelData;
-  
-  const int TEXTURE_SIZE_THRESHOLD = 50;
-  
+
+  private const int TEXTURE_SIZE_THRESHOLD = 50;
+
   public void ResetScreen(WebCamDevice? device) {
     if (webCamTexture != null && webCamTexture.isPlaying) {
       webCamTexture.Stop();
@@ -30,10 +30,9 @@ public class WebCamScreenController : MonoBehaviour {
       return;
     }
   }
-  
-  private bool IsWebCamTextureInitialized()
-  {
-    //Some cameras may take time to be initialized, so wait here. (e.g. on MacBook Pro, the size of webCamTexture is 16x16 at the beginning.) 
+
+  private bool IsWebCamTextureInitialized() {
+    // Some cameras may take time to be initialized, so check the texture size.
     return webCamTexture != null && webCamTexture.width > TEXTURE_SIZE_THRESHOLD;
   }
 
@@ -61,10 +60,10 @@ public class WebCamScreenController : MonoBehaviour {
     Renderer renderer = GetComponent<Renderer>();
     outputTexture = new Texture2D(webCamTexture.width, webCamTexture.height);
     renderer.material.mainTexture = outputTexture;
-    
+
     pixelData = new Color32[webCamTexture.width * webCamTexture.height];
   }
-  
+
   public Texture2D GetScreen() {
     return outputTexture;
   }
