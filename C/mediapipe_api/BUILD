@@ -35,15 +35,7 @@ cc_library(
 )
 
 cc_binary(
-    name = "libmediapipe_c.so",
-    deps = [":mediapipe_c"],
-    linkshared = True,
-    linkstatic = True,
-    visibility = ["//visibility:public"],
-)
-
-cc_binary(
-    name = "libmediapipe_c.dylib",
+    name = "libmediapipe_c",
     deps = [":mediapipe_c"],
     linkshared = True,
     linkstatic = True,

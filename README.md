@@ -34,9 +34,6 @@ This project uses protocol buffers to communicate with MediaPipe, and it is nece
     # For Desktop CPU
     make cpu
 
-    # For Mac CPU
-    make mac_cpu
-
     # For Android
     make android_arm
     ```
