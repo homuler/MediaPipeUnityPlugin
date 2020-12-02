@@ -32,10 +32,10 @@ bazel_common_target := $(bazel_models_target) $(bazel_protos_target)
 
 # build
 gpu: | $(protobuf_dll)
-	cd C && bazel build -c opt ${bazelflags.gpu} //mediapipe_api:libmediapipe_c.so $(bazel_common_target)
+	cd C && bazel build -c opt ${bazelflags.gpu} //mediapipe_api:libmediapipe_c $(bazel_common_target)
 
 cpu: | $(protobuf_dll)
-	cd C && bazel build -c opt ${bazelflags.cpu} //mediapipe_api:libmediapipe_c.so $(bazel_common_target)
+	cd C && bazel build -c opt ${bazelflags.cpu} //mediapipe_api:libmediapipe_c $(bazel_common_target)
 
 android_arm: | $(protobuf_dll)
 	cd C && bazel build -c opt ${bazelflags.android_arm} //mediapipe_api/java/org/homuler/mediapipe/unity:mediapipe_android $(bazel_common_target)
@@ -60,29 +60,31 @@ install-protobuf: | $(plugindir)/Protobuf
 install-mediapipe_c:
 ifneq ("$(wildcard $(bazel_root)/libmediapipe_c.so)", "")
 	cp -f $(bazel_root)/libmediapipe_c.so $(plugindir)
+else ifneq ("$(wildcard $(bazel_root)/libmediapipe_c.dylib)", "")
+	cp -f $(bazel_root)/libmediapipe_c.dylib $(plugindir)
 else
-	echo "skip installing libmediapipe_c.so"
+	# skip installing libmediapipe_c
 endif
 
 install-mediapipe_android:
 ifneq ("$(wildcard $(bazel_root)/java/org/homuler/mediapipe/unity/mediapipe_android.aar)", "")
 	cp -f $(bazel_root)/java/org/homuler/mediapipe/unity/mediapipe_android.aar $(plugindir)/Android
 else
-	echo "skip installing mediapipe_android.aar"
+	# skip installing mediapipe_android.aar
 endif
 
 install-models: | $(modeldir)
 ifneq ("$(wildcard $(bazel_root)/mediapipe_models.zip)", "")
 	unzip $(bazel_root)/mediapipe_models.zip -d $(modeldir)
 else
-	echo "skip installing models"
+	# skip installing models
 endif
 
 install-protos: | $(proto_srcdir)
 ifneq ("$(wildcard $(bazel_root)/mediapipe_proto_srcs.zip)", "")
 	unzip $(bazel_root)/mediapipe_proto_srcs.zip -d $(proto_srcdir)
 else
-	echo "skip installing proto sources"
+	# skip installing proto sources
 endif
 
 uninstall: uninstall-models uninstall-mediapipe_android uninstall-mediapipe_c uninstall-protobuf
@@ -91,13 +93,13 @@ uninstall-protobuf:
 	rm -r $(plugindir)/Protobuf
 
 uninstall-mediapipe_c:
-	rm -f $(plugindir)/libmediapipe_c.so
+	rm -f $(plugindir)/libmediapipe_c.so && rm -f $(plugindir)/libmediapipe_c.dylib
 
 uninstall-mediapipe_android:
 	rm -f $(plugindir)/Android/mediapipe_android.aar
 
 uninstall-models:
-	rm -rf $(modeldir)
+	rm -f $(modeldir)/*.bytes && rm -f $(modeldir)/*.txt
 
 # create directories
 $(builddir):

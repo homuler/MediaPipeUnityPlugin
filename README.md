@@ -4,7 +4,7 @@ This is a Unity (2019.4.10f1) Plugin to use MediaPipe.
 ## Platforms
 - [x] Linux Desktop (tested on ArchLinux)
 - [x] Android (ARM v7)
-- [ ] OS X
+- [x] OS X
 - [ ] iOS
 
 ## Prerequisites

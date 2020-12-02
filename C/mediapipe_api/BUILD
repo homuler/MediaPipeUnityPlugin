@@ -36,7 +36,7 @@ cc_library(
 )
 
 cc_binary(
-    name = "libmediapipe_c.so",
+    name = "libmediapipe_c",
     deps = [":mediapipe_c"],
     linkshared = True,
     linkstatic = True,
