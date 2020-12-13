@@ -36,11 +36,27 @@ cc_library(
 )
 
 cc_binary(
-    name = "libmediapipe_c",
+    name = "libmediapipe_c.so",
     deps = [":mediapipe_c"],
     linkshared = True,
     linkstatic = True,
     visibility = ["//visibility:public"],
+)
+
+cc_binary(
+    name = "libmediapipe_c.dylib",
+    deps = [":mediapipe_c"],
+    linkshared = True,
+    linkstatic = True,
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "libmediapipe_c",
+    actual = select({
+        "@com_google_mediapipe//mediapipe:macos": ":libmediapipe_c.dylib",
+        "//conditions:default": ":libmediapipe_c.so",
+    }),
 )
 
 # It is recommended that you include only neccessary calculators.

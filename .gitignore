@@ -9,9 +9,10 @@ obj/
 *.csproj
 *.sln
 
-*.dll
-*.so
 *.aar
+*.dll
+*.dylib
+*.so
 
 bazel-*
 
