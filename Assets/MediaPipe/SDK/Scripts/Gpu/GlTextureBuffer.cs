@@ -21,7 +21,8 @@ namespace Mediapipe {
       UnsafeNativeMethods.mp_SharedGlTextureBuffer__ui_ui_i_i_ui_PF_PSgc(
           target, name, width, height, format, callback, sharedContextPtr, out var ptr).Assert();
 
-      this.ptr = ptr;
+      sharedPtrHandle = new SharedPtr(ptr);
+      this.ptr = sharedPtrHandle.Get();
     }
 
     public GlTextureBuffer(UInt32 name, int width, int height, GpuBufferFormat format, DeletionCallback callback, GlContext glContext = null) :
