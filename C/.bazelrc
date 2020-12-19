@@ -7,14 +7,17 @@ build --define='absl=1'
 build --enable_platform_specific_config
 
 # Linux
-build:linux --cxxopt=-std=c++14
-build:linux --host_cxxopt=-std=c++14
+build:linux --cxxopt=-std=c++17
+build:linux --host_cxxopt=-std=c++17
 build:linux --copt=-w
 
 # macOS
-build:macos --cxxopt=-std=c++14
-build:macos --host_cxxopt=-std=c++14
+build:macos --cxxopt=-std=c++17
+build:macos --host_cxxopt=-std=c++17
 build:macos --copt=-w
+
+# Sets the default Apple platform to macOS.
+build --apple_platform_type=macos
 
 # Android configs.
 # Note: the documentation tells us to use @androidndk//:default_crosstool, but
