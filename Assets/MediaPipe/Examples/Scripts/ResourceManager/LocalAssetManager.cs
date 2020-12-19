@@ -32,21 +32,27 @@ public sealed class LocalAssetManager : ResourceManager {
   }
 
   protected override bool ReadFile(string path, IntPtr dst) {
-    var localPath = CacheFileFromAsset(path);
-    var asset = File.ReadAllBytes(localPath);
+    try {
+      Debug.Log(path);
+      var localPath = CacheFileFromAsset(path);
+      var asset = File.ReadAllBytes(localPath);
 
-    using (var srcStr = new StdString(asset)) {
-      srcStr.Swap(new StdString(dst, false));
+      using (var srcStr = new StdString(asset)) {
+        srcStr.Swap(new StdString(dst, false));
+      }
+
+      return true;
+    } catch (Exception e) {
+      Debug.Log($"Failed to read file `{path}`: ${e.ToString()}");
+      return false;
     }
-
-    return true;
   }
 
   private string GetAssetName(string assetPath) {
     var assetName = Path.GetFileNameWithoutExtension(assetPath);
     var extension = Path.GetExtension(assetPath);
 
-    return extension == ".tflite" ? $"{assetName}.bytes" : $"{assetName}.txt";
+    return (extension == ".tflite" || extension == ".bytes") ? $"{assetName}.bytes" : $"{assetName}.txt";
   }
 
   private string GetLocalFilePath(string assetName) {
