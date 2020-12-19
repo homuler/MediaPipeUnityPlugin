@@ -111,10 +111,10 @@ index 0000000..ffe126f
 +#endif  // MEDIAPIPE_UTIL_RESOURCE_MANAGER_H_
 diff --git a/mediapipe/util/resource_util_unity.cc b/mediapipe/util/resource_util_unity.cc
 new file mode 100644
-index 0000000..6ddbefa
+index 0000000..89d1d1c
 --- /dev/null
 +++ b/mediapipe/util/resource_util_unity.cc
-@@ -0,0 +1,20 @@
+@@ -0,0 +1,25 @@
 +#include "mediapipe/util/resource_manager.h"
 +#include "mediapipe/util/resource_util.h"
 +#include "mediapipe/framework/port/singleton.h"
@@ -128,7 +128,12 @@ index 0000000..6ddbefa
 +}
 +
 +::mediapipe::Status GetResourceContents(const std::string& path,
-+                                        std::string* output) {
++                                        std::string* output,
++                                        bool read_as_binary) {
++  if (!read_as_binary) {
++    LOG(WARNING)
++        << "Setting \"read_as_binary\" to false is a no-op on Unity.";
++  }
 +  RET_CHECK(Singleton<ResourceManager>::get()->ReadFile(path, output))
 +    << "could not read asset: " << path;
 +  return mediapipe::OkStatus();
