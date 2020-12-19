@@ -19,7 +19,7 @@ input_stream: "input_video"
 output_stream: "pose_landmarks_smoothed"
 output_stream: "pose_detection"
 output_stream: "pose_landmarks_smoothed_presence"
-output_stream: "pose_detection_stream"
+output_stream: "pose_detection_presence"
 
 # Throttles the images flowing downstream for flow control. It passes through
 # the very first incoming image unaltered, and waits for downstream nodes
