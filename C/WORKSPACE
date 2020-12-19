@@ -259,6 +259,7 @@ new_local_repository(
 http_archive(
     name = "android_opencv",
     build_file = "@com_google_mediapipe//third_party:opencv_android.BUILD",
+    sha256 = "cdb0e190c3734edd4052a3535d9e4310af912a9f70a421b1621711942a1028d5",
     strip_prefix = "OpenCV-android-sdk",
     type = "zip",
     url = "https://github.com/opencv/opencv/releases/download/3.4.3/opencv-3.4.3-android-sdk.zip",
