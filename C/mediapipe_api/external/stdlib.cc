@@ -8,7 +8,7 @@ void std_string__delete(std::string* str) {
   delete str;
 }
 
-MpReturnCode std_string__PKc_int(const char* src, int size, std::string** str_out) {
+MpReturnCode std_string__PKc_i(const char* src, int size, std::string** str_out) {
   TRY {
     *str_out = new std::string(src, size);
     RETURN_CODE(MpReturnCode::Success);
