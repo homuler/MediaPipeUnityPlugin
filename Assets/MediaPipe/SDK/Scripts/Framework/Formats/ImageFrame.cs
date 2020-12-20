@@ -146,6 +146,7 @@ namespace Mediapipe {
       return Mediapipe.Format.FromBytePtr(MutablePixelData(), Format(), Width(), Height(), WidthStep(), isFlipped);
     }
 
+    [Obsolete("FromPixels32() is deprecated")]
     public static ImageFrame FromPixels32(Color32[] colors, int width, int height, bool isFlipped = false) {
       return new ImageFrame(ImageFormat.Format.SRGBA, width, height, 4 * width, Mediapipe.Format.FromPixels32(colors, width, height, isFlipped));
     }

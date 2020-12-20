@@ -65,6 +65,7 @@ cc_library(
     deps = [
         "@com_google_mediapipe//mediapipe/calculators/core:pass_through_calculator",
         "@com_google_mediapipe//mediapipe/calculators/core:packet_presence_calculator",
+        "@com_google_mediapipe//mediapipe/calculators/image:image_transformation_calculator",
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [
             "@com_google_mediapipe//mediapipe/graphs/face_detection:desktop_live_calculators",
@@ -75,6 +76,7 @@ cc_library(
             "@com_google_mediapipe//mediapipe/graphs/object_detection:desktop_tflite_calculators",
         ],
         "//conditions:default": [
+            "@com_google_mediapipe//mediapipe/gpu:gl_scaler_calculator",
             "@com_google_mediapipe//mediapipe/graphs/face_detection:desktop_live_gpu_calculators",
             "@com_google_mediapipe//mediapipe/graphs/face_mesh:desktop_live_gpu_calculators",
             "@com_google_mediapipe//mediapipe/graphs/hair_segmentation:mobile_calculators",

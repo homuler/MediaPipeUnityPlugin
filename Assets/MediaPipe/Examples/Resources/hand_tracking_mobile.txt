@@ -54,10 +54,21 @@ node {
   output_stream: "throttled_input_video"
 }
 
+node: {
+  calculator: "ImageTransformationCalculator"
+  input_stream: "IMAGE_GPU:throttled_input_video"
+  output_stream: "IMAGE_GPU:transformed_input_video"
+  node_options: {
+    [type.googleapis.com/mediapipe.ImageTransformationCalculatorOptions] {
+      rotation_mode: 3
+    }
+  }
+}
+
 # Detects/tracks hand landmarks.
 node {
   calculator: "HandLandmarkTrackingGpu"
-  input_stream: "IMAGE:throttled_input_video"
+  input_stream: "IMAGE:transformed_input_video"
   input_side_packet: "NUM_HANDS:num_hands"
   output_stream: "LANDMARKS:hand_landmarks"
   output_stream: "HANDEDNESS:handedness"

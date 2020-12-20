@@ -39,7 +39,8 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
     ImageFrame imageFrame = null;
 
     if (!IsGpuEnabled()) {
-      imageFrame = CopyPixelsFrom(textureFrame);
+      imageFrame = new ImageFrame(
+        ImageFormat.Format.SRGBA, textureFrame.width, textureFrame.height, 4 * textureFrame.width, textureFrame.GetRawNativeByteArray());
       var packet = new ImageFramePacket(imageFrame, timestamp);
 
       return graph.AddPacketToInputStream(inputStream, packet);
@@ -53,16 +54,12 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
         var glTextureBuffer = new GlTextureBuffer((UInt32)glTextureName, textureFrame.width, textureFrame.height,
                                                   textureFrame.gpuBufferformat, textureFrame.OnRelease, glContext);
         var gpuBuffer = new GpuBuffer(glTextureBuffer);
-        var texture = gpuHelper.CreateSourceTexture(gpuBuffer);
-        var gpuFrame = texture.GetGpuBufferFrame();
-
-        Gl.Flush();
-        texture.Release();
 
         return graph.AddPacketToInputStream(inputStream, new GpuBufferPacket(gpuBuffer, timestamp));
       });
     #else
-      imageFrame = CopyPixelsFrom(textureFrame);
+      imageFrame = new ImageFrame(
+        ImageFormat.Format.SRGBA, textureFrame.width, textureFrame.height, 4 * textureFrame.width, textureFrame.GetRawNativeByteArray());
 
       return gpuHelper.RunInGlContext(() => {
         var texture = gpuHelper.CreateSourceTexture(imageFrame);
@@ -74,10 +71,6 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
         return graph.AddPacketToInputStream(inputStream, new GpuBufferPacket(gpuBuffer, timestamp));
       });
     #endif
-  }
-
-  private ImageFrame CopyPixelsFrom(TextureFrame textureFrame) {
-    return ImageFrame.FromPixels32(textureFrame.GetPixels32(), textureFrame.width, textureFrame.height, true);
   }
 
   public abstract void RenderOutput(WebCamScreenController screenController, TextureFrame textureFrame);

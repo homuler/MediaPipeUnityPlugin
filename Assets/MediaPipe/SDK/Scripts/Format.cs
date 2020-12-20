@@ -12,6 +12,7 @@ namespace Mediapipe {
     ///   In <paramref name="colors" />, pixels are laid out left to right, bottom to top,
     ///   but in the returned array, left to right, top to bottom.
     /// </remarks>
+    [Obsolete("FromPixels32 is deprecated, use Texture2D#GetRawNativeData")]
     public static NativeArray<byte> FromPixels32(Color32[] colors, int width, int height, bool isFlipped = false, Allocator allocator = Allocator.Temp) {
       var pixelData = new NativeArray<byte>(colors.Length * 4, allocator, NativeArrayOptions.UninitializedMemory);
 

@@ -38,10 +38,21 @@ node {
   }
 }
 
+node: {
+  calculator: "ImageTransformationCalculator"
+  input_stream: "IMAGE:input_video"
+  output_stream: "IMAGE:transformed_input_video"
+  node_options: {
+    [type.googleapis.com/mediapipe.ImageTransformationCalculatorOptions] {
+      rotation_mode: 3
+    }
+  }
+}
+
 # Detects faces and corresponding landmarks.
 node {
   calculator: "FaceLandmarkFrontCpu"
-  input_stream: "IMAGE:input_video"
+  input_stream: "IMAGE:transformed_input_video"
   input_side_packet: "NUM_FACES:num_faces"
   output_stream: "LANDMARKS:multi_face_landmarks"
   output_stream: "ROIS_FROM_LANDMARKS:face_rects_from_landmarks"
@@ -107,7 +118,7 @@ node {
 # Detects iris landmarks, eye contour landmarks, and corresponding rect (ROI).
 node {
   calculator: "IrisLandmarkLeftAndRightCpu"
-  input_stream: "IMAGE:input_video"
+  input_stream: "IMAGE:transformed_input_video"
   input_stream: "LEFT_EYE_BOUNDARY_LANDMARKS:left_eye_boundary_landmarks"
   input_stream: "RIGHT_EYE_BOUNDARY_LANDMARKS:right_eye_boundary_landmarks"
   output_stream: "LEFT_EYE_CONTOUR_LANDMARKS:left_eye_contour_landmarks"

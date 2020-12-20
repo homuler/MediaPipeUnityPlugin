@@ -1,7 +1,9 @@
 using Mediapipe;
 using System;
 using System.Runtime.InteropServices;
+using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 
 public class TextureFrame {
   private Texture2D texture;
@@ -13,6 +15,14 @@ public class TextureFrame {
 
   public int height {
     get { return texture.height; }
+  }
+
+  public GraphicsFormat graphicsFormat {
+    get { return texture.graphicsFormat; }
+  }
+
+  public TextureFormat format {
+    get { return texture.format; }
   }
 
   public TextureFrame(int width, int height) {
@@ -38,6 +48,11 @@ public class TextureFrame {
 
   public Color32[] GetPixels32() {
     return texture.GetPixels32();
+  }
+
+  // TODO: implement generic method
+  public NativeArray<byte> GetRawNativeByteArray() {
+    return texture.GetRawTextureData<byte>();
   }
 
   public IntPtr GetNativeTexturePtr() {

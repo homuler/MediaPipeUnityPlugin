@@ -47,10 +47,21 @@ node {
   output_stream: "throttled_input_video"
 }
 
+node: {
+  calculator: "ImageTransformationCalculator"
+  input_stream: "IMAGE:throttled_input_video"
+  output_stream: "IMAGE:transformed_input_video"
+  node_options: {
+    [type.googleapis.com/mediapipe.ImageTransformationCalculatorOptions] {
+      rotation_mode: 3
+    }
+  }
+}
+
 # Subgraph that detects faces and corresponding landmarks.
 node {
   calculator: "FaceLandmarkFrontCpu"
-  input_stream: "IMAGE:throttled_input_video"
+  input_stream: "IMAGE:transformed_input_video"
   input_side_packet: "NUM_FACES:num_faces"
   output_stream: "LANDMARKS:multi_face_landmarks"
   output_stream: "ROIS_FROM_LANDMARKS:face_rects_from_landmarks"

@@ -34,10 +34,21 @@ output_stream: "hand_rects_from_palm_detections"
 output_stream: "hand_landmarks_presence"
 output_stream: "palm_detections_presence"
 
+node: {
+  calculator: "ImageTransformationCalculator"
+  input_stream: "IMAGE:input_video"
+  output_stream: "IMAGE:transformed_input_video"
+  node_options: {
+    [type.googleapis.com/mediapipe.ImageTransformationCalculatorOptions] {
+      rotation_mode: 3
+    }
+  }
+}
+
 # Detects/tracks hand landmarks.
 node {
   calculator: "HandLandmarkTrackingCpu"
-  input_stream: "IMAGE:input_video"
+  input_stream: "IMAGE:transformed_input_video"
   input_side_packet: "NUM_HANDS:num_hands"
   output_stream: "LANDMARKS:hand_landmarks"
   output_stream: "HANDEDNESS:handedness"
