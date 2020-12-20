@@ -6,6 +6,7 @@ namespace Mediapipe {
 
     public GpuBuffer(GlTextureBuffer glTextureBuffer) : base() {
       UnsafeNativeMethods.mp_GpuBuffer__PSgtb(glTextureBuffer.sharedPtr, out var ptr).Assert();
+      glTextureBuffer.Dispose(); // GpuBuffer will manage the resource
       this.ptr = ptr;
     }
 
