@@ -18,9 +18,7 @@ public class ObjectDetectionGraph : DemoGraph {
     var detections = FetchNextOutputDetections();
     RenderAnnotation(screenController, detections);
 
-    var texture = screenController.GetScreen();
-    texture.SetPixels32(textureFrame.GetPixels32());
-    texture.Apply();
+    screenController.DrawScreen(textureFrame);
   }
 
   private List<Detection> FetchNextOutputDetections() {

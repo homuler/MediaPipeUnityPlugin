@@ -3,36 +3,28 @@ using System;
 using System.Runtime.InteropServices;
 using Unity.Collections;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
 
 public class TextureFrame {
   private Texture2D texture;
-  private GCHandle releaseCallbackHandle;
+  private IntPtr nativeTexturePtr = IntPtr.Zero;
 
-  public int width {
-    get { return texture.width; }
-  }
+  public int width { get; private set; }
+  public int height { get; private set; }
 
-  public int height {
-    get { return texture.height; }
-  }
+  public GlTextureBuffer.DeletionCallback OnRelease;
+  private GCHandle deletionCallbackHandle;
 
-  public GraphicsFormat graphicsFormat {
-    get { return texture.graphicsFormat; }
-  }
-
-  public TextureFormat format {
-    get { return texture.format; }
-  }
-
-  public TextureFrame(int width, int height) {
-    this.texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
-    releaseCallbackHandle = GCHandle.Alloc((GlTextureBuffer.DeletionCallback)this.OnRelease, GCHandleType.Pinned);
+  public TextureFrame(int width, int height, GlTextureBuffer.DeletionCallback OnRelease) {
+    texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
+    this.width = width;
+    this.height = height;
+    this.OnRelease = OnRelease;
+    deletionCallbackHandle = GCHandle.Alloc(this.OnRelease, GCHandleType.Pinned);
   }
 
   ~TextureFrame() {
-    if (releaseCallbackHandle != null && releaseCallbackHandle.IsAllocated) {
-      releaseCallbackHandle.Free();
+    if (deletionCallbackHandle.IsAllocated) {
+      deletionCallbackHandle.Free();
     }
   }
 
@@ -55,8 +47,12 @@ public class TextureFrame {
     return texture.GetRawTextureData<byte>();
   }
 
-  public IntPtr GetNativeTexturePtr() {
-    return texture.GetNativeTexturePtr();
+  public IntPtr GetNativeTexturePtr(bool update = true) {
+    if (update || nativeTexturePtr == IntPtr.Zero) {
+      nativeTexturePtr = texture.GetNativeTexturePtr();
+    }
+
+    return nativeTexturePtr;
   }
 
   public GpuBufferFormat gpuBufferformat {
@@ -65,9 +61,7 @@ public class TextureFrame {
     }
   }
 
-  public void OnRelease(IntPtr ptr) {
-    var token = new GlSyncPoint(ptr);
-    Debug.Log("OnRelease");
-    token.Wait();
+  public void Release() {
+    OnRelease((UInt64)GetNativeTexturePtr(false), IntPtr.Zero);
   }
 }

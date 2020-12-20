@@ -46,9 +46,7 @@ public class IrisTrackingGraph : DemoGraph {
     var faceMeshValue = FetchNextIrisTrackingValue();
     RenderAnnotation(screenController, faceMeshValue);
 
-    var texture = screenController.GetScreen();
-    texture.SetPixels32(textureFrame.GetPixels32());
-    texture.Apply();
+    screenController.DrawScreen(textureFrame);
   }
 
   private IrisTrackingValue FetchNextIrisTrackingValue() {

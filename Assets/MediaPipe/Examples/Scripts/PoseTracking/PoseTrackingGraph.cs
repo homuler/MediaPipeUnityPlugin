@@ -38,10 +38,7 @@ public class PoseTrackingGraph : DemoGraph {
     var poseTrackingValue = FetchNextPoseTrackingValue();
     RenderAnnotation(screenController, poseTrackingValue);
 
-    var texture = screenController.GetScreen();
-    texture.SetPixels32(textureFrame.GetPixels32());
-
-    texture.Apply();
+    screenController.DrawScreen(textureFrame);
   }
 
   private PoseTrackingValue FetchNextPoseTrackingValue() {

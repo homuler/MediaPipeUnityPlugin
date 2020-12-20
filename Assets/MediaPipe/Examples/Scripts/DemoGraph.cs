@@ -41,6 +41,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
     if (!IsGpuEnabled()) {
       imageFrame = new ImageFrame(
         ImageFormat.Format.SRGBA, textureFrame.width, textureFrame.height, 4 * textureFrame.width, textureFrame.GetRawNativeByteArray());
+      textureFrame.Release();
       var packet = new ImageFramePacket(imageFrame, timestamp);
 
       return graph.AddPacketToInputStream(inputStream, packet);
@@ -60,6 +61,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
     #else
       imageFrame = new ImageFrame(
         ImageFormat.Format.SRGBA, textureFrame.width, textureFrame.height, 4 * textureFrame.width, textureFrame.GetRawNativeByteArray());
+      textureFrame.Release();
 
       return gpuHelper.RunInGlContext(() => {
         var texture = gpuHelper.CreateSourceTexture(imageFrame);

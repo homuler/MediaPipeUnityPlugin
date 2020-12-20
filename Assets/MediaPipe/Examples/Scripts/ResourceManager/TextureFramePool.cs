@@ -1,21 +1,37 @@
+using Mediapipe;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TextureFramePool : MonoBehaviour {
-  [SerializeField] int poolSize = 20;
-  public int frameCount { get; private set; }
-  private readonly object frameCountLock = new object();
+public class TextureFramePool : MonoSingleton<TextureFramePool> {
+  [SerializeField] readonly int poolSize = 10;
 
+  private readonly object dimensionLock = new object();
   private int textureWidth = 0;
   private int textureHeight = 0;
-  private readonly object dimensionLock = new object();
+
   private Queue<TextureFrame> availableTextureFrames;
+  /// <remarks>
+  ///   key: texture's native pointer (e.g. OpenGL texture name)
+  /// </remarks>
+  private Dictionary<UInt64, TextureFrame> textureFramesInUse;
+
+  /// <returns>
+  ///   The total number of texture frames in the pool.
+  /// </returns>
+  public int frameCount {
+    get {
+      var availableTextureFramesCount = availableTextureFrames == null ? 0 : availableTextureFrames.Count;
+      var textureFramesInUseCount = textureFramesInUse == null ? 0 : textureFramesInUse.Count;
+
+      return availableTextureFramesCount + textureFramesInUseCount;
+    }
+  }
 
   void Start() {
-    frameCount = 0;
     availableTextureFrames = new Queue<TextureFrame>(poolSize);
+    textureFramesInUse = new Dictionary<UInt64, TextureFrame>();
   }
 
   public void SetDimension(int textureWidth, int textureHeight) {
@@ -29,13 +45,24 @@ public class TextureFramePool : MonoBehaviour {
     return new TextureFrameRequest(this, callback);
   }
 
-  public void OnTextureFrameReleased(TextureFrame textureFrame) {
-    lock(frameCountLock) {
-      if (frameCount > poolSize || IsStale(textureFrame)) {
-        frameCount--;
+  private void OnTextureFrameRelease(UInt64 textureName, IntPtr syncTokenPtr) {
+    lock(((ICollection)textureFramesInUse).SyncRoot) {
+      if (!textureFramesInUse.TryGetValue(textureName, out var textureFrame)) {
+        Debug.LogWarning("The released texture does not belong to the pool");
         return;
       }
 
+      textureFramesInUse.Remove(textureName);
+
+      if (frameCount > poolSize || IsStale(textureFrame)) {
+        return;
+      }
+
+      if (syncTokenPtr != IntPtr.Zero) {
+        using (var glSyncToken = new GlSyncPoint(syncTokenPtr)) {
+          glSyncToken.Wait();
+        }
+      }
       availableTextureFrames.Enqueue(textureFrame);
     }
   }
@@ -48,7 +75,7 @@ public class TextureFramePool : MonoBehaviour {
 
   private TextureFrame CreateNewTextureFrame() {
     lock(dimensionLock) {
-      return new TextureFrame(textureWidth, textureHeight);
+      return new TextureFrame(textureWidth, textureHeight, (GlTextureBuffer.DeletionCallback)OnTextureFrameRelease);
     }
   }
 
@@ -60,26 +87,25 @@ public class TextureFramePool : MonoBehaviour {
         return poolSize > frameCount || availableTextureFrames.Count > 0;
       });
 
-      lock(frameCountLock) {
-        while (availableTextureFrames.Count > 0) {
-          var textureFrame = availableTextureFrames.Dequeue();
+      while (availableTextureFrames.Count > 0) {
+        var textureFrame = availableTextureFrames.Dequeue();
 
-          if (!IsStale(textureFrame)) {
-            nextFrame = textureFrame;
-            break;
-          }
-
-          frameCount--;
+        if (!IsStale(textureFrame)) {
+          nextFrame = textureFrame;
+          break;
         }
+      }
 
-        if (nextFrame == null) {
-          nextFrame = CreateNewTextureFrame();
-          frameCount++;
-        }
+      if (nextFrame == null) {
+        nextFrame = CreateNewTextureFrame();
       }
     }
 
     callback(nextFrame);
+
+    lock(((ICollection)textureFramesInUse).SyncRoot) {
+      textureFramesInUse.Add((UInt64)nextFrame.GetNativeTexturePtr(false), nextFrame);
+    }
   }
 
   public class TextureFrameRequest : CustomYieldInstruction {

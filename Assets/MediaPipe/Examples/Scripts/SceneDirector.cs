@@ -144,7 +144,7 @@ public class SceneDirector : MonoBehaviour {
       Debug.LogWarning("No graph is set. Stopping...");
       yield break;
     }
-    
+
     if (!webCamScreenController.isPlaying) {
       Debug.LogWarning("WebCamDevice is not working. Stopping...");
       yield break;
@@ -190,8 +190,6 @@ public class SceneDirector : MonoBehaviour {
 
       graph.PushInput(nextFrame).AssertOk();
       graph.RenderOutput(webCamScreenController, nextFrame);
-
-      webCamScreenController.OnReleaseFrame(nextFrame);
     }
   }
 }

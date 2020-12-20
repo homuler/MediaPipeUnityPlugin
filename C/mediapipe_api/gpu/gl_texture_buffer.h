@@ -10,7 +10,7 @@
 extern "C" {
 
 typedef std::shared_ptr<mediapipe::GlTextureBuffer> SharedGlTextureBuffer;
-typedef void GlTextureBufferDeletionCallback(std::shared_ptr<mediapipe::GlSyncPoint>* sync_token);
+typedef void GlTextureBufferDeletionCallback(GLuint64 name, std::shared_ptr<mediapipe::GlSyncPoint>* sync_token);
 
 MP_CAPI(void) mp_SharedGlTextureBuffer__delete(SharedGlTextureBuffer* gl_texture_buffer);
 MP_CAPI(mediapipe::GlTextureBuffer*) mp_SharedGlTextureBuffer__get(SharedGlTextureBuffer* gl_texture_buffer);

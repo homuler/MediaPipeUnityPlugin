@@ -57,10 +57,7 @@ public class HandTrackingGraph : DemoGraph {
     var handTrackingValue = FetchNextHandTrackingValue();
     RenderAnnotation(screenController, handTrackingValue);
 
-    var texture = screenController.GetScreen();
-    texture.SetPixels32(textureFrame.GetPixels32());
-
-    texture.Apply();
+    screenController.DrawScreen(textureFrame);
   }
 
   private HandTrackingValue FetchNextHandTrackingValue() {

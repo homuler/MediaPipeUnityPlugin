@@ -5,7 +5,12 @@ namespace Mediapipe {
   public class GlTextureBuffer : MpResourceHandle {
     private SharedPtrHandle sharedPtrHandle;
 
-    public delegate void DeletionCallback(IntPtr glSyncToken);
+    /// <remarks>
+    ///   In the original MediaPipe repo, DeletionCallback only receives GlSyncToken.
+    ///   However, IL2CPP does not support marshaling delegates that point to instance methods to native code,
+    ///   so it receives also the texture name to specify the target instance.
+    /// </remarks>
+    public delegate void DeletionCallback(UInt64 name, IntPtr glSyncToken);
     private GCHandle deletionCallbackHandle;
 
     private GlTextureBuffer(IntPtr ptr) : base() {
