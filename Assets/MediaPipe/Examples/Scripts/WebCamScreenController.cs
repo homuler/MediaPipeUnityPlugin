@@ -41,6 +41,7 @@ public class WebCamScreenController : MonoBehaviour {
 
     try {
       webCamTexture.Play();
+      Debug.Log($"WebCamTexture Graphics Format: {webCamTexture.graphicsFormat}");
     } catch (Exception e) {
       Debug.LogWarning(e.ToString());
       return;
@@ -74,7 +75,7 @@ public class WebCamScreenController : MonoBehaviour {
 
   public void InitScreen() {
     Renderer renderer = GetComponent<Renderer>();
-    outputTexture = new Texture2D(webCamTexture.width, webCamTexture.height, TextureFormat.BGRA32, false);
+    outputTexture = new Texture2D(webCamTexture.width, webCamTexture.height, TextureFormat.RGBA32, false);
     renderer.material.mainTexture = outputTexture;
 
     pixelData = new Color32[webCamTexture.width * webCamTexture.height];

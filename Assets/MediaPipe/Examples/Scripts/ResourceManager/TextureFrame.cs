@@ -26,7 +26,7 @@ public class TextureFrame {
   }
 
   public TextureFrame(int width, int height) {
-    this.texture = new Texture2D(width, height, TextureFormat.BGRA32, false);
+    this.texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
     releaseCallbackHandle = GCHandle.Alloc((GlTextureBuffer.DeletionCallback)this.OnRelease, GCHandleType.Pinned);
   }
 

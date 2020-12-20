@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections;
+using System.Runtime.InteropServices;
 
 using Mediapipe;
 using UnityEngine;
@@ -22,6 +23,9 @@ public class SceneDirector : MonoBehaviour {
   bool IsAssetLoaded = false;
   bool IsAssetLoadFailed = false;
 
+  delegate void PluginCallback(int eventId);
+  GCHandle InitializeGpuHelperHandle;
+
   void OnEnable() {
     var nameForGlog = Path.Combine(Application.dataPath, "MediaPipePlugin");
     var logDir = Path.Combine(Application.persistentDataPath, "Logs", "MediaPipe");
@@ -33,13 +37,30 @@ public class SceneDirector : MonoBehaviour {
     Glog.Initialize(nameForGlog, logDir);
   }
 
+  void InitializeGpuHelper(int eventId) {
+    // context is EGL_NO_CONTEXT if the graphics API is not OpenGL ES
+    var context = Egl.getCurrentContext();
+
+    if (context == IntPtr.Zero) {
+      Debug.LogWarning("No EGL Context Found");
+    } else {
+      Debug.Log($"EGL Context Found ({context})");
+    }
+
+    gpuResources = GpuResources.Create(context).ConsumeValueOrDie();
+    gpuHelper = new GlCalculatorHelper();
+    gpuHelper.InitializeForTest(gpuResources);
+  }
+
   async void Start() {
     webCamScreen = GameObject.Find("WebCamScreen");
 
     if (useGPU) {
-      gpuResources = GpuResources.Create(Egl.getCurrentContext()).ConsumeValueOrDie();
-      gpuHelper = new GlCalculatorHelper();
-      gpuHelper.InitializeForTest(gpuResources);
+      PluginCallback gpuHelperInitializer = InitializeGpuHelper;
+      InitializeGpuHelperHandle = GCHandle.Alloc(gpuHelperInitializer, GCHandleType.Pinned);
+
+      var fp = Marshal.GetFunctionPointerForDelegate(gpuHelperInitializer);
+      GL.IssuePluginEvent(fp, 1);
     }
 
     #if UNITY_EDITOR
@@ -60,6 +81,12 @@ public class SceneDirector : MonoBehaviour {
   }
 
   void OnDisable() {
+    StopGraph();
+
+    if (InitializeGpuHelperHandle.IsAllocated) {
+      InitializeGpuHelperHandle.Free();
+    }
+
     Glog.Shutdown();
   }
 
@@ -140,6 +167,7 @@ public class SceneDirector : MonoBehaviour {
     var graph = graphContainer.GetComponent<IDemoGraph<TextureFrame>>();
 
     if (useGPU) {
+      // TODO: have to wait for gpuHelper to be initialized.
       graph.Initialize(gpuResources, gpuHelper);
     } else {
       graph.Initialize();
