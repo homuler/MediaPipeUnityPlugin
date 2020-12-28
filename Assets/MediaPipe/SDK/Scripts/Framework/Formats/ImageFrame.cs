@@ -142,6 +142,7 @@ namespace Mediapipe {
       return CopyToBuffer<float>(UnsafeNativeMethods.mp_ImageFrame__CopyToBuffer__Pf_i, bufferSize);
     }
 
+    [Obsolete("GetColor32s() is deprecated")]
     public Color32[] GetColor32s(bool isFlipped = false) {
       return Mediapipe.Format.FromBytePtr(MutablePixelData(), Format(), Width(), Height(), WidthStep(), isFlipped);
     }

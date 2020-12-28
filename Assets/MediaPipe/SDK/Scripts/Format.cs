@@ -51,6 +51,7 @@ namespace Mediapipe {
       return pixelData;
     }
 
+    [Obsolete("FromBytePtr is deprecated, use Texture2D#LoadRawTextureData")]
     public static Color32[] FromBytePtr(IntPtr ptr, ImageFormat.Format format, int width, int height, int widthStep, bool isFlipped = false) {
       switch (format) {
         case ImageFormat.Format.SRGB:
