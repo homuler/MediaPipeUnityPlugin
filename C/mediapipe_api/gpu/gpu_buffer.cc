@@ -12,6 +12,10 @@ void mp_GpuBuffer__delete(mediapipe::GpuBuffer* gpu_buffer) {
   delete gpu_buffer;
 }
 
+const SharedGlTextureBuffer& mp_GpuBuffer__GetGlTextureBufferSharedPtr(mediapipe::GpuBuffer* gpu_buffer) {
+  return gpu_buffer->GetGlTextureBufferSharedPtr();
+}
+
 int mp_GpuBuffer__width(mediapipe::GpuBuffer* gpu_buffer) {
   return gpu_buffer->width();
 }

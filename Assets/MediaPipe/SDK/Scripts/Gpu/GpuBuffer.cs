@@ -6,12 +6,16 @@ namespace Mediapipe {
 
     public GpuBuffer(GlTextureBuffer glTextureBuffer) : base() {
       UnsafeNativeMethods.mp_GpuBuffer__PSgtb(glTextureBuffer.sharedPtr, out var ptr).Assert();
-      glTextureBuffer.Dispose(); // GpuBuffer will manage the resource
+      glTextureBuffer.Dispose(); // respect move semantics
       this.ptr = ptr;
     }
 
     protected override void DeleteMpPtr() {
       UnsafeNativeMethods.mp_GpuBuffer__delete(ptr);
+    }
+
+    public GlTextureBuffer GetGlTextureBuffer() {
+      return new GlTextureBuffer(SafeNativeMethods.mp_GpuBuffer__GetGlTextureBufferSharedPtr(mpPtr), false);
     }
 
     public GpuBufferFormat Format() {

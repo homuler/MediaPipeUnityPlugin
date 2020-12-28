@@ -5,6 +5,9 @@ using System.Runtime.InteropServices;
 namespace Mediapipe {
   internal static partial class SafeNativeMethods {
     [Pure, DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern IntPtr mp_GpuBuffer__GetGlTextureBufferSharedPtr(IntPtr gpuBuffer);
+
+    [Pure, DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern int mp_GpuBuffer__width(IntPtr gpuBuffer);
 
     [Pure, DllImport (MediaPipeLibrary, ExactSpelling = true)]

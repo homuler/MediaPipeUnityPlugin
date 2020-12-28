@@ -10,8 +10,8 @@ namespace Mediapipe {
       return glContextPtr == IntPtr.Zero ? null : new GlContext(glContextPtr);
     }
  
-    public GlContext(IntPtr ptr) : base(ptr) {
-      sharedPtrHandle = new SharedPtr(ptr);
+    public GlContext(IntPtr ptr, bool isOwner = true) : base(isOwner) {
+      sharedPtrHandle = new SharedPtr(ptr, isOwner);
       this.ptr = sharedPtrHandle.Get();
     }
 
@@ -60,7 +60,7 @@ namespace Mediapipe {
     }
 
     private class SharedPtr : SharedPtrHandle {
-      public SharedPtr(IntPtr ptr) : base(ptr) {}
+      public SharedPtr(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
       protected override void DeleteMpPtr() {
         UnsafeNativeMethods.mp_SharedGlContext__delete(ptr);
