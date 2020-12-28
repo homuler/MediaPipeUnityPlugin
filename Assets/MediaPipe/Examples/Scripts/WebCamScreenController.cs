@@ -91,6 +91,11 @@ public class WebCamScreenController : MonoBehaviour {
     outputTexture.Apply();
   }
 
+  public void DrawScreen(GpuBuffer gpuBuffer) {
+    // TODO: create an external texture
+    outputTexture.UpdateExternalTexture((IntPtr)gpuBuffer.GetGlTextureBuffer().Name());
+  }
+
   public TextureFramePool.TextureFrameRequest RequestNextFrame() {
     return WebCamTextureFramePool.Instance.RequestNextTextureFrame((TextureFrame textureFrame) => {
       textureFrame.CopyTextureFrom(webCamTexture);

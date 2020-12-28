@@ -5,16 +5,16 @@ using UnityEngine;
 public class OfficialDemoGPU : DemoGraph {
   private const string outputStream = "output_video";
 
-  private readonly object outputImageLock = new object();
-  private GpuBuffer outputImage;
-  private GCHandle outputVideoCallbackHandle;
+  private OutputStreamPoller<GpuBuffer> outputStreamPoller;
+  private GpuBufferPacket outputPacket;
 
   private SidePacket sidePacket;
 
   public override Status StartRun() {
     Debug.LogWarning("This graph is for testing official examples. You can customize the graph by editing `official_demo_gpu.txt` (default is `hand_tracking_mobile.pbtxt`)");
 
-    graph.ObserveOutputStream<GpuBufferPacket, GpuBuffer>(outputStream, OutputVideoCallback, out outputVideoCallbackHandle).AssertOk();
+    outputStreamPoller = graph.AddOutputStreamPoller<GpuBuffer>(outputStream).ConsumeValueOrDie();
+    outputPacket = new GpuBufferPacket();
 
     sidePacket = new SidePacket();
     sidePacket.Emplace("num_hands", new IntPacket(2));
@@ -23,58 +23,41 @@ public class OfficialDemoGPU : DemoGraph {
   }
 
   public override void RenderOutput(WebCamScreenController screenController, TextureFrame textureFrame) {
-    ImageFrame imageFrame = null;
-
-    lock (outputImageLock) {
-      if (outputImage == null) { return; }
-
-      var status = gpuHelper.RunInGlContext(() => {
-        var gpuBufferFormat = outputImage.Format();
-        var sourceTexture = gpuHelper.CreateSourceTexture(outputImage);
-
-        imageFrame = new ImageFrame(
-          gpuBufferFormat.ImageFormatFor(), outputImage.Width(), outputImage.Height(), ImageFrame.kGlDefaultAlignmentBoundary);
-
-        gpuHelper.BindFramebuffer(sourceTexture);
-        var info = gpuBufferFormat.GlTextureInfoFor(0);
-
-        Gl.ReadPixels(0, 0, sourceTexture.width, sourceTexture.height, info.glFormat, info.glType, imageFrame.MutablePixelData());
-        Gl.Flush();
-
-        sourceTexture.Release();
-
-        return Status.Ok(false);
-      });
-
-      outputImage.Dispose();
-      outputImage = null;
-
-      if (!status.ok) {
-        Debug.LogError(status.ToString());
-        return;
-      }
+    if (!outputStreamPoller.Next(outputPacket)) {
+      Debug.LogWarning("Failed to fetch an output packet, rendering the input image");
+      screenController.DrawScreen(textureFrame);
+      return;
     }
 
-    if (imageFrame != null) { /// always true
-      screenController.DrawScreen(imageFrame);
-    }
-  }
+    using (var gpuBuffer = outputPacket.Get()) {
+      #if UNITY_ANDROID
+        // OpenGL ES
+        screenController.DrawScreen(gpuBuffer);
+      #else
+        ImageFrame imageFrame = null;
 
-  private Status OutputVideoCallback(GpuBufferPacket packet) {
-    return gpuHelper.RunInGlContext(() => {
-      var statusOrGpuBuffer = packet.Consume();
+        gpuHelper.RunInGlContext(() => {
+          var gpuBufferFormat = gpuBuffer.Format();
+          var sourceTexture = gpuHelper.CreateSourceTexture(gpuBuffer);
 
-      if (statusOrGpuBuffer.ok) {
-        lock (outputImageLock) {
-          if (outputImage != null) {
-            outputImage.Dispose();
-          }
+          imageFrame = new ImageFrame(
+            gpuBufferFormat.ImageFormatFor(), gpuBuffer.Width(), gpuBuffer.Height(), ImageFrame.kGlDefaultAlignmentBoundary);
 
-          outputImage = statusOrGpuBuffer.ConsumeValueOrDie();
+          gpuHelper.BindFramebuffer(sourceTexture);
+          var info = gpuBufferFormat.GlTextureInfoFor(0);
+
+          Gl.ReadPixels(0, 0, sourceTexture.width, sourceTexture.height, info.glFormat, info.glType, imageFrame.MutablePixelData());
+          Gl.Flush();
+
+          sourceTexture.Release();
+
+          return Status.Ok(false);
+        }).AssertOk();
+
+        if (imageFrame != null) { // always true
+          screenController.DrawScreen(imageFrame);
         }
-      }
-
-      return Status.Ok();
-    });
+      #endif
+    }
   }
 }

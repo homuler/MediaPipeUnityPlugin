@@ -31,11 +31,11 @@ public class OfficialDemoCPU : DemoGraph {
 
   public override void RenderOutput(WebCamScreenController screenController, TextureFrame textureFrame) {
     lock (outputImageLock) {
-      if (outputImage != null) {
-        screenController.DrawScreen(outputImage);
-        outputImage.Dispose();
-        outputImage = null;
-      }
+      if (outputImage == null) { return; }
+
+      screenController.DrawScreen(outputImage);
+      outputImage.Dispose();
+      outputImage = null;
     }
   }
 
