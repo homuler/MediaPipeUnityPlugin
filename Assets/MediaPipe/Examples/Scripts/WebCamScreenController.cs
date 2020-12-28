@@ -1,3 +1,4 @@
+using Mediapipe;
 using System;
 using UnityEngine;
 
@@ -83,6 +84,11 @@ public class WebCamScreenController : MonoBehaviour {
   public void DrawScreen(TextureFrame src) {
     // TODO: size assertion
     src.CopyTexture(outputTexture);
+  }
+
+  public void DrawScreen(ImageFrame imageFrame) {
+    outputTexture.LoadRawTextureData(imageFrame.MutablePixelData(), imageFrame.PixelDataSize());
+    outputTexture.Apply();
   }
 
   public TextureFramePool.TextureFrameRequest RequestNextFrame() {

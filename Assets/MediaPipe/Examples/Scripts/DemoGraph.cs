@@ -10,7 +10,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
   protected CalculatorGraph graph;
   protected GlCalculatorHelper gpuHelper;
 
-  void OnDestroy() {
+  protected virtual void OnDestroy() {
     Stop();
   }
 

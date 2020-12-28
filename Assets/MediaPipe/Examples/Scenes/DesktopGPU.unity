@@ -843,10 +843,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 842caaa3595af5affbad9424323d3133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Width: 640
-  Height: 480
-  FPS: 30
-  FocalLengthPx: 2
 --- !u!64 &496037460
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1205,6 +1201,8 @@ MonoBehaviour:
   hairSegmentationGraph: {fileID: 2037604842797791001, guid: 23ff6b39a3225ee19970690d46a4fba2,
     type: 3}
   objectDetectionGraph: {fileID: 8958252977655340068, guid: d5971d2eb607f463cb377c8460592f82,
+    type: 3}
+  officialDemoGraph: {fileID: 5680418270291803701, guid: fc49226dfd774c66faf8a3dd6be53d0f,
     type: 3}
 --- !u!1 &908513300
 GameObject:

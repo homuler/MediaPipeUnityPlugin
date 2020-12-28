@@ -71,7 +71,7 @@ Example scenes for mobile device is not implemented yet, but `DesktopGPU` scene 
 
 If you prefer, model files can be included in `mediapipe_android.aar` instead, and in that case, skip the AssetBundle build step.
 
-## Example Scenes
+## Example Graphs
 - Hello World!
 - Face Detection (on CPU/GPU)
 - Face Mesh (on CPU/GPU)
@@ -80,6 +80,8 @@ If you prefer, model files can be included in `mediapipe_android.aar` instead, a
 - Pose Tracking (on CPU/GPU)
 - Hair Segmentation (on GPU)
 - Object Detection (on CPU/GPU)
+- Official Demo (on CPU/GPU)
+   - Edit `official_demo_cpu.txt` (or `official_demo.gpu.txt`) and you can test your favorite official graph (if only it can be run on your platform)
 
 ### Troubleshooting
 #### DllNotFoundException: mediapipe_c

@@ -824,7 +824,6 @@ GameObject:
   - component: {fileID: 496037461}
   - component: {fileID: 496037460}
   - component: {fileID: 496037459}
-  - component: {fileID: 496037464}
   m_Layer: 0
   m_Name: WebCamScreen
   m_TagString: Untagged
@@ -844,10 +843,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 842caaa3595af5affbad9424323d3133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DefaultWidth: 640
-  DefaultHeight: 480
-  FPS: 30
-  DefaultFocalLengthPx: 2
 --- !u!64 &496037460
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -923,19 +918,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: 180, z: 0}
---- !u!114 &496037464
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 496037458}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5da564da19cb6b7d8e4f97f269edc5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  poolSize: 20
 --- !u!1 &624144232
 GameObject:
   m_ObjectHideFlags: 0
@@ -1218,6 +1200,8 @@ MonoBehaviour:
     type: 3}
   hairSegmentationGraph: {fileID: 0}
   objectDetectionGraph: {fileID: 514909837165703941, guid: d50ca9db44c2807f3bc203d81f25c1e2,
+    type: 3}
+  officialDemoGraph: {fileID: 577776907147759449, guid: 9b48f51533669b1e994fc188780fefb9,
     type: 3}
 --- !u!1 &908513300
 GameObject:
