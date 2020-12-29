@@ -120,6 +120,13 @@ pkg_model(
 pkg_zip(
     name = "mediapipe_proto_srcs",
     srcs = [
+        "//mediapipe_api/framework:calculator_cs",
+        "//mediapipe_api/framework:calculator_options_cs",
+        "//mediapipe_api/framework:mediapipe_options_cs",
+        "//mediapipe_api/framework:packet_factory_cs",
+        "//mediapipe_api/framework:packet_generator_cs",
+        "//mediapipe_api/framework:status_handler_cs",
+        "//mediapipe_api/framework:stream_handler_cs",
         "//mediapipe_api/framework/formats:classification_cs",
         "//mediapipe_api/framework/formats:detection_cs",
         "//mediapipe_api/framework/formats:landmark_cs",

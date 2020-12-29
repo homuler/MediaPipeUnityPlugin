@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "mediapipe_api/common.h"
-#include "google/protobuf/stubs/logging.h"
+#include "mediapipe/framework/port/parse_text_proto.h"
 
 namespace mp_api {
 
@@ -41,7 +41,6 @@ inline struct mp_api::SerializedProto* SerializeProto(const T& proto) {
   return new mp_api::SerializedProto { bytes, static_cast<int>(length) };
 }
 
-
 template<class T>
 inline struct mp_api::SerializedProtoVector* SerializeProtoVector(const std::vector<T>& proto_vec) {
   auto size = proto_vec.size();
@@ -52,6 +51,14 @@ inline struct mp_api::SerializedProtoVector* SerializeProtoVector(const std::vec
   }
 
   return new mp_api::SerializedProtoVector { data, static_cast<int>(size) };
+}
+
+template<class T>
+inline struct mp_api::SerializedProto* ConvertFromTextFormat(const char* str) {
+  T proto;
+  auto result = google::protobuf::TextFormat::ParseFromString(str, &proto);
+
+  return result ? SerializeProto(proto) : nullptr;
 }
 
 extern "C" {

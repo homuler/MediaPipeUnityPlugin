@@ -1,6 +1,13 @@
 #include <utility>
 #include "mediapipe_api/framework/calculator_graph.h"
 
+inline mediapipe::CalculatorGraphConfig ParseFromStringAsCalculatorGraphConfig(const char* serialized_config, int size) {
+  mediapipe::CalculatorGraphConfig config;
+  CHECK(config.ParseFromString(std::string(serialized_config, size)));
+
+  return config;
+}
+
 MpReturnCode mp_CalculatorGraph__(mediapipe::CalculatorGraph** graph_out) {
   TRY {
     *graph_out = new mediapipe::CalculatorGraph();
@@ -12,36 +19,41 @@ void mp_CalculatorGraph__delete(mediapipe::CalculatorGraph* graph) {
   delete graph;
 }
 
-MpReturnCode mp_CalculatorGraph__Rconfig(mediapipe::CalculatorGraphConfig* config, mediapipe::CalculatorGraph** graph_out) {
+MpReturnCode mp_CalculatorGraph__Rcgc(const char* serialized_config, int size, mediapipe::CalculatorGraph** graph_out) {
   TRY_ALL {
-    *graph_out = new mediapipe::CalculatorGraph(*config);
+    LOG(INFO) << serialized_config;
+    auto config = ParseFromStringAsCalculatorGraphConfig(serialized_config, size);
+    *graph_out = new mediapipe::CalculatorGraph(config);
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_ALL
 }
 
-MpReturnCode mp_CalculatorGraph__Initialize__Rconfig(mediapipe::CalculatorGraph* graph,
-                                                     mediapipe::CalculatorGraphConfig* config,
-                                                     mediapipe::Status** status_out) {
+MpReturnCode mp_CalculatorGraph__Initialize__Rcgc(mediapipe::CalculatorGraph* graph,
+                                                  const char* serialized_config,
+                                                  int size,
+                                                  mediapipe::Status** status_out) {
   TRY_ALL {
-    *status_out = new mediapipe::Status { graph->Initialize(*config) };
+    auto config = ParseFromStringAsCalculatorGraphConfig(serialized_config, size);
+    *status_out = new mediapipe::Status { graph->Initialize(config) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_ALL
 }
 
-MpReturnCode mp_CalculatorGraph__Initialize__Rconfig_Rsp(
-    mediapipe::CalculatorGraph* graph,
-    mediapipe::CalculatorGraphConfig* config,
-    SidePackets* side_packets,
-    mediapipe::Status** status_out) {
+MpReturnCode mp_CalculatorGraph__Initialize__Rcgc_Rsp(mediapipe::CalculatorGraph* graph,
+                                                      const char* serialized_config,
+                                                      int size,
+                                                      SidePackets* side_packets,
+                                                      mediapipe::Status** status_out) {
   TRY_ALL {
-    *status_out = new mediapipe::Status { graph->Initialize(*config, *side_packets) };
+    auto config = ParseFromStringAsCalculatorGraphConfig(serialized_config, size);
+    *status_out = new mediapipe::Status { graph->Initialize(config, *side_packets) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_ALL
 }
 
-MpReturnCode mp_CalculatorGraph__Config(mediapipe::CalculatorGraph* graph, mediapipe::CalculatorGraphConfig** config_out) {
+MpReturnCode mp_CalculatorGraph__Config(mediapipe::CalculatorGraph* graph, mp_api::SerializedProto** config_out) {
   TRY_ALL {
-    *config_out = new mediapipe::CalculatorGraphConfig { graph->Config() };  // Crashes if graph has no config
+    *config_out = SerializeProto(graph->Config());
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_ALL
 }

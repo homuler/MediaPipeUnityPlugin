@@ -7,20 +7,20 @@ namespace Mediapipe {
     public static extern MpReturnCode mp_CalculatorGraph__(out IntPtr graph);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_CalculatorGraph__Rconfig(IntPtr config, out IntPtr graph);
+    public static extern MpReturnCode mp_CalculatorGraph__Rcgc(byte[] serializedConfig, int size, out IntPtr graph);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern void mp_CalculatorGraph__delete(IntPtr graph);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_CalculatorGraph__Initialize__Rconfig(IntPtr graph, IntPtr config, out IntPtr status);
+    public static extern MpReturnCode mp_CalculatorGraph__Initialize__Rcgc(IntPtr graph, byte[] serializedConfig, int size, out IntPtr status);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_CalculatorGraph__Initialize__Rconfig_Rsp(
-        IntPtr graph, IntPtr config, IntPtr sidePackets, out IntPtr status);
+    public static extern MpReturnCode mp_CalculatorGraph__Initialize__Rcgc_Rsp(
+        IntPtr graph, byte[] serializedConfig, int size, IntPtr sidePackets, out IntPtr status);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_CalculatorGraph__Config(IntPtr graph, out IntPtr config);
+    public static extern MpReturnCode mp_CalculatorGraph__Config(IntPtr graph, out IntPtr serializedProto);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_CalculatorGraph__ObserveOutputStream__PKc_PF(IntPtr graph, string streamName,

@@ -4,6 +4,8 @@
 #include <map>
 #include <memory>
 #include <string>
+
+#include "mediapipe_api/external/protobuf.h"
 #include "mediapipe/framework/calculator_graph.h"
 #include "mediapipe_api/common.h"
 #include "mediapipe_api/framework/packet.h"
@@ -21,19 +23,20 @@ typedef std::map<std::string, mediapipe::Packet> SidePackets;
 typedef mediapipe::Status* NativePacketCallback(const mediapipe::Packet&);
 
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__(mediapipe::CalculatorGraph** graph_out);
-MP_CAPI(MpReturnCode) mp_CalculatorGraph__Rconfig(mediapipe::CalculatorGraphConfig* config, mediapipe::CalculatorGraph** graph_out);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__Rcgc(const char* serialized_config, int size, mediapipe::CalculatorGraph** graph_out);
 MP_CAPI(void) mp_CalculatorGraph__delete(mediapipe::CalculatorGraph* graph);
-MP_CAPI(MpReturnCode) mp_CalculatorGraph__Initialize__Rconfig(mediapipe::CalculatorGraph* graph,
-                                                              mediapipe::CalculatorGraphConfig* config,
-                                                              mediapipe::Status** status_out);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__Initialize__Rcgc(mediapipe::CalculatorGraph* graph,
+                                                           const char* serialized_config,
+                                                           int size,
+                                                           mediapipe::Status** status_out);
 
-MP_CAPI(MpReturnCode) mp_CalculatorGraph__Initialize__Rconfig_Rsp(
-    mediapipe::CalculatorGraph* graph,
-    mediapipe::CalculatorGraphConfig* config,
-    SidePackets* side_packets,
-    mediapipe::Status** status_out);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__Initialize__Rcgc_Rsp(mediapipe::CalculatorGraph* graph,
+                                                               const char* serialized_config,
+                                                               int size,
+                                                               SidePackets* side_packets,
+                                                               mediapipe::Status** status_out);
 
-MP_CAPI(MpReturnCode) mp_CalculatorGraph__Config(mediapipe::CalculatorGraph* graph, mediapipe::CalculatorGraphConfig** config_out);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__Config(mediapipe::CalculatorGraph* graph, mp_api::SerializedProto** config_out);
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__ObserveOutputStream__PKc_PF(mediapipe::CalculatorGraph* graph,
                                                                       const char* stream_name,
                                                                       NativePacketCallback* packet_callback,

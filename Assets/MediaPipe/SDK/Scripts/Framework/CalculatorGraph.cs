@@ -1,6 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
 
+using Google.Protobuf;
+
 namespace Mediapipe {
   public class CalculatorGraph : MpResourceHandle {
     public delegate IntPtr NativePacketCallback(IntPtr packetPtr);
@@ -11,10 +13,18 @@ namespace Mediapipe {
       this.ptr = ptr;
     }
 
-    public CalculatorGraph(string configText) : base() {
-      var config = CalculatorGraphConfig.ParseFromString(configText);
-      UnsafeNativeMethods.mp_CalculatorGraph__Rconfig(config.mpPtr, out var ptr).Assert();
-      GC.KeepAlive(config);
+    /// <param name="textFormatConfig">text-formatted config</param>
+    /// <remarks>
+    ///   By calling this constructor, the config text is parsed and serialized to binary string in C++,
+    ///   parsed and serialized again in C#, and finally the serialized config is passed to C++ (so it is not efficient).
+    ///   If possible, it would be better to build CalculatorGraphConfig from JSON in C# and pass it to another constructor.
+    /// </remarks>
+    public CalculatorGraph(string textFormatConfig) : this(CalculatorGraphConfig.Parser.ParseFromTextFormat(textFormatConfig)) {}
+
+    public CalculatorGraph(CalculatorGraphConfig config) : base() {
+      var bytes = config.ToByteArray();
+
+      UnsafeNativeMethods.mp_CalculatorGraph__Rcgc(bytes, bytes.Length, out var ptr).Assert();
       this.ptr = ptr;
     }
 
@@ -23,27 +33,30 @@ namespace Mediapipe {
     }
 
     public Status Initialize(CalculatorGraphConfig config) {
-      UnsafeNativeMethods.mp_CalculatorGraph__Initialize__Rconfig(mpPtr, config.mpPtr, out var statusPtr).Assert();
+      var bytes = config.ToByteArray();
+      UnsafeNativeMethods.mp_CalculatorGraph__Initialize__Rcgc(mpPtr, bytes, bytes.Length, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       return new Status(statusPtr);
     }
 
     public Status Initialize(CalculatorGraphConfig config, SidePacket sidePacket) {
-      UnsafeNativeMethods.mp_CalculatorGraph__Initialize__Rconfig_Rsp(mpPtr, config.mpPtr, sidePacket.mpPtr, out var statusPtr).Assert();
+      var bytes = config.ToByteArray();
+      UnsafeNativeMethods.mp_CalculatorGraph__Initialize__Rcgc_Rsp(mpPtr, bytes, bytes.Length, sidePacket.mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       return new Status(statusPtr);
     }
 
     /// <remarks>Crashes if config is not set</remarks>
-    public CalculatorGraphConfig config {
-      get {
-        UnsafeNativeMethods.mp_CalculatorGraph__Config(mpPtr, out var configPtr).Assert();
+    public CalculatorGraphConfig Config() {
+      UnsafeNativeMethods.mp_CalculatorGraph__Config(mpPtr, out var serializedProtoPtr).Assert();
+      GC.KeepAlive(this);
 
-        GC.KeepAlive(this);
-        return new CalculatorGraphConfig(configPtr);
-      }
+      var config = Protobuf.DeserializeProto<CalculatorGraphConfig>(serializedProtoPtr, CalculatorGraphConfig.Parser);
+      UnsafeNativeMethods.mp_api_SerializedProto__delete(serializedProtoPtr);
+
+      return config;
     }
 
     public Status ObserveOutputStream<T, U>(string streamName, PacketCallback<T, U> packetCallback, out GCHandle callbackHandle) where T : Packet<U> {

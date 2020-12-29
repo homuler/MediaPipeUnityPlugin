@@ -26,9 +26,10 @@ output_stream: ""out""
     [Test]
     public void Ctor_ShouldInstantiateCalculatorGraph_When_CalledWithConfigText() {
       var graph = new CalculatorGraph(validConfigText);
-      var config = graph.config;
+      var config = graph.Config();
 
-      Assert.Greater(config.byteSizeLong, 0);
+      Assert.AreEqual(config.InputStream[0], "in");
+      Assert.AreEqual(config.OutputStream[0], "out");
     }
     #endregion
 
@@ -53,18 +54,18 @@ output_stream: ""out""
     [Test]
     public void Initialize_ShouldReturnOk_When_CalledWithConfig_And_ConfigIsNotSet() {
       var graph = new CalculatorGraph();
-      var config = CalculatorGraphConfig.ParseFromString(validConfigText);
-      var status = graph.Initialize(config);
-
+      var status = graph.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(validConfigText));
       Assert.True(status.ok);
-      Assert.Greater(graph.config.byteSizeLong, 0);
+
+      var config = graph.Config();
+      Assert.AreEqual(config.InputStream[0], "in");
+      Assert.AreEqual(config.OutputStream[0], "out");
     }
 
     [Test]
     public void Initialize_ShouldReturnInternalError_When_CalledWithConfig_And_ConfigIsSet() {
       var graph = new CalculatorGraph(validConfigText);
-      var config = CalculatorGraphConfig.ParseFromString(validConfigText);
-      var status = graph.Initialize(config);
+      var status = graph.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(validConfigText));
 
       Assert.AreEqual(status.code, Status.StatusCode.Internal);
     }
@@ -72,7 +73,7 @@ output_stream: ""out""
     [Test]
     public void Initialize_ShouldReturnOk_When_CalledWithConfigAndSidePacket_And_ConfigIsNotSet() {
       var graph = new CalculatorGraph();
-      var config = CalculatorGraphConfig.ParseFromString(validConfigText);
+      var config = CalculatorGraphConfig.Parser.ParseFromTextFormat(validConfigText);
       var sidePacket = new SidePacket();
       sidePacket.Emplace("flag", new BoolPacket(true));
       var status = graph.Initialize(config, sidePacket);
@@ -84,7 +85,7 @@ output_stream: ""out""
     [Test]
     public void Initialize_ShouldReturnInternalError_When_CalledWithConfigAndSidePacket_And_ConfigIsSet() {
       var graph = new CalculatorGraph(validConfigText);
-      var config = CalculatorGraphConfig.ParseFromString(validConfigText);
+      var config = CalculatorGraphConfig.Parser.ParseFromTextFormat(validConfigText);
       var sidePacket = new SidePacket();
       sidePacket.Emplace("flag", new BoolPacket(true));
       var status = graph.Initialize(config, sidePacket);

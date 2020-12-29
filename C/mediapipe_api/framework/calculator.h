@@ -3,20 +3,12 @@
 
 #include <memory>
 #include <utility>
-#include "mediapipe/framework/calculator.pb.h"
 #include "mediapipe_api/common.h"
+#include "mediapipe_api/external/protobuf.h"
 
 extern "C" {
 
-MP_CAPI(MpReturnCode) google_protobuf_TextFormat__ParseFromStringAsCalculatorGraphConfig__PKc(
-    const char* input,
-    mediapipe::CalculatorGraphConfig** config_out);
-
-MP_CAPI(void) mp_CalculatorGraphConfig__delete(mediapipe::CalculatorGraphConfig* config);
-
-MP_CAPI(int) mp_CalculatorGraphConfig__ByteSizeLong(mediapipe::CalculatorGraphConfig* config);
-MP_CAPI(MpReturnCode) mp_CalculatorGraphConfig__SerializeAsString(mediapipe::CalculatorGraphConfig* config, const char** str_out);
-MP_CAPI(MpReturnCode) mp_CalculatorGraphConfig__DebugString(mediapipe::CalculatorGraphConfig* config, const char** str_out);
+MP_CAPI(MpReturnCode) mp_api__ConvertFromCalculatorGraphConfigTextFormat(const char* config_text, mp_api::SerializedProto** value_out);
 
 }  // extern "C"
 

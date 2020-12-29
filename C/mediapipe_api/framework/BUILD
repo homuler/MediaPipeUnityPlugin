@@ -2,21 +2,17 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
+load("//mediapipe_api:csharp_proto_src.bzl", "csharp_proto_src")
+
 cc_library(
     name = "calculator",
     srcs = ["calculator.cc"],
     hdrs = ["calculator.h"],
     deps = [
         "//mediapipe_api:common",
+        "//mediapipe_api/external:protobuf",
         "@com_google_mediapipe//mediapipe/framework:calculator_framework",
-        "@com_google_mediapipe//mediapipe/framework/port:parse_text_proto",
-    ] + select({
-        "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [],
-        "//conditions:default": [
-            "//mediapipe_api/gpu:gl_calculator_helper",
-            "//mediapipe_api/gpu:gpu_shared_data_internal",
-        ],
-    }),
+    ],
     alwayslink = True,
 )
 
@@ -73,4 +69,60 @@ cc_library(
         "//mediapipe_api:common",
     ],
     alwayslink = True,
+)
+
+csharp_proto_src(
+    name = "calculator_cs",
+    proto_src = "mediapipe/framework/calculator.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework:protos_src",
+    ],
+)
+
+csharp_proto_src(
+    name = "calculator_options_cs",
+    proto_src = "mediapipe/framework/calculator_options.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework:protos_src",
+    ],
+)
+
+csharp_proto_src(
+    name = "mediapipe_options_cs",
+    proto_src = "mediapipe/framework/mediapipe_options.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework:protos_src",
+    ],
+)
+
+csharp_proto_src(
+    name = "packet_factory_cs",
+    proto_src = "mediapipe/framework/packet_factory.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework:protos_src",
+    ],
+)
+
+csharp_proto_src(
+    name = "packet_generator_cs",
+    proto_src = "mediapipe/framework/packet_generator.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework:protos_src",
+    ],
+)
+
+csharp_proto_src(
+    name = "status_handler_cs",
+    proto_src = "mediapipe/framework/status_handler.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework:protos_src",
+    ],
+)
+
+csharp_proto_src(
+    name = "stream_handler_cs",
+    proto_src = "mediapipe/framework/stream_handler.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework:protos_src",
+    ],
 )

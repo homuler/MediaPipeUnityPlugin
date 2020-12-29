@@ -11,18 +11,6 @@ namespace Mediapipe {
       UnsafeNativeMethods.google_protobuf__SetLogHandler__PF(protobufLogHandler).Assert();
     }
 
-    /// <exception cref="MediaPipeException">Thrown when an error occured in unmanaged code</exception>
-    /// <exception cref="FormatException">Thrown when failed to parse <paramref name="configText" /></exception>
-    public static CalculatorGraphConfig ParseFromStringAsCalculatorGraphConfig(string configText) {
-      UnsafeNativeMethods.google_protobuf_TextFormat__ParseFromStringAsCalculatorGraphConfig__PKc(configText, out var configPtr).Assert();
-
-      if (configPtr == IntPtr.Zero) {
-        throw new FormatException("Failed to parse the text as CalculatorGraphConfig");
-      }
-
-      return new CalculatorGraphConfig(configPtr);
-    }
-
     public static T DeserializeProto<T>(IntPtr ptr, pb::MessageParser<T> parser) where T : pb::IMessage<T> {
       var serializedProto = Marshal.PtrToStructure<SerializedProto>(ptr);
       var bytes = new byte[serializedProto.length];

@@ -16,6 +16,7 @@ cc_library(
     deps = [
         "//mediapipe_api:common",
         "@com_google_protobuf//:protobuf",
+        "@com_google_mediapipe//mediapipe/framework/port:parse_text_proto",
     ],
     visibility = ["//visibility:public"],
     alwayslink = True,
