@@ -22,6 +22,7 @@ cc_library(
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [],
         "//conditions:default": [
+            "//mediapipe_api/gpu:egl_surface_holder", # TODO: exclude when apple
             "//mediapipe_api/gpu:gl_base",
             "//mediapipe_api/gpu:gl_context",
             "//mediapipe_api/gpu:gl_calculator_helper",
