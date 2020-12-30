@@ -63,11 +63,11 @@ public class SceneDirector : MonoBehaviour {
       GL.IssuePluginEvent(fp, 1);
     }
 
-    #if UNITY_EDITOR
-      var resourceManager = LocalAssetManager.Instance;
-    #else
-      var resourceManager = AssetBundleManager.Instance;
-    #endif
+#if UNITY_EDITOR
+    var resourceManager = LocalAssetManager.Instance;
+#else
+    var resourceManager = AssetBundleManager.Instance;
+#endif
 
     ResourceUtil.InitializeResourceManager(resourceManager);
 

@@ -30,34 +30,34 @@ public class OfficialDemoGPU : DemoGraph {
     }
 
     using (var gpuBuffer = outputPacket.Get()) {
-      #if UNITY_ANDROID
-        // OpenGL ES
-        screenController.DrawScreen(gpuBuffer);
-      #else
-        ImageFrame imageFrame = null;
+#if UNITY_ANDROID
+      // OpenGL ES
+      screenController.DrawScreen(gpuBuffer);
+#else
+      ImageFrame imageFrame = null;
 
-        gpuHelper.RunInGlContext(() => {
-          var gpuBufferFormat = gpuBuffer.Format();
-          var sourceTexture = gpuHelper.CreateSourceTexture(gpuBuffer);
+      gpuHelper.RunInGlContext(() => {
+        var gpuBufferFormat = gpuBuffer.Format();
+        var sourceTexture = gpuHelper.CreateSourceTexture(gpuBuffer);
 
-          imageFrame = new ImageFrame(
-            gpuBufferFormat.ImageFormatFor(), gpuBuffer.Width(), gpuBuffer.Height(), ImageFrame.kGlDefaultAlignmentBoundary);
+        imageFrame = new ImageFrame(
+          gpuBufferFormat.ImageFormatFor(), gpuBuffer.Width(), gpuBuffer.Height(), ImageFrame.kGlDefaultAlignmentBoundary);
 
-          gpuHelper.BindFramebuffer(sourceTexture);
-          var info = gpuBufferFormat.GlTextureInfoFor(0);
+        gpuHelper.BindFramebuffer(sourceTexture);
+        var info = gpuBufferFormat.GlTextureInfoFor(0);
 
-          Gl.ReadPixels(0, 0, sourceTexture.width, sourceTexture.height, info.glFormat, info.glType, imageFrame.MutablePixelData());
-          Gl.Flush();
+        Gl.ReadPixels(0, 0, sourceTexture.width, sourceTexture.height, info.glFormat, info.glType, imageFrame.MutablePixelData());
+        Gl.Flush();
 
-          sourceTexture.Release();
+        sourceTexture.Release();
 
-          return Status.Ok(false);
-        }).AssertOk();
+        return Status.Ok(false);
+      }).AssertOk();
 
-        if (imageFrame != null) { // always true
-          screenController.DrawScreen(imageFrame);
-        }
-      #endif
+      if (imageFrame != null) { // always true
+        screenController.DrawScreen(imageFrame);
+      }
+#endif
     }
   }
 }

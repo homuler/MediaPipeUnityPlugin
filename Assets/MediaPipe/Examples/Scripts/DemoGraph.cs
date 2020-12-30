@@ -47,32 +47,32 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
       return graph.AddPacketToInputStream(inputStream, packet);
     }
 
-    #if UNITY_ANDROID
-      var glTextureName = textureFrame.GetNativeTexturePtr();
+#if UNITY_ANDROID
+    var glTextureName = textureFrame.GetNativeTexturePtr();
 
-      return gpuHelper.RunInGlContext(() => {
-        var glContext = GlContext.GetCurrent();
-        var glTextureBuffer = new GlTextureBuffer((UInt32)glTextureName, textureFrame.width, textureFrame.height,
-                                                  textureFrame.gpuBufferformat, textureFrame.OnRelease, glContext);
-        var gpuBuffer = new GpuBuffer(glTextureBuffer);
+    return gpuHelper.RunInGlContext(() => {
+      var glContext = GlContext.GetCurrent();
+      var glTextureBuffer = new GlTextureBuffer((UInt32)glTextureName, textureFrame.width, textureFrame.height,
+                                                textureFrame.gpuBufferformat, textureFrame.OnRelease, glContext);
+      var gpuBuffer = new GpuBuffer(glTextureBuffer);
 
-        return graph.AddPacketToInputStream(inputStream, new GpuBufferPacket(gpuBuffer, timestamp));
-      });
-    #else
-      imageFrame = new ImageFrame(
-        ImageFormat.Format.SRGBA, textureFrame.width, textureFrame.height, 4 * textureFrame.width, textureFrame.GetRawNativeByteArray());
-      textureFrame.Release();
+      return graph.AddPacketToInputStream(inputStream, new GpuBufferPacket(gpuBuffer, timestamp));
+    });
+#else
+    imageFrame = new ImageFrame(
+      ImageFormat.Format.SRGBA, textureFrame.width, textureFrame.height, 4 * textureFrame.width, textureFrame.GetRawNativeByteArray());
+    textureFrame.Release();
 
-      return gpuHelper.RunInGlContext(() => {
-        var texture = gpuHelper.CreateSourceTexture(imageFrame);
-        var gpuBuffer = texture.GetGpuBufferFrame();
+    return gpuHelper.RunInGlContext(() => {
+      var texture = gpuHelper.CreateSourceTexture(imageFrame);
+      var gpuBuffer = texture.GetGpuBufferFrame();
 
-        Gl.Flush();
-        texture.Release();
+      Gl.Flush();
+      texture.Release();
 
-        return graph.AddPacketToInputStream(inputStream, new GpuBufferPacket(gpuBuffer, timestamp));
-      });
-    #endif
+      return graph.AddPacketToInputStream(inputStream, new GpuBufferPacket(gpuBuffer, timestamp));
+    });
+#endif
   }
 
   public abstract void RenderOutput(WebCamScreenController screenController, TextureFrame textureFrame);
