@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/homuler/MediapipeUnityPlugin/compare/v0.2.2...v0.3.0) (2020-12-31)
+
+
+### ⚠ BREAKING CHANGES
+
+* **example:** pass the input texture name to MediaPipe
+* **example:** MediaPipe rotates the input image
+* use OpenGL ES on Android
+
+### Features
+
+* **example:** enable to specify the output texture on Android ([18e00a8](https://github.com/homuler/MediapipeUnityPlugin/commit/18e00a85ac271b123178e593184184e8715ed22e))
+* **example:** implement TextureFramePool ([9723843](https://github.com/homuler/MediapipeUnityPlugin/commit/972384368459628b151b79c7f799f2f9547b93fd))
+* **example:** pass the input texture name to MediaPipe ([7f3628d](https://github.com/homuler/MediapipeUnityPlugin/commit/7f3628dcdce156c35f865fbfa354ecd3b28aa867))
+* **example:** render external textures directly ([ebbf0ed](https://github.com/homuler/MediapipeUnityPlugin/commit/ebbf0ed4367748254a42cda891674817ee78cb33))
+* add Official Demo Graph ([7a340f9](https://github.com/homuler/MediapipeUnityPlugin/commit/7a340f97da91f71c9c3850cd88fa549fd908e4b5))
+* use OpenGL ES on Android ([a10efce](https://github.com/homuler/MediapipeUnityPlugin/commit/a10efce8ead138192a1d6fc71796078bce529fc3))
+* **sdk:** add GlTextureBuffer APIs ([1643620](https://github.com/homuler/MediapipeUnityPlugin/commit/1643620ed92fe7630213f058c19864b40810a443))
+* **sdk:** build CalculatorGraphConfig.cs from proto srcs ([9e576e2](https://github.com/homuler/MediapipeUnityPlugin/commit/9e576e2e2141ed9995ee8abdd8d1b4a68d3b69b7))
+* **sdk:** CreateDestinationTexture from GpuBuffer ([48ba090](https://github.com/homuler/MediapipeUnityPlugin/commit/48ba0902f1e1071f5a14831fbb148e0777329121))
+* **sdk:** implement EglSurfaceHolder ([380a8c5](https://github.com/homuler/MediapipeUnityPlugin/commit/380a8c5e8d719846a0d12c71a9ba1a4b680d2f7d))
+* **sdk:** implement name related APIs under mediapipe::tool ([e967820](https://github.com/homuler/MediapipeUnityPlugin/commit/e967820c8f43c9c2809aa75841acdaaacfd2fa97))
+
+
+### Bug Fixes
+
+* SIGSEGV when GlTextureBuffer is destroyed ([a1e4cc0](https://github.com/homuler/MediapipeUnityPlugin/commit/a1e4cc074861403160962c7c0ddc1da4f41823b3))
+* **example:** use FlowLimiterCalculator in OfficialDemoCPU graph ([f92d71a](https://github.com/homuler/MediapipeUnityPlugin/commit/f92d71a33fc39c0f99ebe7c0e435a4d623f1de1d))
+
+
+* **example:** MediaPipe rotates the input image ([0eda94c](https://github.com/homuler/MediapipeUnityPlugin/commit/0eda94cd25686664a70c594c29fc6617ef55ac94))
+
 ### [0.2.2](https://github.com/homuler/MediapipeUnityPlugin/compare/v0.2.1...v0.2.2) (2020-12-19)
 
 
