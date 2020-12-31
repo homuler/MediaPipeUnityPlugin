@@ -1,4 +1,5 @@
 using Mediapipe;
+using UnityEngine;
 
 public interface IDemoGraph<T> {
   /// <summary>
@@ -18,6 +19,7 @@ public interface IDemoGraph<T> {
   ///   It is also necessary to initialize OutputStreamPollers.
   /// </summary>
   Status StartRun();
+  Status StartRun(Texture texture);
 
   Status PushInput(T input);
 

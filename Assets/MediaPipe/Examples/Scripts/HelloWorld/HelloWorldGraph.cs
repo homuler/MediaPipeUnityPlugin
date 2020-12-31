@@ -14,6 +14,7 @@
 
 using Mediapipe;
 using UnityEngine;
+using System;
 
 /// <Summary>
 ///   A simple example to print out "Hello World!" from a MediaPipe graph.
@@ -58,6 +59,10 @@ node {
     outputPacket = new StringPacket();
 
     return graph.StartRun();
+  }
+
+  public Status StartRun(Texture texture) {
+    throw new NotSupportedException();
   }
 
   public Status PushInput(string text) {

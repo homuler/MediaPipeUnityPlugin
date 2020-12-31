@@ -11,7 +11,7 @@ public class OfficialDemoCPU : DemoGraph {
   private SidePacket sidePacket;
 
   public override Status StartRun() {
-    Debug.LogWarning("This graph is for testing official examples. You can customize the graph by editing `official_demo_cpu.txt` (default is `hand_tracking_desktop.pbtxt`)");
+    Debug.Log("This graph is for testing official examples. You can customize the graph by editing `official_demo_cpu.txt` (default is `hand_tracking_desktop.pbtxt`)");
 
     graph.ObserveOutputStream<ImageFramePacket, ImageFrame>(outputStream, OutputVideoCallback, out outputVideoCallbackHandle).AssertOk();
 

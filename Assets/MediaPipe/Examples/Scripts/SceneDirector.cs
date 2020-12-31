@@ -173,7 +173,7 @@ public class SceneDirector : MonoBehaviour {
       graph.Initialize();
     }
 
-    graph.StartRun().AssertOk();
+    graph.StartRun(webCamScreenController.GetScreen()).AssertOk();
 
     while (true) {
       yield return new WaitForEndOfFrame();

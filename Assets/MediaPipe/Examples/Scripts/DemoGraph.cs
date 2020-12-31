@@ -14,7 +14,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
     Stop();
   }
 
-  public void Initialize() {
+  public virtual void Initialize() {
     if (config == null) {
       throw new InvalidOperationException("config is missing");
     }
@@ -30,6 +30,9 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
   }
 
   public abstract Status StartRun();
+  public virtual Status StartRun(Texture texture) {
+    return StartRun();
+  }
 
   /// <summary>
   ///   Convert <paramref name="colors" /> to a packet and send it to the input stream.
