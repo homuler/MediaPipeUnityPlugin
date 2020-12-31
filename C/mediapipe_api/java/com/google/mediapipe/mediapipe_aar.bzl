@@ -64,6 +64,7 @@ cat > $(OUTS) <<EOF
         android:targetSdkVersion="27" />
     <application />
 </manifest>
+EOF
 """.format(package),
     )
 
