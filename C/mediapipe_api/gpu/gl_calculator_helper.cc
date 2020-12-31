@@ -36,7 +36,7 @@ MpReturnCode mp_GlCalculatorHelper__CreateSourceTexture__Rif(mediapipe::GlCalcul
                                                              mediapipe::ImageFrame* image_frame,
                                                              mediapipe::GlTexture** gl_texture_out) {
   TRY_ALL {
-    *gl_texture_out = new mediapipe::GlTexture { gl_calculator_helper->CreateSourceTexture(std::move(*image_frame)) };
+    *gl_texture_out = new mediapipe::GlTexture { gl_calculator_helper->CreateSourceTexture(*image_frame) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_ALL
 }
@@ -45,7 +45,7 @@ MpReturnCode mp_GlCalculatorHelper__CreateSourceTexture__Rgb(mediapipe::GlCalcul
                                                              mediapipe::GpuBuffer* gpu_buffer,
                                                              mediapipe::GlTexture** gl_texture_out) {
   TRY_ALL {
-    *gl_texture_out = new mediapipe::GlTexture { gl_calculator_helper->CreateSourceTexture(std::move(*gpu_buffer)) };
+    *gl_texture_out = new mediapipe::GlTexture { gl_calculator_helper->CreateSourceTexture(*gpu_buffer) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_ALL
 }
@@ -66,6 +66,15 @@ MpReturnCode mp_GlCalculatorHelper__CreateDestinationTexture__i_i_ui(mediapipe::
   } CATCH_EXCEPTION
 }
 
+MpReturnCode mp_GlCalculatorHelper__CreateDestinationTexture__Rgb(mediapipe::GlCalculatorHelper* gl_calculator_helper,
+                                                                  mediapipe::GpuBuffer* gpu_buffer,
+                                                                  mediapipe::GlTexture** gl_texture_out) {
+  TRY_ALL {
+    *gl_texture_out = new mediapipe::GlTexture { gl_calculator_helper->CreateDestinationTexture(*gpu_buffer) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
+}
+
 GLuint mp_GlCalculatorHelper__framebuffer(mediapipe::GlCalculatorHelper* gl_calculator_helper) {
   return gl_calculator_helper->framebuffer();
 }
@@ -73,7 +82,7 @@ GLuint mp_GlCalculatorHelper__framebuffer(mediapipe::GlCalculatorHelper* gl_calc
 MpReturnCode mp_GlCalculatorHelper__BindFrameBuffer__Rtexture(mediapipe::GlCalculatorHelper* gl_calculator_helper,
                                                              mediapipe::GlTexture* gl_texture) {
   TRY {
-    gl_calculator_helper->BindFramebuffer(std::move(*gl_texture));
+    gl_calculator_helper->BindFramebuffer(*gl_texture);
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }

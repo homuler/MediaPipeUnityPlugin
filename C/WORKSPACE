@@ -43,6 +43,7 @@ http_archive(
   patches = [
       "@//third_party:mediapipe_visibility.diff",
       "@//third_party:mediapipe_model_path.diff",
+      "@//third_party:mediapipe_extension.diff",
       # "@//third_party:mediapipe_debug.diff",
   ],
   patch_args = [

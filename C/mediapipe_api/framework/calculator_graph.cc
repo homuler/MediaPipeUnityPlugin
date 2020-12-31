@@ -21,7 +21,6 @@ void mp_CalculatorGraph__delete(mediapipe::CalculatorGraph* graph) {
 
 MpReturnCode mp_CalculatorGraph__Rcgc(const char* serialized_config, int size, mediapipe::CalculatorGraph** graph_out) {
   TRY_ALL {
-    LOG(INFO) << serialized_config;
     auto config = ParseFromStringAsCalculatorGraphConfig(serialized_config, size);
     *graph_out = new mediapipe::CalculatorGraph(config);
     RETURN_CODE(MpReturnCode::Success);

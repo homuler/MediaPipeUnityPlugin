@@ -1,0 +1,145 @@
+diff --git a/mediapipe/gpu/gl_calculator_helper.cc b/mediapipe/gpu/gl_calculator_helper.cc
+index 8b63735..a60b815 100644
+--- a/mediapipe/gpu/gl_calculator_helper.cc
++++ b/mediapipe/gpu/gl_calculator_helper.cc
+@@ -136,6 +136,10 @@ GlTexture GlCalculatorHelper::CreateDestinationTexture(int output_width,
+   return impl_->CreateDestinationTexture(output_width, output_height, format);
+ }
+ 
++GlTexture GlCalculatorHelper::CreateDestinationTexture(const GpuBuffer& pixel_buffer) {
++  return impl_->CreateDestinationTexture(pixel_buffer);
++}
++
+ GlContext& GlCalculatorHelper::GetGlContext() const {
+   return impl_->GetGlContext();
+ }
+diff --git a/mediapipe/gpu/gl_calculator_helper.h b/mediapipe/gpu/gl_calculator_helper.h
+index 53178da..f400c43 100644
+--- a/mediapipe/gpu/gl_calculator_helper.h
++++ b/mediapipe/gpu/gl_calculator_helper.h
+@@ -144,6 +144,8 @@ class GlCalculatorHelper {
+       int output_width, int output_height,
+       GpuBufferFormat format = GpuBufferFormat::kBGRA32);
+ 
++  GlTexture CreateDestinationTexture(const GpuBuffer& pixel_buffer);
++
+   // The OpenGL name of the output framebuffer.
+   GLuint framebuffer() const;
+ 
+diff --git a/mediapipe/gpu/gl_calculator_helper_impl.h b/mediapipe/gpu/gl_calculator_helper_impl.h
+index 2a20b84..9953081 100644
+--- a/mediapipe/gpu/gl_calculator_helper_impl.h
++++ b/mediapipe/gpu/gl_calculator_helper_impl.h
+@@ -50,6 +50,7 @@ class GlCalculatorHelperImpl {
+   // Creates a framebuffer and returns the texture that it is bound to.
+   GlTexture CreateDestinationTexture(int output_width, int output_height,
+                                      GpuBufferFormat format);
++  GlTexture CreateDestinationTexture(const GpuBuffer& gpu_buffer);
+ 
+   GLuint framebuffer() const { return framebuffer_; }
+   void BindFramebuffer(const GlTexture& dst);
+diff --git a/mediapipe/gpu/gl_calculator_helper_impl_common.cc b/mediapipe/gpu/gl_calculator_helper_impl_common.cc
+index 5a46042..7f01362 100644
+--- a/mediapipe/gpu/gl_calculator_helper_impl_common.cc
++++ b/mediapipe/gpu/gl_calculator_helper_impl_common.cc
+@@ -190,14 +190,18 @@ GlTextureBufferSharedPtr GlCalculatorHelperImpl::MakeGlTextureBuffer(
+ 
+ GlTexture GlCalculatorHelperImpl::CreateDestinationTexture(
+     int width, int height, GpuBufferFormat format) {
++  GpuBuffer buffer =
++      gpu_resources_.gpu_buffer_pool().GetBuffer(width, height, format);
++
++  return CreateDestinationTexture(buffer);
++}
++
++GlTexture GlCalculatorHelperImpl::CreateDestinationTexture(const GpuBuffer& gpu_buffer) {
+   if (!framebuffer_) {
+     CreateFramebuffer();
+   }
+ 
+-  GpuBuffer buffer =
+-      gpu_resources_.gpu_buffer_pool().GetBuffer(width, height, format);
+-  GlTexture texture = MapGpuBuffer(buffer, 0);
+-
++  GlTexture texture = MapGpuBuffer(gpu_buffer, 0);
+   return texture;
+ }
+ 
+diff --git a/mediapipe/gpu/gl_scaler_calculator.cc b/mediapipe/gpu/gl_scaler_calculator.cc
+index 8806267..92200ae 100644
+--- a/mediapipe/gpu/gl_scaler_calculator.cc
++++ b/mediapipe/gpu/gl_scaler_calculator.cc
+@@ -12,6 +12,8 @@
+ // See the License for the specific language governing permissions and
+ // limitations under the License.
+ 
++// Modified to enable to specify the target GpuBuffer
++
+ #include "mediapipe/framework/calculator_framework.h"
+ #include "mediapipe/framework/port/ret_check.h"
+ #include "mediapipe/framework/port/status.h"
+@@ -58,6 +60,7 @@ namespace mediapipe {
+ //   existing calculator options, depending on field merge_fields.
+ //   OUTPUT_DIMENSIONS: the output width and height in pixels.
+ //   ROTATION: the counterclockwise rotation angle in degrees.
++//   DESTINATION: the target GpuBuffer
+ // These can also be specified as options.
+ // To enable horizontal or vertical flip, specify them in options.
+ // The flipping is applied after rotation.
+@@ -82,6 +85,7 @@ class GlScalerCalculator : public CalculatorBase {
+ 
+  private:
+   GlCalculatorHelper helper_;
++  GpuBuffer dst_buffer_;
+   int dst_width_ = 0;
+   int dst_height_ = 0;
+   float dst_scale_ = -1.f;
+@@ -109,6 +113,9 @@ REGISTER_CALCULATOR(GlScalerCalculator);
+   }
+   MP_RETURN_IF_ERROR(GlCalculatorHelper::UpdateContract(cc));
+ 
++  if (cc->InputSidePackets().HasTag("DESTINATION")) {
++    cc->InputSidePackets().Tag("DESTINATION").Set<GpuBuffer>();
++  }
+   if (cc->InputSidePackets().HasTag("OPTIONS")) {
+     cc->InputSidePackets().Tag("OPTIONS").Set<GlScalerCalculatorOptions>();
+   }
+@@ -175,6 +182,13 @@ REGISTER_CALCULATOR(GlScalerCalculator);
+     dst_width_ = dimensions[0];
+     dst_height_ = dimensions[1];
+   }
++
++  if (HasTagOrIndex(cc->InputSidePackets(), "DESTINATION", 1)) {
++    dst_buffer_ = cc->InputSidePackets().Tag("DESTINATION").Get<GpuBuffer>();
++    dst_width_ = dst_buffer_.width();
++    dst_height_ = dst_buffer_.height();
++  }
++
+   if (cc->InputSidePackets().HasTag("ROTATION")) {
+     rotation_ccw = cc->InputSidePackets().Tag("ROTATION").Get<int>();
+   }
+@@ -185,7 +199,7 @@ REGISTER_CALCULATOR(GlScalerCalculator);
+ }
+ 
+ ::mediapipe::Status GlScalerCalculator::Process(CalculatorContext* cc) {
+-  if (cc->Inputs().HasTag("OUTPUT_DIMENSIONS")) {
++  if (!dst_buffer_ && cc->Inputs().HasTag("OUTPUT_DIMENSIONS")) {
+     if (cc->Inputs().Tag("OUTPUT_DIMENSIONS").IsEmpty()) {
+       // OUTPUT_DIMENSIONS input stream is specified, but value is missing.
+       return ::mediapipe::OkStatus();
+@@ -264,8 +278,13 @@ REGISTER_CALCULATOR(GlScalerCalculator);
+               MakePacket<float>(left_right_padding).At(cc->InputTimestamp()));
+     }
+ 
+-    auto dst = helper_.CreateDestinationTexture(dst_width, dst_height,
+-                                                GetOutputFormat());
++    GlTexture dst;
++    if (dst_buffer_) {
++      dst_buffer_.GetGlTextureBufferSharedPtr()->Reuse();
++      dst = helper_.CreateDestinationTexture(dst_buffer_);
++    } else {
++      dst = helper_.CreateDestinationTexture(dst_width, dst_height, GetOutputFormat());
++    }
+ 
+     helper_.BindFramebuffer(dst);
+     glActiveTexture(GL_TEXTURE1);

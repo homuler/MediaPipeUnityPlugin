@@ -29,6 +29,10 @@ namespace Mediapipe {
         IntPtr glCalculatorHelper, int outputWidth, int outputHeight, GpuBufferFormat formatCode, out IntPtr glTexture);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_GlCalculatorHelper__CreateDestinationTexture__Rgb(
+        IntPtr glCalculatorHelper, IntPtr gpuBuffer, out IntPtr glTexture);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_GlCalculatorHelper__BindFrameBuffer__Rtexture(IntPtr glCalculatorHelper, IntPtr glTexture);
   }
 }

@@ -68,6 +68,14 @@ namespace Mediapipe {
       return new GlTexture(texturePtr);
     }
 
+    public GlTexture CreateDestinationTexture(GpuBuffer gpuBuffer) {
+      UnsafeNativeMethods.mp_GlCalculatorHelper__CreateDestinationTexture__Rgb(mpPtr, gpuBuffer.mpPtr, out var texturePtr).Assert();
+
+      GC.KeepAlive(this);
+      GC.KeepAlive(gpuBuffer);
+      return new GlTexture(texturePtr);
+    }
+
     public uint framebuffer {
       get { return SafeNativeMethods.mp_GlCalculatorHelper__framebuffer(mpPtr); }
     }
