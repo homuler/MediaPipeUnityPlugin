@@ -15,6 +15,7 @@
 # This file is OfficialDemoCPU's config file.
 #
 # CHANGES:
+#  - add FlowLimiterCalculator
 #  - add ImageTransformationCalculator
 #  - use SidePacket instead of ConstantSidePacketCalculator
 #  - add comments
@@ -30,11 +31,22 @@ input_stream: "input_video"
 # CPU image. (ImageFrame)
 output_stream: "output_video"
 
+node {
+  calculator: "FlowLimiterCalculator"
+  input_stream: "input_video"
+  input_stream: "FINISHED:output_video"
+  input_stream_info: {
+    tag_index: "FINISHED"
+    back_edge: true
+  }
+  output_stream: "throttled_input_video"
+}
+
 # Flip vertically because the input image is aligned from bottom-left to top-right,
 # and horizontally to use Web Camera.
 node: {
   calculator: "ImageTransformationCalculator"
-  input_stream: "IMAGE:input_video"
+  input_stream: "IMAGE:throttled_input_video"
   output_stream: "IMAGE:transformed_input_video"
   node_options: {
     [type.googleapis.com/mediapipe.ImageTransformationCalculatorOptions] {
