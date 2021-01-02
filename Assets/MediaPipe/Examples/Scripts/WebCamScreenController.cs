@@ -3,10 +3,10 @@ using System;
 using UnityEngine;
 
 public class WebCamScreenController : MonoBehaviour {
-  [SerializeField] readonly int Width = 640;
-  [SerializeField] readonly int Height = 480;
-  [SerializeField] readonly int FPS = 30;
-  [SerializeField] readonly float FocalLengthPx = 2.0f; /// TODO: calculate it from webCamDevice info if possible.
+  [SerializeField] int Width = 640;
+  [SerializeField] int Height = 480;
+  [SerializeField] int FPS = 30;
+  [SerializeField] float FocalLengthPx = 2.0f; /// TODO: calculate it from webCamDevice info if possible.
   private const int TEXTURE_SIZE_THRESHOLD = 50;
 
   private WebCamDevice webCamDevice;

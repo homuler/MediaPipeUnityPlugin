@@ -843,6 +843,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 842caaa3595af5affbad9424323d3133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Width: 640
+  Height: 480
+  FPS: 30
+  FocalLengthPx: 2
 --- !u!64 &496037460
 MeshCollider:
   m_ObjectHideFlags: 0
