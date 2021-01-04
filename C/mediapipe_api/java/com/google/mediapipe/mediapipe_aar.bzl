@@ -19,8 +19,7 @@
 #  - add `srcs` option
 #  - add `deps` option
 #  - remove `calculators` option
-#  - add a `--proto_path` option
-#  - not to generate *Proto.java other than CalculatorProto.java
+#  - not to generate *Proto.java
 #  - .so files are placed under lib/
 
 load("@build_bazel_rules_android//android:rules.bzl", "android_binary", "android_library")
@@ -68,20 +67,12 @@ EOF
 """.format(package),
     )
 
-    _proto_java_src_generator(
-        name = "calculator_proto",
-        proto_src = "mediapipe/framework/calculator.proto",
-        java_lite_out = "com/google/mediapipe/proto/CalculatorProto.java",
-        srcs = ["@com_google_mediapipe//mediapipe/framework:protos_src"],
-    )
-
     android_library(
         name = name + "_android_lib",
         srcs = [
             "@com_google_mediapipe//mediapipe/java/com/google/mediapipe/components:java_src",
             "@com_google_mediapipe//mediapipe/java/com/google/mediapipe/framework:java_src",
             "@com_google_mediapipe//mediapipe/java/com/google/mediapipe/glutil:java_src",
-            "com/google/mediapipe/proto/CalculatorProto.java",
         ] + srcs,
         manifest = "AndroidManifest.xml",
         proguard_specs = ["@com_google_mediapipe//mediapipe/java/com/google/mediapipe/framework:proguard.pgcfg"],
@@ -108,24 +99,6 @@ EOF
     )
 
     _aar_with_jni(name, name + "_android_lib")
-
-def _proto_java_src_generator(name, proto_src, java_lite_out, srcs = []):
-    native.genrule(
-        name = name,
-        srcs = srcs + [
-            "@com_google_protobuf//:well_known_protos",
-        ],
-        outs = [java_lite_out],
-        cmd = "$(location @com_google_protobuf//:protoc) " +
-              "--proto_path=. --proto_path=$(GENDIR) " +
-              "--proto_path=$$(pwd)/external/com_google_protobuf/src " +
-              "--proto_path=$$(pwd)/external/com_google_mediapipe " +
-              "--java_out=lite:$(GENDIR) " + proto_src + " && " +
-              "mv $(GENDIR)/" + java_lite_out + " $$(dirname $(location " + java_lite_out + "))",
-        tools = [
-            "@com_google_protobuf//:protoc",
-        ],
-    )
 
 def _aar_with_jni(name, android_library):
     # Generate dummy AndroidManifest.xml for dummy apk usage
