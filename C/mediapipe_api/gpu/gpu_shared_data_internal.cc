@@ -19,13 +19,19 @@ MpReturnCode mp_GpuResources_Create(mediapipe::StatusOr<SharedGpuResources>** st
   } CATCH_EXCEPTION
 }
 
-MP_CAPI(MpReturnCode) mp_GpuResources_Create__Pv(EGLContext external_context,
+MP_CAPI(MpReturnCode) mp_GpuResources_Create__Pv(mediapipe::PlatformGlContext external_context,
                                                  mediapipe::StatusOr<SharedGpuResources>** status_or_gpu_resources_out) {
   TRY {
     *status_or_gpu_resources_out = new mediapipe::StatusOr<SharedGpuResources> { mediapipe::GpuResources::Create(external_context) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }
+
+#if __APPLE__
+MPPGraphGPUData* mp_GpuResources__ios_gpu_data(mediapipe::GpuResources* gpu_resources) {
+  return gpu_resources->ios_gpu_data();
+}
+#endif  // __APPLE__
 
 void mp_StatusOrGpuResources__delete(mediapipe::StatusOr<SharedGpuResources>* status_or_gpu_resources) {
   delete status_or_gpu_resources;

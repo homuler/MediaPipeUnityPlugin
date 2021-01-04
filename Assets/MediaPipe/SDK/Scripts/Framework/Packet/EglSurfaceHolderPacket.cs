@@ -1,5 +1,6 @@
 using System;
 
+#if UNITY_STANDALONE_LINUX || UNITY_ANDROID
 namespace Mediapipe {
   public class EglSurfaceHolderPacket : Packet<EglSurfaceHolder> {
     public EglSurfaceHolderPacket() : base() {}
@@ -31,3 +32,4 @@ namespace Mediapipe {
     }
   }
 }
+#endif

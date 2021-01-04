@@ -1,6 +1,7 @@
 using Mediapipe;
 using NUnit.Framework;
 
+#if UNITY_STANDALONE_LINUX || UNITY_ANDROID
 namespace Tests {
   public class EglSurfaceHolderPacketTest {
     #region Constructor
@@ -69,3 +70,4 @@ namespace Tests {
     #endregion
   }
 }
+#endif

@@ -18,12 +18,21 @@ MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__InitializeForTest__Pgr(mediapipe::G
 MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__RunInGlContext__PF(mediapipe::GlCalculatorHelper* gl_calculator_helper,
                                                                 NativeGlStatusFunction* gl_func,
                                                                 mediapipe::Status** status_out);
+
 MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__CreateSourceTexture__Rif(mediapipe::GlCalculatorHelper* gl_calculator_helper,
                                                                       mediapipe::ImageFrame* image_frame,
                                                                       mediapipe::GlTexture** gl_texture_out);
 MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__CreateSourceTexture__Rgb(mediapipe::GlCalculatorHelper* gl_calculator_helper,
                                                                       mediapipe::GpuBuffer* gpu_buffer,
                                                                       mediapipe::GlTexture** gl_texture_out);
+
+#ifdef __APPLE__
+MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__CreateSourceTexture__Rgb_i(mediapipe::GlCalculatorHelper* gl_calculator_helper,
+                                                                        mediapipe::GpuBuffer* gpu_buffer,
+                                                                        int plane,
+                                                                        mediapipe::GlTexture** gl_texture_out);
+#endif  // __APPLE__
+
 MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__CreateDestinationTexture__i_i_ui(mediapipe::GlCalculatorHelper* gl_calculator_helper,
                                                                               int output_width,
                                                                               int output_height,

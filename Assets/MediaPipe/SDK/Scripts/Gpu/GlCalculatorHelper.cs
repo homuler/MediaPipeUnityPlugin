@@ -61,6 +61,16 @@ namespace Mediapipe {
       return new GlTexture(texturePtr);
     }
 
+#if UNITY_IOS
+    public GlTexture CreateSourceTexture(GpuBuffer gpuBuffer, int plane) {
+      UnsafeNativeMethods.mp_GlCalculatorHelper__CreateSourceTexture__Rgb_i(mpPtr, gpuBuffer.mpPtr, plane, out var texturePtr).Assert();
+
+      GC.KeepAlive(this);
+      GC.KeepAlive(gpuBuffer);
+      return new GlTexture(texturePtr);
+    }
+#endif
+
     public GlTexture CreateDestinationTexture(int width, int height, GpuBufferFormat format) {
       UnsafeNativeMethods.mp_GlCalculatorHelper__CreateDestinationTexture__i_i_ui(mpPtr, width, height, format, out var texturePtr).Assert();
 

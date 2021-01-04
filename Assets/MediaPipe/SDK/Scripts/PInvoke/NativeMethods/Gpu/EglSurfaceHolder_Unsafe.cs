@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Mediapipe {
   internal static partial class UnsafeNativeMethods {
+#if UNITY_STANDALONE_LINUX || UNITY_ANDROID // defined on Linux, but usefull only with OpenGL ES
     [DllImport (MediaPipeLibrary)]
     public static extern MpReturnCode mp_EglSurfaceHolderUniquePtr__(out IntPtr eglSurfaceHolder);
 
@@ -21,5 +22,6 @@ namespace Mediapipe {
 
     [DllImport (MediaPipeLibrary)]
     public static extern MpReturnCode mp_Packet__ValidateAsEglSurfaceHolderUniquePtr(IntPtr packet, out IntPtr status);
+#endif
   }
 }

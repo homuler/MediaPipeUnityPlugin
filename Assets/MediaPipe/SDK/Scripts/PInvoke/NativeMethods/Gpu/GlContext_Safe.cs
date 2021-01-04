@@ -8,6 +8,7 @@ namespace Mediapipe {
     [Pure, DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern IntPtr mp_SharedGlContext__get(IntPtr sharedGlContext);
 
+#if UNITY_STANDALONE_LINUX || UNITY_ANDROID
     [Pure, DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern IntPtr mp_GlContext__egl_display(IntPtr GlContext);
 
@@ -16,6 +17,16 @@ namespace Mediapipe {
 
     [Pure, DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern IntPtr mp_GlContext__egl_context(IntPtr GlContext);
+#elif UNITY_IOS
+    [Pure, DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern IntPtr mp_GlContext__eagl_context(IntPtr GlContext);
+#elif UNITY_STANDALONE_OSX
+    [Pure, DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern IntPtr mp_GlContext__nsgl_context(IntPtr GlContext);
+
+    [Pure, DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern IntPtr mp_GlContext__nsgl_pixel_format(IntPtr GlContext);
+#endif
 
     [Pure, DllImport (MediaPipeLibrary, ExactSpelling = true)]
     [return: MarshalAs(UnmanagedType.I1)]

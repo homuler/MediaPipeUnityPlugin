@@ -2,6 +2,7 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
+# requires EGL
 cc_library(
     name = "egl_surface_holder",
     srcs = ["egl_surface_holder.cc"],

@@ -25,7 +25,7 @@ MpReturnCode mp_GlContext_GetCurrent(SharedGlContext** shared_gl_context_out) {
   } CATCH_EXCEPTION
 }
 
-MpReturnCode mp_GlContext_Create__p_b(bool create_thread, StatusOrSharedGlContext** status_or_shared_gl_context_out) {
+MpReturnCode mp_GlContext_Create__P_b(bool create_thread, StatusOrSharedGlContext** status_or_shared_gl_context_out) {
   TRY {
     *status_or_shared_gl_context_out = new StatusOrSharedGlContext { mediapipe::GlContext::Create(nullptr, create_thread) };
     RETURN_CODE(MpReturnCode::Success);
@@ -50,6 +50,18 @@ MpReturnCode mp_GlContext_Create__ui_b(mediapipe::PlatformGlContext share_contex
   } CATCH_EXCEPTION
 }
 
+#if HAS_EAGL
+MpReturnCode mp_GlContext_Create__Pes_b(EAGLSharegroup* sharegroup,
+                                         bool create_thread,
+                                         StatusOrSharedGlContext** status_or_shared_gl_context_out) {
+  TRY {
+    *status_or_shared_gl_context_out = new StatusOrSharedGlContext { mediapipe::GlContext::Create(sharegroup, create_thread) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+#endif  // HAS_EAGL
+
+#if HAS_EGL
 EGLDisplay mp_GlContext__egl_display(mediapipe::GlContext* gl_context) {
   return gl_context->egl_display();
 }
@@ -61,6 +73,19 @@ EGLConfig mp_GlContext__egl_config(mediapipe::GlContext* gl_context) {
 EGLContext mp_GlContext__egl_context(mediapipe::GlContext* gl_context) {
   return gl_context->egl_context();
 }
+#elif HAS_EAGL
+EAGLContext* mp_GlContext__eagl_context(mediapipe::GlContext* gl_context) {
+  return gl_context->eagl_context();
+}
+#elif HAS_NSGL
+NSOpenGLContext* mp_GlContext__nsgl_context(mediapipe::GlContext* gl_context) {
+  return gl_context->nsgl_context();
+}
+
+NSOpenGLPixelFormat* mp_GlContext__nsgl_pixel_format(mediapipe::GlContext* gl_context) {
+  return gl_context->nsgl_pixel_format();
+}
+#endif  // HAS_EGL
 
 bool mp_GlContext__IsCurrent(mediapipe::GlContext* gl_context) {
   return gl_context->IsCurrent();

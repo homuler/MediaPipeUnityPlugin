@@ -14,7 +14,7 @@ namespace Mediapipe {
     public static extern MpReturnCode mp_GlContext_GetCurrent(out IntPtr sharedGlContext);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_GlContext_Create__p_b([MarshalAs(UnmanagedType.I1)]bool createThread, out IntPtr statusOrSharedGlContext);
+    public static extern MpReturnCode mp_GlContext_Create__P_b([MarshalAs(UnmanagedType.I1)]bool createThread, out IntPtr statusOrSharedGlContext);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_GlContext_Create__Rgc_b(
@@ -23,6 +23,12 @@ namespace Mediapipe {
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_GlContext_Create__ui_b(
         UInt32 shareContext, [MarshalAs(UnmanagedType.I1)]bool createThread, out IntPtr statusOrSharedGlContext);
+
+#if UNITY_IOS
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_GlContext_Create__Pes_b(
+        IntPtr sharegroup, [MarshalAs(UnmanagedType.I1)]bool createThread, out IntPtr statusOrSharedGlContext);
+#endif
     #endregion
 
     #region GlSyncToken

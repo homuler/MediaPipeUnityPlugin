@@ -1,6 +1,13 @@
 #include <utility>
 #include "mediapipe_api/gpu/gpu_buffer.h"
 
+void mp_GpuBuffer__delete(mediapipe::GpuBuffer* gpu_buffer) {
+  delete gpu_buffer;
+}
+
+#if MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
+// TODO
+#else
 MpReturnCode mp_GpuBuffer__PSgtb(SharedGlTextureBuffer* gl_texture_buffer, mediapipe::GpuBuffer** gpu_buffer_out) {
   TRY {
     *gpu_buffer_out = new mediapipe::GpuBuffer { *gl_texture_buffer };
@@ -8,13 +15,10 @@ MpReturnCode mp_GpuBuffer__PSgtb(SharedGlTextureBuffer* gl_texture_buffer, media
   } CATCH_EXCEPTION
 }
 
-void mp_GpuBuffer__delete(mediapipe::GpuBuffer* gpu_buffer) {
-  delete gpu_buffer;
-}
-
 const SharedGlTextureBuffer& mp_GpuBuffer__GetGlTextureBufferSharedPtr(mediapipe::GpuBuffer* gpu_buffer) {
   return gpu_buffer->GetGlTextureBufferSharedPtr();
 }
+#endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
 
 int mp_GpuBuffer__width(mediapipe::GpuBuffer* gpu_buffer) {
   return gpu_buffer->width();

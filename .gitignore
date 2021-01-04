@@ -13,6 +13,7 @@ obj/
 *.dll
 *.dylib
 *.so
+*.framework/
 
 bazel-*
 

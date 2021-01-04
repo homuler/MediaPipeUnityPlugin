@@ -10,7 +10,7 @@ scriptdir := $(sdkdir)/Scripts
 bazelflags.gpu := --copt -DMESA_EGL_NO_X11_HEADERS --copt -DEGL_NO_X11
 bazelflags.cpu := --define MEDIAPIPE_DISABLE_GPU=1
 bazelflags.android_arm := --config=android_arm
-baseltarget.model = //mediapipe_api:mediapipe_models
+bazelflags.ios_arm64 := --config=ios_arm64 --copt=-fembed-bitcode --apple_bitcode=embedded
 
 proto_srcdir := $(scriptdir)/Protobuf
 
@@ -26,9 +26,9 @@ bazel_models_target := //mediapipe_api:mediapipe_models
 bazel_protos_target := //mediapipe_api:mediapipe_proto_srcs
 bazel_common_target := $(bazel_models_target) $(bazel_protos_target)
 
-.PHONY: all gpu cpu android_arm clean \
-	install install-protobuf install-mediapipe_c install-mediapipe_android install-models \
-	uninstall uninstall-protobuf uninstall-mediapipe_c uninstall-mediapipe_android uninstall-models
+.PHONY: all gpu cpu android_arm ios_arm64 clean \
+	install install-protobuf install-mediapipe_c install-mediapipe_android install-mediapipe_ios install-models \
+	uninstall uninstall-protobuf uninstall-mediapipe_c uninstall-mediapipe_android uninstall-mediapipe_ios uninstall-models
 
 # build
 gpu: | $(protobuf_dll)
@@ -39,6 +39,9 @@ cpu: | $(protobuf_dll)
 
 android_arm: | $(protobuf_dll)
 	cd C && bazel build -c opt ${bazelflags.android_arm} //mediapipe_api/java/org/homuler/mediapipe/unity:mediapipe_android $(bazel_common_target)
+
+ios_arm64: | $(protobuf_dll)
+	cd C && bazel build -c opt ${bazelflags.ios_arm64} --copt=-fembed-bitcode --apple_bitcode=embedded //mediapipe_api:MediaPipeUnityFramework $(bazel_common_target)
 
 $(plugindir)/Google.Protobuf.dll: Temp/$(protobuf_tarball)
 	cd Temp/protobuf-$(protobuf_version)/csharp && ./buildall.sh && mv src/Google.Protobuf/bin/Release/net45/* ../../../$(plugindir)
@@ -52,7 +55,7 @@ clean:
 	bazel clean
 
 # install
-install: install-protobuf install-mediapipe_c install-mediapipe_android install-models install-protos
+install: install-protobuf install-mediapipe_c install-mediapipe_android install-mediapipe_ios install-models install-protos
 
 install-protobuf: | $(plugindir)/Protobuf
 	cp $(protobuf_bindir)/* $(plugindir)/Protobuf
@@ -73,6 +76,14 @@ else
 	# skip installing mediapipe_android.aar
 endif
 
+install-mediapipe_ios:
+ifneq ("$(wildcard $(bazel_root)/MediaPipeUnityFramework.zip)", "")
+	unzip $(bazel_root)/MediaPipeUnityFramework.zip -d $(plugindir)/iOS
+else
+	# skip installing MediaPipeUnityFramework.zip
+endif
+
+
 install-models: | $(modeldir)
 ifneq ("$(wildcard $(bazel_root)/mediapipe_models.zip)", "")
 	unzip $(bazel_root)/mediapipe_models.zip -d $(modeldir)
@@ -87,7 +98,7 @@ else
 	# skip installing proto sources
 endif
 
-uninstall: uninstall-models uninstall-mediapipe_android uninstall-mediapipe_c uninstall-protobuf
+uninstall: uninstall-models uninstall-mediapipe_ios uninstall-mediapipe_android uninstall-mediapipe_c uninstall-protobuf
 
 uninstall-protobuf:
 	rm -r $(plugindir)/Protobuf
@@ -97,6 +108,9 @@ uninstall-mediapipe_c:
 
 uninstall-mediapipe_android:
 	rm -f $(plugindir)/Android/mediapipe_android.aar
+
+uninstall-mediapipe_ios:
+	rm -f $(plugindir)/iOS/MediaPipeUnityFramework.framework
 
 uninstall-models:
 	rm -f $(modeldir)/*.bytes && rm -f $(modeldir)/*.txt

@@ -24,6 +24,12 @@ namespace Mediapipe {
     public static extern MpReturnCode mp_GlCalculatorHelper__CreateSourceTexture__Rgb(
         IntPtr glCalculatorHelper, IntPtr gpuBuffer, out IntPtr glTexture);
 
+#if UNITY_IOS
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_GlCalculatorHelper__CreateSourceTexture__Rgb_i(
+        IntPtr glCalculatorHelper, IntPtr gpuBuffer, int plane, out IntPtr glTexture);
+#endif
+
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_GlCalculatorHelper__CreateDestinationTexture__i_i_ui(
         IntPtr glCalculatorHelper, int outputWidth, int outputHeight, GpuBufferFormat formatCode, out IntPtr glTexture);

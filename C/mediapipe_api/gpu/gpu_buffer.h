@@ -13,9 +13,15 @@ extern "C" {
 
 typedef mediapipe::StatusOr<mediapipe::GpuBuffer> StatusOrGpuBuffer;
 
-MP_CAPI(MpReturnCode) mp_GpuBuffer__PSgtb(SharedGlTextureBuffer* gl_texture_buffer, mediapipe::GpuBuffer** gpu_buffer_out);
 MP_CAPI(void) mp_GpuBuffer__delete(mediapipe::GpuBuffer* gpu_buffer);
+
+#if MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
+// TODO
+#else
+MP_CAPI(MpReturnCode) mp_GpuBuffer__PSgtb(SharedGlTextureBuffer* gl_texture_buffer, mediapipe::GpuBuffer** gpu_buffer_out);
 MP_CAPI(const SharedGlTextureBuffer&) mp_GpuBuffer__GetGlTextureBufferSharedPtr(mediapipe::GpuBuffer* gpu_buffer);
+#endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
+
 MP_CAPI(int) mp_GpuBuffer__width(mediapipe::GpuBuffer* gpu_buffer);
 MP_CAPI(int) mp_GpuBuffer__height(mediapipe::GpuBuffer* gpu_buffer);
 MP_CAPI(mediapipe::GpuBufferFormat) mp_GpuBuffer__format(mediapipe::GpuBuffer* gpu_buffer);

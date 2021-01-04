@@ -66,7 +66,7 @@ index 5a46042..7f01362 100644
  }
  
 diff --git a/mediapipe/gpu/gl_scaler_calculator.cc b/mediapipe/gpu/gl_scaler_calculator.cc
-index 8806267..92200ae 100644
+index 8806267..c0e66bd 100644
 --- a/mediapipe/gpu/gl_scaler_calculator.cc
 +++ b/mediapipe/gpu/gl_scaler_calculator.cc
 @@ -12,6 +12,8 @@
@@ -127,19 +127,24 @@ index 8806267..92200ae 100644
      if (cc->Inputs().Tag("OUTPUT_DIMENSIONS").IsEmpty()) {
        // OUTPUT_DIMENSIONS input stream is specified, but value is missing.
        return ::mediapipe::OkStatus();
-@@ -264,8 +278,13 @@ REGISTER_CALCULATOR(GlScalerCalculator);
+@@ -264,8 +278,18 @@ REGISTER_CALCULATOR(GlScalerCalculator);
                MakePacket<float>(left_right_padding).At(cc->InputTimestamp()));
      }
  
 -    auto dst = helper_.CreateDestinationTexture(dst_width, dst_height,
 -                                                GetOutputFormat());
 +    GlTexture dst;
++#if MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
++    // for iOS
++    dst = helper_.CreateDestinationTexture(dst_width, dst_height, GetOutputFormat());
++#else
 +    if (dst_buffer_) {
 +      dst_buffer_.GetGlTextureBufferSharedPtr()->Reuse();
 +      dst = helper_.CreateDestinationTexture(dst_buffer_);
 +    } else {
 +      dst = helper_.CreateDestinationTexture(dst_width, dst_height, GetOutputFormat());
 +    }
++#endif
  
      helper_.BindFramebuffer(dst);
      glActiveTexture(GL_TEXTURE1);

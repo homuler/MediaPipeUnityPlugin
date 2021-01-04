@@ -50,6 +50,18 @@ MpReturnCode mp_GlCalculatorHelper__CreateSourceTexture__Rgb(mediapipe::GlCalcul
   } CATCH_ALL
 }
 
+#ifdef __APPLE__
+MpReturnCode mp_GlCalculatorHelper__CreateSourceTexture__Rgb_i(mediapipe::GlCalculatorHelper* gl_calculator_helper,
+                                                               mediapipe::GpuBuffer* gpu_buffer,
+                                                               int plane,
+                                                               mediapipe::GlTexture** gl_texture_out) {
+  TRY_ALL {
+    *gl_texture_out = new mediapipe::GlTexture { gl_calculator_helper->CreateSourceTexture(*gpu_buffer, plane) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
+}
+#endif  // __APPLE__
+
 MpReturnCode mp_GlCalculatorHelper__CreateDestinationTexture__i_i_ui(mediapipe::GlCalculatorHelper* gl_calculator_helper,
                                                                               int output_width,
                                                                               int output_height,

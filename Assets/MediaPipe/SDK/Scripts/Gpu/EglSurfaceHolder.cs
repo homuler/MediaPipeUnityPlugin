@@ -1,5 +1,6 @@
 using System;
 
+#if UNITY_STANDALONE_LINUX || UNITY_ANDROID // defined on Linux, but usefull only with OpenGL ES
 namespace Mediapipe {
   public class EglSurfaceHolder : MpResourceHandle {
     private UniquePtrHandle uniquePtrHandle;
@@ -61,3 +62,4 @@ namespace Mediapipe {
     }
   }
 }
+#endif

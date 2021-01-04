@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System;
 using UnityEngine;
 
+#if UNITY_STANDALONE_LINUX || UNITY_ANDROID
 namespace Tests {
   public class EglSurfaceHolderTest {
     #region Constructor
@@ -71,3 +72,4 @@ namespace Tests {
     #endregion
   }
 }
+#endif

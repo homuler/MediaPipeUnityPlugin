@@ -40,12 +40,18 @@ namespace Tests {
     public void ShouldReturnProperties() {
       var glContext = GetGlContext();
 
+#if UNITY_STANDALONE_LINUX || UNITY_ANDROID
       Assert.AreNotEqual(glContext.eglDisplay, IntPtr.Zero);
       Assert.AreNotEqual(glContext.eglConfig, IntPtr.Zero);
       Assert.AreNotEqual(glContext.eglContext, IntPtr.Zero);
       Assert.AreEqual(glContext.glMajorVersion, 3);
       Assert.AreEqual(glContext.glMinorVersion, 2);
       Assert.AreEqual(glContext.glFinishCount, 0);
+#elif UNITY_STANDALONE_OSX
+      Assert.AreNotEqual(glContext.nsglContext, IntPtr.Zero);
+#elif UNITY_IOS
+      Assert.AreNotEqual(glContext.eaglContext, IntPtr.Zero);
+#endif
     }
     #endregion
 

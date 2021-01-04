@@ -1,3 +1,4 @@
+load("@build_bazel_rules_apple//apple:ios.bzl", "ios_static_framework")
 load("@rules_pkg//:pkg.bzl", "pkg_zip")
 load("//mediapipe_api:import_model.bzl", "pkg_model")
 
@@ -22,7 +23,6 @@ cc_library(
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [],
         "//conditions:default": [
-            "//mediapipe_api/gpu:egl_surface_holder", # TODO: exclude when apple
             "//mediapipe_api/gpu:gl_base",
             "//mediapipe_api/gpu:gl_context",
             "//mediapipe_api/gpu:gl_calculator_helper",
@@ -30,6 +30,12 @@ cc_library(
             "//mediapipe_api/gpu:gpu_buffer",
             "//mediapipe_api/gpu:gpu_buffer_format",
             "//mediapipe_api/gpu:gpu_shared_data_internal",
+        ],
+    }) + select({
+        "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [],
+        "@com_google_mediapipe//mediapipe:ios": [],
+        "//conditions:default": [
+            "//mediapipe_api/gpu:egl_surface_holder",
         ],
     }),
     visibility = ["//visibility:public"],
@@ -58,6 +64,16 @@ alias(
         "@com_google_mediapipe//mediapipe:macos": ":libmediapipe_c.dylib",
         "//conditions:default": ":libmediapipe_c.so",
     }),
+)
+
+ios_static_framework(
+    name = "MediaPipeUnityFramework",
+    minimum_os_version = "10.0",
+    deps = [
+        ":mediapipe_c",
+        "@ios_opencv//:opencv",
+    ],
+    visibility = ["//visibility:public"],
 )
 
 # It is recommended that you include only neccessary calculators.

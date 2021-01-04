@@ -38,6 +38,7 @@ public class SceneDirector : MonoBehaviour {
   }
 
   void InitializeGpuHelper(int eventId) {
+#if UNITY_ANDROID
     // context is EGL_NO_CONTEXT if the graphics API is not OpenGL ES
     var context = Egl.getCurrentContext();
 
@@ -48,6 +49,10 @@ public class SceneDirector : MonoBehaviour {
     }
 
     gpuResources = GpuResources.Create(context).ConsumeValueOrDie();
+#else
+    gpuResources = GpuResources.Create().ConsumeValueOrDie();
+#endif
+
     gpuHelper = new GlCalculatorHelper();
     gpuHelper.InitializeForTest(gpuResources);
   }

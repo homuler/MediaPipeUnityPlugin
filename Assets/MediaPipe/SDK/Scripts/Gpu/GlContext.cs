@@ -31,6 +31,7 @@ namespace Mediapipe {
       get { return sharedPtrHandle == null ? IntPtr.Zero : sharedPtrHandle.mpPtr; }
     }
 
+#if UNITY_STANDALONE_LINUX || UNITY_ANDROID
     public IntPtr eglDisplay {
       get { return SafeNativeMethods.mp_GlContext__egl_display(mpPtr); }
     }
@@ -42,6 +43,15 @@ namespace Mediapipe {
     public IntPtr eglContext {
       get { return SafeNativeMethods.mp_GlContext__egl_context(mpPtr); }
     }
+#elif UNITY_STANDALONE_OSX
+    public IntPtr nsglContext {
+      get { return SafeNativeMethods.mp_GlContext__nsgl_context(mpPtr); }
+    }
+#elif UNITY_IOS
+    public IntPtr eaglContext {
+      get { return SafeNativeMethods.mp_GlContext__eagl_context(mpPtr); }
+    }
+#endif
 
     public bool IsCurrent() {
       return SafeNativeMethods.mp_GlContext__IsCurrent(mpPtr);

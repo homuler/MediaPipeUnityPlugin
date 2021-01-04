@@ -1,6 +1,9 @@
 using Mediapipe;
 using System;
+using System.Diagnostics;
 using UnityEngine;
+
+using Debug = UnityEngine.Debug;
 
 public class WebCamScreenController : MonoBehaviour {
   [SerializeField] int Width = 640;
@@ -92,8 +95,12 @@ public class WebCamScreenController : MonoBehaviour {
   }
 
   public void DrawScreen(GpuBuffer gpuBuffer) {
+#if UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || UNITY_ANDROID
     // TODO: create an external texture
     outputTexture.UpdateExternalTexture((IntPtr)gpuBuffer.GetGlTextureBuffer().Name());
+#else
+    throw new NotSupportedException();
+#endif
   }
 
   public TextureFramePool.TextureFrameRequest RequestNextFrame() {

@@ -16,8 +16,13 @@ MP_CAPI(mediapipe::GpuResources*) mp_SharedGpuResources__get(SharedGpuResources*
 MP_CAPI(void) mp_SharedGpuResources__reset(SharedGpuResources* gpu_resources);
 
 MP_CAPI(MpReturnCode) mp_GpuResources_Create(mediapipe::StatusOr<SharedGpuResources>** status_or_gpu_resources_out);
-MP_CAPI(MpReturnCode) mp_GpuResources_Create__Pv(EGLContext external_context,
+MP_CAPI(MpReturnCode) mp_GpuResources_Create__Pv(mediapipe::PlatformGlContext external_context,
                                                  mediapipe::StatusOr<SharedGpuResources>** status_or_gpu_resources_out);
+
+#if __APPLE__
+MP_CAPI(MPPGraphGPUData*) mp_GpuResources__ios_gpu_data(mediapipe::GpuResources* gpu_resources);
+#endif  // __APPLE__
+
 MP_CAPI(void) mp_StatusOrGpuResources__delete(mediapipe::StatusOr<SharedGpuResources>* status_or_gpu_resources);
 MP_CAPI(bool) mp_StatusOrGpuResources__ok(mediapipe::StatusOr<SharedGpuResources>* status_or_gpu_resources);
 MP_CAPI(MpReturnCode) mp_StatusOrGpuResources__status(mediapipe::StatusOr<SharedGpuResources>* status_or_gpu_resources,
