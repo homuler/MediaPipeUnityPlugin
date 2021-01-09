@@ -65,7 +65,8 @@ namespace Tests {
       var glCalculatorHelper = new GlCalculatorHelper();
       glCalculatorHelper.InitializeForTest(GpuResources.Create().ConsumeValueOrDie());
 
-      var status = glCalculatorHelper.RunInGlContext(() => { throw new InvalidProgramException(); });
+      GlCalculatorHelper.GlStatusFunction glStatusFunction = () => { throw new InvalidProgramException(); };
+      var status = glCalculatorHelper.RunInGlContext(glStatusFunction);
       Assert.AreEqual(status.code, Status.StatusCode.FailedPrecondition);
     }
     #endregion

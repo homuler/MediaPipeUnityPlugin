@@ -45,16 +45,17 @@ public class TextureFramePool : MonoSingleton<TextureFramePool> {
     return new TextureFrameRequest(this, callback);
   }
 
-  private void OnTextureFrameRelease(UInt64 textureName, IntPtr syncTokenPtr) {
-    lock(((ICollection)textureFramesInUse).SyncRoot) {
-      if (!textureFramesInUse.TryGetValue(textureName, out var textureFrame)) {
+  [AOT.MonoPInvokeCallback(typeof(GlTextureBuffer.DeletionCallback))]
+  private static void OnTextureFrameRelease(UInt64 textureName, IntPtr syncTokenPtr) {
+    lock(((ICollection)Instance.textureFramesInUse).SyncRoot) {
+      if (!Instance.textureFramesInUse.TryGetValue(textureName, out var textureFrame)) {
         Debug.LogWarning("The released texture does not belong to the pool");
         return;
       }
 
-      textureFramesInUse.Remove(textureName);
+      Instance.textureFramesInUse.Remove(textureName);
 
-      if (frameCount > poolSize || IsStale(textureFrame)) {
+      if (Instance.frameCount > Instance.poolSize || IsStale(textureFrame)) {
         return;
       }
 
@@ -63,13 +64,13 @@ public class TextureFramePool : MonoSingleton<TextureFramePool> {
           glSyncToken.Wait();
         }
       }
-      availableTextureFrames.Enqueue(textureFrame);
+      Instance.availableTextureFrames.Enqueue(textureFrame);
     }
   }
 
-  private bool IsStale(TextureFrame textureFrame) {
-    lock(dimensionLock) {
-      return textureFrame.width != textureWidth || textureFrame.height != textureHeight;
+  private static bool IsStale(TextureFrame textureFrame) {
+    lock(Instance.dimensionLock) {
+      return textureFrame.width != Instance.textureWidth || textureFrame.height != Instance.textureHeight;
     }
   }
 

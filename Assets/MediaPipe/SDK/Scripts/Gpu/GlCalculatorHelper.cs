@@ -23,26 +23,36 @@ namespace Mediapipe {
       GC.KeepAlive(this);
     }
 
+    /// <param name="nativeGlStatusFunction">
+    ///   Function that is run in Gl Context.
+    ///   Make sure that this function doesn't throw exceptions and won't be GCed.
+    /// </param>
+    public Status RunInGlContext(NativeGlStatusFunction nativeGlStatusFunction) {
+      UnsafeNativeMethods.mp_GlCalculatorHelper__RunInGlContext__PF(mpPtr, nativeGlStatusFunction, out var statusPtr).Assert();
+      GC.KeepAlive(this);
+
+      return new Status(statusPtr);
+    }
+
     public Status RunInGlContext(GlStatusFunction glStatusFunc) {
-      Status status = null;
+      Status tmpStatus = null;
 
       NativeGlStatusFunction nativeGlStatusFunc = () => {
         try {
-          status = glStatusFunc();
+          tmpStatus = glStatusFunc();
         } catch (Exception e) {
-          status = Status.FailedPrecondition(e.ToString());
+          tmpStatus = Status.FailedPrecondition(e.ToString());
         }
-        return status.mpPtr;
+        return tmpStatus.mpPtr;
       };
 
       GCHandle nativeGlStatusFuncHandle = GCHandle.Alloc(nativeGlStatusFunc, GCHandleType.Pinned);
-      UnsafeNativeMethods.mp_GlCalculatorHelper__RunInGlContext__PF(mpPtr, nativeGlStatusFunc, out var statusPtr).Assert();
-      GC.KeepAlive(this);
+      var status = RunInGlContext(nativeGlStatusFunc);
       nativeGlStatusFuncHandle.Free();
 
-      if (status != null) { status.Dispose(); }
+      if (tmpStatus != null) { tmpStatus.Dispose(); }
 
-      return new Status(statusPtr);
+      return status;
     }
 
     public GlTexture CreateSourceTexture(ImageFrame imageFrame) {

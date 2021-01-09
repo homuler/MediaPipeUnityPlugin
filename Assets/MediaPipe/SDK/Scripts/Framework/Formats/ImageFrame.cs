@@ -10,7 +10,6 @@ namespace Mediapipe {
     public static readonly uint kGlDefaultAlignmentBoundary = 4;
 
     public delegate void Deleter(IntPtr ptr);
-    private GCHandle deleterHandle;
 
     public ImageFrame() : base() {
       UnsafeNativeMethods.mp_ImageFrame__(out var ptr).Assert();
@@ -27,14 +26,11 @@ namespace Mediapipe {
     }
 
     public ImageFrame(ImageFormat.Format format, int width, int height, int widthStep, NativeArray<byte> pixelData) {
-      Deleter deleter = (IntPtr ptr) => { /** Do nothing (pixelData will be moved) */ };
-      deleterHandle = GCHandle.Alloc(deleter, GCHandleType.Pinned);
-
       unsafe {
         UnsafeNativeMethods.mp_ImageFrame__ui_i_i_i_Pui8_PF(
           format, width, height, widthStep,
           (IntPtr)NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(pixelData),
-          deleter,
+          ReleasePixelData,
           out var ptr
         ).Assert();
         this.ptr = ptr;
@@ -45,12 +41,9 @@ namespace Mediapipe {
       UnsafeNativeMethods.mp_ImageFrame__delete(ptr);
     }
 
-    protected override void DisposeUnmanaged() {
-      base.DisposeUnmanaged();
-
-      if (deleterHandle.IsAllocated) {
-        deleterHandle.Free();
-      }
+    [AOT.MonoPInvokeCallback(typeof(Deleter))]
+    static void ReleasePixelData(IntPtr ptr) {
+      // Do nothing (pixelData is moved)
     }
 
     public bool IsEmpty() {

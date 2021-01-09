@@ -13,14 +13,22 @@ public sealed class LocalAssetManager : ResourceManager {
   public static LocalAssetManager Instance { get { return lazy.Value; } }
   private readonly static string ModelRootPath = Path.Combine(Application.dataPath, "MediaPipe", "SDK", "Models");
 
-  private LocalAssetManager() : base() {}
+  public override CacheFilePathResolver cacheFilePathResolver {
+    get { return CacheFileFromAsset; }
+  }
+
+  public override ReadFileHandler readFileHandler {
+    get { return ReadFile; }
+  }
+
+  private LocalAssetManager() {}
 
   /// <summary>dummy method</summary>
   public async Task LoadAllAssetsAsync() {
     await Task.CompletedTask;
   }
 
-  protected override string CacheFileFromAsset(string assetPath) {
+  static string CacheFileFromAsset(string assetPath) {
     var assetName = GetAssetName(assetPath);
     var localPath = GetLocalFilePath(assetName);
 
@@ -31,7 +39,7 @@ public sealed class LocalAssetManager : ResourceManager {
     return null;
   }
 
-  protected override bool ReadFile(string path, IntPtr dst) {
+  static bool ReadFile(string path, IntPtr dst) {
     try {
       Debug.Log(path);
       var localPath = CacheFileFromAsset(path);
@@ -48,14 +56,14 @@ public sealed class LocalAssetManager : ResourceManager {
     }
   }
 
-  private string GetAssetName(string assetPath) {
+  static string GetAssetName(string assetPath) {
     var assetName = Path.GetFileNameWithoutExtension(assetPath);
     var extension = Path.GetExtension(assetPath);
 
     return (extension == ".tflite" || extension == ".bytes") ? $"{assetName}.bytes" : $"{assetName}.txt";
   }
 
-  private string GetLocalFilePath(string assetName) {
+  static string GetLocalFilePath(string assetName) {
     return Path.Combine(ModelRootPath, assetName);
   }
 }

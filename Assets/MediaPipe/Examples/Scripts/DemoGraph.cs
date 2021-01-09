@@ -7,8 +7,15 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
   [SerializeField] protected TextAsset config = null;
 
   protected const string inputStream = "input_video";
-  protected CalculatorGraph graph;
-  protected GlCalculatorHelper gpuHelper;
+  protected static CalculatorGraph graph;
+  protected static GlCalculatorHelper gpuHelper;
+
+#if UNITY_ANDROID
+  static readonly object frameLock = new object();
+  static Timestamp currentTimestamp;
+  static TextureFrame currentTextureFrame;
+  static IntPtr currentTextureName;
+#endif
 
   protected virtual void OnDestroy() {
     Stop();
@@ -26,7 +33,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
     this.Initialize();
 
     graph.SetGpuResources(gpuResources).AssertOk();
-    this.gpuHelper = gpuHelper;
+    DemoGraph.gpuHelper = gpuHelper;
   }
 
   public abstract Status StartRun();
@@ -34,49 +41,46 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
     return StartRun();
   }
 
-  /// <summary>
-  ///   Convert <paramref name="colors" /> to a packet and send it to the input stream.
-  /// </summary>
   public Status PushInput(TextureFrame textureFrame) {
     var timestamp = new Timestamp(System.Environment.TickCount & System.Int32.MaxValue);
-    ImageFrame imageFrame = null;
 
-    if (!IsGpuEnabled()) {
-      imageFrame = new ImageFrame(
-        ImageFormat.Format.SRGBA, textureFrame.width, textureFrame.height, 4 * textureFrame.width, textureFrame.GetRawNativeByteArray());
-      textureFrame.Release();
-      var packet = new ImageFramePacket(imageFrame, timestamp);
-
-      return graph.AddPacketToInputStream(inputStream, packet);
-    }
-
-#if UNITY_ANDROID
-    var glTextureName = textureFrame.GetNativeTexturePtr();
-
-    return gpuHelper.RunInGlContext(() => {
-      var glContext = GlContext.GetCurrent();
-      var glTextureBuffer = new GlTextureBuffer((UInt32)glTextureName, textureFrame.width, textureFrame.height,
-                                                textureFrame.gpuBufferformat, textureFrame.OnRelease, glContext);
-      var gpuBuffer = new GpuBuffer(glTextureBuffer);
-
-      return graph.AddPacketToInputStream(inputStream, new GpuBufferPacket(gpuBuffer, timestamp));
-    });
-#else
-    imageFrame = new ImageFrame(
+#if !UNITY_ANDROID
+    var imageFrame = new ImageFrame(
       ImageFormat.Format.SRGBA, textureFrame.width, textureFrame.height, 4 * textureFrame.width, textureFrame.GetRawNativeByteArray());
     textureFrame.Release();
+    var packet = new ImageFramePacket(imageFrame, timestamp);
 
-    return gpuHelper.RunInGlContext(() => {
-      var texture = gpuHelper.CreateSourceTexture(imageFrame);
-      var gpuBuffer = texture.GetGpuBufferFrame();
+    return graph.AddPacketToInputStream(inputStream, packet);
+#else
+    lock (frameLock) {
+      currentTimestamp = timestamp;
+      currentTextureFrame = textureFrame;
+      currentTextureName = textureFrame.GetNativeTexturePtr();
 
-      Gl.Flush();
-      texture.Release();
-
-      return graph.AddPacketToInputStream(inputStream, new GpuBufferPacket(gpuBuffer, timestamp));
-    });
+      return gpuHelper.RunInGlContext(PushInputInGlContext);
+    }
 #endif
   }
+
+#if UNITY_ANDROID
+  /// <remarks>
+  ///    <see cref="currentTimestamp" />, <see cref="currentTextureFrame" /> and <see cref="currentTextureName" /> must be set before calling.
+  /// </remarks>
+  [AOT.MonoPInvokeCallback(typeof(GlCalculatorHelper.NativeGlStatusFunction))]
+  static IntPtr PushInputInGlContext() {
+    try {
+      var glContext = GlContext.GetCurrent();
+      var glTextureBuffer = new GlTextureBuffer((UInt32)currentTextureName, currentTextureFrame.width, currentTextureFrame.height,
+                                                currentTextureFrame.gpuBufferformat, currentTextureFrame.OnRelease, glContext);
+      var gpuBuffer = new GpuBuffer(glTextureBuffer);
+
+      // TODO: ensure the returned status won't be garbage collected prematurely.
+      return graph.AddPacketToInputStream(inputStream, new GpuBufferPacket(gpuBuffer, currentTimestamp)).mpPtr;
+    } catch (Exception e) {
+      return Status.FailedPrecondition(e.ToString()).mpPtr;
+    }
+  }
+#endif
 
   public abstract void RenderOutput(WebCamScreenController screenController, TextureFrame textureFrame);
 

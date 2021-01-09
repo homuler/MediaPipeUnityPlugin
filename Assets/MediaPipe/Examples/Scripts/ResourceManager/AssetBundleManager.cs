@@ -5,13 +5,26 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
+/// <summary>
+///   Sample implementation of ResourceManager, that reads files from AssetBundle.
+/// </summary>
 public sealed class AssetBundleManager : ResourceManager {
   private static readonly Lazy<AssetBundleManager> lazy = new Lazy<AssetBundleManager>(() => new AssetBundleManager());
   public static AssetBundleManager Instance { get { return lazy.Value; } }
+
   private readonly static string CacheRootPath = Path.Combine(Application.persistentDataPath, "Cache");
   private readonly static string ModelCacheRootPath = Path.Combine(CacheRootPath, "MediaPipe", "Models");
+  private readonly static string AssetBundlePath = Path.Combine(Application.streamingAssetsPath, "AssetBundles", "mediapipe", "models");
 
-  private AssetBundleManager() : base() {
+  public override CacheFilePathResolver cacheFilePathResolver {
+    get { return CacheFileFromAsset; }
+  }
+
+  public override ReadFileHandler readFileHandler {
+    get { return ReadFile; }
+  }
+
+  private AssetBundleManager() {
     if (!Directory.Exists(ModelCacheRootPath)) {
       Directory.CreateDirectory(ModelCacheRootPath);
     }
@@ -20,7 +33,7 @@ public sealed class AssetBundleManager : ResourceManager {
   public async Task LoadAllAssetsAsync() {
     Debug.Log("Starting to load assets");
 
-    var bundleLoadReq = await AssetBundle.LoadFromFileAsync(Path.Combine(Application.streamingAssetsPath, "AssetBundles", "mediapipe", "models"));
+    var bundleLoadReq = await AssetBundle.LoadFromFileAsync(AssetBundlePath);
 
     if (bundleLoadReq.assetBundle == null) {
       Debug.LogError("Failed to load the AssetBundle");
@@ -38,7 +51,8 @@ public sealed class AssetBundleManager : ResourceManager {
     Debug.Log("Loaded all assets");
   }
 
-  protected override string CacheFileFromAsset(string assetPath) {
+  [AOT.MonoPInvokeCallback(typeof(CacheFilePathResolver))]
+  static string CacheFileFromAsset(string assetPath) {
     var assetName = Path.GetFileNameWithoutExtension(assetPath);
     var cachePath = CachePathFor(assetName);
 
@@ -49,7 +63,8 @@ public sealed class AssetBundleManager : ResourceManager {
     return null;
   }
 
-  protected override bool ReadFile(string path, IntPtr dst) {
+  [AOT.MonoPInvokeCallback(typeof(ReadFileHandler))]
+  static bool ReadFile(string path, IntPtr dst) {
     var cachePath = CacheFileFromAsset(path);
 
     if (!File.Exists(cachePath)) {
@@ -64,11 +79,11 @@ public sealed class AssetBundleManager : ResourceManager {
     return true;
   }
 
-  private string CachePathFor(string assetName) {
+  static string CachePathFor(string assetName) {
     return Path.Combine(ModelCacheRootPath, assetName);
   }
 
-  private async Task WriteCacheFileAsync(TextAsset asset) {
+  async Task WriteCacheFileAsync(TextAsset asset) {
     var path = CachePathFor(asset.name);
     var bytes = asset.bytes;
     Debug.Log($"Saving {asset.name} to {path} (length={bytes.Length})");

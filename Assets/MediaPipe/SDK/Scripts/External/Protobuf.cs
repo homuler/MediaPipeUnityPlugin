@@ -36,13 +36,14 @@ namespace Mediapipe {
     }
 
     public delegate void ProtobufLogHandler(int level, string filename, int line, string message);
-    private static readonly ProtobufLogHandler protobufLogHandler = LogProtobufMessage;
+    static readonly ProtobufLogHandler protobufLogHandler = LogProtobufMessage;
 
-    private static void LogProtobufMessage(int level, string filename, int line, string message) {
+    [AOT.MonoPInvokeCallback(typeof(ProtobufLogHandler))]
+    static void LogProtobufMessage(int level, string filename, int line, string message) {
       Debug.Log($"[libprotobuf {FormatProtobufLogLevel(level)} {filename}:{line}] {message}");
     }
 
-    private static string FormatProtobufLogLevel(int level) {
+    static string FormatProtobufLogLevel(int level) {
       switch (level) {
         case 1: return "WARNING";
         case 2: return "ERROR";

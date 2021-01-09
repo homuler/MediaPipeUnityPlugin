@@ -12,20 +12,12 @@ public class TextureFrame {
   public int height { get; private set; }
 
   public GlTextureBuffer.DeletionCallback OnRelease;
-  private GCHandle deletionCallbackHandle;
 
   public TextureFrame(int width, int height, GlTextureBuffer.DeletionCallback OnRelease) {
     texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
     this.width = width;
     this.height = height;
     this.OnRelease = OnRelease;
-    deletionCallbackHandle = GCHandle.Alloc(this.OnRelease, GCHandleType.Pinned);
-  }
-
-  ~TextureFrame() {
-    if (deletionCallbackHandle.IsAllocated) {
-      deletionCallbackHandle.Free();
-    }
   }
 
   public void CopyTexture(Texture dst) {

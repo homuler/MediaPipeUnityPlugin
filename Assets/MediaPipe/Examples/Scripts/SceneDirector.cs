@@ -24,7 +24,7 @@ public class SceneDirector : MonoBehaviour {
   bool IsAssetLoadFailed = false;
 
   delegate void PluginCallback(int eventId);
-  GCHandle InitializeGpuHelperHandle;
+  IntPtr currentContext = IntPtr.Zero;
 
   void OnEnable() {
     var nameForGlog = Path.Combine(Application.dataPath, "MediaPipePlugin");
@@ -37,36 +37,23 @@ public class SceneDirector : MonoBehaviour {
     Glog.Initialize(nameForGlog, logDir);
   }
 
-  void InitializeGpuHelper(int eventId) {
 #if UNITY_ANDROID
-    // context is EGL_NO_CONTEXT if the graphics API is not OpenGL ES
-    var context = Egl.getCurrentContext();
-
-    if (context == IntPtr.Zero) {
-      Debug.LogWarning("No EGL Context Found");
-    } else {
-      Debug.Log($"EGL Context Found ({context})");
-    }
-
-    gpuResources = GpuResources.Create(context).ConsumeValueOrDie();
-#else
-    gpuResources = GpuResources.Create().ConsumeValueOrDie();
-#endif
-
-    gpuHelper = new GlCalculatorHelper();
-    gpuHelper.InitializeForTest(gpuResources);
+  void GetCurrentContext(int eventId) {
+    currentContext = Egl.getCurrentContext();
   }
+#endif
 
   async void Start() {
     webCamScreen = GameObject.Find("WebCamScreen");
 
+#if UNITY_ANDROID
     if (useGPU) {
-      PluginCallback gpuHelperInitializer = InitializeGpuHelper;
-      InitializeGpuHelperHandle = GCHandle.Alloc(gpuHelperInitializer, GCHandleType.Pinned);
+      PluginCallback callback = GetCurrentContext;
 
-      var fp = Marshal.GetFunctionPointerForDelegate(gpuHelperInitializer);
+      var fp = Marshal.GetFunctionPointerForDelegate(callback);
       GL.IssuePluginEvent(fp, 1);
     }
+#endif
 
 #if UNITY_EDITOR
     var resourceManager = LocalAssetManager.Instance;
@@ -87,11 +74,6 @@ public class SceneDirector : MonoBehaviour {
 
   void OnDisable() {
     StopGraph();
-
-    if (InitializeGpuHelperHandle.IsAllocated) {
-      InitializeGpuHelperHandle.Free();
-    }
-
     Glog.Shutdown();
   }
 
@@ -172,7 +154,17 @@ public class SceneDirector : MonoBehaviour {
     var graph = graphContainer.GetComponent<IDemoGraph<TextureFrame>>();
 
     if (useGPU) {
-      // TODO: have to wait for gpuHelper to be initialized.
+      // TODO: have to wait for currentContext to be initialized.
+      if (currentContext == IntPtr.Zero) {
+        Debug.LogWarning("No EGL Context Found");
+      } else {
+        Debug.Log($"EGL Context Found ({currentContext})");
+      }
+
+      gpuResources = GpuResources.Create(currentContext).ConsumeValueOrDie();
+      gpuHelper = new GlCalculatorHelper();
+      gpuHelper.InitializeForTest(gpuResources);
+
       graph.Initialize(gpuResources, gpuHelper);
     } else {
       graph.Initialize();

@@ -1,8 +1,8 @@
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
-index 9347fc0..f452843 100644
+index 9347fc0..c942416 100644
 --- a/mediapipe/util/BUILD
 +++ b/mediapipe/util/BUILD
-@@ -146,13 +146,21 @@ cc_library(
+@@ -146,14 +146,19 @@ cc_library(
      ],
  )
  
@@ -18,16 +18,17 @@ index 9347fc0..f452843 100644
 +
  cc_library(
      name = "resource_util",
-     srcs = select({
+-    srcs = select({
 -        "//conditions:default": ["resource_util.cc"],
 -        "//mediapipe:android": ["resource_util_android.cc"],
-+        "//conditions:default": ["resource_util_unity.cc"],
-         "//mediapipe:ios": ["resource_util_apple.cc"],
+-        "//mediapipe:ios": ["resource_util_apple.cc"],
 -        "//mediapipe:macos": ["resource_util.cc"],
-     }),
+-    }),
++    srcs = ["resource_util_unity.cc"],
      hdrs = ["resource_util.h"],
      # We use Objective-C++ on iOS.
-@@ -161,7 +169,6 @@ cc_library(
+     copts = select({
+@@ -161,33 +166,17 @@ cc_library(
          "//mediapipe:ios": [
              "-ObjC++",
          ],
@@ -35,10 +36,15 @@ index 9347fc0..f452843 100644
      }),
      visibility = [
          "//mediapipe/framework:mediapipe_internal",
-@@ -173,20 +180,9 @@ cc_library(
+     ],
+     deps = [
++        ":resource_manager",
+         "//mediapipe/framework/port:ret_check",
+         "//mediapipe/framework/port:status",
+         "//mediapipe/framework/port:statusor",
          "@com_google_absl//absl/strings",
-     ] + select({
-         "//conditions:default": [
+-    ] + select({
+-        "//conditions:default": [
 -            "//mediapipe/framework/deps:file_path",
 -            "//mediapipe/framework/port:file_helpers",
 -            "@com_google_absl//absl/flags:flag",
@@ -46,17 +52,18 @@ index 9347fc0..f452843 100644
 -        "//mediapipe:android": [
 -            "//mediapipe/util/android:asset_manager_util",
 -            "//mediapipe/util/android/file/base",
-+            ":resource_manager",
-         ],
-         "//mediapipe:ios": [],
+-        ],
+-        "//mediapipe:ios": [],
 -        "//mediapipe:macos": [
 -            "//mediapipe/framework/deps:file_path",
 -            "//mediapipe/framework/port:file_helpers",
 -            "@com_google_absl//absl/flags:flag",
 -        ],
-     }),
+-    }),
++    ],
  )
  
+ cc_library(
 diff --git a/mediapipe/util/resource_manager.h b/mediapipe/util/resource_manager.h
 new file mode 100644
 index 0000000..ffe126f
