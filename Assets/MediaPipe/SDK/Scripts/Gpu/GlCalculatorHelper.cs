@@ -97,6 +97,13 @@ namespace Mediapipe {
       GC.KeepAlive(this);
     }
 
+    public GlContext GetGlContext() {
+      var glContextPtr = SafeNativeMethods.mp_GlCalculatorHelper__GetGlContext(mpPtr);
+
+      GC.KeepAlive(this);
+      return new GlContext(glContextPtr, false);
+    }
+
     public bool Initialized() {
       return SafeNativeMethods.mp_GlCalculatorHelper__Initialized(mpPtr);
     }

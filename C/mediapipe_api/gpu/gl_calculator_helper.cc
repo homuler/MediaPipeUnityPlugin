@@ -99,6 +99,10 @@ MpReturnCode mp_GlCalculatorHelper__BindFrameBuffer__Rtexture(mediapipe::GlCalcu
   } CATCH_EXCEPTION
 }
 
+mediapipe::GlContext& mp_GlCalculatorHelper__GetGlContext(mediapipe::GlCalculatorHelper* gl_calculator_helper) {
+  return gl_calculator_helper->GetGlContext();
+}
+
 bool mp_GlCalculatorHelper__Initialized(mediapipe::GlCalculatorHelper* gl_calculator_helper) {
   return gl_calculator_helper->Initialized();
 }

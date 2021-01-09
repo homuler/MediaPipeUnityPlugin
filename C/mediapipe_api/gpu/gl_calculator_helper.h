@@ -44,6 +44,7 @@ MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__CreateDestinationTexture__Rgb(media
 MP_CAPI(GLuint) mp_GlCalculatorHelper__framebuffer(mediapipe::GlCalculatorHelper* gl_calculator_helper);
 MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__BindFrameBuffer__Rtexture(mediapipe::GlCalculatorHelper* gl_calculator_helper,
                                                                       mediapipe::GlTexture* gl_texture);
+MP_CAPI(mediapipe::GlContext&) mp_GlCalculatorHelper__GetGlContext(mediapipe::GlCalculatorHelper* gl_calculator_helper);
 MP_CAPI(bool) mp_GlCalculatorHelper__Initialized(mediapipe::GlCalculatorHelper* gl_calculator_helper);
 
 /** GlTexture API */

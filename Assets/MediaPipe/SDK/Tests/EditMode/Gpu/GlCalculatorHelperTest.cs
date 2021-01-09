@@ -134,5 +134,22 @@ namespace Tests {
       Assert.AreEqual(glCalculatorHelper.framebuffer, 0);
     }
     #endregion
+
+    #region #GetGlContext
+    [Test, GpuOnly]
+    public void GetGlContext_ShouldReturnCurrentContext() {
+      var glCalculatorHelper = new GlCalculatorHelper();
+      glCalculatorHelper.InitializeForTest(GpuResources.Create().ConsumeValueOrDie());
+
+      var glContext = glCalculatorHelper.GetGlContext();
+#if UNITY_STANDALONE_LINUX || UNITY_ANDROID
+      Assert.AreNotEqual(glContext.eglContext, IntPtr.Zero);
+#elif UNITY_STANDALONE_OSX
+      Assert.AreNotEqual(glContext.nsglContext, IntPtr.Zero);
+#elif UNITY_IOS
+      Assert.AreNotEqual(glContext.eaglContext, IntPtr.Zero);
+#endif
+    }
+    #endregion
   }
 }
