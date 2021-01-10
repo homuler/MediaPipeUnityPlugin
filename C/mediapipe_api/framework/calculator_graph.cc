@@ -19,7 +19,16 @@ void mp_CalculatorGraph__delete(mediapipe::CalculatorGraph* graph) {
   delete graph;
 }
 
-MpReturnCode mp_CalculatorGraph__Rcgc(const char* serialized_config, int size, mediapipe::CalculatorGraph** graph_out) {
+MpReturnCode mp_CalculatorGraph__PKc(const char* text_format_config, mediapipe::CalculatorGraph** graph_out) {
+  TRY_ALL {
+    mediapipe::CalculatorGraphConfig config;
+    auto result = google::protobuf::TextFormat::ParseFromString(text_format_config, &config);
+    *graph_out = result ? new mediapipe::CalculatorGraph(config) : nullptr;
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
+}
+
+MpReturnCode mp_CalculatorGraph__PKc_i(const char* serialized_config, int size, mediapipe::CalculatorGraph** graph_out) {
   TRY_ALL {
     auto config = ParseFromStringAsCalculatorGraphConfig(serialized_config, size);
     *graph_out = new mediapipe::CalculatorGraph(config);
@@ -27,10 +36,10 @@ MpReturnCode mp_CalculatorGraph__Rcgc(const char* serialized_config, int size, m
   } CATCH_ALL
 }
 
-MpReturnCode mp_CalculatorGraph__Initialize__Rcgc(mediapipe::CalculatorGraph* graph,
-                                                  const char* serialized_config,
-                                                  int size,
-                                                  mediapipe::Status** status_out) {
+MpReturnCode mp_CalculatorGraph__Initialize__PKc_i(mediapipe::CalculatorGraph* graph,
+                                                   const char* serialized_config,
+                                                   int size,
+                                                   mediapipe::Status** status_out) {
   TRY_ALL {
     auto config = ParseFromStringAsCalculatorGraphConfig(serialized_config, size);
     *status_out = new mediapipe::Status { graph->Initialize(config) };
@@ -38,11 +47,11 @@ MpReturnCode mp_CalculatorGraph__Initialize__Rcgc(mediapipe::CalculatorGraph* gr
   } CATCH_ALL
 }
 
-MpReturnCode mp_CalculatorGraph__Initialize__Rcgc_Rsp(mediapipe::CalculatorGraph* graph,
-                                                      const char* serialized_config,
-                                                      int size,
-                                                      SidePackets* side_packets,
-                                                      mediapipe::Status** status_out) {
+MpReturnCode mp_CalculatorGraph__Initialize__PKc_i_Rsp(mediapipe::CalculatorGraph* graph,
+                                                       const char* serialized_config,
+                                                       int size,
+                                                       SidePackets* side_packets,
+                                                       mediapipe::Status** status_out) {
   TRY_ALL {
     auto config = ParseFromStringAsCalculatorGraphConfig(serialized_config, size);
     *status_out = new mediapipe::Status { graph->Initialize(config, *side_packets) };

@@ -13,20 +13,17 @@ namespace Mediapipe {
       this.ptr = ptr;
     }
 
-    /// <param name="textFormatConfig">text-formatted config</param>
-    /// <remarks>
-    ///   By calling this constructor, the config text is parsed and serialized to binary string in C++,
-    ///   parsed and serialized again in C#, and finally the serialized config is passed to C++ (so it is not efficient).
-    ///   If possible, it would be better to build CalculatorGraphConfig from JSON in C# and pass it to another constructor.
-    /// </remarks>
-    public CalculatorGraph(string textFormatConfig) : this(CalculatorGraphConfig.Parser.ParseFromTextFormat(textFormatConfig)) {}
-
-    public CalculatorGraph(CalculatorGraphConfig config) : base() {
-      var bytes = config.ToByteArray();
-
-      UnsafeNativeMethods.mp_CalculatorGraph__Rcgc(bytes, bytes.Length, out var ptr).Assert();
+    public CalculatorGraph(string textFormatConfig) : base() {
+      UnsafeNativeMethods.mp_CalculatorGraph__PKc(textFormatConfig, out var ptr).Assert();
       this.ptr = ptr;
     }
+
+    public CalculatorGraph(byte[] serializedConfig) : base() {
+      UnsafeNativeMethods.mp_CalculatorGraph__PKc_i(serializedConfig, serializedConfig.Length, out var ptr).Assert();
+      this.ptr = ptr;
+    }
+
+    public CalculatorGraph(CalculatorGraphConfig config) : this(config.ToByteArray()) {}
 
     protected override void DeleteMpPtr() {
       UnsafeNativeMethods.mp_CalculatorGraph__delete(ptr);
@@ -34,7 +31,7 @@ namespace Mediapipe {
 
     public Status Initialize(CalculatorGraphConfig config) {
       var bytes = config.ToByteArray();
-      UnsafeNativeMethods.mp_CalculatorGraph__Initialize__Rcgc(mpPtr, bytes, bytes.Length, out var statusPtr).Assert();
+      UnsafeNativeMethods.mp_CalculatorGraph__Initialize__PKc_i(mpPtr, bytes, bytes.Length, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       return new Status(statusPtr);
@@ -42,7 +39,7 @@ namespace Mediapipe {
 
     public Status Initialize(CalculatorGraphConfig config, SidePacket sidePacket) {
       var bytes = config.ToByteArray();
-      UnsafeNativeMethods.mp_CalculatorGraph__Initialize__Rcgc_Rsp(mpPtr, bytes, bytes.Length, sidePacket.mpPtr, out var statusPtr).Assert();
+      UnsafeNativeMethods.mp_CalculatorGraph__Initialize__PKc_i_Rsp(mpPtr, bytes, bytes.Length, sidePacket.mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       return new Status(statusPtr);

@@ -7,16 +7,19 @@ namespace Mediapipe {
     public static extern MpReturnCode mp_CalculatorGraph__(out IntPtr graph);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_CalculatorGraph__Rcgc(byte[] serializedConfig, int size, out IntPtr graph);
+    public static extern MpReturnCode mp_CalculatorGraph__PKc(string textFormatConfig, out IntPtr graph);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_CalculatorGraph__PKc_i(byte[] serializedConfig, int size, out IntPtr graph);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern void mp_CalculatorGraph__delete(IntPtr graph);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_CalculatorGraph__Initialize__Rcgc(IntPtr graph, byte[] serializedConfig, int size, out IntPtr status);
+    public static extern MpReturnCode mp_CalculatorGraph__Initialize__PKc_i(IntPtr graph, byte[] serializedConfig, int size, out IntPtr status);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_CalculatorGraph__Initialize__Rcgc_Rsp(
+    public static extern MpReturnCode mp_CalculatorGraph__Initialize__PKc_i_Rsp(
         IntPtr graph, byte[] serializedConfig, int size, IntPtr sidePackets, out IntPtr status);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
