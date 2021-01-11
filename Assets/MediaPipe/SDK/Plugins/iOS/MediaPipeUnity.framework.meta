@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 6233bcf2e5d3d4ca4ba075ad325cffce
+guid: c478f08fb676943b897c4fb1c285f0f6
 folderAsset: yes
 PluginImporter:
   externalObjects: {}
@@ -18,7 +18,7 @@ PluginImporter:
       enabled: 0
       settings:
         Exclude Android: 1
-        Exclude Editor: 1
+        Exclude Editor: 0
         Exclude Linux64: 1
         Exclude OSXUniversal: 1
         Exclude WebGL: 1
@@ -40,7 +40,7 @@ PluginImporter:
   - first:
       Editor: Editor
     second:
-      enabled: 0
+      enabled: 1
       settings:
         CPU: AnyCPU
         DefaultValueInitialized: true
@@ -74,10 +74,10 @@ PluginImporter:
     second:
       enabled: 1
       settings:
-        AddToEmbeddedBinaries: false
+        AddToEmbeddedBinaries: true
         CPU: AnyCPU
         CompileFlags: 
-        FrameworkDependencies: Accelerate;CoreImage;
+        FrameworkDependencies: CoreFoundation;Accelerate;CoreImage;GLKit;Metal;
   - first:
       tvOS: tvOS
     second:

@@ -1,4 +1,4 @@
-load("@build_bazel_rules_apple//apple:ios.bzl", "ios_static_framework")
+load("@build_bazel_rules_apple//apple:ios.bzl", "ios_framework")
 load("@rules_pkg//:pkg.bzl", "pkg_zip")
 load("//mediapipe_api:import_model.bzl", "pkg_model")
 
@@ -66,12 +66,23 @@ alias(
     }),
 )
 
-ios_static_framework(
-    name = "MediaPipeUnityFramework",
+objc_library(
+    name = "opencv_objc_lib",
+    deps = ["@ios_opencv//:OpencvFramework"],
+)
+
+ios_framework(
+    name = "MediaPipeUnity",
+    bundle_id = "org.homuler.unity.MediaPipeUnity",
+    families = [
+        "iphone",
+        "ipad",
+    ],
+    infoplists = ["Info.plist"],
     minimum_os_version = "10.0",
     deps = [
         ":mediapipe_c",
-        "@ios_opencv//:opencv",
+        ":opencv_objc_lib",
     ],
     visibility = ["//visibility:public"],
 )

@@ -41,7 +41,7 @@ android_arm: | $(protobuf_dll)
 	cd C && bazel build -c opt ${bazelflags.android_arm} //mediapipe_api/java/org/homuler/mediapipe/unity:mediapipe_android $(bazel_common_target)
 
 ios_arm64: | $(protobuf_dll)
-	cd C && bazel build -c opt ${bazelflags.ios_arm64} --copt=-fembed-bitcode --apple_bitcode=embedded //mediapipe_api:MediaPipeUnityFramework $(bazel_common_target)
+	cd C && bazel build -c opt ${bazelflags.ios_arm64} --copt=-fembed-bitcode --apple_bitcode=embedded //mediapipe_api:MediaPipeUnity $(bazel_common_target)
 
 $(plugindir)/Google.Protobuf.dll: Temp/$(protobuf_tarball)
 	cd Temp/protobuf-$(protobuf_version)/csharp && ./buildall.sh && mv src/Google.Protobuf/bin/Release/net45/* ../../../$(plugindir)
@@ -77,8 +77,8 @@ else
 endif
 
 install-mediapipe_ios:
-ifneq ("$(wildcard $(bazel_root)/MediaPipeUnityFramework.zip)", "")
-	unzip $(bazel_root)/MediaPipeUnityFramework.zip -d $(plugindir)/iOS
+ifneq ("$(wildcard $(bazel_root)/MediaPipeUnity.zip)", "")
+	unzip $(bazel_root)/MediaPipeUnity.zip -d $(plugindir)/iOS
 else
 	# skip installing MediaPipeUnityFramework.zip
 endif
@@ -110,7 +110,7 @@ uninstall-mediapipe_android:
 	rm -f $(plugindir)/Android/mediapipe_android.aar
 
 uninstall-mediapipe_ios:
-	rm -f $(plugindir)/iOS/MediaPipeUnityFramework.framework
+	rm -f $(plugindir)/iOS/MediaPipeUnity.framework
 
 uninstall-models:
 	rm -f $(modeldir)/*.bytes && rm -f $(modeldir)/*.txt
