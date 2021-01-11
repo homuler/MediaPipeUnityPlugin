@@ -56,6 +56,13 @@ namespace Mediapipe {
       return config;
     }
 
+    public Status ObserveOutputStream(string streamName, NativePacketCallback nativePacketCallback) {
+      UnsafeNativeMethods.mp_CalculatorGraph__ObserveOutputStream__PKc_PF(mpPtr, streamName, nativePacketCallback, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      return new Status(statusPtr);
+    }
+
     public Status ObserveOutputStream<T, U>(string streamName, PacketCallback<T, U> packetCallback, out GCHandle callbackHandle) where T : Packet<U> {
       NativePacketCallback nativePacketCallback = (IntPtr packetPtr) => {
         Status status = null;
@@ -69,10 +76,7 @@ namespace Mediapipe {
       };
       callbackHandle = GCHandle.Alloc(nativePacketCallback, GCHandleType.Pinned);
 
-      UnsafeNativeMethods.mp_CalculatorGraph__ObserveOutputStream__PKc_PF(mpPtr, streamName, nativePacketCallback, out var statusPtr).Assert();
-
-      GC.KeepAlive(this);
-      return new Status(statusPtr);
+      return ObserveOutputStream(streamName, nativePacketCallback);
     }
 
     public StatusOrPoller<T> AddOutputStreamPoller<T>(string streamName) {

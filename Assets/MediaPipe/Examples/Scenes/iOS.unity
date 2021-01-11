@@ -1202,8 +1202,7 @@ MonoBehaviour:
     type: 3}
   poseTrackingGraph: {fileID: 2128668153064451319, guid: 5d2913f213c90c73e8299fec12f0b535,
     type: 3}
-  hairSegmentationGraph: {fileID: 6213750851844926661, guid: 8e457257eaf544b78b4cc8334120a6f8,
-    type: 3}
+  hairSegmentationGraph: {fileID: 0}
   objectDetectionGraph: {fileID: 8958252977655340068, guid: d5971d2eb607f463cb377c8460592f82,
     type: 3}
   officialDemoGraph: {fileID: 5680418270291803701, guid: fc49226dfd774c66faf8a3dd6be53d0f,
