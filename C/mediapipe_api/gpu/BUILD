@@ -53,6 +53,9 @@ cc_library(
     name = "gl_texture_buffer",
     srcs = ["gl_texture_buffer.cc"],
     hdrs = ["gl_texture_buffer.h"],
+    copts = [
+        "-Wno-return-type-c-linkage",
+    ],
     deps = [
         ":gl_context",
         "//mediapipe_api:common",
@@ -65,6 +68,9 @@ cc_library(
     name = "gpu_buffer",
     srcs = ["gpu_buffer.cc"],
     hdrs = ["gpu_buffer.h"],
+    copts = [
+        "-Wno-return-type-c-linkage",
+    ],
     deps = [
         ":gl_texture_buffer",
         "//mediapipe_api:common",
