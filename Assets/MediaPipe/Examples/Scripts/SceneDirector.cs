@@ -1,25 +1,30 @@
+using Mediapipe;
 using System;
 using System.IO;
 using System.Collections;
-using System.Runtime.InteropServices;
-
-using Mediapipe;
 using UnityEngine;
+
+#if UNITY_ANDROID
+using System.Runtime.InteropServices;
+#endif
 
 using Directory = System.IO.Directory;
 
 public class SceneDirector : MonoBehaviour {
   [SerializeField] bool useGPU = true;
 
+  readonly object graphLock = new object();
+  WebCamDevice? webCamDevice;
   GameObject webCamScreen;
+  Coroutine cameraSetupCoroutine;
   GameObject graphPrefab;
   GameObject graphContainer;
   Coroutine graphRunner;
+
   GpuResources gpuResources;
   GlCalculatorHelper gpuHelper;
 
-  const int MAX_WAIT_FRAME = 500;
-
+  const int MAX_WAIT_FRAME = 1000;
   bool IsAssetLoaded = false;
   bool IsAssetLoadFailed = false;
 
@@ -73,22 +78,49 @@ public class SceneDirector : MonoBehaviour {
   }
 
   void OnDisable() {
-    StopGraph();
+    DestroyGraph();
+    StopCamera();
     Glog.Shutdown();
   }
 
   public void ChangeWebCamDevice(WebCamDevice? webCamDevice) {
-    webCamScreen.GetComponent<WebCamScreenController>().ResetScreen(webCamDevice);
+    lock (graphLock) {
+      ResetCamera(webCamDevice);
+
+      if (graphPrefab != null) {
+        StopGraph();
+        StartGraph();
+      }
+    }
+  }
+
+  void ResetCamera(WebCamDevice? webCamDevice) {
+    StopCamera();
+    cameraSetupCoroutine = StartCoroutine(webCamScreen.GetComponent<WebCamScreenController>().ResetScreen(webCamDevice));
+    this.webCamDevice = webCamDevice;
+  }
+
+  void StopCamera() {
+    if (cameraSetupCoroutine != null) {
+      StopCoroutine(cameraSetupCoroutine);
+      cameraSetupCoroutine = null;
+    }
   }
 
   public void ChangeGraph(GameObject graphPrefab) {
-    StopGraph();
-    this.graphPrefab = graphPrefab;
-    StartGraph();
+    lock (graphLock) {
+      DestroyGraph();
+      this.graphPrefab = graphPrefab;
+
+      if (webCamDevice != null) {
+        StartGraph();
+      }
+    }
   }
 
   void StartGraph() {
     if (graphRunner != null) {
+      Debug.Log("The graph is already running");
       return;
     }
 
@@ -100,53 +132,36 @@ public class SceneDirector : MonoBehaviour {
       StopCoroutine(graphRunner);
       graphRunner = null;
     }
+  }
+
+  void DestroyGraph() {
+    StopGraph();
 
     if (graphContainer != null) {
-      Destroy(graphContainer);;
+      Destroy(graphContainer);
     }
   }
 
   IEnumerator RunGraph() {
-    var webCamScreenController = webCamScreen.GetComponent<WebCamScreenController>();
-    var waitFrame = MAX_WAIT_FRAME;
+    yield return WaitForAssets();
 
-    yield return new WaitWhile(() => {
-      waitFrame--;
+    if (IsAssetLoadFailed) {
+      Debug.LogError("Failed to load assets. Stopping...");
+      yield break;
+    }
 
-      var isGraphPrefabPresent = graphPrefab != null;
-      var isWebCamPlaying = webCamScreenController.isPlaying;
-
-      if (!isGraphPrefabPresent && waitFrame % 10 == 0) {
-        Debug.Log($"Waiting for a graph");
-      }
-
-      if (!isWebCamPlaying && waitFrame % 10 == 0) {
-        Debug.Log($"Waiting for a WebCamDevice");
-      }
-
-      return (!isGraphPrefabPresent || !isWebCamPlaying) && waitFrame > 0;
-    });
+    yield return WaitForGraph();
 
     if (graphPrefab == null) {
       Debug.LogWarning("No graph is set. Stopping...");
       yield break;
     }
 
+    var webCamScreenController = webCamScreen.GetComponent<WebCamScreenController>();
+    yield return WaitForCamera(webCamScreenController);
+
     if (!webCamScreenController.isPlaying) {
       Debug.LogWarning("WebCamDevice is not working. Stopping...");
-      yield break;
-    }
-
-    webCamScreenController.InitScreen();
-
-    if (!IsAssetLoaded && !IsAssetLoadFailed) {
-      Debug.Log("Waiting for assets to be loaded...");
-    }
-
-    yield return new WaitUntil(() => IsAssetLoaded || IsAssetLoadFailed);
-
-    if (IsAssetLoadFailed) {
-      Debug.LogError("Failed to load assets. Stopping...");
       yield break;
     }
 
@@ -175,11 +190,6 @@ public class SceneDirector : MonoBehaviour {
     while (true) {
       yield return new WaitForEndOfFrame();
 
-      if (!webCamScreenController.isPlaying) {
-        Debug.LogWarning("WebCam is not working");
-        break;
-      }
-
       var nextFrameRequest = webCamScreenController.RequestNextFrame();
       yield return nextFrameRequest;
 
@@ -188,5 +198,44 @@ public class SceneDirector : MonoBehaviour {
       graph.PushInput(nextFrame).AssertOk();
       graph.RenderOutput(webCamScreenController, nextFrame);
     }
+  }
+
+  IEnumerator WaitForAssets() {
+    if (!IsAssetLoaded && !IsAssetLoadFailed) {
+      Debug.Log("Waiting for assets to be loaded...");
+    }
+
+    yield return new WaitUntil(() => IsAssetLoaded || IsAssetLoadFailed);
+  }
+
+  IEnumerator WaitForGraph() {
+    var waitFrame = MAX_WAIT_FRAME;
+
+    yield return new WaitUntil(() => {
+      waitFrame--;
+
+      var isGraphPrefabPresent = graphPrefab != null;
+
+      if (!isGraphPrefabPresent && waitFrame % 50 == 0) {
+        Debug.Log($"Waiting for a graph");
+      }
+
+      return isGraphPrefabPresent || waitFrame < 0;
+    });
+  }
+
+  IEnumerator WaitForCamera(WebCamScreenController webCamScreenController) {
+    var waitFrame = MAX_WAIT_FRAME;
+
+    yield return new WaitUntil(() => {
+      waitFrame--;
+      var isWebCamPlaying = webCamScreenController.isPlaying;
+
+      if (!isWebCamPlaying && waitFrame % 50 == 0) {
+        Debug.Log($"Waiting for a WebCamDevice");
+      }
+
+      return isWebCamPlaying || waitFrame < 0;
+    });
   }
 }
