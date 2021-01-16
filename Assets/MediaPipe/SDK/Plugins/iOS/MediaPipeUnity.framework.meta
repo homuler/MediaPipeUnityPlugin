@@ -77,7 +77,7 @@ PluginImporter:
         AddToEmbeddedBinaries: true
         CPU: AnyCPU
         CompileFlags: 
-        FrameworkDependencies: CoreFoundation;Accelerate;CoreImage;GLKit;Metal;
+        FrameworkDependencies: 
   - first:
       tvOS: tvOS
     second:

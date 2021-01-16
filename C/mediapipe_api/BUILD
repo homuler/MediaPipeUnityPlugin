@@ -1,4 +1,3 @@
-load("@build_bazel_rules_apple//apple:ios.bzl", "ios_framework")
 load("@rules_pkg//:pkg.bzl", "pkg_zip")
 load("//mediapipe_api:import_model.bzl", "pkg_model")
 
@@ -64,27 +63,6 @@ alias(
         "@com_google_mediapipe//mediapipe:macos": ":libmediapipe_c.dylib",
         "//conditions:default": ":libmediapipe_c.so",
     }),
-)
-
-objc_library(
-    name = "opencv_objc_lib",
-    deps = ["@ios_opencv//:OpencvFramework"],
-)
-
-ios_framework(
-    name = "MediaPipeUnity",
-    bundle_id = "org.homuler.unity.MediaPipeUnity",
-    families = [
-        "iphone",
-        "ipad",
-    ],
-    infoplists = ["Info.plist"],
-    minimum_os_version = "10.0",
-    deps = [
-        ":mediapipe_c",
-        ":opencv_objc_lib",
-    ],
-    visibility = ["//visibility:public"],
 )
 
 # It is recommended that you include only neccessary calculators.
