@@ -1,11 +1,11 @@
 # MediaPipe Unity Plugin
-This is a Unity (2019.4.10f1) Plugin to use MediaPipe.
+This is a Unity (2019.4.16f1) Plugin to use MediaPipe.
 
 ## Platforms
 - [x] Linux Desktop (tested on ArchLinux)
 - [x] Android (ARM v7)
 - [x] OS X
-- [ ] iOS
+- [x] iOS
 
 ## Prerequisites
 ### MediaPipe
@@ -19,7 +19,6 @@ If your version or path is different, please edit [C/third_party/opencv_linux.BU
 This project uses protocol buffers to communicate with MediaPipe, and it is necessary to install .NET Core SDK(3.x) and .NET Core runtime 2.1 to build `Google.Protobuf.dll`.
 
 ## Build
-### Libraries
 1. Clone the repository
     ```sh
     git clone https://github.com/homuler/MediaPipeUnityPlugin.git
@@ -27,21 +26,27 @@ This project uses protocol buffers to communicate with MediaPipe, and it is nece
     ```
 
 2. Build native libraries
+    ### Desktop GPU (Linux only)
     ```sh
-    # For Desktop GPU
-    make gpu
-
-    # For Desktop CPU
-    make cpu
-
-    # For Android
-    make android_arm
+    make
+    make install
     ```
 
-3. Copy the libraries and model files under `Assets`
+    ### Desktop CPU
     ```sh
-    # Copy libraries to `Assets/MediaPipe/SDK/Plugins` and
-    # model files to `Assets/MediaPipe/SDK/Models`
+    make cpu
+    make install
+    ```
+
+    ### Android
+    ```sh
+    make android_arm
+    make install
+    ```
+
+    ### iOS
+    ```sh
+    make ios_arm64
     make install
     ```
 
@@ -67,9 +72,13 @@ The AssetBundle file will be created under `Assets/StreamingAssets`.
 
 ### Android
 See [Desktop](#Desktop) to build AssetBundles.\
-Example scenes for mobile device is not implemented yet, but `DesktopGPU` scene can be run on Android devices.
+When building, select **only** `Android` scene in `Scenes In Build`.
 
 If you prefer, model files can be included in `mediapipe_android.aar` instead, and in that case, skip the AssetBundle build step.
+
+### iOS
+See [Desktop](#Desktop) to build AssetBundles.\
+When building, select **only** `iOS` scene in `Scenes In Build`.
 
 ## Example Graphs
 - Hello World!
@@ -99,8 +108,8 @@ InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000_mediapipe/
 
 ### TODO
 - [ ] Prepare API Documents
+- [ ] use CVPixelBuffer on iOS
 - [ ] Box Tracking (on CPU/GPU)
-- [ ] iOS
 - [ ] Windows
 
 ## LICENSE
