@@ -12,6 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Copied from mediapipe/graphs/face_detection/face_detection_mobile_gpu.pbtxt
+#
+# CHANGES:
+#   - `input_video` is ImageFrame (ImageFrameToGpuBufferCalculator converts it into GpuBuffer)
+#   - Add ImageTransformationCalculator and rotate the input
+#   - Remove AnnotationOverlayCalculator
+#   - Add PacketPresenceCalculator
+
 # ImageFrame
 input_stream: "input_video"
 

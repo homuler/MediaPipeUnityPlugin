@@ -12,6 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Copied from mediapipe/graphs/hair_segmentation/hair_segmentation_mobile_gpu.pbtxt
+#
+# CHANGES:
+#   - ImageTransformationCalculator rotates the input
+#   - Remove RecolorCalculator
+
 # MediaPipe graph that performs hair segmentation with TensorFlow Lite on GPU.
 # Used in the example in
 # mediapipie/examples/android/src/java/com/mediapipe/apps/hairsegmentationgpu.

@@ -12,6 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Copied from mediapipe/graphs/hand_tracking/hand_tracking_mobile.pbtxt
+#
+# CHANGES:
+#   - `input_video` is ImageFrame (ImageFrameToGpuBufferCalculator converts it into GpuBuffer)
+#   - Add ImageTransformationCalculator and rotate the input
+#   - Remove HandRendererSubgraph
+#   - Add PacketPresenceCalculators
+
 # MediaPipe graph that performs multi-hand tracking with TensorFlow Lite on GPU.
 # Used in the examples in
 # mediapipe/examples/android/src/java/com/mediapipe/apps/multihandtrackinggpu.

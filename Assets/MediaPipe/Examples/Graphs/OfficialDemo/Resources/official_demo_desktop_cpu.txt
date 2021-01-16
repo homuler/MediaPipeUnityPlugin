@@ -12,13 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This file is OfficialDemoCPU's config file.
+# This file is OfficialDemoDesktopCPU's config file (Copied from mediapipe/graphs/hand_tracking/hand_tracking_desktop_live.pbtxt).
 #
 # CHANGES:
-#  - add FlowLimiterCalculator
-#  - add ImageTransformationCalculator
-#  - use SidePacket instead of ConstantSidePacketCalculator
-#  - add comments
+#  - Add FlowLimiterCalculator
+#  - Add ImageTransformationCalculator and rotate the input
+#  - Use SidePacket instead of ConstantSidePacketCalculator
 
 # MediaPipe graph that performs hands tracking on desktop with TensorFlow
 # Lite on CPU.

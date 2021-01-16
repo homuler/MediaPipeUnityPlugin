@@ -12,6 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Copied from mediapipe/graphs/object_detection/object_detection_mobile_gpu.pbtxt
+#
+# CHANGES:
+#   - `input_video` is ImageFrame (ImageFrameToGpuBufferCalculator converts it into GpuBuffer)
+#   - ImageTransformationCalculator rotates the input
+#   - Remove AnnotationOverlayCalculator
+
 # MediaPipe graph that performs object detection with TensorFlow Lite on GPU.
 # Used in the examples in
 # mediapipe/examples/android/src/java/com/mediapipe/apps/objectdetectiongpu and

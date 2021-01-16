@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This file is OfficialDemoGPU's config file.
+# This file is OfficialDemoAndroid's config file (Copied from mediapipe/graphs/hand_tracking/hand_tracking_mobile.pbtxt).
 #
 # CHANGES:
-#  - Add ImageTransformationCalculator
-#  - Add comments
+#  - Add ImageTransformationCalculator and rotate the input
+#  - Add GlScalerCalculator and flips the output
 
 # MediaPipe graph that performs multi-hand tracking with TensorFlow Lite on GPU.
 # Used in the examples in
