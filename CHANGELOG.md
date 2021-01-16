@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.4.0](https://github.com/homuler/MediapipeUnityPlugin/compare/v0.3.0...v0.4.0) (2021-01-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* define callbacks as static methods for IL2CPP
+
+### Features
+
+* **sdk:** GlCalculatorHelper#GetGlContext ([3238cf6](https://github.com/homuler/MediapipeUnityPlugin/commit/3238cf6ce0598f28076967c8f67c20794e273833))
+
+
+### Bug Fixes
+
+* remove readonly ([7fdf71a](https://github.com/homuler/MediapipeUnityPlugin/commit/7fdf71a401ea4c8e50b84444e3518bbfc558ab38))
+* suppress C linkage errors ([461d019](https://github.com/homuler/MediapipeUnityPlugin/commit/461d019eb04545397aa398496e8e066140eb5312))
+* wait for WebCamTexture to be initialized ([8fd204c](https://github.com/homuler/MediapipeUnityPlugin/commit/8fd204cfed441340566618f49fdf8e7a1eb11b2f))
+
+
+* define callbacks as static methods for IL2CPP ([0172e01](https://github.com/homuler/MediapipeUnityPlugin/commit/0172e01bf59a4a8593530ec14742f19b076e2575))
+
 ## [0.3.0](https://github.com/homuler/MediapipeUnityPlugin/compare/v0.2.2...v0.3.0) (2020-12-31)
 
 
