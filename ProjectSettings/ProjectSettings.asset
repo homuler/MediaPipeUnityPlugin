@@ -168,7 +168,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: org.homuler.mediapipe.unity.MediaPipePlugin
+    Android: org.homuler.unity.MediaPipeUnityPlugin
     iPhone: org.homuler.unity.MediaPipeUnityPlugin
   buildNumber: {}
   AndroidBundleVersionCode: 1

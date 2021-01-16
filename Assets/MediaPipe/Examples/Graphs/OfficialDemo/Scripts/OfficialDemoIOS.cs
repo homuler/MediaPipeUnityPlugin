@@ -1,9 +1,8 @@
 using Mediapipe;
 using System;
-using System.Linq;
 using UnityEngine;
 
-public class OfficialDemoGPU : DemoGraph {
+public class OfficialDemoIOS : DemoGraph {
   private const string outputStream = "output_video";
 
   private OutputStreamPoller<ImageFrame> outputStreamPoller;

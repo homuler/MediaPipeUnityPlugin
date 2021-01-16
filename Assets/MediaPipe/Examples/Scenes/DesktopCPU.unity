@@ -1205,7 +1205,7 @@ MonoBehaviour:
   hairSegmentationGraph: {fileID: 0}
   objectDetectionGraph: {fileID: 2332830239939318747, guid: 4860f13fa4d3e4daab6ddf6f43ce96ab,
     type: 3}
-  officialDemoGraph: {fileID: 1030163418046843870, guid: b07188c7d472a44188094cf2804f7875,
+  officialDemoGraph: {fileID: 8080420373148060850, guid: bcbe21b0464e9b73ea37d18add25baf5,
     type: 3}
 --- !u!1 &908513300
 GameObject:

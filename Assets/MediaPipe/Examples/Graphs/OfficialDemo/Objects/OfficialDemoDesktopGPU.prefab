@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5680418270291803703}
   - component: {fileID: -5853697970282788592}
   m_Layer: 0
-  m_Name: OfficialDemoGPU
+  m_Name: OfficialDemoDesktopGPU
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -40,7 +40,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5680418270291803701}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 837c6eaee8d738102b379f9ce5dcd763, type: 3}
+  m_Script: {fileID: 11500000, guid: e32f6ff63c1300ae0bc35516f44a9523, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   config: {fileID: 4900000, guid: 6c23f05384f6f0bb29afd72e99344a72, type: 3}

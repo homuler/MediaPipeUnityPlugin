@@ -2,7 +2,7 @@ using Mediapipe;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-public class OfficialDemoCPU : DemoGraph {
+public class OfficialDemoDesktop : DemoGraph {
   private const string outputStream = "output_video";
   private readonly object outputImageLock = new object();
   private ImageFrame outputImage;
@@ -11,7 +11,7 @@ public class OfficialDemoCPU : DemoGraph {
   private SidePacket sidePacket;
 
   public override Status StartRun() {
-    Debug.Log("This graph is for testing official examples. You can customize the graph by editing `official_demo_desktop_cpu.txt` (default is `hand_tracking_desktop.pbtxt`)");
+    Debug.Log("This graph is for testing official examples. You can customize the graph by editing `official_demo_desktop_*.txt` (default is `hand_tracking_desktop.pbtxt`)");
 
     graph.ObserveOutputStream<ImageFramePacket, ImageFrame>(outputStream, OutputVideoCallback, out outputVideoCallbackHandle).AssertOk();
 

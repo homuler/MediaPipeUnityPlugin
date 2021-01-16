@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-#if UNITY_ANDROID
 public class OfficialDemoAndroid : DemoGraph {
   private const string outputStream = "output_video";
 
@@ -35,6 +34,7 @@ public class OfficialDemoAndroid : DemoGraph {
     sidePacket = new SidePacket();
     sidePacket.Emplace("num_hands", new IntPacket(2));
 
+#if UNITY_ANDROID
     var glTextureName = texture.GetNativeTexturePtr();
     var textureWidth = texture.width;
     var textureHeight = texture.height;
@@ -50,6 +50,7 @@ public class OfficialDemoAndroid : DemoGraph {
 
     outputPacket = new GpuBufferPacket(gpuBuffer);
     sidePacket.Emplace(destinationBufferName, outputPacket);
+#endif
 
     return graph.StartRun(sidePacket);
   }
@@ -66,4 +67,3 @@ public class OfficialDemoAndroid : DemoGraph {
     }
   }
 }
-#endif

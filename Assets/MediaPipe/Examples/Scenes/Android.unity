@@ -1206,7 +1206,7 @@ MonoBehaviour:
     type: 3}
   objectDetectionGraph: {fileID: 3735150179219885988, guid: b1fcdb3eb670b402693f9c69c98a0d51,
     type: 3}
-  officialDemoGraph: {fileID: 5716405286658754340, guid: d21cb7587642d4cc79d1b51c8911fa07,
+  officialDemoGraph: {fileID: 2660707083848588742, guid: 5a41994360993fec9acff375b639b07a,
     type: 3}
 --- !u!1 &908513300
 GameObject:
