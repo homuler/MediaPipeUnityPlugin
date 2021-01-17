@@ -18,13 +18,14 @@
 #   - `input_video` is ImageFrame (ImageFrameToGpuBufferCalculator converts it into GpuBuffer)
 #   - ImageTransformationCalculator rotates the input
 #   - Remove RecolorCalculator
+#   - output ImageFrame
 
 # MediaPipe graph that performs hair segmentation with TensorFlow Lite on GPU.
 # Used in the example in
 # mediapipie/examples/android/src/java/com/mediapipe/apps/hairsegmentationgpu.
 
 input_stream: "input_video"
-output_stream: "hair_mask"
+output_stream: "hair_mask_cpu"
 
 # Throttles the images flowing downstream for flow control. It passes through
 # the very first incoming image unaltered, and waits for
@@ -42,7 +43,7 @@ output_stream: "hair_mask"
 node {
   calculator: "FlowLimiterCalculator"
   input_stream: "input_video"
-  input_stream: "FINISHED:hair_mask"
+  input_stream: "FINISHED:hair_mask_cpu"
   input_stream_info: {
     tag_index: "FINISHED"
     back_edge: true
@@ -162,4 +163,10 @@ node {
       output_layer_index: 1
     }
   }
+}
+
+node: {
+  calculator: "GpuBufferToImageFrameCalculator"
+  input_stream: "hair_mask"
+  output_stream: "hair_mask_cpu"
 }
