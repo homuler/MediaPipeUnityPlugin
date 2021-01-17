@@ -10,6 +10,7 @@ scriptdir := $(sdkdir)/Scripts
 bazelflags.gpu := --copt -DMESA_EGL_NO_X11_HEADERS --copt -DEGL_NO_X11
 bazelflags.cpu := --define MEDIAPIPE_DISABLE_GPU=1
 bazelflags.android_arm := --config=android_arm
+bazelflags.android_arm64 := --config=android_arm64
 bazelflags.ios_arm64 := --config=ios_arm64 --copt=-fembed-bitcode --apple_bitcode=embedded
 
 proto_srcdir := $(scriptdir)/Protobuf
@@ -22,26 +23,32 @@ protobuf_bindir := $(protobuf_csharpdir)/src/Google.Protobuf/bin/Release/net45
 protobuf_dll := $(protobuf_bindir)/Google.Protobuf.dll
 
 bazel_root := C/bazel-bin/mediapipe_api
+bazel_desktop_target := //mediapipe_api:libmediapipe_c
+bazel_android_target := //mediapipe_api/java/org/homuler/mediapipe/unity:mediapipe_android
+bazel_ios_target := //mediapipe_api/objc:MediaPipeUnity
 bazel_models_target := //mediapipe_api:mediapipe_models
 bazel_protos_target := //mediapipe_api:mediapipe_proto_srcs
 bazel_common_target := $(bazel_models_target) $(bazel_protos_target)
 
-.PHONY: all gpu cpu android_arm ios_arm64 clean \
+.PHONY: all gpu cpu android_arm android_arm64 ios_arm64 clean \
 	install install-protobuf install-mediapipe_c install-mediapipe_android install-mediapipe_ios install-models \
 	uninstall uninstall-protobuf uninstall-mediapipe_c uninstall-mediapipe_android uninstall-mediapipe_ios uninstall-models
 
 # build
 gpu: | $(protobuf_dll)
-	cd C && bazel build -c opt ${bazelflags.gpu} //mediapipe_api:libmediapipe_c $(bazel_common_target)
+	cd C && bazel build -c opt ${bazelflags.gpu} $(bazel_desktop_target) $(bazel_common_target)
 
 cpu: | $(protobuf_dll)
-	cd C && bazel build -c opt ${bazelflags.cpu} //mediapipe_api:libmediapipe_c $(bazel_common_target)
+	cd C && bazel build -c opt ${bazelflags.cpu} $(bazel_desktop_target) $(bazel_common_target)
 
 android_arm: | $(protobuf_dll)
-	cd C && bazel build -c opt ${bazelflags.android_arm} //mediapipe_api/java/org/homuler/mediapipe/unity:mediapipe_android $(bazel_common_target)
+	cd C && bazel build -c opt ${bazelflags.android_arm} $(bazel_android_target) $(bazel_common_target)
+
+android_arm64: | $(protobuf_dll)
+	cd C && bazel build -c opt ${bazelflags.android_arm64} $(bazel_android_target) $(bazel_common_target)
 
 ios_arm64: | $(protobuf_dll)
-	cd C && bazel build -c opt ${bazelflags.ios_arm64} --copt=-fembed-bitcode --apple_bitcode=embedded //mediapipe_api/objc:MediaPipeUnity $(bazel_common_target)
+	cd C && bazel build -c opt ${bazelflags.ios_arm64} $(bazel_ios_target) $(bazel_common_target)
 
 $(plugindir)/Google.Protobuf.dll: Temp/$(protobuf_tarball)
 	cd Temp/protobuf-$(protobuf_version)/csharp && ./buildall.sh && mv src/Google.Protobuf/bin/Release/net45/* ../../../$(plugindir)
