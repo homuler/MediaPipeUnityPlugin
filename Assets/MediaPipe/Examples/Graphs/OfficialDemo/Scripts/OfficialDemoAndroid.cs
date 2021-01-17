@@ -4,12 +4,16 @@ using System.Linq;
 using UnityEngine;
 
 public class OfficialDemoAndroid : DemoGraph {
-  private const string outputStream = "output_video";
+  const string outputStream = "output_video";
 
-  private OutputStreamPoller<GpuBuffer> outputStreamPoller;
-  private GpuBufferPacket outputPacket;
-  private SidePacket sidePacket;
-  private string destinationBufferName;
+  OutputStreamPoller<GpuBuffer> outputStreamPoller;
+  SidePacket sidePacket;
+
+  static GpuBufferPacket outputPacket;
+  static string destinationBufferName;
+  static int destinationWidth;
+  static int destinationHeight;
+  static IntPtr destinationNativeTexturePtr;
 
   public override void Initialize() {
     if (config == null) {
@@ -34,23 +38,12 @@ public class OfficialDemoAndroid : DemoGraph {
     sidePacket = new SidePacket();
     sidePacket.Emplace("num_hands", new IntPacket(2));
 
-#if UNITY_ANDROID
-    var glTextureName = texture.GetNativeTexturePtr();
-    var textureWidth = texture.width;
-    var textureHeight = texture.height;
-    GpuBuffer gpuBuffer = null;
+    destinationNativeTexturePtr = texture.GetNativeTexturePtr();
+    destinationWidth = texture.width;
+    destinationHeight = texture.height;
 
-    gpuHelper.RunInGlContext(() => {
-      var glContext = GlContext.GetCurrent();
-      var glTextureBuffer = new GlTextureBuffer((UInt32)glTextureName, textureWidth, textureHeight,
-                                                GpuBufferFormat.kBGRA32, OnReleaseDestinationTexture, glContext);
-      gpuBuffer = new GpuBuffer(glTextureBuffer);
-      return Status.Ok();
-    }).AssertOk();
-
-    outputPacket = new GpuBufferPacket(gpuBuffer);
+    gpuHelper.RunInGlContext(BuildDestination).AssertOk();
     sidePacket.Emplace(destinationBufferName, outputPacket);
-#endif
 
     return graph.StartRun(sidePacket);
   }
@@ -60,6 +53,20 @@ public class OfficialDemoAndroid : DemoGraph {
     return;
   }
 
+  [AOT.MonoPInvokeCallback(typeof(GlCalculatorHelper.NativeGlStatusFunction))]
+  static IntPtr BuildDestination() {
+#if UNITY_ANDROID
+    var glContext = GlContext.GetCurrent();
+    var glTextureBuffer = new GlTextureBuffer((UInt32)destinationNativeTexturePtr, destinationWidth, destinationHeight,
+                                              GpuBufferFormat.kBGRA32, OnReleaseDestinationTexture, glContext);
+    outputPacket = new GpuBufferPacket(new GpuBuffer(glTextureBuffer));
+#else
+    outputPacket = new GpuBufferPacket();
+#endif
+    return Status.Ok().mpPtr;
+  }
+
+  [AOT.MonoPInvokeCallback(typeof(GlTextureBuffer.DeletionCallback))]
   static void OnReleaseDestinationTexture(UInt64 name, IntPtr tokenPtr) {
     // TODO: release outputPacket
     using (var token = new GlSyncPoint(tokenPtr)) {

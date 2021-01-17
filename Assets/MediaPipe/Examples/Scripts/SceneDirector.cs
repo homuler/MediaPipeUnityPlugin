@@ -23,13 +23,12 @@ public class SceneDirector : MonoBehaviour {
 
   GpuResources gpuResources;
   GlCalculatorHelper gpuHelper;
+  delegate void PluginCallback(int eventId);
+  static IntPtr currentContext = IntPtr.Zero;
 
   const int MAX_WAIT_FRAME = 1000;
   bool IsAssetLoaded = false;
   bool IsAssetLoadFailed = false;
-
-  delegate void PluginCallback(int eventId);
-  IntPtr currentContext = IntPtr.Zero;
 
   void OnEnable() {
     var nameForGlog = Path.Combine(Application.dataPath, "MediaPipePlugin");
@@ -43,7 +42,8 @@ public class SceneDirector : MonoBehaviour {
   }
 
 #if UNITY_ANDROID
-  void GetCurrentContext(int eventId) {
+  [AOT.MonoPInvokeCallback(typeof(PluginCallback))]
+  static void GetCurrentContext(int eventId) {
     currentContext = Egl.getCurrentContext();
   }
 #endif

@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.InteropServices;
 
 namespace Mediapipe {
   public class GlTextureBuffer : MpResourceHandle {
@@ -11,17 +10,19 @@ namespace Mediapipe {
     ///   so it receives also the texture name to specify the target instance.
     /// </remarks>
     public delegate void DeletionCallback(UInt64 name, IntPtr glSyncToken);
-    private GCHandle deletionCallbackHandle;
 
     public GlTextureBuffer(IntPtr ptr, bool isOwner = true) : base(isOwner) {
       sharedPtrHandle = new SharedPtr(ptr, isOwner);
       this.ptr = sharedPtrHandle.Get();
     }
 
+    /// <param name="callback">
+    ///   A function called when the texture buffer is deleted.
+    ///   Make sure that this function doesn't throw exceptions and won't be GCed.
+    /// </param>
     public GlTextureBuffer(UInt32 target, UInt32 name, int width, int height,
         GpuBufferFormat format, DeletionCallback callback, GlContext glContext)
     {
-      deletionCallbackHandle = GCHandle.Alloc(callback, GCHandleType.Pinned);
       var sharedContextPtr = glContext == null ? IntPtr.Zero : glContext.sharedPtr;
       UnsafeNativeMethods.mp_SharedGlTextureBuffer__ui_ui_i_i_ui_PF_PSgc(
           target, name, width, height, format, callback, sharedContextPtr, out var ptr).Assert();
@@ -43,14 +44,6 @@ namespace Mediapipe {
 
     protected override void DeleteMpPtr() {
       // Do nothing
-    }
-
-    protected override void DisposeUnmanaged() {
-      base.DisposeUnmanaged();
-
-      if (deletionCallbackHandle.IsAllocated) {
-        deletionCallbackHandle.Free();
-      }
     }
 
     public IntPtr sharedPtr {
