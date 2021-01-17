@@ -3,9 +3,10 @@ This is a Unity (2019.4.16f1) Plugin to use MediaPipe.
 
 ## Platforms
 - [x] Linux Desktop (tested on ArchLinux)
-- [x] Android (ARM v7)
-- [x] OS X
+- [x] Android
 - [x] iOS
+- [x] macOS (CPU only)
+- [ ] Windows 10
 
 ## Prerequisites
 ### MediaPipe
@@ -40,6 +41,11 @@ This project uses protocol buffers to communicate with MediaPipe, and it is nece
 
     ### Android
     ```sh
+    # ARM64
+    make android_arm64
+    make install
+
+    # ARMv7
     make android_arm
     make install
     ```
