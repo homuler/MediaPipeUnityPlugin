@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.1](https://github.com/homuler/MediapipeUnityPlugin/compare/v0.4.0...v0.4.1) (2021-01-17)
+
+
+### Features
+
+* add android_arm64 target ([70d46d9](https://github.com/homuler/MediapipeUnityPlugin/commit/70d46d9b2926c2e603f0d9143742fe6419fe412b))
+
 ## [0.4.0](https://github.com/homuler/MediapipeUnityPlugin/compare/v0.3.0...v0.4.0) (2021-01-16)
 
 
