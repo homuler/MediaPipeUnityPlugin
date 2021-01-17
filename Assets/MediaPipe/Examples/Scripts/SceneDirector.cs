@@ -78,7 +78,7 @@ public class SceneDirector : MonoBehaviour {
   }
 
   void OnDisable() {
-    DestroyGraph();
+    StopGraph();
     StopCamera();
     Glog.Shutdown();
   }
@@ -109,7 +109,7 @@ public class SceneDirector : MonoBehaviour {
 
   public void ChangeGraph(GameObject graphPrefab) {
     lock (graphLock) {
-      DestroyGraph();
+      StopGraph();
       this.graphPrefab = graphPrefab;
 
       if (webCamDevice != null) {
@@ -132,10 +132,6 @@ public class SceneDirector : MonoBehaviour {
       StopCoroutine(graphRunner);
       graphRunner = null;
     }
-  }
-
-  void DestroyGraph() {
-    StopGraph();
 
     if (graphContainer != null) {
       Destroy(graphContainer);
