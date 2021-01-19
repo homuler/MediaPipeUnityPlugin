@@ -29,8 +29,8 @@ cc_library(
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [],
         "//conditions:default": [
-            "//mediapipe_api/gpu:gl_calculator_helper",
-            "//mediapipe_api/gpu:gpu_shared_data_internal",
+            "@com_google_mediapipe//mediapipe/gpu:gl_calculator_helper",
+            "@com_google_mediapipe//mediapipe/gpu:gpu_shared_data_internal",
         ],
     }),
     alwayslink = True,

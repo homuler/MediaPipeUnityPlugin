@@ -30,6 +30,9 @@ cc_library(
     name = "gl_calculator_helper",
     srcs = ["gl_calculator_helper.cc"],
     hdrs = ["gl_calculator_helper.h"],
+    copts = [
+        "-Wno-return-type-c-linkage",
+    ],
     deps = [
         "//mediapipe_api:common",
         "//mediapipe_api/framework/port:status",

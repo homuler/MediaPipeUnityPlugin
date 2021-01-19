@@ -13,8 +13,8 @@
 #include "mediapipe_api/framework/port/statusor.h"
 
 #ifndef MEDIAPIPE_DISABLE_GPU
-#include "mediapipe_api/gpu/gl_calculator_helper.h"
-#include "mediapipe_api/gpu/gpu_shared_data_internal.h"
+#include "mediapipe/gpu/gl_calculator_helper.h"
+#include "mediapipe/gpu/gpu_shared_data_internal.h"
 #endif  // !defined(MEDIAPIPE_DISABLE_GPU)
 
 extern "C" {
