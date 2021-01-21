@@ -12,23 +12,24 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.2d.common": {
-      "version": "2.0.2",
+      "version": "2.1.0",
       "depth": 1,
       "source": "registry",
       "dependencies": {
-        "com.unity.2d.sprite": "1.0.0"
+        "com.unity.2d.sprite": "1.0.0",
+        "com.unity.modules.uielements": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
     "com.unity.2d.path": {
-      "version": "2.0.6",
+      "version": "2.1.0",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.2d.pixel-perfect": {
-      "version": "2.0.4",
+      "version": "2.1.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -76,7 +77,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ext.nunit": {
-      "version": "1.0.5",
+      "version": "1.0.6",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
@@ -113,11 +114,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.test-framework": {
-      "version": "1.1.19",
+      "version": "1.1.20",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.ext.nunit": "1.0.5",
+        "com.unity.ext.nunit": "1.0.6",
         "com.unity.modules.imgui": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0"
       },
