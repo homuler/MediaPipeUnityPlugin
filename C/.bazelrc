@@ -11,6 +11,14 @@ build:linux --cxxopt=-std=c++17
 build:linux --host_cxxopt=-std=c++17
 build:linux --copt=-w
 
+# windows
+build:windows --cxxopt=/std:c++17
+build:windows --host_cxxopt=/std:c++17
+build:windows --copt=/w
+# For using M_* math constants on Windows with MSVC.
+build:windows --copt=/D_USE_MATH_DEFINES
+build:windows --host_copt=/D_USE_MATH_DEFINES
+
 # macOS
 build:macos --cxxopt=-std=c++17
 build:macos --host_cxxopt=-std=c++17

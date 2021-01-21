@@ -41,6 +41,7 @@ http_archive(
   sha256 = "7ae90bdab3b602fc4782c1f8f00d7c05834ec2b9b3d638fe7fa80623ccc0aa9e",
   strip_prefix = "mediapipe-0.8.2",
   patches = [
+      "@//third_party:mediapipe_windows.patch",
       "@//third_party:mediapipe_visibility.diff",
       "@//third_party:mediapipe_model_path.diff",
       "@//third_party:mediapipe_extension.diff",

@@ -1,7 +1,7 @@
 #ifndef C_MEDIAPIPE_API_COMMON_H_
 #define C_MEDIAPIPE_API_COMMON_H_
 
-#ifdef DLL_EXPORTS
+#ifdef _WIN32
 #define MP_CAPI_EXPORT __declspec(dllexport)
 #else
 #define MP_CAPI_EXPORT
@@ -30,26 +30,32 @@ enum class MpReturnCode : int {
 };
 
 namespace mp_api {
+#ifndef _WIN32
   extern thread_local struct sigaction orig_act;
   extern thread_local sigjmp_buf abrt_jbuf;
 
   extern void sigabrt_handler(int sig);
+#endif
 }
 
-// TODO(homuler): make code more readable
+// TODO: make code more readable
 #define TRY             auto volatile _mp_return_code = MpReturnCode::Unset;\
                         try
 #define CATCH_EXCEPTION catch (std::exception& e) {\
                           LOG(ERROR) << e.what();\
-                          google::FlushLogFiles(google::ERROR);\
+                          google::FlushLogFiles(google::GLOG_ERROR);\
                           _mp_return_code = MpReturnCode::StandardError;\
                         } catch (...) {\
                           LOG(ERROR) << "Unknown exception occured";\
-                          google::FlushLogFiles(google::ERROR);\
+                          google::FlushLogFiles(google::GLOG_ERROR);\
                           _mp_return_code = MpReturnCode::UnknownError;\
                         }\
                         return _mp_return_code;
 
+#ifdef _WIN32
+#define TRY_ALL TRY
+#define CATCH_ALL CATCH_EXCEPTION
+#else
 #define TRY_ALL   TRY {\
                     struct sigaction act;\
                     sigemptyset(&act.sa_mask);\
@@ -59,12 +65,20 @@ namespace mp_api {
                     if (sigsetjmp(mp_api::abrt_jbuf, 1) == 0)
 #define CATCH_ALL   else {\
                       LOG(ERROR) << "Aborted";\
-                      google::FlushLogFiles(google::ERROR);\
+                      google::FlushLogFiles(google::GLOG_ERROR);\
                       _mp_return_code = MpReturnCode::Aborted;\
                     }\
                     sigaction(SIGABRT, &mp_api::orig_act, nullptr);\
                   } CATCH_EXCEPTION
+#endif  // _WIN32
+
 #define RETURN_CODE(code) _mp_return_code = code
 
-#define MP_CAPI(rettype) MP_CAPI_EXPORT extern rettype
+#ifdef _WIN32
+#define CDECL __cdecl
+#else
+#define CDECL
+#endif  // _WIN32
+
+#define MP_CAPI(rettype) MP_CAPI_EXPORT extern rettype CDECL
 #endif  // C_MEDIAPIPE_API_COMMON_H_
