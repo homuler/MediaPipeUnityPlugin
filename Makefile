@@ -1,5 +1,3 @@
-
-
 builddir := .build
 sdkdir := Assets/MediaPipe/SDK
 plugindir := $(sdkdir)/Plugins
@@ -7,7 +5,10 @@ modeldir := $(sdkdir)/Models
 scriptdir := $(sdkdir)/Scripts
 
 bazelflags.gpu := --copt -DMESA_EGL_NO_X11_HEADERS --copt -DEGL_NO_X11
-bazelflags.cpu := --define MEDIAPIPE_DISABLE_GPU=1 --action_env PYTHON_BIN_PATH="$(PYTHON_BIN_PATH)"
+bazelflags.cpu := --define MEDIAPIPE_DISABLE_GPU=1
+ifeq ($(OS),Windows_NT)
+  bazelflags.cpu += --action_env PYTHON_BIN_PATH="$(PYTHON_BIN_PATH)"
+endif
 bazelflags.android_arm := --config=android_arm
 bazelflags.android_arm64 := --config=android_arm64
 bazelflags.ios_arm64 := --config=ios_arm64 --copt=-fembed-bitcode --apple_bitcode=embedded
