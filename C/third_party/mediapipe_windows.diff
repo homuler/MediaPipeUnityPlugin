@@ -1,0 +1,39 @@
+diff --git a/mediapipe/calculators/tflite/tflite_inference_calculator.cc b/mediapipe/calculators/tflite/tflite_inference_calculator.cc
+index 2c956d6..df8b3c7 100644
+--- a/mediapipe/calculators/tflite/tflite_inference_calculator.cc
++++ b/mediapipe/calculators/tflite/tflite_inference_calculator.cc
+@@ -431,12 +431,14 @@ mediapipe::Status TfLiteInferenceCalculator::Process(CalculatorContext* cc) {
+
+     // 1. Receive pre-processed tensor inputs.
+     if (gpu_input_) {
+-      MP_RETURN_IF_ERROR(ProcessInputsGpu(cc,
+ #if MEDIAPIPE_TFLITE_METAL_INFERENCE
++      MP_RETURN_IF_ERROR(ProcessInputsGpu(cc,
+                                           compute_encoder,
+-#endif  // MEDIAPIPE_TFLITE_METAL_INFERENCE
+-
+                                           output_tensors_gpu.get()));
++#else
++      MP_RETURN_IF_ERROR(ProcessInputsGpu(cc,
++                                          output_tensors_gpu.get()));
++#endif  // MEDIAPIPE_TFLITE_METAL_INFERENCE
+     } else {
+       MP_RETURN_IF_ERROR(ProcessInputsCpu(cc, output_tensors_cpu.get()));
+     }
+@@ -462,11 +464,13 @@ mediapipe::Status TfLiteInferenceCalculator::Process(CalculatorContext* cc) {
+
+     // 3. Output processed tensors.
+     if (gpu_output_ || use_advanced_gpu_api_) {
+-      MP_RETURN_IF_ERROR(ProcessOutputsGpu(cc, std::move(output_tensors_cpu),
+ #if MEDIAPIPE_TFLITE_METAL_INFERENCE
+-                                           compute_encoder,
+-#endif  // MEDIAPIPE_TFLITE_METAL_INFERENCE
++      MP_RETURN_IF_ERROR(ProcessOutputsGpu(cc, std::move(output_tensors_cpu),
++                                           compute_encoder, std::move(output_tensors_gpu)));
++#else
++      MP_RETURN_IF_ERROR(ProcessOutputsGpu(cc, std::move(output_tensors_cpu),
+                                            std::move(output_tensors_gpu)));
++#endif  // MEDIAPIPE_TFLITE_METAL_INFERENCE
+     } else {
+       MP_RETURN_IF_ERROR(ProcessOutputsCpu(cc, std::move(output_tensors_cpu)));
+     }
