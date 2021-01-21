@@ -7,6 +7,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
   [SerializeField] protected TextAsset config = null;
 
   protected const string inputStream = "input_video";
+  protected int timestampValue;
   protected static CalculatorGraph graph;
   protected static GlCalculatorHelper gpuHelper;
 
@@ -27,6 +28,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
     }
 
     graph = new CalculatorGraph(config.text);
+    timestampValue = System.Environment.TickCount & System.Int32.MaxValue;
   }
 
   public void Initialize(GpuResources gpuResources, GlCalculatorHelper gpuHelper) {
@@ -42,7 +44,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
   }
 
   public Status PushInput(TextureFrame textureFrame) {
-    var timestamp = new Timestamp(System.Environment.TickCount & System.Int32.MaxValue);
+    var timestamp = new Timestamp(++timestampValue);
 
 #if !UNITY_ANDROID
     var imageFrame = new ImageFrame(
@@ -86,7 +88,11 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
 
   public void Stop() {
     if (graph != null) {
-      graph.CloseInputStream(inputStream).AssertOk();
+      var status = graph.CloseAllPacketSources();
+
+      if (!status.ok) {
+        Debug.LogError(status.ToString());
+      }
       graph.WaitUntilDone().AssertOk();
     }
   }
