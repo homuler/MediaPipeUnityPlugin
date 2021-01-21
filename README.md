@@ -6,7 +6,7 @@ This is a Unity (2019.4.16f1) Plugin to use MediaPipe.
 - [x] Android
 - [x] iOS
 - [x] macOS (CPU only)
-- [ ] Windows 10
+- [x] Windows 10 (CPU only, experimental)
 
 ## Prerequisites
 ### MediaPipe
@@ -33,10 +33,19 @@ This project uses protocol buffers to communicate with MediaPipe, and it is nece
     make install
     ```
 
-    ### Desktop CPU
+    ### Desktop CPU (Linux, macOS)
     ```sh
     make cpu
     make install
+    ```
+
+    ### Windows 10
+    ```sh
+    # If `python.exe` is installed at 'C:\path\to\python.exe'
+    make cpu PYTHON_BIN_PATH="C://path//to//python.exe"
+    make install
+
+    # Copy `opencv_world3410.dll` to `Assets\MediaPipe\SDK\Plugins` manually.
     ```
 
     ### Android
@@ -116,7 +125,6 @@ InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000_mediapipe/
 - [ ] Prepare API Documents
 - [ ] use CVPixelBuffer on iOS
 - [ ] Box Tracking (on CPU/GPU)
-- [ ] Windows
 
 ## LICENSE
 MIT
