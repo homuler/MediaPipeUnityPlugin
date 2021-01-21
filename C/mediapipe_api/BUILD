@@ -114,6 +114,17 @@ cc_library(
     alwayslink = True,
 )
 
+pkg_zip(
+    name = "mediapipe_desktop",
+    srcs = [
+        ":libmediapipe_c",
+    ] + select({
+        "@com_google_mediapipe//mediapipe:windows": ["@windows_opencv//:opencv_libs"],
+        "//conditions:default": [],
+    }),
+    # TODO: keep directory structure
+)
+
 pkg_model(
     name = "mediapipe_models",
     srcs = [

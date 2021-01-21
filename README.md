@@ -44,8 +44,6 @@ This project uses protocol buffers to communicate with MediaPipe, and it is nece
     # If `python.exe` is installed at 'C:\path\to\python.exe'
     make cpu PYTHON_BIN_PATH="C://path//to//python.exe"
     make install
-
-    # Copy `opencv_world3410.dll` to `Assets\MediaPipe\SDK\Plugins` manually.
     ```
 
     ### Android

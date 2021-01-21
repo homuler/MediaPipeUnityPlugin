@@ -22,7 +22,7 @@ protobuf_bindir := $(protobuf_csharpdir)/src/Google.Protobuf/bin/Release/net45
 protobuf_dll := $(protobuf_bindir)/Google.Protobuf.dll
 
 bazel_root := C/bazel-bin/mediapipe_api
-bazel_desktop_target := mediapipe_api:libmediapipe_c
+bazel_desktop_target := mediapipe_api:mediapipe_desktop
 bazel_android_target := mediapipe_api/java/org/homuler/mediapipe/unity:mediapipe_android
 bazel_ios_target := mediapipe_api/objc:MediaPipeUnity
 bazel_models_target := mediapipe_api:mediapipe_models
@@ -30,8 +30,8 @@ bazel_protos_target := mediapipe_api:mediapipe_proto_srcs
 bazel_common_target := $(bazel_models_target) $(bazel_protos_target)
 
 .PHONY: all gpu cpu android_arm android_arm64 ios_arm64 clean \
-	install install-protobuf install-mediapipe_c install-mediapipe_android install-mediapipe_ios install-models \
-	uninstall uninstall-protobuf uninstall-mediapipe_c uninstall-mediapipe_android uninstall-mediapipe_ios uninstall-models
+	install install-protobuf install-mediapipe_desktop install-mediapipe_android install-mediapipe_ios install-models \
+	uninstall uninstall-protobuf uninstall-mediapipe_desktop uninstall-mediapipe_android uninstall-mediapipe_ios uninstall-models
 
 # build
 gpu: | $(protobuf_dll)
@@ -61,20 +61,16 @@ clean:
 	bazel clean
 
 # install
-install: install-protobuf install-mediapipe_c install-mediapipe_android install-mediapipe_ios install-models install-protos
+install: install-protobuf install-mediapipe_desktop install-mediapipe_android install-mediapipe_ios install-models install-protos
 
 install-protobuf: | $(plugindir)/Protobuf
 	cp $(protobuf_bindir)/* $(plugindir)/Protobuf
 
-install-mediapipe_c:
-ifneq ("$(wildcard $(bazel_root)/libmediapipe_c.so)", "")
-	cp -f $(bazel_root)/libmediapipe_c.so $(plugindir)
-else ifneq ("$(wildcard $(bazel_root)/libmediapipe_c.dylib)", "")
-	cp -f $(bazel_root)/libmediapipe_c.dylib $(plugindir)
-else ifneq ("$(wildcard $(bazel_root)/libmediapipe_c.dll)", "")
-	cp -f $(bazel_root)/libmediapipe_c.dll $(plugindir)
+install-mediapipe_desktop:
+ifneq ("$(wildcard $(bazel_root)/mediapipe_desktop.zip)", "")
+	unzip $(bazel_root)/mediapipe_desktop.zip -d $(plugindir)
 else
-	# skip installing libmediapipe_c
+	# skip installing mediapipe_desktop
 endif
 
 install-mediapipe_android:
@@ -106,12 +102,12 @@ else
 	# skip installing proto sources
 endif
 
-uninstall: uninstall-models uninstall-mediapipe_ios uninstall-mediapipe_android uninstall-mediapipe_c uninstall-protobuf
+uninstall: uninstall-models uninstall-mediapipe_ios uninstall-mediapipe_android uninstall-mediapipe_desktop uninstall-protobuf
 
 uninstall-protobuf:
 	rm -r $(plugindir)/Protobuf
 
-uninstall-mediapipe_c:
+uninstall-mediapipe_desktop:
 	rm -f $(plugindir)/libmediapipe_c.so && rm -f $(plugindir)/libmediapipe_c.dylib	&& rm -f $(plugindir)/libmediapipe_c.dll
 
 uninstall-mediapipe_android:
