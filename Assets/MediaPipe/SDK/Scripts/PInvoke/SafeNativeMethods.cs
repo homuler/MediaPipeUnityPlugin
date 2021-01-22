@@ -5,7 +5,7 @@ namespace Mediapipe {
   internal static partial class SafeNativeMethods {
     private const string MediaPipeLibrary =
 #if UNITY_EDITOR
-        "mediapipe_c";
+      "mediapipe_c";
 #elif UNITY_IOS
       "__Internal";
 #elif UNITY_ANDROID
