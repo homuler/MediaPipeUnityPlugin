@@ -3,6 +3,8 @@ using System;
 using System.Linq;
 using UnityEngine;
 
+using Stopwatch = System.Diagnostics.Stopwatch;
+
 public class OfficialDemoAndroid : DemoGraph {
   const string outputStream = "output_video";
 
@@ -26,6 +28,7 @@ public class OfficialDemoAndroid : DemoGraph {
     sinkNode.InputSidePacket.Add($"DESTINATION:{destinationBufferName}");
 
     graph = new CalculatorGraph(calculatorGraphConfig);
+    stopwatch = new Stopwatch();
   }
 
   public override Status StartRun() {
@@ -45,6 +48,7 @@ public class OfficialDemoAndroid : DemoGraph {
     gpuHelper.RunInGlContext(BuildDestination).AssertOk();
     sidePacket.Emplace(destinationBufferName, outputPacket);
 
+    stopwatch.Start();
     return graph.StartRun(sidePacket);
   }
 

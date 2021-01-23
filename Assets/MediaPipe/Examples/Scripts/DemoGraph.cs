@@ -3,11 +3,13 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Stopwatch = System.Diagnostics.Stopwatch;
+
 public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
   [SerializeField] protected TextAsset config = null;
 
   protected const string inputStream = "input_video";
-  protected int timestampValue;
+  protected Stopwatch stopwatch;
   protected static CalculatorGraph graph;
   protected static GlCalculatorHelper gpuHelper;
 
@@ -20,6 +22,10 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
 
   protected virtual void OnDestroy() {
     Stop();
+
+    if (stopwatch != null && stopwatch.IsRunning) {
+      stopwatch.Stop();
+    }
   }
 
   public virtual void Initialize() {
@@ -28,7 +34,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
     }
 
     graph = new CalculatorGraph(config.text);
-    timestampValue = System.Environment.TickCount & System.Int32.MaxValue;
+    stopwatch = new Stopwatch();
   }
 
   public void Initialize(GpuResources gpuResources, GlCalculatorHelper gpuHelper) {
@@ -40,11 +46,12 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
 
   public abstract Status StartRun();
   public virtual Status StartRun(Texture texture) {
+    stopwatch.Start();
     return StartRun();
   }
 
   public Status PushInput(TextureFrame textureFrame) {
-    var timestamp = new Timestamp(++timestampValue);
+    var timestamp = GetCurrentTimestamp();
 
 #if !UNITY_ANDROID
     var imageFrame = new ImageFrame(
@@ -87,13 +94,18 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
   public abstract void RenderOutput(WebCamScreenController screenController, TextureFrame textureFrame);
 
   public void Stop() {
-    if (graph != null) {
-      var status = graph.CloseAllPacketSources();
+    if (graph == null) { return; }
 
+    using (var status = graph.CloseAllPacketSources()) {
       if (!status.ok) {
         Debug.LogError(status.ToString());
       }
-      graph.WaitUntilDone().AssertOk();
+    }
+
+    using (var status = graph.WaitUntilDone()) {
+      if (!status.ok) {
+        Debug.LogError(status.ToString());
+      }
     }
   }
 
@@ -129,5 +141,14 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
 
   protected bool IsGpuEnabled() {
     return gpuHelper != null;
+  }
+
+  Timestamp GetCurrentTimestamp() {
+    if (stopwatch == null || !stopwatch.IsRunning) {
+      return Timestamp.Unset();
+    }
+
+    var microseconds = (stopwatch.ElapsedTicks) / (TimeSpan.TicksPerMillisecond / 1000);
+    return new Timestamp(microseconds);
   }
 }

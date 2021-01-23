@@ -10,10 +10,6 @@ public class OfficialDemoIOS : DemoGraph {
   private SidePacket sidePacket;
 
   public override Status StartRun() {
-    throw new NotSupportedException();
-  }
-
-  public override Status StartRun(Texture texture) {
     Debug.Log("This graph is for testing official examples. You can customize the graph by editing `official_demo_dekstop_gpu.txt` (default is `hand_tracking_mobile.pbtxt`)");
 
     outputStreamPoller = graph.AddOutputStreamPoller<ImageFrame>(outputStream).ConsumeValueOrDie();
