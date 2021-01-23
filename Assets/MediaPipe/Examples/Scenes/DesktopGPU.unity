@@ -1206,6 +1206,8 @@ MonoBehaviour:
     type: 3}
   objectDetectionGraph: {fileID: 8958252977655340068, guid: d5971d2eb607f463cb377c8460592f82,
     type: 3}
+  boxTrackingGraph: {fileID: 6262546456675006810, guid: 044e1cba0ae838e6db69f9166320db5a,
+    type: 3}
   officialDemoGraph: {fileID: 5680418270291803701, guid: fc49226dfd774c66faf8a3dd6be53d0f,
     type: 3}
 --- !u!1 &908513300

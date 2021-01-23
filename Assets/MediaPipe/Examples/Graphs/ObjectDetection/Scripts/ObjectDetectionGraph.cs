@@ -1,6 +1,5 @@
 using Mediapipe;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class ObjectDetectionGraph : DemoGraph {
   private const string outputDetectionsStream = "output_detections";

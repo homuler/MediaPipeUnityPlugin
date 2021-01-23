@@ -15,10 +15,10 @@
 # This file is OfficialDemoDesktopGPU's config file (Copied from mediapipe/graphs/hand_tracking/hand_tracking_mobile.pbtxt).
 #
 # CHANGES:
-#  - `input_video` is ImageFrame (ImageFrameToGpuBufferCalculator converts it into GpuBuffer)
-#  - Add ImageTransformationCalculator and rotate the input
-#  - Add GlScalerCalculator and flips the output
-#  - `output_video` is ImageFrame
+#   - `input_video` is ImageFrame (ImageFrameToGpuBufferCalculator converts it into GpuBuffer)
+#   - Add ImageTransformationCalculator and rotate the input
+#   - Add GlScalerCalculator and flips the output
+#   - `output_video` is ImageFrame
 
 # MediaPipe graph that performs multi-hand tracking with TensorFlow Lite on GPU.
 # Used in the examples in

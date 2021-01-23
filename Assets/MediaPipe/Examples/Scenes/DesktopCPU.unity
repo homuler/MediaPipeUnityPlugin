@@ -1205,6 +1205,8 @@ MonoBehaviour:
   hairSegmentationGraph: {fileID: 0}
   objectDetectionGraph: {fileID: 2332830239939318747, guid: 4860f13fa4d3e4daab6ddf6f43ce96ab,
     type: 3}
+  boxTrackingGraph: {fileID: 5144046067910221867, guid: f60d076394a0fff98aa7376e6a373608,
+    type: 3}
   officialDemoGraph: {fileID: 8080420373148060850, guid: bcbe21b0464e9b73ea37d18add25baf5,
     type: 3}
 --- !u!1 &908513300

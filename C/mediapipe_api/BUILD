@@ -89,6 +89,7 @@ cc_library(
             "@com_google_mediapipe//mediapipe/graphs/iris_tracking:iris_tracking_cpu_deps",
             "@com_google_mediapipe//mediapipe/graphs/pose_tracking:upper_body_pose_tracking_cpu_deps",
             "@com_google_mediapipe//mediapipe/graphs/object_detection:desktop_tflite_calculators",
+            "@com_google_mediapipe//mediapipe/graphs/tracking:desktop_calculators",
         ],
         "//conditions:default": [
             "@com_google_mediapipe//mediapipe/gpu:gl_scaler_calculator",
@@ -99,6 +100,7 @@ cc_library(
             "@com_google_mediapipe//mediapipe/graphs/iris_tracking:iris_tracking_gpu_deps",
             "@com_google_mediapipe//mediapipe/graphs/pose_tracking:upper_body_pose_tracking_gpu_deps",
             "@com_google_mediapipe//mediapipe/graphs/object_detection:mobile_calculators",
+            "@com_google_mediapipe//mediapipe/graphs/tracking:mobile_calculators",
         ],
     }),
 )
