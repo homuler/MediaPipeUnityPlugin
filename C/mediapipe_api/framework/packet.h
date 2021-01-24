@@ -52,6 +52,15 @@ MP_CAPI(MpReturnCode) mp__MakeIntPacket_At__i_Rtimestamp(int value, mediapipe::T
 MP_CAPI(MpReturnCode) mp_Packet__GetInt(mediapipe::Packet* packet, int* value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsInt(mediapipe::Packet* packet, mediapipe::Status** status_out);
 
+// Float Array
+MP_CAPI(MpReturnCode) mp__MakeFloatArrayPacket__Pf_i(float* value, int size, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeFloatArrayPacket_At__Pf_i_Rtimestamp(float* value,
+                                                                   int size,
+                                                                   mediapipe::Timestamp* timestamp,
+                                                                   mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetFloatArray(mediapipe::Packet* packet, const float** value_out);
+MP_CAPI(MpReturnCode) mp_Packet__ValidateAsFloatArray(mediapipe::Packet* packet, mediapipe::Status** status_out);
+
 // String
 MP_CAPI(MpReturnCode) mp__MakeStringPacket__PKc(const char* str, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeStringPacket_At__PKc_Rtimestamp(const char* str,

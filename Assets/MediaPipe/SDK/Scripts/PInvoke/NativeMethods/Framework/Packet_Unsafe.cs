@@ -71,6 +71,20 @@ namespace Mediapipe {
     public static extern MpReturnCode mp_Packet__ValidateAsInt(IntPtr packet, out IntPtr status);
     #endregion
 
+    #region FloatArray
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeFloatArrayPacket__Pf_i(float[] value, int size, out IntPtr packet);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeFloatArrayPacket_At__Pf_i_Rtimestamp(float[] value, int size, IntPtr timestamp, out IntPtr packet);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__GetFloatArray(IntPtr packet, out IntPtr value);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__ValidateAsFloatArray(IntPtr packet, out IntPtr status);
+    #endregion
+
     #region String
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp__MakeStringPacket__PKc(string value, out IntPtr packet);

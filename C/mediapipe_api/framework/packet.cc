@@ -143,6 +143,42 @@ MpReturnCode mp_Packet__ValidateAsInt(mediapipe::Packet* packet, mediapipe::Stat
   } CATCH_EXCEPTION
 }
 
+// FloatArrayPacket
+MpReturnCode mp__MakeFloatArrayPacket__Pf_i(float* value, int size, mediapipe::Packet** packet_out) {
+  TRY {
+    float* array = new float[size];
+    std::memcpy(array, value, size * sizeof(float));
+    *packet_out = new mediapipe::Packet { mediapipe::Adopt(reinterpret_cast<float(*)[]>(array)) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+MpReturnCode mp__MakeFloatArrayPacket_At__Pf_i_Rtimestamp(float* value,
+                                                        int size,
+                                                        mediapipe::Timestamp* timestamp,
+                                                        mediapipe::Packet** packet_out) {
+  TRY {
+    float* array = new float[size];
+    std::memcpy(array, value, size * sizeof(float));
+    *packet_out = new mediapipe::Packet { mediapipe::Adopt(reinterpret_cast<float(*)[]>(array)).At(*timestamp) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+MpReturnCode mp_Packet__GetFloatArray(mediapipe::Packet* packet, const float** value_out) {
+  TRY_ALL {
+    *value_out = packet->Get<float[]>();
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
+}
+
+MpReturnCode mp_Packet__ValidateAsFloatArray(mediapipe::Packet* packet, mediapipe::Status** status_out) {
+  TRY {
+    *status_out = new mediapipe::Status { packet->ValidateAsType<float[]>() };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
 // StringPacket
 MpReturnCode mp__MakeStringPacket__PKc(const char* str, mediapipe::Packet** packet_out) {
   TRY {
