@@ -1,0 +1,148 @@
+# Copyright 2019 The MediaPipe Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# This file is OfficialDemoDesktopCPU's config file (Copied from mediapipe/graphs/hand_tracking/hand_tracking_desktop_live.pbtxt).
+#
+# CHANGES:
+#  - Add FlowLimiterCalculator
+#  - Add ImageTransformationCalculator and rotate the input
+#  - Use SidePacket instead of ConstantSidePacketCalculator
+
+# Tracks and renders pose + hands + face landmarks.
+
+# ImageFrame
+input_stream: "input_video"
+
+output_stream: "pose_landmarks"
+output_stream: "pose_roi"
+output_stream: "pose_detection"
+output_stream: "face_landmarks"
+output_stream: "left_hand_landmarks"
+output_stream: "right_hand_landmarks"
+
+output_stream: "pose_landmarks_presence"
+output_stream: "pose_roi_presence"
+output_stream: "pose_detection_presence"
+output_stream: "face_landmarks_presence"
+output_stream: "left_hand_landmarks_presence"
+output_stream: "right_hand_landmarks_presence"
+
+# Throttles the images flowing downstream for flow control. It passes through
+# the very first incoming image unaltered, and waits for downstream nodes
+# (calculators and subgraphs) in the graph to finish their tasks before it
+# passes through another image. All images that come in while waiting are
+# dropped, limiting the number of in-flight images in most part of the graph to
+# 1. This prevents the downstream nodes from queuing up incoming images and data
+# excessively, which leads to increased latency and memory usage, unwanted in
+# real-time mobile applications. It also eliminates unnecessarily computation,
+# e.g., the output produced by a node may get dropped downstream if the
+# subsequent nodes are still busy processing previous inputs.
+node {
+  calculator: "FlowLimiterCalculator"
+  input_stream: "input_video"
+  input_stream: "FINISHED:pose_landmarks_presence"
+  input_stream_info: {
+    tag_index: "FINISHED"
+    back_edge: true
+  }
+  output_stream: "throttled_input_video"
+  node_options: {
+    [type.googleapis.com/mediapipe.FlowLimiterCalculatorOptions] {
+      max_in_flight: 1
+      max_in_queue: 1
+      # Timeout is disabled (set to 0) as first frame processing can take more
+      # than 1 second.
+      in_flight_timeout: 0
+    }
+  }
+}
+
+node: {
+  calculator: "ImageFrameToGpuBufferCalculator"
+  input_stream: "throttled_input_video"
+  output_stream: "throttled_input_video_gpu"
+}
+
+# Flip vertically because the input image is aligned from top-left to bottom-right.
+node: {
+  calculator: "ImageTransformationCalculator"
+  input_stream: "IMAGE_GPU:throttled_input_video_gpu"
+  output_stream: "IMAGE_GPU:transformed_input_video"
+  node_options: {
+    [type.googleapis.com/mediapipe.ImageTransformationCalculatorOptions] {
+      rotation_mode: 3
+    }
+  }
+}
+
+node {
+  calculator: "ConstantSidePacketCalculator"
+  output_side_packet: "PACKET:0:upper_body_only"
+  output_side_packet: "PACKET:1:smooth_landmarks"
+  node_options: {
+    [type.googleapis.com/mediapipe.ConstantSidePacketCalculatorOptions]: {
+      packet { bool_value: false }
+      packet { bool_value: true }
+    }
+  }
+}
+
+node {
+  calculator: "HolisticLandmarkGpu"
+  input_stream: "IMAGE:transformed_input_video"
+  input_side_packet: "UPPER_BODY_ONLY:upper_body_only"
+  input_side_packet: "SMOOTH_LANDMARKS:smooth_landmarks"
+  output_stream: "POSE_LANDMARKS:pose_landmarks"
+  output_stream: "POSE_ROI:pose_roi"
+  output_stream: "POSE_DETECTION:pose_detection"
+  output_stream: "FACE_LANDMARKS:face_landmarks"
+  output_stream: "LEFT_HAND_LANDMARKS:left_hand_landmarks"
+  output_stream: "RIGHT_HAND_LANDMARKS:right_hand_landmarks"
+}
+
+node {
+  calculator: "PacketPresenceCalculator"
+  input_stream: "PACKET:pose_landmarks"
+  output_stream: "PRESENCE:pose_landmarks_presence"
+}
+
+node {
+  calculator: "PacketPresenceCalculator"
+  input_stream: "PACKET:pose_roi"
+  output_stream: "PRESENCE:pose_roi_presence"
+}
+
+node {
+  calculator: "PacketPresenceCalculator"
+  input_stream: "PACKET:pose_detection"
+  output_stream: "PRESENCE:pose_detection_presence"
+}
+
+node {
+  calculator: "PacketPresenceCalculator"
+  input_stream: "PACKET:face_landmarks"
+  output_stream: "PRESENCE:face_landmarks_presence"
+}
+
+node {
+  calculator: "PacketPresenceCalculator"
+  input_stream: "PACKET:left_hand_landmarks"
+  output_stream: "PRESENCE:left_hand_landmarks_presence"
+}
+
+node {
+  calculator: "PacketPresenceCalculator"
+  input_stream: "PACKET:right_hand_landmarks"
+  output_stream: "PRESENCE:right_hand_landmarks_presence"
+}
