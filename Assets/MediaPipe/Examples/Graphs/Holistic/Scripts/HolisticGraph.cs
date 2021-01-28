@@ -1,10 +1,17 @@
 using Mediapipe;
-using System.Collections.Generic;
 
 public class HolisticGraph : DemoGraph {
   private const string poseLandmarksStream = "pose_landmarks";
   private OutputStreamPoller<NormalizedLandmarkList> poseLandmarksStreamPoller;
   private NormalizedLandmarkListPacket poseLandmarksPacket;
+
+  private const string poseRoiStream = "pose_roi";
+  private OutputStreamPoller<NormalizedRect> poseRoiStreamPoller;
+  private NormalizedRectPacket poseRoiPacket;
+
+  private const string poseDetectionStream = "pose_detection";
+  private OutputStreamPoller<Detection> poseDetectionStreamPoller;
+  private DetectionPacket poseDetectionPacket;
 
   private const string faceLandmarksStream = "face_landmarks";
   private OutputStreamPoller<NormalizedLandmarkList> faceLandmarksStreamPoller;
@@ -18,13 +25,17 @@ public class HolisticGraph : DemoGraph {
   private OutputStreamPoller<NormalizedLandmarkList> rightHandLandmarksStreamPoller;
   private NormalizedLandmarkListPacket rightHandLandmarksPacket;
 
-  private const string poseDetectionStream = "pose_detection";
-  private OutputStreamPoller<Detection> poseDetectionStreamPoller;
-  private DetectionPacket poseDetectionPacket;
-
   private const string poseLandmarksPresenceStream = "pose_landmarks_presence";
   private OutputStreamPoller<bool> poseLandmarksPresenceStreamPoller;
   private BoolPacket poseLandmarksPresencePacket;
+
+  private const string poseRoiPresenceStream = "pose_roi_presence";
+  private OutputStreamPoller<bool> poseRoiPresenceStreamPoller;
+  private BoolPacket poseRoiPresencePacket;
+
+  private const string poseDetectionPresenceStream = "pose_detection_presence";
+  private OutputStreamPoller<bool> poseDetectionPresenceStreamPoller;
+  private BoolPacket poseDetectionPresencePacket;
 
   private const string faceLandmarksPresenceStream = "face_landmarks_presence";
   private OutputStreamPoller<bool> faceLandmarksPresenceStreamPoller;
@@ -44,6 +55,12 @@ public class HolisticGraph : DemoGraph {
     poseLandmarksStreamPoller = graph.AddOutputStreamPoller<NormalizedLandmarkList>(poseLandmarksStream).ConsumeValueOrDie();
     poseLandmarksPacket = new NormalizedLandmarkListPacket();
 
+    poseRoiStreamPoller = graph.AddOutputStreamPoller<NormalizedRect>(poseRoiStream).ConsumeValueOrDie();
+    poseRoiPacket = new NormalizedRectPacket();
+
+    poseDetectionStreamPoller = graph.AddOutputStreamPoller<Detection>(poseDetectionStream).ConsumeValueOrDie();
+    poseDetectionPacket = new DetectionPacket();
+
     faceLandmarksStreamPoller = graph.AddOutputStreamPoller<NormalizedLandmarkList>(faceLandmarksStream).ConsumeValueOrDie();
     faceLandmarksPacket = new NormalizedLandmarkListPacket();
 
@@ -53,11 +70,14 @@ public class HolisticGraph : DemoGraph {
     rightHandLandmarksStreamPoller = graph.AddOutputStreamPoller<NormalizedLandmarkList>(rightHandLandmarksStream).ConsumeValueOrDie();
     rightHandLandmarksPacket = new NormalizedLandmarkListPacket();
 
-    poseDetectionStreamPoller = graph.AddOutputStreamPoller<Detection>(poseDetectionStream).ConsumeValueOrDie();
-    poseDetectionPacket = new DetectionPacket();
-
     poseLandmarksPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(poseLandmarksPresenceStream).ConsumeValueOrDie();
     poseLandmarksPresencePacket = new BoolPacket();
+
+    poseRoiPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(poseRoiPresenceStream).ConsumeValueOrDie();
+    poseRoiPresencePacket = new BoolPacket();
+
+    poseDetectionPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(poseDetectionPresenceStream).ConsumeValueOrDie();
+    poseDetectionPresencePacket = new BoolPacket();
 
     faceLandmarksPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(faceLandmarksPresenceStream).ConsumeValueOrDie();
     faceLandmarksPresencePacket = new BoolPacket();
@@ -81,22 +101,33 @@ public class HolisticGraph : DemoGraph {
   }
 
   private HolisticValue FetchNextHolisticValue() {
-    var isFaceLandmarksPresent = FetchNextFaceLandmarksPresence();
     var isPoseLandmarksPresent = FetchNextPoseLandmarksPresence();
+    var isPoseRoiPresent = FetchNextPoseRoiPresence();
+    var isPoseDetectionPresent = FetchNextPoseDetectionPresence();
+    var isFaceLandmarksPresent = FetchNextFaceLandmarksPresence();
     var isLeftHandLandmarksPresent = FetchNextLeftHandLandmarksPresence();
     var isRightHandLandmarksPresent = FetchNextRightHandLandmarksPresence();
 
     var poseLandmarks = isPoseLandmarksPresent ? FetchNextPoseLandmarks() : new NormalizedLandmarkList();
+    var poseRoi = isPoseRoiPresent ? FetchNextPoseRoi() : new NormalizedRect();
+    var poseDetection = isPoseDetectionPresent ? FetchNextPoseDetection() : new Detection();
     var faceLandmarks = isFaceLandmarksPresent ? FetchNextFaceLandmarks() : new NormalizedLandmarkList();
     var leftHandLandmarks = isLeftHandLandmarksPresent ? FetchNextLeftHandLandmarks() : new NormalizedLandmarkList();
     var rightHandLandmarks = isRightHandLandmarksPresent ? FetchNextRightHandLandmarks() : new NormalizedLandmarkList();
 
-    UnityEngine.Debug.Log(poseLandmarks.Landmark.Count);
-    return new HolisticValue(poseLandmarks, faceLandmarks, leftHandLandmarks, rightHandLandmarks);
+    return new HolisticValue(poseLandmarks, poseRoi, poseDetection, faceLandmarks, leftHandLandmarks, rightHandLandmarks);
   }
 
   private NormalizedLandmarkList FetchNextPoseLandmarks() {
     return FetchNext(poseLandmarksStreamPoller, poseLandmarksPacket, poseLandmarksStream);
+  }
+
+  private NormalizedRect FetchNextPoseRoi() {
+    return FetchNext(poseRoiStreamPoller, poseRoiPacket, poseRoiStream);
+  }
+
+  private Detection FetchNextPoseDetection() {
+    return FetchNext(poseDetectionStreamPoller, poseDetectionPacket, poseDetectionStream);
   }
 
   private NormalizedLandmarkList FetchNextFaceLandmarks() {
@@ -115,6 +146,14 @@ public class HolisticGraph : DemoGraph {
     return FetchNext(poseLandmarksPresenceStreamPoller, poseLandmarksPresencePacket, poseLandmarksPresenceStream);
   }
 
+  private bool FetchNextPoseRoiPresence() {
+    return FetchNext(poseRoiPresenceStreamPoller, poseRoiPresencePacket, poseRoiPresenceStream);
+  }
+
+  private bool FetchNextPoseDetectionPresence() {
+    return FetchNext(poseDetectionPresenceStreamPoller, poseDetectionPresencePacket, poseDetectionPresenceStream);
+  }
+
   private bool FetchNextFaceLandmarksPresence() {
     return FetchNext(faceLandmarksPresenceStreamPoller, faceLandmarksPresencePacket, faceLandmarksPresenceStream);
   }
@@ -130,6 +169,7 @@ public class HolisticGraph : DemoGraph {
   private void RenderAnnotation(WebCamScreenController screenController, HolisticValue value) {
     // NOTE: input image is flipped
     GetComponent<HolisticAnnotationController>().Draw(
-      screenController.transform, value.PoseLandmarks, value.FaceLandmarks, value.LeftHandLandmarks, value.RightHandLandmarks, true);
+      screenController.transform, value.PoseLandmarks, value.PoseRoi, value.PoseDetection,
+      value.FaceLandmarks, value.LeftHandLandmarks, value.RightHandLandmarks, true);
   }
 }

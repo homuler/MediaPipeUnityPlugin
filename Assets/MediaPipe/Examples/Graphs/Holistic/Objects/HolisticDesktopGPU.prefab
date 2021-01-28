@@ -59,6 +59,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   poseLandmarksPrefab: {fileID: 7166525400038315749, guid: 69cf28587972333cca1eb4c1a1ec7e6d,
     type: 3}
+  poseRoiPrefab: {fileID: 1405412484651109527, guid: c5c846cc7bbefdfa7af64f9d29912b70,
+    type: 3}
+  poseDetectionPrefab: {fileID: 1405412484651109527, guid: 3779864e7ead10e31b03fc362f4746de,
+    type: 3}
   faceLandmarksPrefab: {fileID: 2250723881323860951, guid: 570a388dca04100b8b491a9bc4ef1d51,
     type: 3}
   handLandmarksPrefab: {fileID: 3100741085041498678, guid: 4eb3a6d7cfea73afdb656b7166ae1a8d,
