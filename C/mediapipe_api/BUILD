@@ -86,9 +86,10 @@ cc_library(
             "@com_google_mediapipe//mediapipe/graphs/face_detection:desktop_live_calculators",
             "@com_google_mediapipe//mediapipe/graphs/face_mesh:desktop_live_calculators",
             "@com_google_mediapipe//mediapipe/graphs/hand_tracking:desktop_tflite_calculators",
+            "@com_google_mediapipe//mediapipe/graphs/holistic_tracking:holistic_tracking_cpu_graph_deps",
             "@com_google_mediapipe//mediapipe/graphs/iris_tracking:iris_tracking_cpu_deps",
-            "@com_google_mediapipe//mediapipe/graphs/pose_tracking:upper_body_pose_tracking_cpu_deps",
             "@com_google_mediapipe//mediapipe/graphs/object_detection:desktop_tflite_calculators",
+            "@com_google_mediapipe//mediapipe/graphs/pose_tracking:upper_body_pose_tracking_cpu_deps",
             "@com_google_mediapipe//mediapipe/graphs/tracking:desktop_calculators",
         ],
         "//conditions:default": [

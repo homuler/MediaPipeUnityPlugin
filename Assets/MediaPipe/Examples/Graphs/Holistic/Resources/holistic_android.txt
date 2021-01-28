@@ -15,14 +15,13 @@
 # Copied from mediapipe/graphs/holistic_tracking/holistic_tracking_gpu.pbtxt
 #
 # CHANGES:
-#   - `input_video` is ImageFrame (ImageFrameToGpuBufferCalculator converts it into GpuBuffer)
 #   - Add ImageTransformationCalculator and rotate the input
 #   - Remove AnnotationOverlayCalculator
 #   - Add PacketPresenceCalculator
 
 # Tracks and renders pose + hands + face landmarks.
 
-# ImageFrame
+# GPU buffer. (GpuBuffer)
 input_stream: "input_video"
 
 output_stream: "pose_landmarks"
@@ -69,16 +68,10 @@ node {
   }
 }
 
-node: {
-  calculator: "ImageFrameToGpuBufferCalculator"
-  input_stream: "throttled_input_video"
-  output_stream: "throttled_input_video_gpu"
-}
-
 # Flip vertically because the input image is aligned from top-left to bottom-right.
 node: {
   calculator: "ImageTransformationCalculator"
-  input_stream: "IMAGE_GPU:throttled_input_video_gpu"
+  input_stream: "IMAGE_GPU:throttled_input_video"
   output_stream: "IMAGE_GPU:transformed_input_video"
   node_options: {
     [type.googleapis.com/mediapipe.ImageTransformationCalculatorOptions] {
