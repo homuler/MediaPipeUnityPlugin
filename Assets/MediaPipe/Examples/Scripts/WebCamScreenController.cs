@@ -3,10 +3,6 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-#if UNITY_ANDROID
-using UnityEngine.Android;
-#endif
-
 public class WebCamScreenController : MonoBehaviour {
   [SerializeField] int Width = 640;
   [SerializeField] int Height = 480;
@@ -38,25 +34,10 @@ public class WebCamScreenController : MonoBehaviour {
   }
 
   public IEnumerator ResetScreen(WebCamDevice? device) {
-#if UNITY_ANDROID
-    if (!Permission.HasUserAuthorizedPermission(Permission.Camera)) {
-      Permission.RequestUserPermission(Permission.Camera);
-    }
-#elif UNITY_IOS
-    if (!Application.HasUserAuthorization(UserAuthorization.WebCam)) {
-      yield return Application.RequestUserAuthorization(UserAuthorization.WebCam);
-    }
-#endif
-
     if (isPlaying) {
       webCamTexture.Stop();
       webCamTexture = null;
       pixelData = null;
-    }
-
-    if (!Application.HasUserAuthorization(UserAuthorization.WebCam)) {
-      Debug.LogWarning("Not permitted to use Camera");
-      yield break;
     }
 
     if (device is WebCamDevice deviceValue) {
