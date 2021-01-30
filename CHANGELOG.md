@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.2](https://github.com/homuler/MediapipeUnityPlugin/compare/v0.4.1...v0.4.2) (2021-01-30)
+
+
+### Features
+
+* **example:** Box Tracking ([c6d5560](https://github.com/homuler/MediapipeUnityPlugin/commit/c6d55602a1c8bdc91fdcb04d34f819a82fe2d6a6))
+* render pose landmarks ([6a26384](https://github.com/homuler/MediapipeUnityPlugin/commit/6a263849aa80d31ee2ad54b53a17b75cc3cd6553))
+* render pose roi and detection ([026b6c8](https://github.com/homuler/MediapipeUnityPlugin/commit/026b6c833a35165e471616e7f621d974778b246c))
+* **example:** holistic on CPU, Android and iOS ([47ddbdd](https://github.com/homuler/MediapipeUnityPlugin/commit/47ddbddab0f0631fbb6ba465d3d29aa655edf60c))
+* **sdk:** build for windows ([aab99a8](https://github.com/homuler/MediapipeUnityPlugin/commit/aab99a8d3374b7f06ed6af828484713a017450b2))
+
+
+### Bug Fixes
+
+* **example:** remove stale annotations ([61f2041](https://github.com/homuler/MediapipeUnityPlugin/commit/61f20419aac6c92caf34a1968def936505461acf))
+* **example:** timestamp can be same as the previous one on Windows ([411fc68](https://github.com/homuler/MediapipeUnityPlugin/commit/411fc68e906f0fe88fd627312b958e9883109072))
+* cannot make ios_arm64 ([43e0cba](https://github.com/homuler/MediapipeUnityPlugin/commit/43e0cba8c50d657622fabc09db1b96126fbeea5c))
+* limit path length for Windows ([4838408](https://github.com/homuler/MediapipeUnityPlugin/commit/48384080bdaa469c2231eb38371bfbc780e42d43))
+* made it possible to run editor while on iOS/Android platform target ([#37](https://github.com/homuler/MediapipeUnityPlugin/issues/37)) ([b7e3bb7](https://github.com/homuler/MediapipeUnityPlugin/commit/b7e3bb7d2e83213058c790bd32d801b92e6d4285))
+* maybe required to preload ([6646d56](https://github.com/homuler/MediapipeUnityPlugin/commit/6646d565ce3d9dffa4974893d21e285531a738e8))
+* patch (box tracking) ([8063e6d](https://github.com/homuler/MediapipeUnityPlugin/commit/8063e6d03a49ef0bd44756cdec39d962856d2626))
+* use microseconds as a Timestamp value ([8e00358](https://github.com/homuler/MediapipeUnityPlugin/commit/8e003585b1d257d5b76d6c05d1205e3458cf2730))
+* wrong file path ([14fc75d](https://github.com/homuler/MediapipeUnityPlugin/commit/14fc75db3dc7b9df90e86ad3aa959b98a93224cd))
+
 ### [0.4.1](https://github.com/homuler/MediapipeUnityPlugin/compare/v0.4.0...v0.4.1) (2021-01-17)
 
 
