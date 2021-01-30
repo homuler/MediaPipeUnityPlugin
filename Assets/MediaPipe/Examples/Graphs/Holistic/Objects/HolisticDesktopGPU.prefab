@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   config: {fileID: 4900000, guid: 329a3f95713299bb5b816d6489f5eec8, type: 3}
+  detectIris: 1
 --- !u!114 &-5097301488528543352
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64,6 +65,8 @@ MonoBehaviour:
   poseDetectionPrefab: {fileID: 1405412484651109527, guid: 3779864e7ead10e31b03fc362f4746de,
     type: 3}
   faceLandmarksPrefab: {fileID: 2250723881323860951, guid: 570a388dca04100b8b491a9bc4ef1d51,
+    type: 3}
+  irisLandmarksPrefab: {fileID: 6305487298461950687, guid: eec693dd0163888b7a498aff810792a3,
     type: 3}
   handLandmarksPrefab: {fileID: 3100741085041498678, guid: 4eb3a6d7cfea73afdb656b7166ae1a8d,
     type: 3}

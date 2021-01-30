@@ -17,12 +17,16 @@
 # CHANGES:
 #   - Add ImageTransformationCalculator and rotate the input
 #   - Remove AnnotationOverlayCalculator
+#   - Detect iris landmarks
 #   - Add PacketPresenceCalculator
 
 # Tracks and renders pose + hands + face landmarks.
 
 # GPU buffer. (GpuBuffer)
 input_stream: "input_video"
+
+# (boolean)
+input_side_packet: "enable_iris_detection"
 
 output_stream: "pose_landmarks"
 output_stream: "pose_roi"
@@ -100,9 +104,42 @@ node {
   output_stream: "POSE_LANDMARKS:pose_landmarks"
   output_stream: "POSE_ROI:pose_roi"
   output_stream: "POSE_DETECTION:pose_detection"
-  output_stream: "FACE_LANDMARKS:face_landmarks"
+  output_stream: "FACE_LANDMARKS:face_landmarks_orig"
   output_stream: "LEFT_HAND_LANDMARKS:left_hand_landmarks"
   output_stream: "RIGHT_HAND_LANDMARKS:right_hand_landmarks"
+}
+
+node {
+  calculator: "GateCalculator"
+  input_stream: "face_landmarks_orig"
+  input_side_packet: "ALLOW:enable_iris_detection"
+  output_stream: "gated_face_landmarks"
+}
+
+# Detects iris landmarks
+node {
+  calculator: "IrisLandmarkLeftAndRightFromFaceLandmarksGpu"
+  input_stream: "IMAGE:transformed_input_video"
+  input_stream: "FACE_LANDMARKS:gated_face_landmarks"
+  output_stream: "UPDATED_FACE_LANDMARKS:refined_face_landmarks"
+  output_stream: "LEFT_EYE_IRIS_LANDMARKS:left_iris_landmarks"
+  output_stream: "RIGHT_EYE_IRIS_LANDMARKS:right_iris_landmarks"
+}
+
+node {
+  calculator: "ConcatenateNormalizedLandmarkListCalculator"
+  input_stream: "refined_face_landmarks"
+  input_stream: "left_iris_landmarks"
+  input_stream: "right_iris_landmarks"
+  output_stream: "face_landmarks_with_iris"
+}
+
+node {
+  calculator: "SwitchMuxCalculator"
+  input_side_packet: "ENABLE:enable_iris_detection"
+  input_stream: "C0__FUNC_INPUT:face_landmarks_orig"
+  input_stream: "C1__FUNC_INPUT:face_landmarks_with_iris"
+  output_stream: "FUNC_INPUT:face_landmarks"
 }
 
 node {

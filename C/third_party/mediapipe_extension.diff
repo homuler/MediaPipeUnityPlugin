@@ -148,3 +148,548 @@ index 8806267..c0e66bd 100644
  
      helper_.BindFramebuffer(dst);
      glActiveTexture(GL_TEXTURE1);
+diff --git a/mediapipe/graphs/iris_tracking/BUILD b/mediapipe/graphs/iris_tracking/BUILD
+index 86e667b..e0062a1 100644
+--- a/mediapipe/graphs/iris_tracking/BUILD
++++ b/mediapipe/graphs/iris_tracking/BUILD
+@@ -30,10 +30,9 @@ cc_library(
+         "//mediapipe/calculators/image:image_file_properties_calculator",
+         "//mediapipe/calculators/image:opencv_encoded_image_to_image_frame_calculator",
+         "//mediapipe/calculators/image:opencv_image_encoder_calculator",
+-        "//mediapipe/graphs/iris_tracking/calculators:update_face_landmarks_calculator",
+         "//mediapipe/graphs/iris_tracking/subgraphs:iris_and_depth_renderer_cpu",
+         "//mediapipe/modules/face_landmark:face_landmark_front_cpu",
+-        "//mediapipe/modules/iris_landmark:iris_landmark_left_and_right_cpu",
++        "//mediapipe/modules/iris_landmark:iris_landmark_left_and_right_from_face_landmarks_cpu",
+     ],
+ )
+ 
+@@ -43,10 +42,9 @@ cc_library(
+         "//mediapipe/calculators/core:constant_side_packet_calculator",
+         "//mediapipe/calculators/core:flow_limiter_calculator",
+         "//mediapipe/calculators/core:split_vector_calculator",
+-        "//mediapipe/graphs/iris_tracking/calculators:update_face_landmarks_calculator",
+         "//mediapipe/graphs/iris_tracking/subgraphs:iris_renderer_cpu",
+         "//mediapipe/modules/face_landmark:face_landmark_front_cpu",
+-        "//mediapipe/modules/iris_landmark:iris_landmark_left_and_right_cpu",
++        "//mediapipe/modules/iris_landmark:iris_landmark_left_and_right_from_face_landmarks_cpu",
+     ],
+ )
+ 
+@@ -58,10 +56,9 @@ cc_library(
+         "//mediapipe/calculators/core:split_vector_calculator",
+         "//mediapipe/calculators/video:opencv_video_decoder_calculator",
+         "//mediapipe/calculators/video:opencv_video_encoder_calculator",
+-        "//mediapipe/graphs/iris_tracking/calculators:update_face_landmarks_calculator",
+         "//mediapipe/graphs/iris_tracking/subgraphs:iris_renderer_cpu",
+         "//mediapipe/modules/face_landmark:face_landmark_front_cpu",
+-        "//mediapipe/modules/iris_landmark:iris_landmark_left_and_right_cpu",
++        "//mediapipe/modules/iris_landmark:iris_landmark_left_and_right_from_face_landmarks_cpu",
+     ],
+ )
+ 
+@@ -71,10 +68,9 @@ cc_library(
+         "//mediapipe/calculators/core:constant_side_packet_calculator",
+         "//mediapipe/calculators/core:flow_limiter_calculator",
+         "//mediapipe/calculators/core:split_vector_calculator",
+-        "//mediapipe/graphs/iris_tracking/calculators:update_face_landmarks_calculator",
+         "//mediapipe/graphs/iris_tracking/subgraphs:iris_and_depth_renderer_gpu",
+         "//mediapipe/modules/face_landmark:face_landmark_front_gpu",
+-        "//mediapipe/modules/iris_landmark:iris_landmark_left_and_right_gpu",
++        "//mediapipe/modules/iris_landmark:iris_landmark_left_and_right_from_face_landmarks_gpu",
+     ],
+ )
+ 
+diff --git a/mediapipe/graphs/iris_tracking/iris_depth_cpu.pbtxt b/mediapipe/graphs/iris_tracking/iris_depth_cpu.pbtxt
+index 3597e7f..8d67b5d 100644
+--- a/mediapipe/graphs/iris_tracking/iris_depth_cpu.pbtxt
++++ b/mediapipe/graphs/iris_tracking/iris_depth_cpu.pbtxt
+@@ -82,40 +82,12 @@ node {
+   }
+ }
+ 
+-# Gets two landmarks which define left eye boundary.
+-node {
+-  calculator: "SplitNormalizedLandmarkListCalculator"
+-  input_stream: "face_landmarks"
+-  output_stream: "left_eye_boundary_landmarks"
+-  node_options: {
+-    [type.googleapis.com/mediapipe.SplitVectorCalculatorOptions] {
+-      ranges: { begin: 33 end: 34 }
+-      ranges: { begin: 133 end: 134 }
+-      combine_outputs: true
+-    }
+-  }
+-}
+-
+-# Gets two landmarks which define right eye boundary.
+-node {
+-  calculator: "SplitNormalizedLandmarkListCalculator"
+-  input_stream: "face_landmarks"
+-  output_stream: "right_eye_boundary_landmarks"
+-  node_options: {
+-    [type.googleapis.com/mediapipe.SplitVectorCalculatorOptions] {
+-      ranges: { begin: 362 end: 363 }
+-      ranges: { begin: 263 end: 264 }
+-      combine_outputs: true
+-    }
+-  }
+-}
+-
+ # Detects iris landmarks, eye contour landmarks, and corresponding rect (ROI).
+ node {
+-  calculator: "IrisLandmarkLeftAndRightCpu"
++  calculator: "IrisLandmarkLeftAndRightFromFaceLandmarksCpu"
+   input_stream: "IMAGE:input_image"
+-  input_stream: "LEFT_EYE_BOUNDARY_LANDMARKS:left_eye_boundary_landmarks"
+-  input_stream: "RIGHT_EYE_BOUNDARY_LANDMARKS:right_eye_boundary_landmarks"
++  input_stream: "FACE_LANDMARKS:face_landmarks"
++  output_stream: "UPDATED_FACE_LANDMARKS:updated_face_landmarks"
+   output_stream: "LEFT_EYE_CONTOUR_LANDMARKS:left_eye_contour_landmarks"
+   output_stream: "LEFT_EYE_IRIS_LANDMARKS:left_iris_landmarks"
+   output_stream: "LEFT_EYE_ROI:left_eye_rect_from_landmarks"
+@@ -124,20 +96,6 @@ node {
+   output_stream: "RIGHT_EYE_ROI:right_eye_rect_from_landmarks"
+ }
+ 
+-node {
+-  calculator: "ConcatenateNormalizedLandmarkListCalculator"
+-  input_stream: "left_eye_contour_landmarks"
+-  input_stream: "right_eye_contour_landmarks"
+-  output_stream: "refined_eye_landmarks"
+-}
+-
+-node {
+-  calculator: "UpdateFaceLandmarksCalculator"
+-  input_stream: "NEW_EYE_LANDMARKS:refined_eye_landmarks"
+-  input_stream: "FACE_LANDMARKS:face_landmarks"
+-  output_stream: "UPDATED_FACE_LANDMARKS:updated_face_landmarks"
+-}
+-
+ # Renders annotations and overlays them on top of the input images.
+ node {
+   calculator: "IrisAndDepthRendererCpu"
+diff --git a/mediapipe/graphs/iris_tracking/iris_tracking_cpu.pbtxt b/mediapipe/graphs/iris_tracking/iris_tracking_cpu.pbtxt
+index c0a3857..cec2ff3 100644
+--- a/mediapipe/graphs/iris_tracking/iris_tracking_cpu.pbtxt
++++ b/mediapipe/graphs/iris_tracking/iris_tracking_cpu.pbtxt
+@@ -61,40 +61,12 @@ node {
+   }
+ }
+ 
+-# Gets two landmarks which define left eye boundary.
+-node {
+-  calculator: "SplitNormalizedLandmarkListCalculator"
+-  input_stream: "face_landmarks"
+-  output_stream: "left_eye_boundary_landmarks"
+-  node_options: {
+-    [type.googleapis.com/mediapipe.SplitVectorCalculatorOptions] {
+-      ranges: { begin: 33 end: 34 }
+-      ranges: { begin: 133 end: 134 }
+-      combine_outputs: true
+-    }
+-  }
+-}
+-
+-# Gets two landmarks which define right eye boundary.
+-node {
+-  calculator: "SplitNormalizedLandmarkListCalculator"
+-  input_stream: "face_landmarks"
+-  output_stream: "right_eye_boundary_landmarks"
+-  node_options: {
+-    [type.googleapis.com/mediapipe.SplitVectorCalculatorOptions] {
+-      ranges: { begin: 362 end: 363 }
+-      ranges: { begin: 263 end: 264 }
+-      combine_outputs: true
+-    }
+-  }
+-}
+-
+ # Detects iris landmarks, eye contour landmarks, and corresponding rect (ROI).
+ node {
+-  calculator: "IrisLandmarkLeftAndRightCpu"
++  calculator: "IrisLandmarkLeftAndRightFromFaceLandmarksCpu"
+   input_stream: "IMAGE:input_video"
+-  input_stream: "LEFT_EYE_BOUNDARY_LANDMARKS:left_eye_boundary_landmarks"
+-  input_stream: "RIGHT_EYE_BOUNDARY_LANDMARKS:right_eye_boundary_landmarks"
++  input_stream: "FACE_LANDMARKS:face_landmarks"
++  output_stream: "UPDATED_FACE_LANDMARKS:updated_face_landmarks"
+   output_stream: "LEFT_EYE_CONTOUR_LANDMARKS:left_eye_contour_landmarks"
+   output_stream: "LEFT_EYE_IRIS_LANDMARKS:left_iris_landmarks"
+   output_stream: "LEFT_EYE_ROI:left_eye_rect_from_landmarks"
+@@ -103,20 +75,6 @@ node {
+   output_stream: "RIGHT_EYE_ROI:right_eye_rect_from_landmarks"
+ }
+ 
+-node {
+-  calculator: "ConcatenateNormalizedLandmarkListCalculator"
+-  input_stream: "left_eye_contour_landmarks"
+-  input_stream: "right_eye_contour_landmarks"
+-  output_stream: "refined_eye_landmarks"
+-}
+-
+-node {
+-  calculator: "UpdateFaceLandmarksCalculator"
+-  input_stream: "NEW_EYE_LANDMARKS:refined_eye_landmarks"
+-  input_stream: "FACE_LANDMARKS:face_landmarks"
+-  output_stream: "UPDATED_FACE_LANDMARKS:updated_face_landmarks"
+-}
+-
+ # Renders annotations and overlays them on top of the input images.
+ node {
+   calculator: "IrisRendererCpu"
+diff --git a/mediapipe/graphs/iris_tracking/iris_tracking_cpu_video_input.pbtxt b/mediapipe/graphs/iris_tracking/iris_tracking_cpu_video_input.pbtxt
+index 82229bd..bbbcea6 100644
+--- a/mediapipe/graphs/iris_tracking/iris_tracking_cpu_video_input.pbtxt
++++ b/mediapipe/graphs/iris_tracking/iris_tracking_cpu_video_input.pbtxt
+@@ -64,40 +64,12 @@ node {
+   }
+ }
+ 
+-# Gets two landmarks which define left eye boundary.
+-node {
+-  calculator: "SplitNormalizedLandmarkListCalculator"
+-  input_stream: "face_landmarks"
+-  output_stream: "left_eye_boundary_landmarks"
+-  node_options: {
+-    [type.googleapis.com/mediapipe.SplitVectorCalculatorOptions] {
+-      ranges: { begin: 33 end: 34 }
+-      ranges: { begin: 133 end: 134 }
+-      combine_outputs: true
+-    }
+-  }
+-}
+-
+-# Gets two landmarks which define right eye boundary.
+-node {
+-  calculator: "SplitNormalizedLandmarkListCalculator"
+-  input_stream: "face_landmarks"
+-  output_stream: "right_eye_boundary_landmarks"
+-  node_options: {
+-    [type.googleapis.com/mediapipe.SplitVectorCalculatorOptions] {
+-      ranges: { begin: 362 end: 363 }
+-      ranges: { begin: 263 end: 264 }
+-      combine_outputs: true
+-    }
+-  }
+-}
+-
+ # Detects iris landmarks, eye contour landmarks, and corresponding rect (ROI).
+ node {
+-  calculator: "IrisLandmarkLeftAndRightCpu"
++  calculator: "IrisLandmarkLeftAndRightFromFaceLandmarksCpu"
+   input_stream: "IMAGE:input_video"
+-  input_stream: "LEFT_EYE_BOUNDARY_LANDMARKS:left_eye_boundary_landmarks"
+-  input_stream: "RIGHT_EYE_BOUNDARY_LANDMARKS:right_eye_boundary_landmarks"
++  input_stream: "FACE_LANDMARKS:face_landmarks"
++  output_stream: "UPDATED_FACE_LANDMARKS:updated_face_landmarks"
+   output_stream: "LEFT_EYE_CONTOUR_LANDMARKS:left_eye_contour_landmarks"
+   output_stream: "LEFT_EYE_IRIS_LANDMARKS:left_iris_landmarks"
+   output_stream: "LEFT_EYE_ROI:left_eye_rect_from_landmarks"
+@@ -106,20 +78,6 @@ node {
+   output_stream: "RIGHT_EYE_ROI:right_eye_rect_from_landmarks"
+ }
+ 
+-node {
+-  calculator: "ConcatenateNormalizedLandmarkListCalculator"
+-  input_stream: "left_eye_contour_landmarks"
+-  input_stream: "right_eye_contour_landmarks"
+-  output_stream: "refined_eye_landmarks"
+-}
+-
+-node {
+-  calculator: "UpdateFaceLandmarksCalculator"
+-  input_stream: "NEW_EYE_LANDMARKS:refined_eye_landmarks"
+-  input_stream: "FACE_LANDMARKS:face_landmarks"
+-  output_stream: "UPDATED_FACE_LANDMARKS:updated_face_landmarks"
+-}
+-
+ # Renders annotations and overlays them on top of the input images.
+ node {
+   calculator: "IrisRendererCpu"
+diff --git a/mediapipe/graphs/iris_tracking/iris_tracking_gpu.pbtxt b/mediapipe/graphs/iris_tracking/iris_tracking_gpu.pbtxt
+index 505a951..944fb45 100644
+--- a/mediapipe/graphs/iris_tracking/iris_tracking_gpu.pbtxt
++++ b/mediapipe/graphs/iris_tracking/iris_tracking_gpu.pbtxt
+@@ -81,40 +81,12 @@ node {
+   }
+ }
+ 
+-# Gets two landmarks which define left eye boundary.
+-node {
+-  calculator: "SplitNormalizedLandmarkListCalculator"
+-  input_stream: "face_landmarks"
+-  output_stream: "left_eye_boundary_landmarks"
+-  node_options: {
+-    [type.googleapis.com/mediapipe.SplitVectorCalculatorOptions] {
+-      ranges: { begin: 33 end: 34 }
+-      ranges: { begin: 133 end: 134 }
+-      combine_outputs: true
+-    }
+-  }
+-}
+-
+-# Gets two landmarks which define right eye boundary.
+-node {
+-  calculator: "SplitNormalizedLandmarkListCalculator"
+-  input_stream: "face_landmarks"
+-  output_stream: "right_eye_boundary_landmarks"
+-  node_options: {
+-    [type.googleapis.com/mediapipe.SplitVectorCalculatorOptions] {
+-      ranges: { begin: 362 end: 363 }
+-      ranges: { begin: 263 end: 264 }
+-      combine_outputs: true
+-    }
+-  }
+-}
+-
+ # Detects iris landmarks, eye contour landmarks, and corresponding rect (ROI).
+ node {
+-  calculator: "IrisLandmarkLeftAndRightGpu"
++  calculator: "IrisLandmarkLeftAndRightFromFaceLandmarksGpu"
+   input_stream: "IMAGE:throttled_input_video"
+-  input_stream: "LEFT_EYE_BOUNDARY_LANDMARKS:left_eye_boundary_landmarks"
+-  input_stream: "RIGHT_EYE_BOUNDARY_LANDMARKS:right_eye_boundary_landmarks"
++  input_stream: "FACE_LANDMARKS:face_landmarks"
++  output_stream: "UPDATED_FACE_LANDMARKS:updated_face_landmarks"
+   output_stream: "LEFT_EYE_CONTOUR_LANDMARKS:left_eye_contour_landmarks"
+   output_stream: "LEFT_EYE_IRIS_LANDMARKS:left_iris_landmarks"
+   output_stream: "LEFT_EYE_ROI:left_eye_rect_from_landmarks"
+@@ -123,20 +95,6 @@ node {
+   output_stream: "RIGHT_EYE_ROI:right_eye_rect_from_landmarks"
+ }
+ 
+-node {
+-  calculator: "ConcatenateNormalizedLandmarkListCalculator"
+-  input_stream: "left_eye_contour_landmarks"
+-  input_stream: "right_eye_contour_landmarks"
+-  output_stream: "refined_eye_landmarks"
+-}
+-
+-node {
+-  calculator: "UpdateFaceLandmarksCalculator"
+-  input_stream: "NEW_EYE_LANDMARKS:refined_eye_landmarks"
+-  input_stream: "FACE_LANDMARKS:face_landmarks"
+-  output_stream: "UPDATED_FACE_LANDMARKS:updated_face_landmarks"
+-}
+-
+ # Renders annotations and overlays them on top of the input images.
+ node {
+   calculator: "IrisAndDepthRendererGpu"
+diff --git a/mediapipe/modules/iris_landmark/BUILD b/mediapipe/modules/iris_landmark/BUILD
+index e16a79b..6bf377a 100644
+--- a/mediapipe/modules/iris_landmark/BUILD
++++ b/mediapipe/modules/iris_landmark/BUILD
+@@ -72,6 +72,18 @@ mediapipe_simple_subgraph(
+     ],
+ )
+ 
++mediapipe_simple_subgraph(
++    name = "iris_landmark_left_and_right_from_face_landmarks_gpu",
++    graph = "iris_landmark_left_and_right_from_face_landmarks_gpu.pbtxt",
++    register_as = "IrisLandmarkLeftAndRightFromFaceLandmarksGpu",
++    deps = [
++        ":iris_landmark_left_and_right_gpu",
++        "//mediapipe/calculators/core:concatenate_normalized_landmark_list_calculator",
++        "//mediapipe/calculators/core:split_normalized_landmark_list_calculator",
++        "//mediapipe/graphs/iris_tracking/calculators:update_face_landmarks_calculator",
++    ],
++)
++
+ mediapipe_simple_subgraph(
+     name = "iris_landmark_left_and_right_cpu",
+     graph = "iris_landmark_left_and_right_cpu.pbtxt",
+@@ -85,6 +97,18 @@ mediapipe_simple_subgraph(
+     ],
+ )
+ 
++mediapipe_simple_subgraph(
++    name = "iris_landmark_left_and_right_from_face_landmarks_cpu",
++    graph = "iris_landmark_left_and_right_from_face_landmarks_cpu.pbtxt",
++    register_as = "IrisLandmarkLeftAndRightFromFaceLandmarksCpu",
++    deps = [
++        ":iris_landmark_left_and_right_cpu",
++        "//mediapipe/calculators/core:concatenate_normalized_landmark_list_calculator",
++        "//mediapipe/calculators/core:split_normalized_landmark_list_calculator",
++        "//mediapipe/graphs/iris_tracking/calculators:update_face_landmarks_calculator",
++    ],
++)
++
+ exports_files(
+     srcs = [
+         "iris_landmark.tflite",
+diff --git a/mediapipe/modules/iris_landmark/iris_landmark_left_and_right_from_face_landmarks_cpu.pbtxt b/mediapipe/modules/iris_landmark/iris_landmark_left_and_right_from_face_landmarks_cpu.pbtxt
+new file mode 100644
+index 0000000..e7772d6
+--- /dev/null
++++ b/mediapipe/modules/iris_landmark/iris_landmark_left_and_right_from_face_landmarks_cpu.pbtxt
+@@ -0,0 +1,82 @@
++# Detects iris landmarks, eye contour landmarks, and corresponding rect (ROI) from face landmarks.
++
++type: "IrisLandmarkLeftAndRightFromFaceLandmarksCpu"
++
++# CPU image. (ImageFrame)
++input_stream: "IMAGE:image"
++# Face landmarks. (NormalizedLandmarkList)
++input_stream: "FACE_LANDMARKS:face_landmarks"
++
++# Refined face landmarks. (NormalizedLandmarkList)
++output_stream: "UPDATED_FACE_LANDMARKS:refined_face_landmarks"
++
++# 71 normalized eye contour landmarks. (NormalizedLandmarkList)
++output_stream: "LEFT_EYE_CONTOUR_LANDMARKS:left_eye_contour_landmarks"
++# 5 normalized iris landmarks. (NormalizedLandmarkList)
++output_stream: "LEFT_EYE_IRIS_LANDMARKS:left_iris_landmarks"
++# Region of interest used to do calculations for the left eye. (NormalizedRect)
++output_stream: "LEFT_EYE_ROI:left_eye_rect_from_landmarks"
++
++# 71 normalized eye contour landmarks. (NormalizedLandmarkList)
++output_stream: "RIGHT_EYE_CONTOUR_LANDMARKS:right_eye_contour_landmarks"
++# 5 normalized iris landmarks. (NormalizedLandmarkList)
++output_stream: "RIGHT_EYE_IRIS_LANDMARKS:right_iris_landmarks"
++# Region of interest used to do calculations for the right eye. (NormalizedRect)
++output_stream: "RIGHT_EYE_ROI:right_eye_rect_from_landmarks"
++
++
++# Gets two landmarks which define left eye boundary.
++node {
++  calculator: "SplitNormalizedLandmarkListCalculator"
++  input_stream: "face_landmarks"
++  output_stream: "left_eye_boundary_landmarks"
++  node_options: {
++    [type.googleapis.com/mediapipe.SplitVectorCalculatorOptions] {
++      ranges: { begin: 33 end: 34 }
++      ranges: { begin: 133 end: 134 }
++      combine_outputs: true
++    }
++  }
++}
++
++# Gets two landmarks which define right eye boundary.
++node {
++  calculator: "SplitNormalizedLandmarkListCalculator"
++  input_stream: "face_landmarks"
++  output_stream: "right_eye_boundary_landmarks"
++  node_options: {
++    [type.googleapis.com/mediapipe.SplitVectorCalculatorOptions] {
++      ranges: { begin: 362 end: 363 }
++      ranges: { begin: 263 end: 264 }
++      combine_outputs: true
++    }
++  }
++}
++
++# Detects iris landmarks, eye contour landmarks, and corresponding rect (ROI).
++node {
++  calculator: "IrisLandmarkLeftAndRightCpu"
++  input_stream: "IMAGE:image"
++  input_stream: "LEFT_EYE_BOUNDARY_LANDMARKS:left_eye_boundary_landmarks"
++  input_stream: "RIGHT_EYE_BOUNDARY_LANDMARKS:right_eye_boundary_landmarks"
++  output_stream: "LEFT_EYE_CONTOUR_LANDMARKS:left_eye_contour_landmarks"
++  output_stream: "LEFT_EYE_IRIS_LANDMARKS:left_iris_landmarks"
++  output_stream: "LEFT_EYE_ROI:left_eye_rect_from_landmarks"
++  output_stream: "RIGHT_EYE_CONTOUR_LANDMARKS:right_eye_contour_landmarks"
++  output_stream: "RIGHT_EYE_IRIS_LANDMARKS:right_iris_landmarks"
++  output_stream: "RIGHT_EYE_ROI:right_eye_rect_from_landmarks"
++}
++
++node {
++  calculator: "ConcatenateNormalizedLandmarkListCalculator"
++  input_stream: "left_eye_contour_landmarks"
++  input_stream: "right_eye_contour_landmarks"
++  output_stream: "refined_eye_landmarks"
++}
++
++node {
++  calculator: "UpdateFaceLandmarksCalculator"
++  input_stream: "NEW_EYE_LANDMARKS:refined_eye_landmarks"
++  input_stream: "FACE_LANDMARKS:face_landmarks"
++  output_stream: "UPDATED_FACE_LANDMARKS:refined_face_landmarks"
++}
+diff --git a/mediapipe/modules/iris_landmark/iris_landmark_left_and_right_from_face_landmarks_gpu.pbtxt b/mediapipe/modules/iris_landmark/iris_landmark_left_and_right_from_face_landmarks_gpu.pbtxt
+new file mode 100644
+index 0000000..f0a4ce9
+--- /dev/null
++++ b/mediapipe/modules/iris_landmark/iris_landmark_left_and_right_from_face_landmarks_gpu.pbtxt
+@@ -0,0 +1,81 @@
++# Detects iris landmarks, eye contour landmarks, and corresponding rect (ROI) from face landmarks.
++
++type: "IrisLandmarkLeftAndRightFromFaceLandmarksGpu"
++
++# GPU image. (GpuBuffer)
++input_stream: "IMAGE:image"
++# Face landmarks. (NormalizedLandmarkList)
++input_stream: "FACE_LANDMARKS:face_landmarks"
++
++# Refined face landmarks. (NormalizedLandmarkList)
++output_stream: "UPDATED_FACE_LANDMARKS:refined_face_landmarks"
++
++# 71 normalized eye contour landmarks. (NormalizedLandmarkList)
++output_stream: "LEFT_EYE_CONTOUR_LANDMARKS:left_eye_contour_landmarks"
++# 5 normalized iris landmarks. (NormalizedLandmarkList)
++output_stream: "LEFT_EYE_IRIS_LANDMARKS:left_iris_landmarks"
++# Region of interest used to do calculations for the left eye. (NormalizedRect)
++output_stream: "LEFT_EYE_ROI:left_eye_rect_from_landmarks"
++
++# 71 normalized eye contour landmarks. (NormalizedLandmarkList)
++output_stream: "RIGHT_EYE_CONTOUR_LANDMARKS:right_eye_contour_landmarks"
++# 5 normalized iris landmarks. (NormalizedLandmarkList)
++output_stream: "RIGHT_EYE_IRIS_LANDMARKS:right_iris_landmarks"
++# Region of interest used to do calculations for the right eye. (NormalizedRect)
++output_stream: "RIGHT_EYE_ROI:right_eye_rect_from_landmarks"
++
++# Gets two landmarks which define left eye boundary.
++node {
++  calculator: "SplitNormalizedLandmarkListCalculator"
++  input_stream: "face_landmarks"
++  output_stream: "left_eye_boundary_landmarks"
++  node_options: {
++    [type.googleapis.com/mediapipe.SplitVectorCalculatorOptions] {
++      ranges: { begin: 33 end: 34 }
++      ranges: { begin: 133 end: 134 }
++      combine_outputs: true
++    }
++  }
++}
++
++# Gets two landmarks which define right eye boundary.
++node {
++  calculator: "SplitNormalizedLandmarkListCalculator"
++  input_stream: "face_landmarks"
++  output_stream: "right_eye_boundary_landmarks"
++  node_options: {
++    [type.googleapis.com/mediapipe.SplitVectorCalculatorOptions] {
++      ranges: { begin: 362 end: 363 }
++      ranges: { begin: 263 end: 264 }
++      combine_outputs: true
++    }
++  }
++}
++
++# Detects iris landmarks, eye contour landmarks, and corresponding rect (ROI).
++node {
++  calculator: "IrisLandmarkLeftAndRightGpu"
++  input_stream: "IMAGE:image"
++  input_stream: "LEFT_EYE_BOUNDARY_LANDMARKS:left_eye_boundary_landmarks"
++  input_stream: "RIGHT_EYE_BOUNDARY_LANDMARKS:right_eye_boundary_landmarks"
++  output_stream: "LEFT_EYE_CONTOUR_LANDMARKS:left_eye_contour_landmarks"
++  output_stream: "LEFT_EYE_IRIS_LANDMARKS:left_iris_landmarks"
++  output_stream: "LEFT_EYE_ROI:left_eye_rect_from_landmarks"
++  output_stream: "RIGHT_EYE_CONTOUR_LANDMARKS:right_eye_contour_landmarks"
++  output_stream: "RIGHT_EYE_IRIS_LANDMARKS:right_iris_landmarks"
++  output_stream: "RIGHT_EYE_ROI:right_eye_rect_from_landmarks"
++}
++
++node {
++  calculator: "ConcatenateNormalizedLandmarkListCalculator"
++  input_stream: "left_eye_contour_landmarks"
++  input_stream: "right_eye_contour_landmarks"
++  output_stream: "refined_eye_landmarks"
++}
++
++node {
++  calculator: "UpdateFaceLandmarksCalculator"
++  input_stream: "NEW_EYE_LANDMARKS:refined_eye_landmarks"
++  input_stream: "FACE_LANDMARKS:face_landmarks"
++  output_stream: "UPDATED_FACE_LANDMARKS:refined_face_landmarks"
++}

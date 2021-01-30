@@ -1,6 +1,9 @@
 using Mediapipe;
+using UnityEngine;
 
 public class HolisticGraph : DemoGraph {
+  [SerializeField] bool detectIris = true;
+
   private const string poseLandmarksStream = "pose_landmarks";
   private OutputStreamPoller<NormalizedLandmarkList> poseLandmarksStreamPoller;
   private NormalizedLandmarkListPacket poseLandmarksPacket;
@@ -89,6 +92,8 @@ public class HolisticGraph : DemoGraph {
     rightHandLandmarksPresencePacket = new BoolPacket();
 
     sidePacket = new SidePacket();
+    var irisFlag = new BoolPacket(detectIris);
+    sidePacket.Emplace("enable_iris_detection", irisFlag);
 
     return graph.StartRun(sidePacket);
   }

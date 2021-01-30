@@ -100,7 +100,7 @@ When building, select **only** `iOS` scene in `Scenes In Build` and set Bundle I
 - Iris Tracking (on CPU/GPU)
 - Hand Tracking (on CPU/GPU)
 - Pose Tracking (on CPU/GPU)
-- Holistic (on CPU/GPU)
+- Holistic (with Iris) (on CPU/GPU)
 - Hair Segmentation (on GPU)
 - Object Detection (on CPU/GPU)
 - Official Demo (on CPU/GPU) (default is Hand Tracking)
