@@ -85,13 +85,13 @@ The AssetBundle file will be created under `Assets/StreamingAssets`.
 
 ### Android
 See [Desktop](#Desktop) to build AssetBundles.\
-When building, select **only** `Android` scene in `Scenes In Build`.
+When building, select **only** `Android` scene in `Scenes In Build` and set Packet Name (**Player Settings > Player > Other Settings**).
 
 If you prefer, model files can be included in `mediapipe_android.aar` instead, and in that case, skip the AssetBundle build step.
 
 ### iOS
 See [Desktop](#Desktop) to build AssetBundles.\
-When building, select **only** `iOS` scene in `Scenes In Build`.
+When building, select **only** `iOS` scene in `Scenes In Build` and set Bundle Identifier (**Player Settings > Player > Other Settings**).
 
 ## Example Graphs
 - Hello World!
@@ -100,29 +100,44 @@ When building, select **only** `iOS` scene in `Scenes In Build`.
 - Iris Tracking (on CPU/GPU)
 - Hand Tracking (on CPU/GPU)
 - Pose Tracking (on CPU/GPU)
+- Holistic (on CPU/GPU)
 - Hair Segmentation (on GPU)
 - Object Detection (on CPU/GPU)
-- Official Demo (on CPU/GPU)
-   - Edit `official_demo_cpu.txt` (or `official_demo.gpu.txt`) and you can test your favorite official graph (if only it can be run on your platform)
+- Official Demo (on CPU/GPU) (default is Hand Tracking)
 
-### Troubleshooting
-#### DllNotFoundException: mediapipe_c
+## Troubleshooting
+### DllNotFoundException: mediapipe_c
 [OpenCV's path](https://github.com/homuler/MediaPipeUnityPlugin#opencv) may not be configured properly.
 
 If you're sure the path is correct, please check on **Load on startup** in the plugin inspector, click **Apply** button, and restart Unity Editor.
 Some helpful logs will be output in the console.
 
-#### InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000
+### InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000
 If you encounter an error like below and you use OpenGL Core as the Unity's graphics APIs, please try Vulkan.
 
 ```txt
 InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000_mediapipe/mediapipe/gpu/gl_context_egl.cc:261)
 ```
 
-### TODO
+### Debug MediaPipe
+Set an environment variable `GLOG_v` before loading native libraries (e.g. `libmediapipe_c.so`).
+
+```cs
+void OnEnable() {
+    // see https://github.com/google/glog#setting-flags
+    System.Environment.SetEnvironmentVariable("GLOG_v", "2");
+}
+```
+
+MediaPipe logs will be output to log files (e.g. `Editor.log`).
+
+## TODO
 - [ ] Prepare API Documents
 - [ ] use CVPixelBuffer on iOS
 - [ ] Box Tracking (on CPU/GPU)
+- [ ] Instant Motion Tracking
+- [ ] Objectron
+- [ ] KNIFT
 
 ## LICENSE
 MIT
