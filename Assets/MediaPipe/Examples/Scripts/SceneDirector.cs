@@ -1,14 +1,11 @@
 using Mediapipe;
 using System;
-using System.IO;
 using System.Collections;
 using UnityEngine;
 
 #if UNITY_ANDROID
 using System.Runtime.InteropServices;
 #endif
-
-using Directory = System.IO.Directory;
 
 public class SceneDirector : MonoBehaviour {
   [SerializeField] bool useGPU = true;
@@ -31,14 +28,8 @@ public class SceneDirector : MonoBehaviour {
   bool IsAssetLoadFailed = false;
 
   void OnEnable() {
-    var nameForGlog = Path.Combine(Application.dataPath, "MediaPipePlugin");
-    var logDir = Path.Combine(Application.persistentDataPath, "Logs", "MediaPipe");
-
-    if (!Directory.Exists(logDir)) {
-      Directory.CreateDirectory(logDir);
-    }
-
-    Glog.Initialize(nameForGlog, logDir);
+    // Uncomment for debugging
+    // System.Environment.SetEnvironmentVariable("GLOG_v", "2");
   }
 
 #if UNITY_ANDROID
@@ -80,7 +71,6 @@ public class SceneDirector : MonoBehaviour {
   void OnDisable() {
     StopGraph();
     StopCamera();
-    Glog.Shutdown();
   }
 
   public void ChangeWebCamDevice(WebCamDevice? webCamDevice) {
