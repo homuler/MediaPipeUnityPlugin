@@ -4,6 +4,10 @@ plugindir := $(sdkdir)/Plugins
 modeldir := $(sdkdir)/Models
 scriptdir := $(sdkdir)/Scripts
 
+ifeq ($(OS),Windows_NT)
+  bazelflags.output := --output_user_root=C:/_bzl
+endif
+
 bazelflags.gpu := --copt -DMESA_EGL_NO_X11_HEADERS --copt -DEGL_NO_X11
 bazelflags.cpu := --define MEDIAPIPE_DISABLE_GPU=1
 ifeq ($(OS),Windows_NT)
@@ -39,7 +43,7 @@ gpu: | $(protobuf_dll)
 	cd C && bazel build -c opt $(bazelflags.gpu) $(bazel_desktop_target) $(bazel_common_target)
 
 cpu: | $(protobuf_dll)
-	cd C && bazel build -c opt $(bazelflags.cpu) $(bazel_desktop_target) $(bazel_common_target)
+	cd C && bazel $(bazelflags.output) build -c opt $(bazelflags.cpu) $(bazel_desktop_target) $(bazel_common_target)
 
 android_arm: | $(protobuf_dll)
 	cd C && bazel build -c opt $(bazelflags.android_arm) $(bazel_android_target) $(bazel_common_target)
