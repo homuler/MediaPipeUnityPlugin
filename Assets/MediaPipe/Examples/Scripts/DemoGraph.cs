@@ -22,6 +22,8 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
 
   protected virtual void OnDestroy() {
     Stop();
+    graph = null;
+    gpuHelper = null;
 
     if (stopwatch != null && stopwatch.IsRunning) {
       stopwatch.Stop();
