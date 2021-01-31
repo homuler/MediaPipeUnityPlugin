@@ -28,6 +28,7 @@ public sealed class LocalAssetManager : ResourceManager {
     await Task.CompletedTask;
   }
 
+  [AOT.MonoPInvokeCallback(typeof(CacheFilePathResolver))]
   static string CacheFileFromAsset(string assetPath) {
     var assetName = GetAssetName(assetPath);
     var localPath = GetLocalFilePath(assetName);
@@ -39,6 +40,7 @@ public sealed class LocalAssetManager : ResourceManager {
     return null;
   }
 
+  [AOT.MonoPInvokeCallback(typeof(ReadFileHandler))]
   static bool ReadFile(string path, IntPtr dst) {
     try {
       Debug.Log(path);
