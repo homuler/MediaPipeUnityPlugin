@@ -114,6 +114,9 @@ public class SceneDirector : MonoBehaviour {
       return;
     }
 
+    if (useGPU) {
+      SetupGpuResources();
+    }
     graphRunner = StartCoroutine(RunGraph());
   }
 
@@ -126,6 +129,24 @@ public class SceneDirector : MonoBehaviour {
     if (graphContainer != null) {
       Destroy(graphContainer);
     }
+  }
+
+  void SetupGpuResources() {
+    if (gpuResources != null) {
+      Debug.Log("Gpu resources are already initialized");
+      return;
+    }
+
+    // TODO: have to wait for currentContext to be initialized.
+    if (currentContext == IntPtr.Zero) {
+      Debug.LogWarning("No EGL Context Found");
+    } else {
+      Debug.Log($"EGL Context Found ({currentContext})");
+    }
+
+    gpuResources = GpuResources.Create(currentContext).ConsumeValueOrDie();
+    gpuHelper = new GlCalculatorHelper();
+    gpuHelper.InitializeForTest(gpuResources);
   }
 
   IEnumerator RunGraph() {
@@ -155,17 +176,6 @@ public class SceneDirector : MonoBehaviour {
     var graph = graphContainer.GetComponent<IDemoGraph<TextureFrame>>();
 
     if (useGPU) {
-      // TODO: have to wait for currentContext to be initialized.
-      if (currentContext == IntPtr.Zero) {
-        Debug.LogWarning("No EGL Context Found");
-      } else {
-        Debug.Log($"EGL Context Found ({currentContext})");
-      }
-
-      gpuResources = GpuResources.Create(currentContext).ConsumeValueOrDie();
-      gpuHelper = new GlCalculatorHelper();
-      gpuHelper.InitializeForTest(gpuResources);
-
       graph.Initialize(gpuResources, gpuHelper);
     } else {
       graph.Initialize();
