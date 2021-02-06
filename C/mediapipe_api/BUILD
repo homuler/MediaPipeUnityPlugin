@@ -165,6 +165,7 @@ pkg_zip(
         "//mediapipe_api/framework/formats:location_data_cs",
         "//mediapipe_api/framework/formats:rasterization_cs",
         "//mediapipe_api/framework/formats:rect_cs",
+        "//mediapipe_api/graphs/instant_motion_tracking/calculators:sticker_buffer_cs",
     ],
     # TODO: keep directory structure
 )

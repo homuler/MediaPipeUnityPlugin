@@ -33,6 +33,20 @@ index a74b488..1d3c699 100644
 -    visibility = ["//mediapipe:__subpackages__"],
 +    visibility = ["//visibility:public"],
  )
+diff --git a/mediapipe/graphs/instant_motion_tracking/calculators/BUILD b/mediapipe/graphs/instant_motion_tracking/calculators/BUILD
+index b8242cf..023ef4f 100644
+--- a/mediapipe/graphs/instant_motion_tracking/calculators/BUILD
++++ b/mediapipe/graphs/instant_motion_tracking/calculators/BUILD
+@@ -82,3 +82,9 @@ cc_library(
+     ],
+     alwayslink = 1,
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
 diff --git a/mediapipe/java/com/google/mediapipe/components/BUILD b/mediapipe/java/com/google/mediapipe/components/BUILD
 index dcbdd3b..5dce33c 100644
 --- a/mediapipe/java/com/google/mediapipe/components/BUILD
