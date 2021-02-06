@@ -11,7 +11,7 @@ using UnityEngine;
 public sealed class LocalAssetManager : ResourceManager {
   private static readonly Lazy<LocalAssetManager> lazy = new Lazy<LocalAssetManager>(() => new LocalAssetManager());
   public static LocalAssetManager Instance { get { return lazy.Value; } }
-  private readonly static string ModelRootPath = Path.Combine(Application.dataPath, "MediaPipe", "SDK", "Models");
+  private readonly static string ResourceRootPath = Path.Combine(Application.dataPath, "MediaPipe", "SDK", "Resources");
 
   public override CacheFilePathResolver cacheFilePathResolver {
     get { return CacheFileFromAsset; }
@@ -33,10 +33,12 @@ public sealed class LocalAssetManager : ResourceManager {
     var assetName = GetAssetName(assetPath);
     var localPath = GetLocalFilePath(assetName);
 
+
     if (File.Exists(localPath)) {
       return localPath;
     }
 
+    Debug.LogWarning($"{localPath} does not exist");
     return null;
   }
 
@@ -62,10 +64,10 @@ public sealed class LocalAssetManager : ResourceManager {
     var assetName = Path.GetFileNameWithoutExtension(assetPath);
     var extension = Path.GetExtension(assetPath);
 
-    return (extension == ".tflite" || extension == ".bytes") ? $"{assetName}.bytes" : $"{assetName}.txt";
+    return extension == ".tflite" ? $"{assetName}.bytes" : $"{assetName}{extension}";
   }
 
   static string GetLocalFilePath(string assetName) {
-    return Path.Combine(ModelRootPath, assetName);
+    return Path.Combine(ResourceRootPath, assetName);
   }
 }

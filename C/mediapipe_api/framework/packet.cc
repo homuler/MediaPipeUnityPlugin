@@ -212,8 +212,7 @@ MpReturnCode mp__MakeStringPacket_At__PKc_i_Rt(const char* str, int size, mediap
 
 MpReturnCode mp_Packet__GetString(mediapipe::Packet* packet, const char** value_out) {
   TRY_ALL {
-    auto& str = packet->Get<std::string>();
-    *value_out = strcpy_to_heap(str);
+    *value_out = strcpy_to_heap(packet->Get<std::string>());
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_ALL
 }

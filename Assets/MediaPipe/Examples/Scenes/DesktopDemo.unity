@@ -1210,6 +1210,8 @@ MonoBehaviour:
     type: 3}
   boxTrackingGraph: {fileID: 6262546456675006810, guid: 044e1cba0ae838e6db69f9166320db5a,
     type: 3}
+  instantMotionTrackingGraph: {fileID: 4459170324269958257, guid: dc998ba0475a9049eadb1dedd8bbf7dd,
+    type: 3}
   officialDemoGraph: {fileID: 5680418270291803701, guid: fc49226dfd774c66faf8a3dd6be53d0f,
     type: 3}
 --- !u!1 &908513300

@@ -14,6 +14,7 @@ public class GraphSelectorController : MonoBehaviour {
   [SerializeField] GameObject hairSegmentationGraph = null;
   [SerializeField] GameObject objectDetectionGraph = null;
   [SerializeField] GameObject boxTrackingGraph = null;
+  [SerializeField] GameObject instantMotionTrackingGraph = null;
   [SerializeField] GameObject officialDemoGraph = null;
 
   private GameObject sceneDirector;
@@ -42,6 +43,7 @@ public class GraphSelectorController : MonoBehaviour {
 #endif
     AddGraph("Object Detection", objectDetectionGraph);
     AddGraph("Box Tracking", boxTrackingGraph);
+    AddGraph("Instant Motion Tracking", instantMotionTrackingGraph);
     AddGraph("Official Demo", officialDemoGraph);
 
     var graphSelector = GetComponent<Dropdown>();

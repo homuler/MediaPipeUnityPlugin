@@ -1,7 +1,7 @@
 builddir := .build
 sdkdir := Assets/MediaPipe/SDK
 plugindir := $(sdkdir)/Plugins
-modeldir := $(sdkdir)/Models
+resourcedir := $(sdkdir)/Resources
 scriptdir := $(sdkdir)/Scripts
 
 ifeq ($(OS),Windows_NT)
@@ -30,13 +30,13 @@ bazel_root := C/bazel-bin/mediapipe_api
 bazel_desktop_target := mediapipe_api:mediapipe_desktop
 bazel_android_target := mediapipe_api/java/org/homuler/mediapipe/unity:mediapipe_android
 bazel_ios_target := mediapipe_api/objc:MediaPipeUnity
-bazel_models_target := mediapipe_api:mediapipe_models
+bazel_resources_target := mediapipe_api:mediapipe_assets
 bazel_protos_target := mediapipe_api:mediapipe_proto_srcs
-bazel_common_target := $(bazel_models_target) $(bazel_protos_target)
+bazel_common_target := $(bazel_resources_target) $(bazel_protos_target)
 
 .PHONY: all gpu cpu android_arm android_arm64 ios_arm64 clean \
-	install install-protobuf install-mediapipe_desktop install-mediapipe_android install-mediapipe_ios install-models \
-	uninstall uninstall-protobuf uninstall-mediapipe_desktop uninstall-mediapipe_android uninstall-mediapipe_ios uninstall-models
+	install install-protobuf install-mediapipe_desktop install-mediapipe_android install-mediapipe_ios install-resources \
+	uninstall uninstall-protobuf uninstall-mediapipe_desktop uninstall-mediapipe_android uninstall-mediapipe_ios uninstall-resources
 
 # build
 gpu: | $(protobuf_dll)
@@ -64,7 +64,7 @@ clean:
 	bazel clean
 
 # install
-install: install-protobuf install-mediapipe_desktop install-mediapipe_android install-mediapipe_ios install-models install-protos
+install: install-protobuf install-mediapipe_desktop install-mediapipe_android install-mediapipe_ios install-resources install-protos
 
 install-protobuf: | $(plugindir)/Protobuf
 	cp $(protobuf_bindir)/* $(plugindir)/Protobuf
@@ -91,9 +91,9 @@ else
 endif
 
 
-install-models: | $(modeldir)
-ifneq ("$(wildcard $(bazel_root)/mediapipe_models.zip)", "")
-	unzip $(bazel_root)/mediapipe_models.zip -d $(modeldir)
+install-resources: | $(resourcedir)
+ifneq ("$(wildcard $(bazel_root)/mediapipe_assets.zip)", "")
+	unzip $(bazel_root)/mediapipe_assets.zip -d $(resourcedir)
 else
 	# skip installing models
 endif
@@ -105,7 +105,7 @@ else
 	# skip installing proto sources
 endif
 
-uninstall: uninstall-models uninstall-mediapipe_ios uninstall-mediapipe_android uninstall-mediapipe_desktop uninstall-protobuf
+uninstall: uninstall-resources uninstall-mediapipe_ios uninstall-mediapipe_android uninstall-mediapipe_desktop uninstall-protobuf
 
 uninstall-protobuf:
 	rm -r $(plugindir)/Protobuf
@@ -119,8 +119,8 @@ uninstall-mediapipe_android:
 uninstall-mediapipe_ios:
 	rm -rf $(plugindir)/iOS/MediaPipeUnity.framework
 
-uninstall-models:
-	rm -f $(modeldir)/*.bytes && rm -f $(modeldir)/*.txt
+uninstall-resources:
+	rm -f $(resourcedir)/*.bytes && rm -f $(resourcedir)/*.txt
 
 # create directories
 $(builddir):
@@ -129,7 +129,7 @@ $(builddir):
 $(plugindir)/Protobuf:
 	mkdir -p $@
 
-$(modeldir):
+$(resourcedir):
 	mkdir -p $@
 
 # sources

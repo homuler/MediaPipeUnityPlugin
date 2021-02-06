@@ -1,0 +1,150 @@
+using Mediapipe;
+using UnityEngine;
+using Google.Protobuf;
+
+public class InstantMotionTrackingGraph : OfficialDemoGraph {
+  [SerializeField] TextAsset texture3dAsset = null;
+
+  int stickerSentinelId = -1;
+
+  // 0: render GIF
+  // 1: render 3D asset
+  // This sample only works with 1 (3D asset)
+  int renderId = 1;
+
+  Sticker currentSticker;
+  readonly object imuRotationMatrixLock = new object();
+  float[] imuRotationMatrix;
+
+  Gyroscope gyroscope;
+
+  void Start() {
+    if (SystemInfo.supportsGyroscope) {
+      gyroscope = Input.gyro;
+      gyroscope.enabled = true;
+    }
+  }
+
+  void Update() {
+    if (Input.GetMouseButtonDown(0)) {
+      Ray raycast = Camera.main.ScreenPointToRay(Input.mousePosition);
+      RaycastHit raycastHit;
+
+      if (Physics.Raycast(raycast, out raycastHit) && raycastHit.collider.name == "WebCamScreen") {
+        var center = raycastHit.collider.bounds.center;
+        var extents = raycastHit.collider.bounds.extents;
+        var x = (raycastHit.point.x - center.x) / 2 / extents.x + 0.5f;
+        var y = 0.5f - (raycastHit.point.y - center.y) / 2 / extents.y;
+
+        ResetSticker(x, y);
+      }
+    }
+
+    if (gyroscope != null) {
+      UpdateImuRotationMatrix(gyroscope);
+    }
+  }
+
+  public override Status StartRun(Texture texture) {
+    stopwatch.Start();
+    ResetSticker();
+    UpdateImuRotationMatrix(new float[] { 0, 0, 1, 1, 0, 0, 0, 1, 0 });
+
+    sidePacket = new SidePacket();
+    sidePacket.Emplace("vertical_fov_radians", new FloatPacket(GetVerticalFovRadians()));
+    sidePacket.Emplace("aspect_ratio", new FloatPacket(3.0f / 4.0f));
+
+    sidePacket.Emplace("texture_3d", new ImageFramePacket(GetImageFrameFromImage(texture3dAsset)));
+    sidePacket.Emplace("asset_3d", new StringPacket("robot.obj.bytes"));
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+    SetupOutputPacket(texture);
+    sidePacket.Emplace(destinationBufferName, outputPacket);
+
+    return graph.StartRun(sidePacket);
+#else
+    return StartRun();
+#endif
+  }
+
+  public override Status PushInput(TextureFrame textureFrame) {
+    base.PushInput(textureFrame).AssertOk();
+
+    graph.AddPacketToInputStream("sticker_sentinel", new IntPacket(stickerSentinelId, currentTimestamp)).AssertOk();
+    stickerSentinelId = -1;
+
+    var stickerRoll = new StickerRoll();
+    stickerRoll.Sticker.Add(currentSticker);
+    graph.AddPacketToInputStream("sticker_proto_string", new StringPacket(stickerRoll.ToByteArray(), currentTimestamp)).AssertOk();
+
+    lock (imuRotationMatrixLock) {
+      graph.AddPacketToInputStream("imu_rotation_matrix", new FloatArrayPacket(imuRotationMatrix, currentTimestamp)).AssertOk();
+    }
+
+    return Status.Ok();
+  }
+
+  float GetVerticalFovRadians() {
+    // TODO: acquire it automatically
+    return Mathf.Deg2Rad * 68.0f;
+  }
+
+  ImageFrame GetImageFrameFromImage(TextAsset image) {
+    var tempTexture = new Texture2D(1, 1);
+    tempTexture.LoadImage(image.bytes);
+
+    // ensure that the texture format is RGBA32
+    var texture = new Texture2D(tempTexture.width, tempTexture.height, TextureFormat.RGBA32, false);
+    texture.SetPixels32(tempTexture.GetPixels32());
+    // flip the image vertically to align pixels from top-left to bottom-right
+    FlipTexture2D(texture);
+    texture.Apply();
+
+    return new ImageFrame(ImageFormat.Format.SRGBA, texture.width, texture.height, 4 * texture.width, texture.GetRawTextureData<byte>());
+  }
+
+  void ResetSticker(float x = 0.5f, float y = 0.5f) {
+    var sticker = new Sticker();
+    var id = currentSticker == null ? 1 : currentSticker.Id + 1;
+
+    sticker.Id = id;
+    sticker.X = x;
+    sticker.Y = y;
+    sticker.Scale = 1;
+    sticker.RenderId = renderId;
+
+    stickerSentinelId = id;
+    currentSticker = sticker;
+  }
+
+  void UpdateImuRotationMatrix(Gyroscope gyroscope) {
+    var matrix = Matrix4x4.Rotate(gyroscope.attitude);
+    // from right-hand to left-hand (rotate 180 degrees around Y axis)
+    var array = new float[] {
+      -matrix[0, 0], matrix[0, 1], -matrix[0, 2],
+      -matrix[1, 0], matrix[1, 1], -matrix[1, 2],
+      -matrix[2, 0], matrix[2, 1], -matrix[2, 2],
+    };
+
+    UpdateImuRotationMatrix(array);
+  }
+
+  void UpdateImuRotationMatrix(float[] matrix) {
+    lock (imuRotationMatrixLock) {
+      imuRotationMatrix = matrix;
+    }
+  }
+
+  void FlipTexture2D(Texture2D texture) {
+    var src = texture.GetPixels32();
+    var dest = new Color32[src.Length];
+
+    for (var i = 0; i < texture.height; i++) {
+      var srcIdx = i * texture.width;
+      var destIdx = (texture.height - 1 - i) * texture.width;
+      System.Array.Copy(src, srcIdx, dest, destIdx, texture.width);
+    }
+
+    texture.SetPixels32(dest);
+  }
+}

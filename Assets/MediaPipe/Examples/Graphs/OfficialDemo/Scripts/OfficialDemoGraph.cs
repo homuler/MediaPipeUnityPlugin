@@ -12,8 +12,8 @@ public class OfficialDemoGraph : DemoGraph {
   private const string outputStream = "output_video";
 
 #if UNITY_ANDROID
-  static GpuBufferPacket outputPacket;
-  static string destinationBufferName;
+  protected static GpuBufferPacket outputPacket;
+  protected static string destinationBufferName;
   static int destinationWidth;
   static int destinationHeight;
   static IntPtr destinationNativeTexturePtr;
@@ -30,7 +30,7 @@ public class OfficialDemoGraph : DemoGraph {
   private GCHandle outputVideoCallbackHandle;
 #endif
 
-  private SidePacket sidePacket;
+  protected SidePacket sidePacket;
 
 #if UNITY_ANDROID
   public override void Initialize() {
@@ -72,17 +72,11 @@ public class OfficialDemoGraph : DemoGraph {
     Debug.Log("This graph is for testing official examples. You can customize the graph by editing `official_demo_*.txt` (default is `hand_tracking_desktop.pbtxt`)");
 
     stopwatch.Start();
-
     sidePacket = new SidePacket();
     sidePacket.Emplace("num_hands", new IntPacket(2));
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-    // Tell MediaPipe the target texture
-    destinationNativeTexturePtr = texture.GetNativeTexturePtr();
-    destinationWidth = texture.width;
-    destinationHeight = texture.height;
-
-    gpuHelper.RunInGlContext(BuildDestination).AssertOk();
+    SetupOutputPacket(texture);
     sidePacket.Emplace(destinationBufferName, outputPacket);
 
     return graph.StartRun(sidePacket);
@@ -120,6 +114,14 @@ public class OfficialDemoGraph : DemoGraph {
   }
 
 #if UNITY_ANDROID
+  protected void SetupOutputPacket(Texture texture) {
+    destinationNativeTexturePtr = texture.GetNativeTexturePtr();
+    destinationWidth = texture.width;
+    destinationHeight = texture.height;
+
+    gpuHelper.RunInGlContext(BuildDestination).AssertOk();
+  }
+
   [AOT.MonoPInvokeCallback(typeof(GlCalculatorHelper.NativeGlStatusFunction))]
   static IntPtr BuildDestination() {
     var glContext = GlContext.GetCurrent();
@@ -151,6 +153,8 @@ public class OfficialDemoGraph : DemoGraph {
 
         outputImage = statusOrImageFrame.ConsumeValueOrDie();
       }
+    } else {
+      Debug.LogWarning(statusOrImageFrame.status.ToString());
     }
 
     return Status.Ok();

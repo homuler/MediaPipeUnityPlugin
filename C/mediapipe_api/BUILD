@@ -80,6 +80,7 @@ cc_library(
     deps = [
         "@com_google_mediapipe//mediapipe/calculators/core:pass_through_calculator",
         "@com_google_mediapipe//mediapipe/calculators/core:packet_presence_calculator",
+        "@com_google_mediapipe//mediapipe/calculators/core:flow_limiter_calculator",
         "@com_google_mediapipe//mediapipe/calculators/image:image_transformation_calculator",
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [
@@ -99,6 +100,7 @@ cc_library(
             "@com_google_mediapipe//mediapipe/graphs/hair_segmentation:mobile_calculators",
             "@com_google_mediapipe//mediapipe/graphs/hand_tracking:mobile_calculators",
             "@com_google_mediapipe//mediapipe/graphs/holistic_tracking:holistic_tracking_gpu_deps",
+            "@com_google_mediapipe//mediapipe/graphs/instant_motion_tracking:instant_motion_tracking_deps",
             "@com_google_mediapipe//mediapipe/graphs/iris_tracking:iris_tracking_gpu_deps",
             "@com_google_mediapipe//mediapipe/graphs/object_detection:mobile_calculators",
             "@com_google_mediapipe//mediapipe/graphs/pose_tracking:upper_body_pose_tracking_gpu_deps",
@@ -130,8 +132,9 @@ pkg_zip(
 )
 
 pkg_asset(
-    name = "mediapipe_models",
+    name = "mediapipe_assets",
     srcs = [
+        "//mediapipe_api/graphs/instant_motion_tracking:assets",
         "@com_google_mediapipe//mediapipe/models:face_detection_front.tflite",
         "@com_google_mediapipe//mediapipe/models:face_detection_front_labelmap.txt",
         "@com_google_mediapipe//mediapipe/models:face_landmark.tflite",

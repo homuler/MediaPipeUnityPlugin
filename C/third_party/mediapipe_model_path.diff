@@ -1,3 +1,238 @@
+diff --git a/mediapipe/graphs/object_detection_3d/calculators/BUILD b/mediapipe/graphs/object_detection_3d/calculators/BUILD
+index 5550128..a4f3154 100644
+--- a/mediapipe/graphs/object_detection_3d/calculators/BUILD
++++ b/mediapipe/graphs/object_detection_3d/calculators/BUILD
+@@ -68,7 +68,7 @@ cc_library(
+         "//mediapipe/gpu:gl_calculator_helper",
+         "//mediapipe/gpu:shader_util",
+         "//mediapipe/modules/objectron/calculators:camera_parameters_cc_proto",
+-        "//mediapipe/util/android:asset_manager_util",
++        "//mediapipe/util:resource_util",
+     ],
+     alwayslink = 1,
+ )
+diff --git a/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc b/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
+index b9f1346..31964c8 100644
+--- a/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
++++ b/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
+@@ -12,12 +12,8 @@
+ // See the License for the specific language governing permissions and
+ // limitations under the License.
+ 
+-#if defined(__ANDROID__)
+-#include "mediapipe/util/android/asset_manager_util.h"
+-#else
+ #include <fstream>
+ #include <iostream>
+-#endif
+ 
+ #include "mediapipe/framework/calculator_framework.h"
+ #include "mediapipe/framework/port/ret_check.h"
+@@ -27,6 +23,7 @@
+ #include "mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.pb.h"
+ #include "mediapipe/graphs/object_detection_3d/calculators/model_matrix.pb.h"
+ #include "mediapipe/modules/objectron/calculators/camera_parameters.pb.h"
++#include "mediapipe/util/resource_util.h";
+ 
+ namespace mediapipe {
+ 
+@@ -40,12 +37,7 @@ namespace {
+ #define GLCHECK(command) command
+ #endif
+ 
+-// For ease of use, we prefer ImageFrame on Android and GpuBuffer otherwise.
+-#if defined(__ANDROID__)
+ typedef ImageFrame AssetTextureFormat;
+-#else
+-typedef GpuBuffer AssetTextureFormat;
+-#endif
+ 
+ enum { ATTRIB_VERTEX, ATTRIB_TEXTURE_POSITION, ATTRIB_NORMAL, NUM_ATTRIBUTES };
+ static const int kNumMatrixEntries = 16;
+@@ -68,12 +60,12 @@ static const float kModelMatrix[] = {0.83704215,  -0.36174262, 0.41049102, 0.0,
+ //   MODEL_MATRICES (TimedModelMatrixProtoList, optional):
+ //     If provided, will set the model matrices for the objects to be rendered
+ //     during future rendering calls.
+-//   TEXTURE (ImageFrame on Android / GpuBuffer on iOS, semi-optional):
++//   TEXTURE (ImageFrame, semi-optional):
+ //     Texture to use with animation file. Texture is REQUIRED to be passed into
+ //     the calculator, but can be passed in as a Side Packet OR Input Stream.
+ //
+ // Input side packets:
+-//   TEXTURE (ImageFrame on Android / GpuBuffer on iOS, semi-optional):
++//   TEXTURE (ImageFrame, semi-optional):
+ //     Texture to use with animation file. Texture is REQUIRED to be passed into
+ //     the calculator, but can be passed in as a Side Packet OR Input Stream.
+ //   ANIMATION_ASSET (String, required):
+@@ -185,15 +177,7 @@ class GlAnimationOverlayCalculator : public CalculatorBase {
+                                     TriangleMesh *triangle_mesh);
+   void Normalize3f(float input[3]);
+ 
+-#if !defined(__ANDROID__)
+-  // Asset loading routine for all non-Android platforms.
+   bool LoadAnimation(const std::string &filename);
+-#else
+-  // Asset loading for all Android platforms.
+-  bool LoadAnimationAndroid(const std::string &filename,
+-                            std::vector<TriangleMesh> *mesh);
+-  bool ReadBytesFromAsset(AAsset *asset, void *buffer, int num_bytes_to_read);
+-#endif
+ };
+ REGISTER_CALCULATOR(GlAnimationOverlayCalculator);
+ 
+@@ -332,113 +316,17 @@ void GlAnimationOverlayCalculator::InitializePerspectiveMatrix(
+   perspective_matrix_[14] = 2.0f * z_far * z_near * denom;
+ }
+ 
+-#if defined(__ANDROID__)
+-// Helper function for reading in a specified number of bytes from an Android
+-// asset.  Returns true if successfully reads in all bytes into buffer.
+-bool GlAnimationOverlayCalculator::ReadBytesFromAsset(AAsset *asset,
+-                                                      void *buffer,
+-                                                      int num_bytes_to_read) {
+-  // Most file systems use block sizes of 4KB or 8KB; ideally we'd choose a
+-  // small multiple of the block size for best input streaming performance, so
+-  // we go for a reasobably safe buffer size of 8KB = 8*1024 bytes.
+-  static const int kMaxChunkSize = 8192;
+-
+-  int bytes_left = num_bytes_to_read;
+-  int bytes_read = 1;  // any value > 0 here just to start looping.
+-
+-  // Treat as uint8_t array so we can deal in single byte arithmetic easily.
+-  uint8_t *currBufferIndex = reinterpret_cast<uint8_t *>(buffer);
+-  while (bytes_read > 0 && bytes_left > 0) {
+-    bytes_read = AAsset_read(asset, (void *)currBufferIndex,
+-                             std::min(bytes_left, kMaxChunkSize));
+-    bytes_left -= bytes_read;
+-    currBufferIndex += bytes_read;
+-  }
+-  // At least log any I/O errors encountered.
+-  if (bytes_read < 0) {
+-    LOG(ERROR) << "Error reading from AAsset: " << bytes_read;
+-    return false;
+-  }
+-  if (bytes_left > 0) {
+-    // Reached EOF before reading in specified number of bytes.
+-    LOG(WARNING) << "Reached EOF before reading in specified number of bytes.";
+-    return false;
+-  }
+-  return true;
+-}
+-
+-// The below asset streaming code is Android-only, making use of the platform
+-// JNI helper classes AAssetManager and AAsset.
+-bool GlAnimationOverlayCalculator::LoadAnimationAndroid(
+-    const std::string &filename, std::vector<TriangleMesh> *meshes) {
+-  mediapipe::AssetManager *mediapipe_asset_manager =
+-      Singleton<mediapipe::AssetManager>::get();
+-  AAssetManager *asset_manager = mediapipe_asset_manager->GetAssetManager();
+-  if (!asset_manager) {
+-    LOG(ERROR) << "Failed to access Android asset manager.";
+-    return false;
+-  }
+-
+-  // New read-bytes stuff here!  First we open file for streaming.
+-  AAsset *asset = AAssetManager_open(asset_manager, filename.c_str(),
+-                                     AASSET_MODE_STREAMING);
+-  if (!asset) {
+-    LOG(ERROR) << "Failed to open animation asset: " << filename;
+-    return false;
+-  }
+-
+-  // And now, while we are able to stream in more frames, we do so.
+-  frame_count_ = 0;
+-  int32 lengths[3];
+-  while (ReadBytesFromAsset(asset, (void *)lengths, sizeof(lengths[0]) * 3)) {
+-    // About to start reading the next animation frame.  Stream it in here.
+-    // Each frame stores first the object counts of its three arrays
+-    // (vertices, texture coordinates, triangle indices; respectively), and
+-    // then stores each of those arrays as a byte dump, in order.
+-    meshes->emplace_back();
+-    TriangleMesh &triangle_mesh = meshes->back();
+-    // Try to read in vertices (4-byte floats)
+-    triangle_mesh.vertices.reset(new float[lengths[0]]);
+-    if (!ReadBytesFromAsset(asset, (void *)triangle_mesh.vertices.get(),
+-                            sizeof(float) * lengths[0])) {
+-      LOG(ERROR) << "Failed to read vertices for frame " << frame_count_;
+-      return false;
+-    }
+-    // Try to read in texture coordinates (4-byte floats)
+-    triangle_mesh.texture_coords.reset(new float[lengths[1]]);
+-    if (!ReadBytesFromAsset(asset, (void *)triangle_mesh.texture_coords.get(),
+-                            sizeof(float) * lengths[1])) {
+-      LOG(ERROR) << "Failed to read tex-coords for frame " << frame_count_;
+-      return false;
+-    }
+-    // Try to read in indices (2-byte shorts)
+-    triangle_mesh.index_count = lengths[2];
+-    triangle_mesh.triangle_indices.reset(new int16[lengths[2]]);
+-    if (!ReadBytesFromAsset(asset, (void *)triangle_mesh.triangle_indices.get(),
+-                            sizeof(int16) * lengths[2])) {
+-      LOG(ERROR) << "Failed to read indices for frame " << frame_count_;
+-      return false;
+-    }
+-
+-    // Set the normals for this triangle_mesh
+-    CalculateTriangleMeshNormals(lengths[0], &triangle_mesh);
+-
+-    frame_count_++;
+-  }
+-  AAsset_close(asset);
++bool GlAnimationOverlayCalculator::LoadAnimation(const std::string &filename) {
++  auto status_or_path = mediapipe::PathToResourceAsFile(filename);
+ 
+-  LOG(INFO) << "Finished parsing " << frame_count_ << " animation frames.";
+-  if (meshes->empty()) {
+-    LOG(ERROR) << "No animation frames were parsed!  Erroring out calculator.";
++  if (!status_or_path.ok()) {
++    LOG(ERROR) << "Error resolving asset path: " << filename;
+     return false;
+   }
+-  return true;
+-}
+ 
+-#else  // defined(__ANDROID__)
++  auto path = status_or_path.ConsumeValueOrDie();
++  std::ifstream infile(path.c_str(), std::ifstream::binary);
+ 
+-bool GlAnimationOverlayCalculator::LoadAnimation(const std::string &filename) {
+-  std::ifstream infile(filename.c_str(), std::ifstream::binary);
+   if (!infile) {
+     LOG(ERROR) << "Error opening asset with filename: " << filename;
+     return false;
+@@ -502,8 +390,6 @@ bool GlAnimationOverlayCalculator::LoadAnimation(const std::string &filename) {
+   return true;
+ }
+ 
+-#endif
+-
+ void GlAnimationOverlayCalculator::ComputeAspectRatioAndFovFromCameraParameters(
+     const CameraParametersProto &camera_parameters, float *aspect_ratio,
+     float *vertical_fov_degrees) {
+@@ -553,22 +439,7 @@ void GlAnimationOverlayCalculator::ComputeAspectRatioAndFovFromCameraParameters(
+   // Try to load in the animation asset in a platform-specific manner.
+   const std::string &asset_name =
+       cc->InputSidePackets().Tag("ANIMATION_ASSET").Get<std::string>();
+-  bool loaded_animation = false;
+-#if defined(__ANDROID__)
+-  if (cc->InputSidePackets().HasTag("MASK_ASSET")) {
+-    has_occlusion_mask_ = true;
+-    const std::string &mask_asset_name =
+-        cc->InputSidePackets().Tag("MASK_ASSET").Get<std::string>();
+-    loaded_animation = LoadAnimationAndroid(mask_asset_name, &mask_meshes_);
+-    if (!loaded_animation) {
+-      LOG(ERROR) << "Failed to load mask asset.";
+-      return ::mediapipe::UnknownError("Failed to load mask asset.");
+-    }
+-  }
+-  loaded_animation = LoadAnimationAndroid(asset_name, &triangle_meshes_);
+-#else
+-  loaded_animation = LoadAnimation(asset_name);
+-#endif
++  bool loaded_animation = LoadAnimation(asset_name);
+   if (!loaded_animation) {
+     LOG(ERROR) << "Failed to load animation asset.";
+     return ::mediapipe::UnknownError("Failed to load animation asset.");
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
 index 9347fc0..c942416 100644
 --- a/mediapipe/util/BUILD

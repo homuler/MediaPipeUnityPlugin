@@ -14,10 +14,10 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
   protected Stopwatch stopwatch;
   protected static CalculatorGraph graph;
   protected static GlCalculatorHelper gpuHelper;
+  protected static Timestamp currentTimestamp;
 
 #if UNITY_ANDROID
   static readonly object frameLock = new object();
-  static Timestamp currentTimestamp;
   static TextureFrame currentTextureFrame;
   static IntPtr currentTextureName;
 #endif
@@ -62,13 +62,12 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
     return StartRun();
   }
 
-  public Status PushInput(TextureFrame textureFrame) {
-    var timestamp = GetCurrentTimestamp();
+  public virtual Status PushInput(TextureFrame textureFrame) {
+    currentTimestamp = GetCurrentTimestamp();
 
 #if UNITY_ANDROID && !UNITY_EDITOR
     if (IsGpuEnabled()) {
       lock (frameLock) {
-        currentTimestamp = timestamp;
         currentTextureFrame = textureFrame;
         currentTextureName = textureFrame.GetNativeTexturePtr();
 
@@ -80,7 +79,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
     var imageFrame = new ImageFrame(
       ImageFormat.Format.SRGBA, textureFrame.width, textureFrame.height, 4 * textureFrame.width, textureFrame.GetRawNativeByteArray());
     textureFrame.Release();
-    var packet = new ImageFramePacket(imageFrame, timestamp);
+    var packet = new ImageFramePacket(imageFrame, currentTimestamp);
 
     return graph.AddPacketToInputStream(inputStream, packet);
   }
@@ -170,7 +169,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
     return gpuConfig;
   }
 
-  Timestamp GetCurrentTimestamp() {
+  protected Timestamp GetCurrentTimestamp() {
     if (stopwatch == null || !stopwatch.IsRunning) {
       return Timestamp.Unset();
     }
