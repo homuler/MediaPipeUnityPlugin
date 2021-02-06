@@ -31,7 +31,7 @@ namespace Mediapipe {
       get { return sharedPtrHandle == null ? IntPtr.Zero : sharedPtrHandle.mpPtr; }
     }
 
-#if UNITY_STANDALONE_LINUX || UNITY_ANDROID
+#if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_ANDROID
     public IntPtr eglDisplay {
       get { return SafeNativeMethods.mp_GlContext__egl_display(mpPtr); }
     }
@@ -43,7 +43,10 @@ namespace Mediapipe {
     public IntPtr eglContext {
       get { return SafeNativeMethods.mp_GlContext__egl_context(mpPtr); }
     }
-#elif UNITY_STANDALONE_OSX
+#endif
+
+#if UNITY_STANDALONE_OSX
+    // NOTE: On macOS, native libs cannot be built with GPU enabled, so it cannot be used actually.
     public IntPtr nsglContext {
       get { return SafeNativeMethods.mp_GlContext__nsgl_context(mpPtr); }
     }

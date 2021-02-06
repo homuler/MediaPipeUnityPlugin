@@ -1,6 +1,7 @@
+#if UNITY_STANDALONE_LINUX || UNITY_ANDROID
 using System;
 
-#if UNITY_STANDALONE_LINUX || UNITY_ANDROID
+// defined on Linux, but usefull only with OpenGL ES
 namespace Mediapipe {
   public class EglSurfaceHolderPacket : Packet<EglSurfaceHolder> {
     public EglSurfaceHolderPacket() : base() {}

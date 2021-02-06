@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace Mediapipe {
   internal static partial class SafeNativeMethods {
-#if UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || UNITY_ANDROID
+#if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_ANDROID
     [Pure, DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern IntPtr mp_GpuBuffer__GetGlTextureBufferSharedPtr(IntPtr gpuBuffer);
 #endif

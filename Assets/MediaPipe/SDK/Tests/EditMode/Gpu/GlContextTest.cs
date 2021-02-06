@@ -40,7 +40,7 @@ namespace Tests {
     public void ShouldReturnProperties() {
       var glContext = GetGlContext();
 
-#if UNITY_STANDALONE_LINUX || UNITY_ANDROID
+#if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_ANDROID
       Assert.AreNotEqual(glContext.eglDisplay, IntPtr.Zero);
       Assert.AreNotEqual(glContext.eglConfig, IntPtr.Zero);
       Assert.AreNotEqual(glContext.eglContext, IntPtr.Zero);

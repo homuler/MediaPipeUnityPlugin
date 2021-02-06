@@ -60,7 +60,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
   public Status PushInput(TextureFrame textureFrame) {
     var timestamp = GetCurrentTimestamp();
 
-#if !UNITY_ANDROID
+#if UNITY_EDITOR || !UNITY_ANDROID
     var imageFrame = new ImageFrame(
       ImageFormat.Format.SRGBA, textureFrame.width, textureFrame.height, 4 * textureFrame.width, textureFrame.GetRawNativeByteArray());
     textureFrame.Release();

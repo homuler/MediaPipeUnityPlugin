@@ -143,7 +143,7 @@ namespace Tests {
       glCalculatorHelper.InitializeForTest(GpuResources.Create().ConsumeValueOrDie());
 
       var glContext = glCalculatorHelper.GetGlContext();
-#if UNITY_STANDALONE_LINUX || UNITY_ANDROID
+#if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_ANDROID
       Assert.AreNotEqual(glContext.eglContext, IntPtr.Zero);
 #elif UNITY_STANDALONE_OSX
       Assert.AreNotEqual(glContext.nsglContext, IntPtr.Zero);

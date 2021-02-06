@@ -116,7 +116,7 @@ public class WebCamScreenController : MonoBehaviour {
   public void DrawScreen(GpuBuffer gpuBuffer) {
     if (!isWebCamReady) { return; }
 
-#if UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || UNITY_ANDROID
+#if (UNITY_STANDALONE_LINUX || UNITY_ANDROID) && !UNITY_EDITOR_OSX && !UNITY_EDITOR_WIN
     // TODO: create an external texture
     outputTexture.UpdateExternalTexture((IntPtr)gpuBuffer.GetGlTextureBuffer().Name());
 #else

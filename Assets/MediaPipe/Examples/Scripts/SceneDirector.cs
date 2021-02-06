@@ -28,11 +28,11 @@ public class SceneDirector : MonoBehaviour {
   bool IsAssetLoadFailed = false;
 
   void OnEnable() {
-    // Uncomment for debugging
-    // System.Environment.SetEnvironmentVariable("GLOG_v", "2");
+    // for debugging
+    System.Environment.SetEnvironmentVariable("GLOG_v", "2");
   }
 
-#if UNITY_ANDROID
+#if (UNITY_STANDALONE_LINUX || UNITY_ANDROID) && !UNITY_EDITOR_OSX && !UNITY_EDITOR_WIN
   [AOT.MonoPInvokeCallback(typeof(PluginCallback))]
   static void GetCurrentContext(int eventId) {
     currentContext = Egl.getCurrentContext();
@@ -42,7 +42,7 @@ public class SceneDirector : MonoBehaviour {
   async void Start() {
     webCamScreen = GameObject.Find("WebCamScreen");
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR_OSX && !UNITY_EDITOR_WIN
     if (useGPU) {
       PluginCallback callback = GetCurrentContext;
 
