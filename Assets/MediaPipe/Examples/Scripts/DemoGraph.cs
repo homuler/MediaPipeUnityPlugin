@@ -27,10 +27,9 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
       graph.Dispose();
       graph = null;
     }
-    if (gpuHelper != null) {
-      gpuHelper.Dispose();
-      gpuHelper = null;
-    }
+
+    gpuHelper = null;
+
     if (stopwatch != null && stopwatch.IsRunning) {
       stopwatch.Stop();
     }
