@@ -44,7 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f12c18f4e3ffe8db8e000322288d324, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  config: {fileID: 4900000, guid: 329a3f95713299bb5b816d6489f5eec8, type: 3}
+  gpuConfig: {fileID: 4900000, guid: 329a3f95713299bb5b816d6489f5eec8, type: 3}
+  cpuConfig: {fileID: 4900000, guid: 1c3b46a55d41ad93ea89e4d7393ee17b, type: 3}
+  androidConfig: {fileID: 4900000, guid: fc128c889293412cb938ac01a3e3b639, type: 3}
   detectIris: 1
 --- !u!114 &-5097301488528543352
 MonoBehaviour:

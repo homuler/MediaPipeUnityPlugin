@@ -7,6 +7,10 @@ public class HairSegmentationGraph : DemoGraph {
   private ImageFramePacket hairMaskPacket;
 
   public override Status StartRun() {
+    if (!IsGpuEnabled()) {
+      return Status.FailedPrecondition("HairSegmentation is not supported on CPU");
+    }
+
     hairMaskStreamPoller = graph.AddOutputStreamPoller<ImageFrame>(hairMaskStream).ConsumeValueOrDie();
     hairMaskPacket = new ImageFramePacket();
 

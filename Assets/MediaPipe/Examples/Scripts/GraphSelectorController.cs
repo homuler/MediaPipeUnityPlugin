@@ -37,7 +37,9 @@ public class GraphSelectorController : MonoBehaviour {
     AddGraph("Hand Tracking", handTrackingGraph);
     AddGraph("Pose Tracking", poseTrackingGraph);
     AddGraph("Holistic", holisticGraph);
+#if !UNITY_IOS
     AddGraph("Hair Segmentation", hairSegmentationGraph);
+#endif
     AddGraph("Object Detection", objectDetectionGraph);
     AddGraph("Box Tracking", boxTrackingGraph);
     AddGraph("Official Demo", officialDemoGraph);

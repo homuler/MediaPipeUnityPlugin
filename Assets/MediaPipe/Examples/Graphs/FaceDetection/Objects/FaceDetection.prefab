@@ -9,9 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5680418270291803703}
-  - component: {fileID: -5853697970282788592}
+  - component: {fileID: 5680418270291803700}
+  - component: {fileID: 5680418270291803702}
   m_Layer: 0
-  m_Name: OfficialDemoDesktopGPU
+  m_Name: FaceDetectionDesktopGPU
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31,7 +32,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-5853697970282788592
+--- !u!114 &5680418270291803700
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,7 +41,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 5680418270291803701}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e32f6ff63c1300ae0bc35516f44a9523, type: 3}
+  m_Script: {fileID: 11500000, guid: 73379cd9f5db55132a18fb41b00ec7a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  config: {fileID: 4900000, guid: 6c23f05384f6f0bb29afd72e99344a72, type: 3}
+  gpuConfig: {fileID: 4900000, guid: ea3b02438eeb2743c8ca34c733a1ab8a, type: 3}
+  cpuConfig: {fileID: 4900000, guid: 51972370b918e54f78553d2d36c8e40a, type: 3}
+  androidConfig: {fileID: 4900000, guid: 754b23d93f14744ee82f1115e5afdb37, type: 3}
+--- !u!114 &5680418270291803702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5680418270291803701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab3c6e30699452d519c7962cd9b9cb7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  annotationPrefab: {fileID: 1405412484651109527, guid: 3779864e7ead10e31b03fc362f4746de,
+    type: 3}
+  DefaultMaxSize: 1

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2128668153064451319
+--- !u!1 &1035096535769674169
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,23 +8,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2128668153064451317}
-  - component: {fileID: 2128668153064451318}
-  - component: {fileID: 3238636675058515084}
+  - component: {fileID: 1035096535769674171}
+  - component: {fileID: 1035096535769674168}
+  - component: {fileID: 1035096535769674170}
   m_Layer: 0
-  m_Name: MediapipeGraph
+  m_Name: FaceMeshDesktopGPU
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2128668153064451317
+--- !u!4 &1035096535769674171
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2128668153064451319}
+  m_GameObject: {fileID: 1035096535769674169}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -32,33 +32,37 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2128668153064451318
+--- !u!114 &1035096535769674168
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2128668153064451319}
+  m_GameObject: {fileID: 1035096535769674169}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abbc7949365b640f6a456f280c4e6ff3, type: 3}
+  m_Script: {fileID: 11500000, guid: 860c2553189c962f597b1b7dc1ee4c82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  config: {fileID: 4900000, guid: b577f637ebbd98034a6ed0c0536dfba2, type: 3}
-  useGPU: 1
---- !u!114 &3238636675058515084
+  gpuConfig: {fileID: 4900000, guid: 8b326cfb74fdb4bd2aed3c30da7cab5b, type: 3}
+  cpuConfig: {fileID: 4900000, guid: 9417639997912183bb3f259506111412, type: 3}
+  androidConfig: {fileID: 4900000, guid: daf329e7d9e05b86e87226eba2dd3f32, type: 3}
+  numFaces: 3
+--- !u!114 &1035096535769674170
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2128668153064451319}
+  m_GameObject: {fileID: 1035096535769674169}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 178c0f33a7c561b3db556cab0a69aa75, type: 3}
+  m_Script: {fileID: 11500000, guid: 1df39cf5dafcd13f28ae9acb505037f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poseLandmarkListPrefab: {fileID: 2712965234984282611, guid: 52f3167d117fe05eb8f7ae8c84e4d403,
+  faceLandmarkListsPrefab: {fileID: 3551659902236151914, guid: 56ae305d0894e67e0a5f8888194e52b1,
     type: 3}
-  poseDetectionPrefab: {fileID: 1405412484651109527, guid: 3779864e7ead10e31b03fc362f4746de,
+  faceRectsPrefab: {fileID: 7813225621568144509, guid: 803037b9800e4cb658907a9a16875cd5,
+    type: 3}
+  faceDetectionsPrefab: {fileID: 6957250898008990224, guid: 8d335567a8544a10e98a42b234b64b13,
     type: 3}

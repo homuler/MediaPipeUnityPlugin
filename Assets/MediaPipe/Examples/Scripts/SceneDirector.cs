@@ -40,10 +40,18 @@ public class SceneDirector : MonoBehaviour {
 #endif
 
   async void Start() {
+#if UNITY_EDITOR_OSX || UNITY_EDITOR_WIN
+  #if UNITY_STANDALONE
+    if (useGPU) {
+      Debug.LogWarning("PC Standalone on macOS or Windows does not support GPU. Toggle `Use GPU` off from Inspector > SceneDirector");
+    }
+  #endif
+#endif
+
     webCamScreen = GameObject.Find("WebCamScreen");
 
-#if UNITY_ANDROID && !UNITY_EDITOR_OSX && !UNITY_EDITOR_WIN
-    if (useGPU) {
+#if UNITY_ANDROID
+    if (IsGpuEnabled()) {
       PluginCallback callback = GetCurrentContext;
 
       var fp = Marshal.GetFunctionPointerForDelegate(callback);
@@ -114,7 +122,7 @@ public class SceneDirector : MonoBehaviour {
       return;
     }
 
-    if (useGPU) {
+    if (IsGpuEnabled()) {
       SetupGpuResources();
     }
     graphRunner = StartCoroutine(RunGraph());
@@ -175,7 +183,7 @@ public class SceneDirector : MonoBehaviour {
     graphContainer = Instantiate(graphPrefab);
     var graph = graphContainer.GetComponent<IDemoGraph<TextureFrame>>();
 
-    if (useGPU) {
+    if (IsGpuEnabled()) {
       graph.Initialize(gpuResources, gpuHelper);
     } else {
       graph.Initialize();
@@ -233,5 +241,13 @@ public class SceneDirector : MonoBehaviour {
 
       return isWebCamPlaying || waitFrame < 0;
     });
+  }
+
+  bool IsGpuEnabled() {
+#if UNITY_EDITOR_OSX || UNITY_EDITOR_WIN
+    return false;
+#else
+    return useGPU;
+#endif
   }
 }

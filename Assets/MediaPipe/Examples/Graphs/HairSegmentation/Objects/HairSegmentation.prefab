@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6213750851844926660}
   - component: {fileID: 2306922753284466125}
   m_Layer: 0
-  m_Name: HairSegmentationGraphGPU 1
+  m_Name: HairSegmentationDesktopGPU
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,7 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c21ccbfc5c613a43f849b9401189180f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  config: {fileID: 4900000, guid: c2115d71bd8a07de0a0f98ecbdb007b8, type: 3}
+  gpuConfig: {fileID: 4900000, guid: c2115d71bd8a07de0a0f98ecbdb007b8, type: 3}
+  cpuConfig: {fileID: 0}
+  androidConfig: {fileID: 4900000, guid: 06473cc1120ff407c97583ea0ab880b6, type: 3}
 --- !u!114 &2306922753284466125
 MonoBehaviour:
   m_ObjectHideFlags: 0

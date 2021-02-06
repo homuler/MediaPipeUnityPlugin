@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 453346265376069446}
   - component: {fileID: 7868679978319864610}
   m_Layer: 0
-  m_Name: MediapipeGraph
+  m_Name: IrisTrackingDesktopGPU
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,7 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c1a93fd37e944d759d013f6bd3d0db8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  config: {fileID: 4900000, guid: a4a40d2e9a6fc9988bbe1709d68feca3, type: 3}
+  gpuConfig: {fileID: 4900000, guid: a4a40d2e9a6fc9988bbe1709d68feca3, type: 3}
+  cpuConfig: {fileID: 4900000, guid: 89fdd5fb61387dfa6820a7eac95ebc76, type: 3}
+  androidConfig: {fileID: 4900000, guid: e6b68ac4530cf44f68837f8a7a31d1cf, type: 3}
 --- !u!114 &7868679978319864610
 MonoBehaviour:
   m_ObjectHideFlags: 0

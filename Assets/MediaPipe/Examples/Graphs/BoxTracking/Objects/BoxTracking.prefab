@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &4537251101492146823
+--- !u!1001 &1746814465944258415
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -11,11 +11,31 @@ PrefabInstance:
         type: 3}
       propertyPath: config
       value: 
-      objectReference: {fileID: 4900000, guid: 56381b940c26918b59d9eb15f793d01c, type: 3}
+      objectReference: {fileID: 4900000, guid: 40b02bc7786abbb10995a02065f86ee8, type: 3}
+    - target: {fileID: -5853697970282788592, guid: fc49226dfd774c66faf8a3dd6be53d0f,
+        type: 3}
+      propertyPath: cpuConfig
+      value: 
+      objectReference: {fileID: 4900000, guid: 26045758a7804d813a7663843e829ee2, type: 3}
+    - target: {fileID: -5853697970282788592, guid: fc49226dfd774c66faf8a3dd6be53d0f,
+        type: 3}
+      propertyPath: gpuConfig
+      value: 
+      objectReference: {fileID: 4900000, guid: 40b02bc7786abbb10995a02065f86ee8, type: 3}
+    - target: {fileID: -5853697970282788592, guid: fc49226dfd774c66faf8a3dd6be53d0f,
+        type: 3}
+      propertyPath: androidConfig
+      value: 
+      objectReference: {fileID: 4900000, guid: 05b9bdfe04f2582629927f10db8a53e8, type: 3}
+    - target: {fileID: -5853697970282788592, guid: fc49226dfd774c66faf8a3dd6be53d0f,
+        type: 3}
+      propertyPath: desktopConfig
+      value: 
+      objectReference: {fileID: 4900000, guid: 40b02bc7786abbb10995a02065f86ee8, type: 3}
     - target: {fileID: 5680418270291803701, guid: fc49226dfd774c66faf8a3dd6be53d0f,
         type: 3}
       propertyPath: m_Name
-      value: OfficialDemoDesktopCPU
+      value: BoxTrackingDesktopGPU
       objectReference: {fileID: 0}
     - target: {fileID: 5680418270291803703, guid: fc49226dfd774c66faf8a3dd6be53d0f,
         type: 3}

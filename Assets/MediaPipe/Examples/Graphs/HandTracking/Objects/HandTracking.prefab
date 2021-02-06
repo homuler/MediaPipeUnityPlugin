@@ -44,7 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f52857899a14754edac864727619f5d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  config: {fileID: 4900000, guid: 7b96952b98da1450085b4737128613d6, type: 3}
+  gpuConfig: {fileID: 4900000, guid: 7b96952b98da1450085b4737128613d6, type: 3}
+  cpuConfig: {fileID: 4900000, guid: 99e0cefbb7dcf514fb1d81e425187d0d, type: 3}
+  androidConfig: {fileID: 4900000, guid: 25d031e0ec16443199a6986b78a86ee1, type: 3}
 --- !u!114 &8479715968756539202
 MonoBehaviour:
   m_ObjectHideFlags: 0

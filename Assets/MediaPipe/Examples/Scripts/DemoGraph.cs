@@ -6,7 +6,9 @@ using UnityEngine;
 using Stopwatch = System.Diagnostics.Stopwatch;
 
 public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
-  [SerializeField] protected TextAsset config = null;
+  [SerializeField] protected TextAsset gpuConfig = null;
+  [SerializeField] protected TextAsset cpuConfig = null;
+  [SerializeField] protected TextAsset androidConfig = null;
 
   protected const string inputStream = "input_video";
   protected Stopwatch stopwatch;
@@ -36,19 +38,22 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
   }
 
   public virtual void Initialize() {
+    stopwatch = new Stopwatch();
+    var config = GetConfig();
+
     if (config == null) {
-      throw new InvalidOperationException("config is missing");
+      Debug.LogError("config is missing");
+      return;
     }
 
     graph = new CalculatorGraph(config.text);
-    stopwatch = new Stopwatch();
   }
 
   public void Initialize(GpuResources gpuResources, GlCalculatorHelper gpuHelper) {
-    this.Initialize();
-
-    graph.SetGpuResources(gpuResources).AssertOk();
     DemoGraph.gpuHelper = gpuHelper;
+
+    this.Initialize();
+    graph?.SetGpuResources(gpuResources).AssertOk();
   }
 
   public abstract Status StartRun();
@@ -60,22 +65,24 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
   public Status PushInput(TextureFrame textureFrame) {
     var timestamp = GetCurrentTimestamp();
 
-#if UNITY_EDITOR || !UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
+    if (IsGpuEnabled()) {
+      lock (frameLock) {
+        currentTimestamp = timestamp;
+        currentTextureFrame = textureFrame;
+        currentTextureName = textureFrame.GetNativeTexturePtr();
+
+        return gpuHelper.RunInGlContext(PushInputInGlContext);
+      }
+    }
+#endif
+
     var imageFrame = new ImageFrame(
       ImageFormat.Format.SRGBA, textureFrame.width, textureFrame.height, 4 * textureFrame.width, textureFrame.GetRawNativeByteArray());
     textureFrame.Release();
     var packet = new ImageFramePacket(imageFrame, timestamp);
 
     return graph.AddPacketToInputStream(inputStream, packet);
-#else
-    lock (frameLock) {
-      currentTimestamp = timestamp;
-      currentTextureFrame = textureFrame;
-      currentTextureName = textureFrame.GetNativeTexturePtr();
-
-      return gpuHelper.RunInGlContext(PushInputInGlContext);
-    }
-#endif
   }
 
 #if UNITY_ANDROID
@@ -148,6 +155,19 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
 
   protected bool IsGpuEnabled() {
     return gpuHelper != null;
+  }
+
+  protected TextAsset GetConfig() {
+    if (!IsGpuEnabled()) {
+      return cpuConfig;
+    }
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+    if (androidConfig != null) {
+      return androidConfig;
+    }
+#endif
+    return gpuConfig;
   }
 
   Timestamp GetCurrentTimestamp() {

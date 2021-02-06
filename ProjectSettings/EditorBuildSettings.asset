@@ -6,12 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/MediaPipe/Examples/Scenes/DesktopGPU.unity
+    path: Assets/MediaPipe/Examples/Scenes/DesktopDemo.unity
     guid: 01636efed5795b70caad55b3515b23ac
-  - enabled: 0
-    path: Assets/MediaPipe/Examples/Scenes/Android.unity
-    guid: e9f419ccdddb94da3b0f97ba3a98de82
-  - enabled: 0
-    path: Assets/MediaPipe/Examples/Scenes/iOS.unity
-    guid: d304f9fbed87e44b1b425268156cdbad
   m_configObjects: {}
