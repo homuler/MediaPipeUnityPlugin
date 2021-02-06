@@ -22,9 +22,15 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
 
   protected virtual void OnDestroy() {
     Stop();
-    graph = null;
-    gpuHelper = null;
 
+    if (graph != null) {
+      graph.Dispose();
+      graph = null;
+    }
+    if (gpuHelper != null) {
+      gpuHelper.Dispose();
+      gpuHelper = null;
+    }
     if (stopwatch != null && stopwatch.IsRunning) {
       stopwatch.Stop();
     }
