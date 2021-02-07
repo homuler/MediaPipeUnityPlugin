@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.3](https://github.com/homuler/MediapipeUnityPlugin/compare/v0.4.2...v0.4.3) (2021-02-07)
+
+
+### Features
+
+* Holistic with iris ([0bf2bdd](https://github.com/homuler/MediapipeUnityPlugin/commit/0bf2bddf9e98fcc02ccc7bc63f05536da05eb487))
+
+
+### Bug Fixes
+
+* **example:** request user permission before searching webcam devices ([9954a52](https://github.com/homuler/MediapipeUnityPlugin/commit/9954a5264e7d9bde3f80a915de28582f99b69056))
+* add missing attributes ([683b88f](https://github.com/homuler/MediapipeUnityPlugin/commit/683b88f1906befc98c1e3ea30cfb2afd69c49cd1))
+* **example:** stop disposing gpu_helper ([94deaba](https://github.com/homuler/MediapipeUnityPlugin/commit/94deaba0599cd8726711fcc37350d1fe1f66099c))
+* **example:** Unity Editor hangs after exiting play mode ([6cc0ed1](https://github.com/homuler/MediapipeUnityPlugin/commit/6cc0ed15ee74447cf651b76f01cb9bbe6bfece4b))
+* correct compilation conditions ([b787ee3](https://github.com/homuler/MediapipeUnityPlugin/commit/b787ee3f4131fd527ed6d5c6f10592ee00a83115))
+* standalone executable does not shut down ([85c77aa](https://github.com/homuler/MediapipeUnityPlugin/commit/85c77aa079aa18233f422503e9b457a762233212))
+
 ### [0.4.2](https://github.com/homuler/MediapipeUnityPlugin/compare/v0.4.1...v0.4.2) (2021-01-30)
 
 
