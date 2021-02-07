@@ -81,7 +81,6 @@ output_stream: ""out""
       Assert.True(status.ok);
     }
 
-
     [Test]
     public void Initialize_ShouldReturnInternalError_When_CalledWithConfigAndSidePacket_And_ConfigIsSet() {
       var graph = new CalculatorGraph(validConfigText);
@@ -97,25 +96,25 @@ output_stream: ""out""
     #region lifecycle
     [Test]
     public void LifecycleMethods_ShouldControlGraphLifeCycle() {
-      var graph = new CalculatorGraph(validConfigText);
+      using (var graph = new CalculatorGraph(validConfigText)) {
+        Assert.True(graph.StartRun().ok);
+        Assert.False(graph.GraphInputStreamsClosed());
 
-      Assert.True(graph.StartRun().ok);
-      Assert.False(graph.GraphInputStreamsClosed());
-
-      Assert.True(graph.WaitUntilIdle().ok);
-      Assert.True(graph.CloseAllPacketSources().ok);
-      Assert.True(graph.GraphInputStreamsClosed());
-      Assert.True(graph.WaitUntilDone().ok);
-      Assert.False(graph.HasError());
+        Assert.True(graph.WaitUntilIdle().ok);
+        Assert.True(graph.CloseAllPacketSources().ok);
+        Assert.True(graph.GraphInputStreamsClosed());
+        Assert.True(graph.WaitUntilDone().ok);
+        Assert.False(graph.HasError());
+      }
     }
 
     [Test]
     public void Cancel_ShouldCancelGraph() {
-      var graph = new CalculatorGraph(validConfigText);
-
-      Assert.True(graph.StartRun().ok);
-      graph.Cancel();
-      Assert.AreEqual(graph.WaitUntilDone().code, Status.StatusCode.Cancelled);
+      using (var graph = new CalculatorGraph(validConfigText)) {
+        Assert.True(graph.StartRun().ok);
+        graph.Cancel();
+        Assert.AreEqual(graph.WaitUntilDone().code, Status.StatusCode.Cancelled);
+      }
     }
     #endregion
   }
