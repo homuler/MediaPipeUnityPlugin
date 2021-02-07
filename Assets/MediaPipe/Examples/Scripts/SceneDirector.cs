@@ -29,7 +29,7 @@ public class SceneDirector : MonoBehaviour {
 
   void OnEnable() {
     // for debugging
-    System.Environment.SetEnvironmentVariable("GLOG_v", "2");
+    // System.Environment.SetEnvironmentVariable("GLOG_v", "2");
   }
 
 #if (UNITY_STANDALONE_LINUX || UNITY_ANDROID) && !UNITY_EDITOR_OSX && !UNITY_EDITOR_WIN
@@ -43,7 +43,7 @@ public class SceneDirector : MonoBehaviour {
 #if UNITY_EDITOR_OSX || UNITY_EDITOR_WIN
   #if UNITY_STANDALONE
     if (useGPU) {
-      Debug.LogWarning("PC Standalone on macOS or Windows does not support GPU. Toggle `Use GPU` off from Inspector > SceneDirector");
+      Debug.LogWarning("PC Standalone on macOS or Windows does not support GPU. Uncheck `Use GPU` from the Inspector window (SceneDirector).");
     }
   #endif
 #endif

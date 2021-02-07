@@ -76,34 +76,38 @@ make install
 
 ## Run example scenes
 ### UnityEditor
-In UnityEditor, you can run example scenes after running `make gpu/cpu` and `make install`.
+On UnityEditor, you can run example scenes after running `make gpu/cpu` and `make install`.
+Note that you need to run those commands even if you have run `make android_arm64` or `make ios_arm64`.
 
 ### Desktop
+If you'd like to run graphs on CPU, uncheck `Use GPU` from the inspector window.
+![scene-director-use-gpu](https://user-images.githubusercontent.com/4690128/107133987-4f51b180-6931-11eb-8a75-4993a5c70cc1.png)
 To include model files in the package, it is neccessary to build an AssetBundle before building the app.
 You can build it by clicking **Assets > Build AssetBundles** from the menu.\
 The AssetBundle file will be created under `Assets/StreamingAssets`.
 
 ### Android
 See [Desktop](#Desktop) to build AssetBundles.\
-When building, select **only** `Android` scene in `Scenes In Build` and set Packet Name (**Player Settings > Player > Other Settings**).
-
 If you prefer, model files can be included in `mediapipe_android.aar` instead, and in that case, skip the AssetBundle build step.
 
 ### iOS
 See [Desktop](#Desktop) to build AssetBundles.\
-When building, select **only** `iOS` scene in `Scenes In Build` and set Bundle Identifier (**Player Settings > Player > Other Settings**).
 
 ## Example Graphs
-- Hello World!
-- Face Detection (on CPU/GPU)
-- Face Mesh (on CPU/GPU)
-- Iris Tracking (on CPU/GPU)
-- Hand Tracking (on CPU/GPU)
-- Pose Tracking (on CPU/GPU)
-- Holistic (with Iris) (on CPU/GPU)
-- Hair Segmentation (on GPU)
-- Object Detection (on CPU/GPU)
-- Official Demo (on CPU/GPU) (default is Hand Tracking)
+[]()                    | Android | iOS | Linux (GPU) | Linux (CPU) | macOS | Windows
+:---------------------: | :-----: | :-: | :---------: | :---------: | :---: | :------:
+Face Detection          | ✅       | ✅   | ✅           | ✅           | ✅     | ✅
+Face Mesh               | ✅       | ✅   | ✅           | ✅           | ✅     | ✅
+Iris                    | ✅       | ✅   | ✅           | ✅           | ✅     | ✅
+Hands                   | ✅       | ✅   | ✅           | ✅           | ✅     | ✅
+Pose                    | ✅       | ✅   | ✅           | ✅           | ✅     | ✅
+Holistic (with iris)    | ✅       | ✅   | ✅           | ✅           | ✅     | ✅
+Hair Segmentationon     | ✅       |     | ✅           |             |       |
+Object Detectionn       | ✅       | ✅   | ✅           | ✅           | ✅     | ✅
+Box Tracking            | ✅       | ✅   | ✅           | ✅           | ✅     | 🔺
+Instant Motion Tracking |         |     |             |             |       |
+Objectron               |         |     |             |             |       |
+KNIFT                   |         |     |             |             |       |
 
 ## Troubleshooting
 ### DllNotFoundException: mediapipe_c
@@ -133,6 +137,7 @@ MediaPipe logs will be output to log files (e.g. `Editor.log`).
 
 ## TODO
 - [ ] Prepare API Documents
+- [ ] Implement cross-platform APIs to send images to MediaPipe
 - [ ] use CVPixelBuffer on iOS
 - [ ] Box Tracking (on CPU/GPU)
 - [ ] Instant Motion Tracking
