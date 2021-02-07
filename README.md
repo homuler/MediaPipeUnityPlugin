@@ -8,90 +8,6 @@ This is a Unity (2019.4.18f1) Plugin to use MediaPipe.
 - [x] macOS (CPU only)
 - [x] Windows 10 (CPU only, experimental)
 
-## Prerequisites
-### MediaPipe
-Please be sure to install required packages and check if you can run the official demos on your machine.
-
-### OpenCV
-By default, it is assumed that OpenCV 3 is installed under `/usr` (e.g. `/usr/lib/libopencv_core.so`).
-If your version or path is different, please edit [C/third_party/opencv_linux.BUILD](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/third_party/opencv_linux.BUILD) and [C/WORKSPACE](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/WORKSPACE).
-
-### .NET Core
-This project uses protocol buffers to communicate with MediaPipe, and it is necessary to install .NET Core SDK(3.x) and .NET Core runtime 2.1 to build `Google.Protobuf.dll`.
-
-## Build
-1. Clone the repository
-    ```sh
-    git clone https://github.com/homuler/MediaPipeUnityPlugin.git
-    cd MediaPipeUnityPlugin
-    ```
-
-2. Build native libraries
-    ### Desktop GPU (Linux only)
-    ```sh
-    make
-    make install
-    ```
-
-    ### Desktop CPU (Linux, macOS)
-    ```sh
-    make cpu
-    make install
-    ```
-
-    ### Windows 10
-    ```sh
-    # If `python.exe` is installed at 'C:\path\to\python.exe'
-    make cpu PYTHON_BIN_PATH="C://path//to//python.exe"
-    make install
-    ```
-
-    ### Android
-    ```sh
-    # ARM64
-    make android_arm64
-    make install
-
-    # ARMv7
-    make android_arm
-    make install
-    ```
-
-    ### iOS
-    ```sh
-    make ios_arm64
-    make install
-    ```
-
-Note that you cannot build libraries for multiple platforms at the same time,
-because the built result will be overwritten.\
-If you'd like to build `libmediapipe_c.so` and `mediapipe_android.aar`, please `make` them individually.
-```sh
-make gpu
-make install
-
-make android_arm
-make install
-```
-
-## Run example scenes
-### UnityEditor
-On UnityEditor, you can run example scenes after running `make gpu/cpu` and `make install`.
-Note that you need to run those commands even if you have run `make android_arm64` or `make ios_arm64`.
-
-### Desktop
-If you'd like to run graphs on CPU, uncheck `Use GPU` from the inspector window.
-![scene-director-use-gpu](https://user-images.githubusercontent.com/4690128/107133987-4f51b180-6931-11eb-8a75-4993a5c70cc1.png)
-To include model files in the package, it is neccessary to build an AssetBundle before building the app.
-You can build it by clicking **Assets > Build AssetBundles** from the menu.\
-The AssetBundle file will be created under `Assets/StreamingAssets`.
-
-### Android
-See [Desktop](#Desktop) to build AssetBundles.\
-If you prefer, model files can be included in `mediapipe_android.aar` instead, and in that case, skip the AssetBundle build step.
-
-### iOS
-See [Desktop](#Desktop) to build AssetBundles.\
 
 ## Example Graphs
 []()                    | Android | iOS | Linux (GPU) | Linux (CPU) | macOS | Windows
@@ -108,6 +24,127 @@ Box Tracking            | ✅       | ✅   | ✅           | ✅           | �
 Instant Motion Tracking |         |     |             |             |       |
 Objectron               |         |     |             |             |       |
 KNIFT                   |         |     |             |             |       |
+
+## Prerequisites
+### OpenCV
+#### Linux
+By default, it is assumed that OpenCV 3 is installed under `/usr` (e.g. `/usr/lib/libopencv_core.so`).
+If your version or path is different, please edit [C/third_party/opencv_linux.BUILD](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/third_party/opencv_linux.BUILD) and [C/WORKSPACE](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/WORKSPACE).
+
+For example, if OpenCV is installed under `/opt/opencv3`, then your `WORKSPACE` looks like this.
+```starlark
+new_local_repository(
+    name = "linux_opencv",
+    build_file = "@//third_party:opencv_linux.BUILD",
+    path = "/opt/opencv3",
+)
+```
+
+If you use Ubuntu, probably OpenCV's shared libraries is installed under `/usr/lib/x86_64-linux-gnu/`.
+In this case, your `opencv_linux.BUILD` would be like this.
+```starlark
+cc_library(
+    name = "opencv",
+    srcs = glob(
+        [
+            "lib/x86_64-linux-gnu/libopencv_core.so",
+            "lib/x86_64-linux-gnu/libopencv_calib3d.so",
+            "lib/x86_64-linux-gnu/libopencv_features2d.so",
+            "lib/x86_64-linux-gnu/libopencv_highgui.so",
+            "lib/x86_64-linux-gnu/libopencv_imgcodecs.so",
+            "lib/x86_64-linux-gnu/libopencv_imgproc.so",
+            "lib/x86_64-linux-gnu/libopencv_video.so",
+            "lib/x86_64-linux-gnu/libopencv_videoio.so",
+        ],
+    ),
+    ...
+)
+```
+
+#### Windows
+By default, it is assumed that OpenCV 3.4.10 is installed under `C:\opencv`.
+If your version or path is different, please edit [C/third_party/opencv_windows.BUILD](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/third_party/opencv_windows.BUILD) and [C/WORKSPACE](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/WORKSPACE).
+
+### .NET Core
+This project uses protocol buffers to communicate with MediaPipe, and it is necessary to install .NET Core SDK(3.x) and .NET Core runtime 2.1 to build `Google.Protobuf.dll`.
+
+For example, if you use Linux and `yay`, you can install required packages with a below command.
+```sh
+yay -S dotnet-sdk dotnet-runtime-2.1
+```
+
+## Installation
+1. [Install MediaPipe](https://google.github.io/mediapipe/getting_started/install.html) and ensure that you can run Hello World! example.
+
+1. Clone the repository
+    ```sh
+    git clone https://github.com/homuler/MediaPipeUnityPlugin.git
+    cd MediaPipeUnityPlugin
+    ```
+
+1. Build required libraries, models and csharp source files.
+    - Linux
+        ```sh
+        # Build native libaries with GPU support enabled
+        make && make install
+
+        # Or without GPU support
+        make cpu && make install
+        ```
+    - macOS
+        ```sh
+        make cpu && make install
+        ```
+    - Windows 10
+        ```sh
+        # You need to specify PYTHON_BIN_PATH
+        # Note that the path separator is `//`, not `\`.
+        # In the below case, `python.exe` is installed at `C:\path\to\pathon.exe`.
+        make cpu PYTHON_BIN_PATH="C://path//to//python.exe"
+        ```
+
+1. Start Unity Editor
+
+## Build native libraries
+It's necessary to build native libraries for your target platforms.
+
+### PC, Mac & Linux Standalone
+Required libraries are built in the installation step.
+
+### Android
+```sh
+# ARM64
+make android_arm64
+make install
+
+# ARMv7
+make android_arm
+make install
+```
+
+### iOS
+```sh
+make ios_arm64
+make install
+```
+
+## Run example scenes
+### UnityEditor
+Select `MediaPipe/Examples/Scenes/DesktopDemo` and play.
+
+### Desktop
+If you'd like to run graphs on CPU, uncheck `Use GPU` from the inspector window.
+![scene-director-use-gpu](https://user-images.githubusercontent.com/4690128/107133987-4f51b180-6931-11eb-8a75-4993a5c70cc1.png)
+To include model files in the package, it is neccessary to build an AssetBundle before building the app.
+You can build it by clicking **Assets > Build AssetBundles** from the menu.\
+The AssetBundle file will be created under `Assets/StreamingAssets`.
+
+### Android
+See [Desktop](#Desktop) to build AssetBundles.\
+If you prefer, model files can be included in `mediapipe_android.aar` instead, and in that case, skip the AssetBundle build step.
+
+### iOS
+See [Desktop](#Desktop) to build AssetBundles.
 
 ## Troubleshooting
 ### DllNotFoundException: mediapipe_c
@@ -133,9 +170,10 @@ void OnEnable() {
 }
 ```
 
-MediaPipe logs will be output to log files (e.g. `Editor.log`).
+MediaPipe will output verbose logs to log files (e.g. `Editor.log`, `Player.log`).
 
 ## TODO
+- [ ] Dockerize build environment
 - [ ] Prepare API Documents
 - [ ] Implement cross-platform APIs to send images to MediaPipe
 - [ ] use CVPixelBuffer on iOS
