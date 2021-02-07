@@ -10,7 +10,7 @@ This is a Unity (2019.4.18f1) Plugin to use MediaPipe.
 
 
 ## Example Graphs
-[]()                    | Android | iOS | Linux (GPU) | Linux (CPU) | macOS | Windows
+|                       | Android | iOS | Linux (GPU) | Linux (CPU) | macOS | Windows
 :---------------------: | :-----: | :-: | :---------: | :---------: | :---: | :------:
 Face Detection          | ✅       | ✅   | ✅           | ✅           | ✅     | ✅
 Face Mesh               | ✅       | ✅   | ✅           | ✅           | ✅     | ✅
@@ -82,7 +82,7 @@ yay -S dotnet-sdk dotnet-runtime-2.1
     cd MediaPipeUnityPlugin
     ```
 
-1. Build required libraries, models and csharp source files.
+1. Build required libraries, models and C# source files.
     - Linux
         ```sh
         # Build native libaries with GPU support enabled
