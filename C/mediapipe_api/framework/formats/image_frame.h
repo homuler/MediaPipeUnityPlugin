@@ -57,9 +57,9 @@ MP_CAPI(MpReturnCode) mp_StatusOrImageFrame__ConsumeValueOrDie(StatusOrImageFram
 
 // Packet API
 MP_CAPI(MpReturnCode) mp__MakeImageFramePacket__Pif(mediapipe::ImageFrame* image_frame, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp__MakeImageFramePacket_At__Pif_Rtimestamp(mediapipe::ImageFrame* image_frame,
-                                                                  mediapipe::Timestamp* timestamp,
-                                                                  mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeImageFramePacket_At__Pif_Rt(mediapipe::ImageFrame* image_frame,
+                                                          mediapipe::Timestamp* timestamp,
+                                                          mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__ConsumeImageFrame(mediapipe::Packet* packet, StatusOrImageFrame** value_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetImageFrame(mediapipe::Packet* packet, const mediapipe::ImageFrame** value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsImageFrame(mediapipe::Packet* packet, mediapipe::Status** status_out);

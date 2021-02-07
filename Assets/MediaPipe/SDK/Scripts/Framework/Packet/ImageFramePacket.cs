@@ -14,7 +14,7 @@ namespace Mediapipe {
     }
 
     public ImageFramePacket(ImageFrame imageFrame, Timestamp timestamp) : base() {
-      UnsafeNativeMethods.mp__MakeImageFramePacket_At__Pif_Rtimestamp(imageFrame.mpPtr, timestamp.mpPtr, out var ptr).Assert();
+      UnsafeNativeMethods.mp__MakeImageFramePacket_At__Pif_Rt(imageFrame.mpPtr, timestamp.mpPtr, out var ptr).Assert();
       GC.KeepAlive(timestamp);
       imageFrame.Dispose(); // respect move semantics
 

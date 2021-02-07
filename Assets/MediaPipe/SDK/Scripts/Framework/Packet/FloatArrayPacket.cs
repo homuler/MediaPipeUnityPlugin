@@ -26,7 +26,7 @@ namespace Mediapipe {
     }
 
     public FloatArrayPacket(float[] value, Timestamp timestamp) : base() {
-      UnsafeNativeMethods.mp__MakeFloatArrayPacket_At__Pf_i_Rtimestamp(value, value.Length, timestamp.mpPtr, out var ptr).Assert();
+      UnsafeNativeMethods.mp__MakeFloatArrayPacket_At__Pf_i_Rt(value, value.Length, timestamp.mpPtr, out var ptr).Assert();
       GC.KeepAlive(timestamp);
       this.ptr = ptr;
       Length = value.Length;

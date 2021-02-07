@@ -13,7 +13,7 @@ void mp_Packet__delete(mediapipe::Packet* packet) {
   delete packet;
 }
 
-MpReturnCode mp_Packet__At__Rtimestamp(mediapipe::Packet* packet, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
+MpReturnCode mp_Packet__At__Rt(mediapipe::Packet* packet, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
   TRY {
     // not move but copy
     *packet_out = new mediapipe::Packet { packet->At(*timestamp) };
@@ -64,7 +64,7 @@ MpReturnCode mp__MakeBoolPacket__b(bool value, mediapipe::Packet** packet_out) {
   } CATCH_EXCEPTION
 }
 
-MpReturnCode mp__MakeBoolPacket_At__b_Rtimestamp(bool value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
+MpReturnCode mp__MakeBoolPacket_At__b_Rt(bool value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
   TRY {
     *packet_out = new mediapipe::Packet { mediapipe::MakePacket<bool>(value).At(*timestamp) };
     RETURN_CODE(MpReturnCode::Success);
@@ -93,7 +93,7 @@ MpReturnCode mp__MakeFloatPacket__f(float value, mediapipe::Packet** packet_out)
   } CATCH_EXCEPTION
 }
 
-MpReturnCode mp__MakeFloatPacket_At__f_Rtimestamp(float value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
+MpReturnCode mp__MakeFloatPacket_At__f_Rt(float value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
   TRY {
     *packet_out = new mediapipe::Packet { mediapipe::MakePacket<float>(value).At(*timestamp) };
     RETURN_CODE(MpReturnCode::Success);
@@ -122,7 +122,7 @@ MpReturnCode mp__MakeIntPacket__i(int value, mediapipe::Packet** packet_out) {
   } CATCH_EXCEPTION
 }
 
-MpReturnCode mp__MakeIntPacket_At__i_Rtimestamp(int value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
+MpReturnCode mp__MakeIntPacket_At__i_Rt(int value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
   TRY {
     *packet_out = new mediapipe::Packet { mediapipe::MakePacket<int>(value).At(*timestamp) };
     RETURN_CODE(MpReturnCode::Success);
@@ -153,10 +153,10 @@ MpReturnCode mp__MakeFloatArrayPacket__Pf_i(float* value, int size, mediapipe::P
   } CATCH_EXCEPTION
 }
 
-MpReturnCode mp__MakeFloatArrayPacket_At__Pf_i_Rtimestamp(float* value,
-                                                        int size,
-                                                        mediapipe::Timestamp* timestamp,
-                                                        mediapipe::Packet** packet_out) {
+MpReturnCode mp__MakeFloatArrayPacket_At__Pf_i_Rt(float* value,
+                                                  int size,
+                                                  mediapipe::Timestamp* timestamp,
+                                                  mediapipe::Packet** packet_out) {
   TRY {
     float* array = new float[size];
     std::memcpy(array, value, size * sizeof(float));
@@ -187,16 +187,46 @@ MpReturnCode mp__MakeStringPacket__PKc(const char* str, mediapipe::Packet** pack
   } CATCH_EXCEPTION
 }
 
-MpReturnCode mp__MakeStringPacket_At__PKc_Rtimestamp(const char* str, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
+MpReturnCode mp__MakeStringPacket_At__PKc_Rt(const char* str,
+                                             mediapipe::Timestamp* timestamp,
+                                             mediapipe::Packet** packet_out) {
   TRY {
     *packet_out = new mediapipe::Packet { mediapipe::MakePacket<std::string>(std::string(str)).At(*timestamp) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }
 
+MpReturnCode mp__MakeStringPacket__PKc_i(const char* str, int size, mediapipe::Packet** packet_out) {
+  TRY {
+    *packet_out = new mediapipe::Packet { mediapipe::MakePacket<std::string>(std::string(str, size)) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
+MpReturnCode mp__MakeStringPacket_At__PKc_i_Rt(const char* str, int size, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
+  TRY {
+    *packet_out = new mediapipe::Packet { mediapipe::MakePacket<std::string>(std::string(str, size)).At(*timestamp) };
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_EXCEPTION
+}
+
 MpReturnCode mp_Packet__GetString(mediapipe::Packet* packet, const char** value_out) {
   TRY_ALL {
-    *value_out = strcpy_to_heap(packet->Get<std::string>());
+    auto& str = packet->Get<std::string>();
+    *value_out = strcpy_to_heap(str);
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
+}
+
+MpReturnCode mp_Packet__GetByteString(mediapipe::Packet* packet, const char** value_out, int* size_out) {
+  TRY_ALL {
+    auto& str = packet->Get<std::string>();
+    auto length = str.size();
+    auto bytes = new char[length];
+    memcpy(bytes, str.c_str(), length);
+
+    *value_out = bytes;
+    *size_out = length;
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_ALL
 }
@@ -220,7 +250,7 @@ void mp_SidePacket__delete(SidePacket* side_packet) {
   delete side_packet;
 }
 
-MpReturnCode mp_SidePacket__emplace__PKc_Rpacket(SidePacket* side_packet, const char* key, mediapipe::Packet* packet) {
+MpReturnCode mp_SidePacket__emplace__PKc_Rp(SidePacket* side_packet, const char* key, mediapipe::Packet* packet) {
   TRY {
     side_packet->emplace(std::string(key), std::move(*packet));
     RETURN_CODE(MpReturnCode::Success);

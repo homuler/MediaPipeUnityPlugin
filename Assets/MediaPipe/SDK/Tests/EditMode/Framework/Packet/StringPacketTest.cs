@@ -16,7 +16,7 @@ namespace Tests {
     }
 
     [Test]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithValue() {
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithString() {
       var packet = new StringPacket("test");
 
       Assert.True(packet.ValidateAsType().ok);
@@ -25,9 +25,30 @@ namespace Tests {
     }
 
     [Test]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithValueAndTimestamp() {
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithByteArray() {
+      byte[] bytes = new byte[] { (byte)'t', (byte)'e', (byte)'s', (byte)'t' };
+      var packet = new StringPacket(bytes);
+
+      Assert.True(packet.ValidateAsType().ok);
+      Assert.AreEqual(packet.Get(), "test");
+      Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
+    }
+
+    [Test]
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithStringAndTimestamp() {
       var timestamp = new Timestamp(1);
       var packet = new StringPacket("test", timestamp);
+
+      Assert.True(packet.ValidateAsType().ok);
+      Assert.AreEqual(packet.Get(), "test");
+      Assert.AreEqual(packet.Timestamp(), timestamp);
+    }
+
+    [Test]
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithByteArrayAndTimestamp() {
+      var timestamp = new Timestamp(1);
+      byte[] bytes = new byte[] { (byte)'t', (byte)'e', (byte)'s', (byte)'t' };
+      var packet = new StringPacket(bytes, timestamp);
 
       Assert.True(packet.ValidateAsType().ok);
       Assert.AreEqual(packet.Get(), "test");
@@ -49,6 +70,17 @@ namespace Tests {
       packet.Dispose();
 
       Assert.True(packet.isDisposed);
+    }
+    #endregion
+
+    #region #GetByteArray
+    [Test]
+    public void GetByteArray_ShouldReturnByteArray() {
+      byte[] bytes = new byte[] { (byte)'a', (byte)'b', 0, (byte)'c' };
+      var packet = new StringPacket(bytes);
+
+      Assert.AreEqual(packet.GetByteArray(), bytes);
+      Assert.AreEqual(packet.Get(), "ab");
     }
     #endregion
 

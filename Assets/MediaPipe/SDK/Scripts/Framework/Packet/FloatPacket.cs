@@ -12,7 +12,7 @@ namespace Mediapipe {
     }
 
     public FloatPacket(float value, Timestamp timestamp) : base() {
-      UnsafeNativeMethods.mp__MakeFloatPacket_At__f_Rtimestamp(value, timestamp.mpPtr, out var ptr).Assert();
+      UnsafeNativeMethods.mp__MakeFloatPacket_At__f_Rt(value, timestamp.mpPtr, out var ptr).Assert();
       GC.KeepAlive(timestamp);
       this.ptr = ptr;
     }

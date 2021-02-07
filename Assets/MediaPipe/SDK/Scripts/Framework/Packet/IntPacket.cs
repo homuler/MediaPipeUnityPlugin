@@ -12,7 +12,7 @@ namespace Mediapipe {
     }
 
     public IntPacket(int value, Timestamp timestamp) : base() {
-      UnsafeNativeMethods.mp__MakeIntPacket_At__i_Rtimestamp(value, timestamp.mpPtr, out var ptr).Assert();
+      UnsafeNativeMethods.mp__MakeIntPacket_At__i_Rt(value, timestamp.mpPtr, out var ptr).Assert();
       GC.KeepAlive(timestamp);
       this.ptr = ptr;
     }

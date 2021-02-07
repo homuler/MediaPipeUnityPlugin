@@ -23,7 +23,7 @@ namespace Mediapipe {
     /// <remarks>To avoid copying the value, instantiate the packet with timestamp</remarks>
     /// <returns>New packet with the given timestamp and the copied value</returns>
     public Packet<T> At(Timestamp timestamp) {
-      UnsafeNativeMethods.mp_Packet__At__Rtimestamp(mpPtr, timestamp.mpPtr, out var packetPtr).Assert();
+      UnsafeNativeMethods.mp_Packet__At__Rt(mpPtr, timestamp.mpPtr, out var packetPtr).Assert();
 
       GC.KeepAlive(timestamp);
       return (Packet<T>)Activator.CreateInstance(this.GetType(), packetPtr, true);

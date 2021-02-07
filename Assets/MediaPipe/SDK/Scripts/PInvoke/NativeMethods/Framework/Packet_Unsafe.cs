@@ -11,7 +11,7 @@ namespace Mediapipe {
     public static extern void mp_Packet__delete(IntPtr packet);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_Packet__At__Rtimestamp(IntPtr packet, IntPtr timestamp, out IntPtr newPacket);
+    public static extern MpReturnCode mp_Packet__At__Rt(IntPtr packet, IntPtr timestamp, out IntPtr newPacket);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__ValidateAsProtoMessageLite(IntPtr packet, out IntPtr status);
@@ -34,7 +34,7 @@ namespace Mediapipe {
     public static extern MpReturnCode mp__MakeBoolPacket__b([MarshalAs(UnmanagedType.I1)] bool value, out IntPtr packet);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp__MakeBoolPacket_At__b_Rtimestamp([MarshalAs(UnmanagedType.I1)] bool value, IntPtr timestamp, out IntPtr packet);
+    public static extern MpReturnCode mp__MakeBoolPacket_At__b_Rt([MarshalAs(UnmanagedType.I1)] bool value, IntPtr timestamp, out IntPtr packet);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__GetBool(IntPtr packet, [MarshalAs(UnmanagedType.I1)]out bool value);
@@ -48,7 +48,7 @@ namespace Mediapipe {
     public static extern MpReturnCode mp__MakeFloatPacket__f(float value, out IntPtr packet);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp__MakeFloatPacket_At__f_Rtimestamp(float value, IntPtr timestamp, out IntPtr packet);
+    public static extern MpReturnCode mp__MakeFloatPacket_At__f_Rt(float value, IntPtr timestamp, out IntPtr packet);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__GetFloat(IntPtr packet, out float value);
@@ -62,7 +62,7 @@ namespace Mediapipe {
     public static extern MpReturnCode mp__MakeIntPacket__i(int value, out IntPtr packet);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp__MakeIntPacket_At__i_Rtimestamp(int value, IntPtr timestamp, out IntPtr packet);
+    public static extern MpReturnCode mp__MakeIntPacket_At__i_Rt(int value, IntPtr timestamp, out IntPtr packet);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__GetInt(IntPtr packet, out int value);
@@ -76,7 +76,7 @@ namespace Mediapipe {
     public static extern MpReturnCode mp__MakeFloatArrayPacket__Pf_i(float[] value, int size, out IntPtr packet);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp__MakeFloatArrayPacket_At__Pf_i_Rtimestamp(float[] value, int size, IntPtr timestamp, out IntPtr packet);
+    public static extern MpReturnCode mp__MakeFloatArrayPacket_At__Pf_i_Rt(float[] value, int size, IntPtr timestamp, out IntPtr packet);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__GetFloatArray(IntPtr packet, out IntPtr value);
@@ -90,10 +90,19 @@ namespace Mediapipe {
     public static extern MpReturnCode mp__MakeStringPacket__PKc(string value, out IntPtr packet);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp__MakeStringPacket_At__PKc_Rtimestamp(string value, IntPtr timestamp, out IntPtr packet);
+    public static extern MpReturnCode mp__MakeStringPacket_At__PKc_Rt(string value, IntPtr timestamp, out IntPtr packet);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeStringPacket__PKc_i(byte[] bytes, int size, out IntPtr packet);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeStringPacket_At__PKc_i_Rt(byte[] bytes, int size, IntPtr timestamp, out IntPtr packet);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__GetString(IntPtr packet, out IntPtr value);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__GetByteString(IntPtr packet, out IntPtr value, out int size);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__ValidateAsString(IntPtr packet, out IntPtr status);
@@ -107,7 +116,7 @@ namespace Mediapipe {
     public static extern void mp_SidePacket__delete(IntPtr sidePacket);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_SidePacket__emplace__PKc_Rpacket(IntPtr sidePacket, string key, IntPtr packet);
+    public static extern MpReturnCode mp_SidePacket__emplace__PKc_Rp(IntPtr sidePacket, string key, IntPtr packet);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_SidePacket__at__PKc(IntPtr sidePacket, string key, out IntPtr packet);

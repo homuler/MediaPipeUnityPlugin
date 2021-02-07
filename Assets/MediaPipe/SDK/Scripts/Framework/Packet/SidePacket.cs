@@ -29,7 +29,7 @@ namespace Mediapipe {
     }
 
     public void Emplace<T>(string key, Packet<T> packet) {
-      UnsafeNativeMethods.mp_SidePacket__emplace__PKc_Rpacket(mpPtr, key, packet.mpPtr).Assert();
+      UnsafeNativeMethods.mp_SidePacket__emplace__PKc_Rp(mpPtr, key, packet.mpPtr).Assert();
       packet.Dispose(); // respect move semantics
       GC.KeepAlive(this);
     }
