@@ -54,11 +54,9 @@ android_arm64: | $(protobuf_dll)
 ios_arm64: | $(protobuf_dll)
 	cd C && bazel build -c opt $(bazelflags.ios_arm64) $(bazel_ios_target) $(bazel_common_target)
 
-$(plugindir)/Google.Protobuf.dll: Temp/$(protobuf_tarball)
-	cd Temp/protobuf-$(protobuf_version)/csharp && ./buildall.sh && mv src/Google.Protobuf/bin/Release/net45/* ../../../$(plugindir)
-
 $(protobuf_dll): | $(protobuf_root)
-	./$(protobuf_csharpdir)/buildall.sh
+	dotnet restore $(protobuf_csharpdir)/src/Google.Protobuf.sln && \
+	dotnet build -c Release $(protobuf_csharpdir)/src/Google.Protobuf.sln
 
 clean:
 	rm -r $(builddir) && \
