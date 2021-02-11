@@ -76,6 +76,14 @@ yay -S dotnet-sdk dotnet-runtime-2.1
 ## Installation
 1. [Install MediaPipe](https://google.github.io/mediapipe/getting_started/install.html) and ensure that you can run Hello World! example.
 
+1. Install numpy
+    ```sh
+    pip install numpy --user
+
+    # or
+    # pip3 install numpy --user
+    ```
+
 1. Clone the repository
     ```sh
     git clone https://github.com/homuler/MediaPipeUnityPlugin.git
