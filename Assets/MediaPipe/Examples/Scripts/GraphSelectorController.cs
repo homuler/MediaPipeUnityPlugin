@@ -62,6 +62,6 @@ public class GraphSelectorController : MonoBehaviour {
     var graph = graphs[option.text];
 
     Debug.Log($"Graph Changed: {option.text}");
-    sceneDirector.GetComponent<SceneDirector>().ChangeGraph(Instantiate(graph));
+    sceneDirector.GetComponent<SceneDirector>().ChangeGraph(graph);
   }
 }
