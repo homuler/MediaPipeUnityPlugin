@@ -120,7 +120,11 @@ It's necessary to build native libraries for your target platforms.
 Required libraries are built in the installation step.
 
 ### Android
+Currently bazel does not support NDK r22, so please use NDK r21 instead.
 ```sh
+export ANDROID_HOME=/path/to/SDK
+export ANDROID_NDK_HOME=/path/to/ndk/21.4.7075529
+
 # ARM64
 make android_arm64
 make install
@@ -185,7 +189,7 @@ MediaPipe will output verbose logs to log files (e.g. `Editor.log`, `Player.log`
 - [ ] Prepare API Documents
 - [ ] Implement cross-platform APIs to send images to MediaPipe
 - [ ] use CVPixelBuffer on iOS
-- [ ] Box Tracking (on CPU/GPU)
+- [ ] Box Tracking (on Windows)
 - [ ] Instant Motion Tracking
 - [ ] Objectron
 - [ ] KNIFT
