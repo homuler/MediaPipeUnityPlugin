@@ -12,6 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Copied from mediapipe/graphs/instant_motion_tracking/instant_motion_tracking.pbtxt
+#
+# CHANGES:
+#   - Remove GIF related inputs
+#   - `input_video` is ImageFrame (ImageFrameToGpuBufferCalculator converts it into GpuBuffer)
+#   - Add ImageTransformationCalculator and flips the input
+#   - Add GlScalerCalculator and flips the output
+#   - `output_video` is ImageFrame
+
 # MediaPipe graph that performs region tracking and 3d object (AR sticker) rendering.
 
 # Images in/out of graph with sticker data and IMU information from device
@@ -27,6 +36,7 @@ node: {
   output_stream: "input_video_gpu"
 }
 
+# Flip vertically because the input image is aligned from bottom-left to top-right.
 node: {
   calculator: "ImageTransformationCalculator"
   input_stream: "IMAGE_GPU:input_video_gpu"

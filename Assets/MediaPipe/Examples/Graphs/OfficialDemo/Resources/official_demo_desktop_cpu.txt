@@ -16,7 +16,7 @@
 #
 # CHANGES:
 #  - Add FlowLimiterCalculator
-#  - Add ImageTransformationCalculator and rotate the input
+#  - Add ImageTransformationCalculator and flips the input
 #  - Use SidePacket instead of ConstantSidePacketCalculator
 
 # MediaPipe graph that performs hands tracking on desktop with TensorFlow
@@ -41,15 +41,14 @@ node {
   output_stream: "throttled_input_video"
 }
 
-# Flip vertically because the input image is aligned from bottom-left to top-right,
-# and horizontally to use Web Camera.
+# Flip vertically because the input image is aligned from bottom-left to top-right.
 node: {
   calculator: "ImageTransformationCalculator"
   input_stream: "IMAGE:throttled_input_video"
   output_stream: "IMAGE:transformed_input_video"
   node_options: {
     [type.googleapis.com/mediapipe.ImageTransformationCalculatorOptions] {
-      rotation_mode: 3
+      flip_vertically: true
     }
   }
 }

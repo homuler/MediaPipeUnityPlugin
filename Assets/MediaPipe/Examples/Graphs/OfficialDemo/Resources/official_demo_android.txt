@@ -15,7 +15,7 @@
 # This file is OfficialDemoAndroid's config file (Copied from mediapipe/graphs/hand_tracking/hand_tracking_mobile.pbtxt).
 #
 # CHANGES:
-#  - Add ImageTransformationCalculator and rotate the input
+#  - Add ImageTransformationCalculator and flips the input
 #  - Add GlScalerCalculator and flips the output
 
 # MediaPipe graph that performs multi-hand tracking with TensorFlow Lite on GPU.
@@ -55,15 +55,14 @@ node {
   output_stream: "throttled_input_video"
 }
 
-# Flip vertically because the input image is aligned from bottom-left to top-right,
-# and horizontally to use Web Camera.
+# Flip vertically because the input image is aligned from bottom-left to top-right.
 node: {
   calculator: "ImageTransformationCalculator"
   input_stream: "IMAGE_GPU:throttled_input_video"
   output_stream: "IMAGE_GPU:transformed_input_video"
   node_options: {
     [type.googleapis.com/mediapipe.ImageTransformationCalculatorOptions] {
-      rotation_mode: 3
+      flip_vertically: true
     }
   }
 }
