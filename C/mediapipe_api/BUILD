@@ -18,6 +18,7 @@ cc_library(
         "//mediapipe_api/framework/formats:landmark",
         "//mediapipe_api/framework/formats:rect",
         "//mediapipe_api/framework/port:logging",
+        "//mediapipe_api/graphs/object_detection_3d/calculators:model_matrix",
         "//mediapipe_api/util:resource_manager",
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [],
@@ -174,6 +175,7 @@ pkg_zip(
         "//mediapipe_api/framework/formats:rasterization_cs",
         "//mediapipe_api/framework/formats:rect_cs",
         "//mediapipe_api/graphs/instant_motion_tracking/calculators:sticker_buffer_cs",
+        "//mediapipe_api/graphs/object_detection_3d/calculators:model_matrix_cs",
     ],
     # TODO: keep directory structure
 )

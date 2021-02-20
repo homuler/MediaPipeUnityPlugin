@@ -1,8 +1,8 @@
 diff --git a/mediapipe/framework/BUILD b/mediapipe/framework/BUILD
-index a6e5fb0..75b9942 100644
+index 7f66bdd..af77cd6 100644
 --- a/mediapipe/framework/BUILD
 +++ b/mediapipe/framework/BUILD
-@@ -1619,5 +1619,5 @@ cc_test(
+@@ -1609,5 +1609,5 @@ cc_test(
  filegroup(
      name = "protos_src",
      srcs = glob(["*.proto"]),
@@ -10,10 +10,10 @@ index a6e5fb0..75b9942 100644
 +    visibility = ["//visibility:public"],
  )
 diff --git a/mediapipe/framework/formats/BUILD b/mediapipe/framework/formats/BUILD
-index 266a059..624e4b0 100644
+index dfe4329..2c1e68e 100644
 --- a/mediapipe/framework/formats/BUILD
 +++ b/mediapipe/framework/formats/BUILD
-@@ -239,7 +239,7 @@ mediapipe_register_type(
+@@ -274,7 +274,7 @@ mediapipe_register_type(
  filegroup(
      name = "protos_src",
      srcs = glob(["*.proto"]),
@@ -23,10 +23,10 @@ index 266a059..624e4b0 100644
  
  cc_library(
 diff --git a/mediapipe/framework/formats/annotation/BUILD b/mediapipe/framework/formats/annotation/BUILD
-index a74b488..1d3c699 100644
+index 2e33f76..4b15727 100644
 --- a/mediapipe/framework/formats/annotation/BUILD
 +++ b/mediapipe/framework/formats/annotation/BUILD
-@@ -40,5 +40,5 @@ mediapipe_proto_library(
+@@ -38,5 +38,5 @@ mediapipe_proto_library(
  filegroup(
      name = "protos_src",
      srcs = glob(["*.proto"]),
@@ -47,11 +47,25 @@ index b8242cf..023ef4f 100644
 +    srcs = glob(["*.proto"]),
 +    visibility = ["//visibility:public"],
 +)
+diff --git a/mediapipe/graphs/object_detection_3d/calculators/BUILD b/mediapipe/graphs/object_detection_3d/calculators/BUILD
+index 5550128..fd8f39e 100644
+--- a/mediapipe/graphs/object_detection_3d/calculators/BUILD
++++ b/mediapipe/graphs/object_detection_3d/calculators/BUILD
+@@ -111,3 +111,9 @@ cc_library(
+     ],
+     alwayslink = 1,
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
 diff --git a/mediapipe/java/com/google/mediapipe/components/BUILD b/mediapipe/java/com/google/mediapipe/components/BUILD
-index dcbdd3b..5dce33c 100644
+index 4471a0c..8508be9 100644
 --- a/mediapipe/java/com/google/mediapipe/components/BUILD
 +++ b/mediapipe/java/com/google/mediapipe/components/BUILD
-@@ -77,5 +77,5 @@ android_library(
+@@ -81,5 +81,5 @@ android_library(
  filegroup(
      name = "java_src",
      srcs = glob(["*.java"]),
