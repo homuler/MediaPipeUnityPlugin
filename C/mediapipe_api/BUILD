@@ -94,7 +94,12 @@ cc_library(
             "@com_google_mediapipe//mediapipe/graphs/tracking:desktop_calculators",
         ],
         "//conditions:default": [
+            # ATTENTION!
+            #   If you're building for Android with debug symobls (--compilation_mode=dbg), exclude `instant_motion_tracking_deps`
+            #   or exclude the other deps defined under `mediapipe/graphs`.
+            #   Otherwise the app will crash (MediaPipe may have some bugs).
             "@com_google_mediapipe//mediapipe/gpu:gl_scaler_calculator",
+            "@com_google_mediapipe//mediapipe/gpu:image_frame_to_gpu_buffer_calculator",
             "@com_google_mediapipe//mediapipe/graphs/face_detection:desktop_live_gpu_calculators",
             "@com_google_mediapipe//mediapipe/graphs/face_mesh:desktop_live_gpu_calculators",
             "@com_google_mediapipe//mediapipe/graphs/hair_segmentation:mobile_calculators",
