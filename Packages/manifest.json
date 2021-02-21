@@ -10,7 +10,7 @@
     "com.unity.ide.rider": "1.1.4",
     "com.unity.ide.vscode": "1.2.3",
     "com.unity.test-framework": "1.1.20",
-    "com.unity.testtools.codecoverage": "0.3.1-preview",
+    "com.unity.testtools.codecoverage": "1.0.0-pre.3",
     "com.unity.textmeshpro": "2.0.1",
     "com.unity.timeline": "1.2.14",
     "com.unity.ugui": "1.0.0",
