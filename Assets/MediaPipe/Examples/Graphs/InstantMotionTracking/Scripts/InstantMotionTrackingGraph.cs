@@ -46,6 +46,10 @@ public class InstantMotionTrackingGraph : OfficialDemoGraph {
   }
 
   public override Status StartRun(Texture texture) {
+    if (!IsGpuEnabled()) {
+      return Status.FailedPrecondition("InstantMotionTracking is not supported on CPU");
+    }
+
     stopwatch.Start();
     ResetSticker();
     imuRotationMatrix = new float[] { 0, 0, 1, 1, 0, 0, 0, 1, 0 };
