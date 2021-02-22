@@ -20,10 +20,12 @@ Pose                    | ✅       | ✅   | ✅           | ✅           | �
 Holistic (with iris)    | ✅       | ✅   | ✅           | ✅           | ✅     | ✅
 Hair Segmentation       | ✅       |     | ✅           |             |       |
 Object Detection        | ✅       | ✅   | ✅           | ✅           | ✅     | ✅
-Box Tracking            | ✅       | ✅   | ✅           | ✅           | ✅     | 🔺
-Instant Motion Tracking |         |     |             |             |       |
+Box Tracking            | ✅       | ✅   | ✅           | ✅           | ✅     | 🔺*1
+Instant Motion Tracking | ✅       | 🔺   | ✅           |             |       |
 Objectron               |         |     |             |             |       |
 KNIFT                   |         |     |             |             |       |
+
+*1: crashes sometimes when the graph exits.
 
 ## Prerequisites
 ### OpenCV
@@ -173,16 +175,37 @@ InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000_mediapipe/
 ```
 
 ### Debug MediaPipe
-Set an environment variable `GLOG_v` before loading native libraries (e.g. `libmediapipe_c.so`).
+If you set an environment variable `GLOG_v` before loading native libraries (e.g. `libmediapipe_c.so`),
+MediaPipe will output verbose logs to log files (e.g. `Editor.log`, `Player.log`).
 
 ```cs
+
 void OnEnable() {
     // see https://github.com/google/glog#setting-flags
     System.Environment.SetEnvironmentVariable("GLOG_v", "2");
 }
 ```
 
-MediaPipe will output verbose logs to log files (e.g. `Editor.log`, `Player.log`).
+You can also setup Glog so that it writes logs to files.
+
+```cs
+using System.IO;
+
+void OnEnable() {
+    var logDir = Path.Combine(Application.persistentDataPath, "Logs");
+
+    if (!Directory.Exists(logDir)) {
+      Directory.CreateDirectory(logDir);
+    }
+
+    Glog.Initialize("MediaPipeUnityPlugin", logDir);
+}
+
+void OnDisable() {
+    Glog.Shutdown();
+}
+```
+
 
 ## TODO
 - [ ] Dockerize build environment
@@ -190,7 +213,6 @@ MediaPipe will output verbose logs to log files (e.g. `Editor.log`, `Player.log`
 - [ ] Implement cross-platform APIs to send images to MediaPipe
 - [ ] use CVPixelBuffer on iOS
 - [ ] Box Tracking (on Windows)
-- [ ] Instant Motion Tracking
 - [ ] Objectron
 - [ ] KNIFT
 
