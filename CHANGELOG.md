@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0](https://github.com/homuler/MediapipeUnityPlugin/compare/v0.4.3...v0.5.0) (2021-02-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* pkg_model -> pkg_asset
+
+### Features
+
+* **sdk:** implement FloatArrayPacket ([9a0780c](https://github.com/homuler/MediapipeUnityPlugin/commit/9a0780c87c2d425a7c1f3678f95dd003308a7913))
+* compile StickerBuffer ([0a4720b](https://github.com/homuler/MediapipeUnityPlugin/commit/0a4720b485f055f6502f73456607f5cda7210cf5))
+* implement APIs to get model matrices ([fe35345](https://github.com/homuler/MediapipeUnityPlugin/commit/fe35345a5908f1579da39ceb9a5c7f583e64ea36))
+* InstantMotionTracking ([ee7c909](https://github.com/homuler/MediapipeUnityPlugin/commit/ee7c90938d2b97414fa4269ff5321da3cf7f20f2))
+* StringPacket can contain null bytes ([1d5240e](https://github.com/homuler/MediapipeUnityPlugin/commit/1d5240e4e7a868401c57376582b84586c1495923))
+
+
+### Bug Fixes
+
+* **example:** not to create redundunt instances ([56ee74f](https://github.com/homuler/MediapipeUnityPlugin/commit/56ee74f24446b8b598176fe68c9d42c4fa1a09da))
+* **test:** thread hangs ([32f30f3](https://github.com/homuler/MediapipeUnityPlugin/commit/32f30f3622e71613803d55f1619f388ee782d005))
+* not to flip input images horizontally when mediapipe outputs images ([28e429c](https://github.com/homuler/MediapipeUnityPlugin/commit/28e429c15d8db1e828afe7bc715e9c231f55a706))
+* typo ([ee91e5b](https://github.com/homuler/MediapipeUnityPlugin/commit/ee91e5b8db7e8a9c9b923f2c17e24bec81fbfde4))
+
+
+* pkg_model -> pkg_asset ([20083ff](https://github.com/homuler/MediapipeUnityPlugin/commit/20083ffdd8fcef89764f751a232e85531ae15bba))
+
 ### [0.4.3](https://github.com/homuler/MediapipeUnityPlugin/compare/v0.4.2...v0.4.3) (2021-02-07)
 
 
