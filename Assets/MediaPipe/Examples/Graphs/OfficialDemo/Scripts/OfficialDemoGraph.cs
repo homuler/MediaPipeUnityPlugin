@@ -43,7 +43,7 @@ public class OfficialDemoGraph : DemoGraph {
     var calculatorGraphConfig = CalculatorGraphConfig.Parser.ParseFromTextFormat(config.text);
 
     if (IsGpuEnabled()) {
-      var sinkNode = calculatorGraphConfig.Node.Last();
+      var sinkNode = calculatorGraphConfig.Node.Last((node) => node.Calculator == "GlScalerCalculator");
       destinationBufferName = Tool.GetUnusedSidePacketName(calculatorGraphConfig, "destination_buffer");
 
   #if !UNITY_EDITOR

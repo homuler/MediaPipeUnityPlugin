@@ -1,4 +1,6 @@
 using Mediapipe;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Google.Protobuf;
 
@@ -12,11 +14,9 @@ public class InstantMotionTrackingGraph : OfficialDemoGraph {
   // This sample only works with 1 (3D asset)
   int renderId = 1;
 
-  Sticker currentSticker;
-  readonly object imuRotationMatrixLock = new object();
-  float[] imuRotationMatrix;
-
   Gyroscope gyroscope;
+  Sticker currentSticker;
+  float[] imuRotationMatrix;
 
   void Start() {
     if (SystemInfo.supportsGyroscope) {
@@ -48,7 +48,9 @@ public class InstantMotionTrackingGraph : OfficialDemoGraph {
   public override Status StartRun(Texture texture) {
     stopwatch.Start();
     ResetSticker();
-    UpdateImuRotationMatrix(new float[] { 0, 0, 1, 1, 0, 0, 0, 1, 0 });
+    imuRotationMatrix = new float[] { 0, 0, 1, 1, 0, 0, 0, 1, 0 };
+
+    graph.ObserveOutputStream("asset_3d_matrices", MatrixCallback).AssertOk();
 
     sidePacket = new SidePacket();
     sidePacket.Emplace("vertical_fov_radians", new FloatPacket(GetVerticalFovRadians()));
@@ -76,12 +78,39 @@ public class InstantMotionTrackingGraph : OfficialDemoGraph {
     var stickerRoll = new StickerRoll();
     stickerRoll.Sticker.Add(currentSticker);
     graph.AddPacketToInputStream("sticker_proto_string", new StringPacket(stickerRoll.ToByteArray(), currentTimestamp)).AssertOk();
-
-    lock (imuRotationMatrixLock) {
-      graph.AddPacketToInputStream("imu_rotation_matrix", new FloatArrayPacket(imuRotationMatrix, currentTimestamp)).AssertOk();
-    }
+    graph.AddPacketToInputStream("imu_rotation_matrix", new FloatArrayPacket(imuRotationMatrix, currentTimestamp)).AssertOk();
 
     return Status.Ok();
+  }
+
+  [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
+  static IntPtr MatrixCallback(IntPtr packetPtr) {
+    try {
+      using (var packet = new TimedModelMatrixProtoListPacket(packetPtr, false)) {
+        var matrixProtoList = packet.Get();
+
+        if (matrixProtoList.ModelMatrix.Count > 0) {
+          var matrix = Matrix4x4FromBytes(matrixProtoList.ModelMatrix[0].MatrixEntries);
+          // Debug.Log(matrix);
+        }
+      }
+
+      // TODO: ensure the returned status won't be garbage collected prematurely.
+      return Status.Ok().mpPtr;
+    } catch (Exception e) {
+      return Status.FailedPrecondition(e.ToString()).mpPtr;
+    }
+  }
+
+  static Matrix4x4 Matrix4x4FromBytes(IList<float> matrixEntries) {
+    var scale = 5.0f;  // a magic number in MediaPipe
+
+    return new Matrix4x4(
+      new Vector4(matrixEntries[0] / scale, -matrixEntries[4] / scale, -matrixEntries[8] / scale, matrixEntries[12]),
+      new Vector4(matrixEntries[1] / scale, -matrixEntries[5] / scale, -matrixEntries[9] / scale, matrixEntries[13]),
+      new Vector4(matrixEntries[2] / scale, -matrixEntries[6] / scale, -matrixEntries[10] / scale, matrixEntries[14]),
+      new Vector4(matrixEntries[3], matrixEntries[7], matrixEntries[11], matrixEntries[15])
+    );
   }
 
   float GetVerticalFovRadians() {
@@ -126,13 +155,7 @@ public class InstantMotionTrackingGraph : OfficialDemoGraph {
       -matrix[2, 0], matrix[2, 1], -matrix[2, 2],
     };
 
-    UpdateImuRotationMatrix(array);
-  }
-
-  void UpdateImuRotationMatrix(float[] matrix) {
-    lock (imuRotationMatrixLock) {
-      imuRotationMatrix = matrix;
-    }
+    imuRotationMatrix = array;
   }
 
   void FlipTexture2D(Texture2D texture) {

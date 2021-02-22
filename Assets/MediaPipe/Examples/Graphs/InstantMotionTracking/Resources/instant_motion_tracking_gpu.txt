@@ -29,6 +29,7 @@ input_stream: "sticker_sentinel"
 input_stream: "sticker_proto_string"
 input_stream: "imu_rotation_matrix"
 output_stream: "output_video"
+output_stream: "asset_3d_matrices"
 
 node: {
   calculator: "ImageFrameToGpuBufferCalculator"
