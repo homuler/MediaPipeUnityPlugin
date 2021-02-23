@@ -77,4 +77,9 @@ public class PoseTrackingGraph : DemoGraph {
     // NOTE: input image is flipped
     GetComponent<PoseTrackingAnnotationController>().Draw(screenController.transform, value.PoseLandmarkList, value.PoseDetection, true);
   }
+
+  protected override void PrepareDependentAssets() {
+    PrepareDependentAsset("pose_detection.bytes");
+    PrepareDependentAsset("pose_landmark_upper_body.bytes");
+  }
 }

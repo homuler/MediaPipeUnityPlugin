@@ -160,4 +160,11 @@ public class OfficialDemoGraph : DemoGraph {
     return Status.Ok();
   }
 #endif
+
+  protected override void PrepareDependentAssets() {
+    PrepareDependentAsset("hand_landmark.bytes");
+    PrepareDependentAsset("hand_recrop.bytes");
+    PrepareDependentAsset("handedness.txt");
+    PrepareDependentAsset("palm_detections.bytes");
+  }
 }

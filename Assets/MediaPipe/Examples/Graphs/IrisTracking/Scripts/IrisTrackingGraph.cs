@@ -92,4 +92,10 @@ public class IrisTrackingGraph : DemoGraph {
     GetComponent<IrisTrackingAnnotationController>().Draw(
         screenController.transform, value.FaceLandmarksWithIris, value.FaceRect, value.FaceDetections, true);
   }
+
+  protected override void PrepareDependentAssets() {
+    PrepareDependentAsset("face_detection_front.bytes");
+    PrepareDependentAsset("face_landmark.bytes");
+    PrepareDependentAsset("iris_landmark.bytes");
+  }
 }

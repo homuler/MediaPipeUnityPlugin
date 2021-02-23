@@ -10,6 +10,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
   [SerializeField] protected TextAsset cpuConfig = null;
   [SerializeField] protected TextAsset androidConfig = null;
 
+  GameObject resourceManager;
   protected const string inputStream = "input_video";
   protected Stopwatch stopwatch;
   protected static CalculatorGraph graph;
@@ -21,6 +22,15 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
   static TextureFrame currentTextureFrame;
   static IntPtr currentTextureName;
 #endif
+
+  void OnEnable() {
+    resourceManager = GameObject.Find("ResourceManager");
+  }
+
+  void Start() {
+    PrepareDependentAssets();
+    Debug.Log("Loaded dependent assets");
+  }
 
   protected virtual void OnDestroy() {
     Stop();
@@ -176,5 +186,15 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
 
     var microseconds = (stopwatch.ElapsedTicks) / (TimeSpan.TicksPerMillisecond / 1000);
     return new Timestamp(microseconds);
+  }
+
+  protected virtual void PrepareDependentAssets() {}
+
+  protected void PrepareDependentAsset(string assetName, string uniqueKey) {
+    resourceManager.GetComponent<AssetLoader>().PrepareAsset(assetName, uniqueKey);
+  }
+
+  protected void PrepareDependentAsset(string assetName) {
+    PrepareDependentAsset(assetName, assetName);
   }
 }

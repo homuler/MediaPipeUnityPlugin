@@ -35,4 +35,8 @@ public class HairSegmentationGraph : DemoGraph {
     // NOTE: input image is flipped
     GetComponent<MaskAnnotationController>().Draw(screenController.GetScreen(), hairMask, new Color(0, 0, 255), true);
   }
+
+  protected override void PrepareDependentAssets() {
+    PrepareDependentAsset("hair_segmentation.bytes");
+  }
 }

@@ -101,4 +101,11 @@ public class HandTrackingGraph : DemoGraph {
     GetComponent<HandTrackingAnnotationController>().Draw(
       screenController.transform, value.HandLandmarkLists, value.Handednesses, value.PalmDetections, value.PalmRects, true);
   }
+
+  protected override void PrepareDependentAssets() {
+    PrepareDependentAsset("hand_landmark.bytes");
+    PrepareDependentAsset("hand_recrop.bytes");
+    PrepareDependentAsset("handedness.txt");
+    PrepareDependentAsset("palm_detections.bytes");
+  }
 }

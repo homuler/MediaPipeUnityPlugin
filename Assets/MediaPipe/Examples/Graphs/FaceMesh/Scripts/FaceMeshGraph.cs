@@ -99,4 +99,9 @@ public class FaceMeshGraph : DemoGraph {
     GetComponent<FaceMeshAnnotationController>().Draw(
         screenController.transform, value.MultiFaceLandmarks, value.FaceRectsFromLandmarks, value.FaceDetections, true);
   }
+
+  protected override void PrepareDependentAssets() {
+    PrepareDependentAsset("face_detection_front.bytes");
+    PrepareDependentAsset("face_landmark.bytes");
+  }
 }

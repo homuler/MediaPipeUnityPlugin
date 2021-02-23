@@ -11,7 +11,6 @@ namespace Mediapipe {
   /// </remarks>
   public abstract class ResourceManager : IDisposable {
     volatile int disposeSignaled = 0;
-    bool isDisposed = false;
 
     public delegate string CacheFilePathResolver(string path);
     public abstract CacheFilePathResolver cacheFilePathResolver { get; }
@@ -33,8 +32,6 @@ namespace Mediapipe {
         return;
       }
 
-      isDisposed = true;
-
       if (disposing) {
         DisposeManaged();
       }
@@ -50,8 +47,6 @@ namespace Mediapipe {
     protected virtual void DisposeUnmanaged() {
       SafeNativeMethods.mp_api__ResetResourceManager(IntPtr.Zero, IntPtr.Zero);
     }
-
-
 
     /// <param name="name">Asset name</param>
     /// <returns>

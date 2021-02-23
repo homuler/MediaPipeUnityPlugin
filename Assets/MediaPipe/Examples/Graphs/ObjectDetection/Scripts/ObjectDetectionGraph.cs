@@ -28,4 +28,9 @@ public class ObjectDetectionGraph : DemoGraph {
     // NOTE: input image is flipped
     GetComponent<DetectionListAnnotationController>().Draw(screenController.transform, detections, true);
   }
+
+  protected override void PrepareDependentAssets() {
+    PrepareDependentAsset("ssdlite_object_detection_labelmap.txt");
+    PrepareDependentAsset("ssdlite_object_detection.bytes");
+  }
 }

@@ -177,4 +177,16 @@ public class HolisticGraph : DemoGraph {
       screenController.transform, value.PoseLandmarks, value.PoseRoi, value.PoseDetection,
       value.FaceLandmarks, value.LeftHandLandmarks, value.RightHandLandmarks, true);
   }
+
+  protected override void PrepareDependentAssets() {
+    PrepareDependentAsset("face_detection_front.bytes");
+    PrepareDependentAsset("face_landmark.bytes");
+    PrepareDependentAsset("iris_landmark.bytes");
+    PrepareDependentAsset("hand_landmark.bytes");
+    PrepareDependentAsset("hand_recrop.bytes");
+    PrepareDependentAsset("handedness.txt");
+    PrepareDependentAsset("palm_detections.bytes");
+    PrepareDependentAsset("pose_detection.bytes");
+    PrepareDependentAsset("pose_landmark_full_body.bytes");
+  }
 }

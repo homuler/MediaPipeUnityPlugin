@@ -1,96 +1,48 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &1746814465944258415
-PrefabInstance:
+--- !u!1 &6989980473500709381
+GameObject:
   m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: -5853697970282788592, guid: fc49226dfd774c66faf8a3dd6be53d0f,
-        type: 3}
-      propertyPath: config
-      value: 
-      objectReference: {fileID: 4900000, guid: 40b02bc7786abbb10995a02065f86ee8, type: 3}
-    - target: {fileID: -5853697970282788592, guid: fc49226dfd774c66faf8a3dd6be53d0f,
-        type: 3}
-      propertyPath: cpuConfig
-      value: 
-      objectReference: {fileID: 4900000, guid: 26045758a7804d813a7663843e829ee2, type: 3}
-    - target: {fileID: -5853697970282788592, guid: fc49226dfd774c66faf8a3dd6be53d0f,
-        type: 3}
-      propertyPath: gpuConfig
-      value: 
-      objectReference: {fileID: 4900000, guid: 40b02bc7786abbb10995a02065f86ee8, type: 3}
-    - target: {fileID: -5853697970282788592, guid: fc49226dfd774c66faf8a3dd6be53d0f,
-        type: 3}
-      propertyPath: androidConfig
-      value: 
-      objectReference: {fileID: 4900000, guid: 05b9bdfe04f2582629927f10db8a53e8, type: 3}
-    - target: {fileID: -5853697970282788592, guid: fc49226dfd774c66faf8a3dd6be53d0f,
-        type: 3}
-      propertyPath: desktopConfig
-      value: 
-      objectReference: {fileID: 4900000, guid: 40b02bc7786abbb10995a02065f86ee8, type: 3}
-    - target: {fileID: 5680418270291803701, guid: fc49226dfd774c66faf8a3dd6be53d0f,
-        type: 3}
-      propertyPath: m_Name
-      value: BoxTrackingDesktopGPU
-      objectReference: {fileID: 0}
-    - target: {fileID: 5680418270291803703, guid: fc49226dfd774c66faf8a3dd6be53d0f,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5680418270291803703, guid: fc49226dfd774c66faf8a3dd6be53d0f,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5680418270291803703, guid: fc49226dfd774c66faf8a3dd6be53d0f,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5680418270291803703, guid: fc49226dfd774c66faf8a3dd6be53d0f,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -10
-      objectReference: {fileID: 0}
-    - target: {fileID: 5680418270291803703, guid: fc49226dfd774c66faf8a3dd6be53d0f,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5680418270291803703, guid: fc49226dfd774c66faf8a3dd6be53d0f,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5680418270291803703, guid: fc49226dfd774c66faf8a3dd6be53d0f,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5680418270291803703, guid: fc49226dfd774c66faf8a3dd6be53d0f,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5680418270291803703, guid: fc49226dfd774c66faf8a3dd6be53d0f,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5680418270291803703, guid: fc49226dfd774c66faf8a3dd6be53d0f,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5680418270291803703, guid: fc49226dfd774c66faf8a3dd6be53d0f,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: fc49226dfd774c66faf8a3dd6be53d0f, type: 3}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6989980473500709383}
+  - component: {fileID: 523618260589877730}
+  m_Layer: 0
+  m_Name: BoxTracking
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6989980473500709383
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6989980473500709381}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &523618260589877730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6989980473500709381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c78f9a7c4d3b98c91b896f05f1fdc00c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gpuConfig: {fileID: 4900000, guid: 40b02bc7786abbb10995a02065f86ee8, type: 3}
+  cpuConfig: {fileID: 4900000, guid: 26045758a7804d813a7663843e829ee2, type: 3}
+  androidConfig: {fileID: 4900000, guid: 05b9bdfe04f2582629927f10db8a53e8, type: 3}

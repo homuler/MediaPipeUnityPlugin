@@ -39,4 +39,8 @@ public class FaceDetectionGraph : DemoGraph {
     // NOTE: input image is flipped
     GetComponent<DetectionListAnnotationController>().Draw(screenController.transform, detections, true);
   }
+
+  protected override void PrepareDependentAssets() {
+    PrepareDependentAsset("face_detection_front.bytes");
+  }
 }

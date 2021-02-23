@@ -54,6 +54,12 @@ namespace Mediapipe {
       }
     }
 
+    public void ClearAllCacheFiles() {
+      if (Directory.Exists(CacheRootPath)) {
+        Directory.Delete(CacheRootPath, true);
+      }
+    }
+
     public void LoadAssetBundle() {
       if (assetBundle != null) {
         Debug.LogWarning("AssetBundle is already loaded");

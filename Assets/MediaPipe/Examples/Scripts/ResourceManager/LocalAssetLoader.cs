@@ -1,17 +1,15 @@
-using UnityEngine;
+using Mediapipe;
 
-public sealed class LocalAssetLoader : MonoBehaviour {
-  Mediapipe.LocalAssetManager resourceManager;
-
+public sealed class LocalAssetLoader : AssetLoader {
   void Start() {
     resourceManager = new Mediapipe.LocalAssetManager();
   }
 
-  void PrepareAsset(string name, string uniqueKey) {
+  public override void PrepareAsset(string name, string uniqueKey) {
     resourceManager.PrepareAsset(name, uniqueKey);
   }
 
-  void PrepareAsset(string name) {
+  public override void PrepareAsset(string name) {
     resourceManager.PrepareAsset(name, name);
   }
 }

@@ -174,4 +174,9 @@ public class InstantMotionTrackingGraph : OfficialDemoGraph {
 
     texture.SetPixels32(dest);
   }
+
+  protected override void PrepareDependentAssets() {
+    PrepareDependentAsset("ssdlite_object_detection.bytes");
+    PrepareDependentAsset("robot.obj.bytes");
+  }
 }

@@ -1,17 +1,21 @@
-using UnityEngine;
+using Mediapipe;
 
-public sealed class AssetBundleLoader : MonoBehaviour {
-  Mediapipe.AssetBundleManager resourceManager;
-
+public sealed class AssetBundleLoader : AssetLoader {
   void Start() {
-    resourceManager = new Mediapipe.AssetBundleManager();
+    resourceManager = new AssetBundleManager();
   }
 
-  void PrepareAsset(string name, string uniqueKey) {
-    resourceManager.PrepareAsset(name, uniqueKey);
+  void OnDestroy() {
+    ((AssetBundleManager)resourceManager).ClearAllCacheFiles();
   }
 
-  void PrepareAsset(string name) {
-    resourceManager.PrepareAsset(name, name);
+  public override void PrepareAsset(string name, string uniqueKey) {
+    if (!resourceManager.IsPrepared(uniqueKey)) {
+      resourceManager.PrepareAsset(name, uniqueKey);
+    }
+  }
+
+  public override void PrepareAsset(string name) {
+    PrepareAsset(name, name);
   }
 }
