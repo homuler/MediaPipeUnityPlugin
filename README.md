@@ -149,16 +149,6 @@ Select `MediaPipe/Examples/Scenes/DesktopDemo` and play.
 ### Desktop
 If you'd like to run graphs on CPU, uncheck `Use GPU` from the inspector window.
 ![scene-director-use-gpu](https://user-images.githubusercontent.com/4690128/107133987-4f51b180-6931-11eb-8a75-4993a5c70cc1.png)
-To include model files in the package, it is neccessary to build an AssetBundle before building the app.
-You can build it by clicking **Assets > Build AssetBundles** from the menu.\
-The AssetBundle file will be created under `Assets/StreamingAssets`.
-
-### Android
-See [Desktop](#Desktop) to build AssetBundles.\
-If you prefer, model files can be included in `mediapipe_android.aar` instead, and in that case, skip the AssetBundle build step.
-
-### iOS
-See [Desktop](#Desktop) to build AssetBundles.
 
 ## Troubleshooting
 ### DllNotFoundException: mediapipe_c
