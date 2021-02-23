@@ -34,8 +34,20 @@ namespace Mediapipe {
 
       var destFilePath = GetCacheFilePathFor(uniqueKey);
 
-      if (sourceFilePath != destFilePath) {
-        File.Copy(sourceFilePath, destFilePath, overwrite);
+      if (sourceFilePath == destFilePath) {
+        return;
+      }
+
+      if (!overwrite && File.Exists(destFilePath)) {
+        Debug.Log($"{destFilePath} already exists");
+        return;
+      }
+
+      using (var sourceStream = File.OpenRead(sourceFilePath)) {
+        using (var destStream = File.Open(destFilePath, overwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.Write)) {
+          sourceStream.CopyTo(destStream);
+          Debug.Log($"{sourceFilePath} is copied to {destFilePath}");
+        }
       }
     }
 
@@ -52,27 +64,16 @@ namespace Mediapipe {
         return;
       }
 
-      FileStream sourceStream = null;
-      FileStream destStream = null;
-  
-      try {
-        sourceStream = File.OpenRead(sourceFilePath);
-        destStream = File.Open(destFilePath, overwrite ? FileMode.Create : FileMode.CreateNew);
-
-        await sourceStream.CopyToAsync(destStream);
-      } finally {
-        if (sourceStream != null) {
-          sourceStream.Close();
-        }
-        if (destStream != null) {
-          destStream.Close();
+      using (var sourceStream = File.OpenRead(sourceFilePath)) {
+        using (var destStream = File.Open(destFilePath, overwrite ? FileMode.Create : FileMode.CreateNew)) {
+          await sourceStream.CopyToAsync(destStream);
         }
       }
     }
 
     [AOT.MonoPInvokeCallback(typeof(CacheFilePathResolver))]
     protected static string CacheFileFromAsset(string assetPath) {
-      var assetName = GetAssetName(assetPath);
+      var assetName = GetAssetNameFromPath(assetPath);
       var cachePath = GetCacheFilePathFor(assetName);
 
       if (File.Exists(cachePath)) {
@@ -98,14 +99,6 @@ namespace Mediapipe {
         Debug.LogError($"Failed to read file `{path}`: ${e.ToString()}");
         return false;
       }
-    }
-
-    static string GetAssetName(string assetPath) {
-      // assume that each file name is unique if its extension is ignored.
-      var assetName = Path.GetFileNameWithoutExtension(assetPath);
-      var extension = Path.GetExtension(assetPath);
-
-      return extension == ".tflite" ? $"{assetName}.bytes" : $"{assetName}{extension}";
     }
 
     static string GetCacheFilePathFor(string assetName) {

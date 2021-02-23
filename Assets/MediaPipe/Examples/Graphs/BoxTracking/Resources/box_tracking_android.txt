@@ -16,7 +16,7 @@
 #
 # CHANGES:
 #   - Add ImageTransformationCalculator and rotate the input
-#   - Add GlScalerCalculator and flips the output
+#   - Add GlScalerCalculator and flip the output
 
 # MediaPipe graph that performs object detection and tracking with TensorFlow
 # Lite on GPU.

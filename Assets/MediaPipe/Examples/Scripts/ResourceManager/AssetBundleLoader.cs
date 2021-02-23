@@ -9,13 +9,11 @@ public sealed class AssetBundleLoader : AssetLoader {
     ((AssetBundleManager)resourceManager).ClearAllCacheFiles();
   }
 
-  public override void PrepareAsset(string name, string uniqueKey) {
-    if (!resourceManager.IsPrepared(uniqueKey)) {
-      resourceManager.PrepareAsset(name, uniqueKey);
-    }
+  public override void PrepareAsset(string name, string uniqueKey, bool overwrite = false) {
+    resourceManager.PrepareAsset(name, uniqueKey, overwrite);
   }
 
-  public override void PrepareAsset(string name) {
-    PrepareAsset(name, name);
+  public override void PrepareAsset(string name, bool overwrite = false) {
+    PrepareAsset(name, name, overwrite);
   }
 }

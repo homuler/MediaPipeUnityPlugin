@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Copied from mediapipe/graphs/instant_motion_tracking/instant_motion_tracking.pbtxt
+# Copied from mediapipe/graphs/object_detection_3d/object_occlusion_tracking.pbtxt
 #
 # CHANGES:
 #   - Remove GIF related inputs

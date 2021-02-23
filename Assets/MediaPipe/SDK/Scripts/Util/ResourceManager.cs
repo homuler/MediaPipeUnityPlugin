@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -80,6 +81,23 @@ namespace Mediapipe {
 
     public Task PrepareAssetAsync(string name, bool overwrite = true) {
       return PrepareAssetAsync(name, name, overwrite);
+    }
+
+    protected static string GetAssetNameFromPath(string assetPath) {
+      var assetName = Path.GetFileNameWithoutExtension(assetPath);
+      var extension = Path.GetExtension(assetPath);
+
+      switch (extension) {
+        case ".tflite": {
+          return $"{assetName}.bytes";
+        }
+        case ".pbtxt": {
+          return $"{assetName}.txt";
+        }
+        default: {
+          return $"{assetName}{extension}";
+        }
+      }
     }
   }
 }

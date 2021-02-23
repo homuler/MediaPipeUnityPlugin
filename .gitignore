@@ -21,6 +21,7 @@ bazel-*
 Assets/StreamingAssets*
 Assets/MediaPipe/SDK/Resources/*
 !Assets/MediaPipe/SDK/Resources/*.meta
+Assets/MediaPipe/SDK/Resources/object_detection_3d.bytes.meta
 Assets/MediaPipe/SDK/Plugins/opencv_world*.dll.meta
 Assets/MediaPipe/SDK/Plugins/Protobuf*
 Assets/MediaPipe/SDK/Scripts/Protobuf/**/*.cs

@@ -1,5 +1,13 @@
 load("@rules_pkg//:pkg.bzl", "pkg_zip")
 
+def copy_file(name, src, out):
+    native.genrule(
+      name = name,
+      srcs = [src],
+      outs = [out],
+      cmd = "cp $< $@"
+    )
+
 def pkg_asset(name, srcs = [], **kwargs):
     """Package MediaPipe assets
     This task renames asset files so that they can be added to an AssetBundle (e.g. x.tflte -> x.bytes) and zip them.
@@ -22,8 +30,12 @@ def _normalize_exts_impl(ctx):
     output_files = []
 
     for src in ctx.files.srcs:
-        if src.extension in ctx.attr.bytes_exts:
-            dest = ctx.actions.declare_file(src.path[:-1 * len(src.extension)] + "bytes")
+        ext = "bytes" if src.extension in ctx.attr.bytes_exts else ("txt" if src.extension in ctx.attr.txt_exts else src.extension)
+
+        if ext == src.extension:
+            output_files.append(src)
+        else:
+            dest = ctx.actions.declare_file(src.path[:-1 * len(src.extension)] + ext)
             ctx.actions.run_shell(
               inputs = [src],
               outputs = [dest],
@@ -32,8 +44,6 @@ def _normalize_exts_impl(ctx):
               progress_message = "Copying %s to %s...".format(src.path, dest.path),
             )
             output_files.append(dest)
-        else:
-            output_files.append(src)
 
     return [
       DefaultInfo(files = depset(output_files)),
@@ -43,6 +53,7 @@ _normalize_exts = rule(
     implementation = _normalize_exts_impl,
     attrs = {
         "srcs": attr.label_list(allow_files = True),
-        "bytes_exts": attr.string_list(default = ["jpg", "tflite", "uuu"]),
+        "bytes_exts": attr.string_list(default = ["jpg", "png", "tflite", "uuu"]),
+        "txt_exts": attr.string_list(default = ["pbtxt"]),
     },
 )

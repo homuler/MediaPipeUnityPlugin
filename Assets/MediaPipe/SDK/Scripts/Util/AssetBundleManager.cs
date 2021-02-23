@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -89,7 +88,12 @@ namespace Mediapipe {
       if (assetBundle == null) {
         LoadAssetBundle();
       }
+
       var asset = assetBundle.LoadAsset<TextAsset>(name);
+      if (asset == null) {
+        throw new IOException($"Failed to load {name} from {assetBundle.name}");
+      }
+
       WriteCacheFile(asset, uniqueKey, overwrite);
     }
 
@@ -108,7 +112,7 @@ namespace Mediapipe {
 
     [AOT.MonoPInvokeCallback(typeof(CacheFilePathResolver))]
     static string CacheFileFromAsset(string assetPath) {
-      var assetName = GetAssetName(assetPath);
+      var assetName = GetAssetNameFromPath(assetPath);
       var cachePath = GetCacheFilePathFor(assetName);
 
       if (File.Exists(cachePath)) {
@@ -136,13 +140,6 @@ namespace Mediapipe {
       }
     }
 
-    static string GetAssetName(string assetPath) {
-      var assetName = Path.GetFileNameWithoutExtension(assetPath);
-      var extension = Path.GetExtension(assetPath);
-
-      return extension == ".tflite" ? $"{assetName}.bytes" : $"{assetName}{extension}";
-    }
-
     static string GetCacheFilePathFor(string assetName) {
       return Path.Combine(_CacheRootPath, assetName);
     }
@@ -151,7 +148,8 @@ namespace Mediapipe {
       var cachePath = GetCacheFilePathFor(uniqueKey);
 
       if (!overwrite && File.Exists(cachePath)) {
-        throw new IOException($"{cachePath} exists");
+        Debug.Log($"{cachePath} already exists");
+        return;
       }
 
       if (!Directory.Exists(CacheRootPath)) {
@@ -163,24 +161,23 @@ namespace Mediapipe {
     }
 
     async Task WriteCacheFileAsync(TextAsset asset, string uniqueKey, bool overwrite) {
+      var cachePath = GetCacheFilePathFor(uniqueKey);
+
+      if (!overwrite && File.Exists(cachePath)) {
+        Debug.Log($"{cachePath} already exists");
+        return;
+      }
+
       if (!Directory.Exists(CacheRootPath)) {
         Directory.CreateDirectory(CacheRootPath);
       }
 
-      var cachePath = GetCacheFilePathFor(uniqueKey);
       var bytes = asset.bytes;
+      var mode = overwrite ? FileMode.Create : FileMode.CreateNew;
 
-      FileStream sourceStream = null;
-
-      try {
-        var mode = overwrite ? FileMode.Create : FileMode.CreateNew;
-        sourceStream = new FileStream(cachePath, mode, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true);
+      using (var sourceStream = new FileStream(cachePath, mode, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true)) {
         await sourceStream.WriteAsync(bytes, 0, bytes.Length);
         Debug.Log($"{asset.name} is saved to {cachePath} (length={bytes.Length})");
-      } finally {
-        if (sourceStream != null) {
-          sourceStream.Close();
-        }
       }
     }
   }

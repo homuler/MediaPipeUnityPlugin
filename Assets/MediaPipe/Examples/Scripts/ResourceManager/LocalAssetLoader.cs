@@ -5,11 +5,11 @@ public sealed class LocalAssetLoader : AssetLoader {
     resourceManager = new Mediapipe.LocalAssetManager();
   }
 
-  public override void PrepareAsset(string name, string uniqueKey) {
-    resourceManager.PrepareAsset(name, uniqueKey);
+  public override void PrepareAsset(string name, string uniqueKey, bool overwrite = false) {
+    resourceManager.PrepareAsset(name, uniqueKey, overwrite);
   }
 
-  public override void PrepareAsset(string name) {
-    resourceManager.PrepareAsset(name, name);
+  public override void PrepareAsset(string name, bool overwrite = false) {
+    resourceManager.PrepareAsset(name, name, overwrite);
   }
 }

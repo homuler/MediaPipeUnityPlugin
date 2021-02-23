@@ -188,11 +188,11 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
 
   protected virtual void PrepareDependentAssets() {}
 
-  protected void PrepareDependentAsset(string assetName, string uniqueKey) {
-    resourceManager.GetComponent<AssetLoader>().PrepareAsset(assetName, uniqueKey);
+  protected void PrepareDependentAsset(string assetName, string uniqueKey, bool overwrite = false) {
+    resourceManager.GetComponent<AssetLoader>().PrepareAsset(assetName, uniqueKey, overwrite);
   }
 
-  protected void PrepareDependentAsset(string assetName) {
-    PrepareDependentAsset(assetName, assetName);
+  protected void PrepareDependentAsset(string assetName, bool overwrite = false) {
+    PrepareDependentAsset(assetName, assetName, overwrite);
   }
 }

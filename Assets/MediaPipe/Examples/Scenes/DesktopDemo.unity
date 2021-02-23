@@ -1238,6 +1238,8 @@ MonoBehaviour:
     type: 3}
   objectDetectionGraph: {fileID: 8958252977655340068, guid: d5971d2eb607f463cb377c8460592f82,
     type: 3}
+  objectDetection3dGraph: {fileID: 8245872100598249146, guid: e062f09bfc63ada65a687ade46bef7ff,
+    type: 3}
   boxTrackingGraph: {fileID: 6989980473500709381, guid: 11c74e9e95a2b0ef3b180784b721735e,
     type: 3}
   instantMotionTrackingGraph: {fileID: 4459170324269958257, guid: dc998ba0475a9049eadb1dedd8bbf7dd,
