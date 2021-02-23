@@ -1,16 +1,20 @@
+#include <mutex>
 #include "mediapipe/framework/port/canonical_errors.h"
 #include "mediapipe/framework/port/logging.h"
 #include "mediapipe/framework/port/ret_check.h"
 #include "mediapipe_api/util/resource_manager.h"
-
 namespace {
+  std::mutex mutex_;
+
   CacheFilePathResolver* cache_file_path_resolver_ = nullptr;
   ReadFileHandler* read_file_handler_ = nullptr;
 }
 
-void mp_api__PrepareResourceManager(CacheFilePathResolver* resolver, ReadFileHandler* handler) {
+void mp_api__ResetResourceManager(CacheFilePathResolver* resolver, ReadFileHandler* handler) {
+  mutex_.lock();
   cache_file_path_resolver_ = resolver;
   read_file_handler_ = handler;
+  mutex_.unlock();
 }
 
 namespace mediapipe {

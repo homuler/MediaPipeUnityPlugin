@@ -24,8 +24,6 @@ public class SceneDirector : MonoBehaviour {
   static IntPtr currentContext = IntPtr.Zero;
 
   const int MAX_WAIT_FRAME = 1000;
-  bool IsAssetLoaded = false;
-  bool IsAssetLoadFailed = false;
 
   void OnEnable() {
     // for debugging
@@ -39,7 +37,7 @@ public class SceneDirector : MonoBehaviour {
   }
 #endif
 
-  async void Start() {
+  void Start() {
 #if UNITY_EDITOR_OSX || UNITY_EDITOR_WIN
   #if UNITY_STANDALONE
     if (useGPU) {
@@ -59,21 +57,12 @@ public class SceneDirector : MonoBehaviour {
     }
 #endif
 
+    var resourceManager = GameObject.Find("ResourceManager");
 #if UNITY_EDITOR
-    var resourceManager = LocalAssetManager.Instance;
+    resourceManager.AddComponent<LocalAssetLoader>();
 #else
-    var resourceManager = AssetBundleManager.Instance;
+    resourceManager.AddComponent<AssetBundleLoader>();
 #endif
-
-    ResourceUtil.InitializeResourceManager(resourceManager);
-
-    try {
-      await resourceManager.LoadAllAssetsAsync();
-      IsAssetLoaded = true;
-    } catch (Exception e) {
-      Debug.LogError(e);
-      IsAssetLoadFailed = true;
-    }
   }
 
   void OnDisable() {
@@ -158,13 +147,6 @@ public class SceneDirector : MonoBehaviour {
   }
 
   IEnumerator RunGraph() {
-    yield return WaitForAssets();
-
-    if (IsAssetLoadFailed) {
-      Debug.LogError("Failed to load assets. Stopping...");
-      yield break;
-    }
-
     yield return WaitForGraph();
 
     if (graphPrefab == null) {
@@ -202,14 +184,6 @@ public class SceneDirector : MonoBehaviour {
       graph.PushInput(nextFrame).AssertOk();
       graph.RenderOutput(webCamScreenController, nextFrame);
     }
-  }
-
-  IEnumerator WaitForAssets() {
-    if (!IsAssetLoaded && !IsAssetLoadFailed) {
-      Debug.Log("Waiting for assets to be loaded...");
-    }
-
-    yield return new WaitUntil(() => IsAssetLoaded || IsAssetLoadFailed);
   }
 
   IEnumerator WaitForGraph() {

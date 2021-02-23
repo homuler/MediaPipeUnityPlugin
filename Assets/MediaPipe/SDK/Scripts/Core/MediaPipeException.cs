@@ -1,7 +1,7 @@
 using System;
 
 namespace Mediapipe {
-  public class MediaPipeException : ApplicationException {
+  public class MediaPipeException : Exception {
     public MediaPipeException(string message) : base(message) {}
   }
 }
