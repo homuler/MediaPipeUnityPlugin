@@ -179,14 +179,14 @@ public class HolisticGraph : DemoGraph {
   }
 
   protected override void PrepareDependentAssets() {
-    PrepareDependentAsset("face_detection_front.bytes");
-    PrepareDependentAsset("face_landmark.bytes");
-    PrepareDependentAsset("iris_landmark.bytes");
-    PrepareDependentAsset("hand_landmark.bytes");
-    PrepareDependentAsset("hand_recrop.bytes");
-    PrepareDependentAsset("handedness.txt");
-    PrepareDependentAsset("palm_detections.bytes");
-    PrepareDependentAsset("pose_detection.bytes");
-    PrepareDependentAsset("pose_landmark_full_body.bytes");
+    PrepareDependentAsset("face_detection_front");
+    PrepareDependentAsset("face_landmark");
+    PrepareDependentAsset("iris_landmark");
+    PrepareDependentAsset("hand_landmark");
+    PrepareDependentAsset("hand_recrop");
+    PrepareDependentAsset("handedness");
+    PrepareDependentAsset("palm_detection");
+    PrepareDependentAsset("pose_detection");
+    PrepareDependentAsset("pose_landmark_full_body");
   }
 }

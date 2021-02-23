@@ -162,9 +162,9 @@ public class OfficialDemoGraph : DemoGraph {
 #endif
 
   protected override void PrepareDependentAssets() {
-    PrepareDependentAsset("hand_landmark.bytes");
-    PrepareDependentAsset("hand_recrop.bytes");
-    PrepareDependentAsset("handedness.txt");
-    PrepareDependentAsset("palm_detections.bytes");
+    PrepareDependentAsset("hand_landmark");
+    PrepareDependentAsset("hand_recrop");
+    PrepareDependentAsset("handedness");
+    PrepareDependentAsset("palm_detection");
   }
 }

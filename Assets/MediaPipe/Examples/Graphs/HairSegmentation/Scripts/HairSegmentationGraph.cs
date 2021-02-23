@@ -37,6 +37,6 @@ public class HairSegmentationGraph : DemoGraph {
   }
 
   protected override void PrepareDependentAssets() {
-    PrepareDependentAsset("hair_segmentation.bytes");
+    PrepareDependentAsset("hair_segmentation");
   }
 }

@@ -41,6 +41,6 @@ public class FaceDetectionGraph : DemoGraph {
   }
 
   protected override void PrepareDependentAssets() {
-    PrepareDependentAsset("face_detection_front.bytes");
+    PrepareDependentAsset("face_detection_front");
   }
 }

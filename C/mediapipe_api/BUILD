@@ -142,7 +142,6 @@ pkg_asset(
     srcs = [
         "//mediapipe_api/graphs/instant_motion_tracking:assets",
         "@com_google_mediapipe//mediapipe/models:face_detection_front.tflite",
-        "@com_google_mediapipe//mediapipe/models:face_detection_front_labelmap.txt",
         "@com_google_mediapipe//mediapipe/models:face_landmark.tflite",
         "@com_google_mediapipe//mediapipe/models:hair_segmentation.tflite",
         "@com_google_mediapipe//mediapipe/models:ssdlite_object_detection.tflite",

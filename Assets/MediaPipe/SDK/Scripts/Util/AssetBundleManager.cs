@@ -104,14 +104,7 @@ namespace Mediapipe {
         LoadAssetBundle();
       }
       var asset = assetBundle.LoadAsset<TextAsset>(name);
-      var cachePath = GetCacheFilePathFor(uniqueKey);
-
-      if (!overwrite && File.Exists(cachePath)) {
-        throw new IOException($"{cachePath} exists");
-      }
-
-      File.WriteAllBytes(cachePath, asset.bytes);
-      Debug.Log($"{name} is saved to {cachePath}");
+      WriteCacheFile(asset, uniqueKey, overwrite);
     }
 
     public override async Task PrepareAssetAsync(string name, string uniqueKey, bool overwrite = true) {
@@ -136,6 +129,7 @@ namespace Mediapipe {
         return cachePath;
       }
 
+      Debug.LogWarning($"{cachePath} does not exist");
       return null;
     }
 
@@ -172,6 +166,7 @@ namespace Mediapipe {
       }
 
       File.WriteAllBytes(cachePath, asset.bytes);
+      Debug.Log($"{asset.name} is saved to {cachePath} (length={asset.bytes.Length})");
     }
 
     async Task WriteCacheFileAsync(TextAsset asset, string uniqueKey, bool overwrite) {
