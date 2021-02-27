@@ -27,11 +27,6 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
     resourceManager = GameObject.Find("ResourceManager");
   }
 
-  void Start() {
-    PrepareDependentAssets();
-    Debug.Log("Loaded dependent assets");
-  }
-
   protected virtual void OnDestroy() {
     Stop();
 
@@ -48,7 +43,9 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
   }
 
   public virtual void Initialize() {
-    stopwatch = new Stopwatch();
+    PrepareDependentAssets();
+    Debug.Log("Loaded dependent assets");
+
     var config = GetConfig();
 
     if (config == null) {
@@ -57,6 +54,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
     }
 
     graph = new CalculatorGraph(config.text);
+    stopwatch = new Stopwatch();
   }
 
   public void Initialize(GpuResources gpuResources, GlCalculatorHelper gpuHelper) {

@@ -103,9 +103,9 @@ public class HandTrackingGraph : DemoGraph {
   }
 
   protected override void PrepareDependentAssets() {
-    PrepareDependentAsset("hand_landmark");
-    PrepareDependentAsset("hand_recrop");
-    PrepareDependentAsset("handedness");
-    PrepareDependentAsset("palm_detection");
+    PrepareDependentAsset("hand_landmark.bytes");
+    PrepareDependentAsset("hand_recrop.bytes");
+    PrepareDependentAsset("handedness.txt");
+    PrepareDependentAsset("palm_detection.bytes");
   }
 }

@@ -30,7 +30,7 @@ public class ObjectDetectionGraph : DemoGraph {
   }
 
   protected override void PrepareDependentAssets() {
-    PrepareDependentAsset("ssdlite_object_detection_labelmap");
-    PrepareDependentAsset("ssdlite_object_detection");
+    PrepareDependentAsset("ssdlite_object_detection_labelmap.txt");
+    PrepareDependentAsset("ssdlite_object_detection.bytes");
   }
 }

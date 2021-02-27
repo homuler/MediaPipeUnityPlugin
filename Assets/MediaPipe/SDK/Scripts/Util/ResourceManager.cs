@@ -55,11 +55,6 @@ namespace Mediapipe {
     public abstract bool IsPrepared(string name);
 
     /// <summary>
-    ///   Saves all MediaPipe assets (e.g. *.tflite) locally so that MediaPipe can read them.
-    /// </summary>
-    public abstract Task PrepareAllAssetsAsync(bool overwrite = true);
-
-    /// <summary>
     ///   Saves <paramref name="name" /> as <paramref name="uniqueKey" /> to the device.
     /// </summary>
     /// <param name="uniqueKey">

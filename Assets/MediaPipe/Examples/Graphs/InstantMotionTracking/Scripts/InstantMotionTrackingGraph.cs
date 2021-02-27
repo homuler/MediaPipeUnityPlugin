@@ -176,7 +176,7 @@ public class InstantMotionTrackingGraph : OfficialDemoGraph {
   }
 
   protected override void PrepareDependentAssets() {
-    PrepareDependentAsset("ssdlite_object_detection");
-    PrepareDependentAsset("robot.obj");
+    PrepareDependentAsset("ssdlite_object_detection.bytes");
+    PrepareDependentAsset("robot.obj.bytes");
   }
 }

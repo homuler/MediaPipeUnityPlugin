@@ -25,11 +25,6 @@ namespace Mediapipe {
       get { return ResourceRootPath; }
     }
 
-    /// <summary>dummy method</summary>
-    public override Task PrepareAllAssetsAsync(bool overwrite = true) {
-      return Task.CompletedTask;
-    }
-
     public override void PrepareAsset(string name, string uniqueKey, bool overwrite = true) {
       var sourceFilePath = GetCacheFilePathFor(name);
 

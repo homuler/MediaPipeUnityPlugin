@@ -94,8 +94,8 @@ public class IrisTrackingGraph : DemoGraph {
   }
 
   protected override void PrepareDependentAssets() {
-    PrepareDependentAsset("face_detection_front");
-    PrepareDependentAsset("face_landmark");
-    PrepareDependentAsset("iris_landmark");
+    PrepareDependentAsset("face_detection_front.bytes");
+    PrepareDependentAsset("face_landmark.bytes");
+    PrepareDependentAsset("iris_landmark.bytes");
   }
 }

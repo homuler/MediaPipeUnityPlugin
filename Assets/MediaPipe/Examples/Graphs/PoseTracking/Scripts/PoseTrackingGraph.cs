@@ -79,7 +79,7 @@ public class PoseTrackingGraph : DemoGraph {
   }
 
   protected override void PrepareDependentAssets() {
-    PrepareDependentAsset("pose_detection");
-    PrepareDependentAsset("pose_landmark_upper_body");
+    PrepareDependentAsset("pose_detection.bytes");
+    PrepareDependentAsset("pose_landmark_upper_body.bytes");
   }
 }

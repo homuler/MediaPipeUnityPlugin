@@ -34,6 +34,9 @@ public class OfficialDemoGraph : DemoGraph {
 
 #if UNITY_ANDROID
   public override void Initialize() {
+    PrepareDependentAssets();
+    Debug.Log("Loaded dependent assets");
+
     var config = GetConfig();
 
     if (config == null) {
@@ -162,9 +165,9 @@ public class OfficialDemoGraph : DemoGraph {
 #endif
 
   protected override void PrepareDependentAssets() {
-    PrepareDependentAsset("hand_landmark");
-    PrepareDependentAsset("hand_recrop");
-    PrepareDependentAsset("handedness");
-    PrepareDependentAsset("palm_detection");
+    PrepareDependentAsset("hand_landmark.bytes");
+    PrepareDependentAsset("hand_recrop.bytes");
+    PrepareDependentAsset("handedness.txt");
+    PrepareDependentAsset("palm_detection.bytes");
   }
 }

@@ -85,20 +85,6 @@ namespace Mediapipe {
       assetBundle = bundleLoadReq.assetBundle;
     }
 
-    public override async Task PrepareAllAssetsAsync(bool overwrite = true) {
-      if (assetBundle == null) {
-        await LoadAssetBundleAsync();
-      }
-
-      var assetLoadReq = await assetBundle.LoadAllAssetsAsync<TextAsset>();
-      if (assetLoadReq.allAssets == null) {
-        throw new IOException($"Failed to load assets from {assetBundle.name}");
-      }
-
-      var loadTasks = assetLoadReq.allAssets.Select((asset) => WriteCacheFileAsync((TextAsset)asset, asset.name, overwrite));
-      await Task.WhenAll(loadTasks);
-    }
-
     public override void PrepareAsset(string name, string uniqueKey, bool overwrite = true) {
       if (assetBundle == null) {
         LoadAssetBundle();
@@ -122,7 +108,7 @@ namespace Mediapipe {
 
     [AOT.MonoPInvokeCallback(typeof(CacheFilePathResolver))]
     static string CacheFileFromAsset(string assetPath) {
-      var assetName = Path.GetFileNameWithoutExtension(assetPath);
+      var assetName = GetAssetName(assetPath);
       var cachePath = GetCacheFilePathFor(assetName);
 
       if (File.Exists(cachePath)) {
@@ -148,6 +134,13 @@ namespace Mediapipe {
         Debug.LogError($"Failed to read file `{path}`: ${e.ToString()}");
         return false;
       }
+    }
+
+    static string GetAssetName(string assetPath) {
+      var assetName = Path.GetFileNameWithoutExtension(assetPath);
+      var extension = Path.GetExtension(assetPath);
+
+      return extension == ".tflite" ? $"{assetName}.bytes" : $"{assetName}{extension}";
     }
 
     static string GetCacheFilePathFor(string assetName) {
