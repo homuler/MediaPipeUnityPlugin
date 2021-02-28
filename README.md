@@ -22,7 +22,7 @@ Hair Segmentation       | ✅       |     | ✅           |             |       
 Object Detection        | ✅       | ✅   | ✅           | ✅           | ✅     | ✅
 Box Tracking            | ✅       | ✅   | ✅           | ✅           | ✅     | 🔺*1
 Instant Motion Tracking | ✅       | 🔺   | ✅           |             |       |
-Objectron               |         |     |             |             |       |
+Objectron               | ✅       | 🔺   | ✅           |             |       |
 KNIFT                   |         |     |             |             |       |
 
 *1: crashes sometimes when the graph exits.
