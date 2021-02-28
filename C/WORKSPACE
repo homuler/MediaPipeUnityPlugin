@@ -42,6 +42,7 @@ http_archive(
   strip_prefix = "mediapipe-0.8.2",
   patches = [
       "@//third_party:mediapipe_windows.diff",
+      "@//third_party:mediapipe_ios.diff",
       "@//third_party:mediapipe_visibility.diff",
       "@//third_party:mediapipe_model_path.diff",
       "@//third_party:mediapipe_extension.diff",
