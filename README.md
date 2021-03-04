@@ -110,7 +110,7 @@ yay -S dotnet-sdk dotnet-runtime-2.1
         # You need to specify PYTHON_BIN_PATH
         # Note that the path separator is `//`, not `\`.
         # In the below case, `python.exe` is installed at `C:\path\to\pathon.exe`.
-        make cpu PYTHON_BIN_PATH="C://path//to//python.exe"
+        make cpu PYTHON_BIN_PATH="C://path//to//python.exe" && make install
         ```
 
 1. Start Unity Editor
