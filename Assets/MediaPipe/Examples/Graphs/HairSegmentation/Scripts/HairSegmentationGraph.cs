@@ -11,7 +11,7 @@ public class HairSegmentationGraph : DemoGraph {
       return Status.FailedPrecondition("HairSegmentation is not supported on CPU");
     }
 
-    hairMaskStreamPoller = graph.AddOutputStreamPoller<ImageFrame>(hairMaskStream).ConsumeValueOrDie();
+    hairMaskStreamPoller = graph.AddOutputStreamPoller<ImageFrame>(hairMaskStream).Value();
     hairMaskPacket = new ImageFramePacket();
 
     return graph.StartRun();

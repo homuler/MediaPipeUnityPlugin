@@ -4,11 +4,11 @@
 #include <memory>
 #include "mediapipe/gpu/gl_calculator_helper.h"
 #include "mediapipe_api/common.h"
-#include "mediapipe_api/framework/port/status.h"
+#include "mediapipe_api/external/absl/status.h"
 
 extern "C" {
 
-typedef mediapipe::Status* NativeGlStatusFunction();
+typedef absl::Status* NativeGlStatusFunction();
 
 /** GlCalculatorHelper API */
 MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__(mediapipe::GlCalculatorHelper** gl_calculator_helper_out);
@@ -17,7 +17,7 @@ MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__InitializeForTest__Pgr(mediapipe::G
                                                                     mediapipe::GpuResources* gpu_resources);
 MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__RunInGlContext__PF(mediapipe::GlCalculatorHelper* gl_calculator_helper,
                                                                 NativeGlStatusFunction* gl_func,
-                                                                mediapipe::Status** status_out);
+                                                                absl::Status** status_out);
 
 MP_CAPI(MpReturnCode) mp_GlCalculatorHelper__CreateSourceTexture__Rif(mediapipe::GlCalculatorHelper* gl_calculator_helper,
                                                                       mediapipe::ImageFrame* image_frame,

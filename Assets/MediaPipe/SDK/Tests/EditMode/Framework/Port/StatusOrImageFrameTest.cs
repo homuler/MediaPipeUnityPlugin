@@ -1,6 +1,5 @@
 using Mediapipe;
 using NUnit.Framework;
-using System;
 
 namespace Tests {
   public class StatusOrImageFrameTest {
@@ -31,22 +30,13 @@ namespace Tests {
     }
     #endregion
 
-    #region #ValueOrDie
-    [Test]
-    public void ValueOrDie_ShouldThrowNotSupportedException() {
-      var statusOrImageFrame = InitializeSubject();
-
-      Assert.Throws<NotSupportedException>(() => { statusOrImageFrame.ValueOrDie(); });
-    }
-    #endregion
-
-    #region #ConsumeValueOrDie
+    #region #Value
     [Test]
     public void ConsumeValueOrDie_ShouldReturnImageFrame_When_StatusIsOk() {
       var statusOrImageFrame = InitializeSubject();
       Assert.True(statusOrImageFrame.ok);
 
-      var imageFrame = statusOrImageFrame.ConsumeValueOrDie();
+      var imageFrame = statusOrImageFrame.Value();
       Assert.AreEqual(imageFrame.Width(), 10);
       Assert.AreEqual(imageFrame.Height(), 10);
       Assert.True(statusOrImageFrame.isDisposed);

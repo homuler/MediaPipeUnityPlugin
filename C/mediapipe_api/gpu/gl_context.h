@@ -5,12 +5,12 @@
 #include <utility>
 #include "mediapipe/gpu/gl_context.h"
 #include "mediapipe_api/common.h"
-#include "mediapipe_api/framework/port/statusor.h"
+#include "mediapipe_api/external/absl/statusor.h"
 
 extern "C" {
 
 typedef std::shared_ptr<mediapipe::GlContext> SharedGlContext;
-typedef mediapipe::StatusOr<SharedGlContext> StatusOrSharedGlContext;
+typedef absl::StatusOr<SharedGlContext> StatusOrSharedGlContext;
 
 MP_CAPI(void) mp_SharedGlContext__delete(SharedGlContext* shared_gl_context);
 MP_CAPI(mediapipe::GlContext*) mp_SharedGlContext__get(SharedGlContext* shared_gl_context);

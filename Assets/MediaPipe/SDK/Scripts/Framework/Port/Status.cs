@@ -25,14 +25,14 @@ namespace Mediapipe {
     public Status(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
     protected override void DeleteMpPtr() {
-      UnsafeNativeMethods.mp_Status__delete(ptr);
+      UnsafeNativeMethods.absl_Status__delete(ptr);
     }
 
     [Obsolete("IsOk() is deprecated, use ok")]
     public bool IsOk() { return ok; }
 
     public bool ok {
-      get { return SafeNativeMethods.mp_Status__ok(mpPtr); }
+      get { return SafeNativeMethods.absl_Status__ok(mpPtr); }
     }
 
     public void AssertOk() {
@@ -46,15 +46,15 @@ namespace Mediapipe {
     }
 
     public int rawCode {
-      get { return SafeNativeMethods.mp_Status__raw_code(mpPtr); }
+      get { return SafeNativeMethods.absl_Status__raw_code(mpPtr); }
     }
 
     public override string ToString() {
-      return MarshalStringFromNative(UnsafeNativeMethods.mp_Status__ToString);
+      return MarshalStringFromNative(UnsafeNativeMethods.absl_Status__ToString);
     }
 
     public static Status Build(StatusCode code, string message, bool isOwner = true) {
-      UnsafeNativeMethods.mp_Status__i_PKc((int)code, message, out var ptr).Assert();
+      UnsafeNativeMethods.absl_Status__i_PKc((int)code, message, out var ptr).Assert();
 
       return new Status(ptr, isOwner);
     }

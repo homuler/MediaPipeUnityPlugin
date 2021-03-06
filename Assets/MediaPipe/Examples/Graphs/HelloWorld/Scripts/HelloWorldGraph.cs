@@ -55,7 +55,7 @@ node {
   }
 
   public Status StartRun() {
-    outputStreamPoller = graph.AddOutputStreamPoller<string>(outputStream).ConsumeValueOrDie();
+    outputStreamPoller = graph.AddOutputStreamPoller<string>(outputStream).Value();
     outputPacket = new StringPacket();
 
     return graph.StartRun();

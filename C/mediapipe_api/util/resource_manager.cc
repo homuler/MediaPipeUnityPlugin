@@ -28,7 +28,7 @@ bool ResourceManager::ReadFile(const std::string& filename, std::string* output)
   return read_file_handler_(filename.c_str(), output);
 }
 
-::mediapipe::StatusOr<std::string> ResourceManager::CachedFileFromAsset(const std::string& filename) {
+::absl::StatusOr<std::string> ResourceManager::CachedFileFromAsset(const std::string& filename) {
   if (cache_file_path_resolver_ == nullptr) {
     return ::mediapipe::FailedPreconditionError("ResourceManager is not initialized");
   }

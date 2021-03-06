@@ -141,7 +141,7 @@ public class SceneDirector : MonoBehaviour {
       Debug.Log($"EGL Context Found ({currentContext})");
     }
 
-    gpuResources = GpuResources.Create(currentContext).ConsumeValueOrDie();
+    gpuResources = GpuResources.Create(currentContext).Value();
     gpuHelper = new GlCalculatorHelper();
     gpuHelper.InitializeForTest(gpuResources);
   }

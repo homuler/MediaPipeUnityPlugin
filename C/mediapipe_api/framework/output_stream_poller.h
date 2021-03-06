@@ -16,8 +16,8 @@ MP_CAPI(MpReturnCode) mp_OutputStreamPoller__QueueSize(mediapipe::OutputStreamPo
 
 MP_CAPI(void) mp_StatusOrPoller__delete(mediapipe::StatusOrPoller* poller);
 MP_CAPI(bool) mp_StatusOrPoller__ok(mediapipe::StatusOrPoller* poller);
-MP_CAPI(MpReturnCode) mp_StatusOrPoller__status(mediapipe::StatusOrPoller* poller, mediapipe::Status** status_out);
-MP_CAPI(MpReturnCode) mp_StatusOrPoller__ConsumeValueOrDie(mediapipe::StatusOrPoller* poller, mediapipe::OutputStreamPoller** poller_out);
+MP_CAPI(MpReturnCode) mp_StatusOrPoller__status(mediapipe::StatusOrPoller* poller, absl::Status** status_out);
+MP_CAPI(MpReturnCode) mp_StatusOrPoller__value(mediapipe::StatusOrPoller* poller, mediapipe::OutputStreamPoller** poller_out);
 
 }  // extern "C"
 

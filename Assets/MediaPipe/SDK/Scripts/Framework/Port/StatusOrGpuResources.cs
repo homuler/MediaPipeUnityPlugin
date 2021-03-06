@@ -21,17 +21,9 @@ namespace Mediapipe {
       }
     }
 
-    public override GpuResources ValueOrDie() {
+    public override GpuResources Value() {
       EnsureOk();
-      UnsafeNativeMethods.mp_StatusOrGpuResources__ValueOrDie(mpPtr, out var gpuResourcesPtr).Assert();
-
-      GC.KeepAlive(this);
-      return new GpuResources(gpuResourcesPtr);
-    }
-
-    public override GpuResources ConsumeValueOrDie() {
-      EnsureOk();
-      UnsafeNativeMethods.mp_StatusOrGpuResources__ConsumeValueOrDie(mpPtr, out var gpuResourcesPtr).Assert();
+      UnsafeNativeMethods.mp_StatusOrGpuResources__value(mpPtr, out var gpuResourcesPtr).Assert();
       Dispose();
 
       return new GpuResources(gpuResourcesPtr);

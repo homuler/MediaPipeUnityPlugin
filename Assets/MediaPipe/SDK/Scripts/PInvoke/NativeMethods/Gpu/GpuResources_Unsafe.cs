@@ -22,9 +22,6 @@ namespace Mediapipe {
     public static extern MpReturnCode mp_StatusOrGpuResources__status(IntPtr statusOrGpuResources, out IntPtr status);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_StatusOrGpuResources__ValueOrDie(IntPtr statusOrGpuResources, out IntPtr gpuResources);
-
-    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_StatusOrGpuResources__ConsumeValueOrDie(IntPtr statusOrGpuResources, out IntPtr gpuResources);
+    public static extern MpReturnCode mp_StatusOrGpuResources__value(IntPtr statusOrGpuResources, out IntPtr gpuResources);
   }
 }

@@ -15,7 +15,7 @@ namespace Tests {
     [Test, GpuOnly]
     public void GetCurrent_ShouldReturnCurrentContext_When_CalledInGlContext() {
       var glCalculatorHelper = new GlCalculatorHelper();
-      glCalculatorHelper.InitializeForTest(GpuResources.Create().ConsumeValueOrDie());
+      glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
 
       glCalculatorHelper.RunInGlContext(() => {
         var glContext = GlContext.GetCurrent();
@@ -59,7 +59,7 @@ namespace Tests {
       GlContext glContext = null;
 
       var glCalculatorHelper = new GlCalculatorHelper();
-      glCalculatorHelper.InitializeForTest(GpuResources.Create().ConsumeValueOrDie());
+      glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
 
       glCalculatorHelper.RunInGlContext(() => {
         glContext = GlContext.GetCurrent();

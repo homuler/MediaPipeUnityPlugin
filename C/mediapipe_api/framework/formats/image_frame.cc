@@ -143,16 +143,15 @@ void mp_StatusOrImageFrame__delete(StatusOrImageFrame* status_or_image_frame) {
 }
 
 bool mp_StatusOrImageFrame__ok(StatusOrImageFrame* status_or_image_frame) {
-  return mp_StatusOr__ok(status_or_image_frame);
+  return absl_StatusOr__ok(status_or_image_frame);
 }
 
-MpReturnCode mp_StatusOrImageFrame__status(StatusOrImageFrame* status_or_image_frame, mediapipe::Status** status_out) {
-  return mp_StatusOr__status(status_or_image_frame, status_out);
+MpReturnCode mp_StatusOrImageFrame__status(StatusOrImageFrame* status_or_image_frame, absl::Status** status_out) {
+  return absl_StatusOr__status(status_or_image_frame, status_out);
 }
 
-MpReturnCode mp_StatusOrImageFrame__ConsumeValueOrDie(StatusOrImageFrame* status_or_image_frame,
-                                                      mediapipe::ImageFrame** value_out) {
-  return mp_StatusOr__ConsumeValueOrDie(status_or_image_frame, value_out);
+MpReturnCode mp_StatusOrImageFrame__value(StatusOrImageFrame* status_or_image_frame, mediapipe::ImageFrame** value_out) {
+  return absl_StatusOr__value(status_or_image_frame, value_out);
 }
 
 // Packet API
@@ -180,9 +179,9 @@ MpReturnCode mp_Packet__GetImageFrame(mediapipe::Packet* packet, const mediapipe
   return mp_Packet__Get(packet, value_out);
 }
 
-MpReturnCode mp_Packet__ValidateAsImageFrame(mediapipe::Packet* packet, mediapipe::Status** status_out) {
+MpReturnCode mp_Packet__ValidateAsImageFrame(mediapipe::Packet* packet, absl::Status** status_out) {
   TRY {
-    *status_out = new mediapipe::Status { packet->ValidateAsType<mediapipe::ImageFrame>() };
+    *status_out = new absl::Status { packet->ValidateAsType<mediapipe::ImageFrame>() };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }

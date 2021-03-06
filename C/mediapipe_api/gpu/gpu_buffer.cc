@@ -37,15 +37,15 @@ void mp_StatusOrGpuBuffer__delete(StatusOrGpuBuffer* status_or_gpu_buffer) {
 }
 
 bool mp_StatusOrGpuBuffer__ok(StatusOrGpuBuffer* status_or_gpu_buffer) {
-  return mp_StatusOr__ok(status_or_gpu_buffer);
+  return absl_StatusOr__ok(status_or_gpu_buffer);
 }
 
-MpReturnCode mp_StatusOrGpuBuffer__status(StatusOrGpuBuffer* status_or_gpu_buffer, mediapipe::Status** status_out) {
-  return mp_StatusOr__status(status_or_gpu_buffer, status_out);
+MpReturnCode mp_StatusOrGpuBuffer__status(StatusOrGpuBuffer* status_or_gpu_buffer, absl::Status** status_out) {
+  return absl_StatusOr__status(status_or_gpu_buffer, status_out);
 }
 
-MpReturnCode mp_StatusOrGpuBuffer__ConsumeValueOrDie(StatusOrGpuBuffer* status_or_gpu_buffer, mediapipe::GpuBuffer** value_out) {
-  return mp_StatusOr__ConsumeValueOrDie(status_or_gpu_buffer, value_out);
+MpReturnCode mp_StatusOrGpuBuffer__value(StatusOrGpuBuffer* status_or_gpu_buffer, mediapipe::GpuBuffer** value_out) {
+  return absl_StatusOr__value(status_or_gpu_buffer, value_out);
 }
 
 MpReturnCode mp__MakeGpuBufferPacket__Rgb(mediapipe::GpuBuffer* gpu_buffer, mediapipe::Packet** packet_out) {
@@ -72,9 +72,9 @@ MpReturnCode mp_Packet__GetGpuBuffer(mediapipe::Packet* packet, const mediapipe:
   return mp_Packet__Get(packet, value_out);
 }
 
-MpReturnCode mp_Packet__ValidateAsGpuBuffer(mediapipe::Packet* packet, mediapipe::Status** status_out) {
+MpReturnCode mp_Packet__ValidateAsGpuBuffer(mediapipe::Packet* packet, absl::Status** status_out) {
   TRY {
-    *status_out = new mediapipe::Status { packet->ValidateAsType<mediapipe::GpuBuffer>() };
+    *status_out = new absl::Status { packet->ValidateAsType<mediapipe::GpuBuffer>() };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }

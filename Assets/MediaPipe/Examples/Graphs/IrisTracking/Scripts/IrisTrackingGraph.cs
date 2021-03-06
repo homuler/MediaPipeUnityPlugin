@@ -24,19 +24,19 @@ public class IrisTrackingGraph : DemoGraph {
   private BoolPacket faceDetectionsPresencePacket;
 
   public override Status StartRun() {
-    faceLandmarksWithIrisStreamPoller = graph.AddOutputStreamPoller<NormalizedLandmarkList>(faceLandmarksWithIrisStream).ConsumeValueOrDie();
+    faceLandmarksWithIrisStreamPoller = graph.AddOutputStreamPoller<NormalizedLandmarkList>(faceLandmarksWithIrisStream).Value();
     faceLandmarksWithIrisPacket = new NormalizedLandmarkListPacket();
 
-    faceRectStreamPoller = graph.AddOutputStreamPoller<NormalizedRect>(faceRectStream).ConsumeValueOrDie();
+    faceRectStreamPoller = graph.AddOutputStreamPoller<NormalizedRect>(faceRectStream).Value();
     faceRectPacket = new NormalizedRectPacket();
 
-    faceDetectionsStreamPoller = graph.AddOutputStreamPoller<List<Detection>>(faceDetectionsStream).ConsumeValueOrDie();
+    faceDetectionsStreamPoller = graph.AddOutputStreamPoller<List<Detection>>(faceDetectionsStream).Value();
     faceDetectionsPacket = new DetectionVectorPacket();
 
-    faceLandmarksWithIrisPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(faceLandmarksWithIrisPresenceStream).ConsumeValueOrDie();
+    faceLandmarksWithIrisPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(faceLandmarksWithIrisPresenceStream).Value();
     faceLandmarksWithIrisPresencePacket = new BoolPacket();
 
-    faceDetectionsPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(faceDetectionsPresenceStream).ConsumeValueOrDie();
+    faceDetectionsPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(faceDetectionsPresenceStream).Value();
     faceDetectionsPresencePacket = new BoolPacket();
 
     return graph.StartRun();

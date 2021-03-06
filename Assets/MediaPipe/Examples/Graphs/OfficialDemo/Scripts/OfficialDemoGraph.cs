@@ -154,7 +154,7 @@ public class OfficialDemoGraph : DemoGraph {
           outputImage.Dispose();
         }
 
-        outputImage = statusOrImageFrame.ConsumeValueOrDie();
+        outputImage = statusOrImageFrame.Value();
       }
     } else {
       Debug.LogWarning(statusOrImageFrame.status.ToString());

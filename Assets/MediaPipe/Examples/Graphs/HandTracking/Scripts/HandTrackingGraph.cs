@@ -29,22 +29,22 @@ public class HandTrackingGraph : DemoGraph {
   private SidePacket sidePacket;
 
   public override Status StartRun() {
-    handLandmarksStreamPoller = graph.AddOutputStreamPoller<List<NormalizedLandmarkList>>(handLandmarksStream).ConsumeValueOrDie();
+    handLandmarksStreamPoller = graph.AddOutputStreamPoller<List<NormalizedLandmarkList>>(handLandmarksStream).Value();
     handLandmarksPacket = new NormalizedLandmarkListVectorPacket();
 
-    handednessStreamPoller = graph.AddOutputStreamPoller<List<ClassificationList>>(handednessStream).ConsumeValueOrDie();
+    handednessStreamPoller = graph.AddOutputStreamPoller<List<ClassificationList>>(handednessStream).Value();
     handednessPacket = new ClassificationListVectorPacket();
 
-    palmDetectionsStreamPoller = graph.AddOutputStreamPoller<List<Detection>>(palmDetectionsStream).ConsumeValueOrDie();
+    palmDetectionsStreamPoller = graph.AddOutputStreamPoller<List<Detection>>(palmDetectionsStream).Value();
     palmDetectionsPacket = new DetectionVectorPacket();
 
-    palmRectsStreamPoller = graph.AddOutputStreamPoller<List<NormalizedRect>>(palmRectsStream).ConsumeValueOrDie();
+    palmRectsStreamPoller = graph.AddOutputStreamPoller<List<NormalizedRect>>(palmRectsStream).Value();
     palmRectsPacket = new NormalizedRectVectorPacket();
 
-    handLandmarksPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(handLandmarksPresenceStream).ConsumeValueOrDie();
+    handLandmarksPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(handLandmarksPresenceStream).Value();
     handLandmarksPresencePacket = new BoolPacket();
 
-    palmDetectionsPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(palmDetectionsPresenceStream).ConsumeValueOrDie();
+    palmDetectionsPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(palmDetectionsPresenceStream).Value();
     palmDetectionsPresencePacket = new BoolPacket();
 
     sidePacket = new SidePacket();

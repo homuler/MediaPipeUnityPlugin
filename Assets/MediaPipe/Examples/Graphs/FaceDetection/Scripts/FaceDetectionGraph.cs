@@ -11,10 +11,10 @@ public class FaceDetectionGraph : DemoGraph {
   private BoolPacket faceDetectionsPresencePacket;
 
   public override Status StartRun() {
-    faceDetectionsStreamPoller = graph.AddOutputStreamPoller<List<Detection>>(faceDetectionsStream).ConsumeValueOrDie();
+    faceDetectionsStreamPoller = graph.AddOutputStreamPoller<List<Detection>>(faceDetectionsStream).Value();
     faceDetectionsPacket = new DetectionVectorPacket();
 
-    faceDetectionsPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(faceDetectionsPresenceStream).ConsumeValueOrDie();
+    faceDetectionsPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(faceDetectionsPresenceStream).Value();
     faceDetectionsPresencePacket = new BoolPacket();
 
     return graph.StartRun();

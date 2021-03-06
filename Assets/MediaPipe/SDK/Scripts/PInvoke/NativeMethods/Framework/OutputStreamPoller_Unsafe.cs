@@ -28,7 +28,7 @@ namespace Mediapipe {
     public static extern MpReturnCode mp_StatusOrPoller__status(IntPtr statusOrPoller, out IntPtr status);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_StatusOrPoller__ConsumeValueOrDie(IntPtr statusOrPoller, out IntPtr poller);
+    public static extern MpReturnCode mp_StatusOrPoller__value(IntPtr statusOrPoller, out IntPtr poller);
     #endregion
   }
 }

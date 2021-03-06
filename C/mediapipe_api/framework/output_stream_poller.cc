@@ -1,5 +1,5 @@
 #include "mediapipe_api/framework/output_stream_poller.h"
-#include "mediapipe_api/framework/port/statusor.h"
+#include "mediapipe_api/external/absl/statusor.h"
 
 void mp_OutputStreamPoller__delete(mediapipe::OutputStreamPoller* poller) {
   delete poller;
@@ -38,13 +38,13 @@ void mp_StatusOrPoller__delete(mediapipe::StatusOrPoller* status_or_poller) {
 }
 
 bool mp_StatusOrPoller__ok(mediapipe::StatusOrPoller* status_or_poller) {
-  return mp_StatusOr__ok(status_or_poller);
+  return absl_StatusOr__ok(status_or_poller);
 }
 
-MpReturnCode mp_StatusOrPoller__status(mediapipe::StatusOrPoller* status_or_poller, mediapipe::Status** status_out) {
-  return mp_StatusOr__status(status_or_poller, status_out);
+MpReturnCode mp_StatusOrPoller__status(mediapipe::StatusOrPoller* status_or_poller, absl::Status** status_out) {
+  return absl_StatusOr__status(status_or_poller, status_out);
 }
 
-MpReturnCode mp_StatusOrPoller__ConsumeValueOrDie(mediapipe::StatusOrPoller* poller, mediapipe::OutputStreamPoller** poller_out) {
-  return mp_StatusOr__ConsumeValueOrDie(poller, poller_out);
+MpReturnCode mp_StatusOrPoller__value(mediapipe::StatusOrPoller* poller, mediapipe::OutputStreamPoller** poller_out) {
+  return absl_StatusOr__value(poller, poller_out);
 }

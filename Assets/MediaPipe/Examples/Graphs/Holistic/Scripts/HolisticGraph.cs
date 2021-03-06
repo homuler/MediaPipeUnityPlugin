@@ -55,40 +55,40 @@ public class HolisticGraph : DemoGraph {
   private SidePacket sidePacket;
 
   public override Status StartRun() {
-    poseLandmarksStreamPoller = graph.AddOutputStreamPoller<NormalizedLandmarkList>(poseLandmarksStream).ConsumeValueOrDie();
+    poseLandmarksStreamPoller = graph.AddOutputStreamPoller<NormalizedLandmarkList>(poseLandmarksStream).Value();
     poseLandmarksPacket = new NormalizedLandmarkListPacket();
 
-    poseRoiStreamPoller = graph.AddOutputStreamPoller<NormalizedRect>(poseRoiStream).ConsumeValueOrDie();
+    poseRoiStreamPoller = graph.AddOutputStreamPoller<NormalizedRect>(poseRoiStream).Value();
     poseRoiPacket = new NormalizedRectPacket();
 
-    poseDetectionStreamPoller = graph.AddOutputStreamPoller<Detection>(poseDetectionStream).ConsumeValueOrDie();
+    poseDetectionStreamPoller = graph.AddOutputStreamPoller<Detection>(poseDetectionStream).Value();
     poseDetectionPacket = new DetectionPacket();
 
-    faceLandmarksStreamPoller = graph.AddOutputStreamPoller<NormalizedLandmarkList>(faceLandmarksStream).ConsumeValueOrDie();
+    faceLandmarksStreamPoller = graph.AddOutputStreamPoller<NormalizedLandmarkList>(faceLandmarksStream).Value();
     faceLandmarksPacket = new NormalizedLandmarkListPacket();
 
-    leftHandLandmarksStreamPoller = graph.AddOutputStreamPoller<NormalizedLandmarkList>(leftHandLandmarksStream).ConsumeValueOrDie();
+    leftHandLandmarksStreamPoller = graph.AddOutputStreamPoller<NormalizedLandmarkList>(leftHandLandmarksStream).Value();
     leftHandLandmarksPacket = new NormalizedLandmarkListPacket();
 
-    rightHandLandmarksStreamPoller = graph.AddOutputStreamPoller<NormalizedLandmarkList>(rightHandLandmarksStream).ConsumeValueOrDie();
+    rightHandLandmarksStreamPoller = graph.AddOutputStreamPoller<NormalizedLandmarkList>(rightHandLandmarksStream).Value();
     rightHandLandmarksPacket = new NormalizedLandmarkListPacket();
 
-    poseLandmarksPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(poseLandmarksPresenceStream).ConsumeValueOrDie();
+    poseLandmarksPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(poseLandmarksPresenceStream).Value();
     poseLandmarksPresencePacket = new BoolPacket();
 
-    poseRoiPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(poseRoiPresenceStream).ConsumeValueOrDie();
+    poseRoiPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(poseRoiPresenceStream).Value();
     poseRoiPresencePacket = new BoolPacket();
 
-    poseDetectionPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(poseDetectionPresenceStream).ConsumeValueOrDie();
+    poseDetectionPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(poseDetectionPresenceStream).Value();
     poseDetectionPresencePacket = new BoolPacket();
 
-    faceLandmarksPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(faceLandmarksPresenceStream).ConsumeValueOrDie();
+    faceLandmarksPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(faceLandmarksPresenceStream).Value();
     faceLandmarksPresencePacket = new BoolPacket();
 
-    leftHandLandmarksPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(leftHandLandmarksPresenceStream).ConsumeValueOrDie();
+    leftHandLandmarksPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(leftHandLandmarksPresenceStream).Value();
     leftHandLandmarksPresencePacket = new BoolPacket();
 
-    rightHandLandmarksPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(rightHandLandmarksPresenceStream).ConsumeValueOrDie();
+    rightHandLandmarksPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(rightHandLandmarksPresenceStream).Value();
     rightHandLandmarksPresencePacket = new BoolPacket();
 
     sidePacket = new SidePacket();

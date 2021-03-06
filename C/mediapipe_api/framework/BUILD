@@ -23,8 +23,8 @@ cc_library(
     deps = [
         ":packet",
         "//mediapipe_api:common",
-        "//mediapipe_api/framework/port:status",
-        "//mediapipe_api/framework/port:statusor",
+        "//mediapipe_api/external/absl:status",
+        "//mediapipe_api/external/absl:statusor",
         "@com_google_mediapipe//mediapipe/framework:calculator_framework",
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [],
@@ -42,7 +42,7 @@ cc_library(
     hdrs = ["output_stream_poller.h"],
     deps = [
         "//mediapipe_api:common",
-        "//mediapipe_api/framework/port:statusor",
+        "//mediapipe_api/external/absl:statusor",
         "@com_google_mediapipe//mediapipe/framework:calculator_framework",
     ],
     alwayslink = True,

@@ -21,9 +21,9 @@ MpReturnCode mp_Packet__At__Rt(mediapipe::Packet* packet, mediapipe::Timestamp* 
   } CATCH_EXCEPTION
 }
 
-MpReturnCode mp_Packet__ValidateAsProtoMessageLite(mediapipe::Packet* packet, mediapipe::Status** status_out) {
+MpReturnCode mp_Packet__ValidateAsProtoMessageLite(mediapipe::Packet* packet, absl::Status** status_out) {
   TRY {
-    *status_out = new mediapipe::Status { packet->ValidateAsProtoMessageLite() };
+    *status_out = new absl::Status { packet->ValidateAsProtoMessageLite() };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }
@@ -78,9 +78,9 @@ MpReturnCode mp_Packet__GetBool(mediapipe::Packet* packet, bool* value_out) {
   } CATCH_ALL
 }
 
-MpReturnCode mp_Packet__ValidateAsBool(mediapipe::Packet* packet, mediapipe::Status** status_out) {
+MpReturnCode mp_Packet__ValidateAsBool(mediapipe::Packet* packet, absl::Status** status_out) {
   TRY {
-    *status_out = new mediapipe::Status { packet->ValidateAsType<bool>() };
+    *status_out = new absl::Status { packet->ValidateAsType<bool>() };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }
@@ -107,9 +107,9 @@ MpReturnCode mp_Packet__GetFloat(mediapipe::Packet* packet, float* value_out) {
   } CATCH_ALL
 }
 
-MpReturnCode mp_Packet__ValidateAsFloat(mediapipe::Packet* packet, mediapipe::Status** status_out) {
+MpReturnCode mp_Packet__ValidateAsFloat(mediapipe::Packet* packet, absl::Status** status_out) {
   TRY {
-    *status_out = new mediapipe::Status { packet->ValidateAsType<float>() };
+    *status_out = new absl::Status { packet->ValidateAsType<float>() };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }
@@ -136,9 +136,9 @@ MpReturnCode mp_Packet__GetInt(mediapipe::Packet* packet, int* value_out) {
   } CATCH_ALL
 }
 
-MpReturnCode mp_Packet__ValidateAsInt(mediapipe::Packet* packet, mediapipe::Status** status_out) {
+MpReturnCode mp_Packet__ValidateAsInt(mediapipe::Packet* packet, absl::Status** status_out) {
   TRY {
-    *status_out = new mediapipe::Status { packet->ValidateAsType<int>() };
+    *status_out = new absl::Status { packet->ValidateAsType<int>() };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }
@@ -172,9 +172,9 @@ MpReturnCode mp_Packet__GetFloatArray(mediapipe::Packet* packet, const float** v
   } CATCH_ALL
 }
 
-MpReturnCode mp_Packet__ValidateAsFloatArray(mediapipe::Packet* packet, mediapipe::Status** status_out) {
+MpReturnCode mp_Packet__ValidateAsFloatArray(mediapipe::Packet* packet, absl::Status** status_out) {
   TRY {
-    *status_out = new mediapipe::Status { packet->ValidateAsType<float[]>() };
+    *status_out = new absl::Status { packet->ValidateAsType<float[]>() };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }
@@ -230,9 +230,9 @@ MpReturnCode mp_Packet__GetByteString(mediapipe::Packet* packet, const char** va
   } CATCH_ALL
 }
 
-MpReturnCode mp_Packet__ValidateAsString(mediapipe::Packet* packet, mediapipe::Status** status_out) {
+MpReturnCode mp_Packet__ValidateAsString(mediapipe::Packet* packet, absl::Status** status_out) {
   TRY {
-    *status_out = new mediapipe::Status { packet->ValidateAsType<std::string>() };
+    *status_out = new absl::Status { packet->ValidateAsType<std::string>() };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }

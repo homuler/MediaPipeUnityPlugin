@@ -38,8 +38,8 @@ cc_library(
         "@com_google_mediapipe//mediapipe/framework/formats:image_frame",
         "//mediapipe_api:common",
         "//mediapipe_api/framework:packet",
-        "//mediapipe_api/framework/port:status",
-        "//mediapipe_api/framework/port:statusor",
+        "//mediapipe_api/external/absl:status",
+        "//mediapipe_api/external/absl:statusor",
     ],
     alwayslink = True,
 )

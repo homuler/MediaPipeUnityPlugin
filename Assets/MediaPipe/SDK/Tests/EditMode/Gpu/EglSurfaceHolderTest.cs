@@ -46,7 +46,7 @@ namespace Tests {
     void ExpectSetSurfaceOk(IntPtr surface) {
       var eglSurfaceHolder = new EglSurfaceHolder();
       var glCalculatorHelper = new GlCalculatorHelper();
-      glCalculatorHelper.InitializeForTest(GpuResources.Create().ConsumeValueOrDie());
+      glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
 
       var status = glCalculatorHelper.RunInGlContext(() => {
         var glContext = GlContext.GetCurrent();

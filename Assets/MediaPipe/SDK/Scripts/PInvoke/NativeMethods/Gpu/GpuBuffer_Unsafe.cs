@@ -19,7 +19,7 @@ namespace Mediapipe {
     public static extern MpReturnCode mp_StatusOrGpuBuffer__status(IntPtr statusOrGpuBuffer, out IntPtr status);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_StatusOrGpuBuffer__ConsumeValueOrDie(IntPtr statusOrGpuBuffer, out IntPtr gpuBuffer);
+    public static extern MpReturnCode mp_StatusOrGpuBuffer__value(IntPtr statusOrGpuBuffer, out IntPtr gpuBuffer);
     #endregion
 
     #region Packet

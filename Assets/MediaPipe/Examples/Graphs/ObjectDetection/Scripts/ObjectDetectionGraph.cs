@@ -7,7 +7,7 @@ public class ObjectDetectionGraph : DemoGraph {
   private DetectionVectorPacket outputDetectionsPacket;
 
   public override Status StartRun() {
-    outputDetectionsStreamPoller = graph.AddOutputStreamPoller<List<Detection>>(outputDetectionsStream).ConsumeValueOrDie();
+    outputDetectionsStreamPoller = graph.AddOutputStreamPoller<List<Detection>>(outputDetectionsStream).Value();
     outputDetectionsPacket = new DetectionVectorPacket();
 
     return graph.StartRun();

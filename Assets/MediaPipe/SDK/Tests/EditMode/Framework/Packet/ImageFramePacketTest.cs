@@ -26,7 +26,7 @@ namespace Tests {
       var statusOrImageFrame = packet.Consume();
       Assert.True(statusOrImageFrame.ok);
 
-      var imageFrame = statusOrImageFrame.ConsumeValueOrDie();
+      var imageFrame = statusOrImageFrame.Value();
       Assert.AreEqual(imageFrame.Format(), ImageFormat.Format.UNKNOWN);
     }
 
@@ -42,7 +42,7 @@ namespace Tests {
       var statusOrImageFrame = packet.Consume();
       Assert.True(statusOrImageFrame.ok);
 
-      var imageFrame = statusOrImageFrame.ConsumeValueOrDie();
+      var imageFrame = statusOrImageFrame.Value();
       Assert.AreEqual(imageFrame.Format(), ImageFormat.Format.UNKNOWN);
       Assert.AreEqual(packet.Timestamp(), timestamp);
     }
@@ -90,7 +90,7 @@ namespace Tests {
       var statusOrImageFrame = packet.Consume();
       Assert.True(statusOrImageFrame.ok);
 
-      var imageFrame = statusOrImageFrame.ConsumeValueOrDie();
+      var imageFrame = statusOrImageFrame.Value();
       Assert.AreEqual(imageFrame.Format(), ImageFormat.Format.SBGRA);
       Assert.AreEqual(imageFrame.Width(), 10);
       Assert.AreEqual(imageFrame.Height(), 10);

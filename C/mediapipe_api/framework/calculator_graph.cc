@@ -39,10 +39,10 @@ MpReturnCode mp_CalculatorGraph__PKc_i(const char* serialized_config, int size, 
 MpReturnCode mp_CalculatorGraph__Initialize__PKc_i(mediapipe::CalculatorGraph* graph,
                                                    const char* serialized_config,
                                                    int size,
-                                                   mediapipe::Status** status_out) {
+                                                   absl::Status** status_out) {
   TRY_ALL {
     auto config = ParseFromStringAsCalculatorGraphConfig(serialized_config, size);
-    *status_out = new mediapipe::Status { graph->Initialize(config) };
+    *status_out = new absl::Status { graph->Initialize(config) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_ALL
 }
@@ -51,10 +51,10 @@ MpReturnCode mp_CalculatorGraph__Initialize__PKc_i_Rsp(mediapipe::CalculatorGrap
                                                        const char* serialized_config,
                                                        int size,
                                                        SidePackets* side_packets,
-                                                       mediapipe::Status** status_out) {
+                                                       absl::Status** status_out) {
   TRY_ALL {
     auto config = ParseFromStringAsCalculatorGraphConfig(serialized_config, size);
-    *status_out = new mediapipe::Status { graph->Initialize(config, *side_packets) };
+    *status_out = new absl::Status { graph->Initialize(config, *side_packets) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_ALL
 }
@@ -69,12 +69,12 @@ MpReturnCode mp_CalculatorGraph__Config(mediapipe::CalculatorGraph* graph, mp_ap
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__ObserveOutputStream__PKc_PF(mediapipe::CalculatorGraph* graph,
                                                                       const char* stream_name,
                                                                       NativePacketCallback* packet_callback,
-                                                                      mediapipe::Status** status_out) {
+                                                                      absl::Status** status_out) {
   TRY {
-    auto status = graph->ObserveOutputStream(stream_name, [packet_callback](const mediapipe::Packet& packet) -> ::mediapipe::Status {
-      return mediapipe::Status { std::move(*packet_callback(packet)) };
+    auto status = graph->ObserveOutputStream(stream_name, [packet_callback](const mediapipe::Packet& packet) -> ::absl::Status {
+      return absl::Status { std::move(*packet_callback(packet)) };
     });
-    *status_out = new mediapipe::Status { std::move(status) };
+    *status_out = new absl::Status { std::move(status) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }
@@ -90,36 +90,36 @@ MpReturnCode mp_CalculatorGraph__AddOutputStreamPoller__PKc(mediapipe::Calculato
 
 MpReturnCode mp_CalculatorGraph__Run__Rsp(mediapipe::CalculatorGraph* graph,
                                           SidePackets* side_packets,
-                                          mediapipe::Status** status_out) {
+                                          absl::Status** status_out) {
   TRY {
     auto status = graph->Run(*side_packets);
-    *status_out = new mediapipe::Status { std::move(status) };
+    *status_out = new absl::Status { std::move(status) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }
 
 MpReturnCode mp_CalculatorGraph__StartRun__Rsp(mediapipe::CalculatorGraph* graph,
                                                SidePackets* side_packets,
-                                               mediapipe::Status** status_out) {
+                                               absl::Status** status_out) {
   TRY {
     auto status = graph->StartRun(*side_packets);
-    *status_out = new mediapipe::Status { std::move(status) };
+    *status_out = new absl::Status { std::move(status) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }
 
-MpReturnCode mp_CalculatorGraph__WaitUntilIdle(mediapipe::CalculatorGraph* graph, mediapipe::Status** status_out) {
+MpReturnCode mp_CalculatorGraph__WaitUntilIdle(mediapipe::CalculatorGraph* graph, absl::Status** status_out) {
   TRY {
     auto status = graph->WaitUntilIdle();
-    *status_out = new mediapipe::Status { std::move(status) };
+    *status_out = new absl::Status { std::move(status) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }
 
-MpReturnCode mp_CalculatorGraph__WaitUntilDone(mediapipe::CalculatorGraph* graph, mediapipe::Status** status_out) {
+MpReturnCode mp_CalculatorGraph__WaitUntilDone(mediapipe::CalculatorGraph* graph, absl::Status** status_out) {
   TRY {
     auto status = graph->WaitUntilDone();
-    *status_out = new mediapipe::Status { std::move(status) };
+    *status_out = new absl::Status { std::move(status) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }
@@ -131,9 +131,9 @@ bool mp_CalculatorGraph__HasError(mediapipe::CalculatorGraph* graph) {
 MpReturnCode mp_CalculatorGraph__AddPacketToInputStream__PKc_Ppacket(mediapipe::CalculatorGraph* graph,
                                                                      const char* stream_name,
                                                                      mediapipe::Packet* packet,
-                                                                     mediapipe::Status** status_out) {
+                                                                     absl::Status** status_out) {
   TRY {
-    *status_out = new mediapipe::Status { graph->AddPacketToInputStream(stream_name, std::move(*packet)) };
+    *status_out = new absl::Status { graph->AddPacketToInputStream(stream_name, std::move(*packet)) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }
@@ -141,9 +141,9 @@ MpReturnCode mp_CalculatorGraph__AddPacketToInputStream__PKc_Ppacket(mediapipe::
 MpReturnCode mp_CalculatorGraph__SetInputStreamMaxQueueSize__PKc_i(mediapipe::CalculatorGraph* graph,
                                                                    const char* stream_name,
                                                                    int max_queue_size,
-                                                                   mediapipe::Status** status_out) {
+                                                                   absl::Status** status_out) {
   TRY {
-    *status_out = new mediapipe::Status { graph->SetInputStreamMaxQueueSize(stream_name, max_queue_size) };
+    *status_out = new absl::Status { graph->SetInputStreamMaxQueueSize(stream_name, max_queue_size) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }
@@ -154,16 +154,16 @@ bool mp_CalculatorGraph__HasInputStream__PKc(mediapipe::CalculatorGraph* graph, 
 
 MpReturnCode mp_CalculatorGraph__CloseInputStream__PKc(mediapipe::CalculatorGraph* graph,
                                                        const char* stream_name,
-                                                       mediapipe::Status** status_out) {
+                                                       absl::Status** status_out) {
   TRY {
-    *status_out = new mediapipe::Status { graph->CloseInputStream(stream_name) };
+    *status_out = new absl::Status { graph->CloseInputStream(stream_name) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }
 
-MpReturnCode mp_CalculatorGraph__CloseAllPacketSources(mediapipe::CalculatorGraph* graph, mediapipe::Status** status_out) {
+MpReturnCode mp_CalculatorGraph__CloseAllPacketSources(mediapipe::CalculatorGraph* graph, absl::Status** status_out) {
   TRY {
-    *status_out = new mediapipe::Status { graph->CloseAllPacketSources() };
+    *status_out = new absl::Status { graph->CloseAllPacketSources() };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }
@@ -199,9 +199,9 @@ MpReturnCode mp_CalculatorGraph__GetGpuResources(mediapipe::CalculatorGraph* gra
 
 MpReturnCode mp_CalculatorGraph__SetGpuResources__SPgpu(mediapipe::CalculatorGraph* graph,
                                                         std::shared_ptr<mediapipe::GpuResources>* gpu_resources,
-                                                        mediapipe::Status** status_out) {
+                                                        absl::Status** status_out) {
   TRY_ALL {
-    *status_out = new mediapipe::Status { graph->SetGpuResources(*gpu_resources) };
+    *status_out = new absl::Status { graph->SetGpuResources(*gpu_resources) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_ALL
 }

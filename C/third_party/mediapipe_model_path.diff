@@ -12,7 +12,7 @@ index 5550128..a4f3154 100644
      alwayslink = 1,
  )
 diff --git a/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc b/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
-index 9bc43ba..d1c505c 100644
+index 9bc43ba..088f8f8 100644
 --- a/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
 +++ b/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
 @@ -12,12 +12,8 @@
@@ -80,7 +80,7 @@ index 9bc43ba..d1c505c 100644
  };
  REGISTER_CALCULATOR(GlAnimationOverlayCalculator);
  
-@@ -331,112 +315,15 @@ void GlAnimationOverlayCalculator::InitializePerspectiveMatrix(
+@@ -331,113 +315,15 @@ void GlAnimationOverlayCalculator::InitializePerspectiveMatrix(
    perspective_matrix_[14] = 2.0f * z_far * z_near * denom;
  }
  
@@ -194,11 +194,12 @@ index 9bc43ba..d1c505c 100644
 -#else  // defined(__ANDROID__)
 -
 -bool GlAnimationOverlayCalculator::LoadAnimation(const std::string &filename) {
-+  auto path = status_or_path.value();
-   std::ifstream infile(filename.c_str(), std::ifstream::binary);
+-  std::ifstream infile(filename.c_str(), std::ifstream::binary);
++  std::ifstream infile(status_or_path->c_str(), std::ifstream::binary);
    if (!infile) {
      LOG(ERROR) << "Error opening asset with filename: " << filename;
-@@ -501,8 +388,6 @@ bool GlAnimationOverlayCalculator::LoadAnimation(const std::string &filename) {
+     return false;
+@@ -501,8 +387,6 @@ bool GlAnimationOverlayCalculator::LoadAnimation(const std::string &filename) {
    return true;
  }
  
@@ -207,7 +208,7 @@ index 9bc43ba..d1c505c 100644
  void GlAnimationOverlayCalculator::ComputeAspectRatioAndFovFromCameraParameters(
      const CameraParametersProto &camera_parameters, float *aspect_ratio,
      float *vertical_fov_degrees) {
-@@ -552,22 +437,7 @@ absl::Status GlAnimationOverlayCalculator::Open(CalculatorContext *cc) {
+@@ -552,22 +436,7 @@ absl::Status GlAnimationOverlayCalculator::Open(CalculatorContext *cc) {
    // Try to load in the animation asset in a platform-specific manner.
    const std::string &asset_name =
        cc->InputSidePackets().Tag("ANIMATION_ASSET").Get<std::string>();
@@ -232,7 +233,7 @@ index 9bc43ba..d1c505c 100644
      LOG(ERROR) << "Failed to load animation asset.";
      return absl::UnknownError("Failed to load animation asset.");
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
-index d115dd0..06acd18 100644
+index d115dd0..341ff4b 100644
 --- a/mediapipe/util/BUILD
 +++ b/mediapipe/util/BUILD
 @@ -145,14 +145,19 @@ cc_library(
@@ -244,7 +245,7 @@ index d115dd0..06acd18 100644
 +    hdrs = ["resource_manager.h"],
 +    deps = [
 +        "//mediapipe/framework/port:singleton",
-+        "//mediapipe/framework/port:statusor",
++        "@com_google_absl//absl/status:statusor",
 +    ],
 +    visibility = ["//visibility:public"],
 +)
@@ -261,15 +262,15 @@ index d115dd0..06acd18 100644
      hdrs = ["resource_util.h"],
      # We use Objective-C++ on iOS.
      copts = select({
-@@ -166,27 +171,10 @@ cc_library(
+@@ -166,27 +171,12 @@ cc_library(
          "//mediapipe/framework:mediapipe_internal",
      ],
      deps = [
 +        ":resource_manager",
          "//mediapipe/framework/port:ret_check",
          "//mediapipe/framework/port:singleton",
--        "//mediapipe/framework/port:status",
--        "//mediapipe/framework/port:statusor",
+         "//mediapipe/framework/port:status",
+         "//mediapipe/framework/port:statusor",
 -        "//mediapipe/framework/port:file_helpers",
 -        "@com_google_absl//absl/strings",
 -    ] + select({
@@ -293,7 +294,7 @@ index d115dd0..06acd18 100644
  cc_library(
 diff --git a/mediapipe/util/resource_manager.h b/mediapipe/util/resource_manager.h
 new file mode 100644
-index 0000000..ffe126f
+index 0000000..60a860e
 --- /dev/null
 +++ b/mediapipe/util/resource_manager.h
 @@ -0,0 +1,46 @@
@@ -317,8 +318,8 @@ index 0000000..ffe126f
 +#include <string>
 +#include <vector>
 +
++#include "absl/status/statusor.h"
 +#include "mediapipe/framework/port/singleton.h"
-+#include "mediapipe/framework/port/statusor.h"
 +
 +namespace mediapipe {
 +
@@ -331,7 +332,7 @@ index 0000000..ffe126f
 +  // Reads a file into output. Returns true on success, false otherwise.
 +  bool ReadFile(const std::string& filename, std::string* output);
 +
-+  ::mediapipe::StatusOr<std::string> CachedFileFromAsset(const std::string& asset_path);
++  ::absl::StatusOr<std::string> CachedFileFromAsset(const std::string& asset_path);
 +
 + private:
 +  // Private constructor since this class is meant to be a singleton.
@@ -345,23 +346,24 @@ index 0000000..ffe126f
 +#endif  // MEDIAPIPE_UTIL_RESOURCE_MANAGER_H_
 diff --git a/mediapipe/util/resource_util_unity.cc b/mediapipe/util/resource_util_unity.cc
 new file mode 100644
-index 0000000..89d1d1c
+index 0000000..c0fb16f
 --- /dev/null
 +++ b/mediapipe/util/resource_util_unity.cc
-@@ -0,0 +1,25 @@
+@@ -0,0 +1,26 @@
 +#include "mediapipe/util/resource_manager.h"
 +#include "mediapipe/util/resource_util.h"
 +#include "mediapipe/framework/port/singleton.h"
++#include "mediapipe/framework/port/status.h"
 +#include "mediapipe/framework/port/ret_check.h"
 +
 +namespace mediapipe {
 +
-+::mediapipe::StatusOr<std::string> PathToResourceAsFile(
++::absl::StatusOr<std::string> PathToResourceAsFile(
 +    const std::string& path) {
 +  return Singleton<ResourceManager>::get()->CachedFileFromAsset(path);
 +}
 +
-+::mediapipe::Status GetResourceContents(const std::string& path,
++::absl::Status GetResourceContents(const std::string& path,
 +                                        std::string* output,
 +                                        bool read_as_binary) {
 +  if (!read_as_binary) {
