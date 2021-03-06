@@ -12,7 +12,7 @@ index 5550128..a4f3154 100644
      alwayslink = 1,
  )
 diff --git a/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc b/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
-index b9f1346..31964c8 100644
+index 9bc43ba..d1c505c 100644
 --- a/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
 +++ b/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
 @@ -12,12 +12,8 @@
@@ -80,7 +80,7 @@ index b9f1346..31964c8 100644
  };
  REGISTER_CALCULATOR(GlAnimationOverlayCalculator);
  
-@@ -332,113 +316,17 @@ void GlAnimationOverlayCalculator::InitializePerspectiveMatrix(
+@@ -331,112 +315,15 @@ void GlAnimationOverlayCalculator::InitializePerspectiveMatrix(
    perspective_matrix_[14] = 2.0f * z_far * z_near * denom;
  }
  
@@ -192,15 +192,13 @@ index b9f1346..31964c8 100644
 -}
  
 -#else  // defined(__ANDROID__)
-+  auto path = status_or_path.ConsumeValueOrDie();
-+  std::ifstream infile(path.c_str(), std::ifstream::binary);
- 
+-
 -bool GlAnimationOverlayCalculator::LoadAnimation(const std::string &filename) {
--  std::ifstream infile(filename.c_str(), std::ifstream::binary);
++  auto path = status_or_path.value();
+   std::ifstream infile(filename.c_str(), std::ifstream::binary);
    if (!infile) {
      LOG(ERROR) << "Error opening asset with filename: " << filename;
-     return false;
-@@ -502,8 +390,6 @@ bool GlAnimationOverlayCalculator::LoadAnimation(const std::string &filename) {
+@@ -501,8 +388,6 @@ bool GlAnimationOverlayCalculator::LoadAnimation(const std::string &filename) {
    return true;
  }
  
@@ -209,7 +207,7 @@ index b9f1346..31964c8 100644
  void GlAnimationOverlayCalculator::ComputeAspectRatioAndFovFromCameraParameters(
      const CameraParametersProto &camera_parameters, float *aspect_ratio,
      float *vertical_fov_degrees) {
-@@ -553,22 +439,7 @@ void GlAnimationOverlayCalculator::ComputeAspectRatioAndFovFromCameraParameters(
+@@ -552,22 +437,7 @@ absl::Status GlAnimationOverlayCalculator::Open(CalculatorContext *cc) {
    // Try to load in the animation asset in a platform-specific manner.
    const std::string &asset_name =
        cc->InputSidePackets().Tag("ANIMATION_ASSET").Get<std::string>();
@@ -222,7 +220,7 @@ index b9f1346..31964c8 100644
 -    loaded_animation = LoadAnimationAndroid(mask_asset_name, &mask_meshes_);
 -    if (!loaded_animation) {
 -      LOG(ERROR) << "Failed to load mask asset.";
--      return ::mediapipe::UnknownError("Failed to load mask asset.");
+-      return absl::UnknownError("Failed to load mask asset.");
 -    }
 -  }
 -  loaded_animation = LoadAnimationAndroid(asset_name, &triangle_meshes_);
@@ -232,12 +230,12 @@ index b9f1346..31964c8 100644
 +  bool loaded_animation = LoadAnimation(asset_name);
    if (!loaded_animation) {
      LOG(ERROR) << "Failed to load animation asset.";
-     return ::mediapipe::UnknownError("Failed to load animation asset.");
+     return absl::UnknownError("Failed to load animation asset.");
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
-index 9347fc0..c942416 100644
+index d115dd0..06acd18 100644
 --- a/mediapipe/util/BUILD
 +++ b/mediapipe/util/BUILD
-@@ -146,14 +146,19 @@ cc_library(
+@@ -145,14 +145,19 @@ cc_library(
      ],
  )
  
@@ -263,25 +261,20 @@ index 9347fc0..c942416 100644
      hdrs = ["resource_util.h"],
      # We use Objective-C++ on iOS.
      copts = select({
-@@ -161,33 +166,17 @@ cc_library(
-         "//mediapipe:ios": [
-             "-ObjC++",
-         ],
--        "//mediapipe:macos": [],
-     }),
-     visibility = [
+@@ -166,27 +171,10 @@ cc_library(
          "//mediapipe/framework:mediapipe_internal",
      ],
      deps = [
 +        ":resource_manager",
          "//mediapipe/framework/port:ret_check",
-         "//mediapipe/framework/port:status",
-         "//mediapipe/framework/port:statusor",
-         "@com_google_absl//absl/strings",
+         "//mediapipe/framework/port:singleton",
+-        "//mediapipe/framework/port:status",
+-        "//mediapipe/framework/port:statusor",
+-        "//mediapipe/framework/port:file_helpers",
+-        "@com_google_absl//absl/strings",
 -    ] + select({
 -        "//conditions:default": [
 -            "//mediapipe/framework/deps:file_path",
--            "//mediapipe/framework/port:file_helpers",
 -            "@com_google_absl//absl/flags:flag",
 -        ],
 -        "//mediapipe:android": [
@@ -291,7 +284,6 @@ index 9347fc0..c942416 100644
 -        "//mediapipe:ios": [],
 -        "//mediapipe:macos": [
 -            "//mediapipe/framework/deps:file_path",
--            "//mediapipe/framework/port:file_helpers",
 -            "@com_google_absl//absl/flags:flag",
 -        ],
 -    }),

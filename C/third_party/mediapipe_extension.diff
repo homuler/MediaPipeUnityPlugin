@@ -1,8 +1,8 @@
 diff --git a/mediapipe/gpu/gl_calculator_helper.cc b/mediapipe/gpu/gl_calculator_helper.cc
-index 8b63735..a60b815 100644
+index aa708e7..c146f56 100644
 --- a/mediapipe/gpu/gl_calculator_helper.cc
 +++ b/mediapipe/gpu/gl_calculator_helper.cc
-@@ -136,6 +136,10 @@ GlTexture GlCalculatorHelper::CreateDestinationTexture(int output_width,
+@@ -137,6 +137,10 @@ GlTexture GlCalculatorHelper::CreateDestinationTexture(int output_width,
    return impl_->CreateDestinationTexture(output_width, output_height, format);
  }
  
@@ -14,7 +14,7 @@ index 8b63735..a60b815 100644
    return impl_->GetGlContext();
  }
 diff --git a/mediapipe/gpu/gl_calculator_helper.h b/mediapipe/gpu/gl_calculator_helper.h
-index 53178da..f400c43 100644
+index b5cc699..e0aa081 100644
 --- a/mediapipe/gpu/gl_calculator_helper.h
 +++ b/mediapipe/gpu/gl_calculator_helper.h
 @@ -144,6 +144,8 @@ class GlCalculatorHelper {
@@ -27,10 +27,10 @@ index 53178da..f400c43 100644
    GLuint framebuffer() const;
  
 diff --git a/mediapipe/gpu/gl_calculator_helper_impl.h b/mediapipe/gpu/gl_calculator_helper_impl.h
-index 2a20b84..9953081 100644
+index 4381111..cdabc45 100644
 --- a/mediapipe/gpu/gl_calculator_helper_impl.h
 +++ b/mediapipe/gpu/gl_calculator_helper_impl.h
-@@ -50,6 +50,7 @@ class GlCalculatorHelperImpl {
+@@ -49,6 +49,7 @@ class GlCalculatorHelperImpl {
    // Creates a framebuffer and returns the texture that it is bound to.
    GlTexture CreateDestinationTexture(int output_width, int output_height,
                                       GpuBufferFormat format);
@@ -39,10 +39,10 @@ index 2a20b84..9953081 100644
    GLuint framebuffer() const { return framebuffer_; }
    void BindFramebuffer(const GlTexture& dst);
 diff --git a/mediapipe/gpu/gl_calculator_helper_impl_common.cc b/mediapipe/gpu/gl_calculator_helper_impl_common.cc
-index 5a46042..7f01362 100644
+index 2e4ab10..6e5e073 100644
 --- a/mediapipe/gpu/gl_calculator_helper_impl_common.cc
 +++ b/mediapipe/gpu/gl_calculator_helper_impl_common.cc
-@@ -190,14 +190,18 @@ GlTextureBufferSharedPtr GlCalculatorHelperImpl::MakeGlTextureBuffer(
+@@ -195,14 +195,18 @@ GlTextureBufferSharedPtr GlCalculatorHelperImpl::MakeGlTextureBuffer(
  
  GlTexture GlCalculatorHelperImpl::CreateDestinationTexture(
      int width, int height, GpuBufferFormat format) {
@@ -66,7 +66,7 @@ index 5a46042..7f01362 100644
  }
  
 diff --git a/mediapipe/gpu/gl_scaler_calculator.cc b/mediapipe/gpu/gl_scaler_calculator.cc
-index 8806267..c0e66bd 100644
+index e50ef22..9cf0f2f 100644
 --- a/mediapipe/gpu/gl_scaler_calculator.cc
 +++ b/mediapipe/gpu/gl_scaler_calculator.cc
 @@ -12,6 +12,8 @@
@@ -94,7 +94,7 @@ index 8806267..c0e66bd 100644
    int dst_width_ = 0;
    int dst_height_ = 0;
    float dst_scale_ = -1.f;
-@@ -109,6 +113,9 @@ REGISTER_CALCULATOR(GlScalerCalculator);
+@@ -109,6 +113,9 @@ absl::Status GlScalerCalculator::GetContract(CalculatorContract* cc) {
    }
    MP_RETURN_IF_ERROR(GlCalculatorHelper::UpdateContract(cc));
  
@@ -104,7 +104,7 @@ index 8806267..c0e66bd 100644
    if (cc->InputSidePackets().HasTag("OPTIONS")) {
      cc->InputSidePackets().Tag("OPTIONS").Set<GlScalerCalculatorOptions>();
    }
-@@ -175,6 +182,13 @@ REGISTER_CALCULATOR(GlScalerCalculator);
+@@ -175,6 +182,13 @@ absl::Status GlScalerCalculator::Open(CalculatorContext* cc) {
      dst_width_ = dimensions[0];
      dst_height_ = dimensions[1];
    }
@@ -118,21 +118,22 @@ index 8806267..c0e66bd 100644
    if (cc->InputSidePackets().HasTag("ROTATION")) {
      rotation_ccw = cc->InputSidePackets().Tag("ROTATION").Get<int>();
    }
-@@ -185,7 +199,7 @@ REGISTER_CALCULATOR(GlScalerCalculator);
+@@ -185,7 +199,7 @@ absl::Status GlScalerCalculator::Open(CalculatorContext* cc) {
  }
  
- ::mediapipe::Status GlScalerCalculator::Process(CalculatorContext* cc) {
+ absl::Status GlScalerCalculator::Process(CalculatorContext* cc) {
 -  if (cc->Inputs().HasTag("OUTPUT_DIMENSIONS")) {
 +  if (!dst_buffer_ && cc->Inputs().HasTag("OUTPUT_DIMENSIONS")) {
      if (cc->Inputs().Tag("OUTPUT_DIMENSIONS").IsEmpty()) {
        // OUTPUT_DIMENSIONS input stream is specified, but value is missing.
-       return ::mediapipe::OkStatus();
-@@ -264,8 +278,18 @@ REGISTER_CALCULATOR(GlScalerCalculator);
+       return absl::OkStatus();
+@@ -264,9 +278,18 @@ absl::Status GlScalerCalculator::Process(CalculatorContext* cc) {
                MakePacket<float>(left_right_padding).At(cc->InputTimestamp()));
      }
  
 -    auto dst = helper_.CreateDestinationTexture(dst_width, dst_height,
 -                                                GetOutputFormat());
+-
 +    GlTexture dst;
 +#if MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
 +    // for iOS
@@ -145,9 +146,9 @@ index 8806267..c0e66bd 100644
 +      dst = helper_.CreateDestinationTexture(dst_width, dst_height, GetOutputFormat());
 +    }
 +#endif
- 
      helper_.BindFramebuffer(dst);
      glActiveTexture(GL_TEXTURE1);
+     glBindTexture(src1.target(), src1.name());
 diff --git a/mediapipe/graphs/iris_tracking/BUILD b/mediapipe/graphs/iris_tracking/BUILD
 index 86e667b..e0062a1 100644
 --- a/mediapipe/graphs/iris_tracking/BUILD

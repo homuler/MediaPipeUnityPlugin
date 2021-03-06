@@ -4,7 +4,7 @@ workspace(name = "mediapipe_api")
 #
 # - com_google_mediapipe dependency
 # - @//third_party -> @com_google_mediapipe//third_party
-#    - exception: opencv_linux
+#    - exception: opencv_linux, opencv_windows
 # - android_opencv sha256 is added
 # - unity dependency
 # - rules_pkg
@@ -38,20 +38,18 @@ new_local_repository(
 # mediapipe
 http_archive(
   name = "com_google_mediapipe",
-  sha256 = "7ae90bdab3b602fc4782c1f8f00d7c05834ec2b9b3d638fe7fa80623ccc0aa9e",
-  strip_prefix = "mediapipe-0.8.2",
+  sha256 = "95b097a014cb329213fa647efafba286bac75126a964dda08f62cbaf95aba42d",
+  strip_prefix = "mediapipe-0.8.3.1",
   patches = [
-      "@//third_party:mediapipe_windows.diff",
       "@//third_party:mediapipe_ios.diff",
       "@//third_party:mediapipe_visibility.diff",
       "@//third_party:mediapipe_model_path.diff",
       "@//third_party:mediapipe_extension.diff",
-      # "@//third_party:mediapipe_debug.diff",
   ],
   patch_args = [
       "-p1",
   ],
-  urls = ["https://github.com/google/mediapipe/archive/0.8.2.tar.gz"],
+  urls = ["https://github.com/google/mediapipe/archive/0.8.3.1.tar.gz"],
 )
 
 # ABSL cpp library lts_2020_09_23
@@ -79,8 +77,8 @@ http_archive(
 
 http_archive(
    name = "rules_foreign_cc",
-   strip_prefix = "rules_foreign_cc-master",
-   url = "https://github.com/bazelbuild/rules_foreign_cc/archive/master.zip",
+   strip_prefix = "rules_foreign_cc-main",
+   url = "https://github.com/bazelbuild/rules_foreign_cc/archive/main.zip",
 )
 
 load("@rules_foreign_cc//:workspace_definitions.bzl", "rules_foreign_cc_dependencies")
@@ -255,7 +253,7 @@ new_local_repository(
 
 new_local_repository(
     name = "windows_opencv",
-    build_file = "//third_party:opencv_windows.BUILD",
+    build_file = "@//third_party:opencv_windows.BUILD",
     path = "C:\\opencv\\build",
 )
 
