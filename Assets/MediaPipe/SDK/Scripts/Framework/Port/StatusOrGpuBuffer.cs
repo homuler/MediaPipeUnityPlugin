@@ -22,7 +22,6 @@ namespace Mediapipe {
     }
 
     public override GpuBuffer Value() {
-      EnsureOk();
       UnsafeNativeMethods.mp_StatusOrGpuBuffer__value(mpPtr, out var gpuBufferPtr).Assert();
       Dispose();
 

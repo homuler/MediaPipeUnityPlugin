@@ -19,7 +19,7 @@ namespace Mediapipe {
           throw new MediaPipeException("MediaPipe Aborted, refer glog files for more details");
         }
         default: {
-          throw new MediaPipePluginException($"Failed to call a native function (code={code}");
+          throw new MediaPipePluginException($"Failed to call a native function (code={code})");
         }
       }
     }

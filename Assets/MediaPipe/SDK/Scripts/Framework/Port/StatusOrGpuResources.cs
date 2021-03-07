@@ -22,7 +22,6 @@ namespace Mediapipe {
     }
 
     public override GpuResources Value() {
-      EnsureOk();
       UnsafeNativeMethods.mp_StatusOrGpuResources__value(mpPtr, out var gpuResourcesPtr).Assert();
       Dispose();
 

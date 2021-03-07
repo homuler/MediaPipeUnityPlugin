@@ -17,11 +17,5 @@ namespace Mediapipe {
 
     /// <exception cref="MediaPipePluginException">Thrown when status is not ok</exception>
     public abstract T Value();
-
-    protected void EnsureOk() {
-      if (!ok) {
-        throw new InternalException($"Status is not ok: {status.ToString()}");
-      }
-    }
   }
 }
