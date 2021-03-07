@@ -81,6 +81,7 @@ EOF
             "@com_google_mediapipe//mediapipe/framework:calculator_java_proto_lite",
             "@com_google_mediapipe//mediapipe/framework:calculator_profile_java_proto_lite",
             "@com_google_mediapipe//mediapipe/framework/tool:calculator_graph_template_java_proto_lite",
+            "@com_google_protobuf//:protobuf_javalite",
             "//third_party:androidx_annotation",
             "//third_party:androidx_appcompat",
             "//third_party:androidx_core",

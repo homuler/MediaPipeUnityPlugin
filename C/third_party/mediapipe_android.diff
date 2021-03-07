@@ -1,0 +1,18 @@
+diff --git a/mediapipe/calculators/tensor/BUILD b/mediapipe/calculators/tensor/BUILD
+index 5a06310..400e537 100644
+--- a/mediapipe/calculators/tensor/BUILD
++++ b/mediapipe/calculators/tensor/BUILD
+@@ -87,7 +87,12 @@ cc_library(
+         "@org_tensorflow//tensorflow/lite/delegates/gpu/gl:gl_buffer",
+         "@org_tensorflow//tensorflow/lite/delegates/gpu/gl:gl_program",
+         "@org_tensorflow//tensorflow/lite/delegates/gpu/gl:gl_shader",
+-    ],
++    ] + select({
++        "//mediapipe:android": [
++            "//mediapipe/util/android/file/base",
++        ],
++        "//conditions:default": [],
++    }),
+     alwayslink = 1,
+ )
+ 

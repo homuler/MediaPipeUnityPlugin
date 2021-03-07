@@ -31,7 +31,7 @@ namespace Tests {
 
     #region #Value
     [Test, GpuOnly]
-    public void ConsumeValueOrDie_ShouldReturnGpuResources_When_StatusIsOk() {
+    public void Value_ShouldReturnGpuResources_When_StatusIsOk() {
       var statusOrGpuResources = GpuResources.Create();
       Assert.True(statusOrGpuResources.ok);
 

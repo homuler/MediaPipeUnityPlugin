@@ -32,7 +32,7 @@ namespace Tests {
 
     #region #Value
     [Test]
-    public void ConsumeValueOrDie_ShouldReturnImageFrame_When_StatusIsOk() {
+    public void Value_ShouldReturnImageFrame_When_StatusIsOk() {
       var statusOrImageFrame = InitializeSubject();
       Assert.True(statusOrImageFrame.ok);
 
