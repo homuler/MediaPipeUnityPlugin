@@ -41,6 +41,7 @@ http_archive(
   sha256 = "95b097a014cb329213fa647efafba286bac75126a964dda08f62cbaf95aba42d",
   strip_prefix = "mediapipe-0.8.3.1",
   patches = [
+      "@//third_party:mediapipe_android.diff",
       "@//third_party:mediapipe_ios.diff",
       "@//third_party:mediapipe_visibility.diff",
       "@//third_party:mediapipe_model_path.diff",
