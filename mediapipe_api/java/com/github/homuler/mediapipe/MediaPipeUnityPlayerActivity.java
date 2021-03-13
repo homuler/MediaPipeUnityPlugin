@@ -1,4 +1,4 @@
-package org.homuler.mediapipe.unity;
+package com.github.homuler.mediapipe;
 
 import android.os.Bundle;
 import android.util.Log;

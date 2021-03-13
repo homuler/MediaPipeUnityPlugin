@@ -41,7 +41,7 @@ def _normalize_exts_impl(ctx):
               outputs = [dest],
               arguments = [src.path, dest.path],
               command = "test $1 != $2 && cp $1 $2",
-              progress_message = "Copying %s to %s...".format(src.path, dest.path),
+              progress_message = "Copying {} to {}...".format(src.path, dest.path),
             )
             output_files.append(dest)
 

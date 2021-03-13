@@ -1,0 +1,14 @@
+{
+  "name": "com.github.homuler.mediapipe",
+  "version": "0.5.0",
+  "displayName": "MediaPipe Plugin",
+  "description": "MediaPipe Plugin for Unity",
+  "unity": "2019.4",
+  "keywords": [
+    "mediapipe",
+    "MediaPipe"
+  ],
+  "author": {
+    "name": "homuler"
+  }
+}

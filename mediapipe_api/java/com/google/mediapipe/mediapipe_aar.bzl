@@ -24,7 +24,7 @@
 
 load("@build_bazel_rules_android//android:rules.bzl", "android_binary", "android_library")
 
-def mediapipe_aar(name, package = "org.homuler.mediapipe.unity", srcs = [], deps = [], jni_deps = [], assets = [], assets_dir = ""):
+def mediapipe_aar(name, package = "com.github.homuler.mediapipe", srcs = [], deps = [], jni_deps = [], assets = [], assets_dir = ""):
     """Generate MediaPipeUnityPlugin AAR.
 
     Args:

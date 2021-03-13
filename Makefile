@@ -1,5 +1,5 @@
 builddir := .build
-sdkdir := Assets/MediaPipe/SDK
+sdkdir := Packages/com.github.homuler.mediapipe/Runtime
 plugindir := $(sdkdir)/Plugins
 resourcedir := $(sdkdir)/Resources
 scriptdir := $(sdkdir)/Scripts

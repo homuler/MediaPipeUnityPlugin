@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Mediapipe {
   public class LocalAssetManager : ResourceManager {
-    readonly static string ResourceRootPath = Path.Combine(Application.dataPath, "MediaPipe", "SDK", "Resources");
+    readonly static string ResourceRootPath = Path.Combine(Application.dataPath, "..", "Packages", "com.github.homuler.mediapipe", "Runtime", "Resources");
 
     public override CacheFilePathResolver cacheFilePathResolver {
       get { return CacheFileFromAsset; }
