@@ -2,7 +2,7 @@ using Mediapipe;
 
 public sealed class LocalAssetLoader : AssetLoader {
   void Start() {
-    resourceManager = new Mediapipe.LocalAssetManager();
+    resourceManager = new LocalAssetManager();
   }
 
   public override void PrepareAsset(string name, string uniqueKey, bool overwrite = false) {
