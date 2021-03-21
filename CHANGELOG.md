@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.1](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.5.0...v0.5.1) (2021-03-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* place ResourceManager classes under SDK directory
+
+### Features
+
+* **example:** Objectron ([bd470eb](https://github.com/homuler/MediaPipeUnityPlugin/commit/bd470eb3a90af6e25e2aa95195458a662fb60965))
+
+
+### Bug Fixes
+
+* add a missing command ([de132bd](https://github.com/homuler/MediaPipeUnityPlugin/commit/de132bdf8fe5eed96fab1d5775a0dd93812a5399))
+* build error ([fe2f97f](https://github.com/homuler/MediaPipeUnityPlugin/commit/fe2f97f1410a2189b89e93e13101c2e30508caab))
+* build for iOS and Android ([7a815f9](https://github.com/homuler/MediaPipeUnityPlugin/commit/7a815f951ef552a924db76d1eaf6033155e13768))
+* failed to apply a patch ([049ca2f](https://github.com/homuler/MediaPipeUnityPlugin/commit/049ca2fabe5b5c7e3d4f87cb5aa1b3bae8ea865e))
+* graph starts before saving model files ([7f9f6b0](https://github.com/homuler/MediaPipeUnityPlugin/commit/7f9f6b02d43a6990f465f8f2a2b0e76676a5a546))
+
+
+* place ResourceManager classes under SDK directory ([c67a456](https://github.com/homuler/MediaPipeUnityPlugin/commit/c67a456c1dde283dd165ad4e7650bb197b6e9720))
+
 ## [0.5.0](https://github.com/homuler/MediapipeUnityPlugin/compare/v0.4.3...v0.5.0) (2021-02-22)
 
 
