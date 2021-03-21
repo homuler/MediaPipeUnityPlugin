@@ -10,8 +10,6 @@ workspace(name = "mediapipe_api")
 # - rules_pkg
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
-
 
 skylib_version = "0.9.0"
 http_archive(
@@ -183,15 +181,6 @@ http_archive(
     patch_args = [
         "-p1",
     ],
-)
-
-# v3.15.6
-new_git_repository(
-    name = "com_google_protobuf_csharp",
-    build_file = "//third_party:protobuf_csharp.BUILD",
-    commit = "6aa539bf0195f188ff86efe6fb8bfa2b676cdd46",
-    shallow_since = "1615416806 -0800",
-    remote = "https://github.com/protocolbuffers/protobuf.git",
 )
 
 http_archive(

@@ -1,5 +1,3 @@
-load("@rules_pkg//:pkg.bzl", "pkg_zip")
-
 cc_library(
     name = "glog",
     srcs = ["glog.cc"],
@@ -33,11 +31,4 @@ cc_library(
     ],
     visibility = ["//visibility:public"],
     alwayslink = True,
-)
-
-pkg_zip(
-    name = "protobuf_dlls",
-    srcs = [
-        "@com_google_protobuf_csharp//:protobuf_dlls",
-    ],
 )

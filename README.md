@@ -67,12 +67,12 @@ cc_library(
 By default, it is assumed that OpenCV 3.4.10 is installed under `C:\opencv`.
 If your version or path is different, please edit [C/third_party/opencv_windows.BUILD](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/third_party/opencv_windows.BUILD) and [C/WORKSPACE](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/WORKSPACE).
 
-### .NET Core
-This project uses protocol buffers to communicate with MediaPipe, and it is necessary to install .NET Core SDK(3.x) and .NET Core runtime 2.1 to build `Google.Protobuf.dll`.
+### NuGet CLI
+This project uses protocol buffers to communicate with MediaPipe, and it is necessary to install [NuGet](https://docs.microsoft.com/en-us/nuget/reference/nuget-exe-cli-reference) to download `Google.Protobuf.dll`.
 
-For example, if you use Linux and `yay`, you can install required packages with a below command.
+For example, if you use Linux and `yay`, you can install it with a below command.
 ```sh
-yay -S dotnet-sdk dotnet-runtime-2.1
+yay -S nuget
 ```
 
 ## Installation
@@ -92,55 +92,40 @@ yay -S dotnet-sdk dotnet-runtime-2.1
     cd MediaPipeUnityPlugin
     ```
 
-1. Build required libraries, models and C# source files.
-    - Linux
+1. Set environment variables
+    - Android (optional)
         ```sh
-        # Build native libaries with GPU support enabled
-        make && make install
+        export ANDROID_HOME=/path/to/SDK
+        # ATTENTION!: Currently bazel does not support NDK r22, so please use NDK r21 instead.
+        export ANDROID_NDK_HOME=/path/to/ndk/21.4.7075529
+        ```
 
-        # Or without GPU support
-        make cpu && make install
+    - Windows
+        ```bat
+        set PYTHON_BIN_PATH=C:\path\to\python.exe
         ```
-    - macOS
-        ```sh
-        make cpu && make install
-        ```
-    - Windows 10
-        ```sh
-        # You need to specify PYTHON_BIN_PATH
-        # Note that the path separator is `//`, not `\`.
-        # In the below case, `python.exe` is installed at `C:\path\to\pathon.exe`.
-        make cpu PYTHON_BIN_PATH="C://path//to//python.exe" && make install
-        ```
+
+1. Run `build.py` with target platforms specified.
+    ```sh
+    # Required files (native libaries, model files, C# scripts) will be built and installed.
+
+    # e.g. Desktop GPU only
+    python build.py build --desktop gpu -v
+
+    # e.g. Desktop CPU and Android
+    # ATTENTION!: Currently bazel does not support NDK r22, so please use NDK r21 instead.
+    export ANDROID_HOME=/path/to/SDK
+    export ANDROID_NDK_HOME=/path/to/ndk/21.4.7075529
+
+    python build.py build --desktop cpu --android arm64 -v
+
+    # e.g. iOS
+    python build.py build --ios arm64 -v
+
+    # Run `python build.py build --help` to see other options.
+    ```
 
 1. Start Unity Editor
-
-## Build native libraries
-It's necessary to build native libraries for your target platforms.
-
-### PC, Mac & Linux Standalone
-Required libraries are built in the installation step.
-
-### Android
-Currently bazel does not support NDK r22, so please use NDK r21 instead.
-```sh
-export ANDROID_HOME=/path/to/SDK
-export ANDROID_NDK_HOME=/path/to/ndk/21.4.7075529
-
-# ARM64
-make android_arm64
-make install
-
-# ARMv7
-make android_arm
-make install
-```
-
-### iOS
-```sh
-make ios_arm64
-make install
-```
 
 ## Run example scenes
 ### UnityEditor

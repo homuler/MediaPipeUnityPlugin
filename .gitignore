@@ -1,4 +1,6 @@
+.nuget/
 .vscode/
+.vs/
 .DS_Store
 
 Temp/
@@ -6,7 +8,7 @@ Logs/
 Library/
 CodeCoverage/
 obj/
-.build/
+build/
 *.csproj
 *.sln
 
