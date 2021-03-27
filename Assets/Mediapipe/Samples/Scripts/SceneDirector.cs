@@ -30,7 +30,7 @@ public class SceneDirector : MonoBehaviour {
     // System.Environment.SetEnvironmentVariable("GLOG_v", "2");
   }
 
-#if (UNITY_STANDALONE_LINUX || UNITY_ANDROID) && !UNITY_EDITOR_OSX && !UNITY_EDITOR_WIN
+#if UNITY_ANDROID && !UNITY_EDITOR_OSX && !UNITY_EDITOR_WIN
   [AOT.MonoPInvokeCallback(typeof(PluginCallback))]
   static void GetCurrentContext(int eventId) {
     currentContext = Egl.getCurrentContext();
@@ -48,7 +48,7 @@ public class SceneDirector : MonoBehaviour {
 
     webCamScreen = GameObject.Find("WebCamScreen");
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR_OSX && !UNITY_EDITOR_WIN
     if (IsGpuEnabled()) {
       PluginCallback callback = GetCurrentContext;
 
