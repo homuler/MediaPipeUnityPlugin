@@ -107,13 +107,15 @@ yay -S nuget
 
 1. Run `build.py` with target platforms specified.
     ```sh
-    # Required files (native libaries, model files, C# scripts) will be built and installed.
+    # Required files (native libraries, model files, C# scripts) will be built and installed.
 
     # e.g. Desktop GPU only
     python build.py build --desktop gpu -v
 
     # e.g. Desktop CPU and Android
-    # ATTENTION!: Currently bazel does not support NDK r22, so please use NDK r21 instead.
+    # ATTENTION!:
+    #   1. Currently bazel does not support NDK r22, so please use NDK r21 instead.
+    #   2. Building for Android on Windows is not supported.
     export ANDROID_HOME=/path/to/SDK
     export ANDROID_NDK_HOME=/path/to/ndk/21.4.7075529
 
