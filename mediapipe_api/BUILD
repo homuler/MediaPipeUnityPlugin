@@ -130,13 +130,7 @@ cc_library(
 
 pkg_zip(
     name = "mediapipe_desktop",
-    srcs = [
-        ":libmediapipe_c",
-    ] + select({
-        "@com_google_mediapipe//mediapipe:windows": ["@windows_opencv//:opencv_libs"],
-        "//conditions:default": [],
-    }),
-    # TODO: keep directory structure
+    srcs = [":libmediapipe_c"],
 )
 
 pkg_asset(
@@ -188,4 +182,15 @@ pkg_zip(
         "//mediapipe_api/graphs/object_detection_3d/calculators:model_matrix_cs",
     ],
     # TODO: keep directory structure
+)
+
+pkg_zip(
+    name = "opencv_libs",
+    srcs = select({
+        "@com_google_mediapipe//mediapipe:windows": ["@windows_opencv//:opencv_libs"],
+        "@com_google_mediapipe//mediapipe:macos": [],
+        "@com_google_mediapipe//mediapipe:android": [],
+        "@com_google_mediapipe//mediapipe:ios": [],
+        "//conditions:default": ["@linux_opencv//:opencv_libs"],
+    }),
 )

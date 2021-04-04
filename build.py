@@ -85,6 +85,7 @@ class BuildCommand(Command):
     self.android = command_args.args.android
     self.ios= command_args.args.ios
     self.resources = command_args.args.resources
+    self.include_opencv_libs = command_args.args.include_opencv_libs
 
     self.compilation_mode = command_args.args.compilation_mode
     self.strip_all = command_args.args.strip_all
@@ -123,6 +124,12 @@ class BuildCommand(Command):
       self._unzip(
         os.path.join(_BAZEL_BIN_PATH, 'mediapipe_api', 'mediapipe_desktop.zip'),
         os.path.join(_BUILD_PATH, 'Plugins'))
+
+      if self.include_opencv_libs:
+        self._run_command(self._build_opencv_libs())
+        self._unzip(
+          os.path.join(_BAZEL_BIN_PATH, 'mediapipe_api', 'opencv_libs.zip'),
+          os.path.join(_BUILD_PATH, 'Plugins', 'OpenCV'))
 
       self.console.info('Built native libraries for Desktop')
 
@@ -189,6 +196,15 @@ class BuildCommand(Command):
 
     commands.append('//mediapipe_api:mediapipe_desktop')
     return commands
+
+  def _build_opencv_libs(self):
+    if not self.include_opencv_libs:
+      return []
+
+    commands = self._build_common_commands()
+    commands.append('//mediapipe_api:opencv_libs')
+    return commands
+
 
   def _build_android_commands(self):
     if self.android is None:
@@ -287,8 +303,6 @@ class UninstallCommand(Command):
 
 class HelpCommand(Command):
   def __init__(self, args):
-    Command.__init__(self, args)
-
     self.args = args
 
   def run(self):
@@ -309,6 +323,7 @@ class Argument:
     build_command_parser.add_argument('--ios', choices=['arm64'])
     build_command_parser.add_argument('--resources', action=argparse.BooleanOptionalAction, default=True)
     build_command_parser.add_argument('--compilation_mode', '-c', choices=['fastbuild', 'opt', 'debug'], default='opt')
+    build_command_parser.add_argument('--include_opencv_libs', action='store_true', help='Include OpenCV\'s native libraries for Desktop')
     build_command_parser.add_argument('--strip_all', '-s', action='store_true', help='Omit all symbol information from the output file')
     build_command_parser.add_argument('--sandbox_debug', action='store_true')
     build_command_parser.add_argument('--verbose_failures', action='store_true')
