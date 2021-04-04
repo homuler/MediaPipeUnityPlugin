@@ -32,7 +32,7 @@ rules_pkg_dependencies()
 new_local_repository(
     name = "unity",
     build_file = "@//third_party:unity.BUILD",
-    path = "/path/to/unity/2019.4.18f1",
+    path = "/path/to/unity/2019.4.23f1",
 )
 
 # mediapipe

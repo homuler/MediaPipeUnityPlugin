@@ -1,5 +1,5 @@
 # MediaPipe Unity Plugin
-This is a Unity (2019.4.18f1) Plugin to use MediaPipe (0.8.3.1).
+This is a Unity (2019.4.23f1) Plugin to use MediaPipe (0.8.3.1).
 
 ## Platforms
 - [x] Linux Desktop (tested on ArchLinux)
