@@ -1,0 +1,59 @@
+pkgbase=opencv3-opt
+pkgname=($pkgbase)
+pkgver=3.4.12
+pkgrel=1
+pkgdesc="Open Source Computer Vision Library (Legacy Version & /opt directory version)"
+arch=(x86_64)
+license=(BSD)
+url="http://opencv.org/"
+makedepends=(cmake)
+source=(
+"opencv-$pkgver.tar.gz::https://github.com/opencv/opencv/archive/$pkgver.tar.gz"
+"opencv_contrib-$pkgver.tar.gz::https://github.com/opencv/opencv_contrib/archive/$pkgver.tar.gz"
+)
+sha256sums=('c8919dfb5ead6be67534bf794cb0925534311f1cd5c6680f8164ad1813c88d13'
+            'b207024589674dd2efc7c25740ef192ee4f3e0783e773e2d49a198c37e3e7570')
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+
+  cmake ../opencv-$pkgver \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DBUILD_LIST=calib3d,core,features2d,highgui,imgcodecs,imgproc,video,videoio \
+    -DBUILD_EXAMPLES=OFF \
+    -DBUILD_PERF_TESTS=OFF \
+    -DBUILD_SHARED_LIBS=ON \
+    -DBUILD_TESTS=OFF \
+    -DBUILD_WITH_DEBUG_INFO=OFF \
+    -DOPENCV_SKIP_VISIBILITY_HIDDEN=OFF \
+    -DOPENCV_SKIP_PYTHON_LOADER=ON \
+    -DBUILD_opencv_python=OFF \
+    -DWITH_ITT=OFF \
+    -DWITH_JASPER=OFF \
+    -DWITH_WEBP=OFF \
+    -DCMAKE_INSTALL_PREFIX=/opt/opencv3 \
+    -DCMAKE_INSTALL_LIBDIR=lib \
+    -DOPENCV_EXTRA_MODULES_PATH="$srcdir/opencv_contrib-$pkgver/modules"
+  make
+}
+
+package_opencv3-opt() {
+  options=(staticlibs)
+  provides=(opencv3)
+
+  cd build
+  make DESTDIR="$pkgdir" install
+
+  # install license file
+  install -Dm644 "$srcdir"/opencv-$pkgver/LICENSE -t "$pkgdir"/usr/share/licenses/$pkgname
+
+  cd "$pkgdir"/opt/opencv3/share
+
+  # separate samples package
+  mv OpenCV opencv3 # otherwise folder naming is inconsistent
+  ln -sf /opt/opencv3/share/opencv3 OpenCV # fix some compatibility problems
+}
