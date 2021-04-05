@@ -25,6 +25,5 @@ Assets/StreamingAssets*
 Packages/com.github.homuler.mediapipe/Runtime/Resources/*
 !Packages/com.github.homuler.mediapipe/Runtime/Resources/*.meta
 Packages/com.github.homuler.mediapipe/Runtime/Resources/object_detection_3d.bytes.meta
-Packages/com.github.homuler.mediapipe/Runtime/Plugins/opencv_world*.dll.meta
 Packages/com.github.homuler.mediapipe/Runtime/Plugins/Protobuf*
 Packages/com.github.homuler.mediapipe/Runtime/Scripts/Protobuf/**/*.cs
