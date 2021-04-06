@@ -152,7 +152,8 @@ class BuildCommand(Command):
       self.console.info('Built native libraries for iOS')
 
     self.console.info('Installing...')
-    self._copytree(_BUILD_PATH, _INSTALL_PATH)
+    # _copytree fails on Windows, so run `cp -r` instead.
+    self._run_command(['cp', '-r', f'{_BUILD_PATH}/*', _INSTALL_PATH])
     self.console.info('Installed')
 
   def _is_windows(self):
