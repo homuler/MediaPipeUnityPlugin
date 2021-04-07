@@ -41,6 +41,13 @@ KNIFT                   |         |     |             |             |       |
 Run commands at the project root if not specified otherwise.\
 Also note that you need to build native libraries for Desktop CPU or GPU to run this plugin on UnityEditor.
 
+- [Docker for Linux (experimental)](#docker-for-linux-experimental)
+- [Linux](#linux)
+- [Docker for Windows (experimental)](#docker-for-windows-experimental)
+- [Windows](#windows)
+- [macOS](#macOS)
+
+
 ### Docker for Linux (experimental)
 1. Build a Docker image
     ```sh
