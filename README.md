@@ -1,6 +1,15 @@
 # MediaPipe Unity Plugin
 This is a Unity (2019.4.23f1) Plugin to use MediaPipe (0.8.3.1).
 
+## Prerequisites
+To use this plugin, you need to build native libraries for the target platforms (Desktop/UnityEditor, Android, iOS).
+If you'd like to build them on your machine, below commands/tools/libraries are required (not required if you use Docker).
+
+- Python >= 3.9.0
+- Bazel >= 3.7.2, (< 4.0.0 for iOS)
+- GCC/G++ >= 8.0.0 (Linux, macOS)
+- [NuGet](https://docs.microsoft.com/en-us/nuget/reference/nuget-exe-cli-reference)
+
 ## Platforms
 - [x] Linux Desktop (tested on ArchLinux)
 - [x] Android
@@ -27,56 +36,85 @@ KNIFT                   |         |     |             |             |       |
 
 *1: crashes sometimes when the graph exits.
 
-## Prerequisites
-### OpenCV
-#### Linux
-By default, it is assumed that OpenCV 3 is installed under `/usr` (e.g. `/usr/lib/libopencv_core.so`).
-If your version or path is different, please edit [C/third_party/opencv_linux.BUILD](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/third_party/opencv_linux.BUILD) and [C/WORKSPACE](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/WORKSPACE).
 
-For example, if OpenCV is installed under `/opt/opencv3`, then your `WORKSPACE` looks like this.
-```starlark
-new_local_repository(
-    name = "linux_opencv",
-    build_file = "@//third_party:opencv_linux.BUILD",
-    path = "/opt/opencv3",
-)
-```
+## Installation Guide
+Run commands at the project root if not specified otherwise.\
+Also note that you need to build native libraries for Desktop CPU or GPU to run this plugin on UnityEditor.
 
-If you use Ubuntu, probably OpenCV's shared libraries is installed under `/usr/lib/x86_64-linux-gnu/`.
-In this case, your `opencv_linux.BUILD` would be like this.
-```starlark
-cc_library(
-    name = "opencv",
-    srcs = glob(
-        [
-            "lib/x86_64-linux-gnu/libopencv_core.so",
-            "lib/x86_64-linux-gnu/libopencv_calib3d.so",
-            "lib/x86_64-linux-gnu/libopencv_features2d.so",
-            "lib/x86_64-linux-gnu/libopencv_highgui.so",
-            "lib/x86_64-linux-gnu/libopencv_imgcodecs.so",
-            "lib/x86_64-linux-gnu/libopencv_imgproc.so",
-            "lib/x86_64-linux-gnu/libopencv_video.so",
-            "lib/x86_64-linux-gnu/libopencv_videoio.so",
-        ],
-    ),
-    ...
-)
-```
+### Docker for Linux (experimental)
+1. Build a Docker image
+    ```sh
+    docker build -t mediapipe_unity:latest . -f docker/linux/x86_64/Dockerfile
 
-#### Windows
-By default, it is assumed that OpenCV 3.4.10 is installed under `C:\opencv`.
-If your version or path is different, please edit [C/third_party/opencv_windows.BUILD](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/third_party/opencv_windows.BUILD) and [C/WORKSPACE](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/C/WORKSPACE).
+    # Above command may fail depending on glibc version installed to your host machine.
+    # cf. https://serverfault.com/questions/1052963/pacman-doesnt-work-in-docker-image
+    #
+    # In that case, apply a patch.
+    #
+    #   git apply docker/linux/x86_64/pacman.patch
+    ```
 
-### NuGet CLI
-This project uses protocol buffers to communicate with MediaPipe, and it is necessary to install [NuGet](https://docs.microsoft.com/en-us/nuget/reference/nuget-exe-cli-reference) to download `Google.Protobuf.dll`.
+1. Run a Docker container
+    ```sh
+    # Run with `Packages` directory mounted to the container
+    docker run --mount type=bind,src=$PWD/Packages,dst=/home/mediapipe/Packages \
+        -it mediapipe_unity:latest
+    ```
 
-For example, if you use Linux and `yay`, you can install it with a below command.
-```sh
-yay -S nuget
-```
+1. Run [build command](#build-command) inside the container
+    ```sh
+    # Build native libraries for Desktop CPU.
+    # Note that you need to specify `--include_opencv_libs` if OpenCV 3 is not installed to your host machine.
+    python build.py build --desktop cpu --include_opencv_libs -v
 
-## Installation
-1. [Install MediaPipe](https://google.github.io/mediapipe/getting_started/install.html) and ensure that you can run Hello World! example.
+    # Build native libraries for Desktop GPU and Android
+    python build.py build --desktop gpu --android arm64 --include_opencv_libs -v
+    ```
+
+If the command finishes successfully, required files will be installed to your host machine.
+
+### Linux
+1. Install OpenCV
+
+    By default, it is assumed that OpenCV 3 is installed under `/usr` (e.g. `/usr/lib/libopencv_core.so`).\
+    If your version or path is different, please edit [third_party/opencv_linux.BUILD](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/third_party/opencv_linux.BUILD) and [WORKSPACE](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/WORKSPACE).
+
+
+    For example, if you use ArchLinux and [opencv3-opt](https://aur.archlinux.org/packages/opencv3-opt/), OpenCV 3 is installed under `/opt/opencv3`.\
+    In this case, your `WORKSPACE` will look like this.
+    ```starlark
+    new_local_repository(
+        name = "linux_opencv",
+        build_file = "@//third_party:opencv_linux.BUILD",
+        path = "/opt/opencv3",
+    )
+    ```
+
+    On the other hand, if you use Ubuntu, probably OpenCV's shared libraries is installed under `/usr/lib/x86_64-linux-gnu/`.\
+    In that case, your `opencv_linux.BUILD` would be like this.
+    ```starlark
+    cc_library(
+        name = "opencv",
+        srcs = glob(
+            [
+                "lib/x86_64-linux-gnu/libopencv_core.so",
+                "lib/x86_64-linux-gnu/libopencv_calib3d.so",
+                "lib/x86_64-linux-gnu/libopencv_features2d.so",
+                "lib/x86_64-linux-gnu/libopencv_highgui.so",
+                "lib/x86_64-linux-gnu/libopencv_imgcodecs.so",
+                "lib/x86_64-linux-gnu/libopencv_imgproc.so",
+                "lib/x86_64-linux-gnu/libopencv_video.so",
+                "lib/x86_64-linux-gnu/libopencv_videoio.so",
+            ],
+        ),
+        ...
+    )
+    ```
+
+1. Ensure you can run `nuget`
+    ```sh
+    nuget
+    ```
 
 1. Install numpy
     ```sh
@@ -86,52 +124,148 @@ yay -S nuget
     # pip3 install numpy --user
     ```
 
-1. Clone the repository
+1. (Optional) Install Android SDK and Android NDK, and set environment variables
     ```sh
-    git clone https://github.com/homuler/MediaPipeUnityPlugin.git
-    cd MediaPipeUnityPlugin
-    ```
-
-1. Set environment variables
-    - Android (optional)
-        ```sh
-        export ANDROID_HOME=/path/to/SDK
-        # ATTENTION!: Currently bazel does not support NDK r22, so please use NDK r21 instead.
-        export ANDROID_NDK_HOME=/path/to/ndk/21.4.7075529
-        ```
-
-    - Windows
-        ```bat
-        set PYTHON_BIN_PATH=C:\path\to\python.exe
-        ```
-
-1. Run `build.py` with target platforms specified.
-    ```sh
-    # Required files (native libraries, model files, C# scripts) will be built and installed.
-
-    # e.g. Desktop GPU only
-    python build.py build --desktop gpu -v
-
-    # e.g. Desktop CPU and Android
-    # ATTENTION!:
-    #   1. Currently bazel does not support NDK r22, so please use NDK r21 instead.
-    #   2. Building for Android on Windows is not supported.
+    # bash
     export ANDROID_HOME=/path/to/SDK
+    # ATTENTION!: Currently Bazel does not support NDK r22, so use NDK r21 instead.
     export ANDROID_NDK_HOME=/path/to/ndk/21.4.7075529
-
-    python build.py build --desktop cpu --android arm64 -v
-
-    # e.g. iOS
-    python build.py build --ios arm64 -v
-
-    # Run `python build.py build --help` to see other options.
     ```
 
-1. Start Unity Editor
+1. Run [build command](#build-command)
+
+### Docker for Windows (experimental)
+#### Desktop/UnityEditor
+1. Switch to windows containers
+
+    Note that Hyper-V backend is required (that is, Windows 10 Home is not supported).
+
+1. Build a Docker image
+    ```sh
+    docker build -t mediapipe_unity:windows . -f docker/windows/x86_64/Dockerfile
+    ```
+
+    This process will hang when MSYS2 is being installed.\
+    If this issue occurs, remove `C:\ProgramData\Docker\tmp\hcs*\Files\$Recycle.Bin\` manually (hcs* is random name).\
+    cf. https://github.com/docker/for-win/issues/8910
+
+1. Run a Docker container
+    ```sh
+    # Run with `Packages` directory mounted to the container
+    # Specify `--cpus` and `--memory` options according to your machine.
+    docker run --cpus=22 --memory=24576m \
+        --mount type=bind,src=%CD%\Packages,dst=C:\mediapipe\Packages \
+        -it mediapipe_unity:windows
+    ```
+
+1. Run [build command](#build-command) inside the container
+    ```sh
+    python build.py build --desktop cpu --include_opencv_libs -v
+    ```
+
+If the command finishes successfully, required files will be installed to your host machine.
+
+#### Android
+1. Switch to Linux containers
+
+    Note that you cannot build native libraries for Desktop with Linux containers.
+
+1. Build a Docker image
+    ```sh
+    # You may skip applying a patch depending on your machine settings.
+    # See https://serverfault.com/questions/1052963/pacman-doesnt-work-in-docker-image for more details.
+    git apply docker/linux/x86_64/pacman.patch
+
+    docker build -t mediapipe_unity:linux . -f docker/linux/x86_64/Dockerfile
+    ```
+
+1. Run a Docker container
+    ```sh
+    # Run with `Packages` directory mounted to the container
+    # Specify `--cpus` and `--memory` options according to your machine.
+    docker run --cpus=16 --memory=8192m \
+        --mount type=bind,src=%CD%\Packages,dst=/home/mediapipe/Packages \
+        -it mediapipe_unity:linux
+    ```
+
+1. Run [build command](#build-command) inside the container
+    ```sh
+    python build.py build --android arm64 -v
+    ```
+
+If the command finishes successfully, required files will be installed to your host machine.
+
+### Windows
+#### Desktop/UnityEditor
+1. Install Opencv
+
+    By default, it is assumed that OpenCV 3.4.10 is installed under `C:\opencv`.\
+    If your version or path is different, please edit [third_party/opencv_windows.BUILD](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/third_party/opencv_windows.BUILD) and [WORKSPACE](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/WORKSPACE).
+
+1. Ensure you can run `nuget`
+    ```sh
+    nuget
+    ```
+
+1. Install numpy
+    ```bat
+    pip install numpy --user
+    ```
+
+1. Set `PYTHON_BIN_PATH`
+    ```sh
+    set PYTHON_BIN_PATH=C:\path\to\python.exe
+    ```
+
+    When the path includes space characters (e.g. `C:\Program Files\Python39\python.exe`), it's reported that build command will fail.\
+    In that case, install python to another directory as a workaround (it's unnecessary to set the path to `%PATH%`, but don't forget to install numpy for the new Python).
+
+1. Run [build command](#build-command)
+
+#### Android
+You cannot build native libraries for Android on Windows 10, so use WSL 2 instead.\
+Installation steps are the same as [Linux](#Linux).
+
+
+### macOS
+WIP
+
+1. Install OpenCV
+1. Install NuGet
+1. Install numpy
+1. (Optional?) Install Xcode
+1. (Optional) Install Android SDK and Android NDK, and set environment variables
+    ```sh
+    # bash
+    export ANDROID_HOME=/path/to/SDK
+    # ATTENTION!: Currently Bazel does not support NDK r22, so use NDK r21 instead.
+    export ANDROID_NDK_HOME=/path/to/ndk/21.4.7075529
+    ```
+1. Run [build command](#build-command)
+
+### Build command
+```sh
+# Required files (native libraries, model files, C# scripts) will be built and installed.
+
+# e.g. Desktop GPU only
+python build.py build --desktop gpu -v
+
+# e.g. Include OpenCV libs to `Packages` (for Desktop)
+python build.py build --desktop gpu --include_opencv_libs -v
+
+# e.g. Desktop CPU and Android
+python build.py build --desktop cpu --android arm64 -v
+
+# e.g. iOS
+python build.py build --ios arm64 -v
+```
+
+Run `python build.py --help` and `python build.py build --help` for more details.
+
 
 ## Run example scenes
 ### UnityEditor
-Select `MediaPipe/Examples/Scenes/DesktopDemo` and play.
+Select `Mediapipe/Samples/Scenes/DesktopDemo` and play.
 
 ### Desktop
 If you'd like to run graphs on CPU, uncheck `Use GPU` from the inspector window.
@@ -139,9 +273,9 @@ If you'd like to run graphs on CPU, uncheck `Use GPU` from the inspector window.
 
 ## Troubleshooting
 ### DllNotFoundException: mediapipe_c
-[OpenCV's path](https://github.com/homuler/MediaPipeUnityPlugin#opencv) may not be configured properly.
+OpenCV's path may not be configured properly.
 
-If you're sure the path is correct, please check on **Load on startup** in the plugin inspector, click **Apply** button, and restart Unity Editor.
+If you're sure the path is correct, please check on **Load on startup** in the plugin inspector, click **Apply** button, and restart Unity Editor.\
 Some helpful logs will be output in the console.
 
 ### InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000
@@ -185,7 +319,6 @@ void OnDisable() {
 
 
 ## TODO
-- [ ] Dockerize build environment
 - [ ] Prepare API Documents
 - [ ] Implement cross-platform APIs to send images to MediaPipe
 - [ ] use CVPixelBuffer on iOS

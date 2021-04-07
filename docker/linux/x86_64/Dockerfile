@@ -63,4 +63,4 @@ ADD packages.config .
 ADD mediapipe_api mediapipe_api
 ADD third_party third_party
 
-CMD ["python", "build.py", "--help"]
+CMD ["/bin/bash"]
