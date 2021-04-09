@@ -152,8 +152,15 @@ class BuildCommand(Command):
       self.console.info('Built native libraries for iOS')
 
     self.console.info('Installing...')
-    # _copytree fails on Windows, so run `cp -r` instead.
-    self._run_command(['cp', '-r', f'{_BUILD_PATH}/*', _INSTALL_PATH])
+
+    if self.android:
+      # When build Android AAR in linux-docker on windows, will copy build/* to host directory failed.
+      # The path need to one up level.
+      self._run_command(['cp', '-r', f'../{_BUILD_PATH}/*', _INSTALL_PATH])
+    else:
+      # _copytree fails on Windows, so run `cp -r` instead.
+      self._run_command(['cp', '-r', f'{_BUILD_PATH}/*', _INSTALL_PATH])
+
     self.console.info('Installed')
 
   def _is_windows(self):
