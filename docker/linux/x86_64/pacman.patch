@@ -1,5 +1,5 @@
 diff --git a/docker/linux/x86_64/Dockerfile b/docker/linux/x86_64/Dockerfile
-index a12f279..d3a668f 100644
+index 3db8ceb..7f0b03c 100644
 --- a/docker/linux/x86_64/Dockerfile
 +++ b/docker/linux/x86_64/Dockerfile
 @@ -6,6 +6,11 @@ FROM archlinux:latest AS builder
