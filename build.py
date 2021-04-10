@@ -38,8 +38,12 @@ class Command:
   def __init__(self, command_args):
     self.console = Console(command_args.args.verbose)
 
-  def _run_command(self, command_list):
+  def _run_command(self, command_list, shell=False):
     self.console.v(f"Running `{' '.join(command_list)}`")
+
+    if shell:
+      return subprocess.run(' '.join(command_list), check=True, shell=shell)
+
     return subprocess.run(command_list, check=True)
 
   def _copy(self, source, dest, mode=0o755):
@@ -61,7 +65,8 @@ class Command:
       self.console.v(f"Creating '{dest}'...")
       os.makedirs(dest, 0o755)
 
-    shutil.copytree(source, dest, dirs_exist_ok=True)
+    # `shutil.copytree` fails on Windows if target file exists, so run `cp -r` instead.
+    self._run_command(['cp', '-r', f'{source}/*', dest], shell=True)
 
   def _remove(self, path):
     self.console.v(f"Removing '{path}'...")
@@ -153,7 +158,7 @@ class BuildCommand(Command):
 
     self.console.info('Installing...')
     # _copytree fails on Windows, so run `cp -r` instead.
-    self._run_command(['cp', '-r', f'{_BUILD_PATH}/*', _INSTALL_PATH])
+    self._copytree(_BUILD_PATH, _INSTALL_PATH)
     self.console.info('Installed')
 
   def _is_windows(self):
