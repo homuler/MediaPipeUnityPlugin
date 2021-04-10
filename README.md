@@ -118,8 +118,9 @@ If the command finishes successfully, required files will be installed to your h
     )
     ```
 
-1. Ensure you can run `nuget`
+1. Install Bazelisk and NuGet, and ensure you can run them
     ```sh
+    bazel --version
     nuget
     ```
 
@@ -148,7 +149,7 @@ If the command finishes successfully, required files will be installed to your h
     Note that Hyper-V backend is required (that is, Windows 10 Home is not supported).
 
 1. Build a Docker image
-    ```sh
+    ```bat
     docker build -t mediapipe_unity:windows . -f docker/windows/x86_64/Dockerfile
     ```
 
@@ -157,16 +158,16 @@ If the command finishes successfully, required files will be installed to your h
     cf. https://github.com/docker/for-win/issues/8910
 
 1. Run a Docker container
-    ```sh
-    # Run with `Packages` directory mounted to the container
-    # Specify `--cpus` and `--memory` options according to your machine.
-    docker run --cpus=22 --memory=24576m \
-        --mount type=bind,src=%CD%\Packages,dst=C:\mediapipe\Packages \
+    ```bat
+    Rem Run with `Packages` directory mounted to the container
+    Rem Specify `--cpus` and `--memory` options according to your machine.
+    docker run --cpus=16 --memory=8192m ^
+        --mount type=bind,src=%CD%\Packages,dst=C:\mediapipe\Packages ^
         -it mediapipe_unity:windows
     ```
 
 1. Run [build command](#build-command) inside the container
-    ```sh
+    ```bat
     python build.py build --desktop cpu --include_opencv_libs -v
     ```
 
@@ -178,20 +179,20 @@ If the command finishes successfully, required files will be installed to your h
     Note that you cannot build native libraries for Desktop with Linux containers.
 
 1. Build a Docker image
-    ```sh
-    # You may skip applying a patch depending on your machine settings.
-    # See https://serverfault.com/questions/1052963/pacman-doesnt-work-in-docker-image for more details.
+    ```bat
+    Rem You may skip applying a patch depending on your machine settings.
+    Rem See https://serverfault.com/questions/1052963/pacman-doesnt-work-in-docker-image for more details.
     git apply docker/linux/x86_64/pacman.patch
 
     docker build -t mediapipe_unity:linux . -f docker/linux/x86_64/Dockerfile
     ```
 
 1. Run a Docker container
-    ```sh
-    # Run with `Packages` directory mounted to the container
-    # Specify `--cpus` and `--memory` options according to your machine.
-    docker run --cpus=16 --memory=8192m \
-        --mount type=bind,src=%CD%\Packages,dst=/home/mediapipe/Packages \
+    ```bat
+    Rem Run with `Packages` directory mounted to the container
+    Rem Specify `--cpus` and `--memory` options according to your machine.
+    docker run --cpus=16 --memory=8192m ^
+        --mount type=bind,src=%CD%\Packages,dst=/home/mediapipe/Packages ^
         -it mediapipe_unity:linux
     ```
 
@@ -209,8 +210,10 @@ If the command finishes successfully, required files will be installed to your h
     By default, it is assumed that OpenCV 3.4.10 is installed under `C:\opencv`.\
     If your version or path is different, please edit [third_party/opencv_windows.BUILD](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/third_party/opencv_windows.BUILD) and [WORKSPACE](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/WORKSPACE).
 
-1. Ensure you can run `nuget`
+
+1. Install Bazelisk and NuGet, and ensure you can run them
     ```sh
+    bazel --version
     nuget
     ```
 
@@ -235,12 +238,36 @@ Installation steps are the same as [Linux](#Linux).
 
 
 ### macOS
-WIP
+1. Install [Homebrew](https://brew.sh)
 
-1. Install OpenCV
-1. Install NuGet
-1. Install numpy
-1. (Optional?) Install Xcode
+1. Install OpenCV 3
+    ```sh
+    brew install opencv@3
+    brew uninstall --ignore-dependencies glog
+    ```
+
+1. Install Python
+    ```sh
+    brew install python
+
+    # Python version must be >= 3.9.0
+    sudo ln -s -f /usr/local/bin/python3.9 /usr/local/bin/python
+    pip3 install --user six numpy
+    ```
+
+1. Install Bazelisk and NuGet
+    ```sh
+    brew install bazelisk
+    # Note that you need to specify bazel version if you'd like to build for iOS
+    # See https://github.com/bazelbuild/bazelisk for more details.
+    #
+    #  e.g. export USE_BAZEL_VERSION=3.7.2
+
+    brew install nuget
+    ```
+
+1. (Optional) Install Xcode
+
 1. (Optional) Install Android SDK and Android NDK, and set environment variables
     ```sh
     # bash
@@ -248,6 +275,7 @@ WIP
     # ATTENTION!: Currently Bazel does not support NDK r22, so use NDK r21 instead.
     export ANDROID_NDK_HOME=/path/to/ndk/21.4.7075529
     ```
+
 1. Run [build command](#build-command)
 
 ### Build command
