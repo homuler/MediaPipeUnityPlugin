@@ -9,12 +9,12 @@ namespace Mediapipe {
     static string _AssetBundlePath = Path.Combine(Application.streamingAssetsPath, "mediapipe");
     AssetBundle _assetBundle;
 
-    public override CacheFilePathResolver cacheFilePathResolver {
-      get { return CacheFileFromAsset; }
+    public override PathResolver pathResolver {
+      get { return PathToResourceAsFile; }
     }
 
-    public override ReadFileHandler readFileHandler {
-      get { return ReadFile; }
+    public override ResourceProvider resourceProvider {
+      get { return GetResourceContents; }
     }
 
     public AssetBundleManager() : base() {}
@@ -110,8 +110,8 @@ namespace Mediapipe {
       await WriteCacheFileAsync((TextAsset)assetLoadReq.asset, uniqueKey, overwrite);
     }
 
-    [AOT.MonoPInvokeCallback(typeof(CacheFilePathResolver))]
-    static string CacheFileFromAsset(string assetPath) {
+    [AOT.MonoPInvokeCallback(typeof(PathResolver))]
+    static string PathToResourceAsFile(string assetPath) {
       var assetName = GetAssetNameFromPath(assetPath);
       var cachePath = GetCacheFilePathFor(assetName);
 
@@ -123,10 +123,10 @@ namespace Mediapipe {
       return null;
     }
 
-    [AOT.MonoPInvokeCallback(typeof(ReadFileHandler))]
-    protected static bool ReadFile(string path, IntPtr dst) {
+    [AOT.MonoPInvokeCallback(typeof(ResourceProvider))]
+    protected static bool GetResourceContents(string path, IntPtr dst) {
       try {
-        var cachePath = CacheFileFromAsset(path);
+        var cachePath = PathToResourceAsFile(path);
         var asset = File.ReadAllBytes(cachePath);
 
         using (var srcStr = new StdString(asset)) {

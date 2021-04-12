@@ -1,5 +1,5 @@
 diff --git a/mediapipe/graphs/object_detection_3d/calculators/BUILD b/mediapipe/graphs/object_detection_3d/calculators/BUILD
-index 5550128..a4f3154 100644
+index 8f80312..45b8c53 100644
 --- a/mediapipe/graphs/object_detection_3d/calculators/BUILD
 +++ b/mediapipe/graphs/object_detection_3d/calculators/BUILD
 @@ -68,7 +68,7 @@ cc_library(
@@ -233,46 +233,35 @@ index 9bc43ba..088f8f8 100644
      LOG(ERROR) << "Failed to load animation asset.";
      return absl::UnknownError("Failed to load animation asset.");
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
-index d115dd0..341ff4b 100644
+index 1fa71c6..758a81f 100644
 --- a/mediapipe/util/BUILD
 +++ b/mediapipe/util/BUILD
-@@ -145,14 +145,19 @@ cc_library(
-     ],
- )
- 
-+cc_library(
-+    name = "resource_manager",
-+    hdrs = ["resource_manager.h"],
-+    deps = [
-+        "//mediapipe/framework/port:singleton",
-+        "@com_google_absl//absl/status:statusor",
-+    ],
-+    visibility = ["//visibility:public"],
-+)
-+
- cc_library(
-     name = "resource_util",
--    srcs = select({
--        "//conditions:default": ["resource_util.cc"],
+@@ -155,12 +155,8 @@ cc_library(
+     srcs = [
+         "resource_util.cc",
+         "resource_util_internal.h",
+-    ] + select({
+-        "//conditions:default": ["resource_util_default.cc"],
 -        "//mediapipe:android": ["resource_util_android.cc"],
 -        "//mediapipe:ios": ["resource_util_apple.cc"],
--        "//mediapipe:macos": ["resource_util.cc"],
+-        "//mediapipe:macos": ["resource_util_default.cc"],
 -    }),
-+    srcs = ["resource_util_unity.cc"],
-     hdrs = ["resource_util.h"],
-     # We use Objective-C++ on iOS.
-     copts = select({
-@@ -166,27 +171,12 @@ cc_library(
-         "//mediapipe/framework:mediapipe_internal",
++        "resource_util_unity.cc",
++    ],
+     hdrs = [
+         "resource_util.h",
      ],
+@@ -176,27 +172,14 @@ cc_library(
      deps = [
-+        ":resource_manager",
+         ":resource_util_custom",
+         "@com_google_absl//absl/container:flat_hash_map",
++        "//mediapipe/framework/deps:file_path",
          "//mediapipe/framework/port:ret_check",
          "//mediapipe/framework/port:singleton",
          "//mediapipe/framework/port:status",
          "//mediapipe/framework/port:statusor",
--        "//mediapipe/framework/port:file_helpers",
--        "@com_google_absl//absl/strings",
+         "//mediapipe/framework/port:file_helpers",
+         "@com_google_absl//absl/strings",
 -    ] + select({
 -        "//conditions:default": [
 -            "//mediapipe/framework/deps:file_path",
@@ -292,87 +281,102 @@ index d115dd0..341ff4b 100644
  )
  
  cc_library(
-diff --git a/mediapipe/util/resource_manager.h b/mediapipe/util/resource_manager.h
-new file mode 100644
-index 0000000..60a860e
---- /dev/null
-+++ b/mediapipe/util/resource_manager.h
-@@ -0,0 +1,46 @@
-+// Copyright 2019 The MediaPipe Authors.
-+//
-+// Licensed under the Apache License, Version 2.0 (the "License");
-+// you may not use this file except in compliance with the License.
-+// You may obtain a copy of the License at
-+//
-+//      http://www.apache.org/licenses/LICENSE-2.0
-+//
-+// Unless required by applicable law or agreed to in writing, software
-+// distributed under the License is distributed on an "AS IS" BASIS,
-+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-+// See the License for the specific language governing permissions and
-+// limitations under the License.
+diff --git a/mediapipe/util/resource_util.cc b/mediapipe/util/resource_util.cc
+index 042d1e8..89d9e9b 100644
+--- a/mediapipe/util/resource_util.cc
++++ b/mediapipe/util/resource_util.cc
+@@ -27,6 +27,7 @@ namespace mediapipe {
+ 
+ namespace {
+ ResourceProviderFn resource_provider_ = nullptr;
++PathResolverFn path_resolver_ = nullptr;
+ }  // namespace
+ 
+ absl::Status GetResourceContents(const std::string& path, std::string* output,
+@@ -37,8 +38,19 @@ absl::Status GetResourceContents(const std::string& path, std::string* output,
+   return absl::OkStatus();
+ }
+ 
++absl::StatusOr<std::string> PathToResourceAsFile(const std::string& path) {
++  if (path_resolver_ == nullptr) {
++    return internal::DefaultPathToResourceAsFile(path);
++  }
++  return path_resolver_(path);
++}
 +
-+#ifndef MEDIAPIPE_UTIL_RESOURCE_MANAGER_H_
-+#define MEDIAPIPE_UTIL_RESOURCE_MANAGER_H_
+ void SetCustomGlobalResourceProvider(ResourceProviderFn fn) {
+   resource_provider_ = std::move(fn);
+ }
+ 
++void SetCustomGlobalPathResolver(PathResolverFn fn) {
++  path_resolver_ = std::move(fn);
++}
 +
-+#include <string>
-+#include <vector>
+ }  // namespace mediapipe
+diff --git a/mediapipe/util/resource_util_custom.h b/mediapipe/util/resource_util_custom.h
+index 6bc1513..e328d9a 100644
+--- a/mediapipe/util/resource_util_custom.h
++++ b/mediapipe/util/resource_util_custom.h
+@@ -4,15 +4,22 @@
+ #include <string>
+ 
+ #include "mediapipe/framework/port/status.h"
++#include "mediapipe/framework/port/statusor.h"
+ 
+ namespace mediapipe {
+ 
+ typedef std::function<absl::Status(const std::string&, std::string*)>
+     ResourceProviderFn;
+ 
++typedef std::function<absl::StatusOr<std::string>(const std::string&)>
++    PathResolverFn;
 +
-+#include "absl/status/statusor.h"
-+#include "mediapipe/framework/port/singleton.h"
+ // Overrides the behavior of GetResourceContents.
+ void SetCustomGlobalResourceProvider(ResourceProviderFn fn);
+ 
++// Overfides the behavior of PathToResourceAsFile.
++void SetCustomGlobalPathResolver(PathResolverFn fn);
 +
-+namespace mediapipe {
+ }  // namespace mediapipe
+ 
+ #endif  // MEDIAPIPE_UTIL_RESOURCE_UTIL_CUSTOM_H_
+diff --git a/mediapipe/util/resource_util_internal.h b/mediapipe/util/resource_util_internal.h
+index 8ae127a..516eddf 100644
+--- a/mediapipe/util/resource_util_internal.h
++++ b/mediapipe/util/resource_util_internal.h
+@@ -14,6 +14,8 @@ absl::Status DefaultGetResourceContents(const std::string& path,
+                                         std::string* output,
+                                         bool read_as_binary);
+ 
++absl::Status DefaultPathToResourceAsFile(const std::string& path);
 +
-+// see mediapipe/util/android/asset_manager_util.h
-+class ResourceManager {
-+ public:
-+  ResourceManager(const ResourceManager&) = delete;
-+  ResourceManager& operator=(const ResourceManager&) = delete;
-+
-+  // Reads a file into output. Returns true on success, false otherwise.
-+  bool ReadFile(const std::string& filename, std::string* output);
-+
-+  ::absl::StatusOr<std::string> CachedFileFromAsset(const std::string& asset_path);
-+
-+ private:
-+  // Private constructor since this class is meant to be a singleton.
-+  ResourceManager() = default;
-+
-+  friend class Singleton<ResourceManager>;
-+};
-+
-+}  // namespace mediapipe
-+
-+#endif  // MEDIAPIPE_UTIL_RESOURCE_MANAGER_H_
+ }  // namespace internal
+ }  // namespace mediapipe
+ #endif  // MEDIAPIPE_UTIL_RESOURCE_UTIL_INTERNAL_H_
 diff --git a/mediapipe/util/resource_util_unity.cc b/mediapipe/util/resource_util_unity.cc
 new file mode 100644
-index 0000000..c0fb16f
+index 0000000..946be0d
 --- /dev/null
 +++ b/mediapipe/util/resource_util_unity.cc
-@@ -0,0 +1,26 @@
-+#include "mediapipe/util/resource_manager.h"
-+#include "mediapipe/util/resource_util.h"
-+#include "mediapipe/framework/port/singleton.h"
-+#include "mediapipe/framework/port/status.h"
-+#include "mediapipe/framework/port/ret_check.h"
+@@ -0,0 +1,21 @@
++#include "mediapipe/framework/port/file_helpers.h"
++#include "mediapipe/framework/port/statusor.h"
 +
 +namespace mediapipe {
 +
-+::absl::StatusOr<std::string> PathToResourceAsFile(
-+    const std::string& path) {
-+  return Singleton<ResourceManager>::get()->CachedFileFromAsset(path);
-+}
++using mediapipe::file::GetContents;
 +
-+::absl::Status GetResourceContents(const std::string& path,
++namespace internal {
++
++absl::Status DefaultGetResourceContents(const std::string& path,
 +                                        std::string* output,
 +                                        bool read_as_binary) {
-+  if (!read_as_binary) {
-+    LOG(WARNING)
-+        << "Setting \"read_as_binary\" to false is a no-op on Unity.";
-+  }
-+  RET_CHECK(Singleton<ResourceManager>::get()->ReadFile(path, output))
-+    << "could not read asset: " << path;
-+  return mediapipe::OkStatus();
++  return GetContents(path, output, read_as_binary);
 +}
 +
++absl::StatusOr<std::string> DefaultPathToResourceAsFile(const std::string& path) {
++  return path;
++}
++
++}  // namespace internal
 +}  // namespace mediapipe

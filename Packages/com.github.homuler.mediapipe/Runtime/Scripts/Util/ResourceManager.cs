@@ -10,43 +10,15 @@ namespace Mediapipe {
   /// <remarks>
   ///   There must not be more than one instance at the same time.
   /// </remarks>
-  public abstract class ResourceManager : IDisposable {
-    volatile int disposeSignaled = 0;
-
-    public delegate string CacheFilePathResolver(string path);
-    public abstract CacheFilePathResolver cacheFilePathResolver { get; }
-
-    public delegate bool ReadFileHandler(string path, IntPtr dst);
-    public abstract ReadFileHandler readFileHandler { get; }
+  public abstract class ResourceManager {
+    public delegate string PathResolver(string path);
+    public abstract PathResolver pathResolver { get; }
+    public delegate bool ResourceProvider(string path, IntPtr output);
+    public abstract ResourceProvider resourceProvider { get; }
 
     public ResourceManager() {
-      SafeNativeMethods.mp_api__ResetResourceManager(cacheFilePathResolver, readFileHandler);
-    }
-
-    public void Dispose() {
-      Dispose(true);
-      GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing) {
-      if (Interlocked.Exchange(ref disposeSignaled, 1) != 0) {
-        return;
-      }
-
-      if (disposing) {
-        DisposeManaged();
-      }
-      DisposeUnmanaged();
-    }
-
-    ~ResourceManager() {
-      Dispose(false);
-    }
-
-    protected virtual void DisposeManaged() {}
-
-    protected virtual void DisposeUnmanaged() {
-      SafeNativeMethods.mp_api__ResetResourceManager(IntPtr.Zero, IntPtr.Zero);
+      SafeNativeMethods.mp__SetCustomGlobalPathResolver__P(pathResolver);
+      SafeNativeMethods.mp__SetCustomGlobalResourceProvider__P(resourceProvider);
     }
 
     /// <param name="name">Asset name</param>

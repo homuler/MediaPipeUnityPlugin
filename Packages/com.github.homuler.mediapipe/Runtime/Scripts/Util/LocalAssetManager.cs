@@ -7,12 +7,12 @@ namespace Mediapipe {
   public class LocalAssetManager : ResourceManager {
     readonly static string ResourceRootPath = Path.Combine(Application.dataPath, "..", "Packages", "com.github.homuler.mediapipe", "Runtime", "Resources");
 
-    public override CacheFilePathResolver cacheFilePathResolver {
-      get { return CacheFileFromAsset; }
+    public override PathResolver pathResolver {
+      get { return PathToResourceAsFile; }
     }
 
-    public override ReadFileHandler readFileHandler {
-      get { return ReadFile; }
+    public override ResourceProvider resourceProvider {
+      get { return GetResourceContents; }
     }
 
     public override bool IsPrepared(string name) {
@@ -71,8 +71,8 @@ namespace Mediapipe {
       }
     }
 
-    [AOT.MonoPInvokeCallback(typeof(CacheFilePathResolver))]
-    protected static string CacheFileFromAsset(string assetPath) {
+    [AOT.MonoPInvokeCallback(typeof(PathResolver))]
+    protected static string PathToResourceAsFile(string assetPath) {
       var assetName = GetAssetNameFromPath(assetPath);
       var cachePath = GetCacheFilePathFor(assetName);
 
@@ -84,10 +84,10 @@ namespace Mediapipe {
       return null;
     }
 
-    [AOT.MonoPInvokeCallback(typeof(ReadFileHandler))]
-    protected static bool ReadFile(string path, IntPtr dst) {
+    [AOT.MonoPInvokeCallback(typeof(ResourceProvider))]
+    protected static bool GetResourceContents(string path, IntPtr dst) {
       try {
-        var cachePath = CacheFileFromAsset(path);
+        var cachePath = PathToResourceAsFile(path);
         var asset = File.ReadAllBytes(cachePath);
 
         using (var srcStr = new StdString(asset)) {

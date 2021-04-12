@@ -19,7 +19,7 @@ cc_library(
         "//mediapipe_api/framework/formats:rect",
         "//mediapipe_api/framework/port:logging",
         "//mediapipe_api/graphs/object_detection_3d/calculators:model_matrix",
-        "//mediapipe_api/util:resource_manager",
+        "//mediapipe_api/util:resource_util",
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [],
         "//conditions:default": [
