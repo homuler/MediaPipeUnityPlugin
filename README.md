@@ -205,13 +205,16 @@ If the command finishes successfully, required files will be installed to your h
 
 ### Windows
 #### Desktop/UnityEditor
+1. Follow [mediapipe's installation guide](https://google.github.io/mediapipe/getting_started/install.html#installing-on-windows) and
+    install MSYS2, Python, Visual C++ Build Tools 2019, WinSDK and Bazel (step1 ~ step6).
+
 1. Install Opencv
 
     By default, it is assumed that OpenCV 3.4.10 is installed under `C:\opencv`.\
     If your version or path is different, please edit [third_party/opencv_windows.BUILD](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/third_party/opencv_windows.BUILD) and [WORKSPACE](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/WORKSPACE).
 
 
-1. Install Bazelisk and NuGet, and ensure you can run them
+1. Install NuGet, and ensure you can run them
     ```sh
     bazel --version
     nuget
