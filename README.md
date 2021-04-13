@@ -52,13 +52,6 @@ Also note that you need to build native libraries for Desktop CPU or GPU to run 
 1. Build a Docker image
     ```sh
     docker build -t mediapipe_unity:latest . -f docker/linux/x86_64/Dockerfile
-
-    # Above command may fail depending on glibc version installed to your host machine.
-    # cf. https://serverfault.com/questions/1052963/pacman-doesnt-work-in-docker-image
-    #
-    # In that case, apply a patch.
-    #
-    #   git apply docker/linux/x86_64/pacman.patch
     ```
 
 1. Run a Docker container

@@ -6,6 +6,11 @@ FROM archlinux:latest AS builder
 
 ARG UID
 
+# https://serverfault.com/questions/1052963/pacman-doesnt-work-in-docker-image
+RUN patched_glibc=glibc-linux4-2.33-4-x86_64.pkg.tar.zst && \
+    curl -LO "https://repo.archlinuxcn.org/x86_64/$patched_glibc" && \
+    bsdtar -C / -xvf "$patched_glibc"
+
 # Create a privileged user
 RUN pacman -Syuu sudo --needed --noconfirm
 RUN echo -e "%wheel ALL=(ALL) NOPASSWD: ALL\n" > /etc/sudoers.d/01_wheel
