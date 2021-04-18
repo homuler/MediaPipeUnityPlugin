@@ -1,0 +1,89 @@
+# TODO: remove unnecessary dependencies
+pkgname=ffmpeg-minimum
+pkgver=4.4
+pkgrel=1
+epoch=2
+pkgdesc='Complete solution to record, convert and stream audio and video (without external dependencies)'
+arch=(x86_64)
+url=https://ffmpeg.org/
+license=(GPL3)
+depends=()
+makedepends=(
+  clang
+  git
+  nasm
+)
+provides=(
+  libavcodec.so
+  libavdevice.so
+  libavfilter.so
+  libavformat.so
+  libavresample.so
+  libavutil.so
+  libpostproc.so
+  libswresample.so
+  libswscale.so
+)
+_tag=dc91b913b6260e85e1304c74ff7bb3c22a8c9fb1
+source=(
+  git+https://git.ffmpeg.org/ffmpeg.git#tag=${_tag}
+  vmaf-model-path.patch
+)
+sha256sums=(
+  SKIP
+  8dff51f84a5f7460f8893f0514812f5d2bd668c3276ef7ab7713c99b71d7bd8d
+)
+
+pkgver() {
+  cd ffmpeg
+
+  git describe --tags | sed 's/^n//'
+}
+
+prepare() {
+  cd ffmpeg
+
+  patch -Np1 -i "${srcdir}"/vmaf-model-path.patch
+}
+
+build() {
+  cd ffmpeg
+
+  ./configure \
+    --prefix=/usr \
+    --disable-debug \
+    --disable-doc \
+    --disable-programs \
+    --disable-stripping \
+    --enable-avresample \
+    --enable-lto \
+    --enable-gpl \
+    --enable-shared \
+    --enable-version3 \
+    --disable-alsa \
+    --disable-bzlib \
+    --disable-iconv \
+    --disable-libxcb \
+    --disable-amf \
+    --disable-lzma \
+    --disable-sndio \
+    --disable-sdl2 \
+    --disable-xlib \
+    --disable-zlib \
+    --disable-audiotoolbox \
+    --disable-cuda-llvm \
+    --disable-cuvid \
+    --disable-ffnvcodec \
+    --disable-nvdec \
+    --disable-nvenc \
+    --disable-v4l2-m2m \
+    --disable-vaapi \
+    --disable-vdpau \
+    --disable-videotoolbox
+
+  make
+}
+
+package() {
+  make DESTDIR="${pkgdir}" -C ffmpeg install
+}

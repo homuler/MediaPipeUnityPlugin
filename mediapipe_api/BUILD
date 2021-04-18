@@ -187,6 +187,7 @@ pkg_zip(
 pkg_zip(
     name = "opencv_libs",
     srcs = select({
+        "@opencv//:source_build": ["@opencv//:opencv_libs"],
         "@com_google_mediapipe//mediapipe:windows": ["@windows_opencv//:opencv_libs"],
         "@com_google_mediapipe//mediapipe:macos": [],
         "@com_google_mediapipe//mediapipe:android": [],

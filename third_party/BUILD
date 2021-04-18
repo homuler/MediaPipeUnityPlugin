@@ -12,12 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 licenses(["notice"])  # Apache License 2.0
 
-exports_files(["LICENSE"])
-
 package(default_visibility = ["//visibility:public"])
+
+exports_files(["LICENSE"])
 
 cc_library(
     name = "glog",
@@ -51,22 +50,6 @@ cc_library(
             "@com_github_glog_glog//:glog",
         ],
     }),
-)
-
-alias(
-    name = "opencv",
-    actual = select({
-        "@com_google_mediapipe//mediapipe:android_x86": "@android_opencv//:libopencv_x86",
-        "@com_google_mediapipe//mediapipe:android_x86_64": "@android_opencv//:libopencv_x86_64",
-        "@com_google_mediapipe//mediapipe:android_armeabi": "@android_opencv//:libopencv_armeabi-v7a",
-        "@com_google_mediapipe//mediapipe:android_arm": "@android_opencv//:libopencv_armeabi-v7a",
-        "@com_google_mediapipe//mediapipe:android_arm64": "@android_opencv//:libopencv_arm64-v8a",
-        "@com_google_mediapipe//mediapipe:ios": "@ios_opencv//:opencv",
-        "@com_google_mediapipe//mediapipe:macos": "@macos_opencv//:opencv",
-        "@com_google_mediapipe//mediapipe:windows": "@windows_opencv//:opencv",
-        "//conditions:default": "@linux_opencv//:opencv",
-    }),
-    visibility = ["//visibility:public"],
 )
 
 cc_library(

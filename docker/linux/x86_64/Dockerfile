@@ -1,5 +1,4 @@
 ARG UID=1000
-ARG OPENCV_VERSION=3.4.12
 ARG ANDROID_NDK_VERSION=r21e
 
 FROM archlinux:latest AS builder
@@ -26,17 +25,6 @@ RUN cd yay && makepkg -si --noconfirm
 RUN rm -rf yay
 
 
-FROM builder AS opencv3
-
-ARG OPENCV_VERSION
-
-# install OpenCV 3
-RUN mkdir opencv3
-ADD docker/linux/x86_64/opencv3/PKGBUILD opencv3/
-RUN cd opencv3 && makepkg -si --noconfirm
-RUN rm -rf opencv3
-
-
 FROM builder AS android
 
 ARG ANDROID_NDK_VERSION
@@ -51,13 +39,21 @@ RUN rm android-ndk.zip
 
 FROM builder
 
-# install dependencies
-RUN yay -S bazel nuget glibc mesa python-numpy --needed --noconfirm
+# install FFmpeg
+RUN mkdir ffmpeg
+ADD docker/linux/x86_64/ffmpeg/ ffmpeg/
+RUN cd ffmpeg && \
+    yay -Sy && \
+    makepkg -si --needed --noconfirm && \
+    cd .. && \
+    rm -rf ffmpeg
 
-COPY --from=opencv3 /opt/opencv3 /usr
+# install dependencies
+RUN yay -S bazel nuget mesa libdc1394 openexr python-numpy --needed --noconfirm
+
+# install Android SDK and NDK
 COPY --from=android /opt/android-sdk /opt/android-sdk
 COPY --from=android /opt/android-ndk /opt/android-ndk
-
 ENV ANDROID_HOME /opt/android-sdk
 ENV ANDROID_NDK_HOME /opt/android-ndk
 

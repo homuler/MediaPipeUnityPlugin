@@ -41,6 +41,7 @@ http_archive(
   sha256 = "95b097a014cb329213fa647efafba286bac75126a964dda08f62cbaf95aba42d",
   strip_prefix = "mediapipe-0.8.3.1",
   patches = [
+      "@//third_party:mediapipe_opencv.diff",
       "@//third_party:mediapipe_android.diff",
       "@//third_party:mediapipe_ios.diff",
       "@//third_party:mediapipe_visibility.diff",
@@ -78,16 +79,16 @@ http_archive(
 
 http_archive(
    name = "rules_foreign_cc",
-   strip_prefix = "rules_foreign_cc-0.1.0",
-   url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.1.0.zip",
+   strip_prefix = "rules_foreign_cc-0.2.0",
+   sha256 = "e60cfd0a8426fa4f5fd2156e768493ca62b87d125cb35e94c44e79a3f0d8635f",
+   url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.2.0.zip",
 )
 
-load("@rules_foreign_cc//:workspace_definitions.bzl", "rules_foreign_cc_dependencies")
+load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
 
+# This sets up some common toolchains for building targets. For more details, please see
+# https://github.com/bazelbuild/rules_foreign_cc/tree/main/docs#rules_foreign_cc_dependencies
 rules_foreign_cc_dependencies()
-
-# This is used to select all contents of the archives for CMake-based packages to give CMake access to them.
-all_content = """filegroup(name = "all", srcs = glob(["**"]), visibility = ["//visibility:public"])"""
 
 # GoogleTest/GoogleMock framework. Used by most unit-tests.
 # Last updated 2020-06-30.
@@ -223,7 +224,8 @@ http_archive(
 
 http_archive(
     name = "opencv",
-    build_file_content = all_content,
+    build_file = "@//third_party:opencv.BUILD",
+    sha256 = "1ed6f5b02a7baf14daca04817566e7c98ec668cec381e0edf534fa49f10f58a2",
     strip_prefix = "opencv-3.4.10",
     urls = ["https://github.com/opencv/opencv/archive/3.4.10.tar.gz"],
 )
@@ -236,7 +238,7 @@ new_local_repository(
 
 new_local_repository(
     name = "linux_ffmpeg",
-    build_file = "@com_google_mediapipe//third_party:ffmpeg_linux.BUILD",
+    build_file = "@//third_party:ffmpeg_linux.BUILD",
     path = "/usr"
 )
 
@@ -248,7 +250,7 @@ new_local_repository(
 
 new_local_repository(
     name = "macos_ffmpeg",
-    build_file = "@com_google_mediapipe//third_party:ffmpeg_macos.BUILD",
+    build_file = "@//third_party:ffmpeg_macos.BUILD",
     path = "/usr/local/opt/ffmpeg",
 )
 

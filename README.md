@@ -64,21 +64,20 @@ Also note that you need to build native libraries for Desktop CPU or GPU to run 
 1. Run [build command](#build-command) inside the container
     ```sh
     # Build native libraries for Desktop CPU.
-    # Note that you need to specify `--include_opencv_libs` if OpenCV 3 is not installed to your host machine.
-    python build.py build --desktop cpu --include_opencv_libs -v
+    # Note that you need to specify `--opencv=cmake`, because OpenCV is not installed to the container.
+    python build.py build --desktop cpu --opencv=cmake -v
 
     # Build native libraries for Desktop GPU and Android
-    python build.py build --desktop gpu --android arm64 --include_opencv_libs -v
+    python build.py build --desktop gpu --android arm64 --opencv=cmake -v
     ```
 
 If the command finishes successfully, required files will be installed to your host machine.
 
 ### Linux
-1. Install OpenCV
+1. Install OpenCV and FFmpeg (optional)
 
     By default, it is assumed that OpenCV 3 is installed under `/usr` (e.g. `/usr/lib/libopencv_core.so`).\
     If your version or path is different, please edit [third_party/opencv_linux.BUILD](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/third_party/opencv_linux.BUILD) and [WORKSPACE](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/WORKSPACE).
-
 
     For example, if you use ArchLinux and [opencv3-opt](https://aur.archlinux.org/packages/opencv3-opt/), OpenCV 3 is installed under `/opt/opencv3`.\
     In this case, your `WORKSPACE` will look like this.
@@ -236,7 +235,7 @@ Installation steps are the same as [Linux](#Linux).
 ### macOS
 1. Install [Homebrew](https://brew.sh)
 
-1. Install OpenCV 3
+1. Install OpenCV 3 and FFmpeg (optional)
     ```sh
     brew install opencv@3
     brew uninstall --ignore-dependencies glog
@@ -278,17 +277,21 @@ Installation steps are the same as [Linux](#Linux).
 ```sh
 # Required files (native libraries, model files, C# scripts) will be built and installed.
 
-# e.g. Desktop GPU only
+# Build for Desktop with GPU enabled.
 python build.py build --desktop gpu -v
 
-# e.g. Include OpenCV libs to `Packages` (for Desktop)
-python build.py build --desktop gpu --include_opencv_libs -v
+# If you've not installed OpenCV locally, you need to build OpenCV from sources for Desktop.
+python build.py build --desktop gpu --opencv=cmake -v
 
-# e.g. Desktop CPU and Android
-python build.py build --desktop cpu --android arm64 -v
+# If FFmpeg is installed, you can build OpenCV with FFmpeg.
+python build.py build --desktop gpu --opencv=cmake --opencv_deps=ffmpeg -v
 
-# e.g. iOS
-python build.py build --ios arm64 -v
+# Build for Desktop with GPU disabled, and copy OpenCV shared libraries to `Packages`.
+# If you use Windows 10, you would run this command.
+python build.py build --desktop cpu --include_opencv_libs -v
+
+# Build for Desktop, Android, and iOS
+python build.py build --desktop cpu --android arm64 --ios arm64 -v
 ```
 
 Run `python build.py --help` and `python build.py build --help` for more details.
