@@ -1,0 +1,25 @@
+diff --git a/docker/linux/x86_64/Dockerfile b/docker/linux/x86_64/Dockerfile
+index 08213e4..226e395 100644
+--- a/docker/linux/x86_64/Dockerfile
++++ b/docker/linux/x86_64/Dockerfile
+@@ -7,6 +7,11 @@ ARG RANKMIRROS
+ ARG MIRROR_COUNTRY=JP,US
+ ARG MIRROR_COUNT=10
+ 
++# https://serverfault.com/questions/1052963/pacman-doesnt-work-in-docker-image
++RUN patched_glibc=glibc-linux4-2.33-4-x86_64.pkg.tar.zst && \
++    curl -LO "https://repo.archlinuxcn.org/x86_64/$patched_glibc" && \
++    bsdtar -C / -xvf "$patched_glibc"
++
+ # Update mirrorlist
+ RUN if [[ "${RANKMIRROS}" ]]; then \
+         pacman -Syu pacman-contrib --needed --noconfirm && \
+@@ -33,7 +38,7 @@ USER mediapipe
+ WORKDIR /home/mediapipe
+ 
+ # install yay
+-RUN sudo pacman -S base-devel git glibc unzip --needed --noconfirm
++RUN sudo pacman -S base-devel git unzip --needed --noconfirm
+ RUN git clone https://aur.archlinux.org/yay.git
+ RUN cd yay && makepkg -si --noconfirm
+ RUN rm -rf yay
