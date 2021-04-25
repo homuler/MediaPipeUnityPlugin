@@ -59,6 +59,9 @@ Also note that you need to build native libraries for Desktop CPU or GPU to run 
     # In that case, apply a patch.
     #
     #   git apply docker/linux/x86_64/glibc.patch
+
+    # You can specify MIRROR_COUNTRY to increase download speed
+    docker build --build-arg RANKMIRROS=true --build-arg MIRROR_COUNTRY=FR,GB -t mediapipe_unity:latest . -f docker/linux/x86_64/Dockerfile
     ```
 
 1. Run a Docker container
