@@ -1,0 +1,147 @@
+# ATTENTION:
+#     It's usually preferable to use `Dockerfile`.
+#     However, if your host (or target) machine's glibc version < 2.33, `libmediapipe_c.so` built on Arch Linux won't work on them.
+#     In suce a case, use this `Dockerfile.ubuntu` instead of `Dockerfile`.
+ARG UID=1000
+ARG ANDROID_SDK_VERSION=30
+ARG ANDROID_NDK_VERSION=21.4.7075529
+
+FROM ubuntu:20.04 AS base
+
+ARG UID
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        apt-transport-https \
+        build-essential \
+        ca-certificates \
+        clang \
+        curl \
+        dirmngr \
+        git \
+        gnupg \
+        libegl1-mesa-dev \
+        libgles2-mesa-dev \
+        mesa-common-dev \
+        nasm \
+        npm \
+        openjdk-11-jdk \
+        pkg-config \
+        software-properties-common \
+        sudo \
+        unzip
+
+FROM base AS android
+
+WORKDIR /tmp
+
+ARG ANDROID_SDK_VERSION
+ARG ANDROID_NDK_VERSION
+
+ENV COMMANDLINETOOLS_ZIP commandlinetools.zip
+ENV COMMANDLINETOOLS_SHA256 87f6dcf41d4e642e37ba03cb2e387a542aa0bd73cb689a9e7152aad40a6e7a08
+
+RUN curl -L https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip -o ${COMMANDLINETOOLS_ZIP} && \
+    (test "$(sha256sum ${COMMANDLINETOOLS_ZIP})" = "${COMMANDLINETOOLS_SHA256}  ${COMMANDLINETOOLS_ZIP}" || { echo 'Checksum Failed'; exit 1; })
+RUN unzip ${COMMANDLINETOOLS_ZIP} -d /opt/android
+RUN yes | /opt/android/cmdline-tools/bin/sdkmanager --sdk_root=/opt/android --licenses
+RUN /opt/android/cmdline-tools/bin/sdkmanager --sdk_root=/opt/android --install \
+    "platforms;android-${ANDROID_SDK_VERSION}" \
+    "platform-tools" \
+    "build-tools;30.0.3" \
+    "ndk;${ANDROID_NDK_VERSION}"
+RUN rm ${COMMANDLINETOOLS_ZIP}
+
+
+FROM base AS builder
+
+ARG UID
+WORKDIR /tmp
+
+# install Android SDK and NDK
+COPY --from=android /opt/android /opt/android
+
+# Setup Python
+RUN add-apt-repository -y ppa:deadsnakes/ppa && \
+    apt-get install -y --no-install-recommends python3.9-dev python3.9-distutils && \
+    curl -L https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python3.9 get-pip.py && \
+    ln -s /usr/bin/python3.9 /usr/local/bin/python
+
+# install NuGet and Bazel
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
+    apt-add-repository -y 'deb https://download.mono-project.com/repo/ubuntu stable-focal main' && \
+    apt-get install -y --no-install-recommends mono-complete && \
+    curl -o /usr/local/bin/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe && \
+    npm install -g @bazel/bazelisk
+
+# install FFmpeg
+RUN git clone https://git.ffmpeg.org/ffmpeg.git && \
+    cd ffmpeg && \
+    git checkout n4.4 && \
+    ./configure \
+        --prefix=/usr \
+        --disable-debug \
+        --disable-doc \
+        --disable-programs \
+        --disable-stripping \
+        --enable-avresample \
+        --enable-lto \
+        --enable-gpl \
+        --enable-shared \
+        --enable-version3 \
+        --disable-alsa \
+        --disable-bzlib \
+        --disable-iconv \
+        --disable-libxcb \
+        --disable-amf \
+        --disable-lzma \
+        --disable-sndio \
+        --disable-sdl2 \
+        --disable-xlib \
+        --disable-zlib \
+        --disable-audiotoolbox \
+        --disable-cuda-llvm \
+        --disable-cuvid \
+        --disable-ffnvcodec \
+        --disable-nvdec \
+        --disable-nvenc \
+        --disable-v4l2-m2m \
+        --disable-vaapi \
+        --disable-vdpau \
+        --disable-videotoolbox && \
+    make -j `nproc` && \
+    make install && \
+    cd .. && \
+    rm -rf ffmpeg
+
+# Create user
+RUN bash -c 'echo -e "%wheel ALL=(ALL) NOPASSWD: ALL\n" > /etc/sudoers.d/01_wheel'
+RUN addgroup wheel && useradd -u ${UID} -m mediapipe && usermod -aG wheel mediapipe
+
+USER mediapipe
+WORKDIR /home/mediapipe
+
+
+FROM builder
+
+ARG ANDROID_NDK_VERSION
+
+RUN bash -c 'echo -e "#!/bin/bash\nmono /usr/local/bin/nuget.exe \$@" | sudo tee -a /usr/local/bin/nuget' && \
+    sudo chmod +x /usr/local/bin/nuget && \
+    pip3.9 install --user numpy
+
+ENV ANDROID_HOME /opt/android
+ENV ANDROID_NDK_HOME /opt/android/ndk/${ANDROID_NDK_VERSION}
+ENV PYTHON_BIN_PATH /usr/bin/python3.9
+
+ADD .bazelrc .
+ADD packages.config .
+ADD build.py .
+ADD WORKSPACE .
+ADD mediapipe_api mediapipe_api
+ADD third_party third_party
+
+CMD ["/bin/bash"]
