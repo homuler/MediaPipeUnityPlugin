@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.3](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.5.2...v0.5.3) (2021-04-30)
+
+
+### Bug Fixes
+
+* **docker:** zip command is not installed ([aa8e1bd](https://github.com/homuler/MediaPipeUnityPlugin/commit/aa8e1bd1fc97046c6fbb0ed21646d0e1eb3811d8))
+
 ### [0.5.2](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.5.1...v0.5.2) (2021-04-30)
 
 
