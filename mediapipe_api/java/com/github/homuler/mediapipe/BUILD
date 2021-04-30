@@ -8,7 +8,7 @@ mediapipe_aar(
     ],
     deps = [
       # "@unity//:activity",
-      "//third_party:opencv",
+      "@opencv//:opencv",
     ],
     jni_deps = [
       "//mediapipe_api:mediapipe_c",
