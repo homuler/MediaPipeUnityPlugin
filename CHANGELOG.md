@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.2](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.5.1...v0.5.2) (2021-04-30)
+
+
+### Bug Fixes
+
+* copytree fails on Windows (Docker) ([fd0e83c](https://github.com/homuler/MediaPipeUnityPlugin/commit/fd0e83cdf561b22e09162363a5310bbbd0d04cd6))
+* fail to build mediapipe_android.aar ([24fe5db](https://github.com/homuler/MediaPipeUnityPlugin/commit/24fe5dbfed6e5a9bc40821898542d3c6906ea11f))
+* modify bsdtar command typo "s" ([#120](https://github.com/homuler/MediaPipeUnityPlugin/issues/120)) ([33c0bd3](https://github.com/homuler/MediaPipeUnityPlugin/commit/33c0bd375b623d47c918cdb4c7d22ad87253013b))
+* nuget fails on Ubuntu or Debian ([e00e4ae](https://github.com/homuler/MediaPipeUnityPlugin/commit/e00e4ae8d35af780e5ff8fa38b09efbea433b473))
+* rules_foreign_cc version must be 0.1.0 ([780d405](https://github.com/homuler/MediaPipeUnityPlugin/commit/780d405da003f472f2b8e14fdd9c71ef21c616f6))
+* wildcard is not expanded ([dd99867](https://github.com/homuler/MediaPipeUnityPlugin/commit/dd9986746cb746e06cc7a4ec846f59eaa3cc3990))
+* **example:** failed to compile when the target is Android ([92cad4b](https://github.com/homuler/MediaPipeUnityPlugin/commit/92cad4bbe9ba52514034c52ac5b5f0a99accab06))
+
 ### [0.5.1](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.5.0...v0.5.1) (2021-03-21)
 
 
