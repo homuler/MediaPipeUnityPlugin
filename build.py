@@ -274,7 +274,7 @@ class BuildCommand(Command):
     return commands
 
   def _build_proto_dlls_commands(self):
-    return ['nuget', 'install', '-o', '.nuget']
+    return ['nuget', 'install', '-o', '.nuget', '-Source', 'https://api.nuget.org/v3/index.json']
 
 
 class CleanCommand(Command):
