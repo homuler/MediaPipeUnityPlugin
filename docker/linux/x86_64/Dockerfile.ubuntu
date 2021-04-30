@@ -31,7 +31,8 @@ RUN apt-get update && \
         pkg-config \
         software-properties-common \
         sudo \
-        unzip
+        unzip \
+        zip
 
 FROM base AS android
 
