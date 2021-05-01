@@ -236,6 +236,10 @@ If the command finishes successfully, required files will be installed to your h
     In that case, install python to another directory as a workaround (it's unnecessary to set the path to `%PATH%`, but don't forget to install numpy for the new Python).
 
 1. Run [build command](#build-command)
+    ```bat
+    python build.py build --desktop cpu --include_opencv_libs -v
+    ```
+
 
 #### Android
 You cannot build native libraries for Android on Windows 10, so use WSL 2 instead.\
