@@ -75,7 +75,6 @@ csharp_proto_src(
     proto_src = "mediapipe/framework/formats/classification.proto",
     deps = [
         "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
-        "@com_google_mediapipe//mediapipe/framework/formats/annotation:protos_src",
     ],
 )
 
@@ -93,7 +92,6 @@ csharp_proto_src(
     proto_src = "mediapipe/framework/formats/landmark.proto",
     deps = [
         "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
-        "@com_google_mediapipe//mediapipe/framework/formats/annotation:protos_src",
     ],
 )
 
@@ -107,11 +105,18 @@ csharp_proto_src(
 )
 
 csharp_proto_src(
+    name = "matrix_data_cs",
+    proto_src = "mediapipe/framework/formats/matrix_data.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+    ],
+)
+
+csharp_proto_src(
     name = "rect_cs",
     proto_src = "mediapipe/framework/formats/rect.proto",
     deps = [
         "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
-        "@com_google_mediapipe//mediapipe/framework/formats/annotation:protos_src",
     ],
 )
 
@@ -119,7 +124,6 @@ csharp_proto_src(
     name = "rasterization_cs",
     proto_src = "mediapipe/framework/formats/annotation/rasterization.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
         "@com_google_mediapipe//mediapipe/framework/formats/annotation:protos_src",
     ],
     import_prefix = "Annotation",

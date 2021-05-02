@@ -52,6 +52,12 @@ namespace Mediapipe {
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__GetTimedModelMatrixProtoList(IntPtr packet, out IntPtr serializedProto);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__GetFaceGeometry(IntPtr packet, out IntPtr serializedProto);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__GetFaceGeometryVector(IntPtr packet, out IntPtr serializedProto);
     #endregion
   }
 }

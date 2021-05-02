@@ -36,7 +36,22 @@ mv {outdir}/{outfile} $$(dirname $(location {outfile}))
     )
 
 def _camelize(str):
-    return "".join([x.capitalize() for x in str.split("_")])
+    res = ""
+    need_capitalize = True
+
+    for s in str.elems():
+        if not s.isalnum():
+            need_capitalize = True
+            continue
+
+        if need_capitalize:
+            res += s.capitalize()
+        else:
+            res += s
+
+        need_capitalize = s.isdigit()
+
+    return res
 
 def _replace_suffix(string, old, new):
     """Returns a string with an old suffix replaced by a new suffix."""
