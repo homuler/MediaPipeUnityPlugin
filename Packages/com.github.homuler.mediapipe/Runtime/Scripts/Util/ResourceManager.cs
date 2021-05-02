@@ -60,6 +60,7 @@ namespace Mediapipe {
       var extension = Path.GetExtension(assetPath);
 
       switch (extension) {
+        case ".binarypb":
         case ".tflite": {
           return $"{assetName}.bytes";
         }

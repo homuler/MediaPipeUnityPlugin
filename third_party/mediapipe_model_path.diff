@@ -1,3 +1,15 @@
+diff --git a/mediapipe/framework/encode_binary_proto.bzl b/mediapipe/framework/encode_binary_proto.bzl
+index 3af435f..5a4a4a1 100644
+--- a/mediapipe/framework/encode_binary_proto.bzl
++++ b/mediapipe/framework/encode_binary_proto.bzl
+@@ -104,6 +104,7 @@ def _encode_binary_proto_impl(ctx):
+                 "--encode=" + ctx.attr.message_type,
+                 "--proto_path=" + ctx.genfiles_dir.path,
+                 "--proto_path=" + ctx.bin_dir.path,
++                "--proto_path=" + ctx.file.input.owner.workspace_root,
+                 "--proto_path=.",
+             ] + path_list + file_list +
+             ["<", textpb.path, ">", binarypb.path],
 diff --git a/mediapipe/graphs/object_detection_3d/calculators/BUILD b/mediapipe/graphs/object_detection_3d/calculators/BUILD
 index 8f80312..45b8c53 100644
 --- a/mediapipe/graphs/object_detection_3d/calculators/BUILD
