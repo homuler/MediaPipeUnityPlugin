@@ -353,14 +353,14 @@ index 6bc1513..e328d9a 100644
  
  #endif  // MEDIAPIPE_UTIL_RESOURCE_UTIL_CUSTOM_H_
 diff --git a/mediapipe/util/resource_util_internal.h b/mediapipe/util/resource_util_internal.h
-index 8ae127a..516eddf 100644
+index 8ae127a..91ffc9a 100644
 --- a/mediapipe/util/resource_util_internal.h
 +++ b/mediapipe/util/resource_util_internal.h
 @@ -14,6 +14,8 @@ absl::Status DefaultGetResourceContents(const std::string& path,
                                          std::string* output,
                                          bool read_as_binary);
  
-+absl::Status DefaultPathToResourceAsFile(const std::string& path);
++absl::StatusOr<std::string> DefaultPathToResourceAsFile(const std::string& path);
 +
  }  // namespace internal
  }  // namespace mediapipe
