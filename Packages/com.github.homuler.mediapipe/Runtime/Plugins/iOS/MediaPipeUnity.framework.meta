@@ -77,7 +77,7 @@ PluginImporter:
         AddToEmbeddedBinaries: true
         CPU: AnyCPU
         CompileFlags: 
-        FrameworkDependencies: 
+        FrameworkDependencies: OpenGLES;
   - first:
       tvOS: tvOS
     second:
