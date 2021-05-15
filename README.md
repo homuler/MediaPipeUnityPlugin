@@ -242,8 +242,7 @@ If the command finishes successfully, required files will be installed to your h
 
 
 #### Android
-You cannot build native libraries for Android on Windows 10, so use WSL 2 instead.\
-Installation steps are the same as [Linux](#Linux).
+You cannot build native libraries for Android on Windows 10, so use [Docker for Windows](https://github.com/homuler/MediaPipeUnityPlugin#android) instead.
 
 
 ### macOS
