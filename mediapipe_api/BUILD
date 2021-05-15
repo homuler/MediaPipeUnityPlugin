@@ -93,7 +93,7 @@ cc_library(
             "@com_google_mediapipe//mediapipe/graphs/iris_tracking:iris_tracking_cpu_deps",
             "@com_google_mediapipe//mediapipe/graphs/object_detection:desktop_tflite_calculators",
             "@com_google_mediapipe//mediapipe/graphs/object_detection_3d:desktop_cpu_calculators",
-            "@com_google_mediapipe//mediapipe/graphs/pose_tracking:upper_body_pose_tracking_cpu_deps",
+            "@com_google_mediapipe//mediapipe/graphs/pose_tracking:pose_tracking_cpu_deps",
             "@com_google_mediapipe//mediapipe/graphs/tracking:desktop_calculators",
         ],
         "//conditions:default": [
@@ -112,7 +112,7 @@ cc_library(
             "@com_google_mediapipe//mediapipe/graphs/iris_tracking:iris_tracking_gpu_deps",
             "@com_google_mediapipe//mediapipe/graphs/object_detection:mobile_calculators",
             "@com_google_mediapipe//mediapipe/graphs/object_detection_3d:mobile_calculators",
-            "@com_google_mediapipe//mediapipe/graphs/pose_tracking:upper_body_pose_tracking_gpu_deps",
+            "@com_google_mediapipe//mediapipe/graphs/pose_tracking:pose_tracking_gpu_deps",
             "@com_google_mediapipe//mediapipe/graphs/tracking:mobile_calculators",
         ],
     }),
@@ -158,8 +158,9 @@ pkg_asset(
         "@com_google_mediapipe//mediapipe/modules/objectron:object_detection_ssd_mobilenetv2_oidv4_fp16.tflite",
         "@com_google_mediapipe//mediapipe/modules/palm_detection:palm_detection.tflite",
         "@com_google_mediapipe//mediapipe/modules/pose_detection:pose_detection.tflite",
-        "@com_google_mediapipe//mediapipe/modules/pose_landmark:pose_landmark_upper_body.tflite",
-        "@com_google_mediapipe//mediapipe/modules/pose_landmark:pose_landmark_full_body.tflite",
+        "@com_google_mediapipe//mediapipe/modules/pose_landmark:pose_landmark_lite.tflite",
+        "@com_google_mediapipe//mediapipe/modules/pose_landmark:pose_landmark_full.tflite",
+        "@com_google_mediapipe//mediapipe/modules/pose_landmark:pose_landmark_heavy.tflite",
     ],
 )
 

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -2811934882097957570}
   - component: {fileID: -5097301488528543352}
   m_Layer: 0
-  m_Name: HolisticDesktopGPU
+  m_Name: Holistic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48,6 +48,8 @@ MonoBehaviour:
   cpuConfig: {fileID: 4900000, guid: 1c3b46a55d41ad93ea89e4d7393ee17b, type: 3}
   androidConfig: {fileID: 4900000, guid: fc128c889293412cb938ac01a3e3b639, type: 3}
   detectIris: 1
+  modelComplexity: 1
+  smoothLandmarks: 1
 --- !u!114 &-5097301488528543352
 MonoBehaviour:
   m_ObjectHideFlags: 0

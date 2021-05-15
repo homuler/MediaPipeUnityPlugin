@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2128668153064451318}
   - component: {fileID: 3238636675058515084}
   m_Layer: 0
-  m_Name: PoseTrackingDesktopGPU
+  m_Name: PoseTracking
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,6 +47,8 @@ MonoBehaviour:
   gpuConfig: {fileID: 4900000, guid: b577f637ebbd98034a6ed0c0536dfba2, type: 3}
   cpuConfig: {fileID: 4900000, guid: bd31758744d1fc66e931e56e8167a463, type: 3}
   androidConfig: {fileID: 4900000, guid: 684b24cdde12549a29f75b33daf233e7, type: 3}
+  modelComplexity: 1
+  smoothLandmarks: 1
 --- !u!114 &3238636675058515084
 MonoBehaviour:
   m_ObjectHideFlags: 0

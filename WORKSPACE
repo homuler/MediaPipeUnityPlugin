@@ -42,8 +42,8 @@ new_local_repository(
 # mediapipe
 http_archive(
     name = "com_google_mediapipe",
-    sha256 = "157d13882da323f5cf00cfabadf491bbb071d3ed62e328caec93e392f767df9f",
-    strip_prefix = "mediapipe-0.8.3.2",
+    strip_prefix = "mediapipe-0.8.4",
+    sha256 = "b44f8d19c6236ae46d7445a477739f24a221326a5cf55ca011350967e5981560",
     patches = [
         "@//third_party:mediapipe_opencv.diff",
         "@//third_party:mediapipe_android.diff",
@@ -55,7 +55,7 @@ http_archive(
     patch_args = [
         "-p1",
     ],
-    urls = ["https://github.com/google/mediapipe/archive/0.8.3.2.tar.gz"],
+    urls = ["https://github.com/google/mediapipe/archive/v0.8.4.tar.gz"],
 )
 
 # ABSL cpp library lts_2020_09_23
@@ -90,8 +90,6 @@ http_archive(
 
 load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
 
-# This sets up some common toolchains for building targets. For more details, please see
-# https://github.com/bazelbuild/rules_foreign_cc/tree/main/docs#rules_foreign_cc_dependencies
 rules_foreign_cc_dependencies()
 
 # GoogleTest/GoogleMock framework. Used by most unit-tests.
@@ -162,7 +160,8 @@ http_archive(
 # libyuv
 http_archive(
     name = "libyuv",
-    urls = ["https://chromium.googlesource.com/libyuv/libyuv/+archive/refs/heads/master.tar.gz"],
+    # Error: operand type mismatch for `vbroadcastss' caused by commit 8a13626e42f7fdcf3a6acbb0316760ee54cda7d8.
+    urls = ["https://chromium.googlesource.com/libyuv/libyuv/+archive/2525698acba9bf9b701ba6b4d9584291a1f62257.tar.gz"],
     build_file = "@com_google_mediapipe//third_party:libyuv.BUILD",
 )
 
@@ -380,6 +379,8 @@ maven_install(
         "androidx.test.espresso:espresso-core:3.1.1",
         "com.github.bumptech.glide:glide:4.11.0",
         "com.google.android.material:material:aar:1.0.0-rc01",
+        "com.google.auto.value:auto-value:1.6.4",
+        "com.google.auto.value:auto-value-annotations:1.6.4",
         "com.google.code.findbugs:jsr305:3.0.2",
         "com.google.flogger:flogger-system-backend:0.3.1",
         "com.google.flogger:flogger:0.3.1",
@@ -410,9 +411,9 @@ http_archive(
 )
 
 # Tensorflow repo should always go after the other external dependencies.
-# 2021-03-25
-_TENSORFLOW_GIT_COMMIT = "c67f68021824410ebe9f18513b8856ac1c6d4887"
-_TENSORFLOW_SHA256= "fd07d0b39422dc435e268c5e53b2646a8b4b1e3151b87837b43f86068faae87f"
+# 2021-04-30
+_TENSORFLOW_GIT_COMMIT = "5bd3c57ef184543d22e34e36cff9d9bea608e06d"
+_TENSORFLOW_SHA256= "9a45862834221aafacf6fb275f92b3876bc89443cbecc51be93f13839a6609f0"
 http_archive(
     name = "org_tensorflow",
     urls = [

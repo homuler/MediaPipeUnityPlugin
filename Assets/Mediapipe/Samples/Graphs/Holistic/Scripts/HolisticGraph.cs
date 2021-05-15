@@ -2,7 +2,15 @@ using Mediapipe;
 using UnityEngine;
 
 public class HolisticGraph : DemoGraph {
+  enum ModelComplexity {
+    Lite = 0,
+    Full = 1,
+    Heavy = 2,
+  }
+
   [SerializeField] bool detectIris = true;
+  [SerializeField] ModelComplexity modelComplexity = ModelComplexity.Full;
+  [SerializeField] bool smoothLandmarks = true;
 
   private const string poseLandmarksStream = "pose_landmarks";
   private OutputStreamPoller<NormalizedLandmarkList> poseLandmarksStreamPoller;
@@ -92,8 +100,9 @@ public class HolisticGraph : DemoGraph {
     rightHandLandmarksPresencePacket = new BoolPacket();
 
     sidePacket = new SidePacket();
-    var irisFlag = new BoolPacket(detectIris);
-    sidePacket.Emplace("enable_iris_detection", irisFlag);
+    sidePacket.Emplace("enable_iris_detection", new BoolPacket(detectIris));
+    sidePacket.Emplace("model_complexity", new IntPacket((int)modelComplexity));
+    sidePacket.Emplace("smooth_landmarks", new BoolPacket(smoothLandmarks));
 
     return graph.StartRun(sidePacket);
   }
@@ -187,6 +196,13 @@ public class HolisticGraph : DemoGraph {
     PrepareDependentAsset("handedness.txt");
     PrepareDependentAsset("palm_detection.bytes");
     PrepareDependentAsset("pose_detection.bytes");
-    PrepareDependentAsset("pose_landmark_full_body.bytes");
+
+    if (modelComplexity == ModelComplexity.Lite) {
+      PrepareDependentAsset("pose_landmark_lite.bytes");
+    } else if (modelComplexity == ModelComplexity.Full) {
+      PrepareDependentAsset("pose_landmark_full.bytes");
+    } else {
+      PrepareDependentAsset("pose_landmark_heavy.bytes");
+    }
   }
 }

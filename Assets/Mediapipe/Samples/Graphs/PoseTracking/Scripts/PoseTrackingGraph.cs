@@ -2,7 +2,16 @@ using Mediapipe;
 using UnityEngine;
 
 public class PoseTrackingGraph : DemoGraph {
-  private const string poseLandmarksStream = "pose_landmarks_smoothed";
+    enum ModelComplexity {
+    Lite = 0,
+    Full = 1,
+    Heavy = 2,
+  }
+
+  [SerializeField] ModelComplexity modelComplexity = ModelComplexity.Full;
+  [SerializeField] bool smoothLandmarks = true;
+
+  private const string poseLandmarksStream = "pose_landmarks";
   private OutputStreamPoller<NormalizedLandmarkList> poseLandmarksStreamPoller;
   private NormalizedLandmarkListPacket poseLandmarksPacket;
 
@@ -10,13 +19,15 @@ public class PoseTrackingGraph : DemoGraph {
   private OutputStreamPoller<Detection> poseDetectionStreamPoller;
   private DetectionPacket poseDetectionPacket;
 
-  private const string poseLandmarksPresenceStream = "pose_landmarks_smoothed_presence";
+  private const string poseLandmarksPresenceStream = "pose_landmarks_presence";
   private OutputStreamPoller<bool> poseLandmarksPresenceStreamPoller;
   private BoolPacket poseLandmarksPresencePacket;
 
   private const string poseDetectionPresenceStream = "pose_detection_presence";
   private OutputStreamPoller<bool> poseDetectionPresenceStreamPoller;
   private BoolPacket poseDetectionPresencePacket;
+
+  private SidePacket sidePacket;
 
   public override Status StartRun() {
     poseLandmarksStreamPoller = graph.AddOutputStreamPoller<NormalizedLandmarkList>(poseLandmarksStream).Value();
@@ -31,7 +42,11 @@ public class PoseTrackingGraph : DemoGraph {
     poseDetectionPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(poseDetectionPresenceStream).Value();
     poseDetectionPresencePacket = new BoolPacket();
 
-    return graph.StartRun();
+    sidePacket = new SidePacket();
+    sidePacket.Emplace("model_complexity", new IntPacket((int)modelComplexity));
+    sidePacket.Emplace("smooth_landmarks", new BoolPacket(smoothLandmarks));
+
+    return graph.StartRun(sidePacket);
   }
 
   public override void RenderOutput(WebCamScreenController screenController, TextureFrame textureFrame) {
@@ -80,6 +95,13 @@ public class PoseTrackingGraph : DemoGraph {
 
   protected override void PrepareDependentAssets() {
     PrepareDependentAsset("pose_detection.bytes");
-    PrepareDependentAsset("pose_landmark_upper_body.bytes");
+
+    if (modelComplexity == ModelComplexity.Lite) {
+      PrepareDependentAsset("pose_landmark_lite.bytes");
+    } else if (modelComplexity == ModelComplexity.Full) {
+      PrepareDependentAsset("pose_landmark_full.bytes");
+    } else {
+      PrepareDependentAsset("pose_landmark_heavy.bytes");
+    }
   }
 }
