@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.6.0](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.5.3...v0.6.0) (2021-05-15)
+
+
+### Features
+
+* read .binarypb ([3ca8642](https://github.com/homuler/MediaPipeUnityPlugin/commit/3ca8642ab57b7f067276da1c67ff8112b9f89c10))
+* **sdk:** implement FaceGeometryPacket ([473c3a0](https://github.com/homuler/MediaPipeUnityPlugin/commit/473c3a0fa1de9f2ea0ab982936fa947d102f7ab4))
+
+
+### Bug Fixes
+
+* return type is wrong ([4ca0f5f](https://github.com/homuler/MediaPipeUnityPlugin/commit/4ca0f5f289b06e610c88cee744d1da50fb270356))
+
 ### [0.5.3](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.5.2...v0.5.3) (2021-04-30)
 
 
