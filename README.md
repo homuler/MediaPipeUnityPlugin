@@ -12,7 +12,7 @@ If you'd like to build them on your machine, below commands/tools/libraries are 
 
 ## Platforms
 - [x] Linux Desktop (tested on ArchLinux)
-- [x] Android
+- [x] Android (GPU only)
 - [x] iOS
 - [x] macOS (CPU only)
 - [x] Windows 10 (CPU only, experimental)
