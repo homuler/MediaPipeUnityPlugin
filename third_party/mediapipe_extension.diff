@@ -66,7 +66,7 @@ index 2e4ab10..6e5e073 100644
  }
  
 diff --git a/mediapipe/gpu/gl_scaler_calculator.cc b/mediapipe/gpu/gl_scaler_calculator.cc
-index e50ef22..9cf0f2f 100644
+index 6191876..19a8cf8 100644
 --- a/mediapipe/gpu/gl_scaler_calculator.cc
 +++ b/mediapipe/gpu/gl_scaler_calculator.cc
 @@ -12,6 +12,8 @@
@@ -76,9 +76,9 @@ index e50ef22..9cf0f2f 100644
 +// Modified to enable to specify the target GpuBuffer
 +
  #include "mediapipe/framework/calculator_framework.h"
+ #include "mediapipe/framework/formats/image.h"
  #include "mediapipe/framework/port/ret_check.h"
- #include "mediapipe/framework/port/status.h"
-@@ -58,6 +60,7 @@ namespace mediapipe {
+@@ -61,6 +63,7 @@ using Image = mediapipe::Image;
  //   existing calculator options, depending on field merge_fields.
  //   OUTPUT_DIMENSIONS: the output width and height in pixels.
  //   ROTATION: the counterclockwise rotation angle in degrees.
@@ -86,7 +86,7 @@ index e50ef22..9cf0f2f 100644
  // These can also be specified as options.
  // To enable horizontal or vertical flip, specify them in options.
  // The flipping is applied after rotation.
-@@ -82,6 +85,7 @@ class GlScalerCalculator : public CalculatorBase {
+@@ -85,6 +88,7 @@ class GlScalerCalculator : public CalculatorBase {
  
   private:
    GlCalculatorHelper helper_;
@@ -94,7 +94,7 @@ index e50ef22..9cf0f2f 100644
    int dst_width_ = 0;
    int dst_height_ = 0;
    float dst_scale_ = -1.f;
-@@ -109,6 +113,9 @@ absl::Status GlScalerCalculator::GetContract(CalculatorContract* cc) {
+@@ -121,6 +125,9 @@ absl::Status GlScalerCalculator::GetContract(CalculatorContract* cc) {
    }
    MP_RETURN_IF_ERROR(GlCalculatorHelper::UpdateContract(cc));
  
@@ -104,21 +104,19 @@ index e50ef22..9cf0f2f 100644
    if (cc->InputSidePackets().HasTag("OPTIONS")) {
      cc->InputSidePackets().Tag("OPTIONS").Set<GlScalerCalculatorOptions>();
    }
-@@ -175,6 +182,13 @@ absl::Status GlScalerCalculator::Open(CalculatorContext* cc) {
+@@ -187,6 +194,11 @@ absl::Status GlScalerCalculator::Open(CalculatorContext* cc) {
      dst_width_ = dimensions[0];
      dst_height_ = dimensions[1];
    }
-+
 +  if (HasTagOrIndex(cc->InputSidePackets(), "DESTINATION", 1)) {
 +    dst_buffer_ = cc->InputSidePackets().Tag("DESTINATION").Get<GpuBuffer>();
 +    dst_width_ = dst_buffer_.width();
 +    dst_height_ = dst_buffer_.height();
 +  }
-+
    if (cc->InputSidePackets().HasTag("ROTATION")) {
      rotation_ccw = cc->InputSidePackets().Tag("ROTATION").Get<int>();
    }
-@@ -185,7 +199,7 @@ absl::Status GlScalerCalculator::Open(CalculatorContext* cc) {
+@@ -197,7 +209,7 @@ absl::Status GlScalerCalculator::Open(CalculatorContext* cc) {
  }
  
  absl::Status GlScalerCalculator::Process(CalculatorContext* cc) {
@@ -127,7 +125,7 @@ index e50ef22..9cf0f2f 100644
      if (cc->Inputs().Tag("OUTPUT_DIMENSIONS").IsEmpty()) {
        // OUTPUT_DIMENSIONS input stream is specified, but value is missing.
        return absl::OkStatus();
-@@ -264,9 +278,18 @@ absl::Status GlScalerCalculator::Process(CalculatorContext* cc) {
+@@ -279,9 +291,18 @@ absl::Status GlScalerCalculator::Process(CalculatorContext* cc) {
                MakePacket<float>(left_right_padding).At(cc->InputTimestamp()));
      }
  

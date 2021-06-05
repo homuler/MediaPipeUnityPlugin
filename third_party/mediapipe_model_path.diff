@@ -245,7 +245,7 @@ index 9bc43ba..088f8f8 100644
      LOG(ERROR) << "Failed to load animation asset.";
      return absl::UnknownError("Failed to load animation asset.");
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
-index 1fa71c6..758a81f 100644
+index da12244..10b2034 100644
 --- a/mediapipe/util/BUILD
 +++ b/mediapipe/util/BUILD
 @@ -155,12 +155,8 @@ cc_library(
@@ -294,7 +294,7 @@ index 1fa71c6..758a81f 100644
  
  cc_library(
 diff --git a/mediapipe/util/resource_util.cc b/mediapipe/util/resource_util.cc
-index 042d1e8..89d9e9b 100644
+index 8f40154..dfebafd 100644
 --- a/mediapipe/util/resource_util.cc
 +++ b/mediapipe/util/resource_util.cc
 @@ -27,6 +27,7 @@ namespace mediapipe {
@@ -306,7 +306,7 @@ index 042d1e8..89d9e9b 100644
  
  absl::Status GetResourceContents(const std::string& path, std::string* output,
 @@ -37,8 +38,19 @@ absl::Status GetResourceContents(const std::string& path, std::string* output,
-   return absl::OkStatus();
+   return internal::DefaultGetResourceContents(path, output, read_as_binary);
  }
  
 +absl::StatusOr<std::string> PathToResourceAsFile(const std::string& path) {

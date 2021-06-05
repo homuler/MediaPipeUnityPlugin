@@ -42,8 +42,8 @@ new_local_repository(
 # mediapipe
 http_archive(
     name = "com_google_mediapipe",
-    strip_prefix = "mediapipe-0.8.4",
-    sha256 = "b44f8d19c6236ae46d7445a477739f24a221326a5cf55ca011350967e5981560",
+    strip_prefix = "mediapipe-0.8.5",
+    sha256 = "2a233540837b6e590a54e0a3c65d60d4d7d2113ec76b96504799a28003aab029",
     patches = [
         "@//third_party:mediapipe_opencv.diff",
         "@//third_party:mediapipe_android.diff",
@@ -55,7 +55,7 @@ http_archive(
     patch_args = [
         "-p1",
     ],
-    urls = ["https://github.com/google/mediapipe/archive/v0.8.4.tar.gz"],
+    urls = ["https://github.com/google/mediapipe/archive/v0.8.5.tar.gz"],
 )
 
 # ABSL cpp library lts_2020_09_23
@@ -111,8 +111,8 @@ http_archive(
 # Google Benchmark library.
 http_archive(
     name = "com_google_benchmark",
-    urls = ["https://github.com/google/benchmark/archive/master.zip"],
-    strip_prefix = "benchmark-master",
+    urls = ["https://github.com/google/benchmark/archive/main.zip"],
+    strip_prefix = "benchmark-main",
     build_file = "@com_google_mediapipe//third_party:benchmark.BUILD",
 )
 
@@ -411,9 +411,9 @@ http_archive(
 )
 
 # Tensorflow repo should always go after the other external dependencies.
-# 2021-04-30
-_TENSORFLOW_GIT_COMMIT = "5bd3c57ef184543d22e34e36cff9d9bea608e06d"
-_TENSORFLOW_SHA256= "9a45862834221aafacf6fb275f92b3876bc89443cbecc51be93f13839a6609f0"
+# 2021-05-27
+_TENSORFLOW_GIT_COMMIT = "d6bfcdb0926173dbb7aa02ceba5aae6250b8aaa6"
+_TENSORFLOW_SHA256 = "ec40e1462239d8783d02f76a43412c8f80bac71ea20e41e1b7729b990aad6923"
 http_archive(
     name = "org_tensorflow",
     urls = [
