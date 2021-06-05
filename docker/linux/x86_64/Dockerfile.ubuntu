@@ -71,11 +71,16 @@ RUN add-apt-repository -y ppa:deadsnakes/ppa && \
     python3.9 get-pip.py && \
     ln -s /usr/bin/python3.9 /usr/local/bin/python
 
-# install NuGet and Bazel
+# install NuGet
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
     apt-add-repository -y 'deb https://download.mono-project.com/repo/ubuntu stable-focal main' && \
     apt-get install -y --no-install-recommends mono-complete && \
     curl -o /usr/local/bin/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe && \
+    bash -c 'echo -e "#!/bin/bash\nmono /usr/local/bin/nuget.exe \$@" | sudo tee -a /usr/local/bin/nuget' && \
+    sudo chmod +x /usr/local/bin/nuget
+
+# install Bazelisk
+RUN apt-get install -y --no-install-recommends npm && \
     npm install -g @bazel/bazelisk
 
 # install FFmpeg
@@ -125,14 +130,20 @@ RUN addgroup wheel && useradd -u ${UID} -m mediapipe && usermod -aG wheel mediap
 USER mediapipe
 WORKDIR /home/mediapipe
 
+ENV NPM_PREFIX /home/mediapipe/.npm-packages
+ENV PATH ${NPM_PREFIX}/bin:/home/mediapipe/.local/bin:${PATH}
+
+# install Bazelisk
+RUN bash -c 'echo -e "prefix = ${NPM_PREFIX}\n" > /home/mediapipe/.npmrc' && \
+    npm install -g @bazel/bazelisk
+
+# install numpy
+RUN pip install --user numpy
+
 
 FROM builder
 
 ARG ANDROID_NDK_VERSION
-
-RUN bash -c 'echo -e "#!/bin/bash\nmono /usr/local/bin/nuget.exe \$@" | sudo tee -a /usr/local/bin/nuget' && \
-    sudo chmod +x /usr/local/bin/nuget && \
-    pip3.9 install --user numpy
 
 ENV ANDROID_HOME /opt/android
 ENV ANDROID_NDK_HOME /opt/android/ndk/${ANDROID_NDK_VERSION}
