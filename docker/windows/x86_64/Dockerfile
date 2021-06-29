@@ -16,7 +16,8 @@ FROM builder as msys2
 RUN setx path "C:\msys64\usr\bin;%PATH%"
 
 # Install MSYS2
-RUN curl -L https://github.com/msys2/msys2-installer/releases/download/2020-06-29/msys2-base-x86_64-20200629.sfx.exe -o C:\TEMP\msys2-installer.exe
+# TODO: check sha256
+RUN curl -L http://repo.msys2.org/distrib/x86_64/msys2-base-x86_64-20210604.sfx.exe -o C:\TEMP\msys2-installer.exe
 RUN C:\TEMP\msys2-installer.exe -y -oC:\ && del C:\TEMP\msys2-installer.exe
 
 # This command may hang and in that case, "C:\ProgramData\Docker\tmp\hcs*\Files\$Recycle.Bin\" should be removed manually.
