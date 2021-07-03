@@ -56,7 +56,7 @@ output_stream: "right_hand_landmarks_presence"
 node {
   calculator: "FlowLimiterCalculator"
   input_stream: "input_video"
-  input_stream: "FINISHED:face_landmarks_presence"
+  input_stream: "FINISHED:pose_landmarks_presence"
   input_stream_info: {
     tag_index: "FINISHED"
     back_edge: true
