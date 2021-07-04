@@ -101,7 +101,7 @@ public class FaceMeshGraph : DemoGraph {
   }
 
   protected override void PrepareDependentAssets() {
-    PrepareDependentAsset("face_detection_front.bytes");
+    PrepareDependentAsset("face_detection_short_range.bytes");
     PrepareDependentAsset("face_landmark.bytes");
   }
 }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5680418270291803700}
   - component: {fileID: 5680418270291803702}
   m_Layer: 0
-  m_Name: FaceDetectionDesktopGPU
+  m_Name: FaceDetection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

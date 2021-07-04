@@ -1,8 +1,26 @@
+diff --git a/mediapipe/calculators/tensor/BUILD b/mediapipe/calculators/tensor/BUILD
+index 71be05f..5dffa2f 100644
+--- a/mediapipe/calculators/tensor/BUILD
++++ b/mediapipe/calculators/tensor/BUILD
+@@ -87,7 +87,12 @@ cc_library(
+         "@org_tensorflow//tensorflow/lite/delegates/gpu/gl:gl_buffer",
+         "@org_tensorflow//tensorflow/lite/delegates/gpu/gl:gl_program",
+         "@org_tensorflow//tensorflow/lite/delegates/gpu/gl:gl_shader",
+-    ],
++    ] + select({
++        "//mediapipe:android": [
++            "//mediapipe/util/android/file/base",
++        ],
++        "//conditions:default": [],
++    }),
+     alwayslink = 1,
+ )
+ 
 diff --git a/mediapipe/modules/objectron/calculators/BUILD b/mediapipe/modules/objectron/calculators/BUILD
-index 0a8b326..a1e0e09 100644
+index 66150c5..b3a14a9 100644
 --- a/mediapipe/modules/objectron/calculators/BUILD
 +++ b/mediapipe/modules/objectron/calculators/BUILD
-@@ -170,6 +170,15 @@ cc_library(
+@@ -181,6 +181,15 @@ cc_library(
      hdrs = [
          "tensor_util.h",
      ],
@@ -18,7 +36,7 @@ index 0a8b326..a1e0e09 100644
      deps = [
          "//mediapipe/framework/formats:tensor",
          "//mediapipe/framework/port:logging",
-@@ -285,6 +294,15 @@ cc_library(
+@@ -296,6 +305,15 @@ cc_library(
      name = "lift_2d_frame_annotation_to_3d_calculator",
      srcs = ["lift_2d_frame_annotation_to_3d_calculator.cc"],
      visibility = ["//visibility:public"],
@@ -34,3 +52,16 @@ index 0a8b326..a1e0e09 100644
      deps = [
          ":annotation_cc_proto",
          ":belief_decoder_config_cc_proto",
+diff --git a/mediapipe/util/tflite/tflite_gpu_runner.cc b/mediapipe/util/tflite/tflite_gpu_runner.cc
+index 5445f02..78af4f6 100644
+--- a/mediapipe/util/tflite/tflite_gpu_runner.cc
++++ b/mediapipe/util/tflite/tflite_gpu_runner.cc
+@@ -214,7 +214,7 @@ absl::Status TFLiteGPURunner::InitializeOpenCL(
+   MP_RETURN_IF_ERROR(cl_environment_->NewInferenceBuilder(
+       cl_options, std::move(*graph_cl_), builder));
+ #endif
+-  return absl::OkStatus();
++  return mediapipe::UnimplementedError("Currently only Android is supported");
+ }
+ 
+ }  // namespace gpu

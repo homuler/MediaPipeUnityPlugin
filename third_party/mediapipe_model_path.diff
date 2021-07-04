@@ -245,7 +245,7 @@ index 9bc43ba..088f8f8 100644
      LOG(ERROR) << "Failed to load animation asset.";
      return absl::UnknownError("Failed to load animation asset.");
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
-index da12244..10b2034 100644
+index 11f08ad..4d2db85 100644
 --- a/mediapipe/util/BUILD
 +++ b/mediapipe/util/BUILD
 @@ -155,12 +155,8 @@ cc_library(
@@ -263,20 +263,12 @@ index da12244..10b2034 100644
      hdrs = [
          "resource_util.h",
      ],
-@@ -176,27 +172,14 @@ cc_library(
-     deps = [
-         ":resource_util_custom",
-         "@com_google_absl//absl/container:flat_hash_map",
-+        "//mediapipe/framework/deps:file_path",
-         "//mediapipe/framework/port:ret_check",
-         "//mediapipe/framework/port:singleton",
-         "//mediapipe/framework/port:status",
+@@ -183,19 +179,7 @@ cc_library(
          "//mediapipe/framework/port:statusor",
          "//mediapipe/framework/port:file_helpers",
          "@com_google_absl//absl/strings",
 -    ] + select({
 -        "//conditions:default": [
--            "//mediapipe/framework/deps:file_path",
 -            "@com_google_absl//absl/flags:flag",
 -        ],
 -        "//mediapipe:android": [
@@ -285,7 +277,6 @@ index da12244..10b2034 100644
 -        ],
 -        "//mediapipe:ios": [],
 -        "//mediapipe:macos": [
--            "//mediapipe/framework/deps:file_path",
 -            "@com_google_absl//absl/flags:flag",
 -        ],
 -    }),

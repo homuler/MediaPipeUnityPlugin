@@ -12,7 +12,7 @@ mediapipe_simple_subgraph(
     deps = [
         "@com_google_mediapipe//mediapipe/modules/iris_landmark:iris_landmark_left_and_right_gpu",
         "@com_google_mediapipe//mediapipe/calculators/core:concatenate_normalized_landmark_list_calculator",
-        "@com_google_mediapipe//mediapipe/calculators/core:split_normalized_landmark_list_calculator",
+        "@com_google_mediapipe//mediapipe/calculators/core:split_landmarks_calculator",
         "@com_google_mediapipe//mediapipe/graphs/iris_tracking/calculators:update_face_landmarks_calculator",
     ],
 )
@@ -24,7 +24,7 @@ mediapipe_simple_subgraph(
     deps = [
         "@com_google_mediapipe//mediapipe/modules/iris_landmark:iris_landmark_left_and_right_cpu",
         "@com_google_mediapipe//mediapipe/calculators/core:concatenate_normalized_landmark_list_calculator",
-        "@com_google_mediapipe//mediapipe/calculators/core:split_normalized_landmark_list_calculator",
+        "@com_google_mediapipe//mediapipe/calculators/core:split_landmarks_calculator",
         "@com_google_mediapipe//mediapipe/graphs/iris_tracking/calculators:update_face_landmarks_calculator",
     ],
 )

@@ -4,9 +4,10 @@ workspace(name = "mediapipe_api")
 #
 # - com_google_mediapipe dependency
 # - @//third_party -> @com_google_mediapipe//third_party
-#    - exception: opencv_linux, opencv_windows
+#    - exception: opencv_linux, opencv_windows, ffmpeg_linux, ffmpeg_macos
 # - android_opencv sha256 is added
 # - unity dependency
+# - rules_foreign_cc's version
 # - rules_pkg
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
@@ -42,12 +43,11 @@ new_local_repository(
 # mediapipe
 http_archive(
     name = "com_google_mediapipe",
-    strip_prefix = "mediapipe-0.8.5",
-    sha256 = "2a233540837b6e590a54e0a3c65d60d4d7d2113ec76b96504799a28003aab029",
+    strip_prefix = "mediapipe-0.8.6",
+    sha256 = "3fa1548474d8ef943361804a9f86a3edaa00b0976b9d58fd3b41092d339053c6",
     patches = [
         "@//third_party:mediapipe_opencv.diff",
-        "@//third_party:mediapipe_android.diff",
-        "@//third_party:mediapipe_ios.diff",
+        "@//third_party:mediapipe_workaround.diff",
         "@//third_party:mediapipe_visibility.diff",
         "@//third_party:mediapipe_model_path.diff",
         "@//third_party:mediapipe_extension.diff",
@@ -55,7 +55,7 @@ http_archive(
     patch_args = [
         "-p1",
     ],
-    urls = ["https://github.com/google/mediapipe/archive/v0.8.5.tar.gz"],
+    urls = ["https://github.com/google/mediapipe/archive/v0.8.6.tar.gz"],
 )
 
 # ABSL cpp library lts_2020_09_23
@@ -284,6 +284,20 @@ http_archive(
     url = "https://github.com/opencv/opencv/releases/download/3.2.0/opencv-3.2.0-ios-framework.zip",
 )
 
+http_archive(
+    name = "stblib",
+    strip_prefix = "stb-b42009b3b9d4ca35bc703f5310eedc74f584be58",
+    sha256 = "13a99ad430e930907f5611325ec384168a958bf7610e63e60e2fd8e7b7379610",
+    urls = ["https://github.com/nothings/stb/archive/b42009b3b9d4ca35bc703f5310eedc74f584be58.tar.gz"],
+    build_file = "@com_google_mediapipe//third_party:stblib.BUILD",
+    patches = [
+        "@com_google_mediapipe//third_party:stb_image_impl.diff"
+    ],
+    patch_args = [
+        "-p1",
+    ],
+)
+
 # You may run setup_android.sh to install Android SDK and NDK.
 android_ndk_repository(
     name = "androidndk",
@@ -379,8 +393,8 @@ maven_install(
         "androidx.test.espresso:espresso-core:3.1.1",
         "com.github.bumptech.glide:glide:4.11.0",
         "com.google.android.material:material:aar:1.0.0-rc01",
-        "com.google.auto.value:auto-value:1.6.4",
-        "com.google.auto.value:auto-value-annotations:1.6.4",
+        "com.google.auto.value:auto-value:1.8.1",
+        "com.google.auto.value:auto-value-annotations:1.8.1",
         "com.google.code.findbugs:jsr305:3.0.2",
         "com.google.flogger:flogger-system-backend:0.3.1",
         "com.google.flogger:flogger:0.3.1",
@@ -411,9 +425,9 @@ http_archive(
 )
 
 # Tensorflow repo should always go after the other external dependencies.
-# 2021-05-27
-_TENSORFLOW_GIT_COMMIT = "d6bfcdb0926173dbb7aa02ceba5aae6250b8aaa6"
-_TENSORFLOW_SHA256 = "ec40e1462239d8783d02f76a43412c8f80bac71ea20e41e1b7729b990aad6923"
+# 2021-06-07
+_TENSORFLOW_GIT_COMMIT = "700533808e6016dc458bb2eeecfca4babfc482ec"
+_TENSORFLOW_SHA256 = "b6edd7f4039bfc19f3e77594ecff558ba620091d0dc48181484b3d9085026126"
 http_archive(
     name = "org_tensorflow",
     urls = [
