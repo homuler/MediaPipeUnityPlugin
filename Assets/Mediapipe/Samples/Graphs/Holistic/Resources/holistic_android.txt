@@ -104,7 +104,7 @@ node {
 
 # Detects iris landmarks
 node {
-  calculator: "IrisLandmarkLeftAndRightFromFaceLandmarksGpu"
+  calculator: "IrisLandmarksFromFaceLandmarksGpu"
   input_stream: "IMAGE:transformed_input_video"
   input_stream: "FACE_LANDMARKS:gated_face_landmarks"
   output_stream: "UPDATED_FACE_LANDMARKS:refined_face_landmarks"

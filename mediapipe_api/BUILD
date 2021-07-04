@@ -86,6 +86,7 @@ cc_library(
         "@com_google_mediapipe//mediapipe/calculators/image:image_transformation_calculator",
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [
+            "//mediapipe_api/modules/iris_landmark:iris_landmarks_from_face_landmarks_cpu",
             "@com_google_mediapipe//mediapipe/graphs/face_detection:desktop_live_calculators",
             "@com_google_mediapipe//mediapipe/graphs/face_mesh:desktop_live_calculators",
             "@com_google_mediapipe//mediapipe/graphs/hand_tracking:desktop_tflite_calculators",
@@ -97,6 +98,7 @@ cc_library(
             "@com_google_mediapipe//mediapipe/graphs/tracking:desktop_calculators",
         ],
         "//conditions:default": [
+           "//mediapipe_api/modules/iris_landmark:iris_landmarks_from_face_landmarks_gpu",
             # ATTENTION!
             #   If you're building for Android with debug symobls (--compilation_mode=dbg), exclude `instant_motion_tracking_deps`
             #   or exclude the other deps defined under `mediapipe/graphs`.
