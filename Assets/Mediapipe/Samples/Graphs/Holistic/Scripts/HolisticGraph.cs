@@ -16,6 +16,10 @@ public class HolisticGraph : DemoGraph {
   private OutputStreamPoller<NormalizedLandmarkList> poseLandmarksStreamPoller;
   private NormalizedLandmarkListPacket poseLandmarksPacket;
 
+  private const string poseWorldLandmarksStream = "pose_world_landmarks";
+  private OutputStreamPoller<LandmarkList> poseWorldLandmarksStreamPoller;
+  private LandmarkListPacket poseWorldLandmarksPacket;
+
   private const string poseRoiStream = "pose_roi";
   private OutputStreamPoller<NormalizedRect> poseRoiStreamPoller;
   private NormalizedRectPacket poseRoiPacket;
@@ -65,6 +69,9 @@ public class HolisticGraph : DemoGraph {
   public override Status StartRun() {
     poseLandmarksStreamPoller = graph.AddOutputStreamPoller<NormalizedLandmarkList>(poseLandmarksStream).Value();
     poseLandmarksPacket = new NormalizedLandmarkListPacket();
+
+    poseWorldLandmarksStreamPoller = graph.AddOutputStreamPoller<LandmarkList>(poseWorldLandmarksStream).Value();
+    poseWorldLandmarksPacket = new LandmarkListPacket();
 
     poseRoiStreamPoller = graph.AddOutputStreamPoller<NormalizedRect>(poseRoiStream).Value();
     poseRoiPacket = new NormalizedRectPacket();
@@ -134,6 +141,10 @@ public class HolisticGraph : DemoGraph {
 
   private NormalizedLandmarkList FetchNextPoseLandmarks() {
     return FetchNext(poseLandmarksStreamPoller, poseLandmarksPacket, poseLandmarksStream);
+  }
+
+  private LandmarkList FetchNextPoseWorldLandmarks() {
+    return FetchNext(poseWorldLandmarksStreamPoller, poseWorldLandmarksPacket, poseWorldLandmarksStream);
   }
 
   private NormalizedRect FetchNextPoseRoi() {
