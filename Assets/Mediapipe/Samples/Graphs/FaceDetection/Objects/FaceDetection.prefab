@@ -47,6 +47,7 @@ MonoBehaviour:
   gpuConfig: {fileID: 4900000, guid: ea3b02438eeb2743c8ca34c733a1ab8a, type: 3}
   cpuConfig: {fileID: 4900000, guid: 51972370b918e54f78553d2d36c8e40a, type: 3}
   androidConfig: {fileID: 4900000, guid: 754b23d93f14744ee82f1115e5afdb37, type: 3}
+  modelType: 0
 --- !u!114 &5680418270291803702
 MonoBehaviour:
   m_ObjectHideFlags: 0

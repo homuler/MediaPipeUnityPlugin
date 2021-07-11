@@ -1,7 +1,15 @@
 using Mediapipe;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class FaceDetectionGraph : DemoGraph {
+  enum ModelType {
+    ShortRange = 0,
+    FullRangeSparse = 1,
+  }
+
+  [SerializeField] ModelType modelType = ModelType.ShortRange;
+
   private const string faceDetectionsStream = "face_detections";
   private OutputStreamPoller<List<Detection>> faceDetectionsStreamPoller;
   private DetectionVectorPacket faceDetectionsPacket;
@@ -10,6 +18,8 @@ public class FaceDetectionGraph : DemoGraph {
   private OutputStreamPoller<bool> faceDetectionsPresenceStreamPoller;
   private BoolPacket faceDetectionsPresencePacket;
 
+  private SidePacket sidePacket;
+
   public override Status StartRun() {
     faceDetectionsStreamPoller = graph.AddOutputStreamPoller<List<Detection>>(faceDetectionsStream).Value();
     faceDetectionsPacket = new DetectionVectorPacket();
@@ -17,7 +27,10 @@ public class FaceDetectionGraph : DemoGraph {
     faceDetectionsPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(faceDetectionsPresenceStream).Value();
     faceDetectionsPresencePacket = new BoolPacket();
 
-    return graph.StartRun();
+    sidePacket = new SidePacket();
+    sidePacket.Emplace("model_type", new IntPacket((int)modelType));
+
+    return graph.StartRun(sidePacket);
   }
 
   public override void RenderOutput(WebCamScreenController screenController, TextureFrame textureFrame) {
@@ -42,5 +55,6 @@ public class FaceDetectionGraph : DemoGraph {
 
   protected override void PrepareDependentAssets() {
     PrepareDependentAsset("face_detection_short_range.bytes");
+    PrepareDependentAsset("face_detection_full_range_sparse.bytes");
   }
 }

@@ -16,6 +16,7 @@
 #
 # CHANGES:
 #   - Add ImageTransformationCalculator and rotate the input
+#   - Switch models
 #   - Remove AnnotationOverlayCalculator
 #   - Add PacketPresenceCalculator
 
@@ -62,7 +63,21 @@ node: {
 node {
   calculator: "FaceDetectionShortRangeCpu"
   input_stream: "IMAGE:transformed_input_video"
-  output_stream: "DETECTIONS:face_detections"
+  output_stream: "DETECTIONS:short_range_detections"
+}
+
+node {
+  calculator: "FaceDetectionFullRangeCpu"
+  input_stream: "IMAGE:transformed_input_video"
+  output_stream: "DETECTIONS:full_range_detections"
+}
+
+node {
+  calculator: "SwitchMuxCalculator"
+  input_side_packet: "SELECT:model_type"
+  input_stream: "C0__FUNC_INPUT:short_range_detections"
+  input_stream: "C1__FUNC_INPUT:full_range_detections"
+  output_stream: "FUNC_INPUT:face_detections"
 }
 
 node {
