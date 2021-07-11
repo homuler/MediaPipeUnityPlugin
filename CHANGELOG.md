@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.6.2](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.6.1...v0.6.2) (2021-07-11)
+
+
+### Features
+
+* **example:** enable to get pose world landmarks ([abbade0](https://github.com/homuler/MediaPipeUnityPlugin/commit/abbade082cbed35209f5c28ca5790f6c59c5e045))
+* **example:** enable to switch face detection models ([58084e8](https://github.com/homuler/MediaPipeUnityPlugin/commit/58084e8e46c67b5ad14c0fc964b84abe613be96d))
+
 ### [0.6.1](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.6.0...v0.6.1) (2021-07-04)
 
 
