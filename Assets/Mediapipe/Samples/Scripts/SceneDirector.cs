@@ -1,4 +1,5 @@
 using Mediapipe;
+using Mediapipe.Unity;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -57,11 +58,10 @@ public class SceneDirector : MonoBehaviour {
     }
 #endif
 
-    var resourceManager = GameObject.Find("ResourceManager");
 #if UNITY_EDITOR
-    resourceManager.AddComponent<LocalAssetLoader>();
+    AssetLoader.Provide(new LocalAssetManager());
 #else
-    resourceManager.AddComponent<AssetBundleLoader>();
+    AssetLoader.Provide(new AssetBundleManager());
 #endif
   }
 

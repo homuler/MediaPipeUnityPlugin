@@ -29,14 +29,11 @@ namespace Mediapipe.Unity {
       GlobalConfigManager.SetEnvs();
 
       Debug.Log("Initializing AssetLoader...");
-      var assetLoader = new GameObject("Asset Loader");
-
       if (assetLoaderType == AssetLoaderType.AssetBundle) {
-        assetLoader.AddComponent<AssetBundleLoader>();
+        AssetLoader.Provide(new AssetBundleManager());
       } else {
-        assetLoader.AddComponent<LocalAssetLoader>();
+        AssetLoader.Provide(new LocalAssetManager());
       }
-      DontDestroyOnLoad(assetLoader);
 
       DecideInferenceMode();
       if (inferenceMode == InferenceMode.GPU) {

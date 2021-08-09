@@ -16,9 +16,18 @@ namespace Mediapipe {
     public delegate bool ResourceProvider(string path, IntPtr output);
     public abstract ResourceProvider resourceProvider { get; }
 
+    static readonly object initLock = new object();
+    static bool isInitialized = false;
+
     public ResourceManager() {
-      SafeNativeMethods.mp__SetCustomGlobalPathResolver__P(pathResolver);
-      SafeNativeMethods.mp__SetCustomGlobalResourceProvider__P(resourceProvider);
+      lock(initLock) {
+        if (isInitialized) {
+          throw new InvalidOperationException("ResourceManager can be initialized only once");
+        }
+        SafeNativeMethods.mp__SetCustomGlobalPathResolver__P(pathResolver);
+        SafeNativeMethods.mp__SetCustomGlobalResourceProvider__P(resourceProvider);
+        isInitialized = true;
+      }
     }
 
     /// <param name="name">Asset name</param>

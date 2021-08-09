@@ -1,4 +1,5 @@
 using Mediapipe;
+using Mediapipe.Unity;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -189,7 +190,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
   protected virtual void PrepareDependentAssets() {}
 
   protected void PrepareDependentAsset(string assetName, string uniqueKey, bool overwrite = false) {
-    resourceManager.GetComponent<AssetLoader>().PrepareAsset(assetName, uniqueKey, overwrite);
+    AssetLoader.PrepareAsset(assetName, uniqueKey, overwrite);
   }
 
   protected void PrepareDependentAsset(string assetName, bool overwrite = false) {
