@@ -4,18 +4,16 @@ using Unity.Collections;
 using UnityEngine;
 
 public class TextureFrame {
-  private Texture2D texture;
+  private readonly Texture2D texture;
   private IntPtr nativeTexturePtr = IntPtr.Zero;
 
-  public int width { get; private set; }
-  public int height { get; private set; }
+  public int width { get { return texture.width; } }
+  public int height { get { return texture.height; } }
 
-  public GlTextureBuffer.DeletionCallback OnRelease;
+  public readonly GlTextureBuffer.DeletionCallback OnRelease;
 
   public TextureFrame(int width, int height, GlTextureBuffer.DeletionCallback OnRelease) {
     texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
-    this.width = width;
-    this.height = height;
     this.OnRelease = OnRelease;
   }
 
@@ -24,9 +22,8 @@ public class TextureFrame {
   }
 
   public void CopyTextureFrom(WebCamTexture src) {
-    // TODO: Convert format on GPU
-    texture.SetPixels32(src.GetPixels32());
-    texture.Apply();
+    Graphics.CopyTexture(src, texture);
+    nativeTexturePtr = IntPtr.Zero;
   }
 
   public Color32[] GetPixels32() {
@@ -38,8 +35,8 @@ public class TextureFrame {
     return texture.GetRawTextureData<byte>();
   }
 
-  public IntPtr GetNativeTexturePtr(bool update = true) {
-    if (update || nativeTexturePtr == IntPtr.Zero) {
+  public IntPtr GetNativeTexturePtr() {
+    if (nativeTexturePtr == IntPtr.Zero) {
       nativeTexturePtr = texture.GetNativeTexturePtr();
     }
 
@@ -53,6 +50,6 @@ public class TextureFrame {
   }
 
   public void Release() {
-    OnRelease((UInt64)GetNativeTexturePtr(false), IntPtr.Zero);
+    OnRelease((UInt64)GetNativeTexturePtr(), IntPtr.Zero);
   }
 }

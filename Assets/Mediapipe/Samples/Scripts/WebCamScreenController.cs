@@ -69,7 +69,8 @@ public class WebCamScreenController : MonoBehaviour {
     }
 
     Renderer renderer = GetComponent<Renderer>();
-    outputTexture = new Texture2D(webCamTexture.width, webCamTexture.height, TextureFormat.RGBA32, false);
+    // TODO: detect the correct format at runtime
+    outputTexture = new Texture2D(webCamTexture.width, webCamTexture.height, TextureFormat.ARGB32, false);
     renderer.material.mainTexture = outputTexture;
 
     pixelData = new Color32[webCamTexture.width * webCamTexture.height];

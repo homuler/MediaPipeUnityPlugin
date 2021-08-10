@@ -105,7 +105,7 @@ public class TextureFramePool : MonoSingleton<TextureFramePool> {
     callback(nextFrame);
 
     lock(((ICollection)textureFramesInUse).SyncRoot) {
-      textureFramesInUse.Add((UInt64)nextFrame.GetNativeTexturePtr(false), nextFrame);
+      textureFramesInUse.Add((UInt64)nextFrame.GetNativeTexturePtr(), nextFrame);
     }
   }
 
