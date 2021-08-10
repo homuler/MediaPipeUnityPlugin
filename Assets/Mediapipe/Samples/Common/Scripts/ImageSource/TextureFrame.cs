@@ -12,10 +12,13 @@ public class TextureFrame {
 
   public readonly GlTextureBuffer.DeletionCallback OnRelease;
 
-  public TextureFrame(int width, int height, GlTextureBuffer.DeletionCallback OnRelease) {
-    texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
+  public TextureFrame(int width, int height, TextureFormat format, GlTextureBuffer.DeletionCallback OnRelease) {
+    texture = new Texture2D(width, height, format, false);
     this.OnRelease = OnRelease;
   }
+
+  public TextureFrame(int width, int height, GlTextureBuffer.DeletionCallback OnRelease) :
+      this(width, height, TextureFormat.RGBA32, OnRelease) {}
 
   public void CopyTexture(Texture dst) {
     Graphics.CopyTexture(texture, dst);
