@@ -50,28 +50,26 @@ namespace Mediapipe.Unity {
     static Dictionary<string, string> _config; 
     static Dictionary<string, string> config {
       get {
-        if (_config != null) {
-          return _config;
-        }
+        if (_config == null) {
+          _config = new Dictionary<string, string>() {
+            { _GlogLogtostderrKey, "0" },
+            { _GlogStderrthresholdKey, "2" },
+            { _GlogMinloglevelKey, "0" },
+            { _GlogLogDirKey, Path.Combine(Application.persistentDataPath, "Logs") },
+            { _GlogVKey, "0" },
+          };
 
-        _config = new Dictionary<string, string>() {
-          { _GlogLogtostderrKey, "0" },
-          { _GlogStderrthresholdKey, "2" },
-          { _GlogMinloglevelKey, "0" },
-          { _GlogLogDirKey, Path.Combine(Application.persistentDataPath, "Logs") },
-          { _GlogVKey, "0" },
-        };
-
-        if (!File.Exists(configFilePath)) {
-          Debug.Log($"Global config file does not exist: {configFilePath}");
-        } else {
-          Debug.Log($"Reading the config file ({configFilePath})...");
-          foreach (var line in File.ReadLines(configFilePath)) {
-            try {
-              (string, string) pair = ParseLine(line);
-              _config[pair.Item1] = pair.Item2;
-            } catch (System.Exception e) {
-              Debug.LogWarning($"{e}");
+          if (!File.Exists(configFilePath)) {
+            Debug.Log($"Global config file does not exist: {configFilePath}");
+          } else {
+            Debug.Log($"Reading the config file ({configFilePath})...");
+            foreach (var line in File.ReadLines(configFilePath)) {
+              try {
+                (string, string) pair = ParseLine(line);
+                _config[pair.Item1] = pair.Item2;
+              } catch (System.Exception e) {
+                Debug.LogWarning($"{e}");
+              }
             }
           }
         }

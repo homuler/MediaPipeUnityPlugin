@@ -17,6 +17,7 @@ namespace Mediapipe.Unity {
       CPU,
     }
 
+    [SerializeField] ImageSource.SourceType defaultImageSource;
     [SerializeField] InferenceMode preferableInferenceMode;
     [SerializeField] AssetLoaderType assetLoaderType;
 
@@ -40,6 +41,10 @@ namespace Mediapipe.Unity {
         Debug.Log("Initializing GPU resources...");
         yield return GpuManager.Initialize();
       }
+
+      Debug.Log("Preparing ImageSource...");
+      ImageSourceProvider.SwitchSource(defaultImageSource);
+      DontDestroyOnLoad(GameObject.Find("Image Source"));
 
       DontDestroyOnLoad(this.gameObject);
       isFinished = true;
