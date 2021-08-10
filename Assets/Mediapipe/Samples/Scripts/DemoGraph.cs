@@ -86,7 +86,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
 #endif
 
     var imageFrame = new ImageFrame(
-      ImageFormat.Format.SRGBA, textureFrame.width, textureFrame.height, 4 * textureFrame.width, textureFrame.GetRawNativeByteArray());
+      ImageFormat.Format.SRGBA, textureFrame.width, textureFrame.height, 4 * textureFrame.width, textureFrame.GetRawTextureData<byte>());
     textureFrame.Release();
     var packet = new ImageFramePacket(imageFrame, currentTimestamp);
 

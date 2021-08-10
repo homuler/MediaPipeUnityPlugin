@@ -30,16 +30,14 @@ public class TextureFrame {
     return texture.GetPixels32();
   }
 
-  // TODO: implement generic method
-  public NativeArray<byte> GetRawNativeByteArray() {
-    return texture.GetRawTextureData<byte>();
+  public NativeArray<T> GetRawTextureData<T>() where T : struct {
+    return texture.GetRawTextureData<T>();
   }
 
   public IntPtr GetNativeTexturePtr() {
     if (nativeTexturePtr == IntPtr.Zero) {
       nativeTexturePtr = texture.GetNativeTexturePtr();
     }
-
     return nativeTexturePtr;
   }
 
