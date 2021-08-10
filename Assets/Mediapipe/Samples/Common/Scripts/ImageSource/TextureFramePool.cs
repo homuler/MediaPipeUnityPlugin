@@ -41,8 +41,8 @@ public class TextureFramePool : MonoSingleton<TextureFramePool> {
     }
   }
 
-  public TextureFrameRequest RequestNextTextureFrame(Action<TextureFrame> callback) {
-    return new TextureFrameRequest(this, callback);
+  public Mediapipe.Unity.WaitForResult<TextureFrame> WaitForNextTextureFrame(Action<TextureFrame> callback) {
+    return new Mediapipe.Unity.WaitForResult<TextureFrame>(this, YieldTextureFrame(callback));
   }
 
   [AOT.MonoPInvokeCallback(typeof(GlTextureBuffer.DeletionCallback))]
@@ -80,7 +80,7 @@ public class TextureFramePool : MonoSingleton<TextureFramePool> {
     }
   }
 
-  private IEnumerator WaitForTextureFrame(Action<TextureFrame> callback) {
+  private IEnumerator YieldTextureFrame(Action<TextureFrame> callback) {
     TextureFrame nextFrame = null;
 
     lock(((ICollection)availableTextureFrames).SyncRoot) {
@@ -107,22 +107,7 @@ public class TextureFramePool : MonoSingleton<TextureFramePool> {
     lock(((ICollection)textureFramesInUse).SyncRoot) {
       textureFramesInUse.Add((UInt64)nextFrame.GetNativeTexturePtr(), nextFrame);
     }
-  }
 
-  public class TextureFrameRequest : CustomYieldInstruction {
-    public TextureFrame textureFrame { get; private set; }
-    private TextureFramePool textureFramePool;
-
-    public override bool keepWaiting {
-      get { return textureFrame == null; }
-    }
-
-    public TextureFrameRequest(TextureFramePool textureFramePool, Action<TextureFrame> callback) : base() {
-      textureFramePool.StartCoroutine(textureFramePool.WaitForTextureFrame((TextureFrame textureFrame) => {
-        callback(textureFrame);
-
-        this.textureFrame = textureFrame;
-      }));
-    }
+    yield return nextFrame;
   }
 }

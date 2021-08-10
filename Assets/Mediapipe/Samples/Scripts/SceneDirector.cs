@@ -179,7 +179,7 @@ public class SceneDirector : MonoBehaviour {
       var nextFrameRequest = webCamScreenController.RequestNextFrame();
       yield return nextFrameRequest;
 
-      var nextFrame = nextFrameRequest.textureFrame;
+      var nextFrame = nextFrameRequest.result;
 
       graph.PushInput(nextFrame).AssertOk();
       graph.RenderOutput(webCamScreenController, nextFrame);

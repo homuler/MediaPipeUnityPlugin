@@ -26,7 +26,6 @@ public class TextureFrame {
 
   public void CopyTextureFrom(WebCamTexture src) {
     Graphics.CopyTexture(src, texture);
-    nativeTexturePtr = IntPtr.Zero;
   }
 
   public Color32[] GetPixels32() {

@@ -125,8 +125,8 @@ public class WebCamScreenController : MonoBehaviour {
 #endif
   }
 
-  public TextureFramePool.TextureFrameRequest RequestNextFrame() {
-    return WebCamTextureFramePool.Instance.RequestNextTextureFrame((TextureFrame textureFrame) => {
+  public Mediapipe.Unity.WaitForResult<TextureFrame> RequestNextFrame() {
+    return WebCamTextureFramePool.Instance.WaitForNextTextureFrame((TextureFrame textureFrame) => {
       if (isPlaying) {
         textureFrame.CopyTextureFrom(webCamTexture);
       }
