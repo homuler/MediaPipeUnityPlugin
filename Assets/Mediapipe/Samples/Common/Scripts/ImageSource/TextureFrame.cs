@@ -1,30 +1,42 @@
 using Mediapipe;
+using Mediapipe.Unity;
 using System;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class TextureFrame {
-  private readonly Texture2D texture;
-  private IntPtr nativeTexturePtr = IntPtr.Zero;
+  public class ReleaseEvent : UnityEvent<TextureFrame> {}
+
+  static InstanceCacheTable<UInt64, TextureFrame> instanceCacheTable = new InstanceCacheTable<UInt64, TextureFrame>(100);
+
+  readonly Texture2D texture;
+  IntPtr nativeTexturePtr = IntPtr.Zero;
+  GlSyncPoint glSyncToken;
 
   public int width { get { return texture.width; } }
   public int height { get { return texture.height; } }
 
-  public readonly GlTextureBuffer.DeletionCallback OnRelease;
+  /// <summary>
+  ///   The event that will be invoked when the TextureFrame is released.
+  /// </summary>
+  public readonly ReleaseEvent OnRelease;
 
-  public TextureFrame(int width, int height, TextureFormat format, GlTextureBuffer.DeletionCallback OnRelease) {
-    texture = new Texture2D(width, height, format, false);
-    this.OnRelease = OnRelease;
+  TextureFrame(Texture2D texture) {
+    this.texture = texture;
+    this.OnRelease = new ReleaseEvent();
+
+    instanceCacheTable.Add(GetId(), this);
   }
 
-  public TextureFrame(int width, int height, GlTextureBuffer.DeletionCallback OnRelease) :
-      this(width, height, TextureFormat.RGBA32, OnRelease) {}
+  public TextureFrame(int width, int height, TextureFormat format) : this(new Texture2D(width, height, format, false)) {}
+  public TextureFrame(int width, int height) : this(width, height, TextureFormat.RGBA32) {}
 
   public void CopyTexture(Texture dst) {
     Graphics.CopyTexture(texture, dst);
   }
 
-  public void CopyTextureFrom(WebCamTexture src) {
+  public void CopyTextureFrom(Texture src) {
     Graphics.CopyTexture(src, texture);
   }
 
@@ -43,13 +55,47 @@ public class TextureFrame {
     return nativeTexturePtr;
   }
 
+  public UInt64 GetId() {
+    return (UInt64)GetNativeTexturePtr();
+  }
+
   public GpuBufferFormat gpuBufferformat {
     get {
       return GpuBufferFormat.kBGRA32;
     }
   }
 
-  public void Release() {
-    OnRelease((UInt64)GetNativeTexturePtr(), IntPtr.Zero);
+  public void Release(GlSyncPoint token = null) {
+    if (glSyncToken != null) {
+      glSyncToken.Dispose();
+    }
+    glSyncToken = token;
+    OnRelease.Invoke(this);
+  }
+
+  /// <summary>
+  ///   Waits until the GPU has executed all commands up to the sync point.
+  ///   This blocks the CPU, and ensures the commands are complete from the point of view of all threads and contexts.
+  /// </summary>
+  public void WaitUntilReleased() {
+    if (glSyncToken == null) {
+      return;
+    }
+    glSyncToken.Wait();
+    glSyncToken.Dispose();
+    glSyncToken = null;
+  }
+
+  [AOT.MonoPInvokeCallback(typeof(GlTextureBuffer.DeletionCallback))]
+  public static void OnReleaseTextureFrame(UInt64 textureName, IntPtr syncTokenPtr) {
+    var isTextureFrameFound = instanceCacheTable.TryGetValue(textureName, out var textureFrame);
+
+    if (!isTextureFrameFound) {
+      Debug.LogWarning($"The released texture is not found or already garbage collected: {textureName}");
+      return;
+    }
+
+    var glSyncToken = syncTokenPtr == IntPtr.Zero ? null : new GlSyncPoint(syncTokenPtr);
+    textureFrame.Release(glSyncToken);
   }
 }

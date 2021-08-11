@@ -15,6 +15,7 @@ public class WebCamScreenController : MonoBehaviour {
   private WebCamTexture webCamTexture;
   private Texture2D outputTexture;
   private Color32[] pixelData;
+  private Mediapipe.Unity.TextureFramePool textureFramePool;
 
   public bool isPlaying {
     get { return isWebCamTextureInitialized && webCamTexture.isPlaying; }
@@ -33,6 +34,10 @@ public class WebCamScreenController : MonoBehaviour {
     }
   }
 
+  void Start() {
+    textureFramePool = new GameObject("TextureFramePool").AddComponent<Mediapipe.Unity.TextureFramePool>();
+  }
+
   public IEnumerator ResetScreen(WebCamDevice? device) {
     if (isPlaying) {
       webCamTexture.Stop();
@@ -47,7 +52,7 @@ public class WebCamScreenController : MonoBehaviour {
     }
 
     webCamTexture = new WebCamTexture(webCamDevice.name, Width, Height, FPS);
-    WebCamTextureFramePool.Instance.SetDimension(Width, Height);
+    textureFramePool.SetDimension(Width, Height);
 
     try {
       webCamTexture.Play();
@@ -126,12 +131,10 @@ public class WebCamScreenController : MonoBehaviour {
   }
 
   public Mediapipe.Unity.WaitForResult<TextureFrame> RequestNextFrame() {
-    return WebCamTextureFramePool.Instance.WaitForNextTextureFrame((TextureFrame textureFrame) => {
+    return textureFramePool.WaitForNextTextureFrame((TextureFrame textureFrame) => {
       if (isPlaying) {
         textureFrame.CopyTextureFrom(webCamTexture);
       }
     });
   }
-
-  private class WebCamTextureFramePool : TextureFramePool {}
 }

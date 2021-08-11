@@ -102,7 +102,7 @@ public abstract class DemoGraph : MonoBehaviour, IDemoGraph<TextureFrame> {
     try {
       var glContext = GlContext.GetCurrent();
       var glTextureBuffer = new GlTextureBuffer((UInt32)currentTextureName, currentTextureFrame.width, currentTextureFrame.height,
-                                                currentTextureFrame.gpuBufferformat, currentTextureFrame.OnRelease, glContext);
+                                                currentTextureFrame.gpuBufferformat, TextureFrame.OnReleaseTextureFrame, glContext);
       var gpuBuffer = new GpuBuffer(glTextureBuffer);
 
       // TODO: ensure the returned status won't be garbage collected prematurely.
