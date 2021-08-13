@@ -6,7 +6,7 @@ namespace Mediapipe.Unity.UI {
       return gameObject.transform.parent.gameObject.GetComponent<Modal>();
     }
 
-    public void Exit() {
+    public virtual void Exit() {
       GetModal().Close();
     }
   }

@@ -6,10 +6,28 @@ namespace Mediapipe.Unity.FaceDetection {
     [SerializeField] UnityEngine.UI.RawImage screen;
     Coroutine coroutine;
 
-    protected override IEnumerator Start() {
-      yield return base.Start();
+    public override void Play() {
+      base.Play();
 
+      if (coroutine != null) {
+        StopCoroutine(coroutine);
+      }
       coroutine = StartCoroutine(Run());
+    }
+
+    public override void Pause() {
+      base.Pause();
+      ImageSourceProvider.imageSource.Pause();
+    }
+
+    public override void Resume() {
+      base.Resume();
+      StartCoroutine(ImageSourceProvider.imageSource.Resume());
+    }
+
+    public override void Stop() {
+      base.Stop();
+      StopCoroutine(coroutine);
     }
 
     IEnumerator Run() {
@@ -26,6 +44,8 @@ namespace Mediapipe.Unity.FaceDetection {
       screen.texture = new Texture2D((int)imageSource.width, (int)imageSource.height, imageSource.format, false);
 
       while (true) {
+        yield return new WaitWhile(() => isPaused);
+
         var textureFrameRequest = imageSource.WaitForNextTextureFrame();
         yield return textureFrameRequest;
         var textureFrame = textureFrameRequest.result;

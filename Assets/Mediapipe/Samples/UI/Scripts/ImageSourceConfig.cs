@@ -18,8 +18,14 @@ namespace Mediapipe.Unity.UI {
     Dropdown RotationInput;
     Toggle FlipInput;
 
+    bool isChanged;
+
     void Start() {
       InitializeContents();
+    }
+
+    public override void Exit() {
+      GetModal().Close(isChanged);
     }
 
     void InitializeContents() {
@@ -47,6 +53,7 @@ namespace Mediapipe.Unity.UI {
 
       SourceTypeInput.onValueChanged.AddListener(delegate {
         ImageSourceProvider.SwitchSource((ImageSource.SourceType)SourceTypeInput.value);
+        isChanged = true;
         InitializeContents();
       });
     }
@@ -76,6 +83,7 @@ namespace Mediapipe.Unity.UI {
 
       SourceInput.onValueChanged.AddListener(delegate {
         imageSource.SelectSource(SourceInput.value);
+        isChanged = true;
       });
     }
 
@@ -104,6 +112,7 @@ namespace Mediapipe.Unity.UI {
 
       ResolutionInput.onValueChanged.AddListener(delegate {
         imageSource.SelectResolution(ResolutionInput.value);
+        isChanged = true;
       });
     }
 
@@ -118,6 +127,7 @@ namespace Mediapipe.Unity.UI {
 
       RotationInput.onValueChanged.AddListener(delegate {
         imageSource.rotation = (ImageSource.Rotation)(90 * RotationInput.value);
+        isChanged = true;
       });
     }
 
@@ -130,6 +140,7 @@ namespace Mediapipe.Unity.UI {
 
       FlipInput.onValueChanged.AddListener(delegate {
         imageSource.isFlipped = FlipInput.isOn;
+        isChanged = true;
       });
     }
   }
