@@ -8,17 +8,17 @@ namespace Mediapipe.Unity {
 
   public class TextureFramePool : MonoBehaviour {
     [SerializeField] readonly int poolSize = 10;
-    [SerializeField] TextureFormat format = TextureFormat.RGBA32;
 
-    readonly object dimensionLock = new object();
+    readonly object formatLock = new object();
     int textureWidth = 0;
     int textureHeight = 0;
+    TextureFormat format = TextureFormat.RGBA32;
 
     Queue<TextureFrame> availableTextureFrames;
     /// <remarks>
-    ///   key: texture's native pointer (e.g. OpenGL texture name)
+    ///   key: TextureFrame's instance ID
     /// </remarks>
-    Dictionary<UInt64, TextureFrame> textureFramesInUse;
+    Dictionary<Guid, TextureFrame> textureFramesInUse;
 
     /// <returns>
     ///   The total number of texture frames in the pool.
@@ -34,7 +34,7 @@ namespace Mediapipe.Unity {
 
     void Start() {
       availableTextureFrames = new Queue<TextureFrame>(poolSize);
-      textureFramesInUse = new Dictionary<UInt64, TextureFrame>();
+      textureFramesInUse = new Dictionary<Guid, TextureFrame>();
     }
 
     void OnDestroy() {
@@ -52,11 +52,16 @@ namespace Mediapipe.Unity {
       }
     }
 
-    public void SetDimension(int textureWidth, int textureHeight) {
-      lock (dimensionLock) {
+    public void ResizeTexture(int textureWidth, int textureHeight, TextureFormat format) {
+      lock (formatLock) {
         this.textureWidth = textureWidth;
         this.textureHeight = textureHeight;
+        this.format = format;
       }
+    }
+
+    public void ResizeTexture(int textureWidth, int textureHeight) {
+      ResizeTexture(textureWidth, textureHeight, format);
     }
 
     public WaitForResult<TextureFrame> WaitForNextTextureFrame(Action<TextureFrame> callback) {
@@ -65,7 +70,7 @@ namespace Mediapipe.Unity {
 
     void OnTextureFrameRelease(TextureFrame textureFrame) {
       lock (((ICollection)textureFramesInUse).SyncRoot) {
-        if (!textureFramesInUse.Remove(textureFrame.GetId())) {
+        if (!textureFramesInUse.Remove(textureFrame.GetInstanceId())) {
           // won't be run
           Debug.LogWarning("The released texture does not belong to the pool");
           return;
@@ -79,7 +84,7 @@ namespace Mediapipe.Unity {
     }
 
     bool IsStale(TextureFrame textureFrame) {
-      lock(dimensionLock) {
+      lock(formatLock) {
         return textureFrame.width != textureWidth || textureFrame.height != textureHeight;
       }
     }
@@ -116,7 +121,7 @@ namespace Mediapipe.Unity {
       }
 
       lock(((ICollection)textureFramesInUse).SyncRoot) {
-        textureFramesInUse.Add(nextFrame.GetId(), nextFrame);
+        textureFramesInUse.Add(nextFrame.GetInstanceId(), nextFrame);
       }
 
       nextFrame.WaitUntilReleased();

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 namespace Mediapipe.Unity {
@@ -50,9 +51,14 @@ namespace Mediapipe.Unity {
       Video = 2,
     }
 
+    protected TextureFramePool textureFramePool { get; private set; }
     public ResolutionStruct resolution { get; protected set; }
     public Rotation rotation = Rotation.Rotation0;
     public bool isFlipped = false;
+
+    // TODO: make it selectable
+    TextureFormat _format = TextureFormat.RGBA32;
+    public TextureFormat format { get { return _format; } }
 
     public uint width {
       get { return resolution.width; }
@@ -74,6 +80,7 @@ namespace Mediapipe.Unity {
     public abstract string sourceName { get; }
     public abstract string[] sourceCandidateNames { get; }
     public abstract ResolutionStruct[] availableResolutions { get; }
+    public virtual bool isPrepared { get { return textureFramePool != null; } }
 
     public abstract void SelectSource(int sourceId);
 
@@ -86,5 +93,33 @@ namespace Mediapipe.Unity {
 
       resolution = resolutions[resolutionId];
     }
+
+    public virtual IEnumerator Play() {
+      if (textureFramePool == null) {
+        textureFramePool = gameObject.AddComponent<TextureFramePool>();
+      }
+      yield return null;
+    }
+
+    public virtual IEnumerator Resume() {
+      yield return null;
+    }
+
+    public virtual void Pause() {}
+
+    public virtual void Stop() {
+      if (textureFramePool != null) {
+        GameObject.Destroy(gameObject.GetComponent<TextureFramePool>());
+        textureFramePool = null;
+      }
+    }
+
+    public WaitForResult<TextureFrame> WaitForNextTextureFrame() {
+      return textureFramePool.WaitForNextTextureFrame((TextureFrame textureFrame) => {
+        textureFrame.CopyTextureFrom(GetCurrentTexture());
+      });
+    }
+
+    protected abstract Texture2D GetCurrentTexture();
   }
 }

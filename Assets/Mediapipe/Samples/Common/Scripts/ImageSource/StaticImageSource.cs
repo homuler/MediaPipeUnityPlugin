@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 
@@ -7,7 +8,21 @@ namespace Mediapipe.Unity {
     [SerializeField] Texture[] availableSources;
     [SerializeField] ResolutionStruct[] defaultAvailableResolutions;
 
-    public Texture image { get; private set; }
+    Texture _image;
+    Texture image {
+      get { return _image; }
+      set {
+        if (_image == value) {
+          return;
+        }
+        _image = value;
+        resolution = GetDefaultResolution();
+        var imageTexture = Texture2D.CreateExternalTexture(image.width, image.height, format, false, false, image.GetNativeTexturePtr());
+        outputTexture = new Texture2D((int)width, (int)height, format, false);
+        Graphics.ConvertTexture(imageTexture, outputTexture);
+      }
+    }
+    Texture2D outputTexture;
 
     public override SourceType type {
       get { return SourceType.Image; }
@@ -30,6 +45,10 @@ namespace Mediapipe.Unity {
       get { return defaultAvailableResolutions; }
     }
 
+    public override bool isPrepared {
+      get { return base.isPrepared && image != null; }
+    }
+
     void Start() {
       if (availableSources != null && availableSources.Length > 0) {
         image = availableSources[0];
@@ -42,6 +61,26 @@ namespace Mediapipe.Unity {
       }
 
       image = availableSources[sourceId];
+    }
+
+    public override IEnumerator Play() {
+      yield return base.Play();
+
+      textureFramePool.ResizeTexture(outputTexture.width, outputTexture.height, format);
+    }
+
+    protected override Texture2D GetCurrentTexture() {
+      return outputTexture;
+    }
+
+    ResolutionStruct GetDefaultResolution() {
+      var resolutions = availableResolutions;
+
+      if (resolutions == null || resolutions.Length == 0) {
+        return new ResolutionStruct();
+      }
+
+      return resolutions[0];
     }
   }
 }

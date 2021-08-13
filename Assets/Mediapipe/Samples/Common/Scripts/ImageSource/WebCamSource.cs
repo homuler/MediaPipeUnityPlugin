@@ -18,8 +18,22 @@ namespace Mediapipe.Unity {
       get { return SourceType.Camera; }
     }
 
+    TextureFormat defaultWebCamFormat = TextureFormat.ARGB32;
+
+    WebCamTexture _webCamTexture;
+    WebCamTexture webCamTexture {
+      get { return _webCamTexture; }
+      set {
+        if (_webCamTexture != null) {
+          _webCamTexture.Stop();
+        }
+        _webCamTexture = value;
+      }
+    }
+    Texture2D outputTexture;
+
     WebCamDevice? _webCamDevice;
-    public WebCamDevice? webCamDevice {
+    WebCamDevice? webCamDevice {
       get { return _webCamDevice; }
       set {
         if (_webCamDevice is WebCamDevice valueOfWebCamDevice) {
@@ -31,8 +45,6 @@ namespace Mediapipe.Unity {
           // not changed
           return;
         }
-
-        resolution = new ResolutionStruct();
         _webCamDevice = value;
         resolution = GetDefaultResolution();
       }
@@ -47,7 +59,7 @@ namespace Mediapipe.Unity {
     }
 
     WebCamDevice[] _availableSources;
-    public WebCamDevice[] availableSources {
+    WebCamDevice[] availableSources {
       get {
         if (_availableSources == null) {
           _availableSources = WebCamTexture.devices;
@@ -55,7 +67,7 @@ namespace Mediapipe.Unity {
 
         return _availableSources;
       }
-      private set { _availableSources = value; }
+      set { _availableSources = value; }
     }
 
     public override string[] sourceCandidateNames {
@@ -69,22 +81,28 @@ namespace Mediapipe.Unity {
 
     public override ResolutionStruct[] availableResolutions {
       get {
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+        if (webCamDevice is WebCamDevice valueOfWebCamDevice) {
+          return valueOfWebCamDevice.availableResolutions.Select(resolution => new ResolutionStruct(resolution)).ToArray();
+        }
+#endif
         if (webCamDevice == null) {
           return null;
         }
-
-#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
-        return webCamDevice.defaultAvailableResolutions.Select(resolution => new ResolutionStruct(resolution)).ToArray();
-#endif
 
         return defaultAvailableResolutions;
       }
     }
 
+    public bool isPlaying { get { return webCamTexture == null ? false : webCamTexture.isPlaying; } }
+    public override bool isPrepared { get { return webCamTexture != null; } }
+    bool isInitialized;
+
     IEnumerator Start() {
       yield return GetPermission();
 
       if (!isPermitted) {
+        isInitialized = true;
         yield break;
       }
       
@@ -93,6 +111,8 @@ namespace Mediapipe.Unity {
       if (availableSources != null && availableSources.Length > 0) {
         webCamDevice = availableSources[0];
       }
+
+      isInitialized = true;
     }
 
     IEnumerator GetPermission() {
@@ -135,6 +155,55 @@ namespace Mediapipe.Unity {
       }
 
       webCamDevice = availableSources[sourceId];
+      InitializeWebCamTexture();
+    }
+
+    public override IEnumerator Play() {
+      yield return new WaitUntil(() => isInitialized);
+
+      if (!isPermitted) {
+        throw new InvalidOperationException("Not permitted to access cameras");
+      }
+      yield return base.Play();
+
+      InitializeWebCamTexture();
+      yield return WaitForWebCamTexture();
+
+      // TODO: determine format at runtime
+      outputTexture = new Texture2D(webCamTexture.width, webCamTexture.height, defaultWebCamFormat, false);
+      textureFramePool.ResizeTexture(webCamTexture.width, webCamTexture.height, format);
+    }
+
+    public override IEnumerator Resume() {
+      if (!isPrepared) {
+        throw new InvalidOperationException("WebCamTexture is not prepared yet");
+      }
+      if (isPlaying) {
+        throw new InvalidOperationException("WebCamTexture is already playing");
+      }
+      yield return base.Resume();
+      yield return WaitForWebCamTexture();
+    }
+
+    public override void Pause() {
+      if (!isPlaying) {
+        throw new InvalidOperationException("WebCamTexture is not playing");
+      }
+      base.Pause();
+      webCamTexture.Pause();
+    }
+
+    public override void Stop() {
+      if (!isPlaying) {
+        throw new InvalidOperationException("WebCamTexture is not playing");
+      }
+      base.Stop();
+      webCamTexture.Stop();
+    }
+
+    protected override Texture2D GetCurrentTexture() {
+      Graphics.ConvertTexture(webCamTexture, outputTexture);
+      return outputTexture;
     }
 
     ResolutionStruct GetDefaultResolution() {
@@ -145,6 +214,19 @@ namespace Mediapipe.Unity {
       }
 
       return resolutions[0];
+    }
+
+    void InitializeWebCamTexture() {
+      if (webCamDevice is WebCamDevice valueOfWebCamDevice) {
+        webCamTexture = new WebCamTexture(valueOfWebCamDevice.name, (int)resolution.width, (int)resolution.height, (int)resolution.frameRate);
+        return;
+      }
+      throw new InvalidOperationException("Cannot initialize WebCamTexture because WebCamDevice is not selected");
+    }
+
+    IEnumerator WaitForWebCamTexture() {
+      webCamTexture.Play();
+      yield return new WaitUntil(() => webCamTexture.width > 16);
     }
   }
 }

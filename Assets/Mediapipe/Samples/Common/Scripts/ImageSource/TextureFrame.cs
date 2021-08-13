@@ -1,6 +1,7 @@
 using Mediapipe;
 using Mediapipe.Unity;
 using System;
+using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,14 +9,17 @@ using UnityEngine.Events;
 public class TextureFrame {
   public class ReleaseEvent : UnityEvent<TextureFrame> {}
 
-  static InstanceCacheTable<UInt64, TextureFrame> instanceCacheTable = new InstanceCacheTable<UInt64, TextureFrame>(100);
+  static InstanceCacheTable<Guid, TextureFrame> instanceCacheTable = new InstanceCacheTable<Guid, TextureFrame>(100);
+  static Dictionary<UInt64, Guid> nameTable = new Dictionary<UInt64, Guid>();
 
   readonly Texture2D texture;
   IntPtr nativeTexturePtr = IntPtr.Zero;
   GlSyncPoint glSyncToken;
 
+  readonly Guid instanceId;
   public int width { get { return texture.width; } }
   public int height { get { return texture.height; } }
+  public TextureFormat format { get { return texture.format; } }
 
   /// <summary>
   ///   The event that will be invoked when the TextureFrame is released.
@@ -26,7 +30,9 @@ public class TextureFrame {
     this.texture = texture;
     this.OnRelease = new ReleaseEvent();
 
-    instanceCacheTable.Add(GetId(), this);
+    instanceId = Guid.NewGuid();
+    nameTable.Add(GetTextureName(), instanceId);
+    instanceCacheTable.Add(instanceId, this);
   }
 
   public TextureFrame(int width, int height, TextureFormat format) : this(new Texture2D(width, height, format, false)) {}
@@ -55,8 +61,12 @@ public class TextureFrame {
     return nativeTexturePtr;
   }
 
-  public UInt64 GetId() {
+  public UInt64 GetTextureName() {
     return (UInt64)GetNativeTexturePtr();
+  }
+
+  public Guid GetInstanceId() {
+    return instanceId;
   }
 
   public GpuBufferFormat gpuBufferformat {
@@ -88,10 +98,17 @@ public class TextureFrame {
 
   [AOT.MonoPInvokeCallback(typeof(GlTextureBuffer.DeletionCallback))]
   public static void OnReleaseTextureFrame(UInt64 textureName, IntPtr syncTokenPtr) {
-    var isTextureFrameFound = instanceCacheTable.TryGetValue(textureName, out var textureFrame);
+    var isIdFound = nameTable.TryGetValue(textureName, out var instanceId);
+
+    if (!isIdFound) {
+      Debug.LogError($"Texture (name={textureName}) is released, but the owner TextureFrame is not found");
+      return;
+    }
+
+    var isTextureFrameFound = instanceCacheTable.TryGetValue(instanceId, out var textureFrame);
 
     if (!isTextureFrameFound) {
-      Debug.LogWarning($"The released texture is not found or already garbage collected: {textureName}");
+      Debug.LogWarning($"The owner TextureFrame of the released texture (name={textureName}) is already garbage collected");
       return;
     }
 
