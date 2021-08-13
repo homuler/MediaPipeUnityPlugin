@@ -41,7 +41,7 @@ namespace Mediapipe.Unity {
 
     public static string GlogLogDir {
       get { return config[_GlogLogDirKey]; }
-      set { config[_GlogLogDirKey] = Path.Combine(Application.persistentDataPath, value); }
+      set { config[_GlogLogDirKey] = value; }
     }
 
     static readonly object setupLock = new object();
@@ -55,7 +55,7 @@ namespace Mediapipe.Unity {
             { _GlogLogtostderrKey, "0" },
             { _GlogStderrthresholdKey, "2" },
             { _GlogMinloglevelKey, "0" },
-            { _GlogLogDirKey, Path.Combine(Application.persistentDataPath, "Logs") },
+            { _GlogLogDirKey, "Logs" },
             { _GlogVKey, "0" },
           };
 
@@ -94,7 +94,7 @@ namespace Mediapipe.Unity {
       System.Environment.SetEnvironmentVariable(_GlogLogtostderrKey, GlogLogtostderr);
       System.Environment.SetEnvironmentVariable(_GlogStderrthresholdKey, GlogStderrthreshold);
       System.Environment.SetEnvironmentVariable(_GlogMinloglevelKey, GlogMinloglevel);
-      System.Environment.SetEnvironmentVariable(_GlogLogDirKey, GlogLogDir);
+      System.Environment.SetEnvironmentVariable(_GlogLogDirKey, Path.Combine(Application.persistentDataPath, GlogLogDir));
       System.Environment.SetEnvironmentVariable(_GlogVKey, GlogV);
     }
 
