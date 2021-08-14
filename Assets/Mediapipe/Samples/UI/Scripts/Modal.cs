@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Mediapipe.Unity.UI {
   public class Modal : MonoBehaviour {
-    [SerializeField] SolutionBase solution;
+    [SerializeField] Solution solution;
     GameObject contents;
 
     public void Open(GameObject contents) {

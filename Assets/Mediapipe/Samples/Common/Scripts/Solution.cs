@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 namespace Mediapipe.Unity {
-  public abstract class SolutionBase : MonoBehaviour {
+  public abstract class Solution : MonoBehaviour {
     protected Bootstrap bootstrap;
     protected bool isPaused;
 

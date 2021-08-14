@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 namespace Mediapipe.Unity.FaceDetection {
-  public class FaceDetectionSolution : SolutionBase {
+  public class FaceDetectionSolution : Solution {
     [SerializeField] UnityEngine.UI.RawImage screen;
     Coroutine coroutine;
 
