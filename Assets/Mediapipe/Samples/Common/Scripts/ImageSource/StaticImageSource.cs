@@ -8,25 +8,21 @@ namespace Mediapipe.Unity {
     [SerializeField] Texture[] availableSources;
     [SerializeField] ResolutionStruct[] defaultAvailableResolutions;
 
+    Texture2D outputTexture;
     Texture _image;
     Texture image {
       get { return _image; }
       set {
-        if (_image == value) {
-          return;
-        }
         _image = value;
         resolution = GetDefaultResolution();
-        var imageTexture = Texture2D.CreateExternalTexture(image.width, image.height, format, false, false, image.GetNativeTexturePtr());
-        outputTexture = new Texture2D((int)width, (int)height, format, false);
-        Graphics.ConvertTexture(imageTexture, outputTexture);
       }
     }
-    Texture2D outputTexture;
 
     public override SourceType type {
       get { return SourceType.Image; }
     }
+
+    public override double frameRate { get { return 0; } }
 
     public override string sourceName {
       get { return image != null ? image.name : null; }
@@ -46,7 +42,7 @@ namespace Mediapipe.Unity {
     }
 
     public override bool isPrepared {
-      get { return base.isPrepared && image != null; }
+      get { return base.isPrepared && outputTexture != null; }
     }
 
     void Start() {
@@ -64,9 +60,14 @@ namespace Mediapipe.Unity {
     }
 
     public override IEnumerator Play() {
-      yield return base.Play();
+      if (image == null) {
+        throw new InvalidOperationException("Image is not selected");
+      }
+      var imageTexture = Texture2D.CreateExternalTexture(image.width, image.height, textureFormat, false, false, image.GetNativeTexturePtr());
+      outputTexture = new Texture2D(textureWidth, textureHeight, textureFormat, false);
+      Graphics.ConvertTexture(imageTexture, outputTexture);
 
-      textureFramePool.ResizeTexture(outputTexture.width, outputTexture.height, format);
+      yield return base.Play();
     }
 
     protected override Texture2D GetCurrentTexture() {

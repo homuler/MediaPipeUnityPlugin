@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using UnityEngine.UI;
 
 namespace Mediapipe.Unity.UI {
@@ -9,14 +8,10 @@ namespace Mediapipe.Unity.UI {
     string _SourceTypePath = "Scroll View/Viewport/Contents/SourceType/Dropdown";
     string _SourcePath = "Scroll View/Viewport/Contents/Source/Dropdown";
     string _ResolutionPath = "Scroll View/Viewport/Contents/Resolution/Dropdown";
-    string _RotationPath = "Scroll View/Viewport/Contents/Rotation/Dropdown";
-    string _FlipPath = "Scroll View/Viewport/Contents/Flip/Toggle";
 
     Dropdown SourceTypeInput;
     Dropdown SourceInput;
     Dropdown ResolutionInput;
-    Dropdown RotationInput;
-    Toggle FlipInput;
 
     bool isChanged;
 
@@ -32,8 +27,6 @@ namespace Mediapipe.Unity.UI {
       InitializeSourceType();
       InitializeSource();
       InitializeResolution();
-      InitializeRotation();
-      InitializeFlip();
     }
 
     void InitializeSourceType() {
@@ -112,34 +105,6 @@ namespace Mediapipe.Unity.UI {
 
       ResolutionInput.onValueChanged.AddListener(delegate {
         imageSource.SelectResolution(ResolutionInput.value);
-        isChanged = true;
-      });
-    }
-
-    void InitializeRotation() {
-      RotationInput = gameObject.transform.Find(_RotationPath).gameObject.GetComponent<Dropdown>();
-      RotationInput.onValueChanged.RemoveAllListeners();
-
-      var imageSource = ImageSourceProvider.imageSource;
-      var currentRotation = imageSource.rotation;
-      var defaultValue = RotationInput.options.FindIndex(option => option.text == ((int)currentRotation).ToString());
-      RotationInput.value = defaultValue;
-
-      RotationInput.onValueChanged.AddListener(delegate {
-        imageSource.rotation = (ImageSource.Rotation)(90 * RotationInput.value);
-        isChanged = true;
-      });
-    }
-
-    void InitializeFlip() {
-      FlipInput = gameObject.transform.Find(_FlipPath).gameObject.GetComponent<Toggle>();
-      FlipInput.onValueChanged.RemoveAllListeners();
-
-      var imageSource = ImageSourceProvider.imageSource;
-      FlipInput.isOn = imageSource.isFlipped;
-
-      FlipInput.onValueChanged.AddListener(delegate {
-        imageSource.isFlipped = FlipInput.isOn;
         isChanged = true;
       });
     }

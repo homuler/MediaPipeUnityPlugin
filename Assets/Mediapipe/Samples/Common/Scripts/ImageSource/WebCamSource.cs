@@ -20,6 +20,7 @@ namespace Mediapipe.Unity {
 
     TextureFormat defaultWebCamFormat = TextureFormat.ARGB32;
 
+    Texture2D outputTexture;
     WebCamTexture _webCamTexture;
     WebCamTexture webCamTexture {
       get { return _webCamTexture; }
@@ -30,7 +31,9 @@ namespace Mediapipe.Unity {
         _webCamTexture = value;
       }
     }
-    Texture2D outputTexture;
+
+    public override int textureWidth { get { return webCamTexture == null ? 0 : webCamTexture.width; } }
+    public override int textureHeight { get { return webCamTexture == null ? 0 : webCamTexture.height; } }
 
     WebCamDevice? _webCamDevice;
     WebCamDevice? webCamDevice {
@@ -159,19 +162,20 @@ namespace Mediapipe.Unity {
     }
 
     public override IEnumerator Play() {
-      yield return new WaitUntil(() => isInitialized);
-
       if (!isPermitted) {
         throw new InvalidOperationException("Not permitted to access cameras");
       }
-      yield return base.Play();
-
+      if (webCamDevice == null) {
+        throw new InvalidOperationException("WebCamDevice is not selected");
+      }
       InitializeWebCamTexture();
       yield return WaitForWebCamTexture();
+      yield return new WaitUntil(() => isInitialized);
 
       // TODO: determine format at runtime
       outputTexture = new Texture2D(webCamTexture.width, webCamTexture.height, defaultWebCamFormat, false);
-      textureFramePool.ResizeTexture(webCamTexture.width, webCamTexture.height, format);
+
+      yield return base.Play();
     }
 
     public override IEnumerator Resume() {

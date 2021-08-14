@@ -6,27 +6,27 @@ namespace Mediapipe.Unity {
   public abstract class ImageSource : MonoBehaviour {
     [System.Serializable]
     public struct ResolutionStruct {
-      public uint width;
-      public uint height;
+      public int width;
+      public int height;
       public double frameRate;
 
-      public ResolutionStruct(uint width, uint height, double frameRate) {
+      public ResolutionStruct(int width, int height, double frameRate) {
         this.width = width;
         this.height = height;
         this.frameRate = frameRate;
       }
 
       public ResolutionStruct(Resolution resolution) {
-        this.width = (uint)resolution.width;
-        this.height = (uint)resolution.height;
+        this.width = resolution.width;
+        this.height = resolution.height;
         this.frameRate = resolution.refreshRate;
       }
 
       public Resolution ToResolution() {
         var resolution = new Resolution();
 
-        resolution.width = (int)width;
-        resolution.height = (int)height;
+        resolution.width = width;
+        resolution.height = height;
         resolution.refreshRate = (int)frameRate;
 
         return resolution;
@@ -38,13 +38,6 @@ namespace Mediapipe.Unity {
       }
     }
 
-    public enum Rotation {
-      Rotation0 = 0,
-      Rotation90 = 90,
-      Rotation180 = 180,
-      Rotation270 = 270,
-    }
-
     public enum SourceType {
       Camera = 0,
       Image = 1,
@@ -52,29 +45,39 @@ namespace Mediapipe.Unity {
     }
 
     protected TextureFramePool textureFramePool { get; private set; }
-    public ResolutionStruct resolution { get; protected set; }
-    public Rotation rotation = Rotation.Rotation0;
-    public bool isFlipped = false;
+
+    ResolutionStruct _resolution;
+    public virtual ResolutionStruct resolution {
+      get { return _resolution; }
+      protected set {
+        _resolution = value;
+
+        if (textureFramePool != null) {
+          textureFramePool.ResizeTexture(_resolution.width, _resolution.height);
+        }
+      }
+    }
 
     // TODO: make it selectable
-    TextureFormat _format = TextureFormat.RGBA32;
-    public TextureFormat format { get { return _format; } }
+    TextureFormat _textureFormat = TextureFormat.RGBA32;
+    public virtual TextureFormat textureFormat {
+      get { return _textureFormat; }
+      protected set {
+        _textureFormat = value;
 
-    public uint width {
-      get { return resolution.width; }
+        if (textureFramePool != null) {
+          textureFramePool.ResizeTexture(textureWidth, textureHeight, _textureFormat);
+        }
+      }
     }
 
-    public uint height {
-      get { return resolution.height; }
-    }
-
-    public double frameRate {
-      get { return resolution.frameRate; }
-    }
-
-    public float focalLengthPx {
-      get { return 2.0f; }
-    }
+    public virtual int textureWidth { get { return resolution.width; } }
+    public virtual int textureHeight { get { return resolution.height; } }
+    /// <remarks>
+    ///   If <see cref="type" /> does not support frame rate, it returns zero.
+    /// </remarks>
+    public virtual double frameRate { get { return resolution.frameRate; } }
+    public float focalLengthPx { get { return 2.0f; } } // TODO: calculate at runtime
 
     public abstract SourceType type { get; }
     public abstract string sourceName { get; }
@@ -82,8 +85,22 @@ namespace Mediapipe.Unity {
     public abstract ResolutionStruct[] availableResolutions { get; }
     public virtual bool isPrepared { get { return textureFramePool != null; } }
 
+    /// <summary>
+    ///   Choose the source from <see cref="sourceCandidateNames" />.
+    /// </summary>
+    /// <remarks>
+    ///   You need to call <see cref="Play" /> for the change to take effect.
+    /// </remarks>
+    /// <param name="sourceId">The index of <see cref="sourceCandidateNames" /></param>
     public abstract void SelectSource(int sourceId);
 
+    /// <summary>
+    ///   Choose the resolution from <see cref="availableResolutions" />.
+    /// </summary>
+    /// <remarks>
+    ///   You need to call <see cref="Play" /> for the change to take effect.
+    /// </remarks>
+    /// <param name="resolutionId">The index of <see cref="availableResolutions" /></param>
     public void SelectResolution(int resolutionId) {
       var resolutions = availableResolutions;
 
@@ -98,6 +115,7 @@ namespace Mediapipe.Unity {
       if (textureFramePool == null) {
         textureFramePool = gameObject.AddComponent<TextureFramePool>();
       }
+      textureFramePool.ResizeTexture(textureWidth, textureHeight, textureFormat);
       yield return null;
     }
 

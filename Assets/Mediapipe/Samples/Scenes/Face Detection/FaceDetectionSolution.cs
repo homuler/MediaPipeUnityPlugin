@@ -40,8 +40,8 @@ namespace Mediapipe.Unity.FaceDetection {
         yield break;
       }
 
-      screen.rectTransform.sizeDelta = new Vector2(imageSource.width, imageSource.height);
-      screen.texture = new Texture2D((int)imageSource.width, (int)imageSource.height, imageSource.format, false);
+      screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
+      screen.texture = new Texture2D(imageSource.textureWidth, imageSource.textureHeight, imageSource.textureFormat, false);
 
       while (true) {
         yield return new WaitWhile(() => isPaused);

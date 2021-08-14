@@ -8,16 +8,15 @@ namespace Mediapipe.Unity {
   public class VideoSource : ImageSource {
     [SerializeField] VideoClip[] availableSources;
 
+    Texture2D outputTexture;
     VideoClip _video;
     VideoClip video {
       get { return _video; }
       set {
         _video = value;
-        resolution = new ResolutionStruct(_video.width, _video.height, _video.frameRate);
-        outputTexture = new Texture2D((int)_video.width, (int)_video.height, format, false);
+        resolution = new ResolutionStruct((int)_video.width, (int)_video.height, _video.frameRate);
       }
     }
-    Texture2D outputTexture;
 
     VideoPlayer videoPlayer;
 
@@ -43,13 +42,13 @@ namespace Mediapipe.Unity {
         if (video == null) {
           return null;
         }
-        return new ResolutionStruct[] { new ResolutionStruct(video.width, video.height, video.frameRate) };
+        return new ResolutionStruct[] { new ResolutionStruct((int)video.width, (int)video.height, video.frameRate) };
       }
     }
 
     public bool isPaused { get { return videoPlayer == null ? false : videoPlayer.isPaused; } }
     public bool isPlaying { get { return videoPlayer == null ? false : videoPlayer.isPlaying; } }
-    public override bool isPrepared { get { return videoPlayer == null ? false : base.isPrepared && videoPlayer.isPrepared; } }
+    public override bool isPrepared { get { return (videoPlayer == null || outputTexture == null) ? false : base.isPrepared && videoPlayer.isPrepared; } }
 
     void Start() {
       if (availableSources != null && availableSources.Length > 0) {
@@ -69,12 +68,16 @@ namespace Mediapipe.Unity {
     }
 
     public override IEnumerator Play() {
-      yield return base.Play();
-      textureFramePool.ResizeTexture((int)video.width, (int)video.height, format);
-
+      if (video == null) {
+        throw new InvalidOperationException("Video is not selected");
+      }
       InitializeVideoPlayer();
-      yield return new WaitUntil(() => isPrepared);
+      outputTexture = new Texture2D((int)video.width, (int)video.height, textureFormat, false);
+
+      yield return new WaitUntil(() => videoPlayer.isPrepared);
       videoPlayer.Play();
+
+      yield return base.Play();
     }
 
     public override IEnumerator Resume() {
@@ -108,7 +111,9 @@ namespace Mediapipe.Unity {
     }
 
     protected override Texture2D GetCurrentTexture() {
-      Graphics.CopyTexture(videoPlayer.texture, outputTexture);
+      if (videoPlayer != null && outputTexture != null) {
+        Graphics.CopyTexture(videoPlayer.texture, outputTexture);
+      }
       return outputTexture;
     }
 
