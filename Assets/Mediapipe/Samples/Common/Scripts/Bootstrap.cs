@@ -1,4 +1,5 @@
 using System.Collections;
+using System.IO;
 using UnityEngine;
 
 namespace Mediapipe.Unity {
@@ -12,14 +13,25 @@ namespace Mediapipe.Unity {
     [SerializeField] ImageSource.SourceType defaultImageSource;
     [SerializeField] InferenceMode preferableInferenceMode;
     [SerializeField] AssetLoaderType assetLoaderType;
+    [SerializeField] bool enableGlog = true;
 
     public InferenceMode inferenceMode { get; private set; }
     public bool isFinished { get; private set; }
+    bool isGlogInitialized;
 
     IEnumerator Start() {
       // GlobalConfigManager must be initialized before loading MediaPipe libraries.
       Debug.Log("Setting environment variables...");
       GlobalConfigManager.SetEnvs();
+
+      if (enableGlog) {
+        var logDir = GlobalConfigManager.GlogLogDir;
+        if (!Directory.Exists(logDir)) {
+          Directory.CreateDirectory(logDir);
+        }
+        Glog.Initialize("MediaPipeUnityPlugin");
+        isGlogInitialized = true;
+      }
 
       Debug.Log("Initializing AssetLoader...");
       if (assetLoaderType == AssetLoaderType.AssetBundle) {
@@ -54,6 +66,12 @@ namespace Mediapipe.Unity {
       inferenceMode = InferenceMode.CPU;
 #endif
       inferenceMode = preferableInferenceMode;
+    }
+
+    void OnDestroy() {
+      if (isGlogInitialized) {
+        Glog.Shutdown();
+      }
     }
   }
 }

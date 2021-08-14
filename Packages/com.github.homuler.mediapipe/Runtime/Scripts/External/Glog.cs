@@ -1,5 +1,5 @@
 namespace Mediapipe {
-  public class Glog {
+  public static class Glog {
     public enum Severity : int {
       INFO = 0,
       WARNING = 1,
@@ -7,8 +7,8 @@ namespace Mediapipe {
       FATAL = 3,
     }
 
-    public static void Initialize(string name, string dir) {
-      UnsafeNativeMethods.google_InitGoogleLogging__PKc(name, dir).Assert();
+    public static void Initialize(string name) {
+      UnsafeNativeMethods.google_InitGoogleLogging__PKc(name).Assert();
     }
 
     public static void Shutdown() {

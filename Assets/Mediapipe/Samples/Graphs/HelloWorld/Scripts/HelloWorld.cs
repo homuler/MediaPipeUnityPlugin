@@ -21,7 +21,7 @@ public class HelloWorld : MonoBehaviour {
       Directory.CreateDirectory(logDir);
     }
 
-    Glog.Initialize(nameForGlog, logDir);
+    Glog.Initialize(nameForGlog);
   }
 
   void OnDestroy() {

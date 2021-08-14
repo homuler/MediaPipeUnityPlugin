@@ -6,7 +6,7 @@
 
 extern "C" {
 
-MP_CAPI(MpReturnCode) google_InitGoogleLogging__PKc(const char* name, const char* log_dir);
+MP_CAPI(MpReturnCode) google_InitGoogleLogging__PKc(const char* name);
 MP_CAPI(MpReturnCode) google_ShutdownGoogleLogging();
 
 }  // extern "C"
