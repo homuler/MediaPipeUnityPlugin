@@ -88,7 +88,7 @@ public class InstantMotionTrackingGraph : OfficialDemoGraph {
   }
 
   [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-  static IntPtr MatrixCallback(IntPtr packetPtr) {
+  static IntPtr MatrixCallback(IntPtr _graphPtr, IntPtr packetPtr) {
     try {
       using (var packet = new TimedModelMatrixProtoListPacket(packetPtr, false)) {
         var matrixProtoList = packet.Get();
