@@ -10,7 +10,7 @@ public class TextureFrame {
   public class ReleaseEvent : UnityEvent<TextureFrame> {}
 
   static InstanceCacheTable<Guid, TextureFrame> instanceCacheTable = new InstanceCacheTable<Guid, TextureFrame>(100);
-  static Dictionary<UInt64, Guid> nameTable = new Dictionary<UInt64, Guid>();
+  static Dictionary<UInt32, Guid> nameTable = new Dictionary<UInt32, Guid>();
 
   readonly Texture2D texture;
   IntPtr nativeTexturePtr = IntPtr.Zero;
@@ -61,8 +61,8 @@ public class TextureFrame {
     return nativeTexturePtr;
   }
 
-  public UInt64 GetTextureName() {
-    return (UInt64)GetNativeTexturePtr();
+  public UInt32 GetTextureName() {
+    return (UInt32)GetNativeTexturePtr();
   }
 
   public Guid GetInstanceID() {
@@ -97,7 +97,7 @@ public class TextureFrame {
   }
 
   [AOT.MonoPInvokeCallback(typeof(GlTextureBuffer.DeletionCallback))]
-  public static void OnReleaseTextureFrame(UInt64 textureName, IntPtr syncTokenPtr) {
+  public static void OnReleaseTextureFrame(UInt32 textureName, IntPtr syncTokenPtr) {
     var isIdFound = nameTable.TryGetValue(textureName, out var instanceId);
 
     if (!isIdFound) {

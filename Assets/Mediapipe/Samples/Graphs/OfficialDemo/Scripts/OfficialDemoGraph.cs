@@ -136,7 +136,7 @@ public class OfficialDemoGraph : DemoGraph {
   }
 
   [AOT.MonoPInvokeCallback(typeof(GlTextureBuffer.DeletionCallback))]
-  static void OnReleaseDestinationTexture(UInt64 name, IntPtr tokenPtr) {
+  static void OnReleaseDestinationTexture(UInt32 name, IntPtr tokenPtr) {
     // TODO: release outputPacket
     using (var token = new GlSyncPoint(tokenPtr)) {
       token.Wait();
