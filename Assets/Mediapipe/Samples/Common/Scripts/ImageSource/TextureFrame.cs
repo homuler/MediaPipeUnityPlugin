@@ -65,7 +65,7 @@ public class TextureFrame {
     return (UInt64)GetNativeTexturePtr();
   }
 
-  public Guid GetInstanceId() {
+  public Guid GetInstanceID() {
     return instanceId;
   }
 

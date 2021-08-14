@@ -69,7 +69,7 @@ namespace Mediapipe.Unity {
 
     void OnTextureFrameRelease(TextureFrame textureFrame) {
       lock (((ICollection)textureFramesInUse).SyncRoot) {
-        if (!textureFramesInUse.Remove(textureFrame.GetInstanceId())) {
+        if (!textureFramesInUse.Remove(textureFrame.GetInstanceID())) {
           // won't be run
           Debug.LogWarning("The released texture does not belong to the pool");
           return;
@@ -120,7 +120,7 @@ namespace Mediapipe.Unity {
       }
 
       lock(((ICollection)textureFramesInUse).SyncRoot) {
-        textureFramesInUse.Add(nextFrame.GetInstanceId(), nextFrame);
+        textureFramesInUse.Add(nextFrame.GetInstanceID(), nextFrame);
       }
 
       nextFrame.WaitUntilReleased();
