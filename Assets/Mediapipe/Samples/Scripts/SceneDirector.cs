@@ -59,9 +59,9 @@ public class SceneDirector : MonoBehaviour {
 #endif
 
 #if UNITY_EDITOR
-    AssetLoader.Provide(new LocalAssetManager());
+    AssetLoader.Provide(new Mediapipe.Unity.LocalResourceManager());
 #else
-    AssetLoader.Provide(new AssetBundleManager());
+    AssetLoader.Provide(new Mediapipe.Unity.AssetBundleResourceManager());
 #endif
   }
 

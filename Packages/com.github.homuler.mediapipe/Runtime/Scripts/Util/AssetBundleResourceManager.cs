@@ -3,10 +3,10 @@ using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Mediapipe {
-  public class AssetBundleManager : ResourceManager {
-    static string _CacheRootPath = Path.Combine(Application.persistentDataPath, "Cache");
-    static string _AssetBundlePath = Path.Combine(Application.streamingAssetsPath, "mediapipe");
+namespace Mediapipe.Unity {
+  public class AssetBundleResourceManager : ResourceManager {
+    static string _CacheRootPath;
+    static string _AssetBundlePath;
     AssetBundle _assetBundle;
 
     public override PathResolver pathResolver {
@@ -17,12 +17,13 @@ namespace Mediapipe {
       get { return GetResourceContents; }
     }
 
-    public AssetBundleManager() : base() {}
-
-    public AssetBundleManager(string CacheRootPath, string AssetBundlePath) : this() {
-      this.CacheRootPath = CacheRootPath;
-      this.AssetBundlePath = AssetBundlePath;
+    public AssetBundleResourceManager(string CacheRootPath, string AssetBundlePath) : base() {
+      // It's safe to update static members because at most one RsourceManager can be initialized.
+      _CacheRootPath = CacheRootPath;
+      _AssetBundlePath = AssetBundlePath;
     }
+
+    public AssetBundleResourceManager(string AssetBundlePath) : this(Path.Combine(Application.persistentDataPath, "Cache"), AssetBundlePath) {}
 
     public override bool IsPrepared(string name) {
       var path = GetCacheFilePathFor(name);
@@ -30,18 +31,8 @@ namespace Mediapipe {
       return File.Exists(path);
     }
 
-    public string CacheRootPath {
-      get { return _CacheRootPath; }
-      set { _CacheRootPath = value; }
-    }
-
-    public string AssetBundlePath {
-      get { return _AssetBundlePath; }
-      set {
-        assetBundle = null;
-        _AssetBundlePath = value;
-      }
-    }
+    public string CacheRootPath { get { return _CacheRootPath; } }
+    public string AssetBundlePath { get { return _AssetBundlePath; } }
 
     AssetBundle assetBundle {
       get { return _assetBundle; }

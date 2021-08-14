@@ -1,4 +1,3 @@
-using Mediapipe;
 using UnityEngine;
 
 namespace Mediapipe.Unity {
@@ -11,8 +10,8 @@ namespace Mediapipe.Unity {
 
     public static void PrepareAsset(string name, string uniqueKey, bool overwrite = false) {
       if (resourceManager == null) {
-        Debug.LogWarning("ResourceManager is not provided, so default LocalAssetManager will be used");
-        resourceManager = new LocalAssetManager();
+        Debug.LogWarning("ResourceManager is not provided, so default LocalResourceManager will be used");
+        resourceManager = new LocalResourceManager();
       }
       resourceManager.PrepareAsset(name, uniqueKey, overwrite);
     }

@@ -1,5 +1,3 @@
-using Mediapipe;
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -9,12 +7,6 @@ namespace Mediapipe.Unity {
     public enum AssetLoaderType {
       StreamingAssets,
       AssetBundle,
-    }
-
-    [System.Serializable]
-    public enum InferenceMode {
-      GPU,
-      CPU,
     }
 
     [SerializeField] ImageSource.SourceType defaultImageSource;
@@ -31,9 +23,13 @@ namespace Mediapipe.Unity {
 
       Debug.Log("Initializing AssetLoader...");
       if (assetLoaderType == AssetLoaderType.AssetBundle) {
-        AssetLoader.Provide(new AssetBundleManager());
+#if UNITY_EDITOR
+        AssetLoader.Provide(new LocalResourceManager());
+#else
+        AssetLoader.Provide(new AssetBundleResourceManager(Path.Combine(Application.streamingAssetsPath, "mediapipe")));
+#endif
       } else {
-        AssetLoader.Provide(new LocalAssetManager());
+        AssetLoader.Provide(new StreamingAssetsResourceManager());
       }
 
       DecideInferenceMode();

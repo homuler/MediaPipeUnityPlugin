@@ -3,9 +3,9 @@ using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Mediapipe {
-  public class LocalAssetManager : ResourceManager {
-    readonly static string ResourceRootPath = Path.Combine(Application.dataPath, "..", "Packages", "com.github.homuler.mediapipe", "Runtime", "Resources");
+namespace Mediapipe.Unity {
+  public class FileSystemResourceManager : ResourceManager {
+    static string _RootPath;
 
     public override PathResolver pathResolver {
       get { return PathToResourceAsFile; }
@@ -15,15 +15,18 @@ namespace Mediapipe {
       get { return GetResourceContents; }
     }
 
+    public FileSystemResourceManager(string RootPath) : base() {
+      // It's safe to update static members because at most one RsourceManager can be initialized.
+      _RootPath = RootPath;
+    }
+
     public override bool IsPrepared(string name) {
       var path = GetCacheFilePathFor(name);
 
       return File.Exists(path);
     }
 
-    public string RootPath {
-      get { return ResourceRootPath; }
-    }
+    public string RootPath { get { return _RootPath; } }
 
     public override void PrepareAsset(string name, string uniqueKey, bool overwrite = true) {
       var sourceFilePath = GetCacheFilePathFor(name);
@@ -102,7 +105,7 @@ namespace Mediapipe {
     }
 
     static string GetCacheFilePathFor(string assetName) {
-      return Path.Combine(ResourceRootPath, assetName);
+      return Path.Combine(_RootPath, assetName);
     }
   }
 }
