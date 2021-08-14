@@ -1,13 +1,16 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Mediapipe.Unity.FaceDetection {
   public class FaceDetectionSolution : Solution {
-    [SerializeField] UnityEngine.UI.RawImage screen;
+    [SerializeField] RawImage screen;
+
     Coroutine coroutine;
 
     public override void Play() {
       base.Play();
+      gameObject.GetComponent<FaceDetectionGraph>().Initialize();
 
       if (coroutine != null) {
         StopCoroutine(coroutine);
@@ -28,6 +31,7 @@ namespace Mediapipe.Unity.FaceDetection {
     public override void Stop() {
       base.Stop();
       StopCoroutine(coroutine);
+      gameObject.GetComponent<FaceDetectionGraph>().Stop();
     }
 
     IEnumerator Run() {
@@ -43,6 +47,9 @@ namespace Mediapipe.Unity.FaceDetection {
       screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
       screen.texture = new Texture2D(imageSource.textureWidth, imageSource.textureHeight, imageSource.textureFormat, false);
 
+      var graphRunner = gameObject.GetComponent<FaceDetectionGraph>();
+      graphRunner.StartRun();
+
       while (true) {
         yield return new WaitWhile(() => isPaused);
 
@@ -51,9 +58,11 @@ namespace Mediapipe.Unity.FaceDetection {
         var textureFrame = textureFrameRequest.result;
 
         textureFrame.CopyTexture(screen.texture);
-        yield return new WaitForEndOfFrame();
+        graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
+        var detections = graphRunner.FetchNextDetections();
+        Debug.Log(detections);
 
-        textureFrame.Release();
+        yield return new WaitForEndOfFrame();
       }
     }
   }

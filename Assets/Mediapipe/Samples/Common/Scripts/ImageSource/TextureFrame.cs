@@ -91,6 +91,7 @@ public class TextureFrame {
     return new GpuBuffer(glTextureBuffer);
   }
 
+  // TODO: stop invoking OnRelease when it's already released
   public void Release(GlSyncPoint token = null) {
     if (glSyncToken != null) {
       glSyncToken.Dispose();

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Mediapipe.Unity {
   public class Bootstrap : MonoBehaviour {
@@ -56,6 +57,9 @@ namespace Mediapipe.Unity {
 
       DontDestroyOnLoad(this.gameObject);
       isFinished = true;
+
+      var sceneLoadReq = SceneManager.LoadSceneAsync(1);
+      yield return new WaitUntil(() => sceneLoadReq.isDone);
     }
 
     void DecideInferenceMode() {
@@ -68,7 +72,9 @@ namespace Mediapipe.Unity {
       inferenceMode = preferableInferenceMode;
     }
 
-    void OnDestroy() {
+    void OnApplicationQuit() {
+      GpuManager.Shutdown();
+
       if (isGlogInitialized) {
         Glog.Shutdown();
       }

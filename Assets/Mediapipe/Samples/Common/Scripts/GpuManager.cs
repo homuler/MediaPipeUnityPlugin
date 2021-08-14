@@ -1,4 +1,3 @@
-using Mediapipe;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -62,6 +61,25 @@ namespace Mediapipe.Unity {
         glCalculatorHelper.InitializeForTest(gpuResources);
 
         isInitialized = true;
+      }
+    }
+
+    /// <summary>
+    ///   Dispose GPU resources.
+    /// </summary>
+    /// <remarks>
+    ///   This has to be called once GPU resources are used by CalculatorGraph.
+    ///   Otherwise, UnityEditor will freeze.
+    /// </remarks>
+    public static void Shutdown() {
+      if (gpuResources != null) {
+        gpuResources.Dispose();
+        gpuResources = null;
+      }
+
+      if (glCalculatorHelper != null) {
+        glCalculatorHelper.Dispose();
+        glCalculatorHelper = null;
       }
     }
 

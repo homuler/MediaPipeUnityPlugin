@@ -76,14 +76,12 @@ namespace Mediapipe.Unity {
       var status = InitializeCalculatorGraph();
       instanceCacheTable.Add(calculatorGraph.mpPtr, this);
       stopwatch = new Stopwatch();
+      stopwatch.Start();
 
       return status;
     }
 
-    public virtual Status StartRun() {
-      stopwatch.Start();
-      return calculatorGraph.StartRun();
-    }
+    public abstract Status StartRun();
 
     public virtual void Stop() {
       if (calculatorGraph == null) { return; }

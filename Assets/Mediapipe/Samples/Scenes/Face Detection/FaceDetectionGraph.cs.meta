@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 7bda1903daf198151820ccb68874ca67
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - cpuConfig: {fileID: 4900000, guid: d0012308a4a6db23394e3599fc15e82c, type: 3}
+  - gpuConfig: {fileID: 4900000, guid: be38c22dedc4a1b02964b6d091e6bddb, type: 3}
+  - openGlEsConfig: {fileID: 4900000, guid: 6070cea8cbd80191199591327316f26c, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
