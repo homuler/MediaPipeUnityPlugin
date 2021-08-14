@@ -21,6 +21,19 @@ public class TextureFrame {
   public int height { get { return texture.height; } }
   public TextureFormat format { get { return texture.format; } }
 
+  ImageFormat.Format _format = ImageFormat.Format.UNKNOWN;
+  public ImageFormat.Format imageFormat {
+    get {
+      if (_format == ImageFormat.Format.UNKNOWN) {
+        _format = format.ToImageFormat();
+      }
+      return _format;
+    }
+  }
+
+  // TODO: determine at runtime
+  public GpuBufferFormat gpuBufferformat { get { return GpuBufferFormat.kBGRA32; } }
+
   /// <summary>
   ///   The event that will be invoked when the TextureFrame is released.
   /// </summary>
@@ -69,10 +82,13 @@ public class TextureFrame {
     return instanceId;
   }
 
-  public GpuBufferFormat gpuBufferformat {
-    get {
-      return GpuBufferFormat.kBGRA32;
-    }
+  public ImageFrame BuildImageFrame() {
+    return new ImageFrame(imageFormat, width, height, 4 * width, GetRawTextureData<byte>());
+  }
+
+  public GpuBuffer BuildGpuBuffer(GlContext glContext) {
+    var glTextureBuffer = new GlTextureBuffer(GetTextureName(), width, height, gpuBufferformat, OnReleaseTextureFrame, glContext);
+    return new GpuBuffer(glTextureBuffer);
   }
 
   public void Release(GlSyncPoint token = null) {
