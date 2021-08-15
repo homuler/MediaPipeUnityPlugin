@@ -63,9 +63,8 @@ namespace Mediapipe.Unity {
       if (image == null) {
         throw new InvalidOperationException("Image is not selected");
       }
-      var imageTexture = Texture2D.CreateExternalTexture(image.width, image.height, textureFormat, false, false, image.GetNativeTexturePtr());
       outputTexture = new Texture2D(textureWidth, textureHeight, textureFormat, false);
-      Graphics.ConvertTexture(imageTexture, outputTexture);
+      Graphics.ConvertTexture(image, outputTexture);
 
       yield return base.Play();
     }
