@@ -201,7 +201,7 @@ class BuildCommand(Command):
     if self.linkopt is None or len(self.linkopt) == 0:
       return []
 
-    return ['--linkopt="{}"'.format(' '.join(self.linkopt))]
+    return ['--linkopt={}'.format(l) for l in self.linkopt]
 
   def _build_opencv_switch(self):
     commands = [f'--@opencv//:switch={self.opencv}']
