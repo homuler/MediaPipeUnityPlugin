@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Mediapipe.Unity {
 
   public class TextureFramePool : MonoBehaviour {
-    [SerializeField] readonly int poolSize = 10;
+    [SerializeField] int poolSize = 10;
 
     readonly object formatLock = new object();
     int textureWidth = 0;
@@ -65,6 +65,10 @@ namespace Mediapipe.Unity {
 
     public WaitForResult<TextureFrame> WaitForNextTextureFrame(Action<TextureFrame> callback) {
       return new WaitForResult<TextureFrame>(this, YieldTextureFrame(callback));
+    }
+
+    public WaitForResult<TextureFrame> WaitForNextTextureFrame() {
+      return new WaitForResult<TextureFrame>(this, YieldTextureFrame((TextureFrame textureFrame) => { /* do nothing */ }));
     }
 
     void OnTextureFrameRelease(TextureFrame textureFrame) {

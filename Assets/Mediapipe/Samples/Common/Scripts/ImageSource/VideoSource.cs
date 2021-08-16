@@ -8,7 +8,6 @@ namespace Mediapipe.Unity {
   public class VideoSource : ImageSource {
     [SerializeField] VideoClip[] availableSources;
 
-    Texture2D outputTexture;
     VideoClip _video;
     VideoClip video {
       get { return _video; }
@@ -46,9 +45,8 @@ namespace Mediapipe.Unity {
       }
     }
 
-    public bool isPaused { get { return videoPlayer == null ? false : videoPlayer.isPaused; } }
-    public bool isPlaying { get { return videoPlayer == null ? false : videoPlayer.isPlaying; } }
-    public override bool isPrepared { get { return (videoPlayer == null || outputTexture == null) ? false : base.isPrepared && videoPlayer.isPrepared; } }
+    public override bool isPlaying { get { return videoPlayer == null ? false : videoPlayer.isPlaying; } }
+    public override bool isPrepared { get { return videoPlayer == null ? false : videoPlayer.isPrepared; } }
 
     void Start() {
       if (availableSources != null && availableSources.Length > 0) {
@@ -71,58 +69,44 @@ namespace Mediapipe.Unity {
       if (video == null) {
         throw new InvalidOperationException("Video is not selected");
       }
-      InitializeVideoPlayer();
-      outputTexture = new Texture2D((int)video.width, (int)video.height, textureFormat, false);
-
-      yield return new WaitUntil(() => videoPlayer.isPrepared);
-      videoPlayer.Play();
-
-      yield return base.Play();
-    }
-
-    public override IEnumerator Resume() {
-      if (!isPrepared) {
-        throw new InvalidOperationException("VideoPlayer is not prepared yet");
-      }
-      if (isPlaying) {
-        throw new InvalidOperationException("VideoPlayer is already playing");
-      }
-      yield return base.Resume();
-      videoPlayer.Play();
-      yield return new WaitUntil(() => isPrepared);
-    }
-
-    public override void Pause() {
-      if (!isPlaying) {
-        throw new InvalidOperationException("VideoPlayer is not playing videos");
-      }
-      base.Pause();
-      videoPlayer.Pause();
-    }
-
-    public override void Stop() {
-      if (!isPlaying) {
-        throw new InvalidOperationException("VideoPlayer is not playing videos");
-      }
-      base.Stop();
-      videoPlayer.Stop();
-      GameObject.Destroy(gameObject.GetComponent<VideoPlayer>());
-      videoPlayer = null;
-    }
-
-    protected override Texture2D GetCurrentTexture() {
-      if (videoPlayer != null && outputTexture != null) {
-        Graphics.CopyTexture(videoPlayer.texture, outputTexture);
-      }
-      return outputTexture;
-    }
-
-    void InitializeVideoPlayer() {
       videoPlayer = gameObject.AddComponent<VideoPlayer>();
       videoPlayer.renderMode = VideoRenderMode.APIOnly;
       videoPlayer.isLooping = true;
       videoPlayer.clip = video;
       videoPlayer.Prepare();
+
+      yield return new WaitUntil(() => videoPlayer.isPrepared);
+      videoPlayer.Play();
+    }
+
+    public override IEnumerator Resume() {
+      if (!isPrepared) {
+        throw new InvalidOperationException("VideoPlayer is not prepared");
+      }
+      if (!isPlaying) {
+        videoPlayer.Play();
+      }
+      yield return null;
+    }
+
+    public override void Pause() {
+      if (!isPlaying) {
+        return;
+      }
+      videoPlayer.Pause();
+    }
+
+    public override void Stop() {
+      if (videoPlayer == null) {
+        return;
+      }
+      videoPlayer.Stop();
+      GameObject.Destroy(gameObject.GetComponent<VideoPlayer>());
+      videoPlayer = null;
+    }
+
+    public override Texture GetCurrentTexture() {
+      return videoPlayer != null ? videoPlayer.texture : null;
     }
   }
 }

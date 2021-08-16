@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 
 namespace Mediapipe.Unity {
   public abstract class ImageSource : MonoBehaviour {
@@ -44,33 +45,22 @@ namespace Mediapipe.Unity {
       Video = 2,
     }
 
-    protected TextureFramePool textureFramePool { get; private set; }
+    public ResolutionStruct resolution { get; protected set; }
 
-    ResolutionStruct _resolution;
-    public virtual ResolutionStruct resolution {
-      get { return _resolution; }
-      protected set {
-        _resolution = value;
-
-        if (textureFramePool != null) {
-          textureFramePool.ResizeTexture(_resolution.width, _resolution.height);
+    /// <remarks>
+    ///   To call this method, the image source must be prepared.
+    /// </remarks>
+    /// <returns>
+    ///   <see cref="TextureFormat" /> that is compatible with the current texture.
+    /// </returns>
+    public TextureFormat textureFormat {
+      get {
+        if (!isPrepared) {
+          throw new InvalidOperationException("ImageSource is not prepared");
         }
+        return TextureFormatFor(GetCurrentTexture());
       }
     }
-
-    // TODO: make it selectable
-    TextureFormat _textureFormat = TextureFormat.RGBA32;
-    public virtual TextureFormat textureFormat {
-      get { return _textureFormat; }
-      protected set {
-        _textureFormat = value;
-
-        if (textureFramePool != null) {
-          textureFramePool.ResizeTexture(textureWidth, textureHeight, _textureFormat);
-        }
-      }
-    }
-
     public virtual int textureWidth { get { return resolution.width; } }
     public virtual int textureHeight { get { return resolution.height; } }
     /// <remarks>
@@ -83,7 +73,16 @@ namespace Mediapipe.Unity {
     public abstract string sourceName { get; }
     public abstract string[] sourceCandidateNames { get; }
     public abstract ResolutionStruct[] availableResolutions { get; }
-    public virtual bool isPrepared { get { return textureFramePool != null; } }
+
+    /// <remarks>
+    ///   Once <see cref="Play" /> finishes successfully, it will become true.
+    /// </remarks>
+    /// <returns>
+    ///   Returns if the image source is prepared.
+    /// </returns>
+    public abstract bool isPrepared { get; }
+
+    public abstract bool isPlaying { get; }
 
     /// <summary>
     ///   Choose the source from <see cref="sourceCandidateNames" />.
@@ -111,33 +110,49 @@ namespace Mediapipe.Unity {
       resolution = resolutions[resolutionId];
     }
 
-    public virtual IEnumerator Play() {
-      if (textureFramePool == null) {
-        textureFramePool = gameObject.AddComponent<TextureFramePool>();
-      }
-      textureFramePool.ResizeTexture(textureWidth, textureHeight, textureFormat);
-      yield return null;
+    /// <summary>
+    ///   Prepare image source.
+    ///   If <see cref="isPlaying" /> is true, it will reset the image source.
+    /// </summary>
+    /// <remarks>
+    ///   When it finishes successfully, <see cref="isPrepared" /> will return true.
+    /// </remarks>
+    /// <exception cref="InvalidOperation" />
+    public abstract IEnumerator Play();
+
+    /// <summary>
+    ///   Resume image source.
+    ///   If <see cref="isPlaying" /> is true, it will do nothing.
+    /// </summary>
+    /// <exception cref="InvalidOperation">
+    ///   The image source has not been played.
+    /// </exception>
+    public abstract IEnumerator Resume();
+
+    /// <summary>
+    ///   Pause image source.
+    ///   If <see cref="isPlaying" /> is false, it will do nothing.
+    /// </summary>
+    public abstract void Pause();
+
+    /// <summary>
+    ///   Stop image source.
+    /// </summary>
+    /// <remarks>
+    ///   When it finishes successfully, <see cref="isPrepared" /> will return false.
+    /// </remarks>
+    public abstract void Stop();
+
+    /// <remarks>
+    ///   To call this method, the image source must be prepared.
+    /// </remarks>
+    /// <returns>
+    ///   <see cref="Texture" /> that contains the current image.
+    /// </returns>
+    public abstract Texture GetCurrentTexture();
+
+    protected static TextureFormat TextureFormatFor(Texture texture) {
+      return GraphicsFormatUtility.GetTextureFormat(texture.graphicsFormat);
     }
-
-    public virtual IEnumerator Resume() {
-      yield return null;
-    }
-
-    public virtual void Pause() {}
-
-    public virtual void Stop() {
-      if (textureFramePool != null) {
-        GameObject.Destroy(gameObject.GetComponent<TextureFramePool>());
-        textureFramePool = null;
-      }
-    }
-
-    public WaitForResult<TextureFrame> WaitForNextTextureFrame() {
-      return textureFramePool.WaitForNextTextureFrame((TextureFrame textureFrame) => {
-        textureFrame.CopyTextureFrom(GetCurrentTexture());
-      });
-    }
-
-    protected abstract Texture2D GetCurrentTexture();
   }
 }

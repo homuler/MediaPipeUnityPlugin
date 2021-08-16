@@ -952,6 +952,7 @@ GameObject:
   - component: {fileID: 1064799461}
   - component: {fileID: 1064799460}
   - component: {fileID: 1064799462}
+  - component: {fileID: 1064799463}
   m_Layer: 0
   m_Name: Solution
   m_TagString: Untagged
@@ -972,6 +973,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   screen: {fileID: 1167413354}
+  graphRunner: {fileID: 1064799462}
+  textureFramePool: {fileID: 1064799463}
 --- !u!4 &1064799461
 Transform:
   m_ObjectHideFlags: 0
@@ -1005,6 +1008,19 @@ MonoBehaviour:
   OnFacesDetected:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1064799463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064799459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5da564da19cb6b7d8e4f97f269edc5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  poolSize: 10
 --- !u!1 &1167413352
 GameObject:
   m_ObjectHideFlags: 0

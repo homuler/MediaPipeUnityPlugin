@@ -5,21 +5,20 @@ namespace Mediapipe.Unity {
     public static ImageSource imageSource { get; private set; }
 
     public static void SwitchSource(ImageSource.SourceType sourceType) {
-      var obj = GameObject.Find(GetSourceObjectName(sourceType));
+      var obj = GameObject.Find("Image Source");
 
-      imageSource = obj.GetComponent<ImageSource>();
-    }
-
-    static string GetSourceObjectName(ImageSource.SourceType sourceType) {
       switch (sourceType) {
+        case ImageSource.SourceType.Camera: {
+          imageSource = obj.GetComponent<WebCamSource>();
+          break;
+        }
         case ImageSource.SourceType.Image: {
-          return "Static Image Source";
+          imageSource = obj.GetComponent<StaticImageSource>();
+          break;
         }
         case ImageSource.SourceType.Video: {
-          return "Video Source";
-        }
-        default: {
-          return "WebCam Source";
+          imageSource = obj.GetComponent<VideoSource>();
+          break;
         }
       }
     }

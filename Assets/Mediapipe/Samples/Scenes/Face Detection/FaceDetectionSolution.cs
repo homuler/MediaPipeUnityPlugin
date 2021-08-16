@@ -5,12 +5,14 @@ using UnityEngine.UI;
 namespace Mediapipe.Unity.FaceDetection {
   public class FaceDetectionSolution : Solution {
     [SerializeField] RawImage screen;
+    [SerializeField] FaceDetectionGraph graphRunner;
+    [SerializeField] TextureFramePool textureFramePool;
 
     Coroutine coroutine;
 
     public override void Play() {
       base.Play();
-      gameObject.GetComponent<FaceDetectionGraph>().Initialize();
+      graphRunner.Initialize();
 
       if (coroutine != null) {
         StopCoroutine(coroutine);
@@ -31,7 +33,8 @@ namespace Mediapipe.Unity.FaceDetection {
     public override void Stop() {
       base.Stop();
       StopCoroutine(coroutine);
-      gameObject.GetComponent<FaceDetectionGraph>().Stop();
+      ImageSourceProvider.imageSource.Stop();
+      graphRunner.Stop();
     }
 
     IEnumerator Run() {
@@ -50,17 +53,41 @@ namespace Mediapipe.Unity.FaceDetection {
       var graphRunner = gameObject.GetComponent<FaceDetectionGraph>();
       graphRunner.StartRun();
 
+      if (graphRunner.configType == GraphRunner.ConfigType.OpenGLES) {
+        textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.BGRA32);
+      } else {
+        textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
+      }
+
       while (true) {
         yield return new WaitWhile(() => isPaused);
 
-        var textureFrameRequest = imageSource.WaitForNextTextureFrame();
+        var textureFrameRequest = textureFramePool.WaitForNextTextureFrame();
         yield return textureFrameRequest;
         var textureFrame = textureFrameRequest.result;
 
-        textureFrame.CopyTexture(screen.texture);
+        var currentTexture = imageSource.GetCurrentTexture();
+        Debug.Log(currentTexture.GetType());
+
+        if (graphRunner.configType == GraphRunner.ConfigType.OpenGLES) {
+          textureFrame.ReadTextureFromOnGPU(currentTexture);
+        } else {
+          var textureType = currentTexture.GetType();
+
+          if (textureType == typeof(WebCamTexture)) {
+            textureFrame.ReadTextureFromOnCPU((WebCamTexture)currentTexture);
+          } else if (textureType == typeof(Texture2D)) {
+            textureFrame.ReadTextureFromOnCPU((Texture2D)currentTexture);
+          } else {
+            textureFrame.ReadTextureFromOnCPU(currentTexture);
+          }
+        }
+
         graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
+        Graphics.CopyTexture(currentTexture, screen.texture);
+
         var detections = graphRunner.FetchNextDetections();
-        Debug.Log(detections);
+        Debug.Log(detections.Count);
 
         yield return new WaitForEndOfFrame();
       }

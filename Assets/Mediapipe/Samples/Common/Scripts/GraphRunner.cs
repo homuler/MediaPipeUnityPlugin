@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Mediapipe.Unity {
   public abstract class GraphRunner : MonoBehaviour {
     public enum ConfigType {
+      None,
       CPU,
       GPU,
       OpenGLES,
@@ -16,16 +18,20 @@ namespace Mediapipe.Unity {
     [SerializeField] TextAsset gpuConfig = null;
     [SerializeField] TextAsset openGlEsConfig = null;
 
-    static readonly InstanceCacheTable<IntPtr, GraphRunner> instanceCacheTable = new InstanceCacheTable<IntPtr, GraphRunner>(10);
+    static readonly InstanceCacheTable<int, GraphRunner> instanceCacheTable = new InstanceCacheTable<int, GraphRunner>(5);
+    static readonly Dictionary<IntPtr, int> nameTable = new Dictionary<IntPtr, int>();
 
-    public InferenceMode inferenceMode { get; private set; }
+    public InferenceMode inferenceMode {
+      get { return configType == ConfigType.CPU ? InferenceMode.CPU : InferenceMode.GPU; }
+    }
     public ConfigType configType { get; private set; }
     public TextAsset config {
       get {
         switch (configType) {
           case ConfigType.CPU: return cpuConfig;
+          case ConfigType.GPU: return gpuConfig;
           case ConfigType.OpenGLES: return openGlEsConfig;
-          default: return gpuConfig;
+          default: return null;
         }
       }
     }
@@ -41,28 +47,16 @@ namespace Mediapipe.Unity {
 #endif
 
     protected virtual void Start() {
-      inferenceMode = GpuManager.isInitialized ? InferenceMode.GPU : InferenceMode.CPU;
-      Debug.Log($"Inference mode: {inferenceMode}");
-
-      if (inferenceMode == InferenceMode.CPU) {
-        configType = ConfigType.CPU;
-#if UNITY_ANDROID
-      } else if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.OpenGLES3) {
-        configType = ConfigType.OpenGLES;
-#endif
-      } else {
-        configType = ConfigType.GPU;
-      }
-      Debug.Log($"Config type: {configType}");
-
       Debug.Log($"Loading dependent assets...");
       PrepareDependentAssets();
+      instanceCacheTable.Add(GetInstanceID(), this);
     }
 
     protected virtual void OnDestroy() {
       Stop();
 
       if (calculatorGraph != null) {
+        nameTable.Remove(calculatorGraph.mpPtr);
         calculatorGraph.Dispose();
         calculatorGraph = null;
       }
@@ -73,8 +67,15 @@ namespace Mediapipe.Unity {
     }
 
     public virtual Status Initialize() {
+      configType = DetectConfigType();
+      Debug.Log($"Config Type: {configType}");
+
+      if (configType == ConfigType.None) {
+        return Status.FailedPrecondition("Failed to detect config. Check if config is set to GraphRunner");
+      }
+
       var status = InitializeCalculatorGraph();
-      instanceCacheTable.Add(calculatorGraph.mpPtr, this);
+      nameTable.Add(calculatorGraph.mpPtr, GetInstanceID());
       stopwatch = new Stopwatch();
       stopwatch.Start();
 
@@ -150,7 +151,13 @@ namespace Mediapipe.Unity {
     }
 
     protected static bool TryGetGraphRunner(IntPtr graphPtr, out GraphRunner graphRunner) {
-      return instanceCacheTable.TryGetValue(graphPtr, out graphRunner);
+      var isInstanceIdFound = nameTable.TryGetValue(graphPtr, out var instanceId);
+
+      if (isInstanceIdFound) {
+        return instanceCacheTable.TryGetValue(instanceId, out graphRunner);
+      }
+      graphRunner = null;
+      return false;
     }
 
     protected Timestamp GetCurrentTimestamp() {
@@ -169,6 +176,21 @@ namespace Mediapipe.Unity {
       }
 
       return calculatorGraph.SetGpuResources(GpuManager.gpuResources);
+    }
+
+    protected virtual ConfigType DetectConfigType() {
+      if (GpuManager.isInitialized) {
+        if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES3 && openGlEsConfig != null) {
+          return ConfigType.OpenGLES;
+        }
+        if (gpuConfig != null) {
+          return ConfigType.GPU;
+        }
+      }
+      if (cpuConfig != null) {
+        return ConfigType.CPU;
+      }
+      return ConfigType.None;
     }
 
     protected abstract void PrepareDependentAssets();

@@ -41,8 +41,11 @@ namespace Mediapipe.Unity {
       get { return defaultAvailableResolutions; }
     }
 
-    public override bool isPrepared {
-      get { return base.isPrepared && outputTexture != null; }
+    public override bool isPrepared { get { return outputTexture != null; } }
+
+    bool _isPlaying = false;
+    public override bool isPlaying {
+      get { return _isPlaying; }
     }
 
     void Start() {
@@ -63,13 +66,34 @@ namespace Mediapipe.Unity {
       if (image == null) {
         throw new InvalidOperationException("Image is not selected");
       }
-      outputTexture = new Texture2D(textureWidth, textureHeight, textureFormat, false);
+      if (isPlaying) {
+        yield break;
+      }
+      outputTexture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBA32, false);
       Graphics.ConvertTexture(image, outputTexture);
+      _isPlaying = true;
 
-      yield return base.Play();
+      yield return null;
     }
 
-    protected override Texture2D GetCurrentTexture() {
+    public override IEnumerator Resume() {
+      if (!isPrepared) {
+        throw new InvalidOperationException("Image is not prepared");
+      }
+      _isPlaying = true;
+
+      yield return null;
+    }
+
+    public override void Pause() {
+      _isPlaying = false;
+    }
+    public override void Stop() {
+      _isPlaying = false;
+      outputTexture = null;
+    }
+
+    public override Texture GetCurrentTexture() {
       return outputTexture;
     }
 
