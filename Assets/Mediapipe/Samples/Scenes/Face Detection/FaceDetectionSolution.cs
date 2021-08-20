@@ -5,6 +5,7 @@ using UnityEngine.UI;
 namespace Mediapipe.Unity.FaceDetection {
   public class FaceDetectionSolution : Solution {
     [SerializeField] RawImage screen;
+    [SerializeField] DetectionListAnnotation annotation;
     [SerializeField] FaceDetectionGraph graphRunner;
     [SerializeField] TextureFramePool textureFramePool;
 
@@ -48,14 +49,16 @@ namespace Mediapipe.Unity.FaceDetection {
       }
 
       screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
-      screen.texture = new Texture2D(imageSource.textureWidth, imageSource.textureHeight, imageSource.textureFormat, false);
+      screen.texture = imageSource.GetCurrentTexture(); // new Texture2D(imageSource.textureWidth, imageSource.textureHeight, imageSource.textureFormat, false);
 
       var graphRunner = gameObject.GetComponent<FaceDetectionGraph>();
       graphRunner.StartRun();
 
       if (graphRunner.configType == GraphRunner.ConfigType.OpenGLES) {
+        // Use BGRA32 when the input packet is GpuBuffer
         textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.BGRA32);
       } else {
+        // Use RGBA32 when the input packet is ImageFrame
         textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
       }
 
@@ -67,8 +70,8 @@ namespace Mediapipe.Unity.FaceDetection {
         var textureFrame = textureFrameRequest.result;
 
         var currentTexture = imageSource.GetCurrentTexture();
-        Debug.Log(currentTexture.GetType());
 
+        // Copy currentTexture to textureFrame's texture
         if (graphRunner.configType == GraphRunner.ConfigType.OpenGLES) {
           textureFrame.ReadTextureFromOnGPU(currentTexture);
         } else {
@@ -84,10 +87,11 @@ namespace Mediapipe.Unity.FaceDetection {
         }
 
         graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
-        Graphics.CopyTexture(currentTexture, screen.texture);
+        // Graphics.CopyTexture(currentTexture, screen.texture);
 
         var detections = graphRunner.FetchNextDetections();
-        Debug.Log(detections.Count);
+        annotation.SetTarget(detections);
+//         Debug.Log(detections.Count);
 
         yield return new WaitForEndOfFrame();
       }
