@@ -31,6 +31,7 @@ namespace Mediapipe.Unity {
 
     public override int textureWidth { get { return !isPrepared ? 0 : webCamTexture.width; } }
     public override int textureHeight { get { return !isPrepared ? 0 : webCamTexture.height; } }
+    public override bool isMirrored { get { return !isPrepared ? false : webCamTexture.videoVerticallyMirrored; } }
 
     WebCamDevice? _webCamDevice;
     WebCamDevice? webCamDevice {

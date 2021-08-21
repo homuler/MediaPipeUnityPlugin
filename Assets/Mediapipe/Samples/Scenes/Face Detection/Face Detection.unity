@@ -973,7 +973,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   screen: {fileID: 1167413354}
-  annotation: {fileID: 1551576305}
+  annotationController: {fileID: 1551576305}
   graphRunner: {fileID: 1064799462}
   textureFramePool: {fileID: 1064799463}
 --- !u!4 &1064799461
@@ -1299,14 +1299,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1551576301}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d433cdb024dfd584696eeb11efb71102, type: 3}
+  m_Script: {fileID: 11500000, guid: 8741257e98d0a1560b37e577decc0e2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rootRect: {fileID: 1551576302}
-  detectionAnnotationPrefab: {fileID: 5404176935574894484, guid: 9e4308c3e97d26a388364cbe0ea8bfb4,
+  annotationPrefab: {fileID: 6320745076577806712, guid: 26114bc9cccb92454a468ea4d41f400a,
     type: 3}
-  lineWidth: 0.8
-  threshold: 0
 --- !u!1001 &1585182918
 PrefabInstance:
   m_ObjectHideFlags: 0

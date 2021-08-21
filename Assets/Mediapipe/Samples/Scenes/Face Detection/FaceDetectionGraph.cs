@@ -20,19 +20,19 @@ namespace Mediapipe.Unity.FaceDetection {
     OutputStreamPoller<bool> faceDetectionsPresenceStreamPoller;
     BoolPacket faceDetectionsPresencePacket;
 
-    public override Status StartRun() {
+    public override Status StartRun(ImageSource imageSource) {
       faceDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<Detection>>(faceDetectionsStreamName).Value();
       faceDetectionsPacket = new DetectionVectorPacket();
 
       faceDetectionsPresenceStreamPoller = calculatorGraph.AddOutputStreamPoller<bool>(faceDetectionsPresenceStreamName).Value();
       faceDetectionsPresencePacket = new BoolPacket();
 
-      return calculatorGraph.StartRun(BuildSidePacket());
+      return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
-    public Status StartRunAsync() {
+    public Status StartRunAsync(ImageSource imageSource) {
       calculatorGraph.ObserveOutputStream(faceDetectionsStreamName, FaceDetectionsCallback).AssertOk();
-      return calculatorGraph.StartRun(BuildSidePacket());
+      return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
     public Status AddTextureFrameToInputStream(TextureFrame textureFrame) {
@@ -71,9 +71,19 @@ namespace Mediapipe.Unity.FaceDetection {
       AssetLoader.PrepareAsset("face_detection_full_range_sparse.bytes");
     }
 
-    SidePacket BuildSidePacket() {
+    SidePacket BuildSidePacket(ImageSource imageSource) {
       var sidePacket = new SidePacket();
       sidePacket.Emplace("model_type", new IntPacket((int)modelType));
+
+      // Coordinate transformation from Unity to MediaPipe
+      if (imageSource.isMirrored) {
+        sidePacket.Emplace("input_rotation", new IntPacket(180));
+        sidePacket.Emplace("input_vertically_flipped", new BoolPacket(false));
+      } else {
+        sidePacket.Emplace("input_rotation", new IntPacket(0));
+        sidePacket.Emplace("input_vertically_flipped", new BoolPacket(true));
+      }
+
       return sidePacket;
     }
   }

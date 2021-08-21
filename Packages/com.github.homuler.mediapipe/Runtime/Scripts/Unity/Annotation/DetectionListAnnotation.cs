@@ -9,6 +9,15 @@ namespace Mediapipe.Unity {
 
     protected List<DetectionAnnotation> detections;
 
+    public override bool isMirrored {
+      set {
+        foreach (var detection in detections) {
+          detection.isMirrored = value;
+        }
+        base.isMirrored = value;
+      }
+    }
+
     void Start() {
       detections = new List<DetectionAnnotation>(1);
     }
@@ -65,8 +74,7 @@ namespace Mediapipe.Unity {
     }
 
     protected DetectionAnnotation InitializeDetectionAnnotation() {
-      var annotation = Instantiate(detectionAnnotationPrefab, transform).GetComponent<DetectionAnnotation>();
-      annotation.rootRect = rootRect;
+      var annotation = InstantiateChild<DetectionAnnotation, Detection>(detectionAnnotationPrefab);
       annotation.SetLineWidth(lineWidth);
       annotation.SetThreshold(threshold);
       return annotation;

@@ -5,12 +5,52 @@ using UnityEngine;
 using mplt = global::Mediapipe.LocationData.Types;
 
 namespace Mediapipe.Unity {
-  public abstract class Annotation<T> : MonoBehaviour where T : class {
-    public RectTransform rootRect;
+  public interface IHierachicalAnnotation {
+    bool isRoot { get; }
+    IHierachicalAnnotation root { get; }
+    Transform transform { get; }
+    RectTransform GetAnnotationLayer();
+  }
+
+  public abstract class Annotation<T> : MonoBehaviour, IHierachicalAnnotation where T : class {
+    bool _isRoot = true;
+    public bool isRoot {
+      get { return _isRoot; }
+      protected set { _isRoot = value; }
+    }
+
+    IHierachicalAnnotation _root;
+    public IHierachicalAnnotation root {
+      get {
+        if (_root != null) {
+          return _root;
+        }
+        return _root = isRoot ? this : transform.parent.gameObject.GetComponent<IHierachicalAnnotation>().root;
+      }
+    }
+
+    public RectTransform GetAnnotationLayer() {
+      return root.transform.parent.gameObject.GetComponent<RectTransform>();
+    }
 
     bool isActive = false;
     bool isStale = false;
     protected T target;
+
+    public void SetTarget(T target) {
+      this.target = target;
+      isStale = true;
+      SetActive(target != null);
+    }
+
+    public virtual bool isMirrored { get; set; }
+
+    public S InstantiateChild<S, U>(GameObject prefab) where S : Annotation<U> where U : class {
+      var annotation = Instantiate(prefab, transform).GetComponent<S>();
+      annotation.isRoot = false;
+
+      return annotation;
+    }
 
     void LateUpdate() {
       if (!isStale) {
@@ -23,12 +63,6 @@ namespace Mediapipe.Unity {
       isStale = false;
     }
 
-    public virtual void SetTarget(T target) {
-      this.target = target;
-      isStale = true;
-      SetActive(target != null);
-    }
-
     /// <remarks>
     ///   This method must be called only when <see cref="target" /> is not null.
     /// </remarks>
@@ -38,19 +72,19 @@ namespace Mediapipe.Unity {
     /// <param name="y">Y value in the MeLdiaPipe's coordinate system</param>
     /// <param name="z">Z value in the MeLdiaPipe's coordinate system</param>
     protected Vector3 GetLocalPosition(int x, int y, int z = 0) {
-      var rect = rootRect.rect;
-      return new Vector3(x, rect.height - y, -z);
+      var rect = GetAnnotationLayer().rect;
+      return new Vector3(isMirrored ? rect.width - x : x, rect.height - y, -z);
     }
 
     /// <param name="normalizedX">Normalized x value in the MeLdiaPipe's coordinate system</param>
     /// <param name="normalizedY">Normalized y value in the MeLdiaPipe's coordinate system</param>
     /// <param name="normalizedZ">Normalized z value in the MeLdiaPipe's coordinate system</param>
     protected Vector3 GetLocalPosition(float normalizedX, float normalizedY, float normalizedZ = 0.0f) {
-      var transform = rootRect;
-      var z = -1 * transform.localScale.z * normalizedZ;
+      var rectTransform = GetAnnotationLayer();
+      var z = -1 * rectTransform.localScale.z * normalizedZ;
 
-      var rect = rootRect.rect;
-      var x = Mathf.Lerp(rect.xMin, rect.xMax, normalizedX);
+      var rect = rectTransform.rect;
+      var x = isMirrored ? Mathf.Lerp(rect.xMax, rect.xMin, normalizedX) : Mathf.Lerp(rect.xMin, rect.xMax, normalizedX);
       var y = Mathf.Lerp(rect.yMax, rect.yMin, normalizedY);
       return new Vector3(x, y, z);
     }

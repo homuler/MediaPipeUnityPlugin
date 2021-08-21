@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace Mediapipe.Unity.FaceDetection {
   public class FaceDetectionSolution : Solution {
     [SerializeField] RawImage screen;
-    [SerializeField] DetectionListAnnotation annotation;
+    [SerializeField] DetectionListAnnotationController annotationController;
     [SerializeField] FaceDetectionGraph graphRunner;
     [SerializeField] TextureFramePool textureFramePool;
 
@@ -49,10 +49,10 @@ namespace Mediapipe.Unity.FaceDetection {
       }
 
       screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
-      screen.texture = imageSource.GetCurrentTexture(); // new Texture2D(imageSource.textureWidth, imageSource.textureHeight, imageSource.textureFormat, false);
+      screen.texture = imageSource.GetCurrentTexture();
 
       var graphRunner = gameObject.GetComponent<FaceDetectionGraph>();
-      graphRunner.StartRun();
+      graphRunner.StartRun(imageSource).AssertOk();
 
       if (graphRunner.configType == GraphRunner.ConfigType.OpenGLES) {
         // Use BGRA32 when the input packet is GpuBuffer
@@ -61,6 +61,8 @@ namespace Mediapipe.Unity.FaceDetection {
         // Use RGBA32 when the input packet is ImageFrame
         textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
       }
+
+      annotationController.isMirrored = imageSource.isMirrored;
 
       while (true) {
         yield return new WaitWhile(() => isPaused);
@@ -87,11 +89,9 @@ namespace Mediapipe.Unity.FaceDetection {
         }
 
         graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
-        // Graphics.CopyTexture(currentTexture, screen.texture);
 
         var detections = graphRunner.FetchNextDetections();
-        annotation.SetTarget(detections);
-//         Debug.Log(detections.Count);
+        annotationController.Draw(detections);
 
         yield return new WaitForEndOfFrame();
       }

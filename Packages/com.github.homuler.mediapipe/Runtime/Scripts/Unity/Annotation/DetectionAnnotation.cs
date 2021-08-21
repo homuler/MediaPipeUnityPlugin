@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using mplt = global::Mediapipe.LocationData.Types;
+
 namespace Mediapipe.Unity {
   public class DetectionAnnotation : Annotation<Detection> {
     [SerializeField] LineRenderer lineRenderer;
@@ -12,6 +14,15 @@ namespace Mediapipe.Unity {
 
     List<RelativeKeypointAnnotation> relativeKeypoints;
     readonly Vector3[] emptyPositions = new Vector3[] { Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero };
+
+    public override bool isMirrored {
+      set {
+        foreach (var relativeKeypoint in relativeKeypoints) {
+          relativeKeypoint.isMirrored = value;
+        }
+        base.isMirrored = value;
+      }
+    }
 
     void Start() {
       SetLineWidth(lineWidth);
@@ -62,8 +73,7 @@ namespace Mediapipe.Unity {
     }
 
     RelativeKeypointAnnotation InitializeRelativeKeypointAnnotation() {
-      var annotation = Instantiate(relativeKeypointAnnotationPrefab, transform).GetComponent<RelativeKeypointAnnotation>();
-      annotation.rootRect = rootRect;
+      var annotation = InstantiateChild<RelativeKeypointAnnotation, mplt.RelativeKeypoint>(relativeKeypointAnnotationPrefab);
       annotation.SetRadius(keypointRadius);
       return annotation;
     }

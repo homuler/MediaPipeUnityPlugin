@@ -82,11 +82,12 @@ namespace Mediapipe.Unity {
       return status;
     }
 
-    public abstract Status StartRun();
+    public abstract Status StartRun(ImageSource imageSource);
 
     public virtual void Stop() {
       if (calculatorGraph == null) { return; }
 
+      // TODO: not to call CloseAllPacketSources if calculatorGraph has not started.
       using (var status = calculatorGraph.CloseAllPacketSources()) {
         if (!status.ok) {
           Debug.LogError(status.ToString());
