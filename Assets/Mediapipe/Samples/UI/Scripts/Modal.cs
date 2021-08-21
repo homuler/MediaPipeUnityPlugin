@@ -9,7 +9,7 @@ namespace Mediapipe.Unity.UI {
       this.contents = Instantiate(contents, gameObject.transform);
       this.contents.transform.localScale = new Vector3(0.8f, 0.8f, 1);
       gameObject.SetActive(true);
-      solution.Pause();
+      solution?.Pause();
     }
 
     public void Close(bool forceRestart = false) {
@@ -20,9 +20,9 @@ namespace Mediapipe.Unity.UI {
       }
 
       if (forceRestart) {
-        solution.Play();
+        solution?.Play();
       } else {
-        solution.Resume();
+        solution?.Resume();
       }
     }
   }

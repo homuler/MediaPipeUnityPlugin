@@ -6,7 +6,9 @@ namespace Mediapipe.Unity.UI {
     [SerializeField] GameObject contents;
 
     public void OnClick() {
-      modal.GetComponent<Modal>().Open(contents);
+      if (contents != null) {
+        modal.GetComponent<Modal>().Open(contents);
+      }
     }
   }
 }
