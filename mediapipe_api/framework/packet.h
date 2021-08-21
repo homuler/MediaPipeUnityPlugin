@@ -28,6 +28,7 @@ typedef std::map<std::string, mediapipe::Packet> SidePacket;
 MP_CAPI(MpReturnCode) mp_Packet__(mediapipe::Packet** packet_out);
 MP_CAPI(void) mp_Packet__delete(mediapipe::Packet* packet);
 MP_CAPI(MpReturnCode) mp_Packet__At__Rt(mediapipe::Packet* packet, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
+MP_CAPI(bool) mp_Packet__IsEmpty(mediapipe::Packet* packet);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsProtoMessageLite(mediapipe::Packet* packet, absl::Status** status_out);
 MP_CAPI(MpReturnCode) mp_Packet__Timestamp(mediapipe::Packet* packet, mediapipe::Timestamp** timestamp_out);
 MP_CAPI(MpReturnCode) mp_Packet__DebugString(mediapipe::Packet* packet, const char** str_out);

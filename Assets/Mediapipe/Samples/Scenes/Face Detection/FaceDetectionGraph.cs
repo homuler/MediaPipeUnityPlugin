@@ -31,7 +31,7 @@ namespace Mediapipe.Unity.FaceDetection {
     }
 
     public Status StartRunAsync(ImageSource imageSource) {
-      calculatorGraph.ObserveOutputStream(faceDetectionsStreamName, FaceDetectionsCallback).AssertOk();
+      calculatorGraph.ObserveOutputStream(faceDetectionsStreamName, FaceDetectionsCallback, true).AssertOk();
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
@@ -58,7 +58,8 @@ namespace Mediapipe.Unity.FaceDetection {
           return Status.FailedPrecondition("Graph runner is not found").mpPtr;
         }
         using (var packet = new DetectionVectorPacket(packetPtr, false)) {
-          (graphRunner as FaceDetectionGraph).OnFacesDetected.Invoke(packet.Get());
+          var value = packet.IsEmpty() ? null : packet.Get();
+          (graphRunner as FaceDetectionGraph).OnFacesDetected.Invoke(value);
         }
         return Status.Ok().mpPtr;
       } catch (Exception e) {

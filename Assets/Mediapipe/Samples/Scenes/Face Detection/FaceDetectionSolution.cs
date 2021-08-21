@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,7 @@ namespace Mediapipe.Unity.FaceDetection {
     [SerializeField] DetectionListAnnotationController annotationController;
     [SerializeField] FaceDetectionGraph graphRunner;
     [SerializeField] TextureFramePool textureFramePool;
+    [SerializeField] RunningMode runningMode;
 
     Coroutine coroutine;
 
@@ -38,6 +40,13 @@ namespace Mediapipe.Unity.FaceDetection {
       graphRunner.Stop();
     }
 
+    /// <remarks>
+    ///   You need to call <see cref="Play" /> for the change to take effect.
+    /// </remarks>
+    public void SwitchRunningMode(RunningMode runningMode) {
+      this.runningMode = runningMode;
+    }
+
     IEnumerator Run() {
       var imageSource = ImageSourceProvider.imageSource;
 
@@ -52,8 +61,17 @@ namespace Mediapipe.Unity.FaceDetection {
       screen.texture = imageSource.GetCurrentTexture();
 
       var graphRunner = gameObject.GetComponent<FaceDetectionGraph>();
-      graphRunner.StartRun(imageSource).AssertOk();
 
+      Debug.Log($"Running Mode: {runningMode}");
+
+      if (runningMode == RunningMode.Async) {
+        graphRunner.OnFacesDetected.AddListener(OnFacesDetected);
+        graphRunner.StartRunAsync(imageSource).AssertOk();
+      } else {
+        graphRunner.StartRun(imageSource).AssertOk();
+      }
+
+      // Decide which TextureFormat to use
       if (graphRunner.configType == GraphRunner.ConfigType.OpenGLES) {
         // Use BGRA32 when the input packet is GpuBuffer
         textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.BGRA32);
@@ -90,11 +108,18 @@ namespace Mediapipe.Unity.FaceDetection {
 
         graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 
-        var detections = graphRunner.FetchNextDetections();
-        annotationController.Draw(detections);
+        if (runningMode == RunningMode.Sync) {
+          // When running synchronously, wait for the outputs here (blocks the main thread).
+          var detections = graphRunner.FetchNextDetections();
+          annotationController.Draw(detections);
+        }
 
         yield return new WaitForEndOfFrame();
       }
+    }
+
+    void OnFacesDetected(List<Detection> detections) {
+      annotationController.Draw(detections);
     }
   }
 }

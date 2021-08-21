@@ -209,11 +209,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a82b9904ff34cc4fb66157217fe48a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rootRect: {fileID: 0}
   lineRenderer: {fileID: 5404176935574894486}
   textMesh: {fileID: 6948870342255070997}
   relativeKeypointAnnotationPrefab: {fileID: 3326991124658421618, guid: 06fba6583bda007cfb4c19f108dff7c5,
     type: 3}
-  lineWidth: 0.8
-  keypointRadius: 1
+  lineWidth: 1
+  keypointRadius: 15
   threshold: 0

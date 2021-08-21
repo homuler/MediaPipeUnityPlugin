@@ -21,6 +21,10 @@ MpReturnCode mp_Packet__At__Rt(mediapipe::Packet* packet, mediapipe::Timestamp* 
   } CATCH_EXCEPTION
 }
 
+bool mp_Packet__IsEmpty(mediapipe::Packet* packet) {
+  return packet->IsEmpty();
+}
+
 MpReturnCode mp_Packet__ValidateAsProtoMessageLite(mediapipe::Packet* packet, absl::Status** status_out) {
   TRY {
     *status_out = new absl::Status { packet->ValidateAsProtoMessageLite() };

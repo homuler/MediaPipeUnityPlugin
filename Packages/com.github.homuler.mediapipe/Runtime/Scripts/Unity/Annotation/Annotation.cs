@@ -33,14 +33,24 @@ namespace Mediapipe.Unity {
       return root.transform.parent.gameObject.GetComponent<RectTransform>();
     }
 
-    bool isActive = false;
-    bool isStale = false;
-    protected T target;
+    bool isActive = true;
+    T target;
 
+    /// <param name="target">Data to be annotated</param>
     public void SetTarget(T target) {
       this.target = target;
-      isStale = true;
-      SetActive(target != null);
+
+      if (target != null) {
+        Draw(target);
+      }
+
+      if (target == null && isActive) {
+        gameObject.SetActive(false);
+        isActive = false;
+      } else if (target != null && !isActive) {
+        gameObject.SetActive(true);
+        isActive = true;
+      }
     }
 
     public virtual bool isMirrored { get; set; }
@@ -52,21 +62,11 @@ namespace Mediapipe.Unity {
       return annotation;
     }
 
-    void LateUpdate() {
-      if (!isStale) {
-        return;
-      }
-
-      if (target != null) {
-        Draw();
-      }
-      isStale = false;
-    }
-
+    /// <param name="target">Data to be annotated and it must not be null</param>
     /// <remarks>
-    ///   This method must be called only when <see cref="target" /> is not null.
+    ///   When the target becomes null, <see cref="OnDisable" /> is called instead.
     /// </remarks>
-    protected abstract void Draw();
+    protected abstract void Draw(T target);
 
     /// <param name="x">X value in the MeLdiaPipe's coordinate system</param>
     /// <param name="y">Y value in the MeLdiaPipe's coordinate system</param>
@@ -158,13 +158,6 @@ namespace Mediapipe.Unity {
           annotations[i] = initializer();
         }
         annotations[i].SetTarget(list[i]);
-      }
-    }
-
-    void SetActive(bool flag) {
-      if (isActive != flag) {
-        isActive = flag;
-        gameObject.SetActive(flag);
       }
     }
 

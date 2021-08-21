@@ -48,8 +48,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d433cdb024dfd584696eeb11efb71102, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rootRect: {fileID: 0}
   detectionAnnotationPrefab: {fileID: 5404176935574894484, guid: 9e4308c3e97d26a388364cbe0ea8bfb4,
     type: 3}
-  lineWidth: 0.8
+  lineWidth: 1
+  keypointRadius: 15
   threshold: 0
