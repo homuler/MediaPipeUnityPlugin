@@ -9,9 +9,14 @@ namespace Mediapipe.Unity.FaceDetection {
     [SerializeField] DetectionListAnnotationController annotationController;
     [SerializeField] FaceDetectionGraph graphRunner;
     [SerializeField] TextureFramePool textureFramePool;
-    [SerializeField] RunningMode runningMode;
+    public RunningMode runningMode;
 
     Coroutine coroutine;
+
+    public FaceDetectionGraph.ModelType modelType {
+      get { return graphRunner.modelType; }
+      set { graphRunner.modelType = value; }
+    }
 
     public override void Play() {
       base.Play();
@@ -40,13 +45,6 @@ namespace Mediapipe.Unity.FaceDetection {
       graphRunner.Stop();
     }
 
-    /// <remarks>
-    ///   You need to call <see cref="Play" /> for the change to take effect.
-    /// </remarks>
-    public void SwitchRunningMode(RunningMode runningMode) {
-      this.runningMode = runningMode;
-    }
-
     IEnumerator Run() {
       var imageSource = ImageSourceProvider.imageSource;
 
@@ -62,6 +60,7 @@ namespace Mediapipe.Unity.FaceDetection {
 
       var graphRunner = gameObject.GetComponent<FaceDetectionGraph>();
 
+      Debug.Log($"Model Selection: {modelType}");
       Debug.Log($"Running Mode: {runningMode}");
 
       if (runningMode == RunningMode.Async) {

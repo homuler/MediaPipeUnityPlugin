@@ -976,6 +976,7 @@ MonoBehaviour:
   annotationController: {fileID: 1551576305}
   graphRunner: {fileID: 1064799462}
   textureFramePool: {fileID: 1064799463}
+  runningMode: 0
 --- !u!4 &1064799461
 Transform:
   m_ObjectHideFlags: 0

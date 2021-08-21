@@ -1,10 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.UI;
-
-using Mediapipe.Unity;
 
 namespace Mediapipe.Unity.UI {
   public class GlobalConfig : ModalContents {
