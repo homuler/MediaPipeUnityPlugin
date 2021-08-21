@@ -378,3 +378,4 @@ MIT
 
 Note that some files are distributed under other licenses.
 - MediaPipe ([Apache Licence 2.0](https://github.com/google/mediapipe/blob/master/LICENSE))
+- FontAwesome ([LICENSE](https://github.com/FortAwesome/Font-Awesome/blob/master/LICENSE.txt))
