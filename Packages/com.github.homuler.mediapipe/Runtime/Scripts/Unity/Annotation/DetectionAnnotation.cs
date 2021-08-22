@@ -39,6 +39,7 @@ namespace Mediapipe.Unity {
 
     void OnDisable() {
       ApplyLineWidth(0.0f);
+      lineRenderer.SetPositions(emptyPositions);
     }
 
     void Destroy() {

@@ -1,12 +1,10 @@
 fileFormatVersion: 2
-guid: 6a82b9904ff34cc4fb66157217fe48a9
+guid: 7adb79bb57c2061d394aa5d06e46c160
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - lineRenderer: {instanceID: 0}
-  - textMesh: {instanceID: 0}
-  - relativeKeypointAnnotationPrefab: {fileID: 3326991124658421618, guid: 06fba6583bda007cfb4c19f108dff7c5,
+  - normalizedRectAnnotationPrefab: {fileID: 6851263750774138616, guid: b322ba3535a6caad5984d6fb3d388e07,
       type: 3}
   executionOrder: 0
   icon: {instanceID: 0}

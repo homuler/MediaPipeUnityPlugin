@@ -12,7 +12,11 @@ namespace Mediapipe.Unity {
     RectTransform GetAnnotationLayer();
   }
 
-  public abstract class Annotation<T> : MonoBehaviour, IHierachicalAnnotation where T : class {
+  public interface IAnnotatable<T> {
+    void SetTarget(T target);
+  }
+
+  public abstract class Annotation<T> : MonoBehaviour, IAnnotatable<T>, IHierachicalAnnotation where T : class {
     bool _isRoot = true;
     public bool isRoot {
       get { return _isRoot; }
@@ -55,7 +59,7 @@ namespace Mediapipe.Unity {
 
     public virtual bool isMirrored { get; set; }
 
-    public S InstantiateChild<S, U>(GameObject prefab) where S : Annotation<U> where U : class {
+    protected S InstantiateChild<S, U>(GameObject prefab) where S : Annotation<U> where U : class {
       var annotation = Instantiate(prefab, transform).GetComponent<S>();
       annotation.isRoot = false;
 
@@ -67,6 +71,13 @@ namespace Mediapipe.Unity {
     ///   When the target becomes null, <see cref="OnDisable" /> is called instead.
     /// </remarks>
     protected abstract void Draw(T target);
+
+    /// <summary>
+    ///   Draw current target again.
+    /// </summary>
+    public void Redraw() {
+      SetTarget(target);
+    }
 
     /// <param name="x">X value in the MeLdiaPipe's coordinate system</param>
     /// <param name="y">Y value in the MeLdiaPipe's coordinate system</param>
@@ -119,12 +130,63 @@ namespace Mediapipe.Unity {
       return GetRectVertices(topLeft, bottomRight);
     }
 
-    protected Vector3[] GetLocalPositions(mplt.RelativeBoundingBox relativeBoundingBox) {
-      return GetLocalPositions(relativeBoundingBox.Xmin, relativeBoundingBox.Ymin, relativeBoundingBox.Width, relativeBoundingBox.Height);
+    /// <summary>
+    ///   Returns a Vector3 array which represents a rectangle's vertices.
+    ///   They are ordered clockwise from top-left point.
+    /// </summary>
+    /// <param name="xCenter">Center x value in the MeLdiaPipe's coordinate system</param>
+    /// <param name="yCenter">center y value in the MeLdiaPipe's coordinate system</param>
+    /// <param name="width">width</param>
+    /// <param name="height">height</param>
+    /// <param name="rotation">Rotation angle in radians (clockwise)</param>
+    protected Vector3[] GetLocalPositions(int xCenter, int yCenter, int width, int height, float rotation) {
+      var center = GetLocalPosition(xCenter, yCenter);
+      var quaternion = Quaternion.Euler(0, 0, (isMirrored ? 1 : -1) * Mathf.Rad2Deg * rotation);
+
+      var topLeftRel = quaternion * new Vector3(-width / 2, height / 2, 0);
+      var topRightRel = quaternion * new Vector3(width / 2, height / 2, 0);
+
+      return new Vector3[] {
+        center + topLeftRel,
+        center + topRightRel,
+        center - topLeftRel,
+        center - topRightRel,
+      };
+    }
+
+    /// <summary>
+    ///   Returns a Vector3 array which represents a rectangle's vertices.
+    ///   They are ordered clockwise from top-left point.
+    /// </summary>
+    /// <param name="normalizedXCenter">Normalized center x value in the MeLdiaPipe's coordinate system</param>
+    /// <param name="normalizedYCenter">Normalized center y value in the MeLdiaPipe's coordinate system</param>
+    /// <param name="normalizedWidth">Normalized width</param>
+    /// <param name="normalizedHeight">Normalized height</param>
+    /// <param name="rotation">Rotation angle in radians (clockwise)</param>
+    protected Vector3[] GetLocalPositions(float normalizedXCenter, float normalizedYCenter, float normalizedWidth, float normalizedHeight, float rotation) {
+      var center = GetLocalPosition(normalizedXCenter, normalizedYCenter);
+      var quaternion = Quaternion.Euler(0, 0, (isMirrored ? 1 : -1) * Mathf.Rad2Deg * rotation);
+
+      var rect = GetAnnotationLayer().rect;
+      var width = rect.width * normalizedWidth;
+      var height = rect.height * normalizedHeight;
+      var topLeftRel = quaternion * new Vector3(-width / 2, height / 2, 0);
+      var topRightRel = quaternion * new Vector3(width / 2, height / 2, 0);
+
+      return new Vector3[] {
+        center + topLeftRel,
+        center + topRightRel,
+        center - topLeftRel,
+        center - topRightRel,
+      };
     }
 
     protected Vector3[] GetLocalPositions(mplt.BoundingBox boundingBox) {
       return GetLocalPositions(boundingBox.Xmin, boundingBox.Ymin, boundingBox.Width, boundingBox.Height);
+    }
+
+    protected Vector3[] GetLocalPositions(mplt.RelativeBoundingBox relativeBoundingBox) {
+      return GetLocalPositions(relativeBoundingBox.Xmin, relativeBoundingBox.Ymin, relativeBoundingBox.Width, relativeBoundingBox.Height);
     }
 
     protected Vector3[] GetLocalPositions(Mediapipe.LocationData locationData) {
@@ -141,7 +203,15 @@ namespace Mediapipe.Unity {
       }
     }
 
-    protected static void SetTargetAll<S, U>(IList<S> annotations, IList<U> list, Func<S> initializer) where S : Annotation<U> where U : class {
+    protected Vector3[] GetLocalPositions(Rect rect) {
+      return GetLocalPositions(rect.XCenter, rect.YCenter, rect.Width, rect.Height, rect.Rotation);
+    }
+
+    protected Vector3[] GetLocalPositions(NormalizedRect normalizedRect) {
+      return GetLocalPositions(normalizedRect.XCenter, normalizedRect.YCenter, normalizedRect.Width, normalizedRect.Height, normalizedRect.Rotation);
+    }
+
+    protected static void SetTargetAll<S, U>(IList<S> annotations, IList<U> list, Func<S> initializer) where S : IAnnotatable<U> where U : class {
       for (var i = 0; i < Mathf.Max(annotations.Count, list.Count); i++) {
         if (i >= list.Count) {
           // Clear superfluous annotations

@@ -3,19 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mediapipe.Unity.FaceDetection {
-  public class FaceDetectionSolution : Solution {
+namespace Mediapipe.Unity.FaceMesh {
+  public class FaceMeshSolution : Solution {
     [SerializeField] RawImage screen;
-    [SerializeField] DetectionListAnnotationController annotationController;
-    [SerializeField] FaceDetectionGraph graphRunner;
+    [SerializeField] DetectionListAnnotationController detectionListAnnotationController;
+    [SerializeField] NormalizedRectListAnnotationController normalizedRectListAnnotationController;
+    [SerializeField] MultiNormalizedLandmarkListAnnotationController multiNormalizedLandmarkListAnnotationController;
+    [SerializeField] FaceMeshGraph graphRunner;
     [SerializeField] TextureFramePool textureFramePool;
 
     Coroutine coroutine;
 
     public RunningMode runningMode;
-    public FaceDetectionGraph.ModelType modelType {
-      get { return graphRunner.modelType; }
-      set { graphRunner.modelType = value; }
+    public int maxNumFaces {
+      get { return graphRunner.maxNumFaces; }
+      set { graphRunner.maxNumFaces = value; }
     }
 
     public override void Play() {
@@ -58,13 +60,15 @@ namespace Mediapipe.Unity.FaceDetection {
       screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
       screen.texture = imageSource.GetCurrentTexture();
 
-      var graphRunner = gameObject.GetComponent<FaceDetectionGraph>();
+      var graphRunner = gameObject.GetComponent<FaceMeshGraph>();
 
-      Debug.Log($"Model Selection: {modelType}");
+      Debug.Log($"Max Num Faces: {maxNumFaces}");
       Debug.Log($"Running Mode: {runningMode}");
 
       if (runningMode == RunningMode.Async) {
         graphRunner.OnFacesDetected.AddListener(OnFacesDetected);
+        graphRunner.OnFaceLandmarksDetected.AddListener(OnFaceLandmarksDetected);
+        graphRunner.OnFaceRectsDetected.AddListener(OnFaceRectsDetected);
         graphRunner.StartRunAsync(imageSource).AssertOk();
       } else {
         graphRunner.StartRun(imageSource).AssertOk();
@@ -79,7 +83,9 @@ namespace Mediapipe.Unity.FaceDetection {
         textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
       }
 
-      annotationController.isMirrored = imageSource.isMirrored;
+      detectionListAnnotationController.isMirrored = imageSource.isMirrored;
+      normalizedRectListAnnotationController.isMirrored = imageSource.isMirrored;
+      multiNormalizedLandmarkListAnnotationController.isMirrored = imageSource.isMirrored;
 
       while (true) {
         yield return new WaitWhile(() => isPaused);
@@ -109,16 +115,26 @@ namespace Mediapipe.Unity.FaceDetection {
 
         if (runningMode == RunningMode.Sync) {
           // When running synchronously, wait for the outputs here (blocks the main thread).
-          var detections = graphRunner.FetchNextDetections();
-          annotationController.Draw(detections);
+          var value = graphRunner.FetchNextValue();
+          detectionListAnnotationController.Draw(value.faceDetections);
+          normalizedRectListAnnotationController.Draw(value.faceRectsFromLandmarks);
+          multiNormalizedLandmarkListAnnotationController.Draw(value.multiFaceLandmarks);
         }
 
         yield return new WaitForEndOfFrame();
       }
     }
 
-    void OnFacesDetected(List<Detection> detections) {
-      annotationController.Draw(detections);
+    void OnFacesDetected(List<Detection> faceDetections) {
+      detectionListAnnotationController.Draw(faceDetections);
+    }
+
+    void OnFaceLandmarksDetected(List<NormalizedLandmarkList> multiFaceLandmarks) {
+      multiNormalizedLandmarkListAnnotationController.Draw(multiFaceLandmarks);
+    }
+
+    void OnFaceRectsDetected(List<NormalizedRect> faceRectsFromLandmarks) {
+      normalizedRectListAnnotationController.Draw(faceRectsFromLandmarks);
     }
   }
 }

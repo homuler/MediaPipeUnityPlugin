@@ -7,7 +7,14 @@ namespace Mediapipe.Unity {
     protected bool isPaused;
 
     protected virtual IEnumerator Start() {
-      bootstrap = GameObject.Find("Bootstrap").GetComponent<Bootstrap>();
+      var bootstrapObj = GameObject.Find("Bootstrap");
+
+      if (bootstrapObj == null) {
+        Debug.LogError("Bootstrap is not found. Please play 'Start Scene' first");
+        yield break;
+      }
+
+      bootstrap = bootstrapObj.GetComponent<Bootstrap>();
       yield return new WaitUntil(() => bootstrap.isFinished);
 
       Play();

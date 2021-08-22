@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity {
-  public class DetectionListAnnotation : Annotation<IList<Detection>> {
+  public class DetectionListAnnotation : Annotation<IList<Detection>>, IAnnotatable<DetectionList> {
     [SerializeField] GameObject detectionAnnotationPrefab;
     [SerializeField, Range(0, 1)] float lineWidth = 1.0f;
     [SerializeField] float keypointRadius = 15.0f;
@@ -18,15 +18,6 @@ namespace Mediapipe.Unity {
       }
     }
 
-    public override bool isMirrored {
-      set {
-        foreach (var detection in detections) {
-          detection.isMirrored = value;
-        }
-        base.isMirrored = value;
-      }
-    }
-
     void Destroy() {
       foreach (var detection in detections) {
         Destroy(detection);
@@ -35,7 +26,16 @@ namespace Mediapipe.Unity {
     }
 
     public void SetTarget(DetectionList target) {
-      SetTarget(target.Detection);
+      SetTarget(target?.Detection);
+    }
+
+    public override bool isMirrored {
+      set {
+        foreach (var detection in detections) {
+          detection.isMirrored = value;
+        }
+        base.isMirrored = value;
+      }
     }
 
     public void SetLineWidth(float lineWidth) {

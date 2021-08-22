@@ -20,7 +20,6 @@ namespace Mediapipe.Unity {
     }
 
     protected override void Draw(mplt.RelativeKeypoint target) {
-      var localPos = GetLocalPosition(target.X, target.Y);
       transform.localPosition = GetLocalPosition(target.X, target.Y);
       GetComponent<Renderer>().material.color = GetColor(target.Score);
     }
