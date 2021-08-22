@@ -31,6 +31,7 @@ namespace Mediapipe.Unity.FaceDetection {
     public override void Pause() {
       base.Pause();
       ImageSourceProvider.imageSource.Pause();
+      ClearAnnotations();
     }
 
     public override void Resume() {
@@ -43,6 +44,7 @@ namespace Mediapipe.Unity.FaceDetection {
       StopCoroutine(coroutine);
       ImageSourceProvider.imageSource.Stop();
       graphRunner.Stop();
+      ClearAnnotations();
     }
 
     IEnumerator Run() {
@@ -117,8 +119,14 @@ namespace Mediapipe.Unity.FaceDetection {
       }
     }
 
+    void ClearAnnotations() {
+      annotationController.Draw(null);
+    }
+
     void OnFacesDetected(List<Detection> detections) {
-      annotationController.Draw(detections);
+      if (!isPaused) {
+        annotationController.Draw(detections);
+      }
     }
   }
 }

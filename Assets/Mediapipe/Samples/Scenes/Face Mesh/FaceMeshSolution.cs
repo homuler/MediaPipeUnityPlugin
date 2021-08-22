@@ -33,6 +33,7 @@ namespace Mediapipe.Unity.FaceMesh {
     public override void Pause() {
       base.Pause();
       ImageSourceProvider.imageSource.Pause();
+      ClearAnnotations();
     }
 
     public override void Resume() {
@@ -45,6 +46,7 @@ namespace Mediapipe.Unity.FaceMesh {
       StopCoroutine(coroutine);
       ImageSourceProvider.imageSource.Stop();
       graphRunner.Stop();
+      ClearAnnotations();
     }
 
     IEnumerator Run() {
@@ -125,16 +127,28 @@ namespace Mediapipe.Unity.FaceMesh {
       }
     }
 
+    void ClearAnnotations() {
+      detectionListAnnotationController.Draw(null);
+      multiNormalizedLandmarkListAnnotationController.Draw(null);
+      normalizedRectListAnnotationController.Draw(null);
+    }
+
     void OnFacesDetected(List<Detection> faceDetections) {
-      detectionListAnnotationController.Draw(faceDetections);
+      if (!isPaused) {
+        detectionListAnnotationController.Draw(faceDetections);
+      }
     }
 
     void OnFaceLandmarksDetected(List<NormalizedLandmarkList> multiFaceLandmarks) {
-      multiNormalizedLandmarkListAnnotationController.Draw(multiFaceLandmarks);
+      if (!isPaused) {
+        multiNormalizedLandmarkListAnnotationController.Draw(multiFaceLandmarks);
+      }
     }
 
     void OnFaceRectsDetected(List<NormalizedRect> faceRectsFromLandmarks) {
-      normalizedRectListAnnotationController.Draw(faceRectsFromLandmarks);
+      if (!isPaused) {
+        normalizedRectListAnnotationController.Draw(faceRectsFromLandmarks);
+      }
     }
   }
 }
