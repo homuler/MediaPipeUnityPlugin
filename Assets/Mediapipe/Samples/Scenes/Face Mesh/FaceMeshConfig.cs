@@ -26,7 +26,6 @@ namespace Mediapipe.Unity.FaceMesh.UI {
 
     public void UpdateMaxNumFaces() {
       if (int.TryParse(MaxNumFacesInput.text, out var value)) {
-        Debug.Log($"Parsed: {value}");
         solution.maxNumFaces = Mathf.Max(0, value);
         isChanged = true;
       }

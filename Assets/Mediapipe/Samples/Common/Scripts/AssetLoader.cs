@@ -10,7 +10,7 @@ namespace Mediapipe.Unity {
 
     public static void PrepareAsset(string name, string uniqueKey, bool overwrite = false) {
       if (resourceManager == null) {
-        Debug.LogWarning("ResourceManager is not provided, so default LocalResourceManager will be used");
+        Logger.LogWarning("ResourceManager is not provided, so default LocalResourceManager will be used");
         resourceManager = new LocalResourceManager();
       }
       resourceManager.PrepareAsset(name, uniqueKey, overwrite);

@@ -9,6 +9,8 @@ using UnityEngine.Android;
 
 namespace Mediapipe.Unity {
   public class WebCamSource : ImageSource {
+    static readonly string TAG = typeof(WebCamSource).Name;
+
     [SerializeField] ResolutionStruct[] defaultAvailableResolutions;
 
     static readonly object permissionLock = new object();
@@ -135,12 +137,12 @@ namespace Mediapipe.Unity {
 
 #if UNITY_ANDROID
         if (!Permission.HasUserAuthorizedPermission(Permission.Camera)) {
-          Debug.LogWarning("Not permitted to use Camera");
+          Logger.LogWarning(TAG, "Not permitted to use Camera");
           yield break;
         }
 #elif UNITY_IOS
         if (!Application.HasUserAuthorization(UserAuthorization.WebCam)) {
-          Debug.LogWarning("Not permitted to use WebCam");
+          Logger.LogWarning(TAG, "Not permitted to use WebCam");
           yield break;
         }
 #endif

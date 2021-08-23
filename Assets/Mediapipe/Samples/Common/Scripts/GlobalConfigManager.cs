@@ -5,6 +5,8 @@ using UnityEngine;
 
 namespace Mediapipe.Unity {
   public static class GlobalConfigManager {
+    static readonly string TAG = typeof(GlobalConfigManager).Name;
+
     static string cacheDirPath {
       get { return Path.Combine(Application.persistentDataPath, "Cache"); }
     }
@@ -60,15 +62,15 @@ namespace Mediapipe.Unity {
           };
 
           if (!File.Exists(configFilePath)) {
-            Debug.Log($"Global config file does not exist: {configFilePath}");
+            Logger.LogDebug(TAG, $"Global config file does not exist: {configFilePath}");
           } else {
-            Debug.Log($"Reading the config file ({configFilePath})...");
+            Logger.LogDebug(TAG, $"Reading the config file ({configFilePath})...");
             foreach (var line in File.ReadLines(configFilePath)) {
               try {
                 (string, string) pair = ParseLine(line);
                 _config[pair.Item1] = pair.Item2;
               } catch (System.Exception e) {
-                Debug.LogWarning($"{e}");
+                Logger.LogWarning($"{e}");
               }
             }
           }
@@ -87,7 +89,7 @@ namespace Mediapipe.Unity {
         $"{_GlogVKey}={GlogV}",
       };
       File.WriteAllLines(configFilePath, lines, Encoding.UTF8);
-      Debug.Log("Global config file has been updated");
+      Logger.LogInfo(TAG, "Global config file has been updated");
     }
 
     public static void SetEnvs() {

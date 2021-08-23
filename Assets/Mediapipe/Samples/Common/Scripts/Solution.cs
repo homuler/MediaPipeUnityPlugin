@@ -3,6 +3,8 @@ using UnityEngine;
 
 namespace Mediapipe.Unity {
   public abstract class Solution : MonoBehaviour {
+    protected virtual string TAG { get { return this.GetType().Name; } }
+
     protected Bootstrap bootstrap;
     protected bool isPaused;
 
@@ -10,7 +12,7 @@ namespace Mediapipe.Unity {
       var bootstrapObj = GameObject.Find("Bootstrap");
 
       if (bootstrapObj == null) {
-        Debug.LogError("Bootstrap is not found. Please play 'Start Scene' first");
+        Logger.LogError(TAG, "Bootstrap is not found. Please play 'Start Scene' first");
         yield break;
       }
 

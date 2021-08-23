@@ -5,6 +5,8 @@ using UnityEngine;
 
 namespace Mediapipe.Unity {
   public class AssetBundleResourceManager : ResourceManager {
+    static readonly string TAG = typeof(AssetBundleResourceManager).Name;
+
     static string _CacheRootPath;
     static string _AssetBundlePath;
     AssetBundle _assetBundle;
@@ -52,7 +54,7 @@ namespace Mediapipe.Unity {
 
     public void LoadAssetBundle() {
       if (assetBundle != null) {
-        Debug.LogWarning("AssetBundle is already loaded");
+        Logger.LogWarning(TAG, "AssetBundle is already loaded");
         return;
       }
 
@@ -61,7 +63,7 @@ namespace Mediapipe.Unity {
 
     public async Task LoadAssetBundleAsync() {
       if (assetBundle != null) {
-        Debug.LogWarning("AssetBundle is already loaded");
+        Logger.LogWarning(TAG, "AssetBundle is already loaded");
         return;
       }
 
@@ -110,7 +112,7 @@ namespace Mediapipe.Unity {
         return cachePath;
       }
 
-      Debug.LogWarning($"{cachePath} does not exist");
+      Logger.LogWarning(TAG, $"{cachePath} does not exist");
       return null;
     }
 
@@ -126,7 +128,7 @@ namespace Mediapipe.Unity {
 
         return true;
       } catch (Exception e) {
-        Debug.LogError($"Failed to read file `{path}`: ${e.ToString()}");
+        Logger.LogError(TAG, $"Failed to read file `{path}`: ${e.ToString()}");
         return false;
       }
     }
@@ -139,7 +141,7 @@ namespace Mediapipe.Unity {
       var cachePath = GetCacheFilePathFor(uniqueKey);
 
       if (!overwrite && File.Exists(cachePath)) {
-        Debug.Log($"{cachePath} already exists");
+        Logger.LogVerbose(TAG, $"{cachePath} already exists");
         return;
       }
 
@@ -148,14 +150,14 @@ namespace Mediapipe.Unity {
       }
 
       File.WriteAllBytes(cachePath, asset.bytes);
-      Debug.Log($"{asset.name} is saved to {cachePath} (length={asset.bytes.Length})");
+      Logger.LogVerbose(TAG, $"{asset.name} is saved to {cachePath} (length={asset.bytes.Length})");
     }
 
     async Task WriteCacheFileAsync(TextAsset asset, string uniqueKey, bool overwrite) {
       var cachePath = GetCacheFilePathFor(uniqueKey);
 
       if (!overwrite && File.Exists(cachePath)) {
-        Debug.Log($"{cachePath} already exists");
+        Logger.LogVerbose(TAG, $"{cachePath} already exists");
         return;
       }
 
@@ -168,7 +170,7 @@ namespace Mediapipe.Unity {
 
       using (var sourceStream = new FileStream(cachePath, mode, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true)) {
         await sourceStream.WriteAsync(bytes, 0, bytes.Length);
-        Debug.Log($"{asset.name} is saved to {cachePath} (length={bytes.Length})");
+        Logger.LogVerbose(TAG, $"{asset.name} is saved to {cachePath} (length={bytes.Length})");
       }
     }
   }

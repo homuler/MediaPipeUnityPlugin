@@ -8,6 +8,8 @@ using System.Runtime.InteropServices;
 
 namespace Mediapipe.Unity {
   public static class GpuManager {
+    static readonly string TAG = typeof(GpuManager).Name;
+
     delegate void PluginCallback(int eventId);
 
     static readonly object setupLock = new object();
@@ -22,7 +24,7 @@ namespace Mediapipe.Unity {
     public static IEnumerator Initialize() {
       lock(setupLock) {
         if (isInitialized) {
-          Debug.LogWarning("Already set up");
+          Logger.LogWarning(TAG, "Already set up");
           yield break;
         }
 
@@ -47,16 +49,16 @@ namespace Mediapipe.Unity {
 
 #if UNITY_ANDROID
         if (currentContext == IntPtr.Zero) {
-          Debug.LogWarning("EGL context is not found, so MediaPipe won't share their EGL contexts with Unity");
+          Logger.LogWarning(TAG, "EGL context is not found, so MediaPipe won't share their EGL contexts with Unity");
         } else {
-          Debug.Log($"EGL context is found: {currentContext}");
+          Logger.LogVerbose(TAG, $"EGL context is found: {currentContext}");
         }
 #endif
 
-        Debug.Log("Initializing GpuResources...");
+        Logger.LogInfo(TAG, "Initializing GpuResources...");
         gpuResources = GpuResources.Create(currentContext).Value();
 
-        Debug.Log("Initializing GlCalculatorHelper...");
+        Logger.LogInfo(TAG, "Initializing GlCalculatorHelper...");
         glCalculatorHelper = new GlCalculatorHelper();
         glCalculatorHelper.InitializeForTest(gpuResources);
 

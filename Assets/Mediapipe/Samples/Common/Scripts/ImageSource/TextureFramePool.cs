@@ -6,6 +6,8 @@ using UnityEngine;
 namespace Mediapipe.Unity {
 
   public class TextureFramePool : MonoBehaviour {
+    static readonly string TAG = typeof(TextureFramePool).Name;
+
     [SerializeField] int poolSize = 10;
 
     readonly object formatLock = new object();
@@ -75,7 +77,7 @@ namespace Mediapipe.Unity {
       lock (((ICollection)textureFramesInUse).SyncRoot) {
         if (!textureFramesInUse.Remove(textureFrame.GetInstanceID())) {
           // won't be run
-          Debug.LogWarning("The released texture does not belong to the pool");
+          Logger.LogWarning(TAG, "The released texture does not belong to the pool");
           return;
         }
 

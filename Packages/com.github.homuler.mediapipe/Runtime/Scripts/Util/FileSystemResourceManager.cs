@@ -1,10 +1,11 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace Mediapipe.Unity {
   public class FileSystemResourceManager : ResourceManager {
+    static readonly string TAG = typeof(FileSystemResourceManager).Name;
+
     static string _RootPath;
 
     public override PathResolver pathResolver {
@@ -42,14 +43,14 @@ namespace Mediapipe.Unity {
       }
 
       if (!overwrite && File.Exists(destFilePath)) {
-        Debug.Log($"{destFilePath} already exists");
+        Logger.LogVerbose(TAG, $"{destFilePath} already exists");
         return;
       }
 
       using (var sourceStream = File.OpenRead(sourceFilePath)) {
         using (var destStream = File.Open(destFilePath, overwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.Write)) {
           sourceStream.CopyTo(destStream);
-          Debug.Log($"{sourceFilePath} is copied to {destFilePath}");
+          Logger.LogVerbose(TAG, $"{sourceFilePath} is copied to {destFilePath}");
         }
       }
     }
@@ -83,7 +84,7 @@ namespace Mediapipe.Unity {
         return cachePath;
       }
 
-      Debug.LogError($"{cachePath} does not exist");
+      Logger.LogError(TAG, $"{cachePath} does not exist");
       return null;
     }
 
@@ -99,7 +100,7 @@ namespace Mediapipe.Unity {
 
         return true;
       } catch (Exception e) {
-        Debug.LogError($"Failed to read file `{path}`: ${e.ToString()}");
+        Logger.LogException(e);
         return false;
       }
     }

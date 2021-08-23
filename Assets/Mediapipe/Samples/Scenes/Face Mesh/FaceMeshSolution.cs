@@ -55,7 +55,7 @@ namespace Mediapipe.Unity.FaceMesh {
       yield return imageSource.Play();
 
       if (!imageSource.isPrepared) {
-        Debug.LogError("Failed to start ImageSource, exiting...");
+        Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
         yield break;
       }
 
@@ -64,8 +64,8 @@ namespace Mediapipe.Unity.FaceMesh {
 
       var graphRunner = gameObject.GetComponent<FaceMeshGraph>();
 
-      Debug.Log($"Max Num Faces: {maxNumFaces}");
-      Debug.Log($"Running Mode: {runningMode}");
+      Logger.LogInfo(TAG, $"Max Num Faces = {maxNumFaces}");
+      Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
       if (runningMode == RunningMode.Async) {
         graphRunner.OnFacesDetected.AddListener(OnFacesDetected);

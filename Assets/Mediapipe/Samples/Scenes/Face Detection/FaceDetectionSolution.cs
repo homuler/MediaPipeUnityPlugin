@@ -53,7 +53,7 @@ namespace Mediapipe.Unity.FaceDetection {
       yield return imageSource.Play();
 
       if (!imageSource.isPrepared) {
-        Debug.LogError("Failed to start ImageSource, exiting...");
+        Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
         yield break;
       }
 
@@ -62,8 +62,8 @@ namespace Mediapipe.Unity.FaceDetection {
 
       var graphRunner = gameObject.GetComponent<FaceDetectionGraph>();
 
-      Debug.Log($"Model Selection: {modelType}");
-      Debug.Log($"Running Mode: {runningMode}");
+      Logger.LogInfo(TAG, $"Model Selection = {modelType}");
+      Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
       if (runningMode == RunningMode.Async) {
         graphRunner.OnFacesDetected.AddListener(OnFacesDetected);

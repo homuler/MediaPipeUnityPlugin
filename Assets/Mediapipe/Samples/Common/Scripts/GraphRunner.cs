@@ -14,6 +14,8 @@ namespace Mediapipe.Unity {
       OpenGLES,
     }
 
+    string TAG { get { return this.GetType().Name; } }
+
     [SerializeField] TextAsset cpuConfig = null;
     [SerializeField] TextAsset gpuConfig = null;
     [SerializeField] TextAsset openGlEsConfig = null;
@@ -47,7 +49,7 @@ namespace Mediapipe.Unity {
 #endif
 
     protected virtual void Start() {
-      Debug.Log($"Loading dependent assets...");
+      Logger.LogInfo(TAG, $"Loading dependent assets...");
       PrepareDependentAssets();
       instanceCacheTable.Add(GetInstanceID(), this);
     }
@@ -68,7 +70,7 @@ namespace Mediapipe.Unity {
 
     public virtual Status Initialize() {
       configType = DetectConfigType();
-      Debug.Log($"Config Type: {configType}");
+      Logger.LogInfo(TAG, $"Using {configType} config");
 
       if (configType == ConfigType.None) {
         return Status.FailedPrecondition("Failed to detect config. Check if config is set to GraphRunner");
@@ -90,13 +92,13 @@ namespace Mediapipe.Unity {
       // TODO: not to call CloseAllPacketSources if calculatorGraph has not started.
       using (var status = calculatorGraph.CloseAllPacketSources()) {
         if (!status.ok) {
-          Debug.LogError(status.ToString());
+          Logger.LogError(TAG, status.ToString());
         }
       }
 
       using (var status = calculatorGraph.WaitUntilDone()) {
         if (!status.ok) {
-          Debug.LogError(status.ToString());
+          Logger.LogError(TAG, status.ToString());
         }
       }
     }
@@ -129,7 +131,7 @@ namespace Mediapipe.Unity {
     public T FetchNext<T>(OutputStreamPoller<T> poller, Packet<T> packet, string streamName = null, T failedValue = default(T)) {
       if (!poller.Next(packet)) { // blocks
         if (streamName != null) {
-          Debug.LogWarning($"Failed to fetch next packet from {streamName}");
+          Logger.LogWarning(TAG, $"Failed to fetch next packet from {streamName}");
         }
         return failedValue;
       }
