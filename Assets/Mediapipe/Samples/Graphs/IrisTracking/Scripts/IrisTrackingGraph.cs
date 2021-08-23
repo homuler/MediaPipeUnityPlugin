@@ -1,6 +1,7 @@
 using Mediapipe;
 using System.Collections.Generic;
-using UnityEngine;
+
+using TextureFrame = Mediapipe.Unity.TextureFrame;
 
 public class IrisTrackingGraph : DemoGraph {
   private const string faceLandmarksWithIrisStream = "face_landmarks_with_iris";

@@ -8,6 +8,8 @@ using System.Linq;
 using Stopwatch = System.Diagnostics.Stopwatch;
 #endif
 
+using TextureFrame = Mediapipe.Unity.TextureFrame;
+
 public class OfficialDemoGraph : DemoGraph {
   private const string outputStream = "output_video";
 

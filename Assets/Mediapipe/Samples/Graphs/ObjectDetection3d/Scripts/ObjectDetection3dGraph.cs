@@ -1,6 +1,8 @@
 using Mediapipe;
 using UnityEngine;
 
+using TextureFrame = Mediapipe.Unity.TextureFrame;
+
 public class ObjectDetection3dGraph : OfficialDemoGraph {
   [SerializeField] Category category;
   [SerializeField] int maxNumObjects = 5;

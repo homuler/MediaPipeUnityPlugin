@@ -1,6 +1,8 @@
 using Mediapipe;
 using UnityEngine;
 
+using TextureFrame = Mediapipe.Unity.TextureFrame;
+
 public class HairSegmentationGraph : DemoGraph {
   private const string hairMaskStream = "hair_mask_cpu";
   private OutputStreamPoller<ImageFrame> hairMaskStreamPoller;

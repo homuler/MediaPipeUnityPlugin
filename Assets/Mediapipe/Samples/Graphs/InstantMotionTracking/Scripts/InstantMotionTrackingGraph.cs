@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Google.Protobuf;
 
+using TextureFrame = Mediapipe.Unity.TextureFrame;
+
 public class InstantMotionTrackingGraph : OfficialDemoGraph {
   [SerializeField] TextAsset texture3dAsset = null;
 

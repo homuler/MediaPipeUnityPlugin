@@ -1,6 +1,8 @@
 using Mediapipe;
 using UnityEngine;
 
+using TextureFrame = Mediapipe.Unity.TextureFrame;
+
 public class HolisticGraph : DemoGraph {
   enum ModelComplexity {
     Lite = 0,

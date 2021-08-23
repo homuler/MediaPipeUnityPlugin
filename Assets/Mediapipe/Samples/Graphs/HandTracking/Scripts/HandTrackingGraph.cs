@@ -1,6 +1,8 @@
 using Mediapipe;
 using System.Collections.Generic;
 
+using TextureFrame = Mediapipe.Unity.TextureFrame;
+
 public class HandTrackingGraph : DemoGraph {
   private const string handLandmarksStream = "hand_landmarks";
   private OutputStreamPoller<List<NormalizedLandmarkList>> handLandmarksStreamPoller;

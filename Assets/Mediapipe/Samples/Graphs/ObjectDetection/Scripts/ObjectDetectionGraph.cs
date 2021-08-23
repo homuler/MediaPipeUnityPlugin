@@ -1,6 +1,8 @@
 using Mediapipe;
 using System.Collections.Generic;
 
+using TextureFrame = Mediapipe.Unity.TextureFrame;
+
 public class ObjectDetectionGraph : DemoGraph {
   private const string outputDetectionsStream = "output_detections";
   private OutputStreamPoller<List<Detection>> outputDetectionsStreamPoller;

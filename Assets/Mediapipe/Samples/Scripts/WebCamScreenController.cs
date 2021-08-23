@@ -3,6 +3,8 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+using TextureFrame = Mediapipe.Unity.TextureFrame;
+
 public class WebCamScreenController : MonoBehaviour {
   [SerializeField] int Width = 640;
   [SerializeField] int Height = 480;
