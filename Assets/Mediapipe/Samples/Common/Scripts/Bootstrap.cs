@@ -1,6 +1,7 @@
 using System.Collections;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 namespace Mediapipe.Unity {
@@ -13,6 +14,8 @@ namespace Mediapipe.Unity {
 
     static readonly string TAG = typeof(Bootstrap).Name;
 
+    [SerializeField] Image screen;
+    [SerializeField] GameObject consolePrefab;
     [SerializeField] ImageSource.SourceType defaultImageSource;
     [SerializeField] InferenceMode preferableInferenceMode;
     [SerializeField] AssetLoaderType assetLoaderType;
@@ -23,8 +26,12 @@ namespace Mediapipe.Unity {
     bool isGlogInitialized;
 
     IEnumerator Start() {
-      Logger.logger = new MemoizedLogger(100);
-      Logger.minLevel = Logger.LogLevel.Debug;
+      Logger.SetLogger(new MemoizedLogger(100));
+      Logger.minLogLevel = Logger.LogLevel.Debug;
+
+      Logger.LogInfo(TAG, "Starting console window...");
+      Instantiate(consolePrefab, screen.transform);
+      yield return new WaitForEndOfFrame();
 
       // GlobalConfigManager must be initialized before loading MediaPipe libraries.
       Logger.LogInfo(TAG, "Setting environment variables...");
@@ -63,6 +70,7 @@ namespace Mediapipe.Unity {
       DontDestroyOnLoad(this.gameObject);
       isFinished = true;
 
+      Logger.LogInfo(TAG, "Loading the first scene...");
       var sceneLoadReq = SceneManager.LoadSceneAsync(2);
       yield return new WaitUntil(() => sceneLoadReq.isDone);
     }
@@ -83,6 +91,8 @@ namespace Mediapipe.Unity {
       if (isGlogInitialized) {
         Glog.Shutdown();
       }
+
+      Logger.SetLogger(null);
     }
   }
 }

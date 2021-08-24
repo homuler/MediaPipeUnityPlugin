@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 using LogLevel = Mediapipe.Logger.LogLevel;
 
 namespace Mediapipe.Unity {
-  public class MemoizedLogger : ILogger {
+  public class MemoizedLogger : IExtendedLogger {
     public struct LogStruct {
       public readonly LogLevel logLevel;
       public readonly string tag;
@@ -54,7 +55,7 @@ namespace Mediapipe.Unity {
     }
 
     Queue<LogStruct> _histories;
-    Queue<LogStruct> histories {
+    public Queue<LogStruct> histories {
       get {
         if (_histories == null) {
           _histories = new Queue<LogStruct>(_historySize);
@@ -62,6 +63,8 @@ namespace Mediapipe.Unity {
         return _histories;
       }
     }
+
+    public UnityEvent<LogStruct> OnHistoryUpdate = new UnityEvent<LogStruct>();
 
     ILogger logger = Debug.unityLogger;
 
@@ -119,6 +122,21 @@ namespace Mediapipe.Unity {
       RecordLog(logType, tag, message);
     }
 
+    public void Log(LogLevel logLevel, string tag, object message, UnityEngine.Object context) {
+      logger.Log(logLevel.GetLogType(), tag, message, context);
+      RecordLog(new LogStruct(logLevel, tag, message));
+    }
+
+    public void Log(LogLevel logLevel, object message, UnityEngine.Object context) {
+      logger.Log(logLevel.GetLogType(), message, context);
+      RecordLog(new LogStruct(logLevel, null, message));
+    }
+
+    public void Log(LogLevel logLevel, object message) {
+      logger.Log(logLevel.GetLogType(), message);
+      RecordLog(new LogStruct(logLevel, null, message));
+    }
+
     public void LogWarning(string tag, object message) {
       logger.LogWarning(tag, message);
       RecordWarnLog(tag, message);
@@ -157,11 +175,12 @@ namespace Mediapipe.Unity {
       RecordErrorLog(null, exception);
     }
 
-    void RecordLog(LogStruct log) {
+    public void RecordLog(LogStruct log) {
       while (histories.Count > 0 && _historySize <= histories.Count) {
         histories.Dequeue();
       }
       histories.Enqueue(log);
+      OnHistoryUpdate.Invoke(log);
     }
 
     void RecordLog(LogType logType, string tag, object message) {
