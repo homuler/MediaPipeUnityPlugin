@@ -3844,7 +3844,7 @@ GameObject:
   - component: {fileID: 5767753061706784394}
   - component: {fileID: 1409415355137883427}
   m_Layer: 5
-  m_Name: Global Config
+  m_Name: Global Config Window
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   screen: {fileID: 941420919}
-  consolePrefab: {fileID: 6798249686407621666, guid: 797aaa91cd42239c59f9e033183f8b78,
+  consolePrefab: {fileID: 3481718972971892304, guid: 3bd1ffa1267fbef6fbdd99b4a8e699ff,
     type: 3}
   defaultImageSource: 0
   preferableInferenceMode: 0
