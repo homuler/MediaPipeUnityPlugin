@@ -21,7 +21,7 @@ namespace Mediapipe.Unity.FaceDetection.UI {
     }
 
     public override void Exit() {
-      GetModal().Close(isChanged);
+      GetModal().CloseAndResume(isChanged);
     }
 
     public void SwitchModelType() {

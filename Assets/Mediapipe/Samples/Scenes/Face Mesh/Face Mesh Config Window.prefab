@@ -2747,7 +2747,7 @@ GameObject:
   - component: {fileID: 8161433437758527756}
   - component: {fileID: -7366824666081885406}
   m_Layer: 5
-  m_Name: Face Mesh Config
+  m_Name: Face Mesh Config Window
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

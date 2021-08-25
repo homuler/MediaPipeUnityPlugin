@@ -20,7 +20,7 @@ namespace Mediapipe.Unity.UI {
     }
 
     public override void Exit() {
-      GetModal().Close(isChanged);
+      GetModal().CloseAndResume(isChanged);
     }
 
     void InitializeContents() {

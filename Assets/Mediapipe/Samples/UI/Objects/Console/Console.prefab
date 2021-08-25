@@ -336,7 +336,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 20
   m_Viewport: {fileID: 4558350226998646492}
   m_HorizontalScrollbar: {fileID: 965831236020746082}
   m_VerticalScrollbar: {fileID: 8915376192930860593}
@@ -361,6 +361,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   logLinePrefab: {fileID: 2894631414300269451, guid: b3a48036f640af0a8b3f1705d5d7e461,
     type: 3}
+  maxLines: 200
 --- !u!1 &3753487017719311786
 GameObject:
   m_ObjectHideFlags: 0

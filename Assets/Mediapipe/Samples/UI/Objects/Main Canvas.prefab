@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8fb55141659b9607bbd8859e1dbcf04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modal: {fileID: 8571076843237194837}
+  modalPanel: {fileID: 8571076843237194837}
   contents: {fileID: 2286573430237446446, guid: 5920f5c607ecc6ea88b86fbecab72418,
     type: 3}
 --- !u!114 &8571076843968688109
@@ -27,7 +27,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8fb55141659b9607bbd8859e1dbcf04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modal: {fileID: 8571076843237194837}
+  modalPanel: {fileID: 8571076843237194837}
   contents: {fileID: 6134773167894791910, guid: d00f9eb5648585662ba6825f8ab8400f,
     type: 3}
 --- !u!114 &8571076843139220523
@@ -42,7 +42,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8fb55141659b9607bbd8859e1dbcf04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modal: {fileID: 8571076843237194837}
+  modalPanel: {fileID: 8571076843237194837}
   contents: {fileID: 6938625115693525800, guid: 43e0b06a07be91d9ab8df9c5e822664a,
     type: 3}
 --- !u!114 &8571076843980202029
@@ -57,7 +57,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8fb55141659b9607bbd8859e1dbcf04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modal: {fileID: 8571076843237194837}
+  modalPanel: {fileID: 8571076843237194837}
   contents: {fileID: 0}
 --- !u!1 &8571076842338426121
 GameObject:
@@ -869,12 +869,12 @@ PrefabInstance:
     - target: {fileID: 3559479236321484026, guid: 43e9f0194e843b641ab8083b120feac8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnClick
+      value: Open
       objectReference: {fileID: 0}
     - target: {fileID: 3559479236321484026, guid: 43e9f0194e843b641ab8083b120feac8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: ModalButton, Assembly-CSharp
+      value: Mediapipe.Unity.UI.ModalButton, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3559479236321484026, guid: 43e9f0194e843b641ab8083b120feac8,
         type: 3}
@@ -1200,12 +1200,12 @@ PrefabInstance:
     - target: {fileID: 3559479236321484026, guid: 43e9f0194e843b641ab8083b120feac8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnClick
+      value: OpenAndPause
       objectReference: {fileID: 0}
     - target: {fileID: 3559479236321484026, guid: 43e9f0194e843b641ab8083b120feac8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: ModalButton, Assembly-CSharp
+      value: Mediapipe.Unity.UI.ModalButton, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3559479236321484026, guid: 43e9f0194e843b641ab8083b120feac8,
         type: 3}
@@ -1386,12 +1386,12 @@ PrefabInstance:
     - target: {fileID: 3559479236321484026, guid: 43e9f0194e843b641ab8083b120feac8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnClick
+      value: Open
       objectReference: {fileID: 0}
     - target: {fileID: 3559479236321484026, guid: 43e9f0194e843b641ab8083b120feac8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: ModalButton, Assembly-CSharp
+      value: Mediapipe.Unity.UI.ModalButton, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3559479236321484026, guid: 43e9f0194e843b641ab8083b120feac8,
         type: 3}
@@ -1572,7 +1572,7 @@ PrefabInstance:
     - target: {fileID: 3559479236321484026, guid: 43e9f0194e843b641ab8083b120feac8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnClick
+      value: OpenAndPause
       objectReference: {fileID: 0}
     - target: {fileID: 3559479236321484026, guid: 43e9f0194e843b641ab8083b120feac8,
         type: 3}

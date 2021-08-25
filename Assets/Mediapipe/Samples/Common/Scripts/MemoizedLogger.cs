@@ -1,7 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 using LogLevel = Mediapipe.Logger.LogLevel;
 
@@ -64,7 +64,8 @@ namespace Mediapipe.Unity {
       }
     }
 
-    public UnityEvent<LogStruct> OnHistoryUpdate = new UnityEvent<LogStruct>();
+    public delegate void LogOutputEventHandler(LogStruct logStruct);
+    public event LogOutputEventHandler OnLogOutput;
 
     ILogger logger = Debug.unityLogger;
 
@@ -176,11 +177,13 @@ namespace Mediapipe.Unity {
     }
 
     public void RecordLog(LogStruct log) {
-      while (histories.Count > 0 && _historySize <= histories.Count) {
-        histories.Dequeue();
+      lock (((ICollection)histories).SyncRoot) {
+        while (histories.Count > 0 && _historySize <= histories.Count) {
+          histories.Dequeue();
+        }
+        histories.Enqueue(log);
+        OnLogOutput?.Invoke(log);
       }
-      histories.Enqueue(log);
-      OnHistoryUpdate.Invoke(log);
     }
 
     void RecordLog(LogType logType, string tag, object message) {

@@ -11,7 +11,7 @@ namespace Mediapipe.Unity {
     public void SetLog(MemoizedLogger.LogStruct logStruct) {
       utcTimeArea.text = FormatUtcTime(logStruct.utcTime);
       tagArea.text = FormatTag(logStruct.tag);
-      messageArea.text = logStruct.message.ToString();
+      messageArea.text = FormatMessage(logStruct.message);
       messageArea.color = GetMessageColor(logStruct.logLevel);
     }
 
@@ -24,6 +24,10 @@ namespace Mediapipe.Unity {
         return null;
       }
       return $"{tag}:";
+    }
+
+    string FormatMessage(object message) {
+      return message == null ? "Null" : message.ToString();
     }
 
     Color GetMessageColor(Logger.LogLevel logLevel) {

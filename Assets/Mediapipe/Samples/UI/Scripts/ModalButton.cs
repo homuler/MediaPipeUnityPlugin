@@ -2,12 +2,22 @@ using UnityEngine;
 
 namespace Mediapipe.Unity.UI {
   public class ModalButton : MonoBehaviour {
-    [SerializeField] GameObject modal;
+    [SerializeField] GameObject modalPanel;
     [SerializeField] GameObject contents;
 
-    public void OnClick() {
+    Modal modal {
+      get { return modalPanel.GetComponent<Modal>(); }
+    }
+
+    public void Open() {
       if (contents != null) {
-        modal.GetComponent<Modal>().Open(contents);
+        modal.Open(contents);
+      }
+    }
+
+    public void OpenAndPause() {
+      if (contents != null) {
+        modal.OpenAndPause(contents);
       }
     }
   }

@@ -21,7 +21,7 @@ namespace Mediapipe.Unity.FaceMesh.UI {
     }
 
     public override void Exit() {
-      GetModal().Close(isChanged);
+      GetModal().CloseAndResume(isChanged);
     }
 
     public void UpdateMaxNumFaces() {

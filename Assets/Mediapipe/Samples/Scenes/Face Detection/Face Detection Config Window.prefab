@@ -3262,7 +3262,7 @@ GameObject:
   - component: {fileID: 7150646400474069085}
   - component: {fileID: -8230794428571547373}
   m_Layer: 5
-  m_Name: Face Detection Config
+  m_Name: Face Detection Config Window
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
