@@ -56,16 +56,6 @@ namespace Mediapipe.Unity {
 
     protected virtual void OnDestroy() {
       Stop();
-
-      if (calculatorGraph != null) {
-        nameTable.Remove(calculatorGraph.mpPtr);
-        calculatorGraph.Dispose();
-        calculatorGraph = null;
-      }
-
-      if (stopwatch != null && stopwatch.IsRunning) {
-        stopwatch.Stop();
-      }
     }
 
     public virtual Status Initialize() {
@@ -100,6 +90,14 @@ namespace Mediapipe.Unity {
         if (!status.ok) {
           Logger.LogError(TAG, status.ToString());
         }
+      }
+
+      nameTable.Remove(calculatorGraph.mpPtr);
+      calculatorGraph.Dispose();
+      calculatorGraph = null;
+
+      if (stopwatch != null && stopwatch.IsRunning) {
+        stopwatch.Stop();
       }
     }
 
