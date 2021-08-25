@@ -8,7 +8,7 @@ namespace Mediapipe.Unity.UI {
     [SerializeField] GameObject logLinePrefab;
     [SerializeField] int maxLines = 200;
 
-    string _ContentPath = "Viewport/Content";
+    const string _ContentPath = "Viewport/Content";
 
     Transform contentRoot;
     MemoizedLogger logger;

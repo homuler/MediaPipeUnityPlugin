@@ -20,7 +20,7 @@ namespace Mediapipe.Unity {
     [SerializeField] TextAsset gpuConfig = null;
     [SerializeField] TextAsset openGlEsConfig = null;
 
-    static readonly InstanceCacheTable<int, GraphRunner> instanceCacheTable = new InstanceCacheTable<int, GraphRunner>(5);
+    static readonly GlobalInstanceTable<int, GraphRunner> instanceTable = new GlobalInstanceTable<int, GraphRunner>(5);
     static readonly Dictionary<IntPtr, int> nameTable = new Dictionary<IntPtr, int>();
 
     public InferenceMode inferenceMode {
@@ -51,7 +51,7 @@ namespace Mediapipe.Unity {
     protected virtual void Start() {
       Logger.LogInfo(TAG, $"Loading dependent assets...");
       PrepareDependentAssets();
-      instanceCacheTable.Add(GetInstanceID(), this);
+      instanceTable.Add(GetInstanceID(), this);
     }
 
     protected virtual void OnDestroy() {
@@ -155,7 +155,7 @@ namespace Mediapipe.Unity {
       var isInstanceIdFound = nameTable.TryGetValue(graphPtr, out var instanceId);
 
       if (isInstanceIdFound) {
-        return instanceCacheTable.TryGetValue(instanceId, out graphRunner);
+        return instanceTable.TryGetValue(instanceId, out graphRunner);
       }
       graphRunner = null;
       return false;

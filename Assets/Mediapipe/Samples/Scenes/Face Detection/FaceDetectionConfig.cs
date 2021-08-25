@@ -6,8 +6,8 @@ using Mediapipe.Unity.UI;
 
 namespace Mediapipe.Unity.FaceDetection.UI {
   public class FaceDetectionConfig : ModalContents {
-    string _ModelSelectionPath = "Scroll View/Viewport/Contents/Model Selection/Dropdown";
-    string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
+    const string _ModelSelectionPath = "Scroll View/Viewport/Contents/Model Selection/Dropdown";
+    const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
 
     FaceDetectionSolution solution;
     Dropdown ModelSelectionInput;

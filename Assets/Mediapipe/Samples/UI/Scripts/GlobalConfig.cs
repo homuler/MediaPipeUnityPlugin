@@ -2,11 +2,11 @@ using UnityEngine.UI;
 
 namespace Mediapipe.Unity.UI {
   public class GlobalConfig : ModalContents {
-    string _GlogLogtostederrPath = "Scroll View/Viewport/Contents/GlogLogtostderr/Toggle";
-    string _GlogStderrthresholdPath = "Scroll View/Viewport/Contents/GlogStderrthreshold/Dropdown";
-    string _GlogMinloglevelPath = "Scroll View/Viewport/Contents/GlogMinloglevel/Dropdown";
-    string _GlogVPath = "Scroll View/Viewport/Contents/GlogV/Dropdown";
-    string _GlogLogDirPath = "Scroll View/Viewport/Contents/GlogLogDir/InputField";
+    const string _GlogLogtostederrPath = "Scroll View/Viewport/Contents/GlogLogtostderr/Toggle";
+    const string _GlogStderrthresholdPath = "Scroll View/Viewport/Contents/GlogStderrthreshold/Dropdown";
+    const string _GlogMinloglevelPath = "Scroll View/Viewport/Contents/GlogMinloglevel/Dropdown";
+    const string _GlogVPath = "Scroll View/Viewport/Contents/GlogV/Dropdown";
+    const string _GlogLogDirPath = "Scroll View/Viewport/Contents/GlogLogDir/InputField";
 
     Toggle GlogLogtostderrInput;
     Dropdown GlogStderrthresholdInput;

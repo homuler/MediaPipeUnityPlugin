@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 namespace Mediapipe.Unity.UI {
   public class ImageSourceConfig : ModalContents {
-    string _SourceTypePath = "Scroll View/Viewport/Contents/SourceType/Dropdown";
-    string _SourcePath = "Scroll View/Viewport/Contents/Source/Dropdown";
-    string _ResolutionPath = "Scroll View/Viewport/Contents/Resolution/Dropdown";
+    const string _SourceTypePath = "Scroll View/Viewport/Contents/SourceType/Dropdown";
+    const string _SourcePath = "Scroll View/Viewport/Contents/Source/Dropdown";
+    const string _ResolutionPath = "Scroll View/Viewport/Contents/Resolution/Dropdown";
 
     Dropdown SourceTypeInput;
     Dropdown SourceInput;

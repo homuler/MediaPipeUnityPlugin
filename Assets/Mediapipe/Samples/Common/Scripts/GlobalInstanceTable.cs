@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Mediapipe.Unity {
-  public class InstanceCacheTable<T, U> where U : class {
+  public class GlobalInstanceTable<T, U> where U : class {
     Dictionary<T, WeakReference<U>> table;
     int maxSize;
 
-    public InstanceCacheTable(int maxSize) {
+    public GlobalInstanceTable(int maxSize) {
       table = new Dictionary<T, WeakReference<U>>();
       this.maxSize = maxSize;
     }

@@ -6,8 +6,8 @@ using Mediapipe.Unity.UI;
 
 namespace Mediapipe.Unity.FaceMesh.UI {
   public class FaceMeshConfig : ModalContents {
-    string _MaxNumFacesPath = "Scroll View/Viewport/Contents/Max Num Faces/InputField";
-    string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
+    const string _MaxNumFacesPath = "Scroll View/Viewport/Contents/Max Num Faces/InputField";
+    const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
 
     FaceMeshSolution solution;
     InputField MaxNumFacesInput;

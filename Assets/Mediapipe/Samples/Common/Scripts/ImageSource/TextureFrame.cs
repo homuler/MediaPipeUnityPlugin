@@ -1,6 +1,5 @@
-using Mediapipe;
-using Mediapipe.Unity;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
@@ -13,7 +12,7 @@ namespace Mediapipe.Unity {
 
     static readonly string TAG = typeof(TextureFrame).Name;
 
-    static readonly InstanceCacheTable<Guid, TextureFrame> instanceCacheTable = new InstanceCacheTable<Guid, TextureFrame>(100);
+    static readonly GlobalInstanceTable<Guid, TextureFrame> instanceTable = new GlobalInstanceTable<Guid, TextureFrame>(100);
     static readonly Dictionary<UInt32, Guid> nameTable = new Dictionary<UInt32, Guid>();
 
     readonly Texture2D texture;
@@ -61,10 +60,8 @@ namespace Mediapipe.Unity {
     TextureFrame(Texture2D texture) {
       this.texture = texture;
       this.OnRelease = new ReleaseEvent();
-
       instanceId = Guid.NewGuid();
-      nameTable.Add(GetTextureName(), instanceId);
-      instanceCacheTable.Add(instanceId, this);
+      RegisterInstance(this);
     }
 
     public TextureFrame(int width, int height, TextureFormat format) : this(new Texture2D(width, height, format, false)) {}
@@ -177,8 +174,7 @@ namespace Mediapipe.Unity {
       texture.Apply();
       nativeTexturePtr = IntPtr.Zero;
 
-      nameTable.Remove(oldName);
-      nameTable.Add(GetTextureName(), instanceId);
+      ChangeNameFrom(oldName);
     }
 
     public NativeArray<T> GetRawTextureData<T>() where T : struct {
@@ -241,7 +237,7 @@ namespace Mediapipe.Unity {
         return;
       }
 
-      var isTextureFrameFound = instanceCacheTable.TryGetValue(instanceId, out var textureFrame);
+      var isTextureFrameFound = instanceTable.TryGetValue(instanceId, out var textureFrame);
 
       if (!isTextureFrameFound) {
         Logger.LogWarning(TAG, $"The owner TextureFrame of the released texture (name={textureName}) is already garbage collected");
@@ -252,8 +248,48 @@ namespace Mediapipe.Unity {
       textureFrame.Release(glSyncToken);
     }
 
+    static void RegisterInstance(TextureFrame textureFrame) {
+      var name = textureFrame.GetTextureName();
+      var id = textureFrame.instanceId;
+      lock (((ICollection)nameTable).SyncRoot) {
+        if (AcquireName(name)) {
+          instanceTable.Add(id, textureFrame);
+          nameTable.Add(name, id);
+          return;
+        }
+      }
+      throw new ArgumentException("Another instance has the same name");
+    }
+
+    /// <summary>
+    ///   Remove <paramref name="name" /> from <see cref="nameTable" /> if it's stale.
+    ///   If <paramref name="name" /> does not exist in <see cref="nameTable" />, do nothing.
+    /// </summary>
+    /// <returns>Return if name is available</returns>
+    static bool AcquireName(UInt32 name) {
+      if (nameTable.TryGetValue(name, out var id)) {
+        if (instanceTable.TryGetValue(id, out var instance)) {
+          // if instance is found, the instance is using the name.
+          return false;
+        }
+        nameTable.Remove(name);
+      }
+      return true;
+    }
+
     static TextureFormat GetTextureFormat(Texture texture) {
       return GraphicsFormatUtility.GetTextureFormat(texture.graphicsFormat);
+    }
+
+    void ChangeNameFrom(UInt32 oldName) {
+      var newName = GetTextureName();
+      lock (((ICollection)nameTable).SyncRoot) {
+        if (!AcquireName(newName)) {
+          throw new ArgumentException("Another instance is using the specified name now");
+        }
+        nameTable.Remove(oldName);
+        nameTable.Add(newName, instanceId);
+      }
     }
 
     Texture2D GetTextureBufferFor(Texture texture) {
