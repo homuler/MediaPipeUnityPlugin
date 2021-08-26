@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d1ec0e202f29d7ee28cccba68415d95b
+guid: c3f533a3b3fececba86462b46ff711ec
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - faceLandmarkListAnnotationPrefab: {fileID: 7273100862690186831, guid: 16074ce928b0558829296ab0d9ccadf3,
+  - annotationPrefab: {fileID: 7434967355688441420, guid: 87a9be2a7620991a78342ef9a56fa62c,
       type: 3}
   executionOrder: 0
   icon: {instanceID: 0}

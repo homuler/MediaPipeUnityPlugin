@@ -71,7 +71,7 @@ namespace Mediapipe.Unity {
       isFinished = true;
 
       Logger.LogInfo(TAG, "Loading the first scene...");
-      var sceneLoadReq = SceneManager.LoadSceneAsync(2);
+      var sceneLoadReq = SceneManager.LoadSceneAsync(1);
       yield return new WaitUntil(() => sceneLoadReq.isDone);
     }
 

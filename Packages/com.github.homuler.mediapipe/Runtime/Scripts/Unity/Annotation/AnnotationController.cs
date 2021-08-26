@@ -4,8 +4,8 @@ namespace Mediapipe.Unity {
   public class AnnotationController<T, U> : MonoBehaviour where T : Annotation<U> where U : class {
     [SerializeField] GameObject annotationPrefab;
     protected T annotation;
-    U target;
-    bool isStale = false;
+    protected U target;
+    protected bool isStale = false;
 
     public bool isMirrored {
       get { return annotation.isMirrored; }
@@ -16,18 +16,18 @@ namespace Mediapipe.Unity {
       }
     }
 
-    void Start() {
+    protected virtual void Start() {
       annotation = Instantiate(annotationPrefab, transform).GetComponent<T>();
     }
 
-    void LateUpdate() {
+    protected virtual void LateUpdate() {
       if (isStale) {
         isStale = false;
         annotation.SetTarget(target);
       }
     }
 
-    void OnDestroy() {
+    protected virtual void OnDestroy() {
       if (annotation != null) {
         Destroy(annotation);
         annotation = null;

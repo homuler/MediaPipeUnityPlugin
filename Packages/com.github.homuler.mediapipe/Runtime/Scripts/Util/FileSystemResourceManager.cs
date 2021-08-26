@@ -92,8 +92,12 @@ namespace Mediapipe.Unity {
     protected static bool GetResourceContents(string path, IntPtr dst) {
       try {
         var cachePath = PathToResourceAsFile(path);
-        var asset = File.ReadAllBytes(cachePath);
+        if (cachePath == null) {
+          Logger.LogError($"Failed to resolve path to {path}");
+          return false;
+        }
 
+        var asset = File.ReadAllBytes(cachePath);
         using (var srcStr = new StdString(asset)) {
           srcStr.Swap(new StdString(dst, false));
         }
