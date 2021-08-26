@@ -36,6 +36,10 @@ namespace Mediapipe.Unity.UI {
       }
     }
 
+    public override void Exit() {
+      GetModal().CloseAndResume();
+    }
+
     Transform InitializeRow() {
       return Instantiate(solutionRowPrefab, solutionGrid).transform;
     }

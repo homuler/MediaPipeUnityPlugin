@@ -24,7 +24,7 @@ namespace Mediapipe.Unity.UI {
       }
     }
 
-    public void CloseAndResume(bool forceRestart) {
+    public void CloseAndResume(bool forceRestart = false) {
       Close();
 
       if (forceRestart) {
