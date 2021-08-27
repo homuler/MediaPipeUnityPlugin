@@ -21,24 +21,24 @@ namespace Mediapipe.Unity {
     static string _GlogVKey = "GLOG_v";
     static string _GlogLogDirKey = "GLOG_log_dir";
 
-    public static string GlogLogtostderr {
-      get { return config[_GlogLogtostderrKey]; }
-      set { config[_GlogLogtostderrKey] = value; }
+    public static bool GlogLogtostderr {
+      get { return config[_GlogLogtostderrKey] == "1"; }
+      set { config[_GlogLogtostderrKey] = value ? "1" : "0"; }
     }
 
-    public static string GlogStderrthreshold {
-      get { return config[_GlogStderrthresholdKey]; }
-      set { config[_GlogStderrthresholdKey] = value; }
+    public static int GlogStderrthreshold {
+      get { return int.Parse(config[_GlogStderrthresholdKey]); }
+      set { config[_GlogStderrthresholdKey] = value.ToString(); }
     }
 
-    public static string GlogMinloglevel {
-      get { return config[_GlogMinloglevelKey]; }
-      set { config[_GlogMinloglevelKey] = value; }
+    public static int GlogMinloglevel {
+      get { return int.Parse(config[_GlogMinloglevelKey]); }
+      set { config[_GlogMinloglevelKey] = value.ToString(); }
     }
 
-    public static string GlogV {
-      get { return config[_GlogVKey]; }
-      set { config[_GlogVKey] = value; }
+    public static int GlogV {
+      get { return int.Parse(config[_GlogVKey]); }
+      set { config[_GlogVKey] = value.ToString(); }
     }
 
     public static string GlogLogDir {
@@ -57,7 +57,7 @@ namespace Mediapipe.Unity {
             { _GlogLogtostderrKey, "0" },
             { _GlogStderrthresholdKey, "2" },
             { _GlogMinloglevelKey, "0" },
-            { _GlogLogDirKey, "Logs" },
+            { _GlogLogDirKey, "" },
             { _GlogVKey, "0" },
           };
 
@@ -82,7 +82,7 @@ namespace Mediapipe.Unity {
 
     public static void Commit() {
       string[] lines = {
-        $"{_GlogLogtostderrKey}={GlogLogtostderr}",
+        $"{_GlogLogtostderrKey}={(GlogLogtostderr ? "1" : "0")}",
         $"{_GlogStderrthresholdKey}={GlogStderrthreshold}",
         $"{_GlogMinloglevelKey}={GlogMinloglevel}",
         $"{_GlogLogDirKey}={GlogLogDir}",
@@ -92,12 +92,12 @@ namespace Mediapipe.Unity {
       Logger.LogInfo(TAG, "Global config file has been updated");
     }
 
-    public static void SetEnvs() {
-      System.Environment.SetEnvironmentVariable(_GlogLogtostderrKey, GlogLogtostderr);
-      System.Environment.SetEnvironmentVariable(_GlogStderrthresholdKey, GlogStderrthreshold);
-      System.Environment.SetEnvironmentVariable(_GlogMinloglevelKey, GlogMinloglevel);
-      System.Environment.SetEnvironmentVariable(_GlogLogDirKey, Path.Combine(Application.persistentDataPath, GlogLogDir));
-      System.Environment.SetEnvironmentVariable(_GlogVKey, GlogV);
+    public static void SetFlags() {
+      Glog.logtostderr = GlogLogtostderr;
+      Glog.stderrthreshold = GlogStderrthreshold;
+      Glog.minloglevel = GlogMinloglevel;
+      Glog.v = GlogV;
+      Glog.logDir = GlogLogDir == "" ? null : Path.Combine(Application.persistentDataPath, GlogLogDir);
     }
 
     static (string, string) ParseLine(string line) {

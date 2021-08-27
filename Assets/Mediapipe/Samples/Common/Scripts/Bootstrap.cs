@@ -33,14 +33,15 @@ namespace Mediapipe.Unity {
       Instantiate(consolePrefab, screen.transform);
       yield return new WaitForEndOfFrame();
 
-      // GlobalConfigManager must be initialized before loading MediaPipe libraries.
-      Logger.LogInfo(TAG, "Setting environment variables...");
-      GlobalConfigManager.SetEnvs();
+      Logger.LogInfo(TAG, "Setting global flags...");
+      GlobalConfigManager.SetFlags();
 
       if (enableGlog) {
-        var logDir = GlobalConfigManager.GlogLogDir;
-        if (!Directory.Exists(logDir)) {
-          Directory.CreateDirectory(logDir);
+        if (Glog.logDir != null) {
+          if (!Directory.Exists(Glog.logDir)) {
+            Directory.CreateDirectory(Glog.logDir);
+          }
+          Logger.LogVerbose(TAG, $"Glog will output files under {Glog.logDir}");
         }
         Glog.Initialize("MediaPipeUnityPlugin");
         isGlogInitialized = true;

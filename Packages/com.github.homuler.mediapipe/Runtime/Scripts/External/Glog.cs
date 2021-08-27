@@ -7,6 +7,51 @@ namespace Mediapipe {
       FATAL = 3,
     }
 
+    static bool _logtostderr = false;
+    public static bool logtostderr {
+      get { return _logtostderr; }
+      set {
+        UnsafeNativeMethods.glog_FLAGS_logtostderr(value);
+        _logtostderr = value;
+      }
+    }
+
+    static int _stderrthreshold = 2;
+    public static int stderrthreshold {
+      get { return _stderrthreshold; }
+      set {
+        UnsafeNativeMethods.glog_FLAGS_stderrthreshold(value);
+        _stderrthreshold = value;
+      }
+    }
+
+    static int _minloglevel = 0;
+    public static int minloglevel {
+      get { return _minloglevel; }
+      set {
+        UnsafeNativeMethods.glog_FLAGS_minloglevel(value);
+        _minloglevel = value;
+      }
+    }
+
+    static string _logDir;
+    public static string logDir {
+      get { return _logDir; }
+      set {
+        UnsafeNativeMethods.glog_FLAGS_log_dir(value == null ? "" : value);
+        _logDir = value;
+      }
+    }
+
+    static int _v = 0;
+    public static int v {
+      get { return _v; }
+      set {
+        UnsafeNativeMethods.glog_FLAGS_v(value);
+        _v = value;
+      }
+    }
+
     public static void Initialize(string name) {
       UnsafeNativeMethods.google_InitGoogleLogging__PKc(name).Assert();
     }
