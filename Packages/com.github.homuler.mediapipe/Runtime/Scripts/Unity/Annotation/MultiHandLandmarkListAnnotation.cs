@@ -7,7 +7,7 @@ namespace Mediapipe.Unity {
     [SerializeField] Color landmarkColor = Color.green;
     [SerializeField] Color leftLandmarkColor = Color.green;
     [SerializeField] Color rightLandmarkColor = Color.green;
-    [SerializeField] float landmarkRadius = 10.0f;
+    [SerializeField] float landmarkRadius = 20.0f;
     [SerializeField] Color connectionColor = Color.white;
     [SerializeField, Range(0, 1)] float connectionWidth = 1.0f;
 
