@@ -5,8 +5,8 @@ class PoseTrackingValue {
   public readonly Detection PoseDetection;
 
   public PoseTrackingValue(NormalizedLandmarkList landmarkList, Detection detection) {
-    PoseLandmarkList = landmarkList;
-    PoseDetection = detection;
+    PoseLandmarkList = landmarkList == null ? new NormalizedLandmarkList() : landmarkList;
+    PoseDetection = detection == null ? new Detection() : detection;
   }
 
   public PoseTrackingValue(NormalizedLandmarkList landmarkList) : this(landmarkList, new Detection()) {}

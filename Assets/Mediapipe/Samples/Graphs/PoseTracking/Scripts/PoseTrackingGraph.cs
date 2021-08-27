@@ -23,14 +23,6 @@ public class PoseTrackingGraph : DemoGraph {
   private OutputStreamPoller<Detection> poseDetectionStreamPoller;
   private DetectionPacket poseDetectionPacket;
 
-  private const string poseLandmarksPresenceStream = "pose_landmarks_presence";
-  private OutputStreamPoller<bool> poseLandmarksPresenceStreamPoller;
-  private BoolPacket poseLandmarksPresencePacket;
-
-  private const string poseDetectionPresenceStream = "pose_detection_presence";
-  private OutputStreamPoller<bool> poseDetectionPresenceStreamPoller;
-  private BoolPacket poseDetectionPresencePacket;
-
   private SidePacket sidePacket;
 
   public override Status StartRun() {
@@ -42,12 +34,6 @@ public class PoseTrackingGraph : DemoGraph {
 
     poseDetectionStreamPoller = graph.AddOutputStreamPoller<Detection>(poseDetectionStream).Value();
     poseDetectionPacket = new DetectionPacket();
-
-    poseLandmarksPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(poseLandmarksPresenceStream).Value();
-    poseLandmarksPresencePacket = new BoolPacket();
-
-    poseDetectionPresenceStreamPoller = graph.AddOutputStreamPoller<bool>(poseDetectionPresenceStream).Value();
-    poseDetectionPresencePacket = new BoolPacket();
 
     sidePacket = new SidePacket();
     sidePacket.Emplace("model_complexity", new IntPacket((int)modelComplexity));
@@ -64,17 +50,15 @@ public class PoseTrackingGraph : DemoGraph {
   }
 
   private PoseTrackingValue FetchNextPoseTrackingValue() {
-    if (!FetchNextPoseLandmarksPresence()) {
-      return new PoseTrackingValue();
+    NormalizedLandmarkList poseLandmarks = null;
+    if (poseLandmarksStreamPoller.QueueSize() > 0) {
+      poseLandmarks = FetchNextPoseLandmarks();
     }
 
-    var poseLandmarks = FetchNextPoseLandmarks();
-
-    if (!FetchNextPoseDetectionPresence()) {
-      return new PoseTrackingValue(poseLandmarks);
+    Detection poseDetection = null;
+    if (poseDetectionStreamPoller.QueueSize() > 0) {
+      poseDetection = FetchNextPoseDetection();
     }
-
-    var poseDetection = FetchNextPoseDetection();
 
     return new PoseTrackingValue(poseLandmarks, poseDetection);
   }
@@ -89,14 +73,6 @@ public class PoseTrackingGraph : DemoGraph {
 
   private Detection FetchNextPoseDetection() {
     return FetchNext(poseDetectionStreamPoller, poseDetectionPacket, poseDetectionStream);
-  }
-
-  private bool FetchNextPoseLandmarksPresence() {
-    return FetchNext(poseLandmarksPresenceStreamPoller, poseLandmarksPresencePacket, poseLandmarksPresenceStream);
-  }
-
-  private bool FetchNextPoseDetectionPresence() {
-    return FetchNext(poseDetectionPresenceStreamPoller, poseDetectionPresencePacket, poseDetectionPresenceStream);
   }
 
   private void RenderAnnotation(WebCamScreenController screenController, PoseTrackingValue value) {

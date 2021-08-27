@@ -17,7 +17,6 @@
 # CHANGES:
 #   - Add ImageTransformationCalculator and rotate the input
 #   - Remove PoseRendererGpu
-#   - Add PacketPresenceCalculators
 
 # MediaPipe graph that performs upper-body pose tracking with TensorFlow Lite on GPU.
 
@@ -26,8 +25,6 @@ input_stream: "input_video"
 output_stream: "pose_landmarks"
 output_stream: "pose_world_landmarks"
 output_stream: "pose_detection"
-output_stream: "pose_landmarks_presence"
-output_stream: "pose_detection_presence"
 
 # Throttles the images flowing downstream for flow control. It passes through
 # the very first incoming image unaltered, and waits for downstream nodes
@@ -42,7 +39,7 @@ output_stream: "pose_detection_presence"
 node {
   calculator: "FlowLimiterCalculator"
   input_stream: "input_video"
-  input_stream: "FINISHED:pose_detection_presence"
+  input_stream: "FINISHED:pose_landmarks"
   input_stream_info: {
     tag_index: "FINISHED"
     back_edge: true
@@ -69,16 +66,4 @@ node {
   output_stream: "WORLD_LANDMARKS:pose_world_landmarks"
   output_stream: "DETECTION:pose_detection"
   output_stream: "ROI_FROM_LANDMARKS:roi_from_landmarks"
-}
-
-node {
-  calculator: "PacketPresenceCalculator"
-  input_stream: "PACKET:pose_landmarks"
-  output_stream: "PRESENCE:pose_landmarks_presence"
-}
-
-node {
-  calculator: "PacketPresenceCalculator"
-  input_stream: "PACKET:pose_detection"
-  output_stream: "PRESENCE:pose_detection_presence"
 }
