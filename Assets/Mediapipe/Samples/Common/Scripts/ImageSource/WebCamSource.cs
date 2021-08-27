@@ -221,7 +221,14 @@ namespace Mediapipe.Unity {
     }
 
     IEnumerator WaitForWebCamTexture() {
-      yield return new WaitUntil(() => webCamTexture.width > 16);
+      const int timeoutFrame = 500;
+      var count = 0;
+      Logger.LogVerbose("Waiting for WebCamTexture to start");
+      yield return new WaitUntil(() => count++ > timeoutFrame || webCamTexture.width > 16);
+
+      if (webCamTexture.width <= 16) {
+        throw new TimeoutException("Failed to start WebCam");
+      }
     }
   }
 }
