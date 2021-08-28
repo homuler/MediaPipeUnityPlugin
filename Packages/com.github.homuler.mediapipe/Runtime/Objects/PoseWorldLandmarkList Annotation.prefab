@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7434967355688441420
+--- !u!1 &8684491236681850282
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7434967355688441423}
-  - component: {fileID: -8837774153085666347}
+  - component: {fileID: 8684491236681850283}
+  - component: {fileID: 6305600689647656967}
   m_Layer: 0
-  m_Name: MultiHandLandmarkList Annotation
+  m_Name: PoseWorldLandmarkList Annotation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7434967355688441423
+--- !u!4 &8684491236681850283
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7434967355688441420}
+  m_GameObject: {fileID: 8684491236681850282}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,24 +31,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-8837774153085666347
+--- !u!114 &6305600689647656967
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7434967355688441420}
+  m_GameObject: {fileID: 8684491236681850282}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ba3c50c2cb46dc9e916dd3a33c8a488, type: 3}
+  m_Script: {fileID: 11500000, guid: ca633cdfd56ebd2a096706d08e36b143, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handLandmarkListAnnotationPrefab: {fileID: 4724242833946851653, guid: b420c3106bd9cc5b6871a7df5459dba0,
+  landmarkAnnotationPrefab: {fileID: 464602458023169743, guid: e57da64f3c0109352ae6947c055f189f,
     type: 3}
-  landmarkColor: {r: 0, g: 1, b: 0, a: 1}
-  leftLandmarkColor: {r: 1, g: 0.33996874, b: 0, a: 1}
-  rightLandmarkColor: {r: 0, g: 0.58245134, b: 1, a: 1}
+  landmarkConnectionAnnotationPrefab: {fileID: 3238139931829362807, guid: 0371bf2d23ec5bdbf84d63778716bb77,
+    type: 3}
+  leftLandmarkColor: {r: 1, g: 0.55, b: 0, a: 1}
+  rightLandmarkColor: {r: 0, g: 0.6666665, b: 1, a: 1}
   landmarkRadius: 15
   connectionColor: {r: 1, g: 1, b: 1, a: 1}
   connectionWidth: 1
+  scale: {x: 1, y: 1, z: 1}
   visualizeZ: 0

@@ -49,6 +49,7 @@ MonoBehaviour:
     type: 3}
   leftLandmarkColor: {r: 1, g: 0.55, b: 0, a: 1}
   rightLandmarkColor: {r: 0, g: 0.6666665, b: 1, a: 1}
-  landmarkRadius: 20
+  landmarkRadius: 15
   connectionColor: {r: 1, g: 1, b: 1, a: 1}
   connectionWidth: 1
+  visualizeZ: 0

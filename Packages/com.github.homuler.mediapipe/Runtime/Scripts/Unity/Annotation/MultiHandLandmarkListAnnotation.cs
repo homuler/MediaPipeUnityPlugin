@@ -2,14 +2,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity {
-  public class MultiHandLandmarkListAnnotation : Annotation<IList<NormalizedLandmarkList>> {
+  public class MultiHandLandmarkListAnnotation : Annotation<IList<NormalizedLandmarkList>>, I3DAnnotatable {
     [SerializeField] GameObject handLandmarkListAnnotationPrefab;
     [SerializeField] Color landmarkColor = Color.green;
     [SerializeField] Color leftLandmarkColor = Color.green;
     [SerializeField] Color rightLandmarkColor = Color.green;
-    [SerializeField] float landmarkRadius = 20.0f;
+    [SerializeField] float landmarkRadius = 15.0f;
     [SerializeField] Color connectionColor = Color.white;
     [SerializeField, Range(0, 1)] float connectionWidth = 1.0f;
+    [SerializeField] bool visualizeZ = false;
 
     List<HandLandmarkListAnnotation> _handLandmarkLists;
     List<HandLandmarkListAnnotation> handLandmarkLists {
@@ -61,6 +62,13 @@ namespace Mediapipe.Unity {
       }
     }
 
+    public void VisualizeZ(bool flag) {
+      this.visualizeZ = flag;
+      foreach (var handLandmarkList in handLandmarkLists) {
+        handLandmarkList.VisualizeZ(flag);
+      }
+    }
+
     protected override void Draw(IList<NormalizedLandmarkList> target) {
       SetTargetAll(handLandmarkLists, target, InitializeHandLandmarkListAnnotation);
     }
@@ -83,6 +91,7 @@ namespace Mediapipe.Unity {
       annotation.SetLandmarkColor(landmarkColor);
       annotation.SetConnectionWidth(connectionWidth);
       annotation.SetConnectionColor(connectionColor);
+      annotation.VisualizeZ(visualizeZ);
       return annotation;
     }
   }

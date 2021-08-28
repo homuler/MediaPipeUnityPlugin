@@ -631,6 +631,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   annotationPrefab: {fileID: 7434967355688441420, guid: 87a9be2a7620991a78342ef9a56fa62c,
     type: 3}
+  landmarkRadius: 20
+  visualizeZ: 0
 --- !u!1 &1223870913
 GameObject:
   m_ObjectHideFlags: 0

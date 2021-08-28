@@ -30,7 +30,7 @@ namespace Mediapipe.Unity {
     }
 
     protected override void Draw(Rect target) {
-      lineRenderer.SetPositions(GetLocalPositions(target));
+      lineRenderer.SetPositions(CoordinateTransform.GetRectVertices(GetAnnotationLayer(), target, isMirrored));
     }
 
     void ApplyLineWidth(float lineWidth) {

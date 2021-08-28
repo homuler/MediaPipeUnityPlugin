@@ -2,13 +2,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity {
-  public class HandLandmarkListAnnotation : Annotation<IList<NormalizedLandmark>>, IAnnotatable<NormalizedLandmarkList> {
+  public class HandLandmarkListAnnotation : Annotation<IList<NormalizedLandmark>>, IAnnotatable<NormalizedLandmarkList>, I3DAnnotatable {
     [SerializeField] GameObject normalizedLandmarkAnnotationPrefab;
     [SerializeField] GameObject normalizedLandmarkConnectionAnnotationPrefab;
     [SerializeField] Color landmarkColor = Color.green;
-    [SerializeField] float landmarkRadius = 10.0f;
+    [SerializeField] float landmarkRadius = 15.0f;
     [SerializeField] Color connectionColor = Color.red;
     [SerializeField, Range(0, 1)] float connectionWidth = 1.0f;
+    [SerializeField] bool visualizeZ = false;
 
     const int landmarkCount = 21;
     readonly List<(int, int)> connections = new List<(int, int)> {
@@ -105,6 +106,13 @@ namespace Mediapipe.Unity {
       }
     }
 
+    public void VisualizeZ(bool flag) {
+      this.visualizeZ = flag;
+      foreach (var landmarkAnnotation in landmarkAnnotations) {
+        landmarkAnnotation.VisualizeZ(flag);
+      }
+    }
+
     protected override void Draw(IList<NormalizedLandmark> target) {
       // NOTE: InitializeLandmarkAnnotation won't be called here, because annotations are already instantiated.
       SetTargetAll(landmarkAnnotations, target, InitializeLandmarkAnnotation);
@@ -119,6 +127,7 @@ namespace Mediapipe.Unity {
       var annotation = InstantiateChild<NormalizedLandmarkAnnotation, NormalizedLandmark>(normalizedLandmarkAnnotationPrefab);
       annotation.SetRadius(landmarkRadius);
       annotation.SetColor(landmarkColor);
+      annotation.VisualizeZ(visualizeZ);
       return annotation;
     }
 

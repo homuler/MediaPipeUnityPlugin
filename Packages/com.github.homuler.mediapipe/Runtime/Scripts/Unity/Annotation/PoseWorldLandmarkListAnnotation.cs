@@ -2,14 +2,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity {
-  public class PoseLandmarkListAnnotation : Annotation<IList<NormalizedLandmark>>, IAnnotatable<NormalizedLandmarkList>, I3DAnnotatable {
-    [SerializeField] GameObject normalizedLandmarkAnnotationPrefab;
-    [SerializeField] GameObject normalizedLandmarkConnectionAnnotationPrefab;
+  public class PoseWorldLandmarkListAnnotation : Annotation<IList<Landmark>>, IAnnotatable<LandmarkList>, I3DAnnotatable {
+    [SerializeField] GameObject landmarkAnnotationPrefab;
+    [SerializeField] GameObject landmarkConnectionAnnotationPrefab;
     [SerializeField] Color leftLandmarkColor = Color.green;
     [SerializeField] Color rightLandmarkColor = Color.green;
     [SerializeField] float landmarkRadius = 15.0f;
     [SerializeField] Color connectionColor = Color.white;
     [SerializeField, Range(0, 1)] float connectionWidth = 1.0f;
+    [SerializeField] Vector3 scale = Vector3.one;
     [SerializeField] bool visualizeZ = false;
 
     const int landmarkCount = 33;
@@ -67,11 +68,11 @@ namespace Mediapipe.Unity {
       (30, 32),
     };
 
-    List<NormalizedLandmarkAnnotation> _landmarkAnnotations;
-    List<NormalizedLandmarkAnnotation> landmarkAnnotations {
+    List<LandmarkAnnotation> _landmarkAnnotations;
+    List<LandmarkAnnotation> landmarkAnnotations {
       get {
         if (_landmarkAnnotations == null) {
-          _landmarkAnnotations = new List<NormalizedLandmarkAnnotation>();
+          _landmarkAnnotations = new List<LandmarkAnnotation>();
           for (var i = 0; i < landmarkCount; i ++) {
             _landmarkAnnotations.Add(InitializeLandmarkAnnotation());
           }
@@ -86,11 +87,11 @@ namespace Mediapipe.Unity {
       }
     }
 
-    List<ConnectionAnnotation<NormalizedLandmarkAnnotation>> _connectionAnnotations;
-    List<ConnectionAnnotation<NormalizedLandmarkAnnotation>> connectionAnnotations {
+    List<ConnectionAnnotation<LandmarkAnnotation>> _connectionAnnotations;
+    List<ConnectionAnnotation<LandmarkAnnotation>> connectionAnnotations {
       get {
         if (_connectionAnnotations == null) {
-          _connectionAnnotations = new List<ConnectionAnnotation<NormalizedLandmarkAnnotation>>();
+          _connectionAnnotations = new List<ConnectionAnnotation<LandmarkAnnotation>>();
           foreach (var connection in Connections) {
             _connectionAnnotations.Add(InitializeConnectionAnnotation(connection.Item1, connection.Item2));
           }
@@ -99,7 +100,7 @@ namespace Mediapipe.Unity {
       }
     }
 
-    public void SetTarget(NormalizedLandmarkList target) {
+    public void SetTarget(LandmarkList target) {
       SetTarget(target?.Landmark);
     }
 
@@ -152,6 +153,13 @@ namespace Mediapipe.Unity {
       }
     }
 
+    public void SetScale(Vector3 scale) {
+      this.scale = scale;
+      foreach (var landmarkAnnotation in landmarkAnnotations) {
+        landmarkAnnotation.SetScale(scale);
+      }
+    }
+
     public void VisualizeZ(bool flag) {
       this.visualizeZ = flag;
       foreach (var landmarkAnnotation in landmarkAnnotations) {
@@ -159,7 +167,7 @@ namespace Mediapipe.Unity {
       }
     }
 
-    protected override void Draw(IList<NormalizedLandmark> target) {
+    protected override void Draw(IList<Landmark> target) {
       // NOTE: InitializeLandmarkAnnotation won't be called here, because annotations are already instantiated.
       SetTargetAll(landmarkAnnotations, target, InitializeLandmarkAnnotation);
 
@@ -169,19 +177,20 @@ namespace Mediapipe.Unity {
       }
     }
 
-    NormalizedLandmarkAnnotation InitializeLandmarkAnnotation() {
-      var annotation = InstantiateChild<NormalizedLandmarkAnnotation, NormalizedLandmark>(normalizedLandmarkAnnotationPrefab);
+    LandmarkAnnotation InitializeLandmarkAnnotation() {
+      var annotation = InstantiateChild<LandmarkAnnotation, Landmark>(landmarkAnnotationPrefab);
       annotation.SetRadius(landmarkRadius);
       annotation.SetColor(connectionColor); // default color = nose color
+      annotation.SetScale(scale);
       annotation.VisualizeZ(visualizeZ);
       return annotation;
     }
 
-    ConnectionAnnotation<NormalizedLandmarkAnnotation> InitializeConnectionAnnotation(int i, int j) {
-      var annotation = InstantiateChild<ConnectionAnnotation<NormalizedLandmarkAnnotation>, Connection<NormalizedLandmarkAnnotation>>(normalizedLandmarkConnectionAnnotationPrefab);
+    ConnectionAnnotation<LandmarkAnnotation> InitializeConnectionAnnotation(int i, int j) {
+      var annotation = InstantiateChild<ConnectionAnnotation<LandmarkAnnotation>, Connection<LandmarkAnnotation>>(landmarkConnectionAnnotationPrefab);
       annotation.SetLineWidth(connectionWidth);
       annotation.SetColor(connectionColor);
-      annotation.SetTarget(new Connection<NormalizedLandmarkAnnotation>(landmarkAnnotations[i], landmarkAnnotations[j]));
+      annotation.SetTarget(new Connection<LandmarkAnnotation>(landmarkAnnotations[i], landmarkAnnotations[j]));
       return annotation;
     }
   }

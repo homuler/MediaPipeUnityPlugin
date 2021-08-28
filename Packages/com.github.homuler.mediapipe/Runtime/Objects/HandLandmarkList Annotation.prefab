@@ -48,6 +48,7 @@ MonoBehaviour:
   normalizedLandmarkConnectionAnnotationPrefab: {fileID: 2214577441519754127, guid: 8e0120500049efdba90da8dcdc1130a2,
     type: 3}
   landmarkColor: {r: 0, g: 1, b: 0, a: 1}
-  landmarkRadius: 10
+  landmarkRadius: 15
   connectionColor: {r: 1, g: 0, b: 0, a: 1}
   connectionWidth: 1
+  visualizeZ: 0

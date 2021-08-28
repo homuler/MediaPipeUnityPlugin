@@ -73,7 +73,7 @@ namespace Mediapipe.Unity {
       var score = target.Score.Count > 0 ? target.Score[0] : 1.0f;
       SetColor(GetColor(score));
 
-      lineRenderer.SetPositions(GetLocalPositions(target.LocationData));
+      lineRenderer.SetPositions(CoordinateTransform.GetRectVertices(GetAnnotationLayer(), target.LocationData, isMirrored));
       var label = target.Label.Count > 0 ? target.Label[0] : null;
       textMesh.text = label;
 

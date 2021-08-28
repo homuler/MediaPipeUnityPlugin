@@ -6,7 +6,8 @@ namespace Mediapipe.Unity.PoseTracking {
   public class PoseTrackingSolution : Solution {
     [SerializeField] RawImage screen;
     [SerializeField] DetectionAnnotationController poseDetectionAnnotationController;
-    [SerializeField] NormalizedLandmarkListAnnotationController poseLandmarksAnnotationController;
+    [SerializeField] PoseLandmarkListAnnotationController poseLandmarksAnnotationController;
+    [SerializeField] PoseWorldLandmarkListAnnotationController poseWorldLandmarksAnnotationController;
     [SerializeField] PoseTrackingGraph graphRunner;
     [SerializeField] TextureFramePool textureFramePool;
 
@@ -88,6 +89,7 @@ namespace Mediapipe.Unity.PoseTracking {
 
       poseDetectionAnnotationController.isMirrored = imageSource.isMirrored;
       poseLandmarksAnnotationController.isMirrored = imageSource.isMirrored;
+      poseWorldLandmarksAnnotationController.isMirrored = imageSource.isMirrored;
 
       while (true) {
         yield return new WaitWhile(() => isPaused);
@@ -120,7 +122,7 @@ namespace Mediapipe.Unity.PoseTracking {
           var value = graphRunner.FetchNextValue();
           poseDetectionAnnotationController.Draw(value.poseDetection);
           poseLandmarksAnnotationController.Draw(value.poseLandmarks);
-          // Logger.LogDebug($"Pose World Landmarks: {value.poseWorldLandmarks}");
+          poseWorldLandmarksAnnotationController.Draw(value.poseWorldLandmarks);
         }
 
         yield return new WaitForEndOfFrame();
@@ -136,7 +138,7 @@ namespace Mediapipe.Unity.PoseTracking {
     }
 
     void OnPoseWorldLandmarksOutput(LandmarkList poseWorldLandmarks) {
-      // Logger.LogDebug($"Pose World Landmarks: {poseWorldLandmarks}");
+      poseWorldLandmarksAnnotationController.Draw(poseWorldLandmarks);
     }
   }
 }
