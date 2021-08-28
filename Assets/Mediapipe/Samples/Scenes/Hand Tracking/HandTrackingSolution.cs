@@ -22,12 +22,11 @@ namespace Mediapipe.Unity.HandTracking {
     }
 
     public override void Play() {
+      if (coroutine != null) {
+        Stop();
+      }
       base.Play();
       graphRunner.Initialize();
-
-      if (coroutine != null) {
-        StopCoroutine(coroutine);
-      }
       coroutine = StartCoroutine(Run());
     }
 

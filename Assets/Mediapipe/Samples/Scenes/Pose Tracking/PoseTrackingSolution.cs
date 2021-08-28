@@ -24,12 +24,11 @@ namespace Mediapipe.Unity.PoseTracking {
     }
 
     public override void Play() {
+      if (coroutine != null) {
+        Stop();
+      }
       base.Play();
       graphRunner.Initialize();
-
-      if (coroutine != null) {
-        StopCoroutine(coroutine);
-      }
       coroutine = StartCoroutine(Run());
     }
 
