@@ -69,10 +69,9 @@ namespace Mediapipe.Unity {
       if (isPlaying) {
         yield break;
       }
-      outputTexture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBA32, false);
-      Graphics.ConvertTexture(image, outputTexture);
-      _isPlaying = true;
 
+      InitializeOutputTexture(image);
+      _isPlaying = true;
       yield return null;
     }
 
@@ -105,6 +104,24 @@ namespace Mediapipe.Unity {
       }
 
       return resolutions[0];
+    }
+
+    void InitializeOutputTexture(Texture src) {
+      outputTexture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBA32, false);
+
+      Texture resizedTexture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBA32, false);
+      Graphics.ConvertTexture(src, resizedTexture);
+
+      var currentRenderTexture = RenderTexture.active;
+      var tmpRenderTexture = new RenderTexture(resizedTexture.width, resizedTexture.height, 32);
+      Graphics.Blit(resizedTexture, tmpRenderTexture);
+      RenderTexture.active = tmpRenderTexture;
+
+      var rect = new UnityEngine.Rect(0, 0, outputTexture.width, outputTexture.height);
+      outputTexture.ReadPixels(rect, 0, 0);
+      outputTexture.Apply();
+
+      RenderTexture.active = currentRenderTexture;
     }
   }
 }

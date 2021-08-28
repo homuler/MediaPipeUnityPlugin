@@ -22,6 +22,15 @@ namespace Mediapipe.Unity {
     // Buffers that will be used to copy texture data on CPU.
     // They won't be initialized until it's necessary.
     Texture2D _textureBuffer;
+    Texture2D textureBuffer {
+      get {
+        if (_textureBuffer == null) {
+          _textureBuffer = new Texture2D(texture.width, texture.height, texture.format, false);
+        }
+        return _textureBuffer;
+      }
+    }
+
     Color32[] _pixelsBuffer; // for WebCamTexture
     Color32[] pixelsBuffer {
       get {
@@ -106,16 +115,16 @@ namespace Mediapipe.Unity {
     ///   If CPU won't access the pixel data, use <see cref="ReadTextureFromOnGPU" /> instead.
     /// </remarks>
     public void ReadTextureFromOnCPU(Texture src) {
-      try {
-        if (GetTextureFormat(src) == format) {
-          // Copy on GPU as long as it's possible.
-          Graphics.CopyTexture(src, texture);
-          return;
-        }
-      } catch (Exception) {
-        // Failed to copy data on GPU.
-      }
-      var textureBuffer = GetTextureBufferFor(src);
+      var currentRenderTexture = RenderTexture.active;
+      var tmpRenderTexture = new RenderTexture(src.width, src.height, 32);
+      Graphics.Blit(src, tmpRenderTexture);
+      RenderTexture.active = tmpRenderTexture;
+
+      var rect = new UnityEngine.Rect(0, 0, Mathf.Min(tmpRenderTexture.width, textureBuffer.width), Mathf.Min(tmpRenderTexture.height, textureBuffer.height));
+      textureBuffer.ReadPixels(rect, 0, 0);
+      textureBuffer.Apply();
+      RenderTexture.active = currentRenderTexture;
+
       SetPixels32(textureBuffer.GetPixels32());
     }
 
@@ -123,39 +132,24 @@ namespace Mediapipe.Unity {
     ///   Copy texture data from <paramref name="src" />.
     /// </summary>
     /// <remarks>
-    ///   This operation is slow.
-    ///   If CPU won't access the pixel data, use <see cref="ReadTextureFromOnGPU" /> instead.
+    ///   In most cases, it should be better to use <paramref name="src" /> directly.
     /// </remarks>
     public void ReadTextureFromOnCPU(Texture2D src) {
-      try {
-        if (src.format == format) {
-          // Copy on GPU as long as it's possible.
-          Graphics.CopyTexture(src, texture);
-          return;
-        }
-      } catch (Exception) {
-        // Failed to copy data on GPU.
-      }
       SetPixels32(src.GetPixels32());
     }
 
     /// <summary>
     ///   Copy texture data from <paramref name="src" />.
     /// </summary>
+    /// <param name="src">
+    ///   The texture from which the pixels are read.
+    ///   Its width and height must match that of the TextureFrame.
+    /// </param>
     /// <remarks>
     ///   This operation is slow.
     ///   If CPU won't access the pixel data, use <see cref="ReadTextureFromOnGPU" /> instead.
     /// </remarks>
     public void ReadTextureFromOnCPU(WebCamTexture src) {
-      try {
-        if (GetTextureFormat(src) == format) {
-          // Copy on GPU as long as it's possible.
-          Graphics.CopyTexture(src, texture);
-          return;
-        }
-      } catch (Exception) {
-        // Failed to copy data on GPU.
-      }
       SetPixels32(src.GetPixels32(pixelsBuffer));
     }
 
@@ -298,7 +292,16 @@ namespace Mediapipe.Unity {
       if (_textureBuffer == null || _textureBuffer.format != textureFormat) {
         _textureBuffer = new Texture2D(texture.width, texture.height, textureFormat, false);
       }
-      Graphics.CopyTexture(texture, _textureBuffer);
+
+      var currentRenderTexture = RenderTexture.active;
+      var tmpRenderTexture = new RenderTexture(texture.width, texture.height, 32);
+      Graphics.Blit(texture, tmpRenderTexture);
+      RenderTexture.active = tmpRenderTexture;
+
+      _textureBuffer.ReadPixels(new UnityEngine.Rect(0, 0, tmpRenderTexture.width, tmpRenderTexture.height), 0, 0);
+      _textureBuffer.Apply();
+      RenderTexture.active = currentRenderTexture;
+
       return _textureBuffer;
     }
   }
