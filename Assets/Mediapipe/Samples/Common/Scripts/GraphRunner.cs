@@ -133,7 +133,7 @@ namespace Mediapipe.Unity {
         }
         return failedValue;
       }
-      return packet.Get();
+      return packet.IsEmpty() ? failedValue : packet.Get();
     }
 
     /// <summary>

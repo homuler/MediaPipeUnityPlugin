@@ -80,11 +80,12 @@ MpReturnCode mp_CalculatorGraph__ObserveOutputStream__PKc_PF_b(mediapipe::Calcul
   } CATCH_EXCEPTION
 }
 
-MpReturnCode mp_CalculatorGraph__AddOutputStreamPoller__PKc(mediapipe::CalculatorGraph* graph,
-                                                            const char* stream_name,
-                                                            mediapipe::StatusOrPoller** status_or_poller_out) {
+MpReturnCode mp_CalculatorGraph__AddOutputStreamPoller__PKc_b(mediapipe::CalculatorGraph* graph,
+                                                              const char* stream_name,
+                                                              bool observe_timestamp_bounds,
+                                                              mediapipe::StatusOrPoller** status_or_poller_out) {
   TRY {
-    *status_or_poller_out = new mediapipe::StatusOrPoller { graph->AddOutputStreamPoller(stream_name) };
+    *status_or_poller_out = new mediapipe::StatusOrPoller { graph->AddOutputStreamPoller(stream_name, observe_timestamp_bounds) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }

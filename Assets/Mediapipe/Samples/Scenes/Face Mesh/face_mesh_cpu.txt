@@ -17,7 +17,6 @@
 # CHANGES:
 #   - Add ImageTransformationCalculator and rotate the input
 #   - Remove FaceRendererCpu
-#   - Add PacketPresenceCalculators
 
 # MediaPipe graph that performs face mesh with TensorFlow Lite on CPU.
 
@@ -33,8 +32,6 @@ output_stream: "multi_face_landmarks"
 
 output_stream: "face_rects_from_landmarks"
 output_stream: "face_detections"
-output_stream: "multi_face_landmarks_presence"
-output_stream: "face_detections_presence"
 
 # Throttles the images flowing downstream for flow control. It passes through
 # the very first incoming image unaltered, and waits for downstream nodes
@@ -49,7 +46,7 @@ output_stream: "face_detections_presence"
 node {
   calculator: "FlowLimiterCalculator"
   input_stream: "input_video"
-  input_stream: "FINISHED:multi_face_landmarks_presence"
+  input_stream: "FINISHED:multi_face_landmarks"
   input_stream_info: {
     tag_index: "FINISHED"
     back_edge: true
@@ -74,16 +71,4 @@ node {
   output_stream: "ROIS_FROM_LANDMARKS:face_rects_from_landmarks"
   output_stream: "DETECTIONS:face_detections"
   output_stream: "ROIS_FROM_DETECTIONS:face_rects_from_detections"
-}
-
-node {
-  calculator: "PacketPresenceCalculator"
-  input_stream: "PACKET:multi_face_landmarks"
-  output_stream: "PRESENCE:multi_face_landmarks_presence"
-}
-
-node {
-  calculator: "PacketPresenceCalculator"
-  input_stream: "PACKET:face_detections"
-  output_stream: "PRESENCE:face_detections_presence"
 }

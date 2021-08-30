@@ -17,7 +17,6 @@
 # CHANGES:
 #   - Add ImageTransformationCalculator and rotate the input
 #   - Remove HandRendererSubgraph
-#   - Add PacketPresenceCalculators
 
 # MediaPipe graph that performs hand tracking on desktop with TensorFlow Lite
 # on CPU.
@@ -38,8 +37,6 @@ output_stream: "handedness"
 output_stream: "palm_detections"
 output_stream: "hand_rects_from_landmarks"
 output_stream: "hand_rects_from_palm_detections"
-output_stream: "hand_landmarks_presence"
-output_stream: "palm_detections_presence"
 
 node: {
   calculator: "ImageTransformationCalculator"
@@ -70,16 +67,4 @@ node {
   output_stream: "PALM_DETECTIONS:palm_detections"
   output_stream: "HAND_ROIS_FROM_LANDMARKS:hand_rects_from_landmarks"
   output_stream: "HAND_ROIS_FROM_PALM_DETECTIONS:hand_rects_from_palm_detections"
-}
-
-node {
-  calculator: "PacketPresenceCalculator"
-  input_stream: "PACKET:hand_landmarks"
-  output_stream: "PRESENCE:hand_landmarks_presence"
-}
-
-node {
-  calculator: "PacketPresenceCalculator"
-  input_stream: "PACKET:palm_detections"
-  output_stream: "PRESENCE:palm_detections_presence"
 }

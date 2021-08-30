@@ -30,29 +30,15 @@ namespace Mediapipe.Unity.PoseTracking {
     OutputStreamPoller<LandmarkList> poseWorldLandmarksStreamPoller;
     LandmarkListPacket poseWorldLandmarksPacket;
 
-    const string poseDetectionPresenceStreamName = "pose_detection_presence";
-    OutputStreamPoller<bool> poseDetectionPresenceStreamPoller;
-    BoolPacket poseDetectionPresencePacket;
-
-    const string poseLandmarksPresenceStreamName = "pose_landmarks_presence";
-    OutputStreamPoller<bool> poseLandmarksPresenceStreamPoller;
-    BoolPacket poseLandmarksPresencePacket;
-
     public override Status StartRun(ImageSource imageSource) {
-      poseDetectionStreamPoller = calculatorGraph.AddOutputStreamPoller<Detection>(poseDetectionStreamName).Value();
+      poseDetectionStreamPoller = calculatorGraph.AddOutputStreamPoller<Detection>(poseDetectionStreamName, true).Value();
       poseDetectionPacket = new DetectionPacket();
 
-      poseLandmarksStreamPoller = calculatorGraph.AddOutputStreamPoller<NormalizedLandmarkList>(poseLandmarksStreamName).Value();
+      poseLandmarksStreamPoller = calculatorGraph.AddOutputStreamPoller<NormalizedLandmarkList>(poseLandmarksStreamName, true).Value();
       poseLandmarksPacket = new NormalizedLandmarkListPacket();
 
-      poseWorldLandmarksStreamPoller = calculatorGraph.AddOutputStreamPoller<LandmarkList>(poseWorldLandmarksStreamName).Value();
+      poseWorldLandmarksStreamPoller = calculatorGraph.AddOutputStreamPoller<LandmarkList>(poseWorldLandmarksStreamName, true).Value();
       poseWorldLandmarksPacket = new LandmarkListPacket();
-
-      poseDetectionPresenceStreamPoller = calculatorGraph.AddOutputStreamPoller<bool>(poseDetectionPresenceStreamName).Value();
-      poseDetectionPresencePacket = new BoolPacket();
-
-      poseLandmarksPresenceStreamPoller = calculatorGraph.AddOutputStreamPoller<bool>(poseLandmarksPresenceStreamName).Value();
-      poseLandmarksPresencePacket = new BoolPacket();
 
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
@@ -70,21 +56,13 @@ namespace Mediapipe.Unity.PoseTracking {
     }
 
     public PoseTrackingValue FetchNextValue() {
-      var isPoseDetecionPresent = FetchNext(poseDetectionPresenceStreamPoller, poseDetectionPresencePacket, poseDetectionPresenceStreamName);
-      var poseDetection = isPoseDetecionPresent ? FetchNext(poseDetectionStreamPoller, poseDetectionPacket, poseDetectionStreamName) : null;
+      var poseDetection = FetchNext(poseDetectionStreamPoller, poseDetectionPacket, poseDetectionStreamName);
+      var poseLandmarks = FetchNext(poseLandmarksStreamPoller, poseLandmarksPacket, poseLandmarksStreamName);
+      var poseWorldLandmarks = FetchNext(poseWorldLandmarksStreamPoller, poseWorldLandmarksPacket, poseWorldLandmarksStreamName);
 
-      if (isPoseDetecionPresent) {
-        OnPoseDetectionOutput.Invoke(poseDetection);
-      }
-
-      var isPoseLandmarkPresent = FetchNext(poseLandmarksPresenceStreamPoller, poseLandmarksPresencePacket, poseLandmarksPresenceStreamName);
-      var poseLandmarks = isPoseLandmarkPresent ? FetchNext(poseLandmarksStreamPoller, poseLandmarksPacket, poseLandmarksStreamName) : null;
-      var poseWorldLandmarks = isPoseLandmarkPresent ? FetchNext(poseWorldLandmarksStreamPoller, poseWorldLandmarksPacket, poseWorldLandmarksStreamName) : null;
-
-      if (isPoseLandmarkPresent) {
-        OnPoseLandmarksOutput.Invoke(poseLandmarks);
-        OnPoseWorldLandmarksOutput.Invoke(poseWorldLandmarks);
-      }
+      OnPoseDetectionOutput.Invoke(poseDetection);
+      OnPoseLandmarksOutput.Invoke(poseLandmarks);
+      OnPoseWorldLandmarksOutput.Invoke(poseWorldLandmarks);
 
       return new PoseTrackingValue(poseDetection, poseLandmarks, poseWorldLandmarks);
     }

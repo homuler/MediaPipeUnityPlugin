@@ -45,9 +45,10 @@ MP_CAPI(MpReturnCode) mp_CalculatorGraph__ObserveOutputStream__PKc_PF_b(mediapip
                                                                         bool observe_timestamp_bounds,
                                                                         absl::Status** status_out);
 
-MP_CAPI(MpReturnCode) mp_CalculatorGraph__AddOutputStreamPoller__PKc(mediapipe::CalculatorGraph* graph,
-                                                                     const char* stream_name,
-                                                                     mediapipe::StatusOrPoller** status_or_poller_out);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__AddOutputStreamPoller__PKc_b(mediapipe::CalculatorGraph* graph,
+                                                                       const char* stream_name,
+                                                                       bool observe_timestamp_bounds,
+                                                                       mediapipe::StatusOrPoller** status_or_poller_out);
 
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__Run__Rsp(mediapipe::CalculatorGraph* graph,
                                                     SidePackets* side_packets,

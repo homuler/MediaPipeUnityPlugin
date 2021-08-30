@@ -33,35 +33,21 @@ namespace Mediapipe.Unity.HandTracking {
     OutputStreamPoller<List<ClassificationList>> handednessStreamPoller;
     ClassificationListVectorPacket handednessPacket;
 
-    const string palmDetectionsPresenceStreamName = "palm_detections_presence";
-    OutputStreamPoller<bool> palmDetectionsPresenceStreamPoller;
-    BoolPacket palmDetectionsPresencePacket;
-
-    const string handLandmarksPresenceStreamName = "hand_landmarks_presence";
-    OutputStreamPoller<bool> handLandmarksPresenceStreamPoller;
-    BoolPacket handLandmarksPresencePacket;
-
     public override Status StartRun(ImageSource imageSource) {
-      palmDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<Detection>>(palmDetectionsStreamName).Value();
+      palmDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<Detection>>(palmDetectionsStreamName, true).Value();
       palmDetectionsPacket = new DetectionVectorPacket();
 
-      handRectsFromPalmDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<NormalizedRect>>(handRectsFromPalmDetectionsStreamName).Value();
+      handRectsFromPalmDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<NormalizedRect>>(handRectsFromPalmDetectionsStreamName, true).Value();
       handRectsFromPalmDetectionsPacket = new NormalizedRectVectorPacket();
 
-      handLandmarksStreamPoller = calculatorGraph.AddOutputStreamPoller<List<NormalizedLandmarkList>>(handLandmarksStreamName).Value();
+      handLandmarksStreamPoller = calculatorGraph.AddOutputStreamPoller<List<NormalizedLandmarkList>>(handLandmarksStreamName, true).Value();
       handLandmarksPacket = new NormalizedLandmarkListVectorPacket();
 
-      handRectsFromLandmarksStreamPoller = calculatorGraph.AddOutputStreamPoller<List<NormalizedRect>>(handRectsFromLandmarksStreamName).Value();
+      handRectsFromLandmarksStreamPoller = calculatorGraph.AddOutputStreamPoller<List<NormalizedRect>>(handRectsFromLandmarksStreamName, true).Value();
       handRectsFromLandmarksPacket = new NormalizedRectVectorPacket();
 
-      handednessStreamPoller = calculatorGraph.AddOutputStreamPoller<List<ClassificationList>>(handednessStreamName).Value();
+      handednessStreamPoller = calculatorGraph.AddOutputStreamPoller<List<ClassificationList>>(handednessStreamName, true).Value();
       handednessPacket = new ClassificationListVectorPacket();
-
-      palmDetectionsPresenceStreamPoller = calculatorGraph.AddOutputStreamPoller<bool>(palmDetectionsPresenceStreamName).Value();
-      palmDetectionsPresencePacket = new BoolPacket();
-
-      handLandmarksPresenceStreamPoller = calculatorGraph.AddOutputStreamPoller<bool>(handLandmarksPresenceStreamName).Value();
-      handLandmarksPresencePacket = new BoolPacket();
 
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
@@ -81,25 +67,17 @@ namespace Mediapipe.Unity.HandTracking {
     }
 
     public HandTrackingValue FetchNextValue() {
-      var isPalmDetectionsPresent = FetchNext(palmDetectionsPresenceStreamPoller, palmDetectionsPresencePacket, palmDetectionsPresenceStreamName);
-      var palmDetections = isPalmDetectionsPresent ? FetchNextVector<Detection>(palmDetectionsStreamPoller, palmDetectionsPacket, palmDetectionsStreamName) : null;
-      var handRectsFromPalmDetections = isPalmDetectionsPresent ? FetchNextVector<NormalizedRect>(handRectsFromPalmDetectionsStreamPoller, handRectsFromPalmDetectionsPacket, handRectsFromPalmDetectionsStreamName) : null;
+      var palmDetections = FetchNextVector(palmDetectionsStreamPoller, palmDetectionsPacket, palmDetectionsStreamName);
+      var handRectsFromPalmDetections = FetchNextVector(handRectsFromPalmDetectionsStreamPoller, handRectsFromPalmDetectionsPacket, handRectsFromPalmDetectionsStreamName);
+      var handLandmarks = FetchNextVector(handLandmarksStreamPoller, handLandmarksPacket, handLandmarksStreamName);
+      var handRectsFromLandmarks = FetchNextVector(handRectsFromLandmarksStreamPoller, handRectsFromLandmarksPacket, handRectsFromLandmarksStreamName);
+      var handedness = FetchNextVector(handednessStreamPoller, handednessPacket, handednessStreamName);
 
-      if (isPalmDetectionsPresent) {
-        OnPalmDetectectionsOutput.Invoke(palmDetections);
-        OnHandRectsFromPalmDetectionsOutput.Invoke(handRectsFromPalmDetections);
-      }
-
-      var isHandLandmarksPresent = FetchNext(handLandmarksPresenceStreamPoller, handLandmarksPresencePacket, handLandmarksPresenceStreamName);
-      var handLandmarks = isHandLandmarksPresent ? FetchNextVector<NormalizedLandmarkList>(handLandmarksStreamPoller, handLandmarksPacket, handLandmarksStreamName) : null;
-      var handRectsFromLandmarks = isHandLandmarksPresent ? FetchNextVector<NormalizedRect>(handRectsFromLandmarksStreamPoller, handRectsFromLandmarksPacket, handRectsFromLandmarksStreamName) : null;
-      var handedness = isHandLandmarksPresent ? FetchNextVector<ClassificationList>(handednessStreamPoller, handednessPacket, handednessStreamName) : null;
-
-      if (isHandLandmarksPresent) {
-        OnHandLandmarksOutput.Invoke(handLandmarks);
-        OnHandRectsFromLandmarksOutput.Invoke(handRectsFromLandmarks);
-        OnHandednessOutput.Invoke(handedness);
-      }
+      OnPalmDetectectionsOutput.Invoke(palmDetections);
+      OnHandRectsFromPalmDetectionsOutput.Invoke(handRectsFromPalmDetections);
+      OnHandLandmarksOutput.Invoke(handLandmarks);
+      OnHandRectsFromLandmarksOutput.Invoke(handRectsFromLandmarks);
+      OnHandednessOutput.Invoke(handedness);
 
       return new HandTrackingValue(palmDetections, handRectsFromPalmDetections, handLandmarks, handRectsFromLandmarks, handedness);
     }

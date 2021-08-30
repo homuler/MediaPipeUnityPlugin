@@ -16,16 +16,9 @@ namespace Mediapipe.Unity.FaceDetection {
     OutputStreamPoller<List<Detection>> faceDetectionsStreamPoller;
     DetectionVectorPacket faceDetectionsPacket;
 
-    const string faceDetectionsPresenceStreamName = "face_detections_presence";
-    OutputStreamPoller<bool> faceDetectionsPresenceStreamPoller;
-    BoolPacket faceDetectionsPresencePacket;
-
     public override Status StartRun(ImageSource imageSource) {
-      faceDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<Detection>>(faceDetectionsStreamName).Value();
+      faceDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<Detection>>(faceDetectionsStreamName, true).Value();
       faceDetectionsPacket = new DetectionVectorPacket();
-
-      faceDetectionsPresenceStreamPoller = calculatorGraph.AddOutputStreamPoller<bool>(faceDetectionsPresenceStreamName).Value();
-      faceDetectionsPresencePacket = new BoolPacket();
 
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
@@ -40,11 +33,6 @@ namespace Mediapipe.Unity.FaceDetection {
     }
 
     public List<Detection> FetchNextDetections() {
-      var isFaceDetectionsPresent = FetchNext(faceDetectionsPresenceStreamPoller, faceDetectionsPresencePacket, faceDetectionsPresenceStreamName);
-      if (!isFaceDetectionsPresent) {
-        return new List<Detection>();
-      }
-
       var detections = FetchNextVector<Detection>(faceDetectionsStreamPoller, faceDetectionsPacket, faceDetectionsStreamName);
       OnFacesDetected.Invoke(detections);
       return detections;

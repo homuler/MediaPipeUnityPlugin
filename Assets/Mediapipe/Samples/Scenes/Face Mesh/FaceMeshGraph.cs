@@ -23,29 +23,15 @@ namespace Mediapipe.Unity.FaceMesh {
     OutputStreamPoller<List<NormalizedRect>> faceRectsFromLandmarksStreamPoller;
     NormalizedRectVectorPacket faceRectsFromLandmarksPacket;
 
-    const string faceDetectionsPresenceStreamName = "face_detections_presence";
-    OutputStreamPoller<bool> faceDetectionsPresenceStreamPoller;
-    BoolPacket faceDetectionsPresencePacket;
-
-    const string multiFaceLandmarksPresenceStreamName = "multi_face_landmarks_presence";
-    OutputStreamPoller<bool> multiFacelandmarksPresenceStreamPoller;
-    BoolPacket multiFaceLandmarksPresencePacket;
-
     public override Status StartRun(ImageSource imageSource) {
-      faceDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<Detection>>(faceDetectionsStreamName).Value();
+      faceDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<Detection>>(faceDetectionsStreamName, true).Value();
       faceDetectionsPacket = new DetectionVectorPacket();
 
-      multiFaceLandmarksStreamPoller = calculatorGraph.AddOutputStreamPoller<List<NormalizedLandmarkList>>(multiFaceLandmarksStreamName).Value();
+      multiFaceLandmarksStreamPoller = calculatorGraph.AddOutputStreamPoller<List<NormalizedLandmarkList>>(multiFaceLandmarksStreamName, true).Value();
       multiFaceLandmarksPacket = new NormalizedLandmarkListVectorPacket();
 
-      faceRectsFromLandmarksStreamPoller = calculatorGraph.AddOutputStreamPoller<List<NormalizedRect>>(faceRectsFromLandmarksStreamName).Value();
+      faceRectsFromLandmarksStreamPoller = calculatorGraph.AddOutputStreamPoller<List<NormalizedRect>>(faceRectsFromLandmarksStreamName, true).Value();
       faceRectsFromLandmarksPacket = new NormalizedRectVectorPacket();
-
-      faceDetectionsPresenceStreamPoller = calculatorGraph.AddOutputStreamPoller<bool>(faceDetectionsPresenceStreamName).Value();
-      faceDetectionsPresencePacket = new BoolPacket();
-
-      multiFacelandmarksPresenceStreamPoller = calculatorGraph.AddOutputStreamPoller<bool>(multiFaceLandmarksPresenceStreamName).Value();
-      multiFaceLandmarksPresencePacket = new BoolPacket();
 
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
@@ -63,21 +49,11 @@ namespace Mediapipe.Unity.FaceMesh {
     }
 
     public FaceMeshValue FetchNextValue() {
-      var isFaceDetectionsPresent = FetchNext(faceDetectionsPresenceStreamPoller, faceDetectionsPresencePacket, faceDetectionsPresenceStreamName);
-      var faceDetections = isFaceDetectionsPresent ? FetchNextVector<Detection>(faceDetectionsStreamPoller, faceDetectionsPacket, faceDetectionsStreamName) : new List<Detection>();
-
-      if (isFaceDetectionsPresent) {
-        OnFacesDetected.Invoke(faceDetections);
-      }
-
-      var isMultiFaceLandmarksPresent = FetchNext(multiFacelandmarksPresenceStreamPoller, multiFaceLandmarksPresencePacket, multiFaceLandmarksPresenceStreamName);
-      if (!isMultiFaceLandmarksPresent) {
-        return new FaceMeshValue(faceDetections);
-      }
-
+      var faceDetections = FetchNextVector<Detection>(faceDetectionsStreamPoller, faceDetectionsPacket, faceDetectionsStreamName);
       var multiFaceLandmarks = FetchNextVector<NormalizedLandmarkList>(multiFaceLandmarksStreamPoller, multiFaceLandmarksPacket, multiFaceLandmarksStreamName);
       var faceRectsFromLandmarks = FetchNextVector<NormalizedRect>(faceRectsFromLandmarksStreamPoller, faceRectsFromLandmarksPacket, faceRectsFromLandmarksStreamName);
 
+      OnFacesDetected.Invoke(faceDetections);
       OnFaceLandmarksDetected.Invoke(multiFaceLandmarks);
       OnFaceRectsDetected.Invoke(faceRectsFromLandmarks);
 

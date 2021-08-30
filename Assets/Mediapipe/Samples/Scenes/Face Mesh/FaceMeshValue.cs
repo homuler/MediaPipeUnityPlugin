@@ -11,9 +11,5 @@ namespace Mediapipe.Unity.FaceMesh {
       this.multiFaceLandmarks = multiFaceLandmarks;
       this.faceRectsFromLandmarks = faceRectsFromLandmarks;
     }
-
-    public FaceMeshValue(List<Detection> faceDetections) : this(faceDetections, new List<NormalizedLandmarkList>(), new List<NormalizedRect>()) {}
-
-    public FaceMeshValue() : this(new List<Detection>()) {}
   }
 }

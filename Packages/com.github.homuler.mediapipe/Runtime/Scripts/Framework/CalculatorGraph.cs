@@ -83,8 +83,8 @@ namespace Mediapipe {
       return ObserveOutputStream(streamName, packetCallback, false, out callbackHandle);
     }
 
-    public StatusOrPoller<T> AddOutputStreamPoller<T>(string streamName) {
-      UnsafeNativeMethods.mp_CalculatorGraph__AddOutputStreamPoller__PKc(mpPtr, streamName, out var statusOrPollerPtr).Assert();
+    public StatusOrPoller<T> AddOutputStreamPoller<T>(string streamName, bool observeTimestampBounds = false) {
+      UnsafeNativeMethods.mp_CalculatorGraph__AddOutputStreamPoller__PKc_b(mpPtr, streamName, observeTimestampBounds, out var statusOrPollerPtr).Assert();
 
       GC.KeepAlive(this);
       return new StatusOrPoller<T>(statusOrPollerPtr);

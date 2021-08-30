@@ -18,14 +18,12 @@
 #   - Add ImageTransformationCalculator and rotate the input
 #   - Switch models
 #   - Remove AnnotationOverlayCalculator
-#   - Add PacketPresenceCalculator
 
 # CPU buffer. (ImageFrame)
 input_stream: "input_video"
 
 # Detected faces. (std::vector<Detection>)
 output_stream: "face_detections"
-output_stream: "face_detections_presence"
 
 # Throttles the images flowing downstream for flow control. It passes through
 # the very first incoming image unaltered, and waits for downstream nodes
@@ -40,7 +38,7 @@ output_stream: "face_detections_presence"
 node {
   calculator: "FlowLimiterCalculator"
   input_stream: "input_video"
-  input_stream: "FINISHED:face_detections_presence"
+  input_stream: "FINISHED:face_detections"
   input_stream_info: {
     tag_index: "FINISHED"
     back_edge: true
@@ -75,10 +73,4 @@ node {
   input_stream: "C0__FUNC_INPUT:short_range_detections"
   input_stream: "C1__FUNC_INPUT:full_range_detections"
   output_stream: "FUNC_INPUT:face_detections"
-}
-
-node {
-  calculator: "PacketPresenceCalculator"
-  input_stream: "PACKET:face_detections"
-  output_stream: "PRESENCE:face_detections_presence"
 }

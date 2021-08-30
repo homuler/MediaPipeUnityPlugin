@@ -10,11 +10,11 @@ namespace Mediapipe.Unity.HandTracking {
 
     public HandTrackingValue(List<Detection> palmDetections, List<NormalizedRect> handRectsFromPalmDetections,
                              List<NormalizedLandmarkList> handLandmarks, List<NormalizedRect> handRectsFromLandmarks, List<ClassificationList> handedness) {
-      this.palmDetections = palmDetections == null ? new List<Detection>() : palmDetections;
-      this.handRectsFromPalmDetections = handRectsFromPalmDetections == null ? new List<NormalizedRect>() : handRectsFromPalmDetections;
-      this.handLandmarks = handLandmarks == null ? new List<NormalizedLandmarkList>() : handLandmarks;
-      this.handRectsFromLandmarks = handRectsFromLandmarks == null ? new List<NormalizedRect>() : handRectsFromLandmarks;
-      this.handedness = handedness == null ? new List<ClassificationList>() : handedness;
+      this.palmDetections = palmDetections;
+      this.handRectsFromPalmDetections = handRectsFromPalmDetections;
+      this.handLandmarks = handLandmarks;
+      this.handRectsFromLandmarks = handRectsFromLandmarks;
+      this.handedness = handedness;
     }
   }
 }
