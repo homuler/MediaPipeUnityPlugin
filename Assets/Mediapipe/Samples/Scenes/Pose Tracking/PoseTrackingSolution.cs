@@ -8,6 +8,7 @@ namespace Mediapipe.Unity.PoseTracking {
     [SerializeField] DetectionAnnotationController poseDetectionAnnotationController;
     [SerializeField] PoseLandmarkListAnnotationController poseLandmarksAnnotationController;
     [SerializeField] PoseWorldLandmarkListAnnotationController poseWorldLandmarksAnnotationController;
+    [SerializeField] NormalizedRectAnnotationController roiFromLandmarksAnnotationController;
     [SerializeField] PoseTrackingGraph graphRunner;
     [SerializeField] TextureFramePool textureFramePool;
 
@@ -73,6 +74,7 @@ namespace Mediapipe.Unity.PoseTracking {
         graphRunner.OnPoseDetectionOutput.AddListener(OnPoseDetectionOutput);
         graphRunner.OnPoseLandmarksOutput.AddListener(OnPoseLandmarksOutput);
         graphRunner.OnPoseWorldLandmarksOutput.AddListener(OnPoseWorldLandmarksOutput);
+        graphRunner.OnRoiFromLandmarksOutput.AddListener(OnRoiFromLandmarksOutput);
         graphRunner.StartRunAsync(imageSource).AssertOk();
       } else {
         graphRunner.StartRun(imageSource).AssertOk();
@@ -90,6 +92,7 @@ namespace Mediapipe.Unity.PoseTracking {
       poseDetectionAnnotationController.isMirrored = imageSource.isMirrored;
       poseLandmarksAnnotationController.isMirrored = imageSource.isMirrored;
       poseWorldLandmarksAnnotationController.isMirrored = imageSource.isMirrored;
+      roiFromLandmarksAnnotationController.isMirrored = imageSource.isMirrored;
 
       while (true) {
         yield return new WaitWhile(() => isPaused);
@@ -123,6 +126,7 @@ namespace Mediapipe.Unity.PoseTracking {
           poseDetectionAnnotationController.Draw(value.poseDetection);
           poseLandmarksAnnotationController.Draw(value.poseLandmarks);
           poseWorldLandmarksAnnotationController.Draw(value.poseWorldLandmarks);
+          roiFromLandmarksAnnotationController.Draw(value.roiFromLandmarks);
         }
 
         yield return new WaitForEndOfFrame();
@@ -139,6 +143,10 @@ namespace Mediapipe.Unity.PoseTracking {
 
     void OnPoseWorldLandmarksOutput(LandmarkList poseWorldLandmarks) {
       poseWorldLandmarksAnnotationController.Draw(poseWorldLandmarks);
+    }
+
+    void OnRoiFromLandmarksOutput(NormalizedRect roiFromLandmarks) {
+      roiFromLandmarksAnnotationController.Draw(roiFromLandmarks);
     }
   }
 }

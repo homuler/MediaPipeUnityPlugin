@@ -15,6 +15,7 @@ namespace Mediapipe.Unity.PoseTracking {
     public UnityEvent<Detection> OnPoseDetectionOutput = new UnityEvent<Detection>();
     public UnityEvent<NormalizedLandmarkList> OnPoseLandmarksOutput = new UnityEvent<NormalizedLandmarkList>();
     public UnityEvent<LandmarkList> OnPoseWorldLandmarksOutput = new UnityEvent<LandmarkList>();
+    public UnityEvent<NormalizedRect> OnRoiFromLandmarksOutput = new UnityEvent<NormalizedRect>();
 
     const string inputStreamName = "input_video";
 
@@ -30,6 +31,10 @@ namespace Mediapipe.Unity.PoseTracking {
     OutputStreamPoller<LandmarkList> poseWorldLandmarksStreamPoller;
     LandmarkListPacket poseWorldLandmarksPacket;
 
+    const string roiFromLandmarksStreamName = "roi_from_landmarks";
+    OutputStreamPoller<NormalizedRect> roiFromLandmarksStreamPoller;
+    NormalizedRectPacket roiFromLandmarksPacket;
+
     public override Status StartRun(ImageSource imageSource) {
       poseDetectionStreamPoller = calculatorGraph.AddOutputStreamPoller<Detection>(poseDetectionStreamName, true).Value();
       poseDetectionPacket = new DetectionPacket();
@@ -40,6 +45,9 @@ namespace Mediapipe.Unity.PoseTracking {
       poseWorldLandmarksStreamPoller = calculatorGraph.AddOutputStreamPoller<LandmarkList>(poseWorldLandmarksStreamName, true).Value();
       poseWorldLandmarksPacket = new LandmarkListPacket();
 
+      roiFromLandmarksStreamPoller = calculatorGraph.AddOutputStreamPoller<NormalizedRect>(roiFromLandmarksStreamName, true).Value();
+      roiFromLandmarksPacket = new NormalizedRectPacket();
+
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
@@ -47,6 +55,7 @@ namespace Mediapipe.Unity.PoseTracking {
       calculatorGraph.ObserveOutputStream(poseDetectionStreamName, PoseDetectionCallback, true).AssertOk();
       calculatorGraph.ObserveOutputStream(poseLandmarksStreamName, PoseLandmarksCallback, true).AssertOk();
       calculatorGraph.ObserveOutputStream(poseWorldLandmarksStreamName, PoseWorldLandmarksCallback, true).AssertOk();
+      calculatorGraph.ObserveOutputStream(roiFromLandmarksStreamName, RoiFromLandmarksCallback, true).AssertOk();
 
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
@@ -59,12 +68,14 @@ namespace Mediapipe.Unity.PoseTracking {
       var poseDetection = FetchNext(poseDetectionStreamPoller, poseDetectionPacket, poseDetectionStreamName);
       var poseLandmarks = FetchNext(poseLandmarksStreamPoller, poseLandmarksPacket, poseLandmarksStreamName);
       var poseWorldLandmarks = FetchNext(poseWorldLandmarksStreamPoller, poseWorldLandmarksPacket, poseWorldLandmarksStreamName);
+      var roiFromLandmarks = FetchNext(roiFromLandmarksStreamPoller, roiFromLandmarksPacket, roiFromLandmarksStreamName);
 
       OnPoseDetectionOutput.Invoke(poseDetection);
       OnPoseLandmarksOutput.Invoke(poseLandmarks);
       OnPoseWorldLandmarksOutput.Invoke(poseWorldLandmarks);
+      OnRoiFromLandmarksOutput.Invoke(roiFromLandmarks);
 
-      return new PoseTrackingValue(poseDetection, poseLandmarks, poseWorldLandmarks);
+      return new PoseTrackingValue(poseDetection, poseLandmarks, poseWorldLandmarks, roiFromLandmarks);
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
@@ -111,6 +122,23 @@ namespace Mediapipe.Unity.PoseTracking {
         using (var packet = new LandmarkListPacket(packetPtr, false)) {
           var value = packet.IsEmpty() ? null : packet.Get();
           (graphRunner as PoseTrackingGraph).OnPoseWorldLandmarksOutput.Invoke(value);
+        }
+        return Status.Ok().mpPtr;
+      } catch (Exception e) {
+        return Status.FailedPrecondition(e.ToString()).mpPtr;
+      }
+    }
+
+    [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
+    static IntPtr RoiFromLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
+      try {
+        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
+        if (!isFound) {
+          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
+        }
+        using (var packet = new NormalizedRectPacket(packetPtr, false)) {
+          var value = packet.IsEmpty() ? null : packet.Get();
+          (graphRunner as PoseTrackingGraph).OnRoiFromLandmarksOutput.Invoke(value);
         }
         return Status.Ok().mpPtr;
       } catch (Exception e) {
