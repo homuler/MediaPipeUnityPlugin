@@ -37,11 +37,11 @@ namespace Mediapipe.Unity.FaceMesh.UI {
     }
 
     void InitializeContents() {
-      InitializeModelSelection();
+      InitializeMaxNumFaces();
       InitializeRunningMode();
     }
 
-    void InitializeModelSelection() {
+    void InitializeMaxNumFaces() {
       MaxNumFacesInput = gameObject.transform.Find(_MaxNumFacesPath).gameObject.GetComponent<InputField>();
       MaxNumFacesInput.text = solution.maxNumFaces.ToString();
     }

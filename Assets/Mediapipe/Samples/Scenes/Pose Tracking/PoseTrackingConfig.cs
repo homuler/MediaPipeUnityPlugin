@@ -42,12 +42,12 @@ namespace Mediapipe.Unity.PoseTracking.UI {
     }
 
     void InitializeContents() {
-      InitializeModelSelection();
+      InitializeModelComplexity();
       InitializeSmoothLandmarksInput();
       InitializeRunningMode();
     }
 
-    void InitializeModelSelection() {
+    void InitializeModelComplexity() {
       ModelComplexityInput = gameObject.transform.Find(_ModelComplexityPath).gameObject.GetComponent<Dropdown>();
       ModelComplexityInput.ClearOptions();
 

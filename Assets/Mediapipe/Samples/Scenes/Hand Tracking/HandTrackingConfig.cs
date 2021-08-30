@@ -37,11 +37,11 @@ namespace Mediapipe.Unity.HandTracking.UI {
     }
 
     void InitializeContents() {
-      InitializeModelSelection();
+      InitializeMaxNumHands();
       InitializeRunningMode();
     }
 
-    void InitializeModelSelection() {
+    void InitializeMaxNumHands() {
       MaxNumHandsInput = gameObject.transform.Find(_MaxNumHandsPath).gameObject.GetComponent<InputField>();
       MaxNumHandsInput.text = solution.maxNumHands.ToString();
     }
