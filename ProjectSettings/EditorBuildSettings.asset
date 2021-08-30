@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/Mediapipe/Samples/Scenes/Face Mesh/Face Mesh.unity
     guid: 95922b7629008a1e1a9e84a30d89bb1f
   - enabled: 1
+    path: Assets/Mediapipe/Samples/Scenes/IrisTracking/Iris Tracking.unity
+    guid: 03aef9213b6024903a59e0468bfc53ed
+  - enabled: 1
     path: Assets/Mediapipe/Samples/Scenes/Hand Tracking/Hand Tracking.unity
     guid: 08035b20d3836a599ad2fd3d81e41ee5
   - enabled: 1
