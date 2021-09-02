@@ -1,105 +1,53 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Mediapipe.Unity {
-  public class IrisLandmarkListAnnotation : Annotation<IList<NormalizedLandmark>> {
-    [SerializeField] GameObject normalizedLandmarkAnnotationPrefab;
-    [SerializeField] LineRenderer lineRenderer;
-    [SerializeField] Color landmarkColor = Color.green;
-    [SerializeField] float landmarkRadius = 10.0f;
-    [SerializeField] Color circleColor = Color.blue;
-    [SerializeField, Range(0, 1)] float circleWidth = 1.0f;
+  public sealed class IrisLandmarkListAnnotation : HierarchicalAnnotation {
+    [SerializeField] PointListAnnotation landmarkList;
+    [SerializeField] CircleAnnotation circle;
 
     const int landmarkCount = 5;
 
-    Vector3[] _emptyPositions;
-    Vector3[] emptyPositions {
-      get {
-        if (_emptyPositions == null) {
-          _emptyPositions = Enumerable.Repeat(Vector3.zero, lineRenderer.positionCount).ToArray();
-        }
-        return _emptyPositions;
-      }
-    }
-
-    List<NormalizedLandmarkAnnotation> _landmarkAnnotations;
-    List<NormalizedLandmarkAnnotation> landmarkAnnotations {
-      get {
-        if (_landmarkAnnotations == null) {
-          _landmarkAnnotations = new List<NormalizedLandmarkAnnotation>();
-          for (var i = 0; i < landmarkCount; i ++) {
-            _landmarkAnnotations.Add(InitializeLandmarkAnnotation());
-          }
-        }
-        return _landmarkAnnotations;
-      }
-    }
-
     public override bool isMirrored {
       set {
-        foreach (var landmarkAnnotation in landmarkAnnotations) {
-          landmarkAnnotation.isMirrored = value;
-        }
+        landmarkList.isMirrored = value;
+        circle.isMirrored = value;
         base.isMirrored = value;
       }
     }
 
-    void OnEnable() {
-      ApplyCircleWidth(circleWidth);
-      SetCircleColor(circleColor);
-    }
-
-    void OnDisable() {
-      ApplyCircleWidth(0.0f);
-      lineRenderer.SetPositions(emptyPositions);
+    public void SetLandmarkColor(Color landmarkColor) {
+      landmarkList.SetColor(landmarkColor);
     }
 
     public void SetLandmarkRadius(float landmarkRadius) {
-      this.landmarkRadius = landmarkRadius;
-      foreach (var landmarkAnnotation in landmarkAnnotations) {
-        landmarkAnnotation.SetRadius(landmarkRadius);
-      }
-    }
-
-    public void SetLandmarkColor(Color landmarkColor) {
-      this.landmarkColor = landmarkColor;
-      foreach (var landmarkAnnotation in landmarkAnnotations) {
-        landmarkAnnotation.SetColor(landmarkColor);
-      }
-    }
-
-    public void SetCircleWidth(float circleWidth) {
-      this.circleWidth = circleWidth;
-      ApplyCircleWidth(circleWidth);
+      landmarkList.SetRadius(landmarkRadius);
     }
 
     public void SetCircleColor(Color circleColor) {
-      this.circleColor = circleColor;
-      lineRenderer.startColor = circleColor;
-      lineRenderer.endColor = circleColor;
+      circle.SetColor(circleColor);
     }
 
-    protected override void Draw(IList<NormalizedLandmark> target) {
-      // NOTE: InitializeLandmarkAnnotation won't be called here, because annotations are already instantiated.
-      SetTargetAll(landmarkAnnotations, target, InitializeLandmarkAnnotation);
-
-      var rectTransform = GetAnnotationLayer();
-      var radius = CalculateRadius(rectTransform, target);
-      DrawCircle(rectTransform, target[0], radius);
+    public void SetCircleWidth(float circleWidth) {
+      circle.SetLineWidth(circleWidth);
     }
 
-    void DrawCircle(RectTransform rectTransform, NormalizedLandmark center, float radius) {
-      var centerPos = CoordinateTransform.GetLocalPosition(rectTransform, center, isMirrored, true);
-      var startPos = new Vector3(radius, 0, 0);
-      var positions = new Vector3[lineRenderer.positionCount];
+    public void Draw(IList<NormalizedLandmark> target, bool visualizeZ = false, int vertices = 128) {
+      if (ActivateFor(target)) {
+        landmarkList.Draw(target, visualizeZ);
 
-      for (var i = 0; i < positions.Length; i++) {
-        var q = Quaternion.Euler(0, 0, i * 360 / positions.Length);
-        positions[i] = q * startPos + centerPos;
+        var rectTransform = GetAnnotationLayer();
+        var center = CoordinateTransform.GetLocalPosition(rectTransform, target[0], isMirrored);
+        if (!visualizeZ) {
+          center.z = 0.0f;
+        }
+        var radius = CalculateRadius(rectTransform, target);
+        circle.Draw(center, radius, vertices);
       }
+    }
 
-      lineRenderer.SetPositions(positions);
+    public void Draw(NormalizedLandmarkList target, bool visualizeZ = false, int vertices = 128) {
+      Draw(target?.Landmark, visualizeZ, vertices);
     }
 
     float CalculateRadius(RectTransform rectTransform, IList<NormalizedLandmark> target) {
@@ -109,21 +57,11 @@ namespace Mediapipe.Unity {
     }
 
     float CalculateDistance(RectTransform rectTransform, NormalizedLandmark a, NormalizedLandmark b) {
-      var aPos = CoordinateTransform.GetLocalPosition(rectTransform, a, isMirrored, true);
-      var bPos = CoordinateTransform.GetLocalPosition(rectTransform, b, isMirrored, true);
+      var aPos = CoordinateTransform.GetLocalPosition(rectTransform, a, isMirrored);
+      var bPos = CoordinateTransform.GetLocalPosition(rectTransform, b, isMirrored);
+      aPos.z = 0.0f;
+      bPos.z = 0.0f;
       return Vector3.Distance(aPos, bPos);
-    }
-
-    NormalizedLandmarkAnnotation InitializeLandmarkAnnotation() {
-      var annotation = InstantiateChild<NormalizedLandmarkAnnotation, NormalizedLandmark>(normalizedLandmarkAnnotationPrefab);
-      annotation.SetRadius(landmarkRadius);
-      annotation.SetColor(landmarkColor);
-      return annotation;
-    }
-
-    void ApplyCircleWidth(float circleWidth) {
-      lineRenderer.startWidth = circleWidth;
-      lineRenderer.endWidth = circleWidth;
     }
   }
 }

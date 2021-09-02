@@ -2,18 +2,31 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity {
-  public class PoseLandmarkListAnnotationController : AnnotationController<PoseLandmarkListAnnotation, IList<NormalizedLandmark>> {
-    [SerializeField] float landmarkRadius = 15.0f;
+  public class PoseLandmarkListAnnotationController : AnnotationController<PoseLandmarkListAnnotation> {
     [SerializeField] bool visualizeZ = false;
 
-    protected override void Start() {
-      base.Start();
-      annotation.SetLandmarkRadius(landmarkRadius);
-      annotation.VisualizeZ(visualizeZ);
+    IList<NormalizedLandmark> currentTarget;
+
+    public void DrawNow(IList<NormalizedLandmark> target) {
+      currentTarget = target;
+      SyncNow();
     }
 
-    public void Draw(NormalizedLandmarkList normalizedLandmarkList) {
-      Draw(normalizedLandmarkList?.Landmark);
+    public void DrawNow(NormalizedLandmarkList target) {
+      DrawNow(target?.Landmark);
+    }
+
+    public void DrawLater(IList<NormalizedLandmark> target) {
+      UpdateCurrentTarget(target, ref currentTarget);
+    }
+
+    public void DrawLater(NormalizedLandmarkList target) {
+      DrawLater(target?.Landmark);
+    }
+
+    protected override void SyncNow() {
+      isStale = false;
+      annotation.Draw(currentTarget, visualizeZ);
     }
   }
 }

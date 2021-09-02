@@ -2,33 +2,34 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity {
-  public class MultiHandLandmarkListAnnotationController : AnnotationController<MultiHandLandmarkListAnnotation, IList<NormalizedLandmarkList>> {
-    [SerializeField] float landmarkRadius = 15.0f;
+  public class MultiHandLandmarkListAnnotationController : AnnotationController<MultiHandLandmarkListAnnotation> {
     [SerializeField] bool visualizeZ = false;
 
-    List<ClassificationList> handedness;
+    IList<NormalizedLandmarkList> currentHandLandmarkLists;
+    IList<ClassificationList> currentHandedness;
 
-    protected override void Start() {
-      base.Start();
-      annotation.SetLandmarkRadius(landmarkRadius);
-      annotation.VisualizeZ(visualizeZ);
+    public void DrawNow(IList<NormalizedLandmarkList> handLandmarkLists, IList<ClassificationList> handedness = null) {
+      currentHandLandmarkLists = handLandmarkLists;
+      currentHandedness = handedness;
+      SyncNow();
     }
 
-    protected override void LateUpdate() {
-      if (isStale) {
-        isStale = false;
-        annotation.SetTarget(target);
+    public void DrawLater(IList<NormalizedLandmarkList> handLandmarkLists) {
+      UpdateCurrentTarget(handLandmarkLists, ref currentHandLandmarkLists);
+    }
 
-        if (handedness != null) {
-          annotation.SetClassificationList(handedness);
-          handedness = null;
-        }
+    public void DrawLater(IList<ClassificationList> handedness) {
+      UpdateCurrentTarget(handedness, ref currentHandedness);
+    }
+
+    protected override void SyncNow() {
+      isStale = false;
+      annotation.Draw(currentHandLandmarkLists, visualizeZ);
+
+      if (currentHandedness != null) {
+        annotation.SetHandedness(currentHandedness);
       }
-    }
-
-    public void SetClassificationList(List<ClassificationList> handedness) {
-      this.handedness = handedness;
-      isStale = true;
+      currentHandedness = null;
     }
   }
 }

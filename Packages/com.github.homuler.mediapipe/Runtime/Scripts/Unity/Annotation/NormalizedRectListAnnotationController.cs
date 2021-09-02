@@ -1,15 +1,21 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Mediapipe.Unity {
-  public class NormalizedRectListAnnotationController : AnnotationController<NormalizedRectListAnnotation, IList<NormalizedRect>> {
-    [SerializeField] Color color = Color.red;
-    [SerializeField, Range(0, 1)] float lineWidth = 1.0f;
+  public class NormalizedRectListAnnotationController : AnnotationController<RectangleListAnnotation> {
+    IList<NormalizedRect> currentTarget;
 
-    protected override void Start() {
-      base.Start();
-      annotation.SetColor(color);
-      annotation.SetLineWidth(lineWidth);
+    public void DrawNow(IList<NormalizedRect> target) {
+      currentTarget = target;
+      SyncNow();
+    }
+
+    public void DrawLater(IList<NormalizedRect> target) {
+      UpdateCurrentTarget(target, ref currentTarget);
+    }
+
+    protected override void SyncNow() {
+      isStale = false;
+      annotation.Draw(currentTarget);
     }
   }
 }

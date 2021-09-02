@@ -1,14 +1,19 @@
-using UnityEngine;
-
 namespace Mediapipe.Unity {
-  public class NormalizedRectAnnotationController : AnnotationController<NormalizedRectAnnotation, NormalizedRect> {
-    [SerializeField] Color color = Color.red;
-    [SerializeField, Range(0, 1)] float lineWidth = 1.0f;
+  public class NormalizedRectAnnotationController : AnnotationController<RectangleAnnotation> {
+    NormalizedRect currentTarget;
 
-    protected override void Start() {
-      base.Start();
-      annotation.SetColor(color);
-      annotation.SetLineWidth(lineWidth);
+    public void DrawNow(NormalizedRect target) {
+      currentTarget = target;
+      SyncNow();
+    }
+
+    public void DrawLater(NormalizedRect target) {
+      UpdateCurrentTarget(target, ref currentTarget);
+    }
+
+    protected override void SyncNow() {
+      isStale = false;
+      annotation.Draw(currentTarget);
     }
   }
 }

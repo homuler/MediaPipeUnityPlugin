@@ -101,8 +101,8 @@ namespace Mediapipe.Unity {
     ///   <see cref="RectTransform" /> to be used for calculating local coordinates
     /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3 GetLocalPosition(RectTransform rectTransform, Landmark landmark, Vector3 scale, bool isMirrored = false, bool ignoreZ = false) {
-      return GetLocalPosition(rectTransform, landmark.X, landmark.Y, ignoreZ ? 0.0f : landmark.Z, scale, isMirrored);
+    public static Vector3 GetLocalPosition(RectTransform rectTransform, Landmark landmark, Vector3 scale, bool isMirrored = false) {
+      return GetLocalPosition(rectTransform, landmark.X, landmark.Y, landmark.Z, scale, isMirrored);
     }
 
     /// <summary>
@@ -112,8 +112,8 @@ namespace Mediapipe.Unity {
     ///   <see cref="RectTransform" /> to be used for calculating local coordinates
     /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3 GetLocalPosition(RectTransform rectTransform, NormalizedLandmark normalizedLandmark, bool isMirrored = false, bool ignoreZ = false) {
-      return GetLocalPositionNormalized(rectTransform, normalizedLandmark.X, normalizedLandmark.Y, ignoreZ ? 0.0f : normalizedLandmark.Z, isMirrored);
+    public static Vector3 GetLocalPosition(RectTransform rectTransform, NormalizedLandmark normalizedLandmark, bool isMirrored = false) {
+      return GetLocalPositionNormalized(rectTransform, normalizedLandmark.X, normalizedLandmark.Y, normalizedLandmark.Z, isMirrored);
     }
 
     /// <summary>

@@ -1,10 +1,21 @@
 using UnityEngine;
 
 namespace Mediapipe.Unity {
-  public class AnnotationController<T, U> : MonoBehaviour where T : Annotation<U> where U : class {
-    [SerializeField] GameObject annotationPrefab;
-    protected T annotation;
-    protected U target;
+  /// <summary>
+  ///   This class draws annotations on the screen which is the parent of the attached <see cref="GameObject" />.<br />
+  ///   That is, it's used like this.<br />
+  ///       1. Select a GameObject where you'd like to draw annotations.<br />
+  ///       2. Create an empty child GameObject (let's say AnnotationLayer) directly under it.<br />
+  ///       3. Attach <see cref="AnnotationController{T}" /> to AnnotationLayer.<br />
+  ///       4. Create an empty child GameObject (let's say RootAnnotation) directly under AnnotationLayer.<br />
+  ///       5. Attach <see cref="HierarchicalAnnotation" /> to RootAnnotation.<br />
+  /// </summary>
+  /// <remarks>
+  ///   Note that this class can be accessed from a thread other than main thread.
+  ///   Extended classes must be implemented to work in such a situation, since Unity APIs won't work in other threads.
+  /// </remarks>
+  public abstract class AnnotationController<T> : MonoBehaviour where T : HierarchicalAnnotation {
+    [SerializeField] protected T annotation;
     protected bool isStale = false;
 
     public bool isMirrored {
@@ -17,13 +28,21 @@ namespace Mediapipe.Unity {
     }
 
     protected virtual void Start() {
-      annotation = Instantiate(annotationPrefab, transform).GetComponent<T>();
+      if (!TryGetComponent<RectTransform>(out var _)) {
+        Logger.LogVerbose(this.GetType().Name, $"Adding RectTransform to {gameObject.name}");
+        var rectTransform = gameObject.AddComponent<RectTransform>();
+        // stretch width and height by default
+        rectTransform.pivot = new Vector2(0.5f, 0.5f);
+        rectTransform.anchorMin = Vector2.zero;
+        rectTransform.anchorMax = Vector2.one;
+        rectTransform.anchoredPosition3D = Vector3.zero;
+        rectTransform.sizeDelta = Vector2.zero;
+      }
     }
 
     protected virtual void LateUpdate() {
       if (isStale) {
-        isStale = false;
-        annotation.SetTarget(target);
+        SyncNow();
       }
     }
 
@@ -32,20 +51,28 @@ namespace Mediapipe.Unity {
         Destroy(annotation);
         annotation = null;
       }
-      target = null;
       isStale = false;
     }
 
-    public void Draw(U target) {
-      if (IsTargetChanged(target)) {
-        this.target = target;
+    /// <summary>
+    ///   Draw annotations in current thread.
+    ///   This method must set <see cref="isStale" /> to false.
+    /// </summary>
+    /// <remarks>
+    ///   This method can only be called from main thread.
+    /// </remarks>
+    protected abstract void SyncNow();
+
+    protected void UpdateCurrentTarget<S>(S newTarget, ref S currentTarget) {
+      if (IsTargetChanged(newTarget, currentTarget)) {
+        currentTarget = newTarget;
         isStale = true;
       }
     }
 
-    bool IsTargetChanged(U target) {
-      // It's assumed that target has not changed iff target is null and annotation's current target is also null.
-      return target != null || this.target != null;
+    protected bool IsTargetChanged<S>(S newTarget, S currentTarget) {
+      // It's assumed that target has not changed iff previous target and new target are both null.
+      return currentTarget != null || newTarget != null;
     }
   }
 }

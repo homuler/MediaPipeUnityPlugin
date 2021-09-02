@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace Mediapipe.Unity.FaceDetection {
   public class FaceDetectionSolution : Solution {
     [SerializeField] RawImage screen;
-    [SerializeField] DetectionListAnnotationController annotationController;
+    [SerializeField] DetectionListAnnotationController faceDetectionsAnnotationController;
     [SerializeField] FaceDetectionGraph graphRunner;
     [SerializeField] TextureFramePool textureFramePool;
 
@@ -78,7 +78,7 @@ namespace Mediapipe.Unity.FaceDetection {
         textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
       }
 
-      annotationController.isMirrored = imageSource.isMirrored;
+      faceDetectionsAnnotationController.isMirrored = imageSource.isMirrored;
 
       while (true) {
         yield return new WaitWhile(() => isPaused);
@@ -109,7 +109,7 @@ namespace Mediapipe.Unity.FaceDetection {
         if (runningMode == RunningMode.Sync) {
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var detections = graphRunner.FetchNextDetections();
-          annotationController.Draw(detections);
+          faceDetectionsAnnotationController.DrawLater(detections);
         }
 
         yield return new WaitForEndOfFrame();
@@ -117,7 +117,7 @@ namespace Mediapipe.Unity.FaceDetection {
     }
 
     void OnFacesDetected(List<Detection> detections) {
-      annotationController.Draw(detections);
+      faceDetectionsAnnotationController.DrawLater(detections);
     }
   }
 }

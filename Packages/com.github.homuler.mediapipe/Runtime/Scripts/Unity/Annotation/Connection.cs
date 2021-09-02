@@ -1,9 +1,9 @@
 namespace Mediapipe.Unity {
-  public class Connection<T> {
-    public readonly T start;
-    public readonly T end;
+  public class Connection {
+    public readonly HierarchicalAnnotation start;
+    public readonly HierarchicalAnnotation end;
 
-    public Connection(T start, T end) {
+    public Connection(HierarchicalAnnotation start, HierarchicalAnnotation end) {
       this.start = start;
       this.end = end;
     }

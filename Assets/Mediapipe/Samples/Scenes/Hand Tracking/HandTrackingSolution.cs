@@ -119,11 +119,11 @@ namespace Mediapipe.Unity.HandTracking {
         if (runningMode == RunningMode.Sync) {
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = graphRunner.FetchNextValue();
-          palmDetectionsAnnotationController.Draw(value.palmDetections);
-          handRectsFromPalmDetectionsAnnotationController.Draw(value.handRectsFromPalmDetections);
-          handLandmarksAnnotationController.Draw(value.handLandmarks);
-          handLandmarksAnnotationController.SetClassificationList(value.handedness);
-          handRectsFromLandmarksAnnotationController.Draw(value.handRectsFromLandmarks);
+          palmDetectionsAnnotationController.DrawLater(value.palmDetections);
+          handRectsFromPalmDetectionsAnnotationController.DrawLater(value.handRectsFromPalmDetections);
+          handLandmarksAnnotationController.DrawLater(value.handLandmarks);
+          handLandmarksAnnotationController.DrawLater(value.handedness);
+          handRectsFromLandmarksAnnotationController.DrawLater(value.handRectsFromLandmarks);
         }
 
         yield return new WaitForEndOfFrame();
@@ -131,23 +131,23 @@ namespace Mediapipe.Unity.HandTracking {
     }
 
     void OnPalmDetectectionsOutput(List<Detection> palmDetections) {
-      palmDetectionsAnnotationController.Draw(palmDetections);
+      palmDetectionsAnnotationController.DrawLater(palmDetections);
     }
 
     void OnHandRectsFromPalmDetectionsOutput(List<NormalizedRect> handRectsFromPalmDetections) {
-      handRectsFromPalmDetectionsAnnotationController.Draw(handRectsFromPalmDetections);
+      handRectsFromPalmDetectionsAnnotationController.DrawLater(handRectsFromPalmDetections);
     }
 
     void OnHandLandmarksOutput(List<NormalizedLandmarkList> handLandmarks) {
-      handLandmarksAnnotationController.Draw(handLandmarks);
+      handLandmarksAnnotationController.DrawLater(handLandmarks);
     }
 
     void OnHandRectsFromLandmarksOutput(List<NormalizedRect> handRectsFromLandmarks) {
-      handRectsFromLandmarksAnnotationController.Draw(handRectsFromLandmarks);
+      handRectsFromLandmarksAnnotationController.DrawLater(handRectsFromLandmarks);
     }
 
     void OnHandednessOutput(List<ClassificationList> handedness) {
-      handLandmarksAnnotationController.SetClassificationList(handedness);
+      handLandmarksAnnotationController.DrawLater(handedness);
     }
   }
 }

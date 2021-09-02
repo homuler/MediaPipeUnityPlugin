@@ -123,10 +123,10 @@ namespace Mediapipe.Unity.PoseTracking {
         if (runningMode == RunningMode.Sync) {
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = graphRunner.FetchNextValue();
-          poseDetectionAnnotationController.Draw(value.poseDetection);
-          poseLandmarksAnnotationController.Draw(value.poseLandmarks);
-          poseWorldLandmarksAnnotationController.Draw(value.poseWorldLandmarks);
-          roiFromLandmarksAnnotationController.Draw(value.roiFromLandmarks);
+          poseDetectionAnnotationController.DrawLater(value.poseDetection);
+          poseLandmarksAnnotationController.DrawLater(value.poseLandmarks);
+          poseWorldLandmarksAnnotationController.DrawLater(value.poseWorldLandmarks);
+          roiFromLandmarksAnnotationController.DrawLater(value.roiFromLandmarks);
         }
 
         yield return new WaitForEndOfFrame();
@@ -134,19 +134,19 @@ namespace Mediapipe.Unity.PoseTracking {
     }
 
     void OnPoseDetectionOutput(Detection poseDetection) {
-      poseDetectionAnnotationController.Draw(poseDetection);
+      poseDetectionAnnotationController.DrawLater(poseDetection);
     }
 
     void OnPoseLandmarksOutput(NormalizedLandmarkList poseLandmarks) {
-      poseLandmarksAnnotationController.Draw(poseLandmarks);
+      poseLandmarksAnnotationController.DrawLater(poseLandmarks);
     }
 
     void OnPoseWorldLandmarksOutput(LandmarkList poseWorldLandmarks) {
-      poseWorldLandmarksAnnotationController.Draw(poseWorldLandmarks);
+      poseWorldLandmarksAnnotationController.DrawLater(poseWorldLandmarks);
     }
 
     void OnRoiFromLandmarksOutput(NormalizedRect roiFromLandmarks) {
-      roiFromLandmarksAnnotationController.Draw(roiFromLandmarks);
+      roiFromLandmarksAnnotationController.DrawLater(roiFromLandmarks);
     }
   }
 }

@@ -6,9 +6,9 @@ using UnityEngine.UI;
 namespace Mediapipe.Unity.FaceMesh {
   public class FaceMeshSolution : Solution {
     [SerializeField] RawImage screen;
-    [SerializeField] DetectionListAnnotationController detectionListAnnotationController;
-    [SerializeField] NormalizedRectListAnnotationController normalizedRectListAnnotationController;
-    [SerializeField] MultiNormalizedLandmarkListAnnotationController multiNormalizedLandmarkListAnnotationController;
+    [SerializeField] DetectionListAnnotationController faceDetectionsAnnotationController;
+    [SerializeField] MultiFaceLandmarkListAnnotationController multiFaceLandmarksAnnotationController;
+    [SerializeField] NormalizedRectListAnnotationController faceRectsFromLandmarksAnnotationController;
     [SerializeField] FaceMeshGraph graphRunner;
     [SerializeField] TextureFramePool textureFramePool;
 
@@ -82,9 +82,9 @@ namespace Mediapipe.Unity.FaceMesh {
         textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
       }
 
-      detectionListAnnotationController.isMirrored = imageSource.isMirrored;
-      normalizedRectListAnnotationController.isMirrored = imageSource.isMirrored;
-      multiNormalizedLandmarkListAnnotationController.isMirrored = imageSource.isMirrored;
+      faceDetectionsAnnotationController.isMirrored = imageSource.isMirrored;
+      faceRectsFromLandmarksAnnotationController.isMirrored = imageSource.isMirrored;
+      multiFaceLandmarksAnnotationController.isMirrored = imageSource.isMirrored;
 
       while (true) {
         yield return new WaitWhile(() => isPaused);
@@ -115,9 +115,9 @@ namespace Mediapipe.Unity.FaceMesh {
         if (runningMode == RunningMode.Sync) {
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = graphRunner.FetchNextValue();
-          detectionListAnnotationController.Draw(value.faceDetections);
-          normalizedRectListAnnotationController.Draw(value.faceRectsFromLandmarks);
-          multiNormalizedLandmarkListAnnotationController.Draw(value.multiFaceLandmarks);
+          faceDetectionsAnnotationController.DrawLater(value.faceDetections);
+          faceRectsFromLandmarksAnnotationController.DrawLater(value.faceRectsFromLandmarks);
+          multiFaceLandmarksAnnotationController.DrawLater(value.multiFaceLandmarks);
         }
 
         yield return new WaitForEndOfFrame();
@@ -125,15 +125,15 @@ namespace Mediapipe.Unity.FaceMesh {
     }
 
     void OnFacesDetected(List<Detection> faceDetections) {
-      detectionListAnnotationController.Draw(faceDetections);
+      faceDetectionsAnnotationController.DrawLater(faceDetections);
     }
 
     void OnFaceLandmarksDetected(List<NormalizedLandmarkList> multiFaceLandmarks) {
-      multiNormalizedLandmarkListAnnotationController.Draw(multiFaceLandmarks);
+      multiFaceLandmarksAnnotationController.DrawLater(multiFaceLandmarks);
     }
 
     void OnFaceRectsDetected(List<NormalizedRect> faceRectsFromLandmarks) {
-      normalizedRectListAnnotationController.Draw(faceRectsFromLandmarks);
+      faceRectsFromLandmarksAnnotationController.DrawLater(faceRectsFromLandmarks);
     }
   }
 }

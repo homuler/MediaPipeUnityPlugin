@@ -8,7 +8,7 @@ namespace Mediapipe.Unity.IrisTracking {
     [SerializeField] RawImage screen;
     [SerializeField] DetectionListAnnotationController faceDetectionsAnnotationController;
     [SerializeField] NormalizedRectAnnotationController faceRectAnnotationController;
-    [SerializeField] NormalizedLandmarkListAnnotationController faceLandmarksWithIrisAnnotationController;
+    [SerializeField] FaceLandmarkListWithIrisAnnotationController faceLandmarksWithIrisAnnotationController;
     [SerializeField] IrisTrackingGraph graphRunner;
     [SerializeField] TextureFramePool textureFramePool;
 
@@ -110,9 +110,9 @@ namespace Mediapipe.Unity.IrisTracking {
         if (runningMode == RunningMode.Sync) {
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = graphRunner.FetchNextValue();
-          faceDetectionsAnnotationController.Draw(value.faceDetections);
-          faceRectAnnotationController.Draw(value.faceRect);
-          faceLandmarksWithIrisAnnotationController.Draw(value.faceLandmarksWithIris);
+          faceDetectionsAnnotationController.DrawLater(value.faceDetections);
+          faceRectAnnotationController.DrawLater(value.faceRect);
+          faceLandmarksWithIrisAnnotationController.DrawLater(value.faceLandmarksWithIris);
         }
 
         yield return new WaitForEndOfFrame();
@@ -120,15 +120,15 @@ namespace Mediapipe.Unity.IrisTracking {
     }
 
     void OnFaceDetectionsOutput(List<Detection> faceDetections) {
-      faceDetectionsAnnotationController.Draw(faceDetections);
+      faceDetectionsAnnotationController.DrawLater(faceDetections);
     }
 
     void OnFaceRectOutput(NormalizedRect faceRect) {
-      faceRectAnnotationController.Draw(faceRect);
+      faceRectAnnotationController.DrawLater(faceRect);
     }
 
     void OnFaceLandmarksWithIrisOutput(NormalizedLandmarkList faceLandmarkListWithIris) {
-      faceLandmarksWithIrisAnnotationController.Draw(faceLandmarkListWithIris);
+      faceLandmarksWithIrisAnnotationController.DrawLater(faceLandmarkListWithIris);
     }
   }
 }

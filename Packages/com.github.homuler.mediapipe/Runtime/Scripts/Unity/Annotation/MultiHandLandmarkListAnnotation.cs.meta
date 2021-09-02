@@ -4,7 +4,7 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - handLandmarkListAnnotationPrefab: {fileID: 4724242833946851653, guid: b420c3106bd9cc5b6871a7df5459dba0,
+  - annotationPrefab: {fileID: 4724242833946851653, guid: b420c3106bd9cc5b6871a7df5459dba0,
       type: 3}
   executionOrder: 0
   icon: {instanceID: 0}

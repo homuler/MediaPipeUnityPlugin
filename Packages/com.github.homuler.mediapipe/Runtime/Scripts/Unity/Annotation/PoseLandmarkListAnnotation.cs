@@ -2,15 +2,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity {
-  public class PoseLandmarkListAnnotation : Annotation<IList<NormalizedLandmark>>, IAnnotatable<NormalizedLandmarkList>, I3DAnnotatable {
-    [SerializeField] GameObject normalizedLandmarkAnnotationPrefab;
-    [SerializeField] GameObject normalizedLandmarkConnectionAnnotationPrefab;
+  public sealed class PoseLandmarkListAnnotation : HierarchicalAnnotation {
+    [SerializeField] PointListAnnotation landmarkList;
+    [SerializeField] ConnectionListAnnotation connectionList;
     [SerializeField] Color leftLandmarkColor = Color.green;
     [SerializeField] Color rightLandmarkColor = Color.green;
-    [SerializeField] float landmarkRadius = 15.0f;
-    [SerializeField] Color connectionColor = Color.white;
-    [SerializeField, Range(0, 1)] float connectionWidth = 1.0f;
-    [SerializeField] bool visualizeZ = false;
 
     const int landmarkCount = 33;
     readonly int[] leftLandmarks = new int[] {
@@ -67,122 +63,78 @@ namespace Mediapipe.Unity {
       (30, 32),
     };
 
-    List<NormalizedLandmarkAnnotation> _landmarkAnnotations;
-    List<NormalizedLandmarkAnnotation> landmarkAnnotations {
-      get {
-        if (_landmarkAnnotations == null) {
-          _landmarkAnnotations = new List<NormalizedLandmarkAnnotation>();
-          for (var i = 0; i < landmarkCount; i ++) {
-            _landmarkAnnotations.Add(InitializeLandmarkAnnotation());
-          }
-          foreach (var index in leftLandmarks) {
-            _landmarkAnnotations[index].SetColor(leftLandmarkColor);
-          }
-          foreach (var index in rightLandmarks) {
-            _landmarkAnnotations[index].SetColor(rightLandmarkColor);
-          }
-        }
-        return _landmarkAnnotations;
-      }
-    }
+    void Start() {
+      landmarkList.Fill(landmarkCount);
+      ApplyLeftLandmarkColor(leftLandmarkColor);
+      ApplyRightLandmarkColor(rightLandmarkColor);
 
-    List<ConnectionAnnotation<NormalizedLandmarkAnnotation>> _connectionAnnotations;
-    List<ConnectionAnnotation<NormalizedLandmarkAnnotation>> connectionAnnotations {
-      get {
-        if (_connectionAnnotations == null) {
-          _connectionAnnotations = new List<ConnectionAnnotation<NormalizedLandmarkAnnotation>>();
-          foreach (var connection in Connections) {
-            _connectionAnnotations.Add(InitializeConnectionAnnotation(connection.Item1, connection.Item2));
-          }
-        }
-        return _connectionAnnotations;
-      }
-    }
-
-    public void SetTarget(NormalizedLandmarkList target) {
-      SetTarget(target?.Landmark);
+      connectionList.Fill(connections, landmarkList);
     }
 
     public override bool isMirrored {
       set {
-        foreach (var landmarkAnnotation in landmarkAnnotations) {
-          landmarkAnnotation.isMirrored = value;
-        }
-        foreach (var connectionAnnotation in connectionAnnotations) {
-          connectionAnnotation.isMirrored = value;
-        }
+        landmarkList.isMirrored = value;
+        connectionList.isMirrored = value;
         base.isMirrored = value;
       }
     }
 
-    public List<(int, int)> Connections => connections;
-
     public void SetLeftLandmarkColor(Color leftLandmarkColor) {
       this.leftLandmarkColor = leftLandmarkColor;
-      foreach (var index in leftLandmarks) {
-        landmarkAnnotations[index].SetColor(leftLandmarkColor);
-      }
+      ApplyLeftLandmarkColor(leftLandmarkColor);
     }
 
     public void SetRightLandmarkColor(Color rightLandmarkColor) {
       this.rightLandmarkColor = rightLandmarkColor;
-      foreach (var index in rightLandmarks) {
-        landmarkAnnotations[index].SetColor(rightLandmarkColor);
-      }
+      ApplyRightLandmarkColor(rightLandmarkColor);
     }
 
     public void SetLandmarkRadius(float landmarkRadius) {
-      this.landmarkRadius = landmarkRadius;
-      foreach (var landmarkAnnotation in landmarkAnnotations) {
-        landmarkAnnotation.SetRadius(landmarkRadius);
-      }
-    }
-
-    public void SetConnectionWidth(float connectionWidth) {
-      this.connectionWidth = connectionWidth;
-      foreach (var connectionAnnotation in connectionAnnotations) {
-        connectionAnnotation.SetLineWidth(connectionWidth);
-      }
+      landmarkList.SetRadius(landmarkRadius);
     }
 
     public void SetConnectionColor(Color connectionColor) {
-      this.connectionColor = connectionColor;
-      foreach (var connectionAnnotation in connectionAnnotations) {
-        connectionAnnotation.SetColor(connectionColor);
+      connectionList.SetColor(connectionColor);
+    }
+
+    public void SetConnectionWidth(float connectionWidth) {
+      connectionList.SetLineWidth(connectionWidth);
+    }
+
+    public void Draw(IList<Landmark> target, Vector3 scale, bool visualizeZ = false) {
+      if (ActivateFor(target)) {
+        landmarkList.Draw(target, scale, visualizeZ);
+        // Draw explicitly because connection annotation's targets remain the same.
+        connectionList.Redraw();
       }
     }
 
-    public void VisualizeZ(bool flag) {
-      this.visualizeZ = flag;
-      foreach (var landmarkAnnotation in landmarkAnnotations) {
-        landmarkAnnotation.VisualizeZ(flag);
+    public void Draw(LandmarkList target, Vector3 scale, bool visualizeZ = false) {
+      Draw(target?.Landmark, scale, visualizeZ);
+    }
+
+    public void Draw(IList<NormalizedLandmark> target, bool visualizeZ = false) {
+      if (ActivateFor(target)) {
+        landmarkList.Draw(target, visualizeZ);
+        // Draw explicitly because connection annotation's targets remain the same.
+        connectionList.Redraw();
       }
     }
 
-    protected override void Draw(IList<NormalizedLandmark> target) {
-      // NOTE: InitializeLandmarkAnnotation won't be called here, because annotations are already instantiated.
-      SetTargetAll(landmarkAnnotations, target, InitializeLandmarkAnnotation);
+    public void Draw(NormalizedLandmarkList target, bool visualizeZ = false) {
+      Draw(target?.Landmark, visualizeZ);
+    }
 
-      // Draw explicitly because connection annotations' targets does not change.
-      foreach (var connectionAnnotation in connectionAnnotations) {
-        connectionAnnotation.Redraw();
+    void ApplyLeftLandmarkColor(Color color) {
+      foreach (var index in leftLandmarks) {
+        landmarkList[index].SetColor(color);
       }
     }
 
-    NormalizedLandmarkAnnotation InitializeLandmarkAnnotation() {
-      var annotation = InstantiateChild<NormalizedLandmarkAnnotation, NormalizedLandmark>(normalizedLandmarkAnnotationPrefab);
-      annotation.SetRadius(landmarkRadius);
-      annotation.SetColor(connectionColor); // default color = nose color
-      annotation.VisualizeZ(visualizeZ);
-      return annotation;
-    }
-
-    ConnectionAnnotation<NormalizedLandmarkAnnotation> InitializeConnectionAnnotation(int i, int j) {
-      var annotation = InstantiateChild<ConnectionAnnotation<NormalizedLandmarkAnnotation>, Connection<NormalizedLandmarkAnnotation>>(normalizedLandmarkConnectionAnnotationPrefab);
-      annotation.SetLineWidth(connectionWidth);
-      annotation.SetColor(connectionColor);
-      annotation.SetTarget(new Connection<NormalizedLandmarkAnnotation>(landmarkAnnotations[i], landmarkAnnotations[j]));
-      return annotation;
+    void ApplyRightLandmarkColor(Color color) {
+      foreach (var index in rightLandmarks) {
+        landmarkList[index].SetColor(color);
+      }
     }
   }
 }

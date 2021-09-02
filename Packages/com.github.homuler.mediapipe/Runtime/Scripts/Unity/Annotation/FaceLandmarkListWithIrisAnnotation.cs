@@ -2,43 +2,76 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity {
-  public class FaceLandmarkListWithIrisAnnotation : Annotation<IList<NormalizedLandmark>>, IAnnotatable<NormalizedLandmarkList> {
-    [SerializeField] GameObject faceLandmarkListAnnotationPrefab;
-    [SerializeField] GameObject irisLandmarkListAnnotationPrefab;
-
-    FaceLandmarkListAnnotation faceLandmarkListAnnotation;
-    IrisLandmarkListAnnotation leftIrisLandmarkListAnnotation;
-    IrisLandmarkListAnnotation rightIrisLandmarkListAnnotation;
+  public sealed class FaceLandmarkListWithIrisAnnotation : HierarchicalAnnotation {
+    [SerializeField] FaceLandmarkListAnnotation faceLandmarkList;
+    [SerializeField] IrisLandmarkListAnnotation leftIrisLandmarkList;
+    [SerializeField] IrisLandmarkListAnnotation rightIrisLandmarkList;
 
     const int faceLandmarkCount = 468;
-
-    void Start() {
-      faceLandmarkListAnnotation = InstantiateChild<FaceLandmarkListAnnotation, IList<NormalizedLandmark>>(faceLandmarkListAnnotationPrefab);
-      leftIrisLandmarkListAnnotation = InstantiateChild<IrisLandmarkListAnnotation, IList<NormalizedLandmark>>(irisLandmarkListAnnotationPrefab);
-      rightIrisLandmarkListAnnotation = InstantiateChild<IrisLandmarkListAnnotation, IList<NormalizedLandmark>>(irisLandmarkListAnnotationPrefab);
-    }
-
-    public void SetTarget(NormalizedLandmarkList target) {
-      SetTarget(target?.Landmark);
-    }
+    const int irisLandmarkCount = 5;
 
     public override bool isMirrored {
       set {
-        faceLandmarkListAnnotation.isMirrored = value;
-        leftIrisLandmarkListAnnotation.isMirrored = value;
-        rightIrisLandmarkListAnnotation.isMirrored = value;
+        faceLandmarkList.isMirrored = value;
+        leftIrisLandmarkList.isMirrored = value;
+        rightIrisLandmarkList.isMirrored = value;
         base.isMirrored = value;
       }
     }
 
-    protected override void Draw(IList<NormalizedLandmark> target) {
-      faceLandmarkListAnnotation.SetTarget(target);
+    public void DrawFaceLandmarkList(IList<NormalizedLandmark> target, bool visualizeZ = false) {
+      if (ActivateFor(target)) {
+        faceLandmarkList.Draw(target, visualizeZ);
+      }
+    }
 
-      var offset = faceLandmarkCount;
-      var leftIrisLandmarkList = new List<NormalizedLandmark> { target[offset + 0], target[offset + 1], target[offset + 2], target[offset + 3], target[offset + 4] };
-      var rightIrisLandmarkList = new List<NormalizedLandmark> { target[offset + 5], target[offset + 6], target[offset + 7], target[offset + 8], target[offset + 9] };
-      leftIrisLandmarkListAnnotation.SetTarget(leftIrisLandmarkList);
-      rightIrisLandmarkListAnnotation.SetTarget(rightIrisLandmarkList);
+    public void DrawLeftIrisLandmarkList(IList<NormalizedLandmark> target, bool visualizeZ = false, int circleVertices = 128) {
+      // does not deactivate if the target is null as long as face landmarks are present.
+      leftIrisLandmarkList.Draw(target, visualizeZ, circleVertices);
+    }
+
+    public void DrawRightIrisLandmarkList(IList<NormalizedLandmark> target, bool visualizeZ = false, int circleVertices = 128) {
+      // does not deactivate if the target is null as long as face landmarks are present.
+      rightIrisLandmarkList.Draw(target, visualizeZ, circleVertices);
+    }
+
+    public static (IList<NormalizedLandmark>, IList<NormalizedLandmark>, IList<NormalizedLandmark>) PartitionLandmarkList(IList<NormalizedLandmark> landmarks) {
+      if (landmarks == null) {
+        return (null, null, null);
+      }
+
+      var enumerator = landmarks.GetEnumerator();
+      var faceLandmarks = new List<NormalizedLandmark>(faceLandmarkCount);
+      for (var i = 0; i < faceLandmarkCount; i++) {
+        if (enumerator.MoveNext()) {
+          faceLandmarks.Add(enumerator.Current);
+        }
+      }
+      if (faceLandmarks.Count < faceLandmarkCount) {
+        return (null, null, null);
+      }
+
+      var leftIrisLandmarks = new List<NormalizedLandmark>(irisLandmarkCount);
+      for (var i = 0; i < irisLandmarkCount; i++) {
+        if (enumerator.MoveNext()) {
+          leftIrisLandmarks.Add(enumerator.Current);
+        }
+      }
+      if (leftIrisLandmarks.Count < irisLandmarkCount) {
+        return (faceLandmarks, null, null);
+      }
+
+      var rightIrisLandmarks = new List<NormalizedLandmark>(irisLandmarkCount);
+      for (var i = 0; i < irisLandmarkCount; i++) {
+        if (enumerator.MoveNext()) {
+          rightIrisLandmarks.Add(enumerator.Current);
+        }
+      }
+      if (rightIrisLandmarks.Count < irisLandmarkCount) {
+        return (faceLandmarks, leftIrisLandmarks, null);
+      }
+
+      return (faceLandmarks, leftIrisLandmarks, rightIrisLandmarks);
     }
   }
 }
