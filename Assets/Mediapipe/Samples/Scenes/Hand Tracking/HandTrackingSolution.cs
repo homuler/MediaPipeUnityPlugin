@@ -119,11 +119,10 @@ namespace Mediapipe.Unity.HandTracking {
         if (runningMode == RunningMode.Sync) {
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = graphRunner.FetchNextValue();
-          palmDetectionsAnnotationController.DrawLater(value.palmDetections);
-          handRectsFromPalmDetectionsAnnotationController.DrawLater(value.handRectsFromPalmDetections);
-          handLandmarksAnnotationController.DrawLater(value.handLandmarks);
-          handLandmarksAnnotationController.DrawLater(value.handedness);
-          handRectsFromLandmarksAnnotationController.DrawLater(value.handRectsFromLandmarks);
+          palmDetectionsAnnotationController.DrawNow(value.palmDetections);
+          handRectsFromPalmDetectionsAnnotationController.DrawNow(value.handRectsFromPalmDetections);
+          handLandmarksAnnotationController.DrawNow(value.handLandmarks, value.handedness);
+          handRectsFromLandmarksAnnotationController.DrawNow(value.handRectsFromLandmarks);
         }
 
         yield return new WaitForEndOfFrame();

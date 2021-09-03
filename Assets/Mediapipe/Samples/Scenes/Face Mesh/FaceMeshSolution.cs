@@ -115,9 +115,9 @@ namespace Mediapipe.Unity.FaceMesh {
         if (runningMode == RunningMode.Sync) {
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = graphRunner.FetchNextValue();
-          faceDetectionsAnnotationController.DrawLater(value.faceDetections);
-          faceRectsFromLandmarksAnnotationController.DrawLater(value.faceRectsFromLandmarks);
-          multiFaceLandmarksAnnotationController.DrawLater(value.multiFaceLandmarks);
+          faceDetectionsAnnotationController.DrawNow(value.faceDetections);
+          faceRectsFromLandmarksAnnotationController.DrawNow(value.faceRectsFromLandmarks);
+          multiFaceLandmarksAnnotationController.DrawNow(value.multiFaceLandmarks);
         }
 
         yield return new WaitForEndOfFrame();

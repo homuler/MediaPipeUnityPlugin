@@ -110,9 +110,9 @@ namespace Mediapipe.Unity.IrisTracking {
         if (runningMode == RunningMode.Sync) {
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = graphRunner.FetchNextValue();
-          faceDetectionsAnnotationController.DrawLater(value.faceDetections);
-          faceRectAnnotationController.DrawLater(value.faceRect);
-          faceLandmarksWithIrisAnnotationController.DrawLater(value.faceLandmarksWithIris);
+          faceDetectionsAnnotationController.DrawNow(value.faceDetections);
+          faceRectAnnotationController.DrawNow(value.faceRect);
+          faceLandmarksWithIrisAnnotationController.DrawNow(value.faceLandmarksWithIris);
         }
 
         yield return new WaitForEndOfFrame();

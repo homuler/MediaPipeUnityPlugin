@@ -109,7 +109,7 @@ namespace Mediapipe.Unity.FaceDetection {
         if (runningMode == RunningMode.Sync) {
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var detections = graphRunner.FetchNextDetections();
-          faceDetectionsAnnotationController.DrawLater(detections);
+          faceDetectionsAnnotationController.DrawNow(detections);
         }
 
         yield return new WaitForEndOfFrame();

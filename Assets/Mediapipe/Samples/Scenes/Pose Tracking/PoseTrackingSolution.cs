@@ -123,10 +123,10 @@ namespace Mediapipe.Unity.PoseTracking {
         if (runningMode == RunningMode.Sync) {
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = graphRunner.FetchNextValue();
-          poseDetectionAnnotationController.DrawLater(value.poseDetection);
-          poseLandmarksAnnotationController.DrawLater(value.poseLandmarks);
-          poseWorldLandmarksAnnotationController.DrawLater(value.poseWorldLandmarks);
-          roiFromLandmarksAnnotationController.DrawLater(value.roiFromLandmarks);
+          poseDetectionAnnotationController.DrawNow(value.poseDetection);
+          poseLandmarksAnnotationController.DrawNow(value.poseLandmarks);
+          poseWorldLandmarksAnnotationController.DrawNow(value.poseWorldLandmarks);
+          roiFromLandmarksAnnotationController.DrawNow(value.roiFromLandmarks);
         }
 
         yield return new WaitForEndOfFrame();
