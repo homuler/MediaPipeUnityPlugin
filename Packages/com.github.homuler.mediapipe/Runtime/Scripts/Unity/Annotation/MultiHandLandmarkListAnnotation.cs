@@ -9,44 +9,37 @@ namespace Mediapipe.Unity {
     [SerializeField] Color connectionColor = Color.white;
     [SerializeField, Range(0, 1)] float connectionWidth = 1.0f;
 
+    void OnValidate() {
+      ApplyLeftLandmarkColor(leftLandmarkColor);
+      ApplyRightLandmarkColor(rightLandmarkColor);
+      ApplyLandmarkRadius(landmarkRadius);
+      ApplyConnectionColor(connectionColor);
+      ApplyConnectionWidth(connectionWidth);
+    }
+
     public void SetLeftLandmarkColor(Color leftLandmarkColor) {
       this.leftLandmarkColor = leftLandmarkColor;
-
-      foreach (var handLandmarkList in children) {
-        handLandmarkList?.SetLeftLandmarkColor(leftLandmarkColor);
-      }
+      ApplyLeftLandmarkColor(leftLandmarkColor);
     }
 
     public void SetRightLandmarkColor(Color rightLandmarkColor) {
       this.rightLandmarkColor = rightLandmarkColor;
-
-      foreach (var handLandmarkList in children) {
-        handLandmarkList?.SetLeftLandmarkColor(rightLandmarkColor);
-      }
+      ApplyRightLandmarkColor(rightLandmarkColor);
     }
 
     public void SetLandmarkRadius(float landmarkRadius) {
       this.landmarkRadius = landmarkRadius;
-
-      foreach (var handLandmarkList in children) {
-        handLandmarkList?.SetLandmarkRadius(landmarkRadius);
-      }
+      ApplyLandmarkRadius(landmarkRadius);
     }
 
     public void SetConnectionColor(Color connectionColor) {
       this.connectionColor = connectionColor;
-
-      foreach (var handLandmarkList in children) {
-        handLandmarkList?.SetConnectionColor(connectionColor);
-      }
+      ApplyConnectionColor(connectionColor);
     }
 
     public void SetConnectionWidth(float connectionWidth) {
       this.connectionWidth = connectionWidth;
-
-      foreach (var handLandmarkList in children) {
-        handLandmarkList?.SetConnectionWidth(connectionWidth);
-      }
+      ApplyConnectionWidth(connectionWidth);
     }
 
     public void SetHandedness(IList<ClassificationList> handedness) {
@@ -73,6 +66,36 @@ namespace Mediapipe.Unity {
       annotation.SetConnectionColor(connectionColor);
       annotation.SetConnectionWidth(connectionWidth);
       return annotation;
+    }
+
+    void ApplyLeftLandmarkColor(Color leftLandmarkColor) {
+      foreach (var handLandmarkList in children) {
+        handLandmarkList?.SetLeftLandmarkColor(leftLandmarkColor);
+      }
+    }
+
+    void ApplyRightLandmarkColor(Color rightLandmarkColor) {
+      foreach (var handLandmarkList in children) {
+        handLandmarkList?.SetRightLandmarkColor(rightLandmarkColor);
+      }
+    }
+
+    void ApplyLandmarkRadius(float landmarkRadius) {
+      foreach (var handLandmarkList in children) {
+        handLandmarkList?.SetLandmarkRadius(landmarkRadius);
+      }
+    }
+
+    void ApplyConnectionColor(Color connectionColor) {
+      foreach (var handLandmarkList in children) {
+        handLandmarkList?.SetConnectionColor(connectionColor);
+      }
+    }
+
+    void ApplyConnectionWidth(float connectionWidth) {
+      foreach (var handLandmarkList in children) {
+        handLandmarkList?.SetConnectionWidth(connectionWidth);
+      }
     }
   }
 }

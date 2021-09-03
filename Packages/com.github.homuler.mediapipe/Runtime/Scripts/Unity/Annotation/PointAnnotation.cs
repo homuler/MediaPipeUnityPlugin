@@ -8,8 +8,8 @@ namespace Mediapipe.Unity {
     [SerializeField] float radius = 15.0f;
    
     void OnEnable() {
+      ApplyColor(color);
       ApplyRadius(radius);
-      SetColor(color);
     }
 
     void OnDisable() {
@@ -18,7 +18,7 @@ namespace Mediapipe.Unity {
 
     public void SetColor(Color color) {
       this.color = color;
-      GetComponent<Renderer>().material.color = color;
+      ApplyColor(color);
     }
 
     public void SetRadius(float radius) {
@@ -55,6 +55,10 @@ namespace Mediapipe.Unity {
         Draw(CoordinateTransform.GetLocalPosition(GetAnnotationLayer(), target, isMirrored));
         SetColor(GetColor(target.Score, threshold));
       }
+    }
+
+    void ApplyColor(Color color) {
+      GetComponent<Renderer>().material.color = color;
     }
 
     void ApplyRadius(float radius) {

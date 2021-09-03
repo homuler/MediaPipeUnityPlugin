@@ -7,7 +7,7 @@ namespace Mediapipe.Unity {
     [SerializeField, Range(0, 1)] float lineWidth = 1.0f;
 
     void OnEnable() {
-      SetColor(color);
+      ApplyColor(color);
       ApplyLineWidth(lineWidth);
     }
 
@@ -17,10 +17,14 @@ namespace Mediapipe.Unity {
       lineRenderer.SetPositions(new Vector3[] {});
     }
 
+    void OnValidate() {
+      ApplyColor(color);
+      ApplyLineWidth(lineWidth);
+    }
+
     public void SetColor(Color color) {
       this.color = color;
-      lineRenderer.startColor = color;
-      lineRenderer.endColor = color;
+      ApplyColor(color);
     }
 
     public void SetLineWidth(float lineWidth) {
@@ -39,6 +43,11 @@ namespace Mediapipe.Unity {
 
       lineRenderer.positionCount = positions.Length;
       lineRenderer.SetPositions(positions);
+    }
+
+    void ApplyColor(Color color) {
+      lineRenderer.startColor = color;
+      lineRenderer.endColor = color;
     }
 
     void ApplyLineWidth(float lineWidth) {

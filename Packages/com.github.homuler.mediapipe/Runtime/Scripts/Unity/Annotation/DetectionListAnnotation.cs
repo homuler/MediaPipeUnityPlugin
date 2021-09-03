@@ -6,20 +6,19 @@ namespace Mediapipe.Unity {
     [SerializeField, Range(0, 1)] float lineWidth = 1.0f;
     [SerializeField] float keypointRadius = 15.0f;
 
+    void OnValidate() {
+      ApplyLineWidth(lineWidth);
+      ApplyKeypointRadius(keypointRadius);
+    }
+
     public void SetLineWidth(float lineWidth) {
       this.lineWidth = lineWidth;
-
-      foreach (var detection in children) {
-        detection?.SetLineWidth(lineWidth);
-      }
+      ApplyLineWidth(lineWidth);
     }
 
     public void SetKeypointRadius(float keypointRadius) {
       this.keypointRadius = keypointRadius;
-
-      foreach (var detection in children) {
-        detection?.SetKeypointRadius(keypointRadius);
-      }
+      ApplyKeypointRadius(keypointRadius);
     }
 
     /// <param name="threshold">
@@ -47,6 +46,18 @@ namespace Mediapipe.Unity {
       annotation.SetLineWidth(lineWidth);
       annotation.SetKeypointRadius(keypointRadius);
       return annotation;
+    }
+
+    void ApplyLineWidth(float lineWidth) {
+      foreach (var detection in children) {
+        detection?.SetLineWidth(lineWidth);
+      }
+    }
+
+    void ApplyKeypointRadius(float keypointRadius) {
+      foreach (var detection in children) {
+        detection?.SetKeypointRadius(keypointRadius);
+      }
     }
   }
 }

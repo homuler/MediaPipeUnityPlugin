@@ -9,7 +9,7 @@ namespace Mediapipe.Unity {
     readonly Vector3[] emptyPositions = new Vector3[] { Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero };
 
     void OnEnable() {
-      SetColor(color);
+      ApplyColor(color);
       ApplyLineWidth(lineWidth);
     }
 
@@ -18,10 +18,14 @@ namespace Mediapipe.Unity {
       lineRenderer.SetPositions(emptyPositions);
     }
 
+    void OnValidate() {
+      ApplyColor(color);
+      ApplyLineWidth(lineWidth);
+    }
+
     public void SetColor(Color color) {
       this.color = color;
-      lineRenderer.startColor = color;
-      lineRenderer.endColor = color;
+      ApplyColor(color);
     }
 
     public void SetLineWidth(float lineWidth) {
@@ -49,6 +53,11 @@ namespace Mediapipe.Unity {
       if (ActivateFor(target)) {
         Draw(CoordinateTransform.GetRectVertices(GetAnnotationLayer(), target, isMirrored));
       }
+    }
+
+    void ApplyColor(Color color) {
+      lineRenderer.startColor = color;
+      lineRenderer.endColor = color;
     }
 
     void ApplyLineWidth(float lineWidth) {

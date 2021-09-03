@@ -20,6 +20,10 @@ namespace Mediapipe.Unity {
       get { return children[index]; }
     }
 
+    public int count {
+      get { return children.Count; }
+    }
+
     public void Fill(int count) {
       while (children.Count < count) {
         children.Add(InstantiateChild(false));

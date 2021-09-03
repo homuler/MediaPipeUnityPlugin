@@ -8,20 +8,19 @@ namespace Mediapipe.Unity {
     [SerializeField] Color color = Color.green;
     [SerializeField] float radius = 15.0f;
 
+    void OnValidate() {
+      ApplyColor(color);
+      ApplyRadius(radius);
+    }
+
     public void SetColor(Color color) {
       this.color = color;
-
-      foreach (var point in children) {
-        point?.SetColor(color);
-      }
+      ApplyColor(color);
     }
 
     public void SetRadius(float radius) {
       this.radius = radius;
-
-      foreach (var point in children) {
-        point?.SetRadius(radius);
-      }
+      ApplyRadius(radius);
     }
 
     public void Draw(IList<Landmark> targets, Vector3 scale, bool visualizeZ = true) {
@@ -55,6 +54,18 @@ namespace Mediapipe.Unity {
       annotation.SetColor(color);
       annotation.SetRadius(radius);
       return annotation;
+    }
+
+    void ApplyColor(Color color) {
+      foreach (var point in children) {
+        point?.SetColor(color);
+      }
+    }
+
+    void ApplyRadius(float radius) {
+      foreach (var point in children) {
+        point?.SetRadius(radius);
+      }
     }
   }
 }

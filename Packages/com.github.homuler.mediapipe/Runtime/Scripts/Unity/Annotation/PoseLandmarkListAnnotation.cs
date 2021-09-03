@@ -63,6 +63,14 @@ namespace Mediapipe.Unity {
       (30, 32),
     };
 
+    public override bool isMirrored {
+      set {
+        landmarkList.isMirrored = value;
+        connectionList.isMirrored = value;
+        base.isMirrored = value;
+      }
+    }
+
     void Start() {
       landmarkList.Fill(landmarkCount);
       ApplyLeftLandmarkColor(leftLandmarkColor);
@@ -71,12 +79,9 @@ namespace Mediapipe.Unity {
       connectionList.Fill(connections, landmarkList);
     }
 
-    public override bool isMirrored {
-      set {
-        landmarkList.isMirrored = value;
-        connectionList.isMirrored = value;
-        base.isMirrored = value;
-      }
+    void OnValidate() {
+      ApplyLeftLandmarkColor(leftLandmarkColor);
+      ApplyRightLandmarkColor(rightLandmarkColor);
     }
 
     public void SetLeftLandmarkColor(Color leftLandmarkColor) {
@@ -126,14 +131,18 @@ namespace Mediapipe.Unity {
     }
 
     void ApplyLeftLandmarkColor(Color color) {
-      foreach (var index in leftLandmarks) {
-        landmarkList[index].SetColor(color);
+      if (landmarkList.count >= landmarkCount) {
+        foreach (var index in leftLandmarks) {
+          landmarkList[index].SetColor(color);
+        }
       }
     }
 
     void ApplyRightLandmarkColor(Color color) {
-      foreach (var index in rightLandmarks) {
-        landmarkList[index].SetColor(color);
+      if (landmarkList.count >= landmarkCount) {
+        foreach (var index in rightLandmarks) {
+          landmarkList[index].SetColor(color);
+        }
       }
     }
   }
