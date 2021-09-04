@@ -113,8 +113,6 @@ MonoBehaviour:
   locationData: {fileID: 8241125562864823516}
   relativeKeypoints: {fileID: 6447834089412636778}
   textMesh: {fileID: 6948870342255070997}
-  lineWidth: 1
-  keypointRadius: 15
 --- !u!1001 &2782677811817078429
 PrefabInstance:
   m_ObjectHideFlags: 0

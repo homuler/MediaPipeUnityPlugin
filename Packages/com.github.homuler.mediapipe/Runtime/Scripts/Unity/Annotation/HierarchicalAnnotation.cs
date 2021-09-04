@@ -41,12 +41,12 @@ namespace Mediapipe.Unity {
       return root.transform.parent.gameObject.GetComponent<RectTransform>();
     }
 
-    bool isActive = true;
+    public bool isActive { get { return gameObject.activeSelf; } }
+    public bool isActiveInHierarchy { get { return gameObject.activeInHierarchy; } }
 
     public void SetActive(bool isActive) {
       if (this.isActive != isActive) {
         gameObject.SetActive(isActive);
-        this.isActive = isActive;
       }
     }
 

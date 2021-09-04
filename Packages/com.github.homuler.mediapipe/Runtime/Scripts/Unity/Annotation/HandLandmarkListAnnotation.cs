@@ -8,6 +8,11 @@ namespace Mediapipe.Unity {
     [SerializeField] Color leftLandmarkColor = Color.green;
     [SerializeField] Color rightLandmarkColor = Color.green;
 
+    public enum Hand {
+      Left,
+      Right,
+    }
+
     const int landmarkCount = 21;
     readonly List<(int, int)> connections = new List<(int, int)> {
       (0, 1),
@@ -41,6 +46,10 @@ namespace Mediapipe.Unity {
       }
     }
 
+    public PointAnnotation this[int index] {
+      get { return landmarkList[index]; }
+    }
+
     void Start() {
       landmarkList.SetColor(leftLandmarkColor); // assume it's left hand by default
       landmarkList.Fill(landmarkCount);
@@ -68,11 +77,19 @@ namespace Mediapipe.Unity {
       connectionList.SetLineWidth(connectionWidth);
     }
 
+    public void SetHandedness(Hand handedness) {
+      if (handedness == Hand.Left) {
+        landmarkList.SetColor(leftLandmarkColor);
+      } else if (handedness == Hand.Right) {
+        landmarkList.SetColor(rightLandmarkColor);
+      }
+    }
+
     public void SetHandedness(IList<Classification> handedness) {
       if (handedness == null || handedness.Count == 0 || handedness[0].Label == "Left") {
-        landmarkList.SetColor(leftLandmarkColor);
+        SetHandedness(Hand.Left);
       } else if (handedness[0].Label == "Right") {
-        landmarkList.SetColor(rightLandmarkColor);
+        SetHandedness(Hand.Right);
       }
       // ignore unknown label
     }

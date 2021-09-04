@@ -49,14 +49,6 @@ MonoBehaviour:
   faceLandmarkList: {fileID: 3152810051868743500}
   leftIrisLandmarkList: {fileID: 3653127876358463003}
   rightIrisLandmarkList: {fileID: 7035677120197205994}
-  faceLandmarkColor: {r: 0, g: 1, b: 0, a: 1}
-  faceLandmarkRedius: 10
-  faceConnectionColor: {r: 1, g: 0, b: 0, a: 1}
-  faceConnectionWidth: 1
-  irisLandmarkColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  irisLandmarkRadius: 10
-  irisCircleColor: {r: 0, g: 0, b: 1, a: 1}
-  irisCircleWidth: 1
 --- !u!1001 &2731930088544666806
 PrefabInstance:
   m_ObjectHideFlags: 0

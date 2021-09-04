@@ -47,10 +47,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   landmarkList: {fileID: 8525746990267350913}
   circle: {fileID: 6589080662169022602}
-  landmarkColor: {r: 1, g: 0.75, b: 0, a: 1}
-  landmarkRadius: 10
-  circleColor: {r: 0, g: 0, b: 1, a: 1}
-  circleWidth: 1
 --- !u!1001 &699405928064242038
 PrefabInstance:
   m_ObjectHideFlags: 0

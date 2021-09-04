@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,14 +9,27 @@ namespace Mediapipe.Unity {
     [SerializeField] Color leftLandmarkColor = Color.green;
     [SerializeField] Color rightLandmarkColor = Color.green;
 
+    [Flags]
+    public enum BodyParts : short {
+      None = 0,
+      Face = 1,
+      // Torso = 2,
+      LeftArm = 4,
+      LeftHand = 8,
+      RightArm = 16,
+      RightHand = 32,
+      LowerBody = 64,
+      All = 127,
+    }
+
     const int landmarkCount = 33;
-    readonly int[] leftLandmarks = new int[] {
+    static readonly int[] leftLandmarks = new int[] {
       1, 2, 3, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31
     };
-    readonly int[] rightLandmarks = new int[] {
+    static readonly int[] rightLandmarks = new int[] {
       4, 5, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32
     };
-    readonly List<(int, int)> connections = new List<(int, int)> {
+    static readonly List<(int, int)> connections = new List<(int, int)> {
       // Left Eye
       (0, 1),
       (1, 2),
@@ -71,6 +85,10 @@ namespace Mediapipe.Unity {
       }
     }
 
+    public PointAnnotation this[int index] {
+      get { return landmarkList[index]; }
+    }
+
     void Start() {
       landmarkList.Fill(landmarkCount);
       ApplyLeftLandmarkColor(leftLandmarkColor);
@@ -118,16 +136,25 @@ namespace Mediapipe.Unity {
       Draw(target?.Landmark, scale, visualizeZ);
     }
 
-    public void Draw(IList<NormalizedLandmark> target, bool visualizeZ = false) {
+    public void Draw(IList<NormalizedLandmark> target, BodyParts mask, bool visualizeZ = false) {
       if (ActivateFor(target)) {
         landmarkList.Draw(target, visualizeZ);
+        ApplyMask(mask);
         // Draw explicitly because connection annotation's targets remain the same.
         connectionList.Redraw();
       }
     }
 
+    public void Draw(NormalizedLandmarkList target, BodyParts mask, bool visualizeZ = false) {
+      Draw(target?.Landmark, mask, visualizeZ);
+    }
+
+    public void Draw(IList<NormalizedLandmark> target, bool visualizeZ = false) {
+      Draw(target, BodyParts.All, visualizeZ);
+    }
+
     public void Draw(NormalizedLandmarkList target, bool visualizeZ = false) {
-      Draw(target?.Landmark, visualizeZ);
+      Draw(target?.Landmark, BodyParts.All, visualizeZ);
     }
 
     void ApplyLeftLandmarkColor(Color color) {
@@ -142,6 +169,47 @@ namespace Mediapipe.Unity {
       if (landmarkList.count >= landmarkCount) {
         foreach (var index in rightLandmarks) {
           landmarkList[index].SetColor(color);
+        }
+      }
+    }
+
+    void ApplyMask(BodyParts mask) {
+      if (mask == BodyParts.All) {
+        return;
+      }
+
+      if (!mask.HasFlag(BodyParts.Face)) {
+        // deactivate face landmarks
+        for (var i = 0; i <= 10; i++) {
+          landmarkList[i].SetActive(false);
+        }
+      }
+      if (!mask.HasFlag(BodyParts.LeftArm)) {
+        // deactivate left elbow to hide left arm
+        landmarkList[13].SetActive(false);
+      }
+      if (!mask.HasFlag(BodyParts.LeftHand)) {
+        // deactive left wrist, thumb, index and pinky to hide left hand
+        landmarkList[15].SetActive(false);
+        landmarkList[17].SetActive(false);
+        landmarkList[19].SetActive(false);
+        landmarkList[21].SetActive(false);
+      }
+      if (!mask.HasFlag(BodyParts.RightArm)) {
+        // deactivate right elbow to hide right arm
+        landmarkList[14].SetActive(false);
+      }
+      if (!mask.HasFlag(BodyParts.RightHand)) {
+        // deactivate right wrist, thumb, index and pinky to hide right hand
+        landmarkList[16].SetActive(false);
+        landmarkList[18].SetActive(false);
+        landmarkList[20].SetActive(false);
+        landmarkList[22].SetActive(false);
+      }
+      if (!mask.HasFlag(BodyParts.LowerBody)) {
+        // deactivate lower body landmarks
+        for (var i = 25; i <= 32; i++) {
+          landmarkList[i].SetActive(false);
         }
       }
     }

@@ -2,6 +2,8 @@ namespace Mediapipe.Unity {
   public class ConnectionAnnotation : LineAnnotation, IAnnotatable<Connection> {
     Connection currentTarget;
 
+    public bool isEmpty { get { return currentTarget == null; } }
+
     public void Draw(Connection target) {
       currentTarget = target;
 
@@ -12,6 +14,15 @@ namespace Mediapipe.Unity {
 
     public void Redraw() {
       Draw(currentTarget);
+    }
+
+    protected bool ActivateFor(Connection target) {
+      if (target == null || !target.start.isActiveInHierarchy || !target.end.isActiveInHierarchy) {
+        SetActive(false);
+        return false;
+      }
+      SetActive(true);
+      return true;
     }
   }
 }

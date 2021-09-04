@@ -14,7 +14,7 @@ namespace Mediapipe.Unity {
       OpenGLES,
     }
 
-    string TAG { get { return this.GetType().Name; } }
+    protected string TAG { get { return this.GetType().Name; } }
 
     [SerializeField] TextAsset cpuConfig = null;
     [SerializeField] TextAsset gpuConfig = null;
@@ -159,6 +159,22 @@ namespace Mediapipe.Unity {
       }
       graphRunner = null;
       return false;
+    }
+
+    protected bool TryGetPacketValue<T>(Packet<T> packet, long timeoutMicrosec, ref long prevMicrosec, out T value) where T : class {
+      long currentMicrosec = 0;
+      using (var timestamp = packet.Timestamp()) {
+        currentMicrosec = timestamp.Microseconds();
+      }
+
+      if (!packet.IsEmpty()) {
+        prevMicrosec = currentMicrosec;
+        value = packet.Get();
+        return true;
+      }
+
+      value = null;
+      return currentMicrosec - prevMicrosec > timeoutMicrosec;
     }
 
     protected Timestamp GetCurrentTimestamp() {
