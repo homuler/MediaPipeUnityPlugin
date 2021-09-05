@@ -4,12 +4,13 @@ namespace Mediapipe.Unity {
   public sealed class DetectionAnnotation : HierarchicalAnnotation {
     [SerializeField] RectangleAnnotation locationData;
     [SerializeField] PointListAnnotation relativeKeypoints;
-    [SerializeField] TextMesh textMesh;
+    [SerializeField] LabelAnnotation label;
 
     public override bool isMirrored {
       set {
         locationData.isMirrored = value;
         relativeKeypoints.isMirrored = value;
+        label.isMirrored = value;
         base.isMirrored = value;
       }
     }
@@ -30,11 +31,15 @@ namespace Mediapipe.Unity {
     public void Draw(Detection target, float threshold = 0.0f) {
       if (ActivateFor(target)) {
         var score = target.Score.Count > 0 ? target.Score[0] : 1.0f;
+        var color = GetColor(score, Mathf.Clamp(threshold, 0.0f, 1.0f));
+        var rectVertices = CoordinateTransform.GetRectVertices(GetAnnotationLayer(), target.LocationData, isMirrored);
         locationData.SetColor(GetColor(score, Mathf.Clamp(threshold, 0.0f, 1.0f)));
-        locationData.Draw(target.LocationData);
+        locationData.Draw(rectVertices);
 
-        var label = target.Label.Count > 0 ? target.Label[0] : null;
-        textMesh.text = label;
+        var width = rectVertices[2].x - rectVertices[0].x;
+        var height = rectVertices[0].y - rectVertices[2].y;
+        var labelText = target.Label.Count > 0 ? target.Label[0] : null;
+        label.Draw(labelText, rectVertices[0], color, width, height);
 
         relativeKeypoints.Draw(target.LocationData.RelativeKeypoints);
       }
