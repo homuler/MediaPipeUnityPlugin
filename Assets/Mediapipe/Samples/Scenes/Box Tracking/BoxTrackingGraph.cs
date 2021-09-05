@@ -2,25 +2,25 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
-namespace Mediapipe.Unity.ObjectDetection {
-  public class ObjectDetectionGraph : GraphRunner {
-    public UnityEvent<List<Detection>> OnOutputDetectionsOutput = new UnityEvent<List<Detection>>();
+namespace Mediapipe.Unity.BoxTracking {
+  public class BoxTrackingGraph : GraphRunner {
+    public UnityEvent<List<Detection>> OnTrackedDetectionsOutput = new UnityEvent<List<Detection>>();
 
     const string inputStreamName = "input_video";
 
-    const string outputDetectionsStreamName = "output_detections";
-    OutputStreamPoller<List<Detection>> outputDetectionsStreamPoller;
-    DetectionVectorPacket outputDetectionsPacket;
+    const string trackedDetectionsStreamName = "tracked_detections";
+    OutputStreamPoller<List<Detection>> trackedDetectionsStreamPoller;
+    DetectionVectorPacket trackedDetectionsPacket;
 
     public override Status StartRun(ImageSource imageSource) {
-      outputDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<Detection>>(outputDetectionsStreamName, true).Value();
-      outputDetectionsPacket = new DetectionVectorPacket();
+      trackedDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<Detection>>(trackedDetectionsStreamName, true).Value();
+      trackedDetectionsPacket = new DetectionVectorPacket();
 
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
     public Status StartRunAsync(ImageSource imageSource) {
-      calculatorGraph.ObserveOutputStream(outputDetectionsStreamName, OutputDetectionsCallback, true).AssertOk();
+      calculatorGraph.ObserveOutputStream(trackedDetectionsStreamName, TrackedDetectionsCallback, true).AssertOk();
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
@@ -28,14 +28,14 @@ namespace Mediapipe.Unity.ObjectDetection {
       return AddTextureFrameToInputStream(inputStreamName, textureFrame);
     }
 
-    public List<Detection> FetchNextDetections() {
-      var detections = FetchNextVector<Detection>(outputDetectionsStreamPoller, outputDetectionsPacket, outputDetectionsStreamName);
-      OnOutputDetectionsOutput.Invoke(detections);
-      return detections;
+    public List<Detection> FetchNextValue() {
+      var trackedDetections = FetchNextVector<Detection>(trackedDetectionsStreamPoller, trackedDetectionsPacket, trackedDetectionsStreamName);
+      OnTrackedDetectionsOutput.Invoke(trackedDetections);
+      return trackedDetections;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr OutputDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr){
+    static IntPtr TrackedDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr){
       try {
         var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
         if (!isFound) {
@@ -43,7 +43,7 @@ namespace Mediapipe.Unity.ObjectDetection {
         }
         using (var packet = new DetectionVectorPacket(packetPtr, false)) {
           var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as ObjectDetectionGraph).OnOutputDetectionsOutput.Invoke(value);
+          (graphRunner as BoxTrackingGraph).OnTrackedDetectionsOutput.Invoke(value);
         }
         return Status.Ok().mpPtr;
       } catch (Exception e) {
