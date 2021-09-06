@@ -128,6 +128,11 @@ namespace Mediapipe.Unity {
       RecordLog(new LogStruct(logLevel, tag, message));
     }
 
+    public void Log(LogLevel logLevel, string tag, object message) {
+      logger.Log(logLevel.GetLogType(), tag, message);
+      RecordLog(new LogStruct(logLevel, tag, message));
+    }
+
     public void Log(LogLevel logLevel, object message, UnityEngine.Object context) {
       logger.Log(logLevel.GetLogType(), message, context);
       RecordLog(new LogStruct(logLevel, null, message));

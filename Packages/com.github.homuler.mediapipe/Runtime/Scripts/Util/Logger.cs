@@ -6,6 +6,7 @@ using ConditionalAttribute = System.Diagnostics.ConditionalAttribute;
 namespace Mediapipe {
   public interface IExtendedLogger : ILogger {
     void Log(Logger.LogLevel logLevel, string tag, object message, UnityEngine.Object context);
+    void Log(Logger.LogLevel logLevel, string tag, object message);
     void Log(Logger.LogLevel logLevel, object message, UnityEngine.Object context);
     void Log(Logger.LogLevel logLevel, object message);
   }
@@ -40,16 +41,30 @@ namespace Mediapipe {
     }
 
     [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
-    public static void LogException(Exception exception, UnityEngine.Object context = null) {
+    public static void LogException(Exception exception, UnityEngine.Object context) {
       if (minLogLevel >= LogLevel.Error) {
         logger.LogException(exception, context);
       }
     }
 
     [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
-    public static void LogError(string tag, object message, UnityEngine.Object context = null) {
+    public static void LogException(Exception exception) {
+      if (minLogLevel >= LogLevel.Error) {
+        logger.LogException(exception);
+      }
+    }
+
+    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    public static void LogError(string tag, object message, UnityEngine.Object context) {
       if (minLogLevel >= LogLevel.Error) {
         logger.LogError(tag, message, context);
+      }
+    }
+
+    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    public static void LogError(string tag, object message) {
+      if (minLogLevel >= LogLevel.Error) {
+        logger.LogError(tag, message);
       }
     }
 
@@ -59,9 +74,16 @@ namespace Mediapipe {
     }
 
     [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
-    public static void LogWarning(string tag, object message, UnityEngine.Object context = null) {
+    public static void LogWarning(string tag, object message, UnityEngine.Object context) {
       if (minLogLevel >= LogLevel.Info) {
         logger.LogWarning(tag, message, context);
+      }
+    }
+
+    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    public static void LogWarning(string tag, object message) {
+      if (minLogLevel >= LogLevel.Info) {
+        logger.LogWarning(tag, message);
       }
     }
 
@@ -71,27 +93,31 @@ namespace Mediapipe {
     }
 
     [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
-    public static void LogInfo(string tag, object message, UnityEngine.Object context = null) {
-      if (minLogLevel >= LogLevel.Info) {
-        logger.Log(tag, message, context);
-      }
-    }
-
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
-    public static void LogInfo(object message) {
-      LogInfo(null, message);
-    }
-
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
-    public static void Log(LogLevel logLevel, string tag, object message, UnityEngine.Object context = null) {
+    public static void Log(LogLevel logLevel, string tag, object message, UnityEngine.Object context) {
       if (minLogLevel >= logLevel) {
         logger.Log(logLevel, tag, message, context);
       }
     }
 
     [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
-    public static void Log(LogLevel logLevel, object message, UnityEngine.Object context = null) {
-      Log(logLevel, null, message, context);
+    public static void Log(LogLevel logLevel, string tag, object message) {
+      if (minLogLevel >= logLevel) {
+        logger.Log(logLevel, tag, message);
+      }
+    }
+
+    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    public static void Log(LogLevel logLevel, object message, UnityEngine.Object context) {
+      if (minLogLevel >= logLevel) {
+        logger.Log(logLevel, message, context);
+      }
+    }
+
+    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    public static void Log(LogLevel logLevel, object message) {
+      if (minLogLevel >= logLevel) {
+        logger.Log(logLevel, message);
+      }
     }
 
     [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
@@ -101,27 +127,52 @@ namespace Mediapipe {
 
     [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
     public static void Log(object message) {
-      Log(LogLevel.Info, null, message);
+      Log(LogLevel.Info, message);
     }
 
     [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
-    public static void LogVerbose(string tag, object message, UnityEngine.Object context = null) {
+    public static void LogInfo(string tag, object message, UnityEngine.Object context) {
+      Log(LogLevel.Info, tag, message, context);
+    }
+
+    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    public static void LogInfo(string tag, object message) {
+      Log(LogLevel.Info, tag, message);
+    }
+
+    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    public static void LogInfo(object message) {
+      Log(LogLevel.Info, message);
+    }
+
+    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    public static void LogVerbose(string tag, object message, UnityEngine.Object context) {
       Log(LogLevel.Verbose, tag, message, context);
     }
 
     [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
-    public static void LogVerbose(object message) {
-      LogVerbose(null, message);
+    public static void LogVerbose(string tag, object message) {
+      Log(LogLevel.Verbose, tag, message);
     }
 
     [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
-    public static void LogDebug(string tag, object message, UnityEngine.Object context = null) {
+    public static void LogVerbose(object message) {
+      Log(LogLevel.Verbose, message);
+    }
+
+    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    public static void LogDebug(string tag, object message, UnityEngine.Object context) {
       Log(LogLevel.Debug, tag, message, context);
     }
 
     [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    public static void LogDebug(string tag, object message) {
+      Log(LogLevel.Debug, tag, message);
+    }
+
+    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
     public static void LogDebug(object message) {
-      LogDebug(null, message);
+      Log(LogLevel.Debug, message);
     }
 
     private class LoggerWrapper : IExtendedLogger {
@@ -155,6 +206,7 @@ namespace Mediapipe {
       public void Log(string tag, object message) => logger.Log(tag, message);
       public void Log(string tag, object message, UnityEngine.Object context) => logger.Log(tag, message, context);
       public void Log(LogLevel logLevel, string tag, object message, UnityEngine.Object context) => logger.Log(logLevel.GetLogType(), tag, message, context);
+      public void Log(LogLevel logLevel, string tag, object message) => logger.Log(logLevel.GetLogType(), tag, message);
       public void Log(LogLevel logLevel, object message, UnityEngine.Object context) => logger.Log(logLevel.GetLogType(), message, context);
       public void Log(LogLevel logLevel, object message) => logger.Log(logLevel.GetLogType(), message);
       public void LogWarning(string tag, object message) => logger.LogWarning(tag, message);
