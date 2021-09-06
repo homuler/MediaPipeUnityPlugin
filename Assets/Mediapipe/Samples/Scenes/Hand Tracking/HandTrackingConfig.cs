@@ -44,6 +44,7 @@ namespace Mediapipe.Unity.HandTracking.UI {
     void InitializeMaxNumHands() {
       MaxNumHandsInput = gameObject.transform.Find(_MaxNumHandsPath).gameObject.GetComponent<InputField>();
       MaxNumHandsInput.text = solution.maxNumHands.ToString();
+      MaxNumHandsInput.onEndEdit.AddListener(delegate { UpdateMaxNumHands(); });
     }
 
     void InitializeRunningMode() {
@@ -59,6 +60,8 @@ namespace Mediapipe.Unity.HandTracking.UI {
       if (defaultValue >= 0) {
         RunningModeInput.value = defaultValue;
       }
+
+      RunningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
     }
   }
 }

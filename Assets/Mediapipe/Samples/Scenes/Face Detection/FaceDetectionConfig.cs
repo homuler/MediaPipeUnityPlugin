@@ -52,6 +52,8 @@ namespace Mediapipe.Unity.FaceDetection.UI {
       if (defaultValue >= 0) {
         ModelSelectionInput.value = defaultValue;
       }
+
+      ModelSelectionInput.onValueChanged.AddListener(delegate { SwitchModelType(); });
     }
 
     void InitializeRunningMode() {
@@ -67,6 +69,8 @@ namespace Mediapipe.Unity.FaceDetection.UI {
       if (defaultValue >= 0) {
         RunningModeInput.value = defaultValue;
       }
+
+      RunningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
     }
   }
 }

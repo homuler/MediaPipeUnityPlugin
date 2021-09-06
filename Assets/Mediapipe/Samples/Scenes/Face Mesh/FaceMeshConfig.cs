@@ -44,6 +44,7 @@ namespace Mediapipe.Unity.FaceMesh.UI {
     void InitializeMaxNumFaces() {
       MaxNumFacesInput = gameObject.transform.Find(_MaxNumFacesPath).gameObject.GetComponent<InputField>();
       MaxNumFacesInput.text = solution.maxNumFaces.ToString();
+      MaxNumFacesInput.onEndEdit.AddListener(delegate { UpdateMaxNumFaces(); });
     }
 
     void InitializeRunningMode() {
@@ -59,6 +60,8 @@ namespace Mediapipe.Unity.FaceMesh.UI {
       if (defaultValue >= 0) {
         RunningModeInput.value = defaultValue;
       }
+
+      RunningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
     }
   }
 }
