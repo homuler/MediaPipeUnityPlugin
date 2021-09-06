@@ -50,10 +50,10 @@ node {
 
 node: {
   calculator: "ImageTransformationCalculator"
-  input_stream: "IMAGE_GPU:throttled_input_video"
+  input_stream: "IMAGE:throttled_input_video"
   input_side_packet: "ROTATION_DEGREES:input_rotation"
   input_side_packet: "FLIP_VERTICALLY:input_vertically_flipped"
-  output_stream: "IMAGE_GPU:transformed_input_video"
+  output_stream: "IMAGE:transformed_input_video"
 }
 
 # Subgraph that detects poses and corresponding landmarks.

@@ -23,7 +23,7 @@ namespace Mediapipe.Unity.FaceDetection {
         Stop();
       }
       base.Play();
-      graphRunner.Initialize();
+      graphRunner.Initialize().AssertOk();
       coroutine = StartCoroutine(Run());
     }
 

@@ -21,7 +21,7 @@ namespace Mediapipe.Unity.IrisTracking {
         Stop();
       }
       base.Play();
-      graphRunner.Initialize();
+      graphRunner.Initialize().AssertOk();
       coroutine = StartCoroutine(Run());
     }
 

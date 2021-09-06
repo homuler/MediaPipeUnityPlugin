@@ -25,7 +25,7 @@ namespace Mediapipe.Unity.FaceMesh {
         Stop();
       }
       base.Play();
-      graphRunner.Initialize();
+      graphRunner.Initialize().AssertOk();
       coroutine = StartCoroutine(Run());
     }
 

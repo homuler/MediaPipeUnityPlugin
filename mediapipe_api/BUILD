@@ -91,6 +91,7 @@ cc_library(
             "@com_google_mediapipe//mediapipe/graphs/face_detection:desktop_live_calculators",
             "@com_google_mediapipe//mediapipe/graphs/face_detection:face_detection_full_range_desktop_live_deps",
             "@com_google_mediapipe//mediapipe/graphs/face_mesh:desktop_live_calculators",
+            "@com_google_mediapipe//mediapipe/graphs/hair_segmentation:desktop_calculators",
             "@com_google_mediapipe//mediapipe/graphs/hand_tracking:desktop_tflite_calculators",
             "@com_google_mediapipe//mediapipe/graphs/holistic_tracking:holistic_tracking_cpu_graph_deps",
             "@com_google_mediapipe//mediapipe/graphs/iris_tracking:iris_tracking_cpu_deps",

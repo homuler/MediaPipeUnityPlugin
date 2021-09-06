@@ -30,7 +30,7 @@ namespace Mediapipe.Unity.PoseTracking {
         Stop();
       }
       base.Play();
-      graphRunner.Initialize();
+      graphRunner.Initialize().AssertOk();
       coroutine = StartCoroutine(Run());
     }
 

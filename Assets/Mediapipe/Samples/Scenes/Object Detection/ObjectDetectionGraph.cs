@@ -11,6 +11,7 @@ namespace Mediapipe.Unity.ObjectDetection {
     const string outputDetectionsStreamName = "output_detections";
     OutputStreamPoller<List<Detection>> outputDetectionsStreamPoller;
     DetectionVectorPacket outputDetectionsPacket;
+    protected long prevOutputDetectionsMicrosec = 0;
 
     public override Status StartRun(ImageSource imageSource) {
       outputDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<Detection>>(outputDetectionsStreamName, true).Value();
@@ -47,8 +48,10 @@ namespace Mediapipe.Unity.ObjectDetection {
           return Status.FailedPrecondition("Graph runner is not found").mpPtr;
         }
         using (var packet = new DetectionVectorPacket(packetPtr, false)) {
-          var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as ObjectDetectionGraph).OnOutputDetectionsOutput.Invoke(value);
+          var objectDetectionGraph = (ObjectDetectionGraph)graphRunner;
+          if (objectDetectionGraph.TryGetPacketValue(packet, ref objectDetectionGraph.prevOutputDetectionsMicrosec, out var value)) {
+            objectDetectionGraph.OnOutputDetectionsOutput.Invoke(value);
+          }
         }
         return Status.Ok().mpPtr;
       } catch (Exception e) {

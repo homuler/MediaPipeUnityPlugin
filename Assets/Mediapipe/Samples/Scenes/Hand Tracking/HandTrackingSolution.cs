@@ -26,7 +26,7 @@ namespace Mediapipe.Unity.HandTracking {
         Stop();
       }
       base.Play();
-      graphRunner.Initialize();
+      graphRunner.Initialize().AssertOk();
       coroutine = StartCoroutine(Run());
     }
 

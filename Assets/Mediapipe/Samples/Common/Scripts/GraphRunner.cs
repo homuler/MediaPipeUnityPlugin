@@ -38,6 +38,8 @@ namespace Mediapipe.Unity {
       }
     }
 
+    public long timeoutMicrosec = 0;
+
     Stopwatch stopwatch;
     protected CalculatorGraph calculatorGraph { get; private set; }
     protected Timestamp currentTimestamp;
@@ -161,7 +163,7 @@ namespace Mediapipe.Unity {
       return false;
     }
 
-    protected bool TryGetPacketValue<T>(Packet<T> packet, long timeoutMicrosec, ref long prevMicrosec, out T value) where T : class {
+    protected bool TryGetPacketValue<T>(Packet<T> packet, ref long prevMicrosec, out T value) where T : class {
       long currentMicrosec = 0;
       using (var timestamp = packet.Timestamp()) {
         currentMicrosec = timestamp.Microseconds();

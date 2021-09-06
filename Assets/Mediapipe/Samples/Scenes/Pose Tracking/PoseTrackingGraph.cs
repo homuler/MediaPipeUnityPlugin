@@ -22,18 +22,22 @@ namespace Mediapipe.Unity.PoseTracking {
     const string poseDetectionStreamName = "pose_detection";
     OutputStreamPoller<Detection> poseDetectionStreamPoller;
     DetectionPacket poseDetectionPacket;
+    protected long prevPoseDetectionMicrosec = 0;
 
     const string poseLandmarksStreamName = "pose_landmarks";
     OutputStreamPoller<NormalizedLandmarkList> poseLandmarksStreamPoller;
     NormalizedLandmarkListPacket poseLandmarksPacket;
+    protected long prevPoseLandmarksMicrosec = 0;
 
     const string poseWorldLandmarksStreamName = "pose_world_landmarks";
     OutputStreamPoller<LandmarkList> poseWorldLandmarksStreamPoller;
     LandmarkListPacket poseWorldLandmarksPacket;
+    protected long prevPoseWorldLandmarksMicrosec = 0;
 
     const string roiFromLandmarksStreamName = "roi_from_landmarks";
     OutputStreamPoller<NormalizedRect> roiFromLandmarksStreamPoller;
     NormalizedRectPacket roiFromLandmarksPacket;
+    protected long prevRoiFromLandmarksMicrosec = 0;
 
     public override Status StartRun(ImageSource imageSource) {
       poseDetectionStreamPoller = calculatorGraph.AddOutputStreamPoller<Detection>(poseDetectionStreamName, true).Value();
@@ -94,8 +98,10 @@ namespace Mediapipe.Unity.PoseTracking {
           return Status.FailedPrecondition("Graph runner is not found").mpPtr;
         }
         using (var packet = new DetectionPacket(packetPtr, false)) {
-          var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as PoseTrackingGraph).OnPoseDetectionOutput.Invoke(value);
+          var poseTrackingGraph = (PoseTrackingGraph)graphRunner;
+          if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevPoseDetectionMicrosec, out var value)) {
+            poseTrackingGraph.OnPoseDetectionOutput.Invoke(value);
+          }
         }
         return Status.Ok().mpPtr;
       } catch (Exception e) {
@@ -111,8 +117,10 @@ namespace Mediapipe.Unity.PoseTracking {
           return Status.FailedPrecondition("Graph runner is not found").mpPtr;
         }
         using (var packet = new NormalizedLandmarkListPacket(packetPtr, false)) {
-          var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as PoseTrackingGraph).OnPoseLandmarksOutput.Invoke(value);
+          var poseTrackingGraph = (PoseTrackingGraph)graphRunner;
+          if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevPoseLandmarksMicrosec, out var value)) {
+            poseTrackingGraph.OnPoseLandmarksOutput.Invoke(value);
+          }
         }
         return Status.Ok().mpPtr;
       } catch (Exception e) {
@@ -128,8 +136,10 @@ namespace Mediapipe.Unity.PoseTracking {
           return Status.FailedPrecondition("Graph runner is not found").mpPtr;
         }
         using (var packet = new LandmarkListPacket(packetPtr, false)) {
-          var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as PoseTrackingGraph).OnPoseWorldLandmarksOutput.Invoke(value);
+          var poseTrackingGraph = (PoseTrackingGraph)graphRunner;
+          if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevPoseWorldLandmarksMicrosec, out var value)) {
+            poseTrackingGraph.OnPoseWorldLandmarksOutput.Invoke(value);
+          }
         }
         return Status.Ok().mpPtr;
       } catch (Exception e) {
@@ -145,8 +155,10 @@ namespace Mediapipe.Unity.PoseTracking {
           return Status.FailedPrecondition("Graph runner is not found").mpPtr;
         }
         using (var packet = new NormalizedRectPacket(packetPtr, false)) {
-          var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as PoseTrackingGraph).OnRoiFromLandmarksOutput.Invoke(value);
+          var poseTrackingGraph = (PoseTrackingGraph)graphRunner;
+          if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevRoiFromLandmarksMicrosec, out var value)) {
+            poseTrackingGraph.OnRoiFromLandmarksOutput.Invoke(value);
+          }
         }
         return Status.Ok().mpPtr;
       } catch (Exception e) {

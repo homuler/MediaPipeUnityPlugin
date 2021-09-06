@@ -40,7 +40,7 @@ namespace Mediapipe.Unity.Holistic {
         Stop();
       }
       base.Play();
-      graphRunner.Initialize();
+      graphRunner.Initialize().AssertOk();
       coroutine = StartCoroutine(Run());
     }
 

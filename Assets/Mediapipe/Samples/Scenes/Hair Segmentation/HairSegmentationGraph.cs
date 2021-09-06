@@ -7,9 +7,10 @@ namespace Mediapipe.Unity.HairSegmentation {
 
     const string inputStreamName = "input_video";
 
-    const string hairMaskStreamName = "hair_mask_cpu";
+    const string hairMaskStreamName = "hair_mask";
     OutputStreamPoller<ImageFrame> hairMaskStreamPoller;
     ImageFramePacket hairMaskPacket;
+    protected long prevHairMaskMicrosec = 0;
 
     public override Status StartRun(ImageSource imageSource) {
       hairMaskStreamPoller = calculatorGraph.AddOutputStreamPoller<ImageFrame>(hairMaskStreamName).Value();
@@ -46,8 +47,10 @@ namespace Mediapipe.Unity.HairSegmentation {
           return Status.FailedPrecondition("Graph runner is not found").mpPtr;
         }
         using (var packet = new ImageFramePacket(packetPtr, false)) {
-          var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as HairSegmentationGraph).OnHairMaskOutput.Invoke(value);
+          var hairSegmentationGraph = (HairSegmentationGraph)graphRunner;
+          if (hairSegmentationGraph.TryGetPacketValue(packet, ref hairSegmentationGraph.prevHairMaskMicrosec, out var value)) {
+            hairSegmentationGraph.OnHairMaskOutput.Invoke(value);
+          }
         }
         return Status.Ok().mpPtr;
       } catch (Exception e) {

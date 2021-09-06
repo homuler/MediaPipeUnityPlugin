@@ -5,6 +5,7 @@ using UnityEngine.Events;
 namespace Mediapipe.Unity.HandTracking {
   public class HandTrackingGraph : GraphRunner {
     public int maxNumHands = 2;
+
     public UnityEvent<List<Detection>> OnPalmDetectectionsOutput = new UnityEvent<List<Detection>>();
     public UnityEvent<List<NormalizedRect>> OnHandRectsFromPalmDetectionsOutput = new UnityEvent<List<NormalizedRect>>();
     public UnityEvent<List<NormalizedLandmarkList>> OnHandLandmarksOutput = new UnityEvent<List<NormalizedLandmarkList>>();
@@ -16,22 +17,27 @@ namespace Mediapipe.Unity.HandTracking {
     const string palmDetectionsStreamName = "palm_detections";
     OutputStreamPoller<List<Detection>> palmDetectionsStreamPoller;
     DetectionVectorPacket palmDetectionsPacket;
+    protected long prevPalmDetectionMicrosec = 0;
 
     const string handRectsFromPalmDetectionsStreamName = "hand_rects_from_palm_detections";
     OutputStreamPoller<List<NormalizedRect>> handRectsFromPalmDetectionsStreamPoller;
     NormalizedRectVectorPacket handRectsFromPalmDetectionsPacket;
+    protected long prevHandRectsFromPalmDetectionsMicrosec = 0;
 
     const string handLandmarksStreamName = "hand_landmarks";
     OutputStreamPoller<List<NormalizedLandmarkList>> handLandmarksStreamPoller;
     NormalizedLandmarkListVectorPacket handLandmarksPacket;
+    protected long prevHandLandmarksMicrosec = 0;
 
     const string handRectsFromLandmarksStreamName = "hand_rects_from_landmarks";
     OutputStreamPoller<List<NormalizedRect>> handRectsFromLandmarksStreamPoller;
     NormalizedRectVectorPacket handRectsFromLandmarksPacket;
+    protected long prevHandRectsFromLandmarksMicrosec;
 
     const string handednessStreamName = "handedness";
     OutputStreamPoller<List<ClassificationList>> handednessStreamPoller;
     ClassificationListVectorPacket handednessPacket;
+    protected long prevHandednessMicrosec;
 
     public override Status StartRun(ImageSource imageSource) {
       palmDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<Detection>>(palmDetectionsStreamName, true).Value();
@@ -99,8 +105,10 @@ namespace Mediapipe.Unity.HandTracking {
           return Status.FailedPrecondition("Graph runner is not found").mpPtr;
         }
         using (var packet = new DetectionVectorPacket(packetPtr, false)) {
-          var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as HandTrackingGraph).OnPalmDetectectionsOutput.Invoke(value);
+          var handTrackingGraph = (HandTrackingGraph)graphRunner;
+          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevPalmDetectionMicrosec, out var value)) {
+            handTrackingGraph.OnPalmDetectectionsOutput.Invoke(value);
+          }
         }
         return Status.Ok().mpPtr;
       } catch (Exception e) {
@@ -116,8 +124,10 @@ namespace Mediapipe.Unity.HandTracking {
           return Status.FailedPrecondition("Graph runner is not found").mpPtr;
         }
         using (var packet = new NormalizedRectVectorPacket(packetPtr, false)) {
-          var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as HandTrackingGraph).OnHandRectsFromPalmDetectionsOutput.Invoke(value);
+          var handTrackingGraph = (HandTrackingGraph)graphRunner;
+          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandRectsFromPalmDetectionsMicrosec, out var value)) {
+            handTrackingGraph.OnHandRectsFromPalmDetectionsOutput.Invoke(value);
+          }
         }
         return Status.Ok().mpPtr;
       } catch (Exception e) {
@@ -133,8 +143,10 @@ namespace Mediapipe.Unity.HandTracking {
           return Status.FailedPrecondition("Graph runner is not found").mpPtr;
         }
         using (var packet = new NormalizedLandmarkListVectorPacket(packetPtr, false)) {
-          var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as HandTrackingGraph).OnHandLandmarksOutput.Invoke(value);
+          var handTrackingGraph = (HandTrackingGraph)graphRunner;
+          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandLandmarksMicrosec, out var value)) {
+            handTrackingGraph.OnHandLandmarksOutput.Invoke(value);
+          }
         }
         return Status.Ok().mpPtr;
       } catch (Exception e) {
@@ -150,8 +162,10 @@ namespace Mediapipe.Unity.HandTracking {
           return Status.FailedPrecondition("Graph runner is not found").mpPtr;
         }
         using (var packet = new NormalizedRectVectorPacket(packetPtr, false)) {
-          var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as HandTrackingGraph).OnHandRectsFromLandmarksOutput.Invoke(value);
+          var handTrackingGraph = (HandTrackingGraph)graphRunner;
+          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandRectsFromLandmarksMicrosec, out var value)) {
+            handTrackingGraph.OnHandRectsFromLandmarksOutput.Invoke(value);
+          }
         }
         return Status.Ok().mpPtr;
       } catch (Exception e) {
@@ -167,8 +181,10 @@ namespace Mediapipe.Unity.HandTracking {
           return Status.FailedPrecondition("Graph runner is not found").mpPtr;
         }
         using (var packet = new ClassificationListVectorPacket(packetPtr, false)) {
-          var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as HandTrackingGraph).OnHandednessOutput.Invoke(value);
+          var handTrackingGraph = (HandTrackingGraph)graphRunner;
+          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandednessMicrosec, out var value)) {
+            handTrackingGraph.OnHandednessOutput.Invoke(value);
+          }
         }
         return Status.Ok().mpPtr;
       } catch (Exception e) {

@@ -12,7 +12,6 @@ namespace Mediapipe.Unity.Holistic {
     public bool detectIris = false;
     public ModelComplexity modelComplexity = ModelComplexity.Lite;
     public bool smoothLandmarks = true;
-    public long timeoutMicrosec = 50000; // 30 millisec
 
     public UnityEvent<Detection> OnPoseDetectionOutput = new UnityEvent<Detection>();
     public UnityEvent<NormalizedLandmarkList> OnPoseLandmarksOutput = new UnityEvent<NormalizedLandmarkList>();
@@ -349,10 +348,6 @@ namespace Mediapipe.Unity.Holistic {
       } else {
         AssetLoader.PrepareAsset("pose_landmark_heavy.bytes");
       }
-    }
-
-    protected bool TryGetPacketValue<T>(Packet<T> packet, ref long prevMicrosec, out T value) where T : class {
-      return TryGetPacketValue(packet, timeoutMicrosec, ref prevMicrosec, out value);
     }
 
     SidePacket BuildSidePacket(ImageSource imageSource) {

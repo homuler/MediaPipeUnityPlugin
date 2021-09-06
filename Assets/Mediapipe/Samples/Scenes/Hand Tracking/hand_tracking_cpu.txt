@@ -38,23 +38,23 @@ output_stream: "palm_detections"
 output_stream: "hand_rects_from_landmarks"
 output_stream: "hand_rects_from_palm_detections"
 
-node: {
-  calculator: "ImageTransformationCalculator"
-  input_stream: "IMAGE:input_video"
-  output_stream: "IMAGE:transformed_input_video"
-  node_options: {
-    [type.googleapis.com/mediapipe.ImageTransformationCalculatorOptions] {
-      rotation_mode: 3
-    }
+node {
+  calculator: "FlowLimiterCalculator"
+  input_stream: "input_video"
+  input_stream: "FINISHED:hand_landmarks"
+  input_stream_info: {
+    tag_index: "FINISHED"
+    back_edge: true
   }
+  output_stream: "throttled_input_video"
 }
 
 node: {
   calculator: "ImageTransformationCalculator"
-  input_stream: "IMAGE_GPU:throttled_input_video"
+  input_stream: "IMAGE:throttled_input_video"
   input_side_packet: "ROTATION_DEGREES:input_rotation"
   input_side_packet: "FLIP_VERTICALLY:input_vertically_flipped"
-  output_stream: "IMAGE_GPU:transformed_input_video"
+  output_stream: "IMAGE:transformed_input_video"
 }
 
 # Detects/tracks hand landmarks.

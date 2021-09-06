@@ -156,7 +156,7 @@ MonoBehaviour:
   consolePrefab: {fileID: 3481718972971892304, guid: 3bd1ffa1267fbef6fbdd99b4a8e699ff,
     type: 3}
   defaultImageSource: 0
-  preferableInferenceMode: 0
+  preferableInferenceMode: 1
   assetLoaderType: 0
   enableGlog: 1
 --- !u!4 &542027324

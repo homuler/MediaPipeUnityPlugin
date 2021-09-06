@@ -19,7 +19,7 @@ namespace Mediapipe.Unity.HairSegmentation {
         Stop();
       }
       base.Play();
-      graphRunner.Initialize();
+      graphRunner.Initialize().AssertOk();
       coroutine = StartCoroutine(Run());
     }
 

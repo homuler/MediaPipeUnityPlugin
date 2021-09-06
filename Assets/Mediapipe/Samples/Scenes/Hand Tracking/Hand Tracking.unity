@@ -171,6 +171,7 @@ MonoBehaviour:
   cpuConfig: {fileID: 4900000, guid: 1a6169be4f688231182390ef6c4122b2, type: 3}
   gpuConfig: {fileID: 4900000, guid: d1c2a5074cb12172d9cbc3098fe038ba, type: 3}
   openGlEsConfig: {fileID: 4900000, guid: 155e81a0de3136db88c8ac8c72fad8b7, type: 3}
+  timeoutMicrosec: 50000
   maxNumHands: 2
   OnPalmDetectectionsOutput:
     m_PersistentCalls:

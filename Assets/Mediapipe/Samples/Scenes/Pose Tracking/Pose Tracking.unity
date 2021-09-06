@@ -412,6 +412,7 @@ MonoBehaviour:
   cpuConfig: {fileID: 4900000, guid: 5199c62ac0186dac28358b2ef639ef9b, type: 3}
   gpuConfig: {fileID: 4900000, guid: 4711c9f7a612c310c844a312f6ec21c6, type: 3}
   openGlEsConfig: {fileID: 4900000, guid: 8256a93f04d3d43118702a0ec0cc93a1, type: 3}
+  timeoutMicrosec: 50000
   modelComplexity: 1
   smoothLandmarks: 1
   OnPoseDetectionOutput:
