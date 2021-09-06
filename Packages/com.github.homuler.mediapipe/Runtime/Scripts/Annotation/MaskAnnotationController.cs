@@ -8,7 +8,7 @@ namespace Mediapipe {
     }
 
     public void Draw(Texture2D texture, ImageFrame mask, Color color, bool isFlipped = false, float threshold = 0.9f) {
-      var maskPixels = mask.GetColor32s(isFlipped);
+      var maskPixels = mask.GetPixels32(isFlipped);
       var maskWidth = mask.Width();
       var maskHeight = mask.Height();
       var minValue = 255 * threshold;
@@ -38,7 +38,7 @@ namespace Mediapipe {
       for (var i = rangeX.Item1; i <= rangeX.Item2; i++) {
         for (var j = rangeY.Item1; j <= rangeY.Item2; j++) {
           var currentColor = texture.GetPixel(i, j);
-          float luminance = (currentColor.r * 0.299f + currentColor.g * 0.587f + currentColor.b * 0.114f) / 255;
+          float luminance = (currentColor.r * 0.299f + currentColor.g * 0.587f + currentColor.b * 0.114f);
           float mixValue = weight * luminance;
 
           var mixedColor = new Color(
