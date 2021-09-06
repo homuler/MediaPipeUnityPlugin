@@ -20,6 +20,7 @@ cc_library(
         "//mediapipe_api/framework/port:logging",
         "//mediapipe_api/graphs/object_detection_3d/calculators:model_matrix",
         "//mediapipe_api/modules/face_geometry/protos:face_geometry",
+        "//mediapipe_api/modules/objectron/calculators:annotation",
         "//mediapipe_api/util:resource_util",
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [],
@@ -191,6 +192,9 @@ pkg_zip(
         "//mediapipe_api/graphs/object_detection_3d/calculators:model_matrix_cs",
         "//mediapipe_api/modules/face_geometry/protos:face_geometry_cs",
         "//mediapipe_api/modules/face_geometry/protos:mesh_3d_cs",
+        "//mediapipe_api/modules/objectron/calculators:a_r_capture_metadata_cs",
+        "//mediapipe_api/modules/objectron/calculators:annotation_data_cs",
+        "//mediapipe_api/modules/objectron/calculators:object_cs",
     ],
     # TODO: keep directory structure
 )
