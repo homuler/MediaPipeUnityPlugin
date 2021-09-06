@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 using pb = global::Google.Protobuf;
 
 namespace Mediapipe {
-  class Protobuf {
+  public static class Protobuf {
     static Protobuf() {
-      UnsafeNativeMethods.google_protobuf__SetLogHandler__PF(protobufLogHandler).Assert();
+      // UnsafeNativeMethods.google_protobuf__SetLogHandler__PF(protobufLogHandler).Assert();
     }
 
     public static T DeserializeProto<T>(IntPtr ptr, pb::MessageParser<T> parser) where T : pb::IMessage<T> {
