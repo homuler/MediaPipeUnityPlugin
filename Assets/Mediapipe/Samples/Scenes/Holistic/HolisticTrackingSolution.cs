@@ -74,8 +74,6 @@ namespace Mediapipe.Unity.Holistic {
       screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
       screen.texture = imageSource.GetCurrentTexture();
 
-      var graphRunner = gameObject.GetComponent<HolisticTrackingGraph>();
-
       Logger.LogInfo(TAG, $"Model Complexity = {modelComplexity}");
       Logger.LogInfo(TAG, $"Smooth Landmarks = {smoothLandmarks}");
       Logger.LogInfo(TAG, $"Detect Iris = {detectIris}");

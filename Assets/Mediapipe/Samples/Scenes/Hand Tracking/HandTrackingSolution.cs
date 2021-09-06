@@ -60,8 +60,6 @@ namespace Mediapipe.Unity.HandTracking {
       screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
       screen.texture = imageSource.GetCurrentTexture();
 
-      var graphRunner = gameObject.GetComponent<HandTrackingGraph>();
-
       Logger.LogInfo(TAG, $"Max Num Hands = {maxNumHands}");
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 

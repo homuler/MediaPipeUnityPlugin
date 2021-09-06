@@ -53,8 +53,6 @@ namespace Mediapipe.Unity.BoxTracking {
       screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
       screen.texture = imageSource.GetCurrentTexture();
 
-      var graphRunner = gameObject.GetComponent<BoxTrackingGraph>();
-
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
       if (runningMode == RunningMode.Async) {

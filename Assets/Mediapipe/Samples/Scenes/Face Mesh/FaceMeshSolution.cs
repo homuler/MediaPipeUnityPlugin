@@ -59,8 +59,6 @@ namespace Mediapipe.Unity.FaceMesh {
       screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
       screen.texture = imageSource.GetCurrentTexture();
 
-      var graphRunner = gameObject.GetComponent<FaceMeshGraph>();
-
       Logger.LogInfo(TAG, $"Max Num Faces = {maxNumFaces}");
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 

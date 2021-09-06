@@ -55,8 +55,6 @@ namespace Mediapipe.Unity.IrisTracking {
       screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
       screen.texture = imageSource.GetCurrentTexture();
 
-      var graphRunner = gameObject.GetComponent<IrisTrackingGraph>();
-
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
       if (runningMode == RunningMode.Async) {

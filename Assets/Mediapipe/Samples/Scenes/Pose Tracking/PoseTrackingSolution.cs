@@ -64,8 +64,6 @@ namespace Mediapipe.Unity.PoseTracking {
       screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
       screen.texture = imageSource.GetCurrentTexture();
 
-      var graphRunner = gameObject.GetComponent<PoseTrackingGraph>();
-
       Logger.LogInfo(TAG, $"Model Complexity = {modelComplexity}");
       Logger.LogInfo(TAG, $"Smooth Landmarks = {smoothLandmarks}");
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");

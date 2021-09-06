@@ -57,8 +57,6 @@ namespace Mediapipe.Unity.FaceDetection {
       screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
       screen.texture = imageSource.GetCurrentTexture();
 
-      var graphRunner = gameObject.GetComponent<FaceDetectionGraph>();
-
       Logger.LogInfo(TAG, $"Model Selection = {modelType}");
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
