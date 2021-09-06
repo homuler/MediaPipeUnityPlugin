@@ -44,6 +44,13 @@ namespace Mediapipe.Unity.FaceMesh {
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
+    public override void Stop() {
+      base.Stop();
+      OnFaceDetectionsOutput.RemoveAllListeners();
+      OnMultiFaceLandmarksOutput.RemoveAllListeners();
+      OnFaceRectsFromLandmarksOutput.RemoveAllListeners();
+    }
+
     public Status AddTextureFrameToInputStream(TextureFrame textureFrame) {
       return AddTextureFrameToInputStream(inputStreamName, textureFrame);
     }

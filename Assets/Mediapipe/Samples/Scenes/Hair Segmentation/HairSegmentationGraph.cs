@@ -23,6 +23,11 @@ namespace Mediapipe.Unity.HairSegmentation {
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
+    public override void Stop() {
+      base.Stop();
+      OnHairMaskOutput.RemoveAllListeners();
+    }
+
     public Status AddTextureFrameToInputStream(TextureFrame textureFrame) {
       return AddTextureFrameToInputStream(inputStreamName, textureFrame);
     }

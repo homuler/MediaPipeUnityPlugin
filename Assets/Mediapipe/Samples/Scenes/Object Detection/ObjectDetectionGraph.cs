@@ -24,6 +24,11 @@ namespace Mediapipe.Unity.ObjectDetection {
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
+    public override void Stop() {
+      base.Stop();
+      OnOutputDetectionsOutput.RemoveAllListeners();
+    }
+
     public Status AddTextureFrameToInputStream(TextureFrame textureFrame) {
       return AddTextureFrameToInputStream(inputStreamName, textureFrame);
     }

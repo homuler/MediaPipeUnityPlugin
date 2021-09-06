@@ -60,6 +60,14 @@ namespace Mediapipe.Unity.PoseTracking {
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
+    public override void Stop() {
+      base.Stop();
+      OnPoseDetectionOutput.RemoveAllListeners();
+      OnPoseLandmarksOutput.RemoveAllListeners();
+      OnPoseWorldLandmarksOutput.RemoveAllListeners();
+      OnRoiFromLandmarksOutput.RemoveAllListeners();
+    }
+
     public Status AddTextureFrameToInputStream(TextureFrame textureFrame) {
       return AddTextureFrameToInputStream(inputStreamName, textureFrame);
     }

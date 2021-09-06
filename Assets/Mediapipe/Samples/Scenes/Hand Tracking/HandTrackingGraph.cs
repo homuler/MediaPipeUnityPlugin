@@ -62,6 +62,15 @@ namespace Mediapipe.Unity.HandTracking {
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
+    public override void Stop() {
+      base.Stop();
+      OnPalmDetectectionsOutput.RemoveAllListeners();
+      OnHandRectsFromPalmDetectionsOutput.RemoveAllListeners();
+      OnHandLandmarksOutput.RemoveAllListeners();
+      OnHandRectsFromLandmarksOutput.RemoveAllListeners();
+      OnHandednessOutput.RemoveAllListeners();
+    }
+
     public Status AddTextureFrameToInputStream(TextureFrame textureFrame) {
       return AddTextureFrameToInputStream(inputStreamName, textureFrame);
     }

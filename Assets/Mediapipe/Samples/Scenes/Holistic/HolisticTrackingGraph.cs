@@ -118,6 +118,19 @@ namespace Mediapipe.Unity.Holistic {
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
+    public override void Stop() {
+      base.Stop();
+      OnPoseDetectionOutput.RemoveAllListeners();
+      OnPoseLandmarksOutput.RemoveAllListeners();
+      OnPoseWorldLandmarksOutput.RemoveAllListeners();
+      OnPoseRoiOutput.RemoveAllListeners();
+      OnFaceLandmarksOutput.RemoveAllListeners();
+      OnLeftHandLandmarksOutput.RemoveAllListeners();
+      OnRightHandLandmarksOutput.RemoveAllListeners();
+      OnLeftIrisLandmarksOutput.RemoveAllListeners();
+      OnRightIrisLandmarksOutput.RemoveAllListeners();
+    }
+
     public Status AddTextureFrameToInputStream(TextureFrame textureFrame) {
       return AddTextureFrameToInputStream(inputStreamName, textureFrame);
     }

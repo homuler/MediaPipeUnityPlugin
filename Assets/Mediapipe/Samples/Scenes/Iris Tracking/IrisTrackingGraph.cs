@@ -43,6 +43,13 @@ namespace Mediapipe.Unity.IrisTracking {
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
+    public override void Stop() {
+      base.Stop();
+      OnFaceDetectionsOutput.RemoveAllListeners();
+      OnFaceRectOutput.RemoveAllListeners();
+      OnFaceLandmarksWithIrisOutput.RemoveAllListeners();
+    }
+
     public Status AddTextureFrameToInputStream(TextureFrame textureFrame) {
       return AddTextureFrameToInputStream(inputStreamName, textureFrame);
     }

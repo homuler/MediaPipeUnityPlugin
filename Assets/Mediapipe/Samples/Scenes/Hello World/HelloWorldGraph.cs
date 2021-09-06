@@ -99,6 +99,8 @@ node {
       if (stopwatch != null && stopwatch.IsRunning) {
         stopwatch.Stop();
       }
+
+      OnOutput.RemoveAllListeners();
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
