@@ -5,9 +5,9 @@ using UnityEngine.Events;
 namespace Mediapipe.Unity.FaceMesh {
   public class FaceMeshGraph : GraphRunner {
     public int maxNumFaces = 1;
-    public UnityEvent<List<Detection>> OnFacesDetected = new UnityEvent<List<Detection>>();
-    public UnityEvent<List<NormalizedRect>> OnFaceRectsDetected = new UnityEvent<List<NormalizedRect>>();
-    public UnityEvent<List<NormalizedLandmarkList>> OnFaceLandmarksDetected = new UnityEvent<List<NormalizedLandmarkList>>();
+    public UnityEvent<List<Detection>> OnFaceDetectionsOutput = new UnityEvent<List<Detection>>();
+    public UnityEvent<List<NormalizedLandmarkList>> OnMultiFaceLandmarksOutput = new UnityEvent<List<NormalizedLandmarkList>>();
+    public UnityEvent<List<NormalizedRect>> OnFaceRectsFromLandmarksOutput = new UnityEvent<List<NormalizedRect>>();
 
     const string inputStreamName = "input_video";
 
@@ -38,8 +38,8 @@ namespace Mediapipe.Unity.FaceMesh {
 
     public Status StartRunAsync(ImageSource imageSource) {
       calculatorGraph.ObserveOutputStream(faceDetectionsStreamName, FaceDetectionsCallback, true).AssertOk();
-      calculatorGraph.ObserveOutputStream(multiFaceLandmarksStreamName, FaceLandmarksCallback, true).AssertOk();
-      calculatorGraph.ObserveOutputStream(faceRectsFromLandmarksStreamName, FaceRectsCallback, true).AssertOk();
+      calculatorGraph.ObserveOutputStream(multiFaceLandmarksStreamName, MultiFaceLandmarksCallback, true).AssertOk();
+      calculatorGraph.ObserveOutputStream(faceRectsFromLandmarksStreamName, FaceRectsFromLandmarksCallback, true).AssertOk();
 
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
@@ -53,9 +53,9 @@ namespace Mediapipe.Unity.FaceMesh {
       var multiFaceLandmarks = FetchNextVector<NormalizedLandmarkList>(multiFaceLandmarksStreamPoller, multiFaceLandmarksPacket, multiFaceLandmarksStreamName);
       var faceRectsFromLandmarks = FetchNextVector<NormalizedRect>(faceRectsFromLandmarksStreamPoller, faceRectsFromLandmarksPacket, faceRectsFromLandmarksStreamName);
 
-      OnFacesDetected.Invoke(faceDetections);
-      OnFaceLandmarksDetected.Invoke(multiFaceLandmarks);
-      OnFaceRectsDetected.Invoke(faceRectsFromLandmarks);
+      OnFaceDetectionsOutput.Invoke(faceDetections);
+      OnMultiFaceLandmarksOutput.Invoke(multiFaceLandmarks);
+      OnFaceRectsFromLandmarksOutput.Invoke(faceRectsFromLandmarks);
 
       return new FaceMeshValue(faceDetections, multiFaceLandmarks, faceRectsFromLandmarks);
     }
@@ -69,7 +69,7 @@ namespace Mediapipe.Unity.FaceMesh {
         }
         using (var packet = new DetectionVectorPacket(packetPtr, false)) {
           var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as FaceMeshGraph).OnFacesDetected.Invoke(value);
+          (graphRunner as FaceMeshGraph).OnFaceDetectionsOutput.Invoke(value);
         }
         return Status.Ok().mpPtr;
       } catch (Exception e) {
@@ -78,7 +78,7 @@ namespace Mediapipe.Unity.FaceMesh {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr FaceLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
+    static IntPtr MultiFaceLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
       try {
         var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
         if (!isFound) {
@@ -86,7 +86,7 @@ namespace Mediapipe.Unity.FaceMesh {
         }
         using (var packet = new NormalizedLandmarkListVectorPacket(packetPtr, false)) {
           var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as FaceMeshGraph).OnFaceLandmarksDetected.Invoke(value);
+          (graphRunner as FaceMeshGraph).OnMultiFaceLandmarksOutput.Invoke(value);
         }
         return Status.Ok().mpPtr;
       } catch (Exception e) {
@@ -95,7 +95,7 @@ namespace Mediapipe.Unity.FaceMesh {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr FaceRectsCallback(IntPtr graphPtr, IntPtr packetPtr){
+    static IntPtr FaceRectsFromLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
       try {
         var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
         if (!isFound) {
@@ -103,7 +103,7 @@ namespace Mediapipe.Unity.FaceMesh {
         }
         using (var packet = new NormalizedRectVectorPacket(packetPtr, false)) {
           var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as FaceMeshGraph).OnFaceRectsDetected.Invoke(value);
+          (graphRunner as FaceMeshGraph).OnFaceRectsFromLandmarksOutput.Invoke(value);
         }
         return Status.Ok().mpPtr;
       } catch (Exception e) {

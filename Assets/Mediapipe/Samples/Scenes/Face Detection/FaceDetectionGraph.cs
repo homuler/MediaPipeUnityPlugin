@@ -9,7 +9,7 @@ namespace Mediapipe.Unity.FaceDetection {
       FullRangeSparse = 1,
     }
     public ModelType modelType = ModelType.ShortRange;
-    public UnityEvent<List<Detection>> OnFacesDetected = new UnityEvent<List<Detection>>();
+    public UnityEvent<List<Detection>> OnFaceDetectionsOutput = new UnityEvent<List<Detection>>();
 
     const string inputStreamName = "input_video";
     const string faceDetectionsStreamName = "face_detections";
@@ -34,7 +34,7 @@ namespace Mediapipe.Unity.FaceDetection {
 
     public List<Detection> FetchNextDetections() {
       var detections = FetchNextVector<Detection>(faceDetectionsStreamPoller, faceDetectionsPacket, faceDetectionsStreamName);
-      OnFacesDetected.Invoke(detections);
+      OnFaceDetectionsOutput.Invoke(detections);
       return detections;
     }
 
@@ -47,7 +47,7 @@ namespace Mediapipe.Unity.FaceDetection {
         }
         using (var packet = new DetectionVectorPacket(packetPtr, false)) {
           var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as FaceDetectionGraph).OnFacesDetected.Invoke(value);
+          (graphRunner as FaceDetectionGraph).OnFaceDetectionsOutput.Invoke(value);
         }
         return Status.Ok().mpPtr;
       } catch (Exception e) {

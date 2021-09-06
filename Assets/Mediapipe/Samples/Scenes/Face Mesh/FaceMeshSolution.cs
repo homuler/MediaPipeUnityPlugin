@@ -63,9 +63,9 @@ namespace Mediapipe.Unity.FaceMesh {
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
       if (runningMode == RunningMode.Async) {
-        graphRunner.OnFacesDetected.AddListener(OnFacesDetected);
-        graphRunner.OnFaceLandmarksDetected.AddListener(OnFaceLandmarksDetected);
-        graphRunner.OnFaceRectsDetected.AddListener(OnFaceRectsDetected);
+        graphRunner.OnFaceDetectionsOutput.AddListener(OnFaceDetectionsOutput);
+        graphRunner.OnMultiFaceLandmarksOutput.AddListener(OnMultiFaceLandmarksOutput);
+        graphRunner.OnFaceRectsFromLandmarksOutput.AddListener(OnFaceRectsFromLandmarksOutput);
         graphRunner.StartRunAsync(imageSource).AssertOk();
       } else {
         graphRunner.StartRun(imageSource).AssertOk();
@@ -122,15 +122,15 @@ namespace Mediapipe.Unity.FaceMesh {
       }
     }
 
-    void OnFacesDetected(List<Detection> faceDetections) {
+    void OnFaceDetectionsOutput(List<Detection> faceDetections) {
       faceDetectionsAnnotationController.DrawLater(faceDetections);
     }
 
-    void OnFaceLandmarksDetected(List<NormalizedLandmarkList> multiFaceLandmarks) {
+    void OnMultiFaceLandmarksOutput(List<NormalizedLandmarkList> multiFaceLandmarks) {
       multiFaceLandmarksAnnotationController.DrawLater(multiFaceLandmarks);
     }
 
-    void OnFaceRectsDetected(List<NormalizedRect> faceRectsFromLandmarks) {
+    void OnFaceRectsFromLandmarksOutput(List<NormalizedRect> faceRectsFromLandmarks) {
       faceRectsFromLandmarksAnnotationController.DrawLater(faceRectsFromLandmarks);
     }
   }

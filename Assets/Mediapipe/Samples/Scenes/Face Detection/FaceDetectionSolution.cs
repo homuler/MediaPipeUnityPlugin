@@ -61,7 +61,7 @@ namespace Mediapipe.Unity.FaceDetection {
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
       if (runningMode == RunningMode.Async) {
-        graphRunner.OnFacesDetected.AddListener(OnFacesDetected);
+        graphRunner.OnFaceDetectionsOutput.AddListener(OnFaceDetectionsOutput);
         graphRunner.StartRunAsync(imageSource).AssertOk();
       } else {
         graphRunner.StartRun(imageSource).AssertOk();
@@ -114,7 +114,7 @@ namespace Mediapipe.Unity.FaceDetection {
       }
     }
 
-    void OnFacesDetected(List<Detection> detections) {
+    void OnFaceDetectionsOutput(List<Detection> detections) {
       faceDetectionsAnnotationController.DrawLater(detections);
     }
   }
