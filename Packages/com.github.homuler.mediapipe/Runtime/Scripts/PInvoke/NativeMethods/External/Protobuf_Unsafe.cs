@@ -36,9 +36,6 @@ namespace Mediapipe {
     public static extern MpReturnCode mp_Packet__GetFrameAnnotation(IntPtr packet, out IntPtr serializedProto);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_Packet__GetFrameAnnotationVector(IntPtr packet, out IntPtr serializedProto);
-
-    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__GetLandmarkList(IntPtr packet, out IntPtr serializedProto);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
