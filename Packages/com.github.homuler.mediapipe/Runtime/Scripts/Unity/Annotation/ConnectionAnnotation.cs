@@ -1,5 +1,5 @@
 namespace Mediapipe.Unity {
-  public class ConnectionAnnotation : LineAnnotation, IAnnotatable<Connection> {
+  public class ConnectionAnnotation : LineAnnotation {
     Connection currentTarget;
 
     public bool isEmpty { get { return currentTarget == null; } }

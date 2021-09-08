@@ -7,19 +7,6 @@ namespace Mediapipe.Unity {
     RectTransform GetAnnotationLayer();
   }
 
-  public interface IAnnotatable<T> {
-    /// <summary>
-    ///   Draw annotations.
-    ///   if <paramref name="target" /> is null, it erases drawn annotations.
-    /// </summary>
-    /// <param name="target">Data to be annotated</param>
-    void Draw(T target);
-  }
-
-  public interface I3DAnnotatable {
-    void VisualizeZ(bool flag);
-  }
-
   public abstract class HierarchicalAnnotation : MonoBehaviour, IHierachicalAnnotation {
     IHierachicalAnnotation _root;
     public IHierachicalAnnotation root {
