@@ -6,6 +6,10 @@ namespace Mediapipe {
     public static CalculatorGraphConfig ParseFromTextFormat(this pb::MessageParser<CalculatorGraphConfig> parser, string configText) {
       UnsafeNativeMethods.mp_api__ConvertFromCalculatorGraphConfigTextFormat(configText, out var serializedProtoPtr).Assert();
 
+      if (serializedProtoPtr == System.IntPtr.Zero) {
+        throw new MediaPipeException("Failed to parse config text. See error logs for more details");
+      }
+
       var config = Protobuf.DeserializeProto(serializedProtoPtr, CalculatorGraphConfig.Parser);
       UnsafeNativeMethods.mp_api_SerializedProto__delete(serializedProtoPtr);
 

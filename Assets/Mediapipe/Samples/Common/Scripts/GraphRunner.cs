@@ -188,13 +188,27 @@ namespace Mediapipe.Unity {
     }
 
     protected virtual Status InitializeCalculatorGraph() {
-      calculatorGraph = new CalculatorGraph(config.text);
+      calculatorGraph = new CalculatorGraph();
 
-      if (inferenceMode == InferenceMode.CPU) {
-        return Status.Ok();
+      // NOTE: There's a simpler way to initialize CalculatorGraph.
+      //
+      //     calculatorGraph = new CalculatorGraph(config.text);
+      //
+      //   However, if the config format is invalid, this code does not initialize CalculatorGraph and does not throw exceptions either.
+      //   The problem is that if you call ObserveStreamOutput in this state, the program will crash.
+      //   The following code is not very efficient, but it will return Non-OK status when an invalid configuration is given.
+      try {
+        var calculatorGraphConfig = CalculatorGraphConfig.Parser.ParseFromTextFormat(config.text);
+        var status = calculatorGraph.Initialize(calculatorGraphConfig);
+
+        if (!status.ok || inferenceMode == InferenceMode.CPU) {
+          return status;
+        }
+
+        return calculatorGraph.SetGpuResources(GpuManager.gpuResources);
+      } catch (Exception e) {
+        return Status.FailedPrecondition(e.ToString());
       }
-
-      return calculatorGraph.SetGpuResources(GpuManager.gpuResources);
     }
 
     protected virtual ConfigType DetectConfigType() {
