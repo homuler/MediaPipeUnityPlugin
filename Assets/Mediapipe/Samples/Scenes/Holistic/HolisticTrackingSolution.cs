@@ -31,8 +31,8 @@ namespace Mediapipe.Unity.Holistic {
     }
 
     public long timeoutMillisec {
-      get { return graphRunner.timeoutMicrosec / 1000; }
-      set { graphRunner.timeoutMicrosec = value * 1000; }
+      get { return graphRunner.timeoutMillisec; }
+      set { graphRunner.SetTimeoutMillisec(value); }
     }
 
     public override void Play() {

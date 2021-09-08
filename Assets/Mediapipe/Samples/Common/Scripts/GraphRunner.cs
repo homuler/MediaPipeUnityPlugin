@@ -19,6 +19,7 @@ namespace Mediapipe.Unity {
     [SerializeField] TextAsset cpuConfig = null;
     [SerializeField] TextAsset gpuConfig = null;
     [SerializeField] TextAsset openGlEsConfig = null;
+    [SerializeField] long _timeoutMicrosec = 0;
 
     static readonly GlobalInstanceTable<int, GraphRunner> instanceTable = new GlobalInstanceTable<int, GraphRunner>(5);
     static readonly Dictionary<IntPtr, int> nameTable = new Dictionary<IntPtr, int>();
@@ -38,7 +39,11 @@ namespace Mediapipe.Unity {
       }
     }
 
-    public long timeoutMicrosec = 0;
+    public long timeoutMicrosec {
+      get { return _timeoutMicrosec; }
+      private set { _timeoutMicrosec = value; }
+    }
+    public long timeoutMillisec { get { return timeoutMicrosec / 1000; } }
 
     Stopwatch stopwatch;
     protected CalculatorGraph calculatorGraph { get; private set; }
@@ -151,6 +156,14 @@ namespace Mediapipe.Unity {
     public List<T> FetchNextVector<T>(OutputStreamPoller<List<T>> poller, Packet<List<T>> packet, string streamName = null) {
       var nextValue = FetchNext<List<T>>(poller, packet, streamName);
       return nextValue == null ? new List<T>() : nextValue;
+    }
+
+    public void SetTimeoutMicrosec(long timeoutMicrosec) {
+      this.timeoutMicrosec = (long)Mathf.Max(0, timeoutMicrosec);
+    }
+
+    public void SetTimeoutMillisec(long timeoutMillisec) {
+      SetTimeoutMicrosec(1000 * timeoutMillisec);
     }
 
     protected static bool TryGetGraphRunner(IntPtr graphPtr, out GraphRunner graphRunner) {

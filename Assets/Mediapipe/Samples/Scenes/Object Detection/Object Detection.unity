@@ -461,7 +461,7 @@ MonoBehaviour:
   cpuConfig: {fileID: 4900000, guid: 03929fe761ff53f61815c8aee8b1ba46, type: 3}
   gpuConfig: {fileID: 4900000, guid: 28e0ca3dea691a3128fcb2b92c0c067a, type: 3}
   openGlEsConfig: {fileID: 4900000, guid: 2b21b041b72e00b068d649ec642c35f6, type: 3}
-  timeoutMicrosec: 0
+  _timeoutMicrosec: 50000
   OnOutputDetectionsOutput:
     m_PersistentCalls:
       m_Calls: []

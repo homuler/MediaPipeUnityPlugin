@@ -117,6 +117,32 @@ namespace Mediapipe.Unity {
     }
 
     /// <summary>
+    ///   Calculate the local coordinates of <paramref name="point2d" />.
+    /// </summary>
+    /// <param name="rectTransform">
+    ///   <see cref="RectTransform" /> to be used for calculating local coordinates
+    /// </param>
+    /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
+    public static Vector3 GetLocalPosition(RectTransform rectTransform, NormalizedPoint2D point2d, bool isMirrored = false) {
+      return GetLocalPositionNormalized(rectTransform, point2d.X, point2d.Y, isMirrored);
+    }
+
+    /// <summary>
+    ///   Calculate the local coordinates of <paramref name="point3d" />.
+    /// </summary>
+    /// <param name="rectTransform">
+    ///   <see cref="RectTransform" /> to be used for calculating local coordinates
+    /// </param>
+    /// <param name="dimension">Input image's dimension. <see cref="Vector3.z" /> will be used to scale z value.</param>
+    /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
+    public static Vector3 GetLocalPosition(RectTransform rectTransform, Point3D point3d, Vector2 focalLength, Vector2 principalPoint, Vector3 dimension, bool isMirrored = false) {
+      var x = -focalLength.x * point3d.X / point3d.Z + principalPoint.x;
+      var y = focalLength.y * point3d.Y / point3d.Z + principalPoint.y;
+      // camera coordinate system is right-handed
+      return GetLocalPosition(rectTransform, x, y, -point3d.Z, dimension, isMirrored);
+    }
+
+    /// <summary>
     ///   Returns a Vector3 array which represents a rectangle's vertices.
     ///   They are ordered clockwise from top-left point.
     ///   X and Y represent the positions in pixels and (0, 0) is located at top left corner of the <paramref name="rectTransform" />.

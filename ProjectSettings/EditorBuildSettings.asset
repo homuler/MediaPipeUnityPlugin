@@ -36,6 +36,9 @@ EditorBuildSettings:
     path: Assets/Mediapipe/Samples/Scenes/Hair Segmentation/Hair Segmentation.unity
     guid: 1192e7a0a46750eb78550919cccb0270
   - enabled: 1
+    path: Assets/Mediapipe/Samples/Scenes/Objectron/Objectron.unity
+    guid: c2acde8e2de1698b385c0a432bd9759c
+  - enabled: 1
     path: Assets/Mediapipe/Samples/Scenes/Hello World/Hello World.unity
     guid: 53a2aa9aa858889f3a8f3385dfad67ee
   - enabled: 0

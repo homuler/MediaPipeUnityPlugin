@@ -274,3 +274,18 @@ index 6191876..19a8cf8 100644
      helper_.BindFramebuffer(dst);
      glActiveTexture(GL_TEXTURE1);
      glBindTexture(src1.target(), src1.name());
+diff --git a/mediapipe/modules/objectron/objectron_gpu.pbtxt b/mediapipe/modules/objectron/objectron_gpu.pbtxt
+index 16187de..a7703f5 100644
+--- a/mediapipe/modules/objectron/objectron_gpu.pbtxt
++++ b/mediapipe/modules/objectron/objectron_gpu.pbtxt
+@@ -11,6 +11,10 @@ input_side_packet: "MAX_NUM_OBJECTS:max_num_objects"
+ 
+ # Collection of detected 3D objects, represented as a FrameAnnotation.
+ output_stream: "FRAME_ANNOTATION:detected_objects"
++# Collection of box landmarks. (NormalizedLandmarkList)
++output_stream: "MULTI_LANDMARKS:multi_box_landmarks"
++# Crop rectangles derived from bounding box landmarks.
++output_stream: "NORM_RECTS:box_rects"
+ 
+ # Defines whether landmarks from the previous video frame should be used to help
+ # predict landmarks on the current video frame.
