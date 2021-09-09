@@ -19,6 +19,7 @@ cc_library(
         "//mediapipe_api/framework/formats:rect",
         "//mediapipe_api/framework/port:logging",
         "//mediapipe_api/graphs/object_detection_3d/calculators:model_matrix",
+        "//mediapipe_api/graphs/instant_motion_tracking/calculators:transformations",
         "//mediapipe_api/modules/face_geometry/protos:face_geometry",
         "//mediapipe_api/modules/objectron/calculators:annotation",
         "//mediapipe_api/util:resource_util",
