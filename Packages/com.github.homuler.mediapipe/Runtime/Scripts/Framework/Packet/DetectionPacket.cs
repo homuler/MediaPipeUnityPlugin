@@ -6,11 +6,11 @@ namespace Mediapipe {
     public DetectionPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
     public override Detection Get() {
-      UnsafeNativeMethods.mp_Packet__GetDetection(mpPtr, out var serializedProtoPtr).Assert();
+      UnsafeNativeMethods.mp_Packet__GetDetection(mpPtr, out var serializedProto).Assert();
       GC.KeepAlive(this);
 
-      var detection = Protobuf.DeserializeProto<Detection>(serializedProtoPtr, Detection.Parser);
-      UnsafeNativeMethods.mp_api_SerializedProto__delete(serializedProtoPtr);
+      var detection = serializedProto.Deserialize(Detection.Parser);
+      serializedProto.Dispose();
 
       return detection;
     }

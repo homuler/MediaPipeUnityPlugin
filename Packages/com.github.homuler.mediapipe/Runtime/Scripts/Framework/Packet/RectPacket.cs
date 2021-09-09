@@ -6,11 +6,11 @@ namespace Mediapipe {
     public RectPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
     public override Rect Get() {
-      UnsafeNativeMethods.mp_Packet__GetRect(mpPtr, out var serializedProtoPtr).Assert();
+      UnsafeNativeMethods.mp_Packet__GetRect(mpPtr, out var serializedProto).Assert();
       GC.KeepAlive(this);
 
-      var rect = Protobuf.DeserializeProto<Rect>(serializedProtoPtr, Rect.Parser);
-      UnsafeNativeMethods.mp_api_SerializedProto__delete(serializedProtoPtr);
+      var rect = serializedProto.Deserialize(Rect.Parser);
+      serializedProto.Dispose();
 
       return rect;
     }

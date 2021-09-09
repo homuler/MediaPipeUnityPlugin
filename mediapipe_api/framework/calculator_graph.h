@@ -38,7 +38,7 @@ MP_CAPI(MpReturnCode) mp_CalculatorGraph__Initialize__PKc_i_Rsp(mediapipe::Calcu
                                                                 SidePackets* side_packets,
                                                                 absl::Status** status_out);
 
-MP_CAPI(MpReturnCode) mp_CalculatorGraph__Config(mediapipe::CalculatorGraph* graph, mp_api::SerializedProto** config_out);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__Config(mediapipe::CalculatorGraph* graph, mp_api::SerializedProto* config_out);
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__ObserveOutputStream__PKc_PF_b(mediapipe::CalculatorGraph* graph,
                                                                         const char* stream_name,
                                                                         NativePacketCallback* packet_callback,

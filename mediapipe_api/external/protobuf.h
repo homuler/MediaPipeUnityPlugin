@@ -2,63 +2,52 @@
 #define C_MEDIAPIPE_API_EXTERNAL_PROTOBUF_H_
 
 #include <vector>
+#include <sstream>
+#include <iomanip>
 #include "mediapipe_api/common.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
 
 namespace mp_api {
 
-struct SerializedProto {
+typedef struct SerializedProto {
   const char* str;
   int length;
-
-  ~SerializedProto() {
-    delete[] str;
-  }
-};
-
-struct SerializedProtoVector {
-  SerializedProto** data;
-  int size;
-
-  ~SerializedProtoVector() {
-    for (auto i = 0; i < size; ++i) {
-      delete data[i];
-    }
-
-    delete[] data;
-  }
 };
 
 }  // namespace mp_api
 
 template<class T>
-inline struct mp_api::SerializedProto* SerializeProto(const T& proto) {
+inline struct mp_api::SerializedProto SerializeProto(const T& proto) {
   auto str = proto.SerializeAsString();
-  auto length = str.size();
-  auto bytes = new char[length];
-  memcpy(bytes, str.c_str(), length);
-
-  return new mp_api::SerializedProto { bytes, static_cast<int>(length) };
+  auto size = str.size();
+  auto bytes = new char[size];
+  memcpy(bytes, str.c_str(), size);
+  return mp_api:: SerializedProto { bytes, static_cast<int>(size) };
 }
 
 template<class T>
-inline struct mp_api::SerializedProtoVector* SerializeProtoVector(const std::vector<T>& proto_vec) {
-  auto size = proto_vec.size();
-  auto data = new mp_api::SerializedProto*[size];
+inline struct mp_api::StructArray<mp_api::SerializedProto> SerializeProtoVector(const std::vector<T>& proto_vec) {
+  mp_api::StructArray<mp_api::SerializedProto> serialized_proto_vector;
 
-  for (auto i = 0; i < size; ++i) {
-    data[i] = SerializeProto(proto_vec[i]);
+  auto vec_size = proto_vec.size();
+  serialized_proto_vector.data = new mp_api::SerializedProto[vec_size];
+
+  for (auto i = 0; i < vec_size; ++i) {
+    serialized_proto_vector.data[i] = SerializeProto(proto_vec[i]);
   }
-
-  return new mp_api::SerializedProtoVector { data, static_cast<int>(size) };
+  serialized_proto_vector.size = static_cast<int>(vec_size);
+  return serialized_proto_vector;
 }
 
 template<class T>
-inline struct mp_api::SerializedProto* ConvertFromTextFormat(const char* str) {
+inline bool ConvertFromTextFormat(const char* str, mp_api::SerializedProto& output) {
   T proto;
   auto result = google::protobuf::TextFormat::ParseFromString(str, &proto);
 
-  return result ? SerializeProto(proto) : nullptr;
+  if (result) {
+    output = SerializeProto(proto);
+  }
+  return result;
 }
 
 extern "C" {
@@ -67,8 +56,7 @@ typedef void LogHandler(int level, const char* filename, int line, const char* m
 
 MP_CAPI(MpReturnCode) google_protobuf__SetLogHandler__PF(LogHandler* handler);
 
-MP_CAPI(void) mp_api_SerializedProto__delete(mp_api::SerializedProto* serialized_proto);
-MP_CAPI(void) mp_api_SerializedProtoVector__delete(mp_api::SerializedProtoVector* serialized_proto_vector);
+MP_CAPI(void) mp_api_SerializedProtoArray__delete(mp_api::SerializedProto* serialized_proto_vector_data);
 
 }  // extern "C"
 

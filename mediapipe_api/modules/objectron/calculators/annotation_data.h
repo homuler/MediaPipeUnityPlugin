@@ -8,7 +8,7 @@
 
 extern "C" {
 
-MP_CAPI(MpReturnCode) mp_Packet__GetFrameAnnotation(mediapipe::Packet* packet, mp_api::SerializedProto** value_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetFrameAnnotation(mediapipe::Packet* packet, mp_api::SerializedProto* value_out);
 
 }  // extern "C"
 

@@ -7,11 +7,11 @@ namespace Mediapipe {
     public NormalizedRectVectorPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
     public override List<NormalizedRect> Get() {
-      UnsafeNativeMethods.mp_Packet__GetNormalizedRectVector(mpPtr, out var serializedProtoVectorPtr).Assert();
+      UnsafeNativeMethods.mp_Packet__GetNormalizedRectVector(mpPtr, out var serializedProtoVector).Assert();
       GC.KeepAlive(this);
 
-      var normalizedRects = Protobuf.DeserializeProtoVector<NormalizedRect>(serializedProtoVectorPtr, NormalizedRect.Parser);
-      UnsafeNativeMethods.mp_api_SerializedProtoVector__delete(serializedProtoVectorPtr);
+      var normalizedRects = serializedProtoVector.Deserialize(NormalizedRect.Parser);
+      serializedProtoVector.Dispose();
 
       return normalizedRects;
     }

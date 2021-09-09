@@ -47,11 +47,11 @@ namespace Mediapipe {
 
     /// <remarks>Crashes if config is not set</remarks>
     public CalculatorGraphConfig Config() {
-      UnsafeNativeMethods.mp_CalculatorGraph__Config(mpPtr, out var serializedProtoPtr).Assert();
+      UnsafeNativeMethods.mp_CalculatorGraph__Config(mpPtr, out var serializedProto).Assert();
       GC.KeepAlive(this);
 
-      var config = Protobuf.DeserializeProto<CalculatorGraphConfig>(serializedProtoPtr, CalculatorGraphConfig.Parser);
-      UnsafeNativeMethods.mp_api_SerializedProto__delete(serializedProtoPtr);
+      var config = serializedProto.Deserialize(CalculatorGraphConfig.Parser);
+      serializedProto.Dispose();
 
       return config;
     }

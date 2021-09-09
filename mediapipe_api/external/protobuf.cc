@@ -22,10 +22,6 @@ MpReturnCode google_protobuf__SetLogHandler__PF(LogHandler* handler) {
   } CATCH_EXCEPTION
 }
 
-void mp_api_SerializedProto__delete(mp_api::SerializedProto* serialized_proto) {
-  delete serialized_proto;
-}
-
-void mp_api_SerializedProtoVector__delete(mp_api::SerializedProtoVector* serialized_proto_vector) {
-  delete serialized_proto_vector;
+void mp_api_SerializedProtoArray__delete(mp_api::SerializedProto* serialized_proto_vector_data) {
+  delete[] serialized_proto_vector_data;
 }

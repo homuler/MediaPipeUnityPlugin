@@ -6,11 +6,11 @@ namespace Mediapipe {
     public FrameAnnotationPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
     public override FrameAnnotation Get() {
-      UnsafeNativeMethods.mp_Packet__GetFrameAnnotation(mpPtr, out var serializedProtoPtr).Assert();
+      UnsafeNativeMethods.mp_Packet__GetFrameAnnotation(mpPtr, out var serializedProto).Assert();
       GC.KeepAlive(this);
 
-      var frameAnnotation = Protobuf.DeserializeProto<FrameAnnotation>(serializedProtoPtr, FrameAnnotation.Parser);
-      UnsafeNativeMethods.mp_api_SerializedProto__delete(serializedProtoPtr);
+      var frameAnnotation = serializedProto.Deserialize(FrameAnnotation.Parser);
+      serializedProto.Dispose();
 
       return frameAnnotation;
     }

@@ -7,13 +7,13 @@ namespace Mediapipe {
     public ClassificationListVectorPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
     public override List<ClassificationList> Get() {
-      UnsafeNativeMethods.mp_Packet__GetClassificationListVector(mpPtr, out var serializedProtoVectorPtr).Assert();
+      UnsafeNativeMethods.mp_Packet__GetClassificationListVector(mpPtr, out var serializedProtoVector).Assert();
       GC.KeepAlive(this);
 
-      var detections = Protobuf.DeserializeProtoVector<ClassificationList>(serializedProtoVectorPtr, ClassificationList.Parser);
-      UnsafeNativeMethods.mp_api_SerializedProtoVector__delete(serializedProtoVectorPtr);
+      var classificationLists = serializedProtoVector.Deserialize(ClassificationList.Parser);
+      serializedProtoVector.Dispose();
 
-      return detections;
+      return classificationLists;
     }
 
     public override StatusOr<List<ClassificationList>> Consume() {

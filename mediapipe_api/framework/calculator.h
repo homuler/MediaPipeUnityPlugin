@@ -8,7 +8,7 @@
 
 extern "C" {
 
-MP_CAPI(MpReturnCode) mp_api__ConvertFromCalculatorGraphConfigTextFormat(const char* config_text, mp_api::SerializedProto** value_out);
+MP_CAPI(bool) mp_api__ConvertFromCalculatorGraphConfigTextFormat(const char* config_text, mp_api::SerializedProto* value_out);
 
 }  // extern "C"
 

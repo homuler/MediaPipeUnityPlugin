@@ -6,11 +6,11 @@ namespace Mediapipe {
     public NormalizedLandmarkListPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
     public override NormalizedLandmarkList Get() {
-      UnsafeNativeMethods.mp_Packet__GetNormalizedLandmarkList(mpPtr, out var serializedProtoPtr).Assert();
+      UnsafeNativeMethods.mp_Packet__GetNormalizedLandmarkList(mpPtr, out var serializedProto).Assert();
       GC.KeepAlive(this);
 
-      var normalizedLandmarkList = Protobuf.DeserializeProto<NormalizedLandmarkList>(serializedProtoPtr, NormalizedLandmarkList.Parser);
-      UnsafeNativeMethods.mp_api_SerializedProto__delete(serializedProtoPtr);
+      var normalizedLandmarkList = serializedProto.Deserialize(NormalizedLandmarkList.Parser);
+      serializedProto.Dispose();
 
       return normalizedLandmarkList;
     }
