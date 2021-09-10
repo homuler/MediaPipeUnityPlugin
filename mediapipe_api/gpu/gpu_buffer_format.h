@@ -11,8 +11,7 @@ MP_CAPI(mediapipe::GpuBufferFormat) mp__GpuBufferFormatForImageFormat__ui(mediap
 MP_CAPI(MpReturnCode) mp__GlTextureInfoForGpuBufferFormat__ui_i_ui(mediapipe::GpuBufferFormat format,
                                                                   int plane,
                                                                   mediapipe::GlVersion gl_version,
-                                                                  mediapipe::GlTextureInfo** gl_texture_info_out);
-MP_CAPI(void) mp_GlTextureInfo__delete(mediapipe::GlTextureInfo* gl_texture_info);
+                                                                  mediapipe::GlTextureInfo* gl_texture_info_out);
 
 }  // extern "C"
 
