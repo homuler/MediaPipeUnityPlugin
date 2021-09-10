@@ -4,22 +4,22 @@ using System.Runtime.InteropServices;
 
 namespace Mediapipe.InstantMotionTracking {
   [StructLayout(LayoutKind.Sequential)]
-  internal struct AnchorVector {
+  internal struct Anchor3dVector {
     public IntPtr data;
     public int size;
 
     public void Dispose() {
-      UnsafeNativeMethods.mp_InstantMotionTrackingAnchorArray__delete(data);
+      UnsafeNativeMethods.mp_Anchor3dArray__delete(data);
     }
 
-    public List<Anchor> ToList() {
-      var anchors = new List<Anchor>(size);
+    public List<Anchor3d> ToList() {
+      var anchors = new List<Anchor3d>(size);
 
       unsafe {
-        Anchor* anchorPtr = (Anchor*)data;
+        Anchor3d* anchorPtr = (Anchor3d*)data;
 
         for (var i = 0; i < size; i++) {
-          anchors.Add(Marshal.PtrToStructure<Anchor>((IntPtr)anchorPtr));
+          anchors.Add(Marshal.PtrToStructure<Anchor3d>((IntPtr)anchorPtr));
         }
       }
 

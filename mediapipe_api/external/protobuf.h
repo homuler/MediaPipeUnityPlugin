@@ -20,7 +20,7 @@ template<class T>
 inline void SerializeProto(const T& proto, mp_api::SerializedProto* serialized_proto) {
   auto str = proto.SerializeAsString();
   auto size = str.size();
-  auto bytes = new char[size];
+  auto bytes = new char[size + 1];
   memcpy(bytes, str.c_str(), size);
 
   serialized_proto->str = bytes;

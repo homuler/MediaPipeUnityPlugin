@@ -65,11 +65,11 @@ namespace Mediapipe.Unity {
     ///   The 1st argument is <typeparamref name="T" />, that is an ith element in <see cref="children" />.
     ///   The 2nd argument is <typeparamref name="S" />, that is also an ith element in <paramref name="argumentList" />.
     /// </param>
-    protected void CallActionForAll<S>(IList<S> argumentList, Action<T, S> action) where S : class {
+    protected void CallActionForAll<S>(IList<S> argumentList, Action<T, S> action) {
       for (var i = 0; i < Mathf.Max(children.Count, argumentList.Count); i++) {
         if (i >= argumentList.Count) {
           // children.Count > argumentList.Count
-          action(children[i], null);
+          action(children[i], default(S));
           continue;
         }
 

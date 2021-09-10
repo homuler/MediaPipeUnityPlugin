@@ -23,6 +23,12 @@ namespace Mediapipe.Unity {
       ApplyRadius(radius);
     }
 
+    public void Draw(IList<Vector3> targets) {
+      if (ActivateFor(targets)) {
+        CallActionForAll(targets, (annotation, target) => { annotation?.Draw(target); });
+      }
+    }
+
     public void Draw(IList<Landmark> targets, Vector3 scale, bool visualizeZ = true) {
       if (ActivateFor(targets)) {
         CallActionForAll(targets, (annotation, target) => { annotation?.Draw(target, scale, visualizeZ); });

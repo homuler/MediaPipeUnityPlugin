@@ -1,0 +1,56 @@
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Copied from mediapipe/graphs/object_detection_3d/object_occlusion_tracking.pbtxt
+#
+# CHANGES:
+#   - Remove GIF related inputs
+#   - `input_video` is ImageFrame (ImageFrameToGpuBufferCalculator converts it into GpuBuffer)
+#   - Add ImageTransformationCalculator and flips the input
+#   - Remove GlAnimationOverlayCalculator
+
+# MediaPipe graph that performs region tracking and 3d object (AR sticker) rendering.
+
+# Images in/out of graph with sticker data and IMU information from device
+input_stream: "input_video"
+input_stream: "sticker_sentinel"
+input_stream: "initial_anchor_data"
+output_stream: "tracked_anchor_data"
+
+node: {
+  calculator: "ImageFrameToGpuBufferCalculator"
+  input_stream: "input_video"
+  output_stream: "input_video_gpu"
+}
+
+# Flip vertically because the input image is aligned from bottom-left to top-right.
+node: {
+  calculator: "ImageTransformationCalculator"
+  input_stream: "IMAGE_GPU:input_video_gpu"
+  output_stream: "IMAGE_GPU:transformed_input_video"
+  node_options: {
+    [type.googleapis.com/mediapipe.ImageTransformationCalculatorOptions] {
+      flip_vertically: true
+    }
+  }
+}
+
+# Uses box tracking in order to create 'anchors' for associated 3d stickers.
+node {
+  calculator: "RegionTrackingSubgraph"
+  input_stream: "VIDEO:transformed_input_video"
+  input_stream: "SENTINEL:sticker_sentinel"
+  input_stream: "ANCHORS:initial_anchor_data"
+  output_stream: "ANCHORS:tracked_anchor_data"
+}

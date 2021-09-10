@@ -1,0 +1,99 @@
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Copied from mediapipe/graphs/instant_motion_tracking/instant_motion_tracking.pbtxt
+#
+# CHANGES:
+#   - Remove GIF related inputs
+#   - Add ImageTransformationCalculator and flips the input
+#   - Add GlScalerCalculator and flips the output
+
+# MediaPipe graph that performs region tracking and 3d object (AR sticker) rendering.
+
+# Images in/out of graph with sticker data and IMU information from device
+input_stream: "input_video"
+input_stream: "sticker_sentinel"
+input_stream: "sticker_proto_string"
+input_stream: "imu_rotation_matrix"
+output_stream: "output_video"
+output_stream: "asset_3d_matrices"
+
+# Flip vertically because the input image is aligned from bottom-left to top-right.
+node: {
+  calculator: "ImageTransformationCalculator"
+  input_stream: "IMAGE_GPU:input_video"
+  output_stream: "IMAGE_GPU:transformed_input_video"
+  node_options: {
+    [type.googleapis.com/mediapipe.ImageTransformationCalculatorOptions] {
+      flip_vertically: true
+    }
+  }
+}
+
+# Converts sticker data into user data (rotations/scalings), render data, and
+# initial anchors.
+node {
+  calculator: "StickerManagerCalculator"
+  input_stream: "PROTO:sticker_proto_string"
+  output_stream: "ANCHORS:initial_anchor_data"
+  output_stream: "USER_ROTATIONS:user_rotation_data"
+  output_stream: "USER_SCALINGS:user_scaling_data"
+  output_stream: "RENDER_DATA:sticker_render_data"
+}
+
+# Uses box tracking in order to create 'anchors' for associated 3d stickers.
+node {
+  calculator: "RegionTrackingSubgraph"
+  input_stream: "VIDEO:transformed_input_video"
+  input_stream: "SENTINEL:sticker_sentinel"
+  input_stream: "ANCHORS:initial_anchor_data"
+  output_stream: "ANCHORS:tracked_anchor_data"
+}
+
+# Concatenates all transformations to generate model matrices for the OpenGL
+# animation overlay calculator.
+node {
+  calculator: "MatricesManagerCalculator"
+  input_stream: "ANCHORS:tracked_anchor_data"
+  input_stream: "IMU_ROTATION:imu_rotation_matrix"
+  input_stream: "USER_ROTATIONS:user_rotation_data"
+  input_stream: "USER_SCALINGS:user_scaling_data"
+  input_stream: "RENDER_DATA:sticker_render_data"
+  output_stream: "MATRICES:0:gif_matrices"
+  output_stream: "MATRICES:1:asset_3d_matrices"
+  input_side_packet: "FOV:vertical_fov_radians"
+  input_side_packet: "ASPECT_RATIO:aspect_ratio"
+}
+
+# Renders the final 3d stickers and overlays them on top of the input image.
+node {
+  calculator: "GlAnimationOverlayCalculator"
+  input_stream: "VIDEO:transformed_input_video"
+  input_stream: "MODEL_MATRICES:asset_3d_matrices"
+  input_side_packet: "TEXTURE:texture_3d"
+  input_side_packet: "ANIMATION_ASSET:asset_3d"
+  output_stream: "output_video_raw"
+}
+
+# Flip vertically because the output image is aligned from top-left to bottom-right.
+node: {
+  calculator: "GlScalerCalculator"
+  input_stream: "VIDEO:output_video_raw"
+  output_stream: "VIDEO:output_video"
+  node_options: {
+    [type.googleapis.com/mediapipe.GlScalerCalculatorOptions] {
+      flip_vertical: true
+    }
+  }
+}

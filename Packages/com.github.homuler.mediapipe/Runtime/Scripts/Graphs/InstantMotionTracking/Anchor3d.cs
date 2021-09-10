@@ -2,10 +2,14 @@ using System.Runtime.InteropServices;
 
 namespace Mediapipe.InstantMotionTracking {
   [StructLayout(LayoutKind.Sequential)]
-  public struct Anchor {
+  public struct Anchor3d {
     public float X;
     public float Y;
     public float Z;
     public int StickerId;
+
+    public override string ToString() {
+      return $"Anchor = ({X}, {Y}, {Z}), StickerId = {StickerId}";
+    }
   }
 }
