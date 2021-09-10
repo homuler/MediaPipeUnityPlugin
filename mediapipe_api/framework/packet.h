@@ -130,7 +130,8 @@ inline MpReturnCode mp_Packet__GetStructVector(mediapipe::Packet* packet, mp_api
     for (auto i = 0; i < size; ++i) {
       data[i] = vec[i];
     }
-    *value_out = mp_api::StructArray<T> { data, static_cast<int>(size) };
+    value_out->data = data;
+    value_out->size = static_cast<int>(size);
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_ALL
 }
@@ -139,7 +140,7 @@ template <typename T>
 inline MpReturnCode mp_Packet__GetSerializedProto(mediapipe::Packet* packet, mp_api::SerializedProto* value_out) {
   TRY_ALL {
     auto proto = packet->Get<T>();
-    *value_out = SerializeProto(proto);
+    SerializeProto(proto, value_out);
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_ALL
 }
@@ -148,7 +149,7 @@ template <typename T>
 inline MpReturnCode mp_Packet__GetSerializedProtoVector(mediapipe::Packet* packet, mp_api::StructArray<mp_api::SerializedProto>* value_out) {
   TRY_ALL {
     auto proto_vec = packet->Get<std::vector<T>>();
-    *value_out = SerializeProtoVector(proto_vec);
+    SerializeProtoVector(proto_vec, value_out);
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_ALL
 }

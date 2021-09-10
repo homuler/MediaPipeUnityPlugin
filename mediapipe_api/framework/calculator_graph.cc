@@ -61,7 +61,7 @@ MpReturnCode mp_CalculatorGraph__Initialize__PKc_i_Rsp(mediapipe::CalculatorGrap
 
 MpReturnCode mp_CalculatorGraph__Config(mediapipe::CalculatorGraph* graph, mp_api::SerializedProto* config_out) {
   TRY_ALL {
-    *config_out = SerializeProto(graph->Config());
+    SerializeProto(graph->Config(), config_out);
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_ALL
 }

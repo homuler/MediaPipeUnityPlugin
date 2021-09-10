@@ -17,35 +17,35 @@ typedef struct SerializedProto {
 }  // namespace mp_api
 
 template<class T>
-inline struct mp_api::SerializedProto SerializeProto(const T& proto) {
+inline void SerializeProto(const T& proto, mp_api::SerializedProto* serialized_proto) {
   auto str = proto.SerializeAsString();
   auto size = str.size();
   auto bytes = new char[size];
   memcpy(bytes, str.c_str(), size);
-  return mp_api:: SerializedProto { bytes, static_cast<int>(size) };
+
+  serialized_proto->str = bytes;
+  serialized_proto->length = static_cast<int>(size);
 }
 
 template<class T>
-inline struct mp_api::StructArray<mp_api::SerializedProto> SerializeProtoVector(const std::vector<T>& proto_vec) {
-  mp_api::StructArray<mp_api::SerializedProto> serialized_proto_vector;
-
+inline void SerializeProtoVector(const std::vector<T>& proto_vec, mp_api::StructArray<mp_api::SerializedProto>* serialized_proto_vector) {
   auto vec_size = proto_vec.size();
-  serialized_proto_vector.data = new mp_api::SerializedProto[vec_size];
+  auto data = new mp_api::SerializedProto[vec_size];
 
   for (auto i = 0; i < vec_size; ++i) {
-    serialized_proto_vector.data[i] = SerializeProto(proto_vec[i]);
+    SerializeProto(proto_vec[i], &data[i]);
   }
-  serialized_proto_vector.size = static_cast<int>(vec_size);
-  return serialized_proto_vector;
+  serialized_proto_vector->data = data;
+  serialized_proto_vector->size = static_cast<int>(vec_size);
 }
 
 template<class T>
-inline bool ConvertFromTextFormat(const char* str, mp_api::SerializedProto& output) {
+inline bool ConvertFromTextFormat(const char* str, mp_api::SerializedProto* output) {
   T proto;
   auto result = google::protobuf::TextFormat::ParseFromString(str, &proto);
 
   if (result) {
-    output = SerializeProto(proto);
+    SerializeProto(proto, output);
   }
   return result;
 }
