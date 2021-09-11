@@ -49,9 +49,9 @@ namespace Mediapipe.Unity {
       Draw(targets.Landmark, visualizeZ);
     }
 
-    public void Draw(IList<AnnotatedKeyPoint> targets, Vector2 focalLength, Vector2 principalPoint, Vector3 dimension, bool visualizeZ = true) {
+    public void Draw(IList<AnnotatedKeyPoint> targets, Vector2 focalLength, Vector2 principalPoint, float zScale, bool visualizeZ = true) {
       if (ActivateFor(targets)) {
-        CallActionForAll(targets, (annotation, target) => { annotation?.Draw(target, focalLength, principalPoint, dimension, visualizeZ); });
+        CallActionForAll(targets, (annotation, target) => { annotation?.Draw(target, focalLength, principalPoint, zScale, visualizeZ); });
       }
     }
 

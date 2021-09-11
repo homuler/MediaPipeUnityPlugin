@@ -1,3 +1,4 @@
+using Mediapipe.Unity.CoordinateSystem;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -37,7 +38,7 @@ namespace Mediapipe.Unity {
         landmarkList.Draw(target, visualizeZ);
 
         var rectTransform = GetAnnotationLayer();
-        var center = CoordinateTransform.GetLocalPosition(rectTransform, target[0], isMirrored);
+        var center = rectTransform.GetLocalPosition(target[0], isMirrored);
         if (!visualizeZ) {
           center.z = 0.0f;
         }
@@ -57,8 +58,8 @@ namespace Mediapipe.Unity {
     }
 
     float CalculateDistance(RectTransform rectTransform, NormalizedLandmark a, NormalizedLandmark b) {
-      var aPos = CoordinateTransform.GetLocalPosition(rectTransform, a, isMirrored);
-      var bPos = CoordinateTransform.GetLocalPosition(rectTransform, b, isMirrored);
+      var aPos = rectTransform.GetLocalPosition(a, isMirrored);
+      var bPos = rectTransform.GetLocalPosition(b, isMirrored);
       aPos.z = 0.0f;
       bPos.z = 0.0f;
       return Vector3.Distance(aPos, bPos);

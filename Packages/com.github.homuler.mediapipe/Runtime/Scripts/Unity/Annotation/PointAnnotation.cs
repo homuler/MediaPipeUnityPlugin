@@ -1,3 +1,4 @@
+using Mediapipe.Unity.CoordinateSystem;
 using UnityEngine;
 
 using mplt = global::Mediapipe.LocationData.Types;
@@ -33,7 +34,7 @@ namespace Mediapipe.Unity {
 
     public void Draw(Landmark target, Vector3 scale, bool visualizeZ = true) {
       if (ActivateFor(target)) {
-        var position = CoordinateTransform.GetLocalPosition(GetAnnotationLayer(), target, scale, isMirrored);
+        var position = GetAnnotationLayer().GetLocalPosition(target, scale, isMirrored);
         if (!visualizeZ) {
           position.z = 0.0f;
         }
@@ -43,7 +44,7 @@ namespace Mediapipe.Unity {
 
     public void Draw(NormalizedLandmark target, bool visualizeZ = true) {
       if (ActivateFor(target)) {
-        var position = CoordinateTransform.GetLocalPosition(GetAnnotationLayer(), target, isMirrored);
+        var position = GetAnnotationLayer().GetLocalPosition(target, isMirrored);
         if (!visualizeZ) {
           position.z = 0.0f;
         }
@@ -53,14 +54,15 @@ namespace Mediapipe.Unity {
 
     public void Draw(NormalizedPoint2D target) {
       if (ActivateFor(target)) {
-        var position = CoordinateTransform.GetLocalPosition(GetAnnotationLayer(), target, isMirrored);
+        var position = GetAnnotationLayer().GetLocalPosition(target, isMirrored);
         transform.localPosition = position;
       }
     }
 
-    public void Draw(Point3D target, Vector2 focalLength, Vector2 principalPoint, Vector3 dimension, bool visualizeZ = true) {
+    public void Draw(Point3D target, Vector2 focalLength, Vector2 principalPoint, float zScale, bool visualizeZ = true) {
       if (ActivateFor(target)) {
-        var position = CoordinateTransform.GetLocalPosition(GetAnnotationLayer(), target, focalLength, principalPoint, dimension, isMirrored);
+        // var position = CoordinateTransform.GetLocalPosition(GetAnnotationLayer(), target, focalLength, principalPoint, new Vector3(1, 1, zScale), isMirrored);
+        var position = GetAnnotationLayer().GetLocalPosition(target, focalLength, principalPoint, zScale, isMirrored);
         if (!visualizeZ) {
           position.z = 0.0f;
         }
@@ -68,9 +70,9 @@ namespace Mediapipe.Unity {
       }
     }
 
-    public void Draw(AnnotatedKeyPoint target, Vector2 focalLength, Vector2 principalPoint, Vector3 dimension, bool visualizeZ = true) {
+    public void Draw(AnnotatedKeyPoint target, Vector2 focalLength, Vector2 principalPoint, float zScale, bool visualizeZ = true) {
       if (visualizeZ) {
-        Draw(target?.Point3D, focalLength, principalPoint, dimension, true);
+        Draw(target?.Point3D, focalLength, principalPoint, zScale, true);
       } else {
         Draw(target?.Point2D);
       }
@@ -78,7 +80,7 @@ namespace Mediapipe.Unity {
 
     public void Draw(mplt.RelativeKeypoint target, float threshold = 0.0f) {
       if (ActivateFor(target)) {
-        Draw(CoordinateTransform.GetLocalPosition(GetAnnotationLayer(), target, isMirrored));
+        Draw(GetAnnotationLayer().GetLocalPosition(target, isMirrored));
         SetColor(GetColor(target.Score, threshold));
       }
     }

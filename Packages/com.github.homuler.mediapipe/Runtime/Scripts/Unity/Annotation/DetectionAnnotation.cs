@@ -1,3 +1,4 @@
+using Mediapipe.Unity.CoordinateSystem;
 using UnityEngine;
 
 namespace Mediapipe.Unity {
@@ -32,14 +33,17 @@ namespace Mediapipe.Unity {
       if (ActivateFor(target)) {
         var score = target.Score.Count > 0 ? target.Score[0] : 1.0f;
         var color = GetColor(score, Mathf.Clamp(threshold, 0.0f, 1.0f));
-        var rectVertices = CoordinateTransform.GetRectVertices(GetAnnotationLayer(), target.LocationData, isMirrored);
+
+        // Assume that location data's format is always RelativeBoundingBox
+        // TODO: fix if there are cases where this assumption is not correct.
+        var rectVertices = GetAnnotationLayer().GetRectVertices(target.LocationData.RelativeBoundingBox, isMirrored);
         locationData.SetColor(GetColor(score, Mathf.Clamp(threshold, 0.0f, 1.0f)));
         locationData.Draw(rectVertices);
 
         var width = rectVertices[2].x - rectVertices[0].x;
         var height = rectVertices[0].y - rectVertices[2].y;
         var labelText = target.Label.Count > 0 ? target.Label[0] : null;
-        label.Draw(labelText, rectVertices[0], color, width, height);
+        label.Draw(labelText, rectVertices[1], color, width, height);
 
         relativeKeypoints.Draw(target.LocationData.RelativeKeypoints);
       }

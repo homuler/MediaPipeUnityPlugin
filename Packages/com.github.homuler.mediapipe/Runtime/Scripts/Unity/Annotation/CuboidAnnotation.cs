@@ -64,13 +64,14 @@ namespace Mediapipe.Unity {
       transformAnnotation.SetArrowWidth(arrowWidth);
     }
 
-    public void Draw(ObjectAnnotation target, Vector2 focalLength, Vector2 principalPoint, Vector3 dimension, bool visualizeZ = true) {
+    public void Draw(ObjectAnnotation target, Vector2 focalLength, Vector2 principalPoint, float zScale, bool visualizeZ = true) {
       if (ActivateFor(target)) {
-        pointListAnnotation.Draw(target.Keypoints, focalLength, principalPoint, dimension, visualizeZ);
+        pointListAnnotation.Draw(target.Keypoints, focalLength, principalPoint, zScale, visualizeZ);
         lineListAnnotation.Redraw();
 
+        var rect = GetAnnotationLayer().rect;
         transformAnnotation.origin = pointListAnnotation[0].transform.localPosition;
-        transformAnnotation.Draw(target.Rotation, target.Scale, dimension);
+        transformAnnotation.Draw(target.Rotation, target.Scale, new Vector3(rect.width, rect.height, zScale));
       }
     }
   }

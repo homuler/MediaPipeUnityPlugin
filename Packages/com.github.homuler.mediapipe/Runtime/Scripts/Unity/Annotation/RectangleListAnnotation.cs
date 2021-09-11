@@ -21,9 +21,9 @@ namespace Mediapipe.Unity {
       ApplyLineWidth(lineWidth);
     }
 
-    public void Draw(IList<Rect> targets) {
+    public void Draw(IList<Rect> targets, Vector2 imageSize) {
       if (ActivateFor(targets)) {
-        CallActionForAll(targets, (annotation, target) => { annotation?.Draw(target); });
+        CallActionForAll(targets, (annotation, target) => { annotation?.Draw(target, imageSize); });
       }
     }
 

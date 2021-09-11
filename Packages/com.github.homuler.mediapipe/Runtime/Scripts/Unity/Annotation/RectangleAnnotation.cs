@@ -1,4 +1,7 @@
+using Mediapipe.Unity.CoordinateSystem;
 using UnityEngine;
+
+using mplt = global::Mediapipe.LocationData.Types;
 
 namespace Mediapipe.Unity {
   public class RectangleAnnotation : HierarchicalAnnotation {
@@ -37,21 +40,47 @@ namespace Mediapipe.Unity {
       lineRenderer.SetPositions(positions == null ? emptyPositions : positions);
     }
 
-    public void Draw(Rect target) {
+    public void Draw(Rect target, Vector2 imageSize) {
       if (ActivateFor(target)) {
-        Draw(CoordinateTransform.GetRectVertices(GetAnnotationLayer(), target, isMirrored));
+        Draw(GetAnnotationLayer().GetRectVertices(target, imageSize, isMirrored));
       }
     }
 
     public void Draw(NormalizedRect target) {
       if (ActivateFor(target)) {
-        Draw(CoordinateTransform.GetRectVertices(GetAnnotationLayer(), target, isMirrored));
+        Draw(GetAnnotationLayer().GetRectVertices(target, isMirrored));
+      }
+    }
+
+    public void Draw(LocationData target, Vector2 imageSize) {
+      if (ActivateFor(target)) {
+        switch (target.Format) {
+          case mplt.Format.BoundingBox: {
+            Draw(GetAnnotationLayer().GetRectVertices(target.BoundingBox, imageSize, isMirrored));
+            break;
+          }
+          case mplt.Format.RelativeBoundingBox: {
+            Draw(GetAnnotationLayer().GetRectVertices(target.RelativeBoundingBox, isMirrored));
+            break;
+          }
+          default: {
+            throw new System.ArgumentException($"The format of the LocationData must be BoundingBox or RelativeBoundingBox, but {target.Format}");
+          }
+        }
       }
     }
 
     public void Draw(LocationData target) {
       if (ActivateFor(target)) {
-        Draw(CoordinateTransform.GetRectVertices(GetAnnotationLayer(), target, isMirrored));
+        switch (target.Format) {
+          case mplt.Format.RelativeBoundingBox: {
+            Draw(GetAnnotationLayer().GetRectVertices(target.RelativeBoundingBox, isMirrored));
+            break;
+          }
+          default: {
+            throw new System.ArgumentException($"The format of the LocationData must be RelativeBoundingBox, but {target.Format}");
+          }
+        }
       }
     }
 

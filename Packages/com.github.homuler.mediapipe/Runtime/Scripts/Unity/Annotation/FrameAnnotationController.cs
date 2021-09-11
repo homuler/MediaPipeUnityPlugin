@@ -4,36 +4,20 @@ namespace Mediapipe.Unity {
   public class FrameAnnotationController : AnnotationController<CuboidListAnnotation> {
     [SerializeField] bool visualizeZ = true;
     [SerializeField] float translateZ = -10.0f;
-    [SerializeField] float scaleZ = 10.0f;
+    [SerializeField] float scaleZ = 1.0f;
 
     [HideInInspector] public Vector2 focalLength = Vector2.zero;
     [HideInInspector] public Vector2 principalPoint = Vector2.zero;
-
-    Vector3 dimension3d = Vector3.zero;
-    public Vector2 dimension {
-      get { return dimension3d; }
-      set {
-        dimension3d.x = value.x;
-        dimension3d.y = value.y;
-      }
-    }
 
     FrameAnnotation currentTarget;
 
     protected override void Start() {
       base.Start();
       ApplyTranslateZ(translateZ);
-      ApplyScaleZ(scaleZ);
     }
 
     void OnValidate() {
       ApplyTranslateZ(translateZ);
-      ApplyScaleZ(scaleZ);
-    }
-
-    public void SetScaleZ(float scaleZ) {
-      this.scaleZ = scaleZ;
-      ApplyScaleZ(scaleZ);
     }
 
     public void DrawNow(FrameAnnotation target) {
@@ -47,7 +31,7 @@ namespace Mediapipe.Unity {
 
     protected override void SyncNow() {
       isStale = false;
-      annotation.Draw(currentTarget, focalLength, principalPoint, dimension3d, visualizeZ);
+      annotation.Draw(currentTarget, focalLength, principalPoint, scaleZ, visualizeZ);
     }
 
     void ApplyTranslateZ(float translateZ) {
@@ -56,10 +40,6 @@ namespace Mediapipe.Unity {
       } else {
         annotation.transform.localPosition = Vector3.zero;
       }
-    }
-
-    void ApplyScaleZ(float scaleZ) {
-      dimension3d.z = scaleZ;
     }
   }
 }

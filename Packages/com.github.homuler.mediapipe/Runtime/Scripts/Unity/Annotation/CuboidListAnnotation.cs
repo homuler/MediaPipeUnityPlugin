@@ -42,14 +42,14 @@ namespace Mediapipe.Unity {
       ApplyArrowWidth(arrowWidth);
     }
 
-    public void Draw(IList<ObjectAnnotation> targets, Vector2 focalLength, Vector2 principalPoint, Vector3 dimension, bool visualizeZ = true) {
+    public void Draw(IList<ObjectAnnotation> targets, Vector2 focalLength, Vector2 principalPoint, float zScale, bool visualizeZ = true) {
       if (ActivateFor(targets)) {
-        CallActionForAll(targets, (annotation, target) => { annotation?.Draw(target, focalLength, principalPoint, dimension, visualizeZ); });
+        CallActionForAll(targets, (annotation, target) => { annotation?.Draw(target, focalLength, principalPoint, zScale, visualizeZ); });
       }
     }
 
-    public void Draw(FrameAnnotation target, Vector2 focalLength, Vector2 principalPoint, Vector3 dimension, bool visualizeZ = true) {
-      Draw(target?.Annotations, focalLength, principalPoint, dimension, visualizeZ);
+    public void Draw(FrameAnnotation target, Vector2 focalLength, Vector2 principalPoint, float zScale, bool visualizeZ = true) {
+      Draw(target?.Annotations, focalLength, principalPoint, zScale, visualizeZ);
     }
 
     protected override CuboidAnnotation InstantiateChild(bool isActive = true) {
