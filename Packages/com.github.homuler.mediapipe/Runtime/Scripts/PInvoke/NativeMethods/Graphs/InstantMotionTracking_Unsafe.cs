@@ -1,8 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
 
-using Mediapipe.InstantMotionTracking;
-
 namespace Mediapipe {
   internal static partial class UnsafeNativeMethods {
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]

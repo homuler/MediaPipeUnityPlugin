@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-using Mediapipe.InstantMotionTracking;
-
 namespace Mediapipe.Unity.InstantMotionTracking {
   public class InstantMotionTrackingSolution : Solution {
     [SerializeField] RawImage screen;

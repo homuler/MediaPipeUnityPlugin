@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
-using Mediapipe.InstantMotionTracking;
-
 namespace Mediapipe.Unity.InstantMotionTracking {
   public class RegionTrackingGraph : GraphRunner {
     bool isTracking = false;

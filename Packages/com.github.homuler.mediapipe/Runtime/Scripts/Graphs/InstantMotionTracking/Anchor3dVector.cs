@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace Mediapipe.InstantMotionTracking {
+namespace Mediapipe {
   [StructLayout(LayoutKind.Sequential)]
   internal struct Anchor3dVector {
     public IntPtr data;

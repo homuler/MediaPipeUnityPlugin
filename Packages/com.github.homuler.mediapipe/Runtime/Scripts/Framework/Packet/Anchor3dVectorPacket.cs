@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Mediapipe.InstantMotionTracking {
+namespace Mediapipe {
   public class Anchor3dVectorPacket : Packet<List<Anchor3d>> {
     public Anchor3dVectorPacket() : base() {}
     public Anchor3dVectorPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}

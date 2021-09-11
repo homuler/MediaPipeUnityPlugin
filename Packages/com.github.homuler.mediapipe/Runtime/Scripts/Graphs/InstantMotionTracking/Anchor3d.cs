@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Mediapipe.InstantMotionTracking {
+namespace Mediapipe {
   [StructLayout(LayoutKind.Sequential)]
   public struct Anchor3d {
     public float X;
