@@ -49,6 +49,7 @@ MonoBehaviour:
   pointListAnnotation: {fileID: 6140629650347037948}
   lineListAnnotation: {fileID: 2711096740066365766}
   transformAnnotation: {fileID: 508183085484426995}
+  arrowLengthScale: 1
 --- !u!1001 &3085711672548358667
 PrefabInstance:
   m_ObjectHideFlags: 0

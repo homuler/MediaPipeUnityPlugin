@@ -6,6 +6,7 @@ namespace Mediapipe.Unity {
     [SerializeField] PointListAnnotation pointListAnnotation;
     [SerializeField] ConnectionListAnnotation lineListAnnotation;
     [SerializeField] TransformAnnotation transformAnnotation;
+    [SerializeField] float arrowLengthScale = 1.0f;
 
     ///     3 ----------- 7
     ///    /|            /|
@@ -60,6 +61,10 @@ namespace Mediapipe.Unity {
       transformAnnotation.SetArrowCapScale(arrowCapScale);
     }
 
+    public void SetArrowLengthScale(float arrowLengthScale) {
+      this.arrowLengthScale = arrowLengthScale;
+    }
+
     public void SetArrowWidth(float arrowWidth) {
       transformAnnotation.SetArrowWidth(arrowWidth);
     }
@@ -71,7 +76,7 @@ namespace Mediapipe.Unity {
 
         var rect = GetAnnotationLayer().rect;
         transformAnnotation.origin = pointListAnnotation[0].transform.localPosition;
-        transformAnnotation.Draw(target.Rotation, target.Scale, new Vector3(rect.width, rect.height, zScale));
+        transformAnnotation.Draw(target.Rotation, target.Scale, arrowLengthScale * Vector3.one, visualizeZ);
       }
     }
   }

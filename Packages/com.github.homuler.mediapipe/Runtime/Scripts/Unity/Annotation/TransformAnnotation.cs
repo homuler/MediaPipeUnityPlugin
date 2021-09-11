@@ -31,16 +31,10 @@ namespace Mediapipe.Unity {
       zArrow.SetVector(Vector3.Scale(z, scale));
     }
     
-    public void Draw(IList<float> rotation, IList<float> scale, Vector3 dimension) {
-      var scaleX = isMirrored ? -scale[0] : scale[0];
-      xArrow.direction = Mathf.Sign(scaleX) * new Vector3(isMirrored ? -rotation[0] : rotation[0], rotation[3], rotation[6]);
-      xArrow.magnitude = Mathf.Abs(scaleX * dimension.x);
-
-      yArrow.direction = Mathf.Sign(scale[1]) * new Vector3(isMirrored ? -rotation[1] : rotation[1], rotation[4], rotation[7]);
-      yArrow.magnitude = Mathf.Abs(scale[1] * dimension.y);
-
-      zArrow.direction = Mathf.Sign(scale[2]) * new Vector3(isMirrored ? -rotation[2] : rotation[2], rotation[5], rotation[8]);
-      zArrow.magnitude = Mathf.Abs(scale[2] * dimension.z);
+    public void Draw(IList<float> rotation, IList<float> scale, Vector3 dimension, bool visualizeZ = true) {
+      DrawArrow(xArrow, isMirrored ? -scale[0] : scale[0], rotation[0], rotation[3], rotation[6], dimension.x, visualizeZ);
+      DrawArrow(yArrow, scale[1], rotation[1], rotation[4], rotation[7], dimension.y, visualizeZ);
+      DrawArrow(zArrow, scale[2], rotation[2], rotation[5], rotation[8], dimension.z, visualizeZ);
     }
 
     Vector3 GetScaleVector() {
@@ -48,6 +42,16 @@ namespace Mediapipe.Unity {
         return new Vector3(-1, 1, 1);
       }
       return Vector3.one;
+    }
+
+    void DrawArrow(Arrow arrow, float scale, float rotationX, float rotationY, float rotationZ, float length, bool visualizeZ) {
+      arrow.direction = Mathf.Sign(scale) * new Vector3(isMirrored ? -rotationX : rotationX, rotationY, visualizeZ ? rotationZ : 0);
+
+      var magnitude = Mathf.Abs(scale * length);
+      if (visualizeZ) {
+        magnitude *= Mathf.Sqrt(rotationX * rotationX + rotationY * rotationY) / Mathf.Sqrt(rotationX * rotationX + rotationY * rotationY + rotationZ * rotationZ);
+      }
+      arrow.magnitude = magnitude;
     }
   }
 }

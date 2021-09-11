@@ -7,6 +7,7 @@ namespace Mediapipe.Unity {
     [SerializeField] Color lineColor = Color.red;
     [SerializeField, Range(0, 1)] float lineWidth = 1.0f;
     [SerializeField] float arrowCapScale = 2.0f;
+    [SerializeField] float arrowLengthScale = 1.0f;
     [SerializeField, Range(0, 1)] float arrowWidth = 1.0f;
 
     void OnValidate() {
@@ -37,19 +38,24 @@ namespace Mediapipe.Unity {
       ApplyArrowCapScale(arrowCapScale);
     }
 
+    public void SetArrowLengthScale(float arrowLengthScale) {
+      this.arrowLengthScale = arrowLengthScale;
+      ApplyArrowLengthScale(arrowLengthScale);
+    }
+
     public void SetArrowWidth(float arrowWidth) {
       this.arrowWidth = arrowWidth;
       ApplyArrowWidth(arrowWidth);
     }
 
-    public void Draw(IList<ObjectAnnotation> targets, Vector2 focalLength, Vector2 principalPoint, float zScale, bool visualizeZ = true) {
+    public void Draw(IList<ObjectAnnotation> targets, Vector2 focalLength, Vector2 principalPoint, float scale, bool visualizeZ = true) {
       if (ActivateFor(targets)) {
-        CallActionForAll(targets, (annotation, target) => { annotation?.Draw(target, focalLength, principalPoint, zScale, visualizeZ); });
+        CallActionForAll(targets, (annotation, target) => { annotation?.Draw(target, focalLength, principalPoint, scale, visualizeZ); });
       }
     }
 
-    public void Draw(FrameAnnotation target, Vector2 focalLength, Vector2 principalPoint, float zScale, bool visualizeZ = true) {
-      Draw(target?.Annotations, focalLength, principalPoint, zScale, visualizeZ);
+    public void Draw(FrameAnnotation target, Vector2 focalLength, Vector2 principalPoint, float scale, bool visualizeZ = true) {
+      Draw(target?.Annotations, focalLength, principalPoint, scale, visualizeZ);
     }
 
     protected override CuboidAnnotation InstantiateChild(bool isActive = true) {
@@ -58,6 +64,7 @@ namespace Mediapipe.Unity {
       annotation.SetLineColor(lineColor);
       annotation.SetLineWidth(lineWidth);
       annotation.SetArrowCapScale(arrowCapScale);
+      annotation.SetArrowLengthScale(arrowLengthScale);
       annotation.SetArrowWidth(arrowWidth);
       return annotation;
     }
@@ -83,6 +90,12 @@ namespace Mediapipe.Unity {
     void ApplyArrowCapScale(float arrowCapScale) {
       foreach (var cuboid in children) {
         cuboid?.SetArrowCapScale(arrowCapScale);
+      }
+    }
+
+    void ApplyArrowLengthScale(float arrowLengthScale) {
+      foreach (var cuboid in children) {
+        cuboid?.SetArrowLengthScale(arrowLengthScale);
       }
     }
 

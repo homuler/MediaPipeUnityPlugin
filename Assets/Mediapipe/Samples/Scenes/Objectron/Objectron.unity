@@ -668,6 +668,11 @@ PrefabInstance:
       propertyPath: arrowCapScale
       value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 6393730721216785986, guid: ad07199e23982e78c9dad255e1176177,
+        type: 3}
+      propertyPath: arrowLengthScale
+      value: 400
+      objectReference: {fileID: 0}
     - target: {fileID: 6458122111144983605, guid: ad07199e23982e78c9dad255e1176177,
         type: 3}
       propertyPath: m_RootOrder
