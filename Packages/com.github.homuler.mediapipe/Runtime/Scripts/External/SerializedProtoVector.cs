@@ -21,7 +21,7 @@ namespace Mediapipe {
         SerializedProto* protoPtr = (SerializedProto*)data;
 
         for (var i = 0; i < size; i++) {
-          var serializedProto = Marshal.PtrToStructure<SerializedProto>((IntPtr)protoPtr);
+          var serializedProto = Marshal.PtrToStructure<SerializedProto>((IntPtr)protoPtr++);
           protos.Add(serializedProto.Deserialize<T>(parser));
         }
       }

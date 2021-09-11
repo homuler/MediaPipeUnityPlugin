@@ -19,7 +19,7 @@ namespace Mediapipe {
         Anchor3d* anchorPtr = (Anchor3d*)data;
 
         for (var i = 0; i < size; i++) {
-          anchors.Add(Marshal.PtrToStructure<Anchor3d>((IntPtr)anchorPtr));
+          anchors.Add(Marshal.PtrToStructure<Anchor3d>((IntPtr)anchorPtr++));
         }
       }
 
