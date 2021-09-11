@@ -23,8 +23,6 @@
 
 # Images coming into and out of the graph.
 input_stream: "input_video"
-input_stream: "WIDTH:input_width"
-input_stream: "HEIGHT:input_height"
 input_side_packet: "LABELS_CSV:allowed_labels"
 input_side_packet: "MAX_NUM_OBJECTS:max_num_objects"
 
@@ -67,23 +65,9 @@ node: {
   output_stream: "IMAGE_GPU:transformed_input_video"
 }
 
-# Crops the image from the center to the size WIDTHxHEIGHT.
-node: {
-  calculator: "ImageCroppingCalculator"
-  input_stream: "IMAGE_GPU:transformed_input_video"
-  output_stream: "IMAGE_GPU:throttled_input_video_3x4"
-  input_stream: "WIDTH:input_width"
-  input_stream: "HEIGHT:input_height"
-  node_options: {
-    [type.googleapis.com/mediapipe.ImageCroppingCalculatorOptions] {
-      border_mode: BORDER_REPLICATE
-    }
-  }
-}
-
 node {
   calculator: "ObjectronGpuSubgraph"
-  input_stream: "IMAGE_GPU:throttled_input_video_3x4"
+  input_stream: "IMAGE_GPU:transformed_input_video"
   input_side_packet: "LABELS_CSV:allowed_labels"
   input_side_packet: "MAX_NUM_OBJECTS:max_num_objects"
   output_stream: "FRAME_ANNOTATION:lifted_objects"

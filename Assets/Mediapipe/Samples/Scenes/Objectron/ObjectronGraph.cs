@@ -15,12 +15,6 @@ namespace Mediapipe.Unity.Objectron {
 
     public Category category;
     public int maxNumObjects = 5;
-    int inputWidth = 0;
-    int inputHeight = 0;
-
-    public Vector2 inputDimension {
-      get { return new Vector2(inputWidth, inputHeight); }
-    }
 
     public Vector2 focalLength {
       get {
@@ -40,8 +34,6 @@ namespace Mediapipe.Unity.Objectron {
     public UnityEvent<List<NormalizedLandmarkList>> OnMultiBoxLandmarksOutput = new UnityEvent<List<NormalizedLandmarkList>>();
 
     const string inputStreamName = "input_video";
-    const string inputWidthStreamName = "input_width";
-    const string inputHeightStreamName = "input_height";
 
     const string liftedObjectsStreamName = "lifted_objects";
     OutputStreamPoller<FrameAnnotation> liftedObjectsStreamPoller;
@@ -59,8 +51,6 @@ namespace Mediapipe.Unity.Objectron {
     protected long prevMultiBoxLandmarksMicrosec = 0;
 
     public override Status StartRun(ImageSource imageSource) {
-      ResetInputWidthAndHeight(imageSource);
-
       liftedObjectsStreamPoller = calculatorGraph.AddOutputStreamPoller<FrameAnnotation>(liftedObjectsStreamName, true).Value();
       liftedObjectsPacket = new FrameAnnotationPacket();
 
@@ -74,8 +64,6 @@ namespace Mediapipe.Unity.Objectron {
     }
 
     public Status StartRunAsync(ImageSource imageSource) {
-      ResetInputWidthAndHeight(imageSource);
-
       calculatorGraph.ObserveOutputStream(liftedObjectsStreamName, LiftedObjectsCallback, true).AssertOk();
       calculatorGraph.ObserveOutputStream(multiBoxRectsStreamName, MultiBoxRectsCallback, true).AssertOk();
       calculatorGraph.ObserveOutputStream(multiBoxLandmarksStreamName, MultiBoxLandmarksCallback, true).AssertOk();
@@ -91,14 +79,7 @@ namespace Mediapipe.Unity.Objectron {
     }
 
     public Status AddTextureFrameToInputStream(TextureFrame textureFrame) {
-      var status = AddTextureFrameToInputStream(inputStreamName, textureFrame);
-
-      if (!status.ok) {
-        return status;
-      }
-
-      AddPacketToInputStream(inputWidthStreamName, new IntPacket(inputWidth, currentTimestamp)).AssertOk();
-      return AddPacketToInputStream(inputHeightStreamName, new IntPacket(inputHeight, currentTimestamp));
+      return AddTextureFrameToInputStream(inputStreamName, textureFrame);
     }
 
     public ObjectronValue FetchNextValue() {
@@ -174,27 +155,6 @@ namespace Mediapipe.Unity.Objectron {
       AssetLoader.PrepareAsset("object_detection_ssd_mobilenetv2_oidv4_fp16.bytes");
       AssetLoader.PrepareAsset("object_detection_oidv4_labelmap.txt");
       AssetLoader.PrepareAsset(GetModelAssetName(category), "object_detection_3d.bytes", true);
-    }
-
-    void ResetInputWidthAndHeight(ImageSource imageSource) {
-      var origWidth = imageSource.textureWidth;
-      var origHeight = imageSource.textureHeight;
-
-      // MediaPipe will crop the input image so that the aspect ratio is 4:3.
-      if (4 * origHeight > 3 * origWidth) {
-        // aspect ratio > 3 / 4 = height is too big
-        inputWidth = origWidth;
-        inputHeight = (int)(3.0f * inputWidth / 4.0f);
-      } else if (4 * inputHeight < 3 * inputWidth) {
-        // aspect ratio < 3 / 4 = width is too big
-        inputWidth = (int)(4.0f * inputHeight / 3.0f);
-        inputHeight = origHeight;
-      } else {
-        inputWidth = origWidth;
-        inputHeight = origHeight;
-      }
-
-      Logger.LogVerbose($"Input image will be cropped from the center to the size {inputWidth}x{inputHeight}");
     }
 
     SidePacket BuildSidePacket(ImageSource imageSource) {

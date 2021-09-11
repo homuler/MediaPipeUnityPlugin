@@ -94,7 +94,6 @@ namespace Mediapipe.Unity.Objectron {
 
       liftedObjectsAnnotationController.focalLength = graphRunner.focalLength;
       liftedObjectsAnnotationController.principalPoint = graphRunner.principalPoint;
-      liftedObjectsAnnotationController.dimension = graphRunner.inputDimension;
       liftedObjectsAnnotationController.isMirrored = imageSource.isMirrored;
 
       multiBoxRectsAnnotationController.isMirrored = imageSource.isMirrored;
