@@ -92,78 +92,46 @@ namespace Mediapipe.Unity.PoseTracking {
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr PoseDetectionCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
-        }
-        using (var packet = new DetectionPacket(packetPtr, false)) {
-          var poseTrackingGraph = (PoseTrackingGraph)graphRunner;
+      return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) => {
+        using (var packet = new DetectionPacket(ptr, false)) {
           if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevPoseDetectionMicrosec, out var value)) {
             poseTrackingGraph.OnPoseDetectionOutput.Invoke(value);
           }
         }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr PoseLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
-        }
-        using (var packet = new NormalizedLandmarkListPacket(packetPtr, false)) {
-          var poseTrackingGraph = (PoseTrackingGraph)graphRunner;
+      return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) => {
+        using (var packet = new NormalizedLandmarkListPacket(ptr, false)) {
           if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevPoseLandmarksMicrosec, out var value)) {
             poseTrackingGraph.OnPoseLandmarksOutput.Invoke(value);
           }
         }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr PoseWorldLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
-        }
-        using (var packet = new LandmarkListPacket(packetPtr, false)) {
-          var poseTrackingGraph = (PoseTrackingGraph)graphRunner;
+      return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) => {
+        using (var packet = new LandmarkListPacket(ptr, false)) {
           if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevPoseWorldLandmarksMicrosec, out var value)) {
             poseTrackingGraph.OnPoseWorldLandmarksOutput.Invoke(value);
           }
         }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr RoiFromLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
-        }
-        using (var packet = new NormalizedRectPacket(packetPtr, false)) {
-          var poseTrackingGraph = (PoseTrackingGraph)graphRunner;
+      return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) => {
+        using (var packet = new NormalizedRectPacket(ptr, false)) {
           if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevRoiFromLandmarksMicrosec, out var value)) {
             poseTrackingGraph.OnRoiFromLandmarksOutput.Invoke(value);
           }
         }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     protected override void PrepareDependentAssets() {

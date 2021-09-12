@@ -11,6 +11,7 @@ namespace Mediapipe.Unity.BoxTracking {
     const string trackedDetectionsStreamName = "tracked_detections";
     OutputStreamPoller<List<Detection>> trackedDetectionsStreamPoller;
     DetectionVectorPacket trackedDetectionsPacket;
+    protected long prevTrackedDetectionsMicrosec = 0;
 
     public override Status StartRun(ImageSource imageSource) {
       trackedDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<Detection>>(trackedDetectionsStreamName, true).Value();
@@ -41,19 +42,13 @@ namespace Mediapipe.Unity.BoxTracking {
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr TrackedDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
+      return InvokeIfGraphRunnerFound<BoxTrackingGraph>(graphPtr, packetPtr, (boxTrackingGraph, ptr) => {
+        using (var packet = new DetectionVectorPacket(ptr, false)) {
+          if (boxTrackingGraph.TryGetPacketValue(packet, ref boxTrackingGraph.prevTrackedDetectionsMicrosec, out var value)) {
+            boxTrackingGraph.OnTrackedDetectionsOutput.Invoke(value);
+          }
         }
-        using (var packet = new DetectionVectorPacket(packetPtr, false)) {
-          var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as BoxTrackingGraph).OnTrackedDetectionsOutput.Invoke(value);
-        }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     protected override void PrepareDependentAssets() {

@@ -16,9 +16,15 @@ namespace Mediapipe.Unity.HandTracking {
     Coroutine coroutine;
 
     public RunningMode runningMode;
+
     public int maxNumHands {
       get { return graphRunner.maxNumHands; }
       set { graphRunner.maxNumHands = value; }
+    }
+
+    public long timeoutMillisec {
+      get { return graphRunner.timeoutMillisec; }
+      set { graphRunner.SetTimeoutMillisec(value); }
     }
 
     public override void Play() {

@@ -176,6 +176,20 @@ namespace Mediapipe.Unity {
       return false;
     }
 
+    protected static Status InvokeIfGraphRunnerFound<T>(IntPtr graphPtr, IntPtr packetPtr, Action<T, IntPtr> action) where T : GraphRunner {
+      try {
+        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
+        if (!isFound) {
+          return Status.FailedPrecondition("Graph runner is not found");
+        }
+        var graph = (T)graphRunner;
+        action(graph, packetPtr);
+        return Status.Ok();
+      } catch (Exception e) {
+        return Status.FailedPrecondition(e.ToString());
+      }
+    }
+
     protected bool TryGetPacketValue<T>(Packet<T> packet, ref long prevMicrosec, out T value) where T : class {
       long currentMicrosec = 0;
       using (var timestamp = packet.Timestamp()) {

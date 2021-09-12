@@ -15,9 +15,15 @@ namespace Mediapipe.Unity.FaceMesh {
     Coroutine coroutine;
 
     public RunningMode runningMode;
+
     public int maxNumFaces {
       get { return graphRunner.maxNumFaces; }
       set { graphRunner.maxNumFaces = value; }
+    }
+
+    public long timeoutMillisec {
+      get { return graphRunner.timeoutMillisec; }
+      set { graphRunner.SetTimeoutMillisec(value); }
     }
 
     public override void Play() {

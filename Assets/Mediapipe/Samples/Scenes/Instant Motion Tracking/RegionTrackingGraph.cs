@@ -70,21 +70,13 @@ namespace Mediapipe.Unity.InstantMotionTracking {
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr TrackedAnchorDataCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
-        }
-        using (var packet = new Anchor3dVectorPacket(packetPtr, false)) {
-          var instantMotionTrackingGraph = (RegionTrackingGraph)graphRunner;
-          if (instantMotionTrackingGraph.TryGetPacketValue(packet, ref instantMotionTrackingGraph.prevTrackedAnchorDataMicrosec, out var value)) {
-            instantMotionTrackingGraph.OnTrackedAnchorDataOutput.Invoke(value);
+      return InvokeIfGraphRunnerFound<RegionTrackingGraph>(graphPtr, packetPtr, (regionTrackingGraph, ptr) => {
+        using (var packet = new Anchor3dVectorPacket(ptr, false)) {
+          if (regionTrackingGraph.TryGetPacketValue(packet, ref regionTrackingGraph.prevTrackedAnchorDataMicrosec, out var value)) {
+            regionTrackingGraph.OnTrackedAnchorDataOutput.Invoke(value);
           }
         }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     protected override void PrepareDependentAssets() {

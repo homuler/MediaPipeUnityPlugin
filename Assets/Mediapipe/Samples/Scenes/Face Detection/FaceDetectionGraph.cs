@@ -12,9 +12,11 @@ namespace Mediapipe.Unity.FaceDetection {
     public UnityEvent<List<Detection>> OnFaceDetectionsOutput = new UnityEvent<List<Detection>>();
 
     const string inputStreamName = "input_video";
+
     const string faceDetectionsStreamName = "face_detections";
     OutputStreamPoller<List<Detection>> faceDetectionsStreamPoller;
     DetectionVectorPacket faceDetectionsPacket;
+    protected long prevFaceDetectionsMicrosec = 0;
 
     public override Status StartRun(ImageSource imageSource) {
       faceDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<Detection>>(faceDetectionsStreamName, true).Value();
@@ -45,19 +47,13 @@ namespace Mediapipe.Unity.FaceDetection {
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr FaceDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
+      return InvokeIfGraphRunnerFound<FaceDetectionGraph>(graphPtr, packetPtr, (faceDetectionGraph, ptr) => {
+        using (var packet = new DetectionVectorPacket(ptr, false)) {
+          if (faceDetectionGraph.TryGetPacketValue(packet, ref faceDetectionGraph.prevFaceDetectionsMicrosec, out var value)) {
+            faceDetectionGraph.OnFaceDetectionsOutput.Invoke(value);
+          }
         }
-        using (var packet = new DetectionVectorPacket(packetPtr, false)) {
-          var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as FaceDetectionGraph).OnFaceDetectionsOutput.Invoke(value);
-        }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     protected override void PrepareDependentAssets() {

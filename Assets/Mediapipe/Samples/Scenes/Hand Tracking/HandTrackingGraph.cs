@@ -99,97 +99,57 @@ namespace Mediapipe.Unity.HandTracking {
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr PalmDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
-        }
-        using (var packet = new DetectionVectorPacket(packetPtr, false)) {
-          var handTrackingGraph = (HandTrackingGraph)graphRunner;
+      return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) => {
+        using (var packet = new DetectionVectorPacket(ptr, false)) {
           if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevPalmDetectionMicrosec, out var value)) {
             handTrackingGraph.OnPalmDetectectionsOutput.Invoke(value);
           }
         }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr HandRectsFromPalmDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
-        }
-        using (var packet = new NormalizedRectVectorPacket(packetPtr, false)) {
-          var handTrackingGraph = (HandTrackingGraph)graphRunner;
+      return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) => {
+        using (var packet = new NormalizedRectVectorPacket(ptr, false)) {
           if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandRectsFromPalmDetectionsMicrosec, out var value)) {
             handTrackingGraph.OnHandRectsFromPalmDetectionsOutput.Invoke(value);
           }
         }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr HandLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
-        }
-        using (var packet = new NormalizedLandmarkListVectorPacket(packetPtr, false)) {
-          var handTrackingGraph = (HandTrackingGraph)graphRunner;
+      return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) => {
+        using (var packet = new NormalizedLandmarkListVectorPacket(ptr, false)) {
           if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandLandmarksMicrosec, out var value)) {
             handTrackingGraph.OnHandLandmarksOutput.Invoke(value);
           }
         }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr HandRectsFromLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
-        }
-        using (var packet = new NormalizedRectVectorPacket(packetPtr, false)) {
-          var handTrackingGraph = (HandTrackingGraph)graphRunner;
+      return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) => {
+        using (var packet = new NormalizedRectVectorPacket(ptr, false)) {
           if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandRectsFromLandmarksMicrosec, out var value)) {
             handTrackingGraph.OnHandRectsFromLandmarksOutput.Invoke(value);
           }
         }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr HandednessCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
-        }
-        using (var packet = new ClassificationListVectorPacket(packetPtr, false)) {
-          var handTrackingGraph = (HandTrackingGraph)graphRunner;
+      return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) => {
+        using (var packet = new ClassificationListVectorPacket(ptr, false)) {
           if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandednessMicrosec, out var value)) {
             handTrackingGraph.OnHandednessOutput.Invoke(value);
           }
         }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     protected override void PrepareDependentAssets() {

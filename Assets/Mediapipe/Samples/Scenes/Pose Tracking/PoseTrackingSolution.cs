@@ -15,6 +15,7 @@ namespace Mediapipe.Unity.PoseTracking {
     Coroutine coroutine;
 
     public RunningMode runningMode;
+
     public PoseTrackingGraph.ModelComplexity modelComplexity {
       get { return graphRunner.modelComplexity; }
       set { graphRunner.modelComplexity = value; }
@@ -23,6 +24,11 @@ namespace Mediapipe.Unity.PoseTracking {
     public bool smoothLandmarks {
       get { return graphRunner.smoothLandmarks; }
       set { graphRunner.smoothLandmarks = value; }
+    }
+
+    public long timeoutMillisec {
+      get { return graphRunner.timeoutMillisec; }
+      set { graphRunner.SetTimeoutMillisec(value); }
     }
 
     public override void Play() {

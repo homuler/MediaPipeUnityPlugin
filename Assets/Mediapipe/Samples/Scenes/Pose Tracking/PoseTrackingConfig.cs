@@ -9,11 +9,13 @@ namespace Mediapipe.Unity.PoseTracking.UI {
     const string _ModelComplexityPath = "Scroll View/Viewport/Contents/Model Complexity/Dropdown";
     const string _SmoothLandmarksPath = "Scroll View/Viewport/Contents/Smooth Landmarks/Toggle";
     const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
+    const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
 
     PoseTrackingSolution solution;
     Dropdown ModelComplexityInput;
     Toggle SmoothLandmarksInput;
     Dropdown RunningModeInput;
+    InputField TimeoutMillisecInput;
 
     bool isChanged;
 
@@ -41,10 +43,18 @@ namespace Mediapipe.Unity.PoseTracking.UI {
       isChanged = true;
     }
 
+    public void SetTimeoutMillisec() {
+      if (int.TryParse(TimeoutMillisecInput.text, out var value)) {
+        solution.timeoutMillisec = value;
+        isChanged = true;
+      }
+    }
+
     void InitializeContents() {
       InitializeModelComplexity();
       InitializeSmoothLandmarksInput();
       InitializeRunningMode();
+      InitializeTimeoutMillisec();
     }
 
     void InitializeModelComplexity() {
@@ -85,6 +95,12 @@ namespace Mediapipe.Unity.PoseTracking.UI {
       }
 
       RunningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
+    }
+
+    void InitializeTimeoutMillisec() {
+      TimeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
+      TimeoutMillisecInput.text = solution.timeoutMillisec.ToString();
+      TimeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });
     }
   }
 }

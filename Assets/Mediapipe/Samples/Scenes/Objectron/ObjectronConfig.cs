@@ -8,14 +8,14 @@ namespace Mediapipe.Unity.Objectron.UI {
   public class ObjectronConfig : ModalContents {
     const string _CategoryPath = "Scroll View/Viewport/Contents/Category/Dropdown";
     const string _MaxNumObjectsPath = "Scroll View/Viewport/Contents/Max Num Objects/InputField";
-    const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
     const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
+    const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
 
     ObjectronSolution solution;
     Dropdown CategoryInput;
     InputField MaxNumObjectsInput;
-    InputField TimeoutMillisecInput;
     Dropdown RunningModeInput;
+    InputField TimeoutMillisecInput;
 
     bool isChanged;
 
@@ -55,8 +55,8 @@ namespace Mediapipe.Unity.Objectron.UI {
     void InitializeContents() {
       InitializeCategory();
       InitializeRunningMode();
-      InitializeTimeoutMillisecInput();
       InitializeMaxNumObjects();
+      InitializeTimeoutMillisec();
     }
 
     void InitializeCategory() {
@@ -82,12 +82,6 @@ namespace Mediapipe.Unity.Objectron.UI {
       MaxNumObjectsInput.onEndEdit.AddListener(delegate { UpdateMaxNumObjects(); });
     }
 
-    void InitializeTimeoutMillisecInput() {
-      TimeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
-      TimeoutMillisecInput.text = solution.timeoutMillisec.ToString();
-      TimeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });
-    }
-
     void InitializeRunningMode() {
       RunningModeInput = gameObject.transform.Find(_RunningModePath).gameObject.GetComponent<Dropdown>();
       RunningModeInput.ClearOptions();
@@ -103,6 +97,12 @@ namespace Mediapipe.Unity.Objectron.UI {
       }
 
       RunningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
+    }
+
+    void InitializeTimeoutMillisec() {
+      TimeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
+      TimeoutMillisecInput.text = solution.timeoutMillisec.ToString();
+      TimeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });
     }
   }
 }

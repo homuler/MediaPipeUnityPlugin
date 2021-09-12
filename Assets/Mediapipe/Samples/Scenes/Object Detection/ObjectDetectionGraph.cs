@@ -42,21 +42,13 @@ namespace Mediapipe.Unity.ObjectDetection {
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr OutputDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
-        }
-        using (var packet = new DetectionVectorPacket(packetPtr, false)) {
-          var objectDetectionGraph = (ObjectDetectionGraph)graphRunner;
+      return InvokeIfGraphRunnerFound<ObjectDetectionGraph>(graphPtr, packetPtr, (objectDetectionGraph, ptr) => {
+        using (var packet = new DetectionVectorPacket(ptr, false)) {
           if (objectDetectionGraph.TryGetPacketValue(packet, ref objectDetectionGraph.prevOutputDetectionsMicrosec, out var value)) {
             objectDetectionGraph.OnOutputDetectionsOutput.Invoke(value);
           }
         }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     protected override void PrepareDependentAssets() {

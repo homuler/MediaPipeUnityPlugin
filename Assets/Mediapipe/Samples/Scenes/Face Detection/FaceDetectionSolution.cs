@@ -13,9 +13,15 @@ namespace Mediapipe.Unity.FaceDetection {
     Coroutine coroutine;
 
     public RunningMode runningMode;
+
     public FaceDetectionGraph.ModelType modelType {
       get { return graphRunner.modelType; }
       set { graphRunner.modelType = value; }
+    }
+
+    public long timeoutMillisec {
+      get { return graphRunner.timeoutMillisec; }
+      set { graphRunner.SetTimeoutMillisec(value); }
     }
 
     public override void Play() {

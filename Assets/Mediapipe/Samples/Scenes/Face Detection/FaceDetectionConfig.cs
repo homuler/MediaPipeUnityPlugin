@@ -8,10 +8,12 @@ namespace Mediapipe.Unity.FaceDetection.UI {
   public class FaceDetectionConfig : ModalContents {
     const string _ModelSelectionPath = "Scroll View/Viewport/Contents/Model Selection/Dropdown";
     const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
+    const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
 
     FaceDetectionSolution solution;
     Dropdown ModelSelectionInput;
     Dropdown RunningModeInput;
+    InputField TimeoutMillisecInput;
 
     bool isChanged;
 
@@ -34,9 +36,17 @@ namespace Mediapipe.Unity.FaceDetection.UI {
       isChanged = true;
     }
 
+    public void SetTimeoutMillisec() {
+      if (int.TryParse(TimeoutMillisecInput.text, out var value)) {
+        solution.timeoutMillisec = value;
+        isChanged = true;
+      }
+    }
+
     void InitializeContents() {
       InitializeModelSelection();
       InitializeRunningMode();
+      InitializeTimeoutMillisec();
     }
 
     void InitializeModelSelection() {
@@ -71,6 +81,12 @@ namespace Mediapipe.Unity.FaceDetection.UI {
       }
 
       RunningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
+    }
+
+    void InitializeTimeoutMillisec() {
+      TimeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
+      TimeoutMillisecInput.text = solution.timeoutMillisec.ToString();
+      TimeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });
     }
   }
 }

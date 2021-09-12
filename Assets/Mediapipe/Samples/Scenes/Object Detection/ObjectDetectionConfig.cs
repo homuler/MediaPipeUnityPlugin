@@ -7,9 +7,11 @@ using Mediapipe.Unity.UI;
 namespace Mediapipe.Unity.ObjectDetection.UI {
   public class ObjectDetectionConfig : ModalContents {
     const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
+    const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
 
     ObjectDetectionSolution solution;
     Dropdown RunningModeInput;
+    InputField TimeoutMillisecInput;
 
     bool isChanged;
 
@@ -27,8 +29,16 @@ namespace Mediapipe.Unity.ObjectDetection.UI {
       isChanged = true;
     }
 
+    public void SetTimeoutMillisec() {
+      if (int.TryParse(TimeoutMillisecInput.text, out var value)) {
+        solution.timeoutMillisec = value;
+        isChanged = true;
+      }
+    }
+
     void InitializeContents() {
       InitializeRunningMode();
+      InitializeTimeoutMillisec();
     }
 
     void InitializeRunningMode() {
@@ -46,6 +56,12 @@ namespace Mediapipe.Unity.ObjectDetection.UI {
       }
 
       RunningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
+    }
+
+    void InitializeTimeoutMillisec() {
+      TimeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
+      TimeoutMillisecInput.text = solution.timeoutMillisec.ToString();
+      TimeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });
     }
   }
 }

@@ -41,21 +41,13 @@ namespace Mediapipe.Unity.HairSegmentation {
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr HairMaskCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
-        }
-        using (var packet = new ImageFramePacket(packetPtr, false)) {
-          var hairSegmentationGraph = (HairSegmentationGraph)graphRunner;
+      return InvokeIfGraphRunnerFound<HairSegmentationGraph>(graphPtr, packetPtr, (hairSegmentationGraph, ptr) => {
+        using (var packet = new ImageFramePacket(ptr, false)) {
           if (hairSegmentationGraph.TryGetPacketValue(packet, ref hairSegmentationGraph.prevHairMaskMicrosec, out var value)) {
             hairSegmentationGraph.OnHairMaskOutput.Invoke(value);
           }
         }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     protected override void PrepareDependentAssets() {

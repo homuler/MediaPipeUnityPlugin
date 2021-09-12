@@ -13,14 +13,17 @@ namespace Mediapipe.Unity.IrisTracking {
     const string faceDetectionsStreamName = "face_detections";
     OutputStreamPoller<List<Detection>> faceDetectionsStreamPoller;
     DetectionVectorPacket faceDetectionsPacket;
+    protected long prevFaceDetectionsMicrosec = 0;
 
     const string faceRectStreamName = "face_rect";
     OutputStreamPoller<NormalizedRect> faceRectStreamPoller;
     NormalizedRectPacket faceRectPacket;
+    protected long prevFaceRectMicrosec = 0;
 
     const string faceLandmarksWithIrisStreamName = "face_landmarks_with_iris";
     OutputStreamPoller<NormalizedLandmarkList> faceLandmarksWithIrisStreamPoller;
     NormalizedLandmarkListPacket faceLandmarksWithIrisPacket;
+    protected long prevFaceLandmarksWithIrisMicrosec = 0;
 
     public override Status StartRun(ImageSource imageSource) {
       faceDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<Detection>>(faceDetectionsStreamName, true).Value();
@@ -68,53 +71,35 @@ namespace Mediapipe.Unity.IrisTracking {
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr FaceDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
+      return InvokeIfGraphRunnerFound<IrisTrackingGraph>(graphPtr, packetPtr, (irisTrackingGraph, ptr) => {
+        using (var packet = new DetectionVectorPacket(ptr, false)) {
+          if (irisTrackingGraph.TryGetPacketValue(packet, ref irisTrackingGraph.prevFaceDetectionsMicrosec, out var value)) {
+            irisTrackingGraph.OnFaceDetectionsOutput.Invoke(value);
+          }
         }
-        using (var packet = new DetectionVectorPacket(packetPtr, false)) {
-          var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as IrisTrackingGraph).OnFaceDetectionsOutput.Invoke(value);
-        }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr FaceRectCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
+      return InvokeIfGraphRunnerFound<IrisTrackingGraph>(graphPtr, packetPtr, (irisTrackingGraph, ptr) => {
+        using (var packet = new NormalizedRectPacket(ptr, false)) {
+          if (irisTrackingGraph.TryGetPacketValue(packet, ref irisTrackingGraph.prevFaceRectMicrosec, out var value)) {
+            irisTrackingGraph.OnFaceRectOutput.Invoke(value);
+          }
         }
-        using (var packet = new NormalizedRectPacket(packetPtr, false)) {
-          var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as IrisTrackingGraph).OnFaceRectOutput.Invoke(value);
-        }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr FaceLandmarksWithIrisCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
+      return InvokeIfGraphRunnerFound<IrisTrackingGraph>(graphPtr, packetPtr, (irisTrackingGraph, ptr) => {
+        using (var packet = new NormalizedLandmarkListPacket(ptr, false)) {
+          if (irisTrackingGraph.TryGetPacketValue(packet, ref irisTrackingGraph.prevFaceLandmarksWithIrisMicrosec, out var value)) {
+            irisTrackingGraph.OnFaceLandmarksWithIrisOutput.Invoke(value);
+          }
         }
-        using (var packet = new NormalizedLandmarkListPacket(packetPtr, false)) {
-          var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as IrisTrackingGraph).OnFaceLandmarksWithIrisOutput.Invoke(value);
-        }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     protected override void PrepareDependentAssets() {

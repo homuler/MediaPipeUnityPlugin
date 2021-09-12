@@ -96,59 +96,35 @@ namespace Mediapipe.Unity.Objectron {
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr LiftedObjectsCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
-        }
-        using (var packet = new FrameAnnotationPacket(packetPtr, false)) {
-          var objectDetectionGraph = (ObjectronGraph)graphRunner;
-          if (objectDetectionGraph.TryGetPacketValue(packet, ref objectDetectionGraph.prevLiftedObjectsMicrosec, out var value)) {
-            objectDetectionGraph.OnLiftedObjectsOutput.Invoke(value);
+      return InvokeIfGraphRunnerFound<ObjectronGraph>(graphPtr, packetPtr, (objectronGraph, ptr) => {
+        using (var packet = new FrameAnnotationPacket(ptr, false)) {
+          if (objectronGraph.TryGetPacketValue(packet, ref objectronGraph.prevLiftedObjectsMicrosec, out var value)) {
+            objectronGraph.OnLiftedObjectsOutput.Invoke(value);
           }
         }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr MultiBoxRectsCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
-        }
-        using (var packet = new NormalizedRectVectorPacket(packetPtr, false)) {
-          var objectDetectionGraph = (ObjectronGraph)graphRunner;
-          if (objectDetectionGraph.TryGetPacketValue(packet, ref objectDetectionGraph.prevMultiBoxRectsMicrosec, out var value)) {
-            objectDetectionGraph.OnMultiBoxRectsOutput.Invoke(value);
+      return InvokeIfGraphRunnerFound<ObjectronGraph>(graphPtr, packetPtr, (objectronGraph, ptr) => {
+        using (var packet = new NormalizedRectVectorPacket(ptr, false)) {
+          if (objectronGraph.TryGetPacketValue(packet, ref objectronGraph.prevMultiBoxRectsMicrosec, out var value)) {
+            objectronGraph.OnMultiBoxRectsOutput.Invoke(value);
           }
         }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr MultiBoxLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
-        }
-        using (var packet = new NormalizedLandmarkListVectorPacket(packetPtr, false)) {
-          var objectDetectionGraph = (ObjectronGraph)graphRunner;
-          if (objectDetectionGraph.TryGetPacketValue(packet, ref objectDetectionGraph.prevMultiBoxLandmarksMicrosec, out var value)) {
-            objectDetectionGraph.OnMultiBoxLandmarksOutput.Invoke(value);
+      return InvokeIfGraphRunnerFound<ObjectronGraph>(graphPtr, packetPtr, (objectronGraph, ptr) => {
+        using (var packet = new NormalizedLandmarkListVectorPacket(ptr, false)) {
+          if (objectronGraph.TryGetPacketValue(packet, ref objectronGraph.prevMultiBoxLandmarksMicrosec, out var value)) {
+            objectronGraph.OnMultiBoxLandmarksOutput.Invoke(value);
           }
         }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     protected override void PrepareDependentAssets() {

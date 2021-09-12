@@ -14,6 +14,11 @@ namespace Mediapipe.Unity.BoxTracking {
 
     public RunningMode runningMode;
 
+    public long timeoutMillisec {
+      get { return graphRunner.timeoutMillisec; }
+      set { graphRunner.SetTimeoutMillisec(value); }
+    }
+
     public override void Play() {
       if (coroutine != null) {
         Stop();

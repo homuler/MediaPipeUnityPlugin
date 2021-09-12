@@ -6,12 +6,12 @@ using Mediapipe.Unity.UI;
 
 namespace Mediapipe.Unity.InstantMotionTracking.UI {
   public class InstantMotionTrackingConfig : ModalContents {
-    const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
     const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
+    const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
 
     InstantMotionTrackingSolution solution;
-    InputField TimeoutMillisecInput;
     Dropdown RunningModeInput;
+    InputField TimeoutMillisecInput;
 
     bool isChanged;
 
@@ -37,14 +37,8 @@ namespace Mediapipe.Unity.InstantMotionTracking.UI {
     }
 
     void InitializeContents() {
-      InitializeTimeoutMillisecInput();
+      InitializeTimeoutMillisec();
       InitializeRunningMode();
-    }
-
-    void InitializeTimeoutMillisecInput() {
-      TimeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
-      TimeoutMillisecInput.text = solution.timeoutMillisec.ToString();
-      TimeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });
     }
 
     void InitializeRunningMode() {
@@ -62,6 +56,12 @@ namespace Mediapipe.Unity.InstantMotionTracking.UI {
       }
 
       RunningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
+    }
+
+    void InitializeTimeoutMillisec() {
+      TimeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
+      TimeoutMillisecInput.text = solution.timeoutMillisec.ToString();
+      TimeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });
     }
   }
 }

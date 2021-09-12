@@ -14,14 +14,17 @@ namespace Mediapipe.Unity.FaceMesh {
     const string faceDetectionsStreamName = "face_detections";
     OutputStreamPoller<List<Detection>> faceDetectionsStreamPoller;
     DetectionVectorPacket faceDetectionsPacket;
+    protected long prevFaceDetectionsMicrosec = 0;
 
     const string multiFaceLandmarksStreamName = "multi_face_landmarks";
     OutputStreamPoller<List<NormalizedLandmarkList>> multiFaceLandmarksStreamPoller;
     NormalizedLandmarkListVectorPacket multiFaceLandmarksPacket;
+    protected long prevMultiFaceLandmarksMicrosec = 0;
 
     const string faceRectsFromLandmarksStreamName = "face_rects_from_landmarks";
     OutputStreamPoller<List<NormalizedRect>> faceRectsFromLandmarksStreamPoller;
     NormalizedRectVectorPacket faceRectsFromLandmarksPacket;
+    protected long prevFaceRectsFromLandmarksMicrosec = 0;
 
     public override Status StartRun(ImageSource imageSource) {
       faceDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<Detection>>(faceDetectionsStreamName, true).Value();
@@ -69,53 +72,35 @@ namespace Mediapipe.Unity.FaceMesh {
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr FaceDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
+      return InvokeIfGraphRunnerFound<FaceMeshGraph>(graphPtr, packetPtr, (faceMeshGraph, ptr) => {
+        using (var packet = new DetectionVectorPacket(ptr, false)) {
+          if (faceMeshGraph.TryGetPacketValue(packet, ref faceMeshGraph.prevFaceDetectionsMicrosec, out var value)) {
+            faceMeshGraph.OnFaceDetectionsOutput.Invoke(value);
+          }
         }
-        using (var packet = new DetectionVectorPacket(packetPtr, false)) {
-          var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as FaceMeshGraph).OnFaceDetectionsOutput.Invoke(value);
-        }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr MultiFaceLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
+      return InvokeIfGraphRunnerFound<FaceMeshGraph>(graphPtr, packetPtr, (faceMeshGraph, ptr) => {
+        using (var packet = new NormalizedLandmarkListVectorPacket(ptr, false)) {
+          if (faceMeshGraph.TryGetPacketValue(packet, ref faceMeshGraph.prevMultiFaceLandmarksMicrosec, out var value)) {
+            faceMeshGraph.OnMultiFaceLandmarksOutput.Invoke(value);
+          }
         }
-        using (var packet = new NormalizedLandmarkListVectorPacket(packetPtr, false)) {
-          var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as FaceMeshGraph).OnMultiFaceLandmarksOutput.Invoke(value);
-        }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     static IntPtr FaceRectsFromLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      try {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
-          return Status.FailedPrecondition("Graph runner is not found").mpPtr;
+      return InvokeIfGraphRunnerFound<FaceMeshGraph>(graphPtr, packetPtr, (faceMeshGraph, ptr) => {
+        using (var packet = new NormalizedRectVectorPacket(ptr, false)) {
+          if (faceMeshGraph.TryGetPacketValue(packet, ref faceMeshGraph.prevFaceRectsFromLandmarksMicrosec, out var value)) {
+            faceMeshGraph.OnFaceRectsFromLandmarksOutput.Invoke(value);
+          }
         }
-        using (var packet = new NormalizedRectVectorPacket(packetPtr, false)) {
-          var value = packet.IsEmpty() ? null : packet.Get();
-          (graphRunner as FaceMeshGraph).OnFaceRectsFromLandmarksOutput.Invoke(value);
-        }
-        return Status.Ok().mpPtr;
-      } catch (Exception e) {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
-      }
+      }).mpPtr;
     }
 
     protected override void PrepareDependentAssets() {
