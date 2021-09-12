@@ -144,8 +144,6 @@ pkg_zip(
 pkg_asset(
     name = "mediapipe_assets",
     srcs = [
-        "//mediapipe_api/graphs/instant_motion_tracking:assets",
-        "//mediapipe_api/graphs/object_detection_3d:assets",
         "@com_google_mediapipe//mediapipe/models:hair_segmentation.tflite",
         "@com_google_mediapipe//mediapipe/models:ssdlite_object_detection.tflite",
         "@com_google_mediapipe//mediapipe/models:ssdlite_object_detection_labelmap.txt",

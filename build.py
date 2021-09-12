@@ -301,6 +301,8 @@ class UninstallCommand(Command):
     self.protobuf = command_args.args.protobuf
 
   def run(self):
+    self._rmtree(_BUILD_PATH)
+
     if self.desktop:
       self.console.info('Uninstalling native libraries for Desktop...')
       for f in glob.glob(os.path.join(_INSTALL_PATH, 'Plugins', '*'), recursive=True):
