@@ -98,6 +98,7 @@ namespace Mediapipe.Unity {
         cone.localScale = Vector3.zero;
         cone.localPosition = Vector3.zero;
       } else {
+        ApplyCapScale(capScale);
         cone.localPosition = (cone.localScale.y + magnitude) * direction; // pivot is at the center of cone
       }
     }

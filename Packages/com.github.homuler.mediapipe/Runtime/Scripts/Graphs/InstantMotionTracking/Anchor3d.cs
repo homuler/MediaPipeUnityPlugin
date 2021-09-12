@@ -9,7 +9,7 @@ namespace Mediapipe {
     public int StickerId;
 
     public override string ToString() {
-      return $"Anchor = ({X}, {Y}, {Z}), StickerId = {StickerId}";
+      return $"({X}, {Y}, {Z}), #{StickerId}";
     }
   }
 }

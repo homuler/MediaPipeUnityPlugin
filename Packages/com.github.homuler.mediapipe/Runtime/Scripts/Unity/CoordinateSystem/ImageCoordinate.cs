@@ -4,7 +4,7 @@ using mplt = global::Mediapipe.LocationData.Types;
 
 namespace Mediapipe.Unity.CoordinateSystem {
   /// <summary>
-  ///   This class provides helper methods for converting from image coordinate values to local coordinate values in Unity.
+  ///   This class provides helper methods for converting from image coordinate values to local coordinate values in Unity, and vice versa.
   /// </summary>
   public static class ImageCoordinate {
     /// <summary>
@@ -337,6 +337,13 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
     public static Vector3[] GetRectVertices(this RectTransform rectTransform, NormalizedRect normalizedRect, bool isMirrored = false) {
       return GetRotatedRectVerticesNormalized(rectTransform, normalizedRect.XCenter, normalizedRect.YCenter, normalizedRect.Width, normalizedRect.Height, normalizedRect.Rotation, isMirrored);
+    }
+
+    public static Vector2 GetNormalizedPosition(this RectTransform rectTransform, Vector2 localPosition, bool isMirrored = false) {
+      var rect = rectTransform.rect;
+      var normalizedX = isMirrored ? Mathf.InverseLerp(rect.width / 2, -rect.width / 2, localPosition.x) : Mathf.InverseLerp(-rect.width / 2, rect.width / 2, localPosition.x);
+      var normalizedY = Mathf.InverseLerp(rect.height / 2, -rect.height / 2, localPosition.y);
+      return new Vector2(normalizedX, normalizedY);
     }
   }
 }

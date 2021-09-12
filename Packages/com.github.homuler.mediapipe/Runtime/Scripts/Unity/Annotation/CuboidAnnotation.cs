@@ -75,8 +75,9 @@ namespace Mediapipe.Unity {
         lineListAnnotation.Redraw();
 
         var rect = GetAnnotationLayer().rect;
+        var scale = arrowLengthScale * new Vector3(target.Scale[0], target.Scale[1], -target.Scale[2]); // right-handed to left-handed
         transformAnnotation.origin = pointListAnnotation[0].transform.localPosition;
-        transformAnnotation.Draw(target.Rotation, target.Scale, arrowLengthScale * Vector3.one, visualizeZ);
+        transformAnnotation.Draw(target.Rotation, scale, visualizeZ);
       }
     }
   }

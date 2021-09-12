@@ -61,10 +61,11 @@ namespace Mediapipe.Unity.InstantMotionTracking {
     }
 
     public void ResetAnchor(float normalizedX = 0.5f, float normalizedY = 0.5f) {
-      currentStickerSentinelId++;
+      anchors[0].StickerId = ++currentStickerSentinelId;
       isTracking = false;
       anchors[0].X = normalizedX;
-      anchors[0].Y = 1.0f - normalizedY;
+      anchors[0].Y = normalizedY;
+      Logger.LogInfo(TAG, $"New anchor = {anchors[0]}");
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]

@@ -1,3 +1,4 @@
+using Mediapipe.Unity.CoordinateSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,11 +7,16 @@ using UnityEngine.UI;
 namespace Mediapipe.Unity.InstantMotionTracking {
   public class InstantMotionTrackingSolution : Solution {
     [SerializeField] RawImage screen;
-    // [SerializeField] Anchor3dAnnotationController annotationController;
+    [SerializeField] Anchor3dAnnotationController trackedAnchorDataAnnotationController;
     [SerializeField] RegionTrackingGraph graphRunner;
     [SerializeField] TextureFramePool textureFramePool;
 
     Coroutine coroutine;
+
+    public long timeoutMillisec {
+      get { return graphRunner.timeoutMillisec; }
+      set { graphRunner.SetTimeoutMillisec(value); }
+    }
 
     public RunningMode runningMode;
 
@@ -38,6 +44,20 @@ namespace Mediapipe.Unity.InstantMotionTracking {
       StopCoroutine(coroutine);
       ImageSourceProvider.imageSource.Stop();
       graphRunner.Stop();
+    }
+
+    void Update() {
+      if (Input.GetMouseButtonDown(0)) {
+        var rectTransform = screen.GetComponent<RectTransform>();
+
+        if (RectTransformUtility.RectangleContainsScreenPoint(rectTransform, Input.mousePosition, Camera.main)) {
+          if (RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, Camera.main, out var localPoint)) {
+            var normalizedPoint = rectTransform.GetNormalizedPosition(localPoint, ImageSourceProvider.imageSource.isMirrored);
+            graphRunner.ResetAnchor(normalizedPoint.x, normalizedPoint.y);
+            trackedAnchorDataAnnotationController.ResetAnchor();
+          }
+        }
+      }
     }
 
     IEnumerator Run() {
@@ -71,7 +91,7 @@ namespace Mediapipe.Unity.InstantMotionTracking {
         textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
       }
 
-      // annotationController.isMirrored = imageSource.isMirrored;
+      trackedAnchorDataAnnotationController.isMirrored = imageSource.isMirrored;
 
       while (true) {
         yield return new WaitWhile(() => isPaused);
@@ -102,6 +122,7 @@ namespace Mediapipe.Unity.InstantMotionTracking {
         if (runningMode == RunningMode.Sync) {
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = graphRunner.FetchNextValue();
+          trackedAnchorDataAnnotationController.DrawNow(value);
         }
 
         yield return new WaitForEndOfFrame();
@@ -109,7 +130,7 @@ namespace Mediapipe.Unity.InstantMotionTracking {
     }
 
     void OnTrackedAnchorDataOutput(List<Anchor3d> trackedAnchorData) {
-      // annotationController.DrawLater(trackedAnchorData);
+      trackedAnchorDataAnnotationController.DrawLater(trackedAnchorData);
     }
   }
 }
