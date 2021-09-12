@@ -78,10 +78,11 @@ namespace Mediapipe.Unity {
     }
 
     public void SetHandedness(Hand handedness) {
+      // MediaPipe assumes that the input image is vertically flipped.
       if (handedness == Hand.Left) {
-        landmarkList.SetColor(leftLandmarkColor);
+        landmarkList.SetColor(isMirrored ? leftLandmarkColor : rightLandmarkColor);
       } else if (handedness == Hand.Right) {
-        landmarkList.SetColor(rightLandmarkColor);
+        landmarkList.SetColor(isMirrored ? rightLandmarkColor : leftLandmarkColor);
       }
     }
 

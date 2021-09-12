@@ -8,10 +8,12 @@ namespace Mediapipe.Unity.UI {
     const string _SourceTypePath = "Scroll View/Viewport/Contents/SourceType/Dropdown";
     const string _SourcePath = "Scroll View/Viewport/Contents/Source/Dropdown";
     const string _ResolutionPath = "Scroll View/Viewport/Contents/Resolution/Dropdown";
+    const string _IsMirroredPath = "Scroll View/Viewport/Contents/IsMirrored/Toggle";
 
     Dropdown SourceTypeInput;
     Dropdown SourceInput;
     Dropdown ResolutionInput;
+    Toggle IsMirroredInput;
 
     bool isChanged;
 
@@ -27,6 +29,7 @@ namespace Mediapipe.Unity.UI {
       InitializeSourceType();
       InitializeSource();
       InitializeResolution();
+      InitializeIsMirrored();
     }
 
     void InitializeSourceType() {
@@ -105,6 +108,17 @@ namespace Mediapipe.Unity.UI {
 
       ResolutionInput.onValueChanged.AddListener(delegate {
         imageSource.SelectResolution(ResolutionInput.value);
+        isChanged = true;
+      });
+    }
+
+    void InitializeIsMirrored() {
+      IsMirroredInput = gameObject.transform.Find(_IsMirroredPath).gameObject.GetComponent<Toggle>();
+
+      var imageSource = ImageSourceProvider.imageSource;
+      IsMirroredInput.isOn = imageSource.isMirrored;
+      IsMirroredInput.onValueChanged.AddListener(delegate {
+        imageSource.isMirrored = IsMirroredInput.isOn;
         isChanged = true;
       });
     }

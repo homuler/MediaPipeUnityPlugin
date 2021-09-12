@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Copied from mediapipe/graphs/object_detection_3d/object_occlusion_tracking.pbtxt
+# Copied from mediapipe/graphs/instant_motion_tracking/instant_motion_tracking.pbtxt
 #
 # CHANGES:
 #   - Remove GIF related inputs
@@ -34,16 +34,12 @@ node: {
   output_stream: "input_video_gpu"
 }
 
-# Flip vertically because the input image is aligned from bottom-left to top-right.
 node: {
   calculator: "ImageTransformationCalculator"
   input_stream: "IMAGE_GPU:input_video_gpu"
+  input_side_packet: "ROTATION_DEGREES:input_rotation"
+  input_side_packet: "FLIP_VERTICALLY:input_vertically_flipped"
   output_stream: "IMAGE_GPU:transformed_input_video"
-  node_options: {
-    [type.googleapis.com/mediapipe.ImageTransformationCalculatorOptions] {
-      flip_vertically: true
-    }
-  }
 }
 
 # Uses box tracking in order to create 'anchors' for associated 3d stickers.

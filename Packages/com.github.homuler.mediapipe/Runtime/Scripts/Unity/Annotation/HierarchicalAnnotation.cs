@@ -58,7 +58,9 @@ namespace Mediapipe.Unity {
     public virtual bool isMirrored { get; set; }
 
     protected S InstantiateChild<S>(GameObject prefab) where S : HierarchicalAnnotation {
-      return Instantiate(prefab, transform).GetComponent<S>();
+      var annotation =  Instantiate(prefab, transform).GetComponent<S>();
+      annotation.isMirrored = isMirrored;
+      return annotation;
     }
 
     protected S InstantiateChild<S>(string name = "Game Object") where S : HierarchicalAnnotation {
