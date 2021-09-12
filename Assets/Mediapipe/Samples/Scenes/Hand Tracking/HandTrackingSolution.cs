@@ -89,10 +89,11 @@ namespace Mediapipe.Unity.HandTracking {
         textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
       }
 
-      palmDetectionsAnnotationController.isMirrored = imageSource.isMirrored;
-      handRectsFromPalmDetectionsAnnotationController.isMirrored = imageSource.isMirrored;
-      handLandmarksAnnotationController.isMirrored = imageSource.isMirrored;
-      handRectsFromLandmarksAnnotationController.isMirrored = imageSource.isMirrored;
+      // The input image is flipped if it's **not** mirrored
+      palmDetectionsAnnotationController.isMirrored = !imageSource.isMirrored;
+      handRectsFromPalmDetectionsAnnotationController.isMirrored = !imageSource.isMirrored;
+      handLandmarksAnnotationController.isMirrored = !imageSource.isMirrored;
+      handRectsFromLandmarksAnnotationController.isMirrored = !imageSource.isMirrored;
 
       while (true) {
         yield return new WaitWhile(() => isPaused);
