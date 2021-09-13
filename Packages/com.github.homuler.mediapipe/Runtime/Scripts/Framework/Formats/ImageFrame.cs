@@ -135,7 +135,9 @@ namespace Mediapipe {
     }
 
     public Color32[] GetPixels32(bool flipVertically, Color32[] colors) {
-      switch (Format()) {
+      var format = Format();
+
+      switch (format) {
         case ImageFormat.Format.SRGB: {
           ReadSRGBByteArray(MutablePixelData(), Width(), Height(), WidthStep(), flipVertically, ref colors);
           return colors;
@@ -145,7 +147,7 @@ namespace Mediapipe {
           return colors;
         }
         default: {
-          throw new NotImplementedException("Currently only SRGB and SRGBA format are supported");
+          throw new NotImplementedException($"Currently only SRGB and SRGBA format are supported: {format}");
         }
       }
     }
@@ -166,7 +168,9 @@ namespace Mediapipe {
     ///   The array to which the output data will be written.
     /// </param>
     public byte[] GetChannel(int channelNumber, bool flipVertically, byte[] colors) {
-      switch (Format()) {
+      var format = Format();
+
+      switch (format) {
         case ImageFormat.Format.SRGB: {
           if (channelNumber < 0 || channelNumber > 3) {
             throw new ArgumentException($"There are only 3 channels, but No. {channelNumber} is specified");
@@ -182,7 +186,7 @@ namespace Mediapipe {
           return colors;
         }
         default: {
-          throw new NotImplementedException("Currently only SRGB and SRGBA format are supported");
+          throw new NotImplementedException($"Currently only SRGB and SRGBA format are supported: {format}");
         }
       }
     }

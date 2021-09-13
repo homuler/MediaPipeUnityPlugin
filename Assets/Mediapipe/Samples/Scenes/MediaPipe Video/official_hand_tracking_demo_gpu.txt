@@ -12,23 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This file is OfficialDemoAndroid's config file (Copied from mediapipe/graphs/hand_tracking/hand_tracking_mobile.pbtxt).
+# Copied from mediapipe/graphs/hand_tracking/hand_tracking_mobile.pbtxt
 #
 # CHANGES:
-#  - Add ImageTransformationCalculator and flips the input
-#  - Add GlScalerCalculator and flips the output
+#   - `input_video` is ImageFrame (ImageFrameToGpuBufferCalculator converts it into GpuBuffer)
+#   - Add ImageTransformationCalculator and flips the input
+#   - Add GlScalerCalculator and flips the output
+#   - `output_video` is ImageFrame
 
 # MediaPipe graph that performs multi-hand tracking with TensorFlow Lite on GPU.
 # Used in the examples in
 # mediapipe/examples/android/src/java/com/mediapipe/apps/handtrackinggpu.
 
-# GPU image. (GpuBuffer)
+# Input image. (ImageFrame)
 input_stream: "input_video"
 
 # Max number of hands to detect/process. (int)
 input_side_packet: "num_hands"
 
-# GPU image. (GpuBuffer)
+# Output image. (ImageFrame)
 output_stream: "output_video"
 # Collection of detected/predicted hands, each represented as a list of
 # landmarks. (std::vector<NormalizedLandmarkList>)
@@ -55,16 +57,18 @@ node {
   output_stream: "throttled_input_video"
 }
 
-# Flip vertically because the input image is aligned from bottom-left to top-right.
+node: {
+  calculator: "ImageFrameToGpuBufferCalculator"
+  input_stream: "throttled_input_video"
+  output_stream: "throttled_input_video_gpu"
+}
+
 node: {
   calculator: "ImageTransformationCalculator"
-  input_stream: "IMAGE_GPU:throttled_input_video"
+  input_stream: "IMAGE_GPU:throttled_input_video_gpu"
+  input_side_packet: "ROTATION_DEGREES:input_rotation"
+  input_side_packet: "FLIP_VERTICALLY:input_vertically_flipped"
   output_stream: "IMAGE_GPU:transformed_input_video"
-  node_options: {
-    [type.googleapis.com/mediapipe.ImageTransformationCalculatorOptions] {
-      flip_vertically: true
-    }
-  }
 }
 
 # Detects/tracks hand landmarks.
@@ -96,10 +100,16 @@ node {
 node: {
   calculator: "GlScalerCalculator"
   input_stream: "VIDEO:output_video_raw"
-  output_stream: "VIDEO:output_video"
+  output_stream: "VIDEO:output_video_gpu"
   node_options: {
     [type.googleapis.com/mediapipe.GlScalerCalculatorOptions] {
       flip_vertical: true
     }
   }
+}
+
+node: {
+  calculator: "GpuBufferToImageFrameCalculator"
+  input_stream: "output_video_gpu"
+  output_stream: "output_video"
 }

@@ -200,6 +200,10 @@ namespace Mediapipe.Unity {
       return new GpuBuffer(glTextureBuffer);
     }
 
+    public void RemoveAllReleaseListeners() {
+      OnRelease.RemoveAllListeners();
+    }
+
     // TODO: stop invoking OnRelease when it's already released
     public void Release(GlSyncPoint token = null) {
       if (glSyncToken != null) {

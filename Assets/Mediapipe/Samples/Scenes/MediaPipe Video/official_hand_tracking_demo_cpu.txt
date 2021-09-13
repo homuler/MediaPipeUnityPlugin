@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This file is OfficialDemoDesktopCPU's config file (Copied from mediapipe/graphs/hand_tracking/hand_tracking_desktop_live.pbtxt).
+# Copied from mediapipe/graphs/hand_tracking/hand_tracking_desktop_live.pbtxt
 #
 # CHANGES:
 #  - Add FlowLimiterCalculator
@@ -41,16 +41,12 @@ node {
   output_stream: "throttled_input_video"
 }
 
-# Flip vertically because the input image is aligned from bottom-left to top-right.
 node: {
   calculator: "ImageTransformationCalculator"
   input_stream: "IMAGE:throttled_input_video"
+  input_side_packet: "ROTATION_DEGREES:input_rotation"
+  input_side_packet: "FLIP_VERTICALLY:input_vertically_flipped"
   output_stream: "IMAGE:transformed_input_video"
-  node_options: {
-    [type.googleapis.com/mediapipe.ImageTransformationCalculatorOptions] {
-      flip_vertically: true
-    }
-  }
 }
 
 # Detects/tracks hand landmarks.
@@ -78,7 +74,7 @@ node {
   output_stream: "IMAGE:output_video_raw"
 }
 
-# Flip vertically because the input image is aligned from top-left to bottom-right.
+# Flip vertically because the output image is aligned from top-left to bottom-right.
 node: {
   calculator: "ImageTransformationCalculator"
   input_stream: "IMAGE:output_video_raw"

@@ -39,7 +39,7 @@ namespace Mediapipe.Unity.FaceDetection {
       return AddTextureFrameToInputStream(inputStreamName, textureFrame);
     }
 
-    public List<Detection> FetchNextDetections() {
+    public List<Detection> FetchNextValue() {
       var detections = FetchNextVector<Detection>(faceDetectionsStreamPoller, faceDetectionsPacket, faceDetectionsStreamName);
       OnFaceDetectionsOutput.Invoke(detections);
       return detections;

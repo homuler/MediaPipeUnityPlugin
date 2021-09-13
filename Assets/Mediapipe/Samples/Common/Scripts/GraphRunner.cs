@@ -190,6 +190,10 @@ namespace Mediapipe.Unity {
       }
     }
 
+    protected static Status InvokeIfGraphRunnerFound<T>(IntPtr graphPtr, Action<T> action) where T : GraphRunner {
+      return InvokeIfGraphRunnerFound<T>(graphPtr, IntPtr.Zero, (graph, ptr) => { action(graph); });
+    }
+
     protected bool TryGetPacketValue<T>(Packet<T> packet, ref long prevMicrosec, out T value) where T : class {
       long currentMicrosec = 0;
       using (var timestamp = packet.Timestamp()) {
@@ -206,6 +210,24 @@ namespace Mediapipe.Unity {
       return currentMicrosec - prevMicrosec > timeoutMicrosec;
     }
 
+    protected bool TryConsumePacketValue<T>(Packet<T> packet, ref long prevMicrosec, out T value) where T : class {
+      long currentMicrosec = 0;
+      using (var timestamp = packet.Timestamp()) {
+        currentMicrosec = timestamp.Microseconds();
+      }
+
+      if (!packet.IsEmpty()) {
+        prevMicrosec = currentMicrosec;
+        var statusOrValue = packet.Consume();
+
+        value = statusOrValue.ValueOr();
+        return true;
+      }
+
+      value = null;
+      return currentMicrosec - prevMicrosec > timeoutMicrosec;
+    }
+
     protected Timestamp GetCurrentTimestamp() {
       if (stopwatch == null || !stopwatch.IsRunning) {
         return Timestamp.Unset();
@@ -214,7 +236,7 @@ namespace Mediapipe.Unity {
       return new Timestamp(microseconds);
     }
 
-    protected virtual Status InitializeCalculatorGraph() {
+    protected Status InitializeCalculatorGraph() {
       calculatorGraph = new CalculatorGraph();
 
       // NOTE: There's a simpler way to initialize CalculatorGraph.
@@ -225,7 +247,7 @@ namespace Mediapipe.Unity {
       //   The problem is that if you call ObserveStreamOutput in this state, the program will crash.
       //   The following code is not very efficient, but it will return Non-OK status when an invalid configuration is given.
       try {
-        var calculatorGraphConfig = CalculatorGraphConfig.Parser.ParseFromTextFormat(config.text);
+        var calculatorGraphConfig = GetCalculatorGraphConfig();
         var status = calculatorGraph.Initialize(calculatorGraphConfig);
 
         if (!status.ok || inferenceMode == InferenceMode.CPU) {
@@ -236,6 +258,10 @@ namespace Mediapipe.Unity {
       } catch (Exception e) {
         return Status.FailedPrecondition(e.ToString());
       }
+    }
+
+    protected virtual CalculatorGraphConfig GetCalculatorGraphConfig() {
+      return CalculatorGraphConfig.Parser.ParseFromTextFormat(config.text);
     }
 
     protected virtual ConfigType DetectConfigType() {

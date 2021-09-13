@@ -1,23 +1,22 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mediapipe.Unity.FaceDetection {
-  public class FaceDetectionSolution : Solution {
+using Stopwatch = System.Diagnostics.Stopwatch;
+
+namespace Mediapipe.Unity.MediaPipeVideo {
+  public class MediaPipeVideoSolution : Solution {
     [SerializeField] RawImage screen;
-    [SerializeField] DetectionListAnnotationController faceDetectionsAnnotationController;
-    [SerializeField] FaceDetectionGraph graphRunner;
+    [SerializeField] MediaPipeVideoGraph graphRunner;
     [SerializeField] TextureFramePool textureFramePool;
+
+    Texture2D outputTexture;
+    static ImageFrame currentOutput;
+    Color32[] outputBuffer;
 
     Coroutine coroutine;
 
     public RunningMode runningMode;
-
-    public FaceDetectionGraph.ModelType modelType {
-      get { return graphRunner.modelType; }
-      set { graphRunner.modelType = value; }
-    }
 
     public long timeoutMillisec {
       get { return graphRunner.timeoutMillisec; }
@@ -50,6 +49,16 @@ namespace Mediapipe.Unity.FaceDetection {
       graphRunner.Stop();
     }
 
+    void Update() {
+      if (currentOutput != null) {
+        var outputVideo = currentOutput;
+        currentOutput = null;
+
+        DrawNow(outputVideo);
+        outputVideo.Dispose();
+      }
+    }
+
     IEnumerator Run() {
       var imageSource = ImageSourceProvider.imageSource;
 
@@ -61,17 +70,8 @@ namespace Mediapipe.Unity.FaceDetection {
       }
 
       screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
-      screen.texture = imageSource.GetCurrentTexture();
 
-      Logger.LogInfo(TAG, $"Model Selection = {modelType}");
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
-
-      if (runningMode == RunningMode.Async) {
-        graphRunner.OnFaceDetectionsOutput.AddListener(OnFaceDetectionsOutput);
-        graphRunner.StartRunAsync(imageSource).AssertOk();
-      } else {
-        graphRunner.StartRun(imageSource).AssertOk();
-      }
 
       // Decide which TextureFormat to use
       if (graphRunner.configType == GraphRunner.ConfigType.OpenGLES) {
@@ -82,7 +82,29 @@ namespace Mediapipe.Unity.FaceDetection {
         textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
       }
 
-      faceDetectionsAnnotationController.isMirrored = imageSource.isMirrored;
+      // Setup output texture
+      if (graphRunner.configType == GraphRunner.ConfigType.OpenGLES) {
+        var textureFrameRequest = textureFramePool.WaitForNextTextureFrame();
+        yield return textureFrameRequest;
+        var outputTexture = textureFrameRequest.result;
+
+        // Exclude from TextureFramePool
+        outputTexture.RemoveAllReleaseListeners();
+        graphRunner.SetupOutputPacket(outputTexture);
+
+        screen.texture = Texture2D.CreateExternalTexture(outputTexture.width, outputTexture.height, outputTexture.format, false, false, outputTexture.GetNativeTexturePtr());
+      } else {
+        outputTexture = new Texture2D(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32, false);
+        screen.texture = outputTexture;
+        outputBuffer = new Color32[imageSource.textureWidth * imageSource.textureHeight];
+      }
+
+      if (runningMode == RunningMode.Async) {
+        graphRunner.OnOutput.AddListener(OnOutput);
+        graphRunner.StartRunAsync(imageSource).AssertOk();
+      } else {
+        graphRunner.StartRun(imageSource).AssertOk();
+      }
 
       while (true) {
         yield return new WaitWhile(() => isPaused);
@@ -110,18 +132,25 @@ namespace Mediapipe.Unity.FaceDetection {
 
         graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 
-        if (runningMode == RunningMode.Sync) {
+        if (runningMode == RunningMode.Sync && graphRunner.configType != GraphRunner.ConfigType.OpenGLES) {
           // When running synchronously, wait for the outputs here (blocks the main thread).
-          var detections = graphRunner.FetchNextValue();
-          faceDetectionsAnnotationController.DrawNow(detections);
+          var output = graphRunner.FetchNextValue();
+          DrawNow(output);
         }
 
         yield return new WaitForEndOfFrame();
       }
     }
 
-    void OnFaceDetectionsOutput(List<Detection> detections) {
-      faceDetectionsAnnotationController.DrawLater(detections);
+    void OnOutput(ImageFrame outputVideo) {
+      if (outputVideo != null) {
+        currentOutput = outputVideo;
+      }
+    }
+
+    void DrawNow(ImageFrame imageFrame) {
+      outputTexture.LoadRawTextureData(imageFrame.MutablePixelData(), imageFrame.PixelDataSize());
+      outputTexture.Apply();
     }
   }
 }

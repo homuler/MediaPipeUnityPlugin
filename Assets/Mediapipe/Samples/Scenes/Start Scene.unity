@@ -218,8 +218,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04085488e5fac35599866a2a6fceeda3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  availableSources:
-  - {fileID: 32900000, guid: 06dce48d59ab796a99c679bb57f7043d, type: 3}
+  availableSources: []
 --- !u!114 &805128652
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -232,8 +231,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd7955705ab46c72b9124bb116a2dca9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  availableSources:
-  - {fileID: 2800000, guid: bb8a18664b5c98a13b0632f6ecd57c97, type: 3}
+  availableSources: []
   defaultAvailableResolutions:
   - width: 512
     height: 512
