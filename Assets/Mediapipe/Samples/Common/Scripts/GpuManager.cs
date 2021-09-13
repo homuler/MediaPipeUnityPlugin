@@ -55,14 +55,19 @@ namespace Mediapipe.Unity {
         }
 #endif
 
-        Logger.LogInfo(TAG, "Initializing GpuResources...");
-        gpuResources = GpuResources.Create(currentContext).Value();
+        try {
+          Logger.LogInfo(TAG, "Initializing GpuResources...");
+          gpuResources = GpuResources.Create(currentContext).Value();
 
-        Logger.LogInfo(TAG, "Initializing GlCalculatorHelper...");
-        glCalculatorHelper = new GlCalculatorHelper();
-        glCalculatorHelper.InitializeForTest(gpuResources);
+          Logger.LogInfo(TAG, "Initializing GlCalculatorHelper...");
+          glCalculatorHelper = new GlCalculatorHelper();
+          glCalculatorHelper.InitializeForTest(gpuResources);
 
-        isInitialized = true;
+          isInitialized = true;
+        } catch (Exception e) {
+          Logger.LogException(e);
+          Logger.LogError(TAG, "Failed to create GpuResources. If your native library is built for CPU, change 'Preferable Inference Mode' to CPU from the Inspector Window for Bootstrap");
+        }
       }
     }
 
