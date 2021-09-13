@@ -426,7 +426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 470c5e55b9634a48c9a40eeef44abcb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cpuConfig: {fileID: 0}
+  cpuConfig: {fileID: 4900000, guid: 550bacf12a6b307ec8cbd497f86ca52c, type: 3}
   gpuConfig: {fileID: 4900000, guid: 79fb55876d4e129ce8f354101b6443a7, type: 3}
   openGlEsConfig: {fileID: 4900000, guid: 767e84fac01a9896cbe5c11402995c99, type: 3}
   _timeoutMicrosec: 0

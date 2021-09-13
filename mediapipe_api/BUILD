@@ -88,6 +88,7 @@ cc_library(
         "@com_google_mediapipe//mediapipe/calculators/image:image_transformation_calculator",
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [
+            "//mediapipe_api/graphs/instant_motion_tracking/subgraphs:region_tracking_cpu",
             "//mediapipe_api/modules/iris_landmark:iris_landmarks_from_face_landmarks_cpu",
             "@com_google_mediapipe//mediapipe/graphs/face_detection:desktop_live_calculators",
             "@com_google_mediapipe//mediapipe/graphs/face_detection:face_detection_full_range_desktop_live_deps",
