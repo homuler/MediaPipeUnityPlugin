@@ -15,6 +15,7 @@ namespace Mediapipe.Unity {
       ApplyLineColor(lineColor);
       ApplyLineWidth(lineWidth);
       ApplyArrowCapScale(arrowCapScale);
+      ApplyArrowLengthScale(arrowLengthScale);
       ApplyArrowWidth(arrowWidth);
     }
 
