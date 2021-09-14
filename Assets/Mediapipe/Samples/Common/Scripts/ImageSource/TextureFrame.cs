@@ -42,9 +42,10 @@ namespace Mediapipe.Unity {
     }
 
     readonly Guid instanceId;
-    public int width { get { return texture.width; } }
-    public int height { get { return texture.height; } }
-    public TextureFormat format { get { return texture.format; } }
+    // NOTE: width and height can be accessed from a thread other than Main Thread.
+    public readonly int width;
+    public readonly int height;
+    public readonly TextureFormat format;
 
     ImageFormat.Format _format = ImageFormat.Format.UNKNOWN;
     public ImageFormat.Format imageFormat {
@@ -68,6 +69,9 @@ namespace Mediapipe.Unity {
 
     TextureFrame(Texture2D texture) {
       this.texture = texture;
+      this.width = texture.width;
+      this.height = texture.height;
+      this.format = texture.format;
       this.OnRelease = new ReleaseEvent();
       instanceId = Guid.NewGuid();
       RegisterInstance(this);
