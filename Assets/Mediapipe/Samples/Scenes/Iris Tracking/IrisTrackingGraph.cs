@@ -102,10 +102,12 @@ namespace Mediapipe.Unity.IrisTracking {
       }).mpPtr;
     }
 
-    protected override void PrepareDependentAssets() {
-      AssetLoader.PrepareAsset("face_detection_short_range.bytes");
-      AssetLoader.PrepareAsset("face_landmark.bytes");
-      AssetLoader.PrepareAsset("iris_landmark.bytes");
+    protected override IList<WaitForResult> RequestDependentAssets() {
+      return new List<WaitForResult> {
+        WaitForAsset("face_detection_short_range.bytes"),
+        WaitForAsset("face_landmark.bytes"),
+        WaitForAsset("iris_landmark.bytes"),
+      };
     }
 
     SidePacket BuildSidePacket(ImageSource imageSource) {

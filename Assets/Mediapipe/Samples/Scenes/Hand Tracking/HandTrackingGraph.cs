@@ -152,11 +152,13 @@ namespace Mediapipe.Unity.HandTracking {
       }).mpPtr;
     }
 
-    protected override void PrepareDependentAssets() {
-      AssetLoader.PrepareAsset("hand_landmark.bytes");
-      AssetLoader.PrepareAsset("hand_recrop.bytes");
-      AssetLoader.PrepareAsset("handedness.txt");
-      AssetLoader.PrepareAsset("palm_detection.bytes");
+    protected override IList<WaitForResult> RequestDependentAssets() {
+      return new List<WaitForResult> {
+        WaitForAsset("hand_landmark.bytes"),
+        WaitForAsset("hand_recrop.bytes"),
+        WaitForAsset("handedness.txt"),
+        WaitForAsset("palm_detection.bytes"),
+      };
     }
 
     SidePacket BuildSidePacket(ImageSource imageSource) {

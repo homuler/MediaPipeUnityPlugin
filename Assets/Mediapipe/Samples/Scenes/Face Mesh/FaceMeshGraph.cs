@@ -103,9 +103,11 @@ namespace Mediapipe.Unity.FaceMesh {
       }).mpPtr;
     }
 
-    protected override void PrepareDependentAssets() {
-      AssetLoader.PrepareAsset("face_detection_short_range.bytes");
-      AssetLoader.PrepareAsset("face_landmark.bytes");
+    protected override IList<WaitForResult> RequestDependentAssets() {
+      return new List<WaitForResult> {
+        WaitForAsset("face_detection_short_range.bytes"),
+        WaitForAsset("face_landmark.bytes"),
+      };
     }
 
     SidePacket BuildSidePacket(ImageSource imageSource) {

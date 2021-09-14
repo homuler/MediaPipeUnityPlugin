@@ -165,11 +165,7 @@ namespace Mediapipe.Unity {
         throw new InvalidOperationException("Not permitted to access cameras");
       }
 
-      if (webCamDevice is WebCamDevice valueOfWebCamDevice) {
-        webCamTexture = new WebCamTexture(valueOfWebCamDevice.name, (int)resolution.width, (int)resolution.height, (int)resolution.frameRate);
-      } else {
-        throw new InvalidOperationException("WebCamDevice is not selected");
-      }
+      InitializeWebCamTexture();
       webCamTexture.Play();
       yield return WaitForWebCamTexture();
     }
@@ -212,6 +208,7 @@ namespace Mediapipe.Unity {
     }
 
     void InitializeWebCamTexture() {
+      Stop();
       if (webCamDevice is WebCamDevice valueOfWebCamDevice) {
         webCamTexture = new WebCamTexture(valueOfWebCamDevice.name, (int)resolution.width, (int)resolution.height, (int)resolution.frameRate);
         return;

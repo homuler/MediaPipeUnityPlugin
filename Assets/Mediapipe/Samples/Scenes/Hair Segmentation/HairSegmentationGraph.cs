@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine.Events;
 
 namespace Mediapipe.Unity.HairSegmentation {
@@ -50,8 +51,10 @@ namespace Mediapipe.Unity.HairSegmentation {
       }).mpPtr;
     }
 
-    protected override void PrepareDependentAssets() {
-      AssetLoader.PrepareAsset("hair_segmentation.bytes");
+    protected override IList<WaitForResult> RequestDependentAssets() {
+      return new List<WaitForResult> {
+        WaitForAsset("hair_segmentation.bytes"),
+      };
     }
 
     SidePacket BuildSidePacket(ImageSource imageSource) {

@@ -32,7 +32,6 @@ namespace Mediapipe.Unity.HandTracking {
         Stop();
       }
       base.Play();
-      graphRunner.Initialize().AssertOk();
       coroutine = StartCoroutine(Run());
     }
 
@@ -54,6 +53,7 @@ namespace Mediapipe.Unity.HandTracking {
     }
 
     IEnumerator Run() {
+      var graphInitRequest = graphRunner.WaitForInit();
       var imageSource = ImageSourceProvider.imageSource;
 
       yield return imageSource.Play();
@@ -68,6 +68,12 @@ namespace Mediapipe.Unity.HandTracking {
 
       Logger.LogInfo(TAG, $"Max Num Hands = {maxNumHands}");
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
+
+      yield return graphInitRequest;
+      if (graphInitRequest.isError) {
+        Logger.LogError(TAG, graphInitRequest.error);
+        yield break;
+      }
 
       if (runningMode == RunningMode.Async) {
         graphRunner.OnPalmDetectectionsOutput.AddListener(OnPalmDetectectionsOutput);

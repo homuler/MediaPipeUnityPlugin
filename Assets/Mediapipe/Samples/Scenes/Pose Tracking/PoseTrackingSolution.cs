@@ -36,7 +36,6 @@ namespace Mediapipe.Unity.PoseTracking {
         Stop();
       }
       base.Play();
-      graphRunner.Initialize().AssertOk();
       coroutine = StartCoroutine(Run());
     }
 
@@ -58,6 +57,7 @@ namespace Mediapipe.Unity.PoseTracking {
     }
 
     IEnumerator Run() {
+      var graphInitRequest = graphRunner.WaitForInit();
       var imageSource = ImageSourceProvider.imageSource;
 
       yield return imageSource.Play();
@@ -73,6 +73,12 @@ namespace Mediapipe.Unity.PoseTracking {
       Logger.LogInfo(TAG, $"Model Complexity = {modelComplexity}");
       Logger.LogInfo(TAG, $"Smooth Landmarks = {smoothLandmarks}");
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
+
+      yield return graphInitRequest;
+      if (graphInitRequest.isError) {
+        Logger.LogError(TAG, graphInitRequest.error);
+        yield break;
+      }
 
       if (runningMode == RunningMode.Async) {
         graphRunner.OnPoseDetectionOutput.AddListener(OnPoseDetectionOutput);

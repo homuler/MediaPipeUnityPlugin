@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -56,8 +58,6 @@ namespace Mediapipe.Unity {
 #endif
 
     protected virtual void Start() {
-      Logger.LogInfo(TAG, $"Loading dependent assets...");
-      PrepareDependentAssets();
       instanceTable.Add(GetInstanceID(), this);
     }
 
@@ -65,20 +65,33 @@ namespace Mediapipe.Unity {
       Stop();
     }
 
-    public virtual Status Initialize() {
+    public WaitForResult WaitForInit() {
+      return new WaitForResult(this, Initialize());
+    }
+
+    public virtual IEnumerator Initialize() {
       configType = DetectConfigType();
       Logger.LogInfo(TAG, $"Using {configType} config");
 
       if (configType == ConfigType.None) {
-        return Status.FailedPrecondition("Failed to detect config. Check if config is set to GraphRunner");
+        throw new InvalidOperationException("Failed to detect config. Check if config is set to GraphRunner");
       }
 
-      var status = InitializeCalculatorGraph();
-      nameTable.Add(calculatorGraph.mpPtr, GetInstanceID());
+      InitializeCalculatorGraph().AssertOk();
       stopwatch = new Stopwatch();
       stopwatch.Start();
 
-      return status;
+      Logger.LogInfo(TAG, "Loading dependent assets...");
+      var assetRequests = RequestDependentAssets();
+      yield return new WaitWhile(() => assetRequests.Any((request) => request.keepWaiting));
+
+      var errors = assetRequests.Where((request) => request.isError).Select((request) => request.error).ToList();
+      if (errors.Count > 0) {
+        foreach (var error in errors) {
+          Logger.LogError(TAG, error);
+        }
+        throw new InternalException("Failed to prepare dependent assets");
+      }
     }
 
     public abstract Status StartRun(ImageSource imageSource);
@@ -238,6 +251,7 @@ namespace Mediapipe.Unity {
 
     protected Status InitializeCalculatorGraph() {
       calculatorGraph = new CalculatorGraph();
+      nameTable.Add(calculatorGraph.mpPtr, GetInstanceID());
 
       // NOTE: There's a simpler way to initialize CalculatorGraph.
       //
@@ -279,6 +293,22 @@ namespace Mediapipe.Unity {
       return ConfigType.None;
     }
 
-    protected abstract void PrepareDependentAssets();
+    protected WaitForResult WaitForAsset(string assetName, string uniqueKey, long timeoutMillisec, bool overwrite = false) {
+      return new WaitForResult(this, AssetLoader.PrepareAssetAsync(assetName, uniqueKey, overwrite), timeoutMillisec);
+    }
+
+    protected WaitForResult WaitForAsset(string assetName, long timeoutMillisec, bool overwrite = false) {
+      return WaitForAsset(assetName, assetName, timeoutMillisec, overwrite);
+    }
+
+    protected WaitForResult WaitForAsset(string assetName, string uniqueKey, bool overwrite = false) {
+      return new WaitForResult(this, AssetLoader.PrepareAssetAsync(assetName, uniqueKey, overwrite));
+    }
+
+    protected WaitForResult WaitForAsset(string assetName, bool overwrite = false) {
+      return WaitForAsset(assetName, assetName, overwrite);
+    }
+
+    protected abstract IList<WaitForResult> RequestDependentAssets();
   }
 }

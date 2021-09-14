@@ -26,7 +26,6 @@ namespace Mediapipe.Unity.IrisTracking {
         Stop();
       }
       base.Play();
-      graphRunner.Initialize().AssertOk();
       coroutine = StartCoroutine(Run());
     }
 
@@ -48,6 +47,7 @@ namespace Mediapipe.Unity.IrisTracking {
     }
 
     IEnumerator Run() {
+      var graphInitRequest = graphRunner.WaitForInit();
       var imageSource = ImageSourceProvider.imageSource;
 
       yield return imageSource.Play();
@@ -61,6 +61,12 @@ namespace Mediapipe.Unity.IrisTracking {
       screen.texture = imageSource.GetCurrentTexture();
 
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
+
+      yield return graphInitRequest;
+      if (graphInitRequest.isError) {
+        Logger.LogError(TAG, graphInitRequest.error);
+        yield break;
+      }
 
       if (runningMode == RunningMode.Async) {
         graphRunner.OnFaceDetectionsOutput.AddListener(OnFaceDetectionsOutput);

@@ -1,4 +1,5 @@
-using UnityEngine;
+using System;
+using System.Collections;
 
 namespace Mediapipe.Unity {
   public static class AssetLoader {
@@ -8,16 +9,20 @@ namespace Mediapipe.Unity {
       resourceManager = manager;
     }
 
-    public static void PrepareAsset(string name, string uniqueKey, bool overwrite = false) {
+    public static IEnumerator PrepareAssetAsync(string name, string uniqueKey, bool overwrite = false) {
       if (resourceManager == null) {
+#if UNITY_EDITOR
         Logger.LogWarning("ResourceManager is not provided, so default LocalResourceManager will be used");
         resourceManager = new LocalResourceManager();
+#else
+        throw new InvalidOperationException("ResourceManager is not provided");
+#endif
       }
-      resourceManager.PrepareAsset(name, uniqueKey, overwrite);
+      return resourceManager.PrepareAssetAsync(name, uniqueKey, overwrite);
     }
 
-    public static void PrepareAsset(string name, bool overwrite = false) {
-      PrepareAsset(name, name, overwrite);
+    public static IEnumerator PrepareAssetAsync(string name, bool overwrite = false) {
+      return PrepareAssetAsync(name, name, overwrite);
     }
   }
 }

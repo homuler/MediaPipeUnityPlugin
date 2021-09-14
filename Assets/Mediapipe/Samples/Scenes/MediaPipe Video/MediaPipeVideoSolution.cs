@@ -2,8 +2,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-using Stopwatch = System.Diagnostics.Stopwatch;
-
 namespace Mediapipe.Unity.MediaPipeVideo {
   public class MediaPipeVideoSolution : Solution {
     [SerializeField] RawImage screen;
@@ -28,7 +26,6 @@ namespace Mediapipe.Unity.MediaPipeVideo {
         Stop();
       }
       base.Play();
-      graphRunner.Initialize().AssertOk();
       coroutine = StartCoroutine(Run());
     }
 
@@ -60,6 +57,7 @@ namespace Mediapipe.Unity.MediaPipeVideo {
     }
 
     IEnumerator Run() {
+      var graphInitRequest = graphRunner.WaitForInit();
       var imageSource = ImageSourceProvider.imageSource;
 
       yield return imageSource.Play();
@@ -97,6 +95,12 @@ namespace Mediapipe.Unity.MediaPipeVideo {
         outputTexture = new Texture2D(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32, false);
         screen.texture = outputTexture;
         outputBuffer = new Color32[imageSource.textureWidth * imageSource.textureHeight];
+      }
+
+      yield return graphInitRequest;
+      if (graphInitRequest.isError) {
+        Logger.LogError(TAG, graphInitRequest.error);
+        yield break;
       }
 
       if (runningMode == RunningMode.Async) {

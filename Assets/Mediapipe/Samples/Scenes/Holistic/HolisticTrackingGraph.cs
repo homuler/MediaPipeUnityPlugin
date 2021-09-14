@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine.Events;
 
 namespace Mediapipe.Unity.Holistic {
@@ -259,22 +260,27 @@ namespace Mediapipe.Unity.Holistic {
       }).mpPtr;
     }
 
-    protected override void PrepareDependentAssets() {
-      AssetLoader.PrepareAsset("face_detection_short_range.bytes");
-      AssetLoader.PrepareAsset("face_landmark.bytes");
-      AssetLoader.PrepareAsset("iris_landmark.bytes");
-      AssetLoader.PrepareAsset("hand_landmark.bytes");
-      AssetLoader.PrepareAsset("hand_recrop.bytes");
-      AssetLoader.PrepareAsset("handedness.txt");
-      AssetLoader.PrepareAsset("palm_detection.bytes");
-      AssetLoader.PrepareAsset("pose_detection.bytes");
+    protected override IList<WaitForResult> RequestDependentAssets() {
+      return new List<WaitForResult> {
+        WaitForAsset("face_detection_short_range.bytes"),
+        WaitForAsset("face_landmark.bytes"),
+        WaitForAsset("iris_landmark.bytes"),
+        WaitForAsset("hand_landmark.bytes"),
+        WaitForAsset("hand_recrop.bytes"),
+        WaitForAsset("handedness.txt"),
+        WaitForAsset("palm_detection.bytes"),
+        WaitForAsset("pose_detection.bytes"),
+        WaitForPoseLandmarkModel(),
+      };
+    }
 
+    WaitForResult WaitForPoseLandmarkModel() {
       if (modelComplexity == ModelComplexity.Lite) {
-        AssetLoader.PrepareAsset("pose_landmark_lite.bytes");
+        return WaitForAsset("pose_landmark_lite.bytes");
       } else if (modelComplexity == ModelComplexity.Full) {
-        AssetLoader.PrepareAsset("pose_landmark_full.bytes");
+        return WaitForAsset("pose_landmark_full.bytes");
       } else {
-        AssetLoader.PrepareAsset("pose_landmark_heavy.bytes");
+        return WaitForAsset("pose_landmark_heavy.bytes");
       }
     }
 

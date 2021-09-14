@@ -127,10 +127,12 @@ namespace Mediapipe.Unity.Objectron {
       }).mpPtr;
     }
 
-    protected override void PrepareDependentAssets() {
-      AssetLoader.PrepareAsset("object_detection_ssd_mobilenetv2_oidv4_fp16.bytes");
-      AssetLoader.PrepareAsset("object_detection_oidv4_labelmap.txt");
-      AssetLoader.PrepareAsset(GetModelAssetName(category), "object_detection_3d.bytes", true);
+    protected override IList<WaitForResult> RequestDependentAssets() {
+      return new List<WaitForResult> {
+        WaitForAsset("object_detection_ssd_mobilenetv2_oidv4_fp16.bytes"),
+        WaitForAsset("object_detection_oidv4_labelmap.txt"),
+        WaitForAsset(GetModelAssetName(category), "object_detection_3d.bytes", true),
+      };
     }
 
     SidePacket BuildSidePacket(ImageSource imageSource) {

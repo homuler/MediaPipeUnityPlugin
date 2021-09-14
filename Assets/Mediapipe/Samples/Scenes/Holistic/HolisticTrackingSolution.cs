@@ -40,7 +40,6 @@ namespace Mediapipe.Unity.Holistic {
         Stop();
       }
       base.Play();
-      graphRunner.Initialize().AssertOk();
       coroutine = StartCoroutine(Run());
     }
 
@@ -62,6 +61,7 @@ namespace Mediapipe.Unity.Holistic {
     }
 
     IEnumerator Run() {
+      var graphInitRequest = graphRunner.WaitForInit();
       var imageSource = ImageSourceProvider.imageSource;
 
       yield return imageSource.Play();
@@ -79,6 +79,12 @@ namespace Mediapipe.Unity.Holistic {
       Logger.LogInfo(TAG, $"Detect Iris = {detectIris}");
       Logger.LogInfo(TAG, $"Timeout Millisec = {timeoutMillisec}");
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
+
+      yield return graphInitRequest;
+      if (graphInitRequest.isError) {
+        Logger.LogError(TAG, graphInitRequest.error);
+        yield break;
+      }
 
       if (runningMode == RunningMode.Async) {
         graphRunner.OnPoseDetectionOutput.AddListener(OnPoseDetectionOutput);

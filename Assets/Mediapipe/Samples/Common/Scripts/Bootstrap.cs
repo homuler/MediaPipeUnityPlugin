@@ -10,6 +10,7 @@ namespace Mediapipe.Unity {
     public enum AssetLoaderType {
       StreamingAssets,
       AssetBundle,
+      Local,
     }
 
     static readonly string TAG = typeof(Bootstrap).Name;
@@ -48,14 +49,24 @@ namespace Mediapipe.Unity {
       }
 
       Logger.LogInfo(TAG, "Initializing AssetLoader...");
-      if (assetLoaderType == AssetLoaderType.AssetBundle) {
+      switch (assetLoaderType) {
+        case AssetLoaderType.AssetBundle: {
+          AssetLoader.Provide(new AssetBundleResourceManager(Path.Combine(Application.streamingAssetsPath, "mediapipe")));
+          break;
+        }
+        case AssetLoaderType.StreamingAssets: {
+          AssetLoader.Provide(new StreamingAssetsResourceManager());
+          break;
+        }
+        default: {
 #if UNITY_EDITOR
-        AssetLoader.Provide(new LocalResourceManager());
+          AssetLoader.Provide(new LocalResourceManager());
+          break;
 #else
-        AssetLoader.Provide(new AssetBundleResourceManager(Path.Combine(Application.streamingAssetsPath, "mediapipe")));
+          Logger.LogError("LocalResourceManager is only supported on UnityEditor");
+          yield break;
 #endif
-      } else {
-        AssetLoader.Provide(new StreamingAssetsResourceManager());
+        }
       }
 
       DecideInferenceMode();

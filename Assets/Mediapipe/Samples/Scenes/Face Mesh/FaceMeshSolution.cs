@@ -31,7 +31,6 @@ namespace Mediapipe.Unity.FaceMesh {
         Stop();
       }
       base.Play();
-      graphRunner.Initialize().AssertOk();
       coroutine = StartCoroutine(Run());
     }
 
@@ -53,6 +52,7 @@ namespace Mediapipe.Unity.FaceMesh {
     }
 
     IEnumerator Run() {
+      var graphInitRequest = graphRunner.WaitForInit();
       var imageSource = ImageSourceProvider.imageSource;
 
       yield return imageSource.Play();
@@ -67,6 +67,12 @@ namespace Mediapipe.Unity.FaceMesh {
 
       Logger.LogInfo(TAG, $"Max Num Faces = {maxNumFaces}");
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
+
+      yield return graphInitRequest;
+      if (graphInitRequest.isError) {
+        Logger.LogError(TAG, graphInitRequest.error);
+        yield break;
+      }
 
       if (runningMode == RunningMode.Async) {
         graphRunner.OnFaceDetectionsOutput.AddListener(OnFaceDetectionsOutput);

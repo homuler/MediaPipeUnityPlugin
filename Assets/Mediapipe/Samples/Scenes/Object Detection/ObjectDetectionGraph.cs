@@ -51,9 +51,11 @@ namespace Mediapipe.Unity.ObjectDetection {
       }).mpPtr;
     }
 
-    protected override void PrepareDependentAssets() {
-      AssetLoader.PrepareAsset("ssdlite_object_detection_labelmap.txt");
-      AssetLoader.PrepareAsset("ssdlite_object_detection.bytes");
+    protected override IList<WaitForResult> RequestDependentAssets() {
+      return new List<WaitForResult> {
+        WaitForAsset("ssdlite_object_detection_labelmap.txt"),
+        WaitForAsset("ssdlite_object_detection.bytes"),
+      };
     }
 
     SidePacket BuildSidePacket(ImageSource imageSource) {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine.Events;
 
 namespace Mediapipe.Unity.PoseTracking {
@@ -134,15 +135,20 @@ namespace Mediapipe.Unity.PoseTracking {
       }).mpPtr;
     }
 
-    protected override void PrepareDependentAssets() {
-      AssetLoader.PrepareAsset("pose_detection.bytes");
+    protected override IList<WaitForResult> RequestDependentAssets() {
+      return new List<WaitForResult> {
+        WaitForAsset("pose_detection.bytes"),
+        WaitForPoseLandmarkModel(),
+      };
+    }
 
+    WaitForResult WaitForPoseLandmarkModel() {
       if (modelComplexity == ModelComplexity.Lite) {
-        AssetLoader.PrepareAsset("pose_landmark_lite.bytes");
+        return WaitForAsset("pose_landmark_lite.bytes");
       } else if (modelComplexity == ModelComplexity.Full) {
-        AssetLoader.PrepareAsset("pose_landmark_full.bytes");
+        return WaitForAsset("pose_landmark_full.bytes");
       } else {
-        AssetLoader.PrepareAsset("pose_landmark_heavy.bytes");
+        return WaitForAsset("pose_landmark_heavy.bytes");
       }
     }
 

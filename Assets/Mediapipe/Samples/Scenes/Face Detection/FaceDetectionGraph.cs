@@ -56,9 +56,11 @@ namespace Mediapipe.Unity.FaceDetection {
       }).mpPtr;
     }
 
-    protected override void PrepareDependentAssets() {
-      AssetLoader.PrepareAsset("face_detection_short_range.bytes");
-      AssetLoader.PrepareAsset("face_detection_full_range_sparse.bytes");
+    protected override IList<WaitForResult> RequestDependentAssets() {
+      return new List<WaitForResult> {
+        WaitForAsset("face_detection_short_range.bytes"),
+        WaitForAsset("face_detection_full_range_sparse.bytes"),
+      };
     }
 
     SidePacket BuildSidePacket(ImageSource imageSource) {

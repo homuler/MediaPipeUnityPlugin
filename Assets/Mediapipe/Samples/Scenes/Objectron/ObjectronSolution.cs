@@ -36,7 +36,6 @@ namespace Mediapipe.Unity.Objectron {
         Stop();
       }
       base.Play();
-      graphRunner.Initialize().AssertOk();
       coroutine = StartCoroutine(Run());
     }
 
@@ -58,6 +57,7 @@ namespace Mediapipe.Unity.Objectron {
     }
 
     IEnumerator Run() {
+      var graphInitRequest = graphRunner.WaitForInit();
       var imageSource = ImageSourceProvider.imageSource;
 
       yield return imageSource.Play();
@@ -73,6 +73,12 @@ namespace Mediapipe.Unity.Objectron {
       Logger.LogInfo(TAG, $"Category = {category}");
       Logger.LogInfo(TAG, $"Max Num Objects = {maxNumObjects}");
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
+
+      yield return graphInitRequest;
+      if (graphInitRequest.isError) {
+        Logger.LogError(TAG, graphInitRequest.error);
+        yield break;
+      }
 
       if (runningMode == RunningMode.Async) {
         graphRunner.OnLiftedObjectsOutput.AddListener(OnLiftedObjectsOutput);
