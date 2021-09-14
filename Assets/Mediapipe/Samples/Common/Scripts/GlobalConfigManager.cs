@@ -54,7 +54,7 @@ namespace Mediapipe.Unity {
       get {
         if (_config == null) {
           _config = new Dictionary<string, string>() {
-            { _GlogLogtostderrKey, "0" },
+            { _GlogLogtostderrKey, "1" },
             { _GlogStderrthresholdKey, "2" },
             { _GlogMinloglevelKey, "0" },
             { _GlogLogDirKey, "" },

@@ -7,7 +7,7 @@ namespace Mediapipe {
       FATAL = 3,
     }
 
-    static bool _logtostderr = false;
+    static bool _logtostderr = true;
     public static bool logtostderr {
       get { return _logtostderr; }
       set {
