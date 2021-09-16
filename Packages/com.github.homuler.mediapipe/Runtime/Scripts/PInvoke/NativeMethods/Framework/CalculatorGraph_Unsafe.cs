@@ -27,10 +27,10 @@ namespace Mediapipe {
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_CalculatorGraph__ObserveOutputStream__PKc_PF_b(IntPtr graph, string streamName,
-        [MarshalAs(UnmanagedType.FunctionPtr)]CalculatorGraph.NativePacketCallback packetCallback, bool observeTimestampBounds, out IntPtr status);
+        [MarshalAs(UnmanagedType.FunctionPtr)]CalculatorGraph.NativePacketCallback packetCallback, [MarshalAs(UnmanagedType.I1)]bool observeTimestampBounds, out IntPtr status);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_CalculatorGraph__AddOutputStreamPoller__PKc_b(IntPtr graph, string streamName, bool observeTimestampBounds, out IntPtr statusOrPoller);
+    public static extern MpReturnCode mp_CalculatorGraph__AddOutputStreamPoller__PKc_b(IntPtr graph, string streamName, [MarshalAs(UnmanagedType.I1)]bool observeTimestampBounds, out IntPtr statusOrPoller);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_CalculatorGraph__Run__Rsp(IntPtr graph, IntPtr sidePackets, out IntPtr status);
