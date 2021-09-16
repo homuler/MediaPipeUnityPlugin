@@ -9,19 +9,18 @@ namespace Mediapipe.Unity.ObjectDetection {
     const string inputStreamName = "input_video";
 
     const string outputDetectionsStreamName = "output_detections";
-    OutputStreamPoller<List<Detection>> outputDetectionsStreamPoller;
-    DetectionVectorPacket outputDetectionsPacket;
+    OutputStream<DetectionVectorPacket, List<Detection>> outputDetectionsStream;
     protected long prevOutputDetectionsMicrosec = 0;
 
     public override Status StartRun(ImageSource imageSource) {
-      outputDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<Detection>>(outputDetectionsStreamName, true).Value();
-      outputDetectionsPacket = new DetectionVectorPacket();
-
+      InitializeOutputStreams();
+      outputDetectionsStream.StartPolling(true).AssertOk();
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
     public Status StartRunAsync(ImageSource imageSource) {
-      calculatorGraph.ObserveOutputStream(outputDetectionsStreamName, OutputDetectionsCallback, true).AssertOk();
+      InitializeOutputStreams();
+      outputDetectionsStream.AddListener(OutputDetectionsCallback, true).AssertOk();
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
@@ -35,15 +34,9 @@ namespace Mediapipe.Unity.ObjectDetection {
     }
 
     public List<Detection> FetchNextDetections() {
-      FetchNext(outputDetectionsStreamPoller, outputDetectionsPacket, out var detections, outputDetectionsStreamName);
-      OnOutputDetectionsOutput.Invoke(detections);
-      return detections;
-    }
-
-    public List<Detection> FetchLatestDetections() {
-      FetchLatest(outputDetectionsStreamPoller, outputDetectionsPacket, out var detections, outputDetectionsStreamName);
-      OnOutputDetectionsOutput.Invoke(detections);
-      return detections;
+      outputDetectionsStream.TryGetNext(out var outputDetections);
+      OnOutputDetectionsOutput.Invoke(outputDetections);
+      return outputDetections;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
@@ -62,6 +55,10 @@ namespace Mediapipe.Unity.ObjectDetection {
         WaitForAsset("ssdlite_object_detection_labelmap.txt"),
         WaitForAsset("ssdlite_object_detection.bytes"),
       };
+    }
+
+    protected void InitializeOutputStreams() {
+      outputDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, outputDetectionsStreamName);
     }
 
     SidePacket BuildSidePacket(ImageSource imageSource) {

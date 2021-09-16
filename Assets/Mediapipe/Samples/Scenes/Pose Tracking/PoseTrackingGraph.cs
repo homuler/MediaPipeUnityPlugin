@@ -21,46 +21,38 @@ namespace Mediapipe.Unity.PoseTracking {
     const string inputStreamName = "input_video";
 
     const string poseDetectionStreamName = "pose_detection";
-    OutputStreamPoller<Detection> poseDetectionStreamPoller;
-    DetectionPacket poseDetectionPacket;
-    protected long prevPoseDetectionMicrosec = 0;
-
     const string poseLandmarksStreamName = "pose_landmarks";
-    OutputStreamPoller<NormalizedLandmarkList> poseLandmarksStreamPoller;
-    NormalizedLandmarkListPacket poseLandmarksPacket;
-    protected long prevPoseLandmarksMicrosec = 0;
-
     const string poseWorldLandmarksStreamName = "pose_world_landmarks";
-    OutputStreamPoller<LandmarkList> poseWorldLandmarksStreamPoller;
-    LandmarkListPacket poseWorldLandmarksPacket;
-    protected long prevPoseWorldLandmarksMicrosec = 0;
-
     const string roiFromLandmarksStreamName = "roi_from_landmarks";
-    OutputStreamPoller<NormalizedRect> roiFromLandmarksStreamPoller;
-    NormalizedRectPacket roiFromLandmarksPacket;
+
+    OutputStream<DetectionPacket, Detection> poseDetectionStream;
+    OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList> poseLandmarksStream;
+    OutputStream<LandmarkListPacket, LandmarkList> poseWorldLandmarksStream;
+    OutputStream<NormalizedRectPacket, NormalizedRect> roiFromLandmarksStream;
+
+    protected long prevPoseDetectionMicrosec = 0;
+    protected long prevPoseLandmarksMicrosec = 0;
+    protected long prevPoseWorldLandmarksMicrosec = 0;
     protected long prevRoiFromLandmarksMicrosec = 0;
 
     public override Status StartRun(ImageSource imageSource) {
-      poseDetectionStreamPoller = calculatorGraph.AddOutputStreamPoller<Detection>(poseDetectionStreamName, true).Value();
-      poseDetectionPacket = new DetectionPacket();
+      InitializeOutputStreams();
 
-      poseLandmarksStreamPoller = calculatorGraph.AddOutputStreamPoller<NormalizedLandmarkList>(poseLandmarksStreamName, true).Value();
-      poseLandmarksPacket = new NormalizedLandmarkListPacket();
-
-      poseWorldLandmarksStreamPoller = calculatorGraph.AddOutputStreamPoller<LandmarkList>(poseWorldLandmarksStreamName, true).Value();
-      poseWorldLandmarksPacket = new LandmarkListPacket();
-
-      roiFromLandmarksStreamPoller = calculatorGraph.AddOutputStreamPoller<NormalizedRect>(roiFromLandmarksStreamName, true).Value();
-      roiFromLandmarksPacket = new NormalizedRectPacket();
+      poseDetectionStream.StartPolling(true).AssertOk();
+      poseLandmarksStream.StartPolling(true).AssertOk();
+      poseWorldLandmarksStream.StartPolling(true).AssertOk();
+      roiFromLandmarksStream.StartPolling(true).AssertOk();
 
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
     public Status StartRunAsync(ImageSource imageSource) {
-      calculatorGraph.ObserveOutputStream(poseDetectionStreamName, PoseDetectionCallback, true).AssertOk();
-      calculatorGraph.ObserveOutputStream(poseLandmarksStreamName, PoseLandmarksCallback, true).AssertOk();
-      calculatorGraph.ObserveOutputStream(poseWorldLandmarksStreamName, PoseWorldLandmarksCallback, true).AssertOk();
-      calculatorGraph.ObserveOutputStream(roiFromLandmarksStreamName, RoiFromLandmarksCallback, true).AssertOk();
+      InitializeOutputStreams();
+
+      poseDetectionStream.AddListener(PoseDetectionCallback, true).AssertOk();
+      poseLandmarksStream.AddListener(PoseLandmarksCallback, true).AssertOk();
+      poseWorldLandmarksStream.AddListener(PoseWorldLandmarksCallback, true).AssertOk();
+      roiFromLandmarksStream.AddListener(RoiFromLandmarksCallback, true).AssertOk();
 
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
@@ -78,24 +70,10 @@ namespace Mediapipe.Unity.PoseTracking {
     }
 
     public PoseTrackingValue FetchNextValue() {
-      FetchNext(poseDetectionStreamPoller, poseDetectionPacket, out var poseDetection, poseDetectionStreamName);
-      FetchNext(poseLandmarksStreamPoller, poseLandmarksPacket, out var poseLandmarks, poseLandmarksStreamName);
-      FetchNext(poseWorldLandmarksStreamPoller, poseWorldLandmarksPacket, out var poseWorldLandmarks, poseWorldLandmarksStreamName);
-      FetchNext(roiFromLandmarksStreamPoller, roiFromLandmarksPacket, out var roiFromLandmarks, roiFromLandmarksStreamName);
-
-      OnPoseDetectionOutput.Invoke(poseDetection);
-      OnPoseLandmarksOutput.Invoke(poseLandmarks);
-      OnPoseWorldLandmarksOutput.Invoke(poseWorldLandmarks);
-      OnRoiFromLandmarksOutput.Invoke(roiFromLandmarks);
-
-      return new PoseTrackingValue(poseDetection, poseLandmarks, poseWorldLandmarks, roiFromLandmarks);
-    }
-
-    public PoseTrackingValue FetchLatestValue() {
-      FetchLatest(poseDetectionStreamPoller, poseDetectionPacket, out var poseDetection, poseDetectionStreamName);
-      FetchLatest(poseLandmarksStreamPoller, poseLandmarksPacket, out var poseLandmarks, poseLandmarksStreamName);
-      FetchLatest(poseWorldLandmarksStreamPoller, poseWorldLandmarksPacket, out var poseWorldLandmarks, poseWorldLandmarksStreamName);
-      FetchLatest(roiFromLandmarksStreamPoller, roiFromLandmarksPacket, out var roiFromLandmarks, roiFromLandmarksStreamName);
+      poseDetectionStream.TryGetNext(out var poseDetection);
+      poseLandmarksStream.TryGetNext(out var poseLandmarks);
+      poseWorldLandmarksStream.TryGetNext(out var poseWorldLandmarks);
+      roiFromLandmarksStream.TryGetNext(out var roiFromLandmarks);
 
       OnPoseDetectionOutput.Invoke(poseDetection);
       OnPoseLandmarksOutput.Invoke(poseLandmarks);
@@ -154,6 +132,13 @@ namespace Mediapipe.Unity.PoseTracking {
         WaitForAsset("pose_detection.bytes"),
         WaitForPoseLandmarkModel(),
       };
+    }
+
+    protected void InitializeOutputStreams() {
+      poseDetectionStream = new OutputStream<DetectionPacket, Detection>(calculatorGraph, poseDetectionStreamName);
+      poseLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, poseLandmarksStreamName);
+      poseWorldLandmarksStream = new OutputStream<LandmarkListPacket, LandmarkList>(calculatorGraph, poseWorldLandmarksStreamName);
+      roiFromLandmarksStream = new OutputStream<NormalizedRectPacket, NormalizedRect>(calculatorGraph, roiFromLandmarksStreamName);
     }
 
     WaitForResult WaitForPoseLandmarkModel() {

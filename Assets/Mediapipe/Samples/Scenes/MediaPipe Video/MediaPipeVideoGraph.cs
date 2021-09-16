@@ -15,25 +15,22 @@ namespace Mediapipe.Unity.MediaPipeVideo {
     string destinationBufferName;
     TextureFrame destinationTexture;
 
-    const string outputStreamName = "output_video";
-    OutputStreamPoller<ImageFrame> outputStreamPoller;
-    ImageFramePacket outputImageFramePacket;
-    protected long prevOutputMicrosec = 0;
+    const string outputVideoStreamName = "output_video";
+    OutputStream<ImageFramePacket, ImageFrame> outputVideoStream;
+    protected long prevOutputVideoMicrosec = 0;
 
     public override Status StartRun(ImageSource imageSource) {
       if (configType != ConfigType.OpenGLES) {
-        outputStreamPoller = calculatorGraph.AddOutputStreamPoller<ImageFrame>(outputStreamName, true).Value();
-        outputImageFramePacket = new ImageFramePacket();
+        InitializeOutputStreams();
+        outputVideoStream.StartPolling(true).AssertOk();
       }
-
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
     public Status StartRunAsync(ImageSource imageSource) {
       if (configType != ConfigType.OpenGLES) {
-        calculatorGraph.ObserveOutputStream(outputStreamName, OutputCallback, true).AssertOk();
+        outputVideoStream.AddListener(OutputVideoCallback, true).AssertOk();
       }
-
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
@@ -55,22 +52,16 @@ namespace Mediapipe.Unity.MediaPipeVideo {
     }
 
     public ImageFrame FetchNextValue() {
-      FetchNext(outputStreamPoller, outputImageFramePacket, out var outputVideo, outputStreamName);
-      OnOutput.Invoke(outputVideo);
-      return outputVideo;
-    }
-
-    public ImageFrame FetchLatestValue() {
-      FetchLatest(outputStreamPoller, outputImageFramePacket, out var outputVideo, outputStreamName);
+      outputVideoStream.TryGetNext(out var outputVideo);
       OnOutput.Invoke(outputVideo);
       return outputVideo;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr OutputCallback(IntPtr graphPtr, IntPtr packetPtr){
+    static IntPtr OutputVideoCallback(IntPtr graphPtr, IntPtr packetPtr){
       return InvokeIfGraphRunnerFound<MediaPipeVideoGraph>(graphPtr, packetPtr, (mediaPipeVideoGraph, ptr) => {
         using (var packet = new ImageFramePacket(ptr, false)) {
-          if (mediaPipeVideoGraph.TryConsumePacketValue(packet, ref mediaPipeVideoGraph.prevOutputMicrosec, out var value)) {
+          if (mediaPipeVideoGraph.TryConsumePacketValue(packet, ref mediaPipeVideoGraph.prevOutputVideoMicrosec, out var value)) {
             mediaPipeVideoGraph.OnOutput.Invoke(value);
           }
         }
@@ -97,6 +88,10 @@ namespace Mediapipe.Unity.MediaPipeVideo {
         WaitForAsset("handedness.txt"),
         WaitForAsset("palm_detection.bytes"),
       };
+    }
+
+    protected void InitializeOutputStreams() {
+      outputVideoStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, outputVideoStreamName);
     }
 
     SidePacket BuildSidePacket(ImageSource imageSource) {

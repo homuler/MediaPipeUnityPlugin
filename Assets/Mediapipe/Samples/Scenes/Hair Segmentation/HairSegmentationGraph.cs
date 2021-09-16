@@ -9,19 +9,18 @@ namespace Mediapipe.Unity.HairSegmentation {
     const string inputStreamName = "input_video";
 
     const string hairMaskStreamName = "hair_mask";
-    OutputStreamPoller<ImageFrame> hairMaskStreamPoller;
-    ImageFramePacket hairMaskPacket;
+    OutputStream<ImageFramePacket, ImageFrame> hairMaskStream;
     protected long prevHairMaskMicrosec = 0;
 
     public override Status StartRun(ImageSource imageSource) {
-      hairMaskStreamPoller = calculatorGraph.AddOutputStreamPoller<ImageFrame>(hairMaskStreamName).Value();
-      hairMaskPacket = new ImageFramePacket();
-
+      InitializeOutputStreams();
+      hairMaskStream.StartPolling(true).AssertOk();
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
     public Status StartRunAsync(ImageSource imageSource) {
-      calculatorGraph.ObserveOutputStream(hairMaskStreamName, HairMaskCallback, true).AssertOk();
+      InitializeOutputStreams();
+      hairMaskStream.AddListener(HairMaskCallback, true).AssertOk();
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
@@ -35,13 +34,7 @@ namespace Mediapipe.Unity.HairSegmentation {
     }
 
     public ImageFrame FetchNextValue() {
-      FetchNext(hairMaskStreamPoller, hairMaskPacket, out var hairMask, hairMaskStreamName);
-      OnHairMaskOutput.Invoke(hairMask);
-      return hairMask;
-    }
-
-    public ImageFrame FetchLatestValue() {
-      FetchLatest(hairMaskStreamPoller, hairMaskPacket, out var hairMask, hairMaskStreamName);
+      hairMaskStream.TryGetNext(out var hairMask);
       OnHairMaskOutput.Invoke(hairMask);
       return hairMask;
     }
@@ -61,6 +54,10 @@ namespace Mediapipe.Unity.HairSegmentation {
       return new List<WaitForResult> {
         WaitForAsset("hair_segmentation.bytes"),
       };
+    }
+
+    protected void InitializeOutputStreams() {
+      hairMaskStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, hairMaskStreamName);
     }
 
     SidePacket BuildSidePacket(ImageSource imageSource) {

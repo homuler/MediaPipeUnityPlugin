@@ -24,7 +24,7 @@
 # mediapipie/examples/android/src/java/com/mediapipe/apps/hairsegmentationgpu.
 
 input_stream: "input_video"
-output_stream: "hair_mask_cpu"
+output_stream: "hair_mask"
 
 # Throttles the images flowing downstream for flow control. It passes through
 # the very first incoming image unaltered, and waits for
@@ -77,7 +77,7 @@ node: {
 node {
   calculator: "PreviousLoopbackCalculator"
   input_stream: "MAIN:throttled_input_video"
-  input_stream: "LOOP:hair_mask"
+  input_stream: "LOOP:hair_mask_gpu"
   input_stream_info: {
     tag_index: "LOOP"
     back_edge: true

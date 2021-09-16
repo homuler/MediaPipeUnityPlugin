@@ -139,63 +139,6 @@ namespace Mediapipe.Unity {
       return AddPacketToInputStream(streamName, new ImageFramePacket(imageFrame, currentTimestamp));
     }
 
-    /// <summary>
-    ///   Fetch next value from <paramref name="poller" />.
-    ///   Note that this method blocks the thread till the next value is fetched.
-    /// </summary>
-    /// <remarks>
-    ///   If there's no next value, this method never returns.
-    /// </remarks>
-    public bool FetchNext<T>(OutputStreamPoller<T> poller, Packet<T> packet, out T value, string streamName = null) {
-      if (poller.Next(packet)) {
-        if (!packet.IsEmpty()) {
-          value = packet.Get();
-          return true;
-        }
-      } else if (streamName != null) {
-        Logger.LogWarning(TAG, $"Failed to fetch next packet from {streamName}");
-      }
-      // failed or packet is empty
-      value = default(T);
-      return false;
-    }
-
-    public IEnumerator FetchNext<T>(OutputStreamPoller<T> poller, Packet<T> packet, string streamName = null) {
-      while (true) {
-        if (FetchNext(poller, packet, out var value, streamName)) {
-          yield return value;
-          break;
-        }
-        if (packet.Timestamp().Microseconds() >= currentTimestamp.Microseconds()) {
-          // The latest input packet has already been processed
-          yield return default(T);
-          break;
-        }
-        yield return new WaitForEndOfFrame();
-      }
-    }
-
-    public WaitForResult<T> WaitForNext<T>(OutputStreamPoller<T> poller, Packet<T> packet, string streamName = null) {
-      return new WaitForResult<T>(this, FetchNext(poller, packet, streamName), timeoutMicrosec);
-    }
-
-    public bool FetchLatest<T>(OutputStreamPoller<T> poller, Packet<T> packet, out T value, string streamName = null) {
-      while (true) {
-        if (FetchNext(poller, packet, out value, streamName)) {
-          Logger.Log($"Fetched next value, {value}");
-          return true;
-        }
-        Logger.LogDebug("Failed to fetch next");
-        if (packet.Timestamp().Microseconds() >= currentTimestamp.Microseconds()) {
-          // The latest input packet has already been processed
-          Logger.LogDebug($"Latest packet: {packet.Timestamp().Microseconds()}, {currentTimestamp.Microseconds()}");
-          value = default(T);
-          return false;
-        }
-        Logger.LogDebug("Retry");
-      }
-    }
-
     public void SetTimeoutMicrosec(long timeoutMicrosec) {
       this.timeoutMicrosec = (long)Mathf.Max(0, timeoutMicrosec);
     }

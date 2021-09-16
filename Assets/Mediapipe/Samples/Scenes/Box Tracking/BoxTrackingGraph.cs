@@ -9,19 +9,18 @@ namespace Mediapipe.Unity.BoxTracking {
     const string inputStreamName = "input_video";
 
     const string trackedDetectionsStreamName = "tracked_detections";
-    OutputStreamPoller<List<Detection>> trackedDetectionsStreamPoller;
-    DetectionVectorPacket trackedDetectionsPacket;
+    OutputStream<DetectionVectorPacket, List<Detection>> trackedDetectionsStream;
     protected long prevTrackedDetectionsMicrosec = 0;
 
     public override Status StartRun(ImageSource imageSource) {
-      trackedDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<Detection>>(trackedDetectionsStreamName, true).Value();
-      trackedDetectionsPacket = new DetectionVectorPacket();
-
+      InitializeOutputStreams();
+      trackedDetectionsStream.StartPolling(true).AssertOk();
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
     public Status StartRunAsync(ImageSource imageSource) {
-      calculatorGraph.ObserveOutputStream(trackedDetectionsStreamName, TrackedDetectionsCallback, true).AssertOk();
+      InitializeOutputStreams();
+      trackedDetectionsStream.AddListener(TrackedDetectionsCallback, true).AssertOk();
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
@@ -35,13 +34,7 @@ namespace Mediapipe.Unity.BoxTracking {
     }
 
     public List<Detection> FetchNextValue() {
-      FetchNext(trackedDetectionsStreamPoller, trackedDetectionsPacket, out var trackedDetections, trackedDetectionsStreamName);
-      OnTrackedDetectionsOutput.Invoke(trackedDetections);
-      return trackedDetections;
-    }
-
-    public List<Detection> FetchLatestValue() {
-      FetchLatest(trackedDetectionsStreamPoller, trackedDetectionsPacket, out var trackedDetections, trackedDetectionsStreamName);
+      trackedDetectionsStream.TryGetNext(out var trackedDetections);
       OnTrackedDetectionsOutput.Invoke(trackedDetections);
       return trackedDetections;
     }
@@ -62,6 +55,10 @@ namespace Mediapipe.Unity.BoxTracking {
         WaitForAsset("ssdlite_object_detection_labelmap.txt"),
         WaitForAsset("ssdlite_object_detection.bytes"),
       };
+    }
+
+    protected void InitializeOutputStreams() {
+      trackedDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, trackedDetectionsStreamName);
     }
 
     SidePacket BuildSidePacket(ImageSource imageSource) {

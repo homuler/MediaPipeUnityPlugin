@@ -15,20 +15,20 @@ namespace Mediapipe.Unity.InstantMotionTracking {
     const string initialAnchorDataStreamName = "initial_anchor_data";
 
     const string trackedAnchorDataStreamName = "tracked_anchor_data";
-    OutputStreamPoller<List<Anchor3d>> trackedAnchorDataStreamPoller;
-    Anchor3dVectorPacket trackedAnchorDataPacket;
+    OutputStream<Anchor3dVectorPacket, List<Anchor3d>> trackedAnchorDataStream;
     protected long prevTrackedAnchorDataMicrosec = 0;
 
     public override Status StartRun(ImageSource imageSource) {
       ResetAnchor();
-      trackedAnchorDataStreamPoller = calculatorGraph.AddOutputStreamPoller<List<Anchor3d>>(trackedAnchorDataStreamName, true).Value();
-      trackedAnchorDataPacket = new Anchor3dVectorPacket();
+      InitializeOutputStreams();
+      trackedAnchorDataStream.StartPolling(true).AssertOk();
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
     public Status StartRunAsync(ImageSource imageSource) {
       ResetAnchor();
-      calculatorGraph.ObserveOutputStream(trackedAnchorDataStreamName, TrackedAnchorDataCallback, true).AssertOk();
+      InitializeOutputStreams();
+      trackedAnchorDataStream.AddListener(TrackedAnchorDataCallback, true).AssertOk();
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
@@ -55,13 +55,7 @@ namespace Mediapipe.Unity.InstantMotionTracking {
     }
 
     public List<Anchor3d> FetchNextValue() {
-      FetchNext(trackedAnchorDataStreamPoller, trackedAnchorDataPacket, out var trackedAnchorData, trackedAnchorDataStreamName);
-      OnTrackedAnchorDataOutput.Invoke(trackedAnchorData);
-      return trackedAnchorData;
-    }
-
-    public List<Anchor3d> FetchLatestValue() {
-      FetchLatest(trackedAnchorDataStreamPoller, trackedAnchorDataPacket, out var trackedAnchorData, trackedAnchorDataStreamName);
+      trackedAnchorDataStream.TryGetNext(out var trackedAnchorData);
       OnTrackedAnchorDataOutput.Invoke(trackedAnchorData);
       return trackedAnchorData;
     }
@@ -89,6 +83,10 @@ namespace Mediapipe.Unity.InstantMotionTracking {
       return new List<WaitForResult> {
         WaitForAsset("ssdlite_object_detection.bytes"),
       };
+    }
+
+    protected void InitializeOutputStreams() {
+      trackedAnchorDataStream = new OutputStream<Anchor3dVectorPacket, List<Anchor3d>>(calculatorGraph, trackedAnchorDataStreamName);
     }
 
     SidePacket BuildSidePacket(ImageSource imageSource) {
