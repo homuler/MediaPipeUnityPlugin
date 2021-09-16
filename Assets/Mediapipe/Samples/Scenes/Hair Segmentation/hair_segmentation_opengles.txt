@@ -42,7 +42,7 @@ output_stream: "hair_mask_cpu"
 node {
   calculator: "FlowLimiterCalculator"
   input_stream: "input_video"
-  input_stream: "FINISHED:hair_mask_cpu"
+  input_stream: "FINISHED:hair_mask"
   input_stream_info: {
     tag_index: "FINISHED"
     back_edge: true
@@ -147,7 +147,7 @@ node {
   calculator: "TfLiteTensorsToSegmentationCalculator"
   input_stream: "TENSORS_GPU:segmentation_tensor"
   input_stream: "PREV_MASK_GPU:previous_hair_mask"
-  output_stream: "MASK_GPU:hair_mask"
+  output_stream: "MASK_GPU:hair_mask_gpu"
   node_options: {
     [type.googleapis.com/mediapipe.TfLiteTensorsToSegmentationCalculatorOptions] {
       tensor_width: 512
@@ -161,6 +161,6 @@ node {
 
 node: {
   calculator: "GpuBufferToImageFrameCalculator"
-  input_stream: "hair_mask"
-  output_stream: "hair_mask_cpu"
+  input_stream: "hair_mask_gpu"
+  output_stream: "hair_mask"
 }
