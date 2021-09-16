@@ -12,37 +12,33 @@ namespace Mediapipe.Unity.FaceMesh {
     const string inputStreamName = "input_video";
 
     const string faceDetectionsStreamName = "face_detections";
-    OutputStreamPoller<List<Detection>> faceDetectionsStreamPoller;
-    DetectionVectorPacket faceDetectionsPacket;
-    protected long prevFaceDetectionsMicrosec = 0;
-
     const string multiFaceLandmarksStreamName = "multi_face_landmarks";
-    OutputStreamPoller<List<NormalizedLandmarkList>> multiFaceLandmarksStreamPoller;
-    NormalizedLandmarkListVectorPacket multiFaceLandmarksPacket;
-    protected long prevMultiFaceLandmarksMicrosec = 0;
-
     const string faceRectsFromLandmarksStreamName = "face_rects_from_landmarks";
-    OutputStreamPoller<List<NormalizedRect>> faceRectsFromLandmarksStreamPoller;
-    NormalizedRectVectorPacket faceRectsFromLandmarksPacket;
+
+    OutputStream<DetectionVectorPacket, List<Detection>> faceDetectionsStream;
+    OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>> multiFaceLandmarksStream;
+    OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>> faceRectsFromLandmarksStream;
+
+    protected long prevFaceDetectionsMicrosec = 0;
+    protected long prevMultiFaceLandmarksMicrosec = 0;
     protected long prevFaceRectsFromLandmarksMicrosec = 0;
 
     public override Status StartRun(ImageSource imageSource) {
-      faceDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<Detection>>(faceDetectionsStreamName, true).Value();
-      faceDetectionsPacket = new DetectionVectorPacket();
+      InitializeOutputStreams();
 
-      multiFaceLandmarksStreamPoller = calculatorGraph.AddOutputStreamPoller<List<NormalizedLandmarkList>>(multiFaceLandmarksStreamName, true).Value();
-      multiFaceLandmarksPacket = new NormalizedLandmarkListVectorPacket();
-
-      faceRectsFromLandmarksStreamPoller = calculatorGraph.AddOutputStreamPoller<List<NormalizedRect>>(faceRectsFromLandmarksStreamName, true).Value();
-      faceRectsFromLandmarksPacket = new NormalizedRectVectorPacket();
+      faceDetectionsStream.StartPolling(true).AssertOk();
+      multiFaceLandmarksStream.StartPolling(true).AssertOk();
+      faceRectsFromLandmarksStream.StartPolling(true).AssertOk();
 
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
     public Status StartRunAsync(ImageSource imageSource) {
-      calculatorGraph.ObserveOutputStream(faceDetectionsStreamName, FaceDetectionsCallback, true).AssertOk();
-      calculatorGraph.ObserveOutputStream(multiFaceLandmarksStreamName, MultiFaceLandmarksCallback, true).AssertOk();
-      calculatorGraph.ObserveOutputStream(faceRectsFromLandmarksStreamName, FaceRectsFromLandmarksCallback, true).AssertOk();
+      InitializeOutputStreams();
+
+      faceDetectionsStream.AddListener(FaceDetectionsCallback, true).AssertOk();
+      multiFaceLandmarksStream.AddListener(MultiFaceLandmarksCallback, true).AssertOk();
+      faceRectsFromLandmarksStream.AddListener(FaceRectsFromLandmarksCallback, true).AssertOk();
 
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
@@ -59,9 +55,9 @@ namespace Mediapipe.Unity.FaceMesh {
     }
 
     public FaceMeshValue FetchNextValue() {
-      var faceDetections = FetchNextVector<Detection>(faceDetectionsStreamPoller, faceDetectionsPacket, faceDetectionsStreamName);
-      var multiFaceLandmarks = FetchNextVector<NormalizedLandmarkList>(multiFaceLandmarksStreamPoller, multiFaceLandmarksPacket, multiFaceLandmarksStreamName);
-      var faceRectsFromLandmarks = FetchNextVector<NormalizedRect>(faceRectsFromLandmarksStreamPoller, faceRectsFromLandmarksPacket, faceRectsFromLandmarksStreamName);
+      faceDetectionsStream.TryGetNext(out var faceDetections);
+      multiFaceLandmarksStream.TryGetNext(out var multiFaceLandmarks);
+      faceRectsFromLandmarksStream.TryGetNext(out var faceRectsFromLandmarks);
 
       OnFaceDetectionsOutput.Invoke(faceDetections);
       OnMultiFaceLandmarksOutput.Invoke(multiFaceLandmarks);
@@ -101,6 +97,12 @@ namespace Mediapipe.Unity.FaceMesh {
           }
         }
       }).mpPtr;
+    }
+
+    protected void InitializeOutputStreams() {
+      faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, faceDetectionsStreamName);
+      multiFaceLandmarksStream = new OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(calculatorGraph, multiFaceLandmarksStreamName);
+      faceRectsFromLandmarksStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, faceRectsFromLandmarksStreamName);
     }
 
     protected override IList<WaitForResult> RequestDependentAssets() {

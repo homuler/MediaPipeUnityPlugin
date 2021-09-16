@@ -58,9 +58,21 @@ namespace Mediapipe.Unity.IrisTracking {
     }
 
     public IrisTrackingValue FetchNextValue() {
-      var faceDetections = FetchNextVector(faceDetectionsStreamPoller, faceDetectionsPacket, faceDetectionsStreamName);
-      var faceRect = FetchNext(faceRectStreamPoller, faceRectPacket, faceRectStreamName);
-      var faceLandmarksWithIris = FetchNext(faceLandmarksWithIrisStreamPoller, faceLandmarksWithIrisPacket, faceLandmarksWithIrisStreamName);
+      FetchNext(faceDetectionsStreamPoller, faceDetectionsPacket, out var faceDetections, faceDetectionsStreamName);
+      FetchNext(faceRectStreamPoller, faceRectPacket, out var faceRect, faceRectStreamName);
+      FetchNext(faceLandmarksWithIrisStreamPoller, faceLandmarksWithIrisPacket, out var faceLandmarksWithIris, faceLandmarksWithIrisStreamName);
+
+      OnFaceDetectionsOutput.Invoke(faceDetections);
+      OnFaceRectOutput.Invoke(faceRect);
+      OnFaceLandmarksWithIrisOutput.Invoke(faceLandmarksWithIris);
+
+      return new IrisTrackingValue(faceDetections, faceRect, faceLandmarksWithIris);
+    }
+
+    public IrisTrackingValue FetchLatestValue() {
+      FetchLatest(faceDetectionsStreamPoller, faceDetectionsPacket, out var faceDetections, faceDetectionsStreamName);
+      FetchLatest(faceRectStreamPoller, faceRectPacket, out var faceRect, faceRectStreamName);
+      FetchLatest(faceLandmarksWithIrisStreamPoller, faceLandmarksWithIrisPacket, out var faceLandmarksWithIris, faceLandmarksWithIrisStreamName);
 
       OnFaceDetectionsOutput.Invoke(faceDetections);
       OnFaceRectOutput.Invoke(faceRect);

@@ -144,31 +144,56 @@ namespace Mediapipe.Unity {
     ///   Note that this method blocks the thread till the next value is fetched.
     /// </summary>
     /// <remarks>
-    ///   If the next value is empty, this method never returns.
+    ///   If there's no next value, this method never returns.
     /// </remarks>
-    public T FetchNext<T>(OutputStreamPoller<T> poller, Packet<T> packet, string streamName = null, T failedValue = default(T)) {
-      if (!poller.Next(packet)) { // blocks
-        if (streamName != null) {
-          Logger.LogWarning(TAG, $"Failed to fetch next packet from {streamName}");
+    public bool FetchNext<T>(OutputStreamPoller<T> poller, Packet<T> packet, out T value, string streamName = null) {
+      if (poller.Next(packet)) {
+        if (!packet.IsEmpty()) {
+          value = packet.Get();
+          return true;
         }
-        return failedValue;
+      } else if (streamName != null) {
+        Logger.LogWarning(TAG, $"Failed to fetch next packet from {streamName}");
       }
-      return packet.IsEmpty() ? failedValue : packet.Get();
+      // failed or packet is empty
+      value = default(T);
+      return false;
     }
 
-    /// <summary>
-    ///   Fetch next vector value from <paramref name="poller" />.
-    /// </summary>
-    /// <remarks>
-    ///   If the next value is empty, this method never returns.
-    /// </remarks>
-    /// <returns>
-    ///   Fetched vector or an empty List when failed.
-    /// </returns>
-    /// <seealso cref="FetchNext" />
-    public List<T> FetchNextVector<T>(OutputStreamPoller<List<T>> poller, Packet<List<T>> packet, string streamName = null) {
-      var nextValue = FetchNext<List<T>>(poller, packet, streamName);
-      return nextValue == null ? new List<T>() : nextValue;
+    public IEnumerator FetchNext<T>(OutputStreamPoller<T> poller, Packet<T> packet, string streamName = null) {
+      while (true) {
+        if (FetchNext(poller, packet, out var value, streamName)) {
+          yield return value;
+          break;
+        }
+        if (packet.Timestamp().Microseconds() >= currentTimestamp.Microseconds()) {
+          // The latest input packet has already been processed
+          yield return default(T);
+          break;
+        }
+        yield return new WaitForEndOfFrame();
+      }
+    }
+
+    public WaitForResult<T> WaitForNext<T>(OutputStreamPoller<T> poller, Packet<T> packet, string streamName = null) {
+      return new WaitForResult<T>(this, FetchNext(poller, packet, streamName), timeoutMicrosec);
+    }
+
+    public bool FetchLatest<T>(OutputStreamPoller<T> poller, Packet<T> packet, out T value, string streamName = null) {
+      while (true) {
+        if (FetchNext(poller, packet, out value, streamName)) {
+          Logger.Log($"Fetched next value, {value}");
+          return true;
+        }
+        Logger.LogDebug("Failed to fetch next");
+        if (packet.Timestamp().Microseconds() >= currentTimestamp.Microseconds()) {
+          // The latest input packet has already been processed
+          Logger.LogDebug($"Latest packet: {packet.Timestamp().Microseconds()}, {currentTimestamp.Microseconds()}");
+          value = default(T);
+          return false;
+        }
+        Logger.LogDebug("Retry");
+      }
     }
 
     public void SetTimeoutMicrosec(long timeoutMicrosec) {
@@ -310,5 +335,108 @@ namespace Mediapipe.Unity {
     }
 
     protected abstract IList<WaitForResult> RequestDependentAssets();
+
+    protected class OutputStream<TPacket, TValue> where TPacket : Packet<TValue>, new() {
+      readonly CalculatorGraph calculatorGraph;
+
+      readonly string streamName;
+      OutputStreamPoller<TValue> poller;
+      TPacket outputPacket;
+
+      string presenceStreamName;
+      OutputStreamPoller<bool> presencePoller;
+      BoolPacket presencePacket;
+
+      bool canFreeze { get { return presenceStreamName != null; } }
+
+      public OutputStream(CalculatorGraph calculatorGraph, string streamName) {
+        this.calculatorGraph = calculatorGraph;
+        this.streamName = streamName;
+      }
+
+      public Status StartPolling(bool observeTimestampBounds = false) {
+        this.outputPacket = new TPacket();
+
+        var statusOrPoller = calculatorGraph.AddOutputStreamPoller<TValue>(streamName, observeTimestampBounds);
+        var status = statusOrPoller.status;
+        if (status.ok) {
+          this.poller = statusOrPoller.Value();
+        }
+        return status;
+      }
+
+      public Status StartPolling(string presenceStreamName) {
+        this.presenceStreamName = presenceStreamName;
+        var status = this.StartPolling(false);
+
+        if (status.ok) {
+          this.presencePacket = new BoolPacket();
+
+          var statusOrPresencePoller = calculatorGraph.AddOutputStreamPoller<bool>(presenceStreamName);
+          status = statusOrPresencePoller.status;
+          if (status.ok) {
+            this.presencePoller = statusOrPresencePoller.Value();
+          }
+        }
+        return status;
+      }
+
+      public Status AddListener(CalculatorGraph.NativePacketCallback callback, bool observeTimestampBounds = false) {
+        return calculatorGraph.ObserveOutputStream(streamName, callback, observeTimestampBounds);
+      }
+
+      public bool TryGetNext(out TValue value) {
+        if (HasNextValue()) {
+          value = outputPacket.Get();
+          return true;
+        }
+        value = default(TValue);
+        return false;
+      }
+
+      public bool TryGetLatest(out TValue value) {
+        if (HasNextValue()) {
+          var queueSize = poller.QueueSize();
+
+          // Assume that queue size will not be reduced from another thread.
+          while (queueSize-- > 0) {
+            if (!Next()) {
+              value = default(TValue);
+              return false;
+            }
+          }
+          value = outputPacket.Get();
+          return true;
+        }
+        value = default(TValue);
+        return false;
+      }
+
+      bool HasNextValue() {
+        if (canFreeze) {
+          if (!NextPresence() || presencePacket.IsEmpty() || !presencePacket.Get()) {
+            // NOTE: IsEmpty() should always return false
+            return false;
+          }
+        }
+        return Next() && !outputPacket.IsEmpty();
+      }
+
+      bool NextPresence() {
+        return Next(presencePoller, presencePacket, presenceStreamName);
+      }
+
+      bool Next() {
+        return Next(poller, outputPacket, streamName);
+      }
+
+      static bool Next<T>(OutputStreamPoller<T> poller, Packet<T> packet, string streamName) {
+        if (!poller.Next(packet)) {
+          Logger.LogWarning($"Failed to get next value from {streamName}, so there may be errors inside the calculatorGraph. See logs for more details");
+          return false;
+        }
+        return true;
+      }
+    }
   }
 }

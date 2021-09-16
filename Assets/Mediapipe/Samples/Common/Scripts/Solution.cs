@@ -50,5 +50,21 @@ namespace Mediapipe.Unity {
     public virtual void Stop() {
       isPaused = true;
     }
+
+    protected static void ReadFromImageSource(TextureFrame textureFrame, RunningMode runningMode, GraphRunner.ConfigType configType) {
+      var sourceTexture = ImageSourceProvider.imageSource.GetCurrentTexture();
+
+      // For some reason, when the image is coiped on GPU, latency tends to be high.
+      // So even when OpenGL ES is available, use CPU to copy images.
+      var textureType = sourceTexture.GetType();
+
+      if (textureType == typeof(WebCamTexture)) {
+        textureFrame.ReadTextureFromOnCPU((WebCamTexture)sourceTexture);
+      } else if (textureType == typeof(Texture2D)) {
+        textureFrame.ReadTextureFromOnCPU((Texture2D)sourceTexture);
+      } else {
+        textureFrame.ReadTextureFromOnCPU(sourceTexture);
+      }
+    }
   }
 }

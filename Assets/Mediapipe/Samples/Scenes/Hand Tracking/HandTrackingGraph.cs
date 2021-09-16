@@ -82,11 +82,27 @@ namespace Mediapipe.Unity.HandTracking {
     }
 
     public HandTrackingValue FetchNextValue() {
-      var palmDetections = FetchNextVector(palmDetectionsStreamPoller, palmDetectionsPacket, palmDetectionsStreamName);
-      var handRectsFromPalmDetections = FetchNextVector(handRectsFromPalmDetectionsStreamPoller, handRectsFromPalmDetectionsPacket, handRectsFromPalmDetectionsStreamName);
-      var handLandmarks = FetchNextVector(handLandmarksStreamPoller, handLandmarksPacket, handLandmarksStreamName);
-      var handRectsFromLandmarks = FetchNextVector(handRectsFromLandmarksStreamPoller, handRectsFromLandmarksPacket, handRectsFromLandmarksStreamName);
-      var handedness = FetchNextVector(handednessStreamPoller, handednessPacket, handednessStreamName);
+      FetchNext(palmDetectionsStreamPoller, palmDetectionsPacket, out var palmDetections, palmDetectionsStreamName);
+      FetchNext(handRectsFromPalmDetectionsStreamPoller, handRectsFromPalmDetectionsPacket, out var handRectsFromPalmDetections, handRectsFromPalmDetectionsStreamName);
+      FetchNext(handLandmarksStreamPoller, handLandmarksPacket, out var handLandmarks, handLandmarksStreamName);
+      FetchNext(handRectsFromLandmarksStreamPoller, handRectsFromLandmarksPacket, out var handRectsFromLandmarks, handRectsFromLandmarksStreamName);
+      FetchNext(handednessStreamPoller, handednessPacket, out var handedness, handednessStreamName);
+
+      OnPalmDetectectionsOutput.Invoke(palmDetections);
+      OnHandRectsFromPalmDetectionsOutput.Invoke(handRectsFromPalmDetections);
+      OnHandLandmarksOutput.Invoke(handLandmarks);
+      OnHandRectsFromLandmarksOutput.Invoke(handRectsFromLandmarks);
+      OnHandednessOutput.Invoke(handedness);
+
+      return new HandTrackingValue(palmDetections, handRectsFromPalmDetections, handLandmarks, handRectsFromLandmarks, handedness);
+    }
+
+    public HandTrackingValue FetchLatestValue() {
+      FetchLatest(palmDetectionsStreamPoller, palmDetectionsPacket, out var palmDetections, palmDetectionsStreamName);
+      FetchLatest(handRectsFromPalmDetectionsStreamPoller, handRectsFromPalmDetectionsPacket, out var handRectsFromPalmDetections, handRectsFromPalmDetectionsStreamName);
+      FetchLatest(handLandmarksStreamPoller, handLandmarksPacket, out var handLandmarks, handLandmarksStreamName);
+      FetchLatest(handRectsFromLandmarksStreamPoller, handRectsFromLandmarksPacket, out var handRectsFromLandmarks, handRectsFromLandmarksStreamName);
+      FetchLatest(handednessStreamPoller, handednessPacket, out var handedness, handednessStreamName);
 
       OnPalmDetectectionsOutput.Invoke(palmDetections);
       OnHandRectsFromPalmDetectionsOutput.Invoke(handRectsFromPalmDetections);

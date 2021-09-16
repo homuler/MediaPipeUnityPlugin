@@ -35,7 +35,13 @@ namespace Mediapipe.Unity.HairSegmentation {
     }
 
     public ImageFrame FetchNextValue() {
-      var hairMask = FetchNext(hairMaskStreamPoller, hairMaskPacket, hairMaskStreamName);
+      FetchNext(hairMaskStreamPoller, hairMaskPacket, out var hairMask, hairMaskStreamName);
+      OnHairMaskOutput.Invoke(hairMask);
+      return hairMask;
+    }
+
+    public ImageFrame FetchLatestValue() {
+      FetchLatest(hairMaskStreamPoller, hairMaskPacket, out var hairMask, hairMaskStreamName);
       OnHairMaskOutput.Invoke(hairMask);
       return hairMask;
     }

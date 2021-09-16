@@ -14,19 +14,18 @@ namespace Mediapipe.Unity.FaceDetection {
     const string inputStreamName = "input_video";
 
     const string faceDetectionsStreamName = "face_detections";
-    OutputStreamPoller<List<Detection>> faceDetectionsStreamPoller;
-    DetectionVectorPacket faceDetectionsPacket;
+    OutputStream<DetectionVectorPacket, List<Detection>> faceDetectionsStream;
     protected long prevFaceDetectionsMicrosec = 0;
 
     public override Status StartRun(ImageSource imageSource) {
-      faceDetectionsStreamPoller = calculatorGraph.AddOutputStreamPoller<List<Detection>>(faceDetectionsStreamName, true).Value();
-      faceDetectionsPacket = new DetectionVectorPacket();
-
+      InitializeOutputStreams();
+      faceDetectionsStream.StartPolling(true).AssertOk();
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
     public Status StartRunAsync(ImageSource imageSource) {
-      calculatorGraph.ObserveOutputStream(faceDetectionsStreamName, FaceDetectionsCallback, true).AssertOk();
+      InitializeOutputStreams();
+      faceDetectionsStream.AddListener(FaceDetectionsCallback, true).AssertOk();
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
@@ -40,9 +39,9 @@ namespace Mediapipe.Unity.FaceDetection {
     }
 
     public List<Detection> FetchNextValue() {
-      var detections = FetchNextVector<Detection>(faceDetectionsStreamPoller, faceDetectionsPacket, faceDetectionsStreamName);
-      OnFaceDetectionsOutput.Invoke(detections);
-      return detections;
+      faceDetectionsStream.TryGetNext(out var faceDetections);
+      OnFaceDetectionsOutput.Invoke(faceDetections);
+      return faceDetections;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
@@ -61,6 +60,10 @@ namespace Mediapipe.Unity.FaceDetection {
         WaitForAsset("face_detection_short_range.bytes"),
         WaitForAsset("face_detection_full_range_sparse.bytes"),
       };
+    }
+
+    protected void InitializeOutputStreams() {
+      faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, faceDetectionsStreamName);
     }
 
     SidePacket BuildSidePacket(ImageSource imageSource) {

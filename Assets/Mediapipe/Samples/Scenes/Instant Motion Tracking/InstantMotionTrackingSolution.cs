@@ -69,7 +69,7 @@ namespace Mediapipe.Unity.InstantMotionTracking {
         Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
         yield break;
       }
-
+      // NOTE: The screen will be resized later, keeping the aspect ratio.
       screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
       screen.texture = imageSource.GetCurrentTexture();
 
@@ -88,14 +88,9 @@ namespace Mediapipe.Unity.InstantMotionTracking {
         graphRunner.StartRun(imageSource).AssertOk();
       }
 
-      // Decide which TextureFormat to use
-      if (graphRunner.configType == GraphRunner.ConfigType.OpenGLES) {
-        // Use BGRA32 when the input packet is GpuBuffer
-        textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.BGRA32);
-      } else {
-        // Use RGBA32 when the input packet is ImageFrame
-        textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
-      }
+      // Use RGBA32 as the input format.
+      // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
+      textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
 
       trackedAnchorDataAnnotationController.isMirrored = imageSource.isMirrored;
 
@@ -106,22 +101,8 @@ namespace Mediapipe.Unity.InstantMotionTracking {
         yield return textureFrameRequest;
         var textureFrame = textureFrameRequest.result;
 
-        var currentTexture = imageSource.GetCurrentTexture();
-
-        // Copy currentTexture to textureFrame's texture
-        if (graphRunner.configType == GraphRunner.ConfigType.OpenGLES) {
-          textureFrame.ReadTextureFromOnGPU(currentTexture);
-        } else {
-          var textureType = currentTexture.GetType();
-
-          if (textureType == typeof(WebCamTexture)) {
-            textureFrame.ReadTextureFromOnCPU((WebCamTexture)currentTexture);
-          } else if (textureType == typeof(Texture2D)) {
-            textureFrame.ReadTextureFromOnCPU((Texture2D)currentTexture);
-          } else {
-            textureFrame.ReadTextureFromOnCPU(currentTexture);
-          }
-        }
+        // Copy current image to TextureFrame
+        ReadFromImageSource(textureFrame, runningMode, graphRunner.configType);
 
         graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 

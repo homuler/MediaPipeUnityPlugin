@@ -35,7 +35,13 @@ namespace Mediapipe.Unity.ObjectDetection {
     }
 
     public List<Detection> FetchNextDetections() {
-      var detections = FetchNextVector<Detection>(outputDetectionsStreamPoller, outputDetectionsPacket, outputDetectionsStreamName);
+      FetchNext(outputDetectionsStreamPoller, outputDetectionsPacket, out var detections, outputDetectionsStreamName);
+      OnOutputDetectionsOutput.Invoke(detections);
+      return detections;
+    }
+
+    public List<Detection> FetchLatestDetections() {
+      FetchLatest(outputDetectionsStreamPoller, outputDetectionsPacket, out var detections, outputDetectionsStreamName);
       OnOutputDetectionsOutput.Invoke(detections);
       return detections;
     }

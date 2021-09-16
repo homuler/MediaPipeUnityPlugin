@@ -10,7 +10,10 @@ namespace Mediapipe.Unity {
 
     protected object tmpResult;
     protected bool isDone = false;
-    protected IEnumerator inner { get; private set; }
+
+    readonly MonoBehaviour runner;
+    readonly IEnumerator inner;
+    readonly Coroutine coroutine;
 
     public bool isError { get; private set; } = false;
     public Exception error { get; private set; }
@@ -19,8 +22,9 @@ namespace Mediapipe.Unity {
     }
 
     public WaitForResult(MonoBehaviour runner, IEnumerator inner, long timeoutMillisec = Int64.MaxValue) {
+      this.runner = runner;
       this.inner = inner;
-      runner.StartCoroutine(Run(timeoutMillisec));
+      coroutine = runner.StartCoroutine(Run(timeoutMillisec));
     }
 
     IEnumerator Run(long timeoutMillisec) {
@@ -30,6 +34,7 @@ namespace Mediapipe.Unity {
       while(true) {
         try {
           if (stopwatch.ElapsedMilliseconds > timeoutMillisec) {
+            runner.StopCoroutine(coroutine);
             throw new TimeoutException($"{stopwatch.ElapsedMilliseconds}ms has passed");
           }
           if (!inner.MoveNext()) {

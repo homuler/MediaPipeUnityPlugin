@@ -55,8 +55,13 @@ namespace Mediapipe.Unity.MediaPipeVideo {
     }
 
     public ImageFrame FetchNextValue() {
-      var outputVideo = FetchNext(outputStreamPoller, outputImageFramePacket, outputStreamName);
+      FetchNext(outputStreamPoller, outputImageFramePacket, out var outputVideo, outputStreamName);
+      OnOutput.Invoke(outputVideo);
+      return outputVideo;
+    }
 
+    public ImageFrame FetchLatestValue() {
+      FetchLatest(outputStreamPoller, outputImageFramePacket, out var outputVideo, outputStreamName);
       OnOutput.Invoke(outputVideo);
       return outputVideo;
     }

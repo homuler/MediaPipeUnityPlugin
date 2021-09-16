@@ -254,7 +254,7 @@ namespace Mediapipe.Unity {
       var name = textureFrame.GetTextureName();
       var id = textureFrame.instanceId;
       lock (((ICollection)nameTable).SyncRoot) {
-        if (AcquireName(name)) {
+        if (AcquireName(name, id)) {
           instanceTable.Add(id, textureFrame);
           nameTable.Add(name, id);
           return;
@@ -267,11 +267,15 @@ namespace Mediapipe.Unity {
     ///   Remove <paramref name="name" /> from <see cref="nameTable" /> if it's stale.
     ///   If <paramref name="name" /> does not exist in <see cref="nameTable" />, do nothing.
     /// </summary>
+    /// <remarks>
+    ///   If the instance whose id is <paramref name="ownerId" /> owns <paramref name="name" /> now, it still removes <paramref name="name" />.
+    /// </remarks>
     /// <returns>Return if name is available</returns>
-    static bool AcquireName(UInt32 name) {
+    static bool AcquireName(UInt32 name, Guid ownerId) {
       if (nameTable.TryGetValue(name, out var id)) {
-        if (instanceTable.TryGetValue(id, out var instance)) {
+        if (ownerId != id && instanceTable.TryGetValue(id, out var instance)) {
           // if instance is found, the instance is using the name.
+          Logger.LogVerbose($"{id} is using {name} now");
           return false;
         }
         nameTable.Remove(name);
@@ -286,7 +290,7 @@ namespace Mediapipe.Unity {
     void ChangeNameFrom(UInt32 oldName) {
       var newName = GetTextureName();
       lock (((ICollection)nameTable).SyncRoot) {
-        if (!AcquireName(newName)) {
+        if (!AcquireName(newName, instanceId)) {
           throw new ArgumentException("Another instance is using the specified name now");
         }
         nameTable.Remove(oldName);

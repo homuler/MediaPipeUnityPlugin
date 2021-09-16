@@ -35,7 +35,13 @@ namespace Mediapipe.Unity.BoxTracking {
     }
 
     public List<Detection> FetchNextValue() {
-      var trackedDetections = FetchNextVector<Detection>(trackedDetectionsStreamPoller, trackedDetectionsPacket, trackedDetectionsStreamName);
+      FetchNext(trackedDetectionsStreamPoller, trackedDetectionsPacket, out var trackedDetections, trackedDetectionsStreamName);
+      OnTrackedDetectionsOutput.Invoke(trackedDetections);
+      return trackedDetections;
+    }
+
+    public List<Detection> FetchLatestValue() {
+      FetchLatest(trackedDetectionsStreamPoller, trackedDetectionsPacket, out var trackedDetections, trackedDetectionsStreamName);
       OnTrackedDetectionsOutput.Invoke(trackedDetections);
       return trackedDetections;
     }

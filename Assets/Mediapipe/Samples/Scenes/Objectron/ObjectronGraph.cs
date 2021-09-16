@@ -83,9 +83,21 @@ namespace Mediapipe.Unity.Objectron {
     }
 
     public ObjectronValue FetchNextValue() {
-      var liftedObjects = FetchNext(liftedObjectsStreamPoller, liftedObjectsPacket, liftedObjectsStreamName);
-      var multiBoxRects = FetchNext(multiBoxRectsStreamPoller, multiBoxRectsPacket, multiBoxRectsStreamName);
-      var multiBoxLandmarks = FetchNext(multiBoxLandmarksStreamPoller, multiBoxLandmarksPacket, multiBoxLandmarksStreamName);
+      FetchNext(liftedObjectsStreamPoller, liftedObjectsPacket, out var liftedObjects, liftedObjectsStreamName);
+      FetchNext(multiBoxRectsStreamPoller, multiBoxRectsPacket, out var multiBoxRects, multiBoxRectsStreamName);
+      FetchNext(multiBoxLandmarksStreamPoller, multiBoxLandmarksPacket, out var multiBoxLandmarks, multiBoxLandmarksStreamName);
+
+      OnLiftedObjectsOutput.Invoke(liftedObjects);
+      OnMultiBoxRectsOutput.Invoke(multiBoxRects);
+      OnMultiBoxLandmarksOutput.Invoke(multiBoxLandmarks);
+
+      return new ObjectronValue(liftedObjects, multiBoxRects, multiBoxLandmarks);
+    }
+
+    public ObjectronValue FetchLatestValue() {
+      FetchLatest(liftedObjectsStreamPoller, liftedObjectsPacket, out var liftedObjects, liftedObjectsStreamName);
+      FetchLatest(multiBoxRectsStreamPoller, multiBoxRectsPacket, out var multiBoxRects, multiBoxRectsStreamName);
+      FetchLatest(multiBoxLandmarksStreamPoller, multiBoxLandmarksPacket, out var multiBoxLandmarks, multiBoxLandmarksStreamName);
 
       OnLiftedObjectsOutput.Invoke(liftedObjects);
       OnMultiBoxRectsOutput.Invoke(multiBoxRects);

@@ -136,15 +136,41 @@ namespace Mediapipe.Unity.Holistic {
     }
 
     public HolisticTrackingValue FetchNextValue() {
-      var poseDetection = FetchNext(poseDetectionStreamPoller, poseDetectionPacket, poseDetectionStreamName);
-      var poseLandmarks = FetchNext(poseLandmarksStreamPoller, poseLandmarksPacket, poseLandmarksStreamName);
-      var poseWorldLandmarks = FetchNext(poseWorldLandmarksStreamPoller, poseWorldLandmarksPacket, poseWorldLandmarksStreamName);
-      var roiFromLandmarks = FetchNext(poseRoiStreamPoller, poseRoiPacket, poseRoiStreamName);
-      var faceLandmarks = FetchNext(faceLandmarksStreamPoller, faceLandmarksPacket, faceLandmarksStreamName);
-      var leftHandLandmarks = FetchNext(leftHandLandmarksStreamPoller, leftHandLandmarksPacket, leftHandLandmarksStreamName);
-      var rightHandLandmarks = FetchNext(rightHandLandmarksStreamPoller, rightHandLandmarksPacket, rightHandLandmarksStreamName);
-      var leftIrisLandmarks = FetchNext(leftIrisLandmarksStreamPoller, leftIrisLandmarksPacket, leftIrisLandmarksStreamName);
-      var rightIrisLandmarks = FetchNext(rightIrisLandmarksStreamPoller, rightIrisLandmarksPacket, rightIrisLandmarksStreamName);
+      FetchNext(poseDetectionStreamPoller, poseDetectionPacket, out var poseDetection, poseDetectionStreamName);
+      FetchNext(poseLandmarksStreamPoller, poseLandmarksPacket, out var poseLandmarks, poseLandmarksStreamName);
+      FetchNext(poseWorldLandmarksStreamPoller, poseWorldLandmarksPacket, out var poseWorldLandmarks, poseWorldLandmarksStreamName);
+      FetchNext(poseRoiStreamPoller, poseRoiPacket, out var roiFromLandmarks, poseRoiStreamName);
+      FetchNext(faceLandmarksStreamPoller, faceLandmarksPacket, out var faceLandmarks, faceLandmarksStreamName);
+      FetchNext(leftHandLandmarksStreamPoller, leftHandLandmarksPacket, out var leftHandLandmarks, leftHandLandmarksStreamName);
+      FetchNext(rightHandLandmarksStreamPoller, rightHandLandmarksPacket, out var rightHandLandmarks, rightHandLandmarksStreamName);
+      FetchNext(leftIrisLandmarksStreamPoller, leftIrisLandmarksPacket, out var leftIrisLandmarks, leftIrisLandmarksStreamName);
+      FetchNext(rightIrisLandmarksStreamPoller, rightIrisLandmarksPacket, out var rightIrisLandmarks, rightIrisLandmarksStreamName);
+
+      OnPoseDetectionOutput.Invoke(poseDetection);
+      OnPoseLandmarksOutput.Invoke(poseLandmarks);
+      OnPoseWorldLandmarksOutput.Invoke(poseWorldLandmarks);
+      OnPoseRoiOutput.Invoke(roiFromLandmarks);
+      OnFaceLandmarksOutput.Invoke(faceLandmarks);
+      OnLeftHandLandmarksOutput.Invoke(leftHandLandmarks);
+      OnRightHandLandmarksOutput.Invoke(rightHandLandmarks);
+      OnLeftIrisLandmarksOutput.Invoke(leftIrisLandmarks);
+      OnRightIrisLandmarksOutput.Invoke(rightIrisLandmarks);
+
+      return new HolisticTrackingValue(
+        poseDetection, poseLandmarks, poseWorldLandmarks, roiFromLandmarks, faceLandmarks, leftHandLandmarks, rightHandLandmarks, leftIrisLandmarks, rightIrisLandmarks
+      );
+    }
+
+    public HolisticTrackingValue FetchLatestValue() {
+      FetchLatest(poseDetectionStreamPoller, poseDetectionPacket, out var poseDetection, poseDetectionStreamName);
+      FetchLatest(poseLandmarksStreamPoller, poseLandmarksPacket, out var poseLandmarks, poseLandmarksStreamName);
+      FetchLatest(poseWorldLandmarksStreamPoller, poseWorldLandmarksPacket, out var poseWorldLandmarks, poseWorldLandmarksStreamName);
+      FetchLatest(poseRoiStreamPoller, poseRoiPacket, out var roiFromLandmarks, poseRoiStreamName);
+      FetchLatest(faceLandmarksStreamPoller, faceLandmarksPacket, out var faceLandmarks, faceLandmarksStreamName);
+      FetchLatest(leftHandLandmarksStreamPoller, leftHandLandmarksPacket, out var leftHandLandmarks, leftHandLandmarksStreamName);
+      FetchLatest(rightHandLandmarksStreamPoller, rightHandLandmarksPacket, out var rightHandLandmarks, rightHandLandmarksStreamName);
+      FetchLatest(leftIrisLandmarksStreamPoller, leftIrisLandmarksPacket, out var leftIrisLandmarks, leftIrisLandmarksStreamName);
+      FetchLatest(rightIrisLandmarksStreamPoller, rightIrisLandmarksPacket, out var rightIrisLandmarks, rightIrisLandmarksStreamName);
 
       OnPoseDetectionOutput.Invoke(poseDetection);
       OnPoseLandmarksOutput.Invoke(poseLandmarks);

@@ -55,7 +55,13 @@ namespace Mediapipe.Unity.InstantMotionTracking {
     }
 
     public List<Anchor3d> FetchNextValue() {
-      var trackedAnchorData = FetchNext(trackedAnchorDataStreamPoller, trackedAnchorDataPacket, trackedAnchorDataStreamName);
+      FetchNext(trackedAnchorDataStreamPoller, trackedAnchorDataPacket, out var trackedAnchorData, trackedAnchorDataStreamName);
+      OnTrackedAnchorDataOutput.Invoke(trackedAnchorData);
+      return trackedAnchorData;
+    }
+
+    public List<Anchor3d> FetchLatestValue() {
+      FetchLatest(trackedAnchorDataStreamPoller, trackedAnchorDataPacket, out var trackedAnchorData, trackedAnchorDataStreamName);
       OnTrackedAnchorDataOutput.Invoke(trackedAnchorData);
       return trackedAnchorData;
     }

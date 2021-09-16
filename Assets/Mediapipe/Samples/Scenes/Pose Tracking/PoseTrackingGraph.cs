@@ -78,10 +78,24 @@ namespace Mediapipe.Unity.PoseTracking {
     }
 
     public PoseTrackingValue FetchNextValue() {
-      var poseDetection = FetchNext(poseDetectionStreamPoller, poseDetectionPacket, poseDetectionStreamName);
-      var poseLandmarks = FetchNext(poseLandmarksStreamPoller, poseLandmarksPacket, poseLandmarksStreamName);
-      var poseWorldLandmarks = FetchNext(poseWorldLandmarksStreamPoller, poseWorldLandmarksPacket, poseWorldLandmarksStreamName);
-      var roiFromLandmarks = FetchNext(roiFromLandmarksStreamPoller, roiFromLandmarksPacket, roiFromLandmarksStreamName);
+      FetchNext(poseDetectionStreamPoller, poseDetectionPacket, out var poseDetection, poseDetectionStreamName);
+      FetchNext(poseLandmarksStreamPoller, poseLandmarksPacket, out var poseLandmarks, poseLandmarksStreamName);
+      FetchNext(poseWorldLandmarksStreamPoller, poseWorldLandmarksPacket, out var poseWorldLandmarks, poseWorldLandmarksStreamName);
+      FetchNext(roiFromLandmarksStreamPoller, roiFromLandmarksPacket, out var roiFromLandmarks, roiFromLandmarksStreamName);
+
+      OnPoseDetectionOutput.Invoke(poseDetection);
+      OnPoseLandmarksOutput.Invoke(poseLandmarks);
+      OnPoseWorldLandmarksOutput.Invoke(poseWorldLandmarks);
+      OnRoiFromLandmarksOutput.Invoke(roiFromLandmarks);
+
+      return new PoseTrackingValue(poseDetection, poseLandmarks, poseWorldLandmarks, roiFromLandmarks);
+    }
+
+    public PoseTrackingValue FetchLatestValue() {
+      FetchLatest(poseDetectionStreamPoller, poseDetectionPacket, out var poseDetection, poseDetectionStreamName);
+      FetchLatest(poseLandmarksStreamPoller, poseLandmarksPacket, out var poseLandmarks, poseLandmarksStreamName);
+      FetchLatest(poseWorldLandmarksStreamPoller, poseWorldLandmarksPacket, out var poseWorldLandmarks, poseWorldLandmarksStreamName);
+      FetchLatest(roiFromLandmarksStreamPoller, roiFromLandmarksPacket, out var roiFromLandmarks, roiFromLandmarksStreamName);
 
       OnPoseDetectionOutput.Invoke(poseDetection);
       OnPoseLandmarksOutput.Invoke(poseLandmarks);
