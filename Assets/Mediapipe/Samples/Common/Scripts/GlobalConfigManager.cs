@@ -88,6 +88,9 @@ namespace Mediapipe.Unity {
         $"{_GlogLogDirKey}={GlogLogDir}",
         $"{_GlogVKey}={GlogV}",
       };
+      if (!Directory.Exists(cacheDirPath)) {
+        Directory.CreateDirectory(cacheDirPath);
+      }
       File.WriteAllLines(configFilePath, lines, Encoding.UTF8);
       Logger.LogInfo(TAG, "Global config file has been updated");
     }
