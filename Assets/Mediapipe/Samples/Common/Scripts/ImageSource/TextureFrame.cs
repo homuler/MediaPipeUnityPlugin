@@ -200,8 +200,12 @@ namespace Mediapipe.Unity {
     }
 
     public GpuBuffer BuildGpuBuffer(GlContext glContext) {
+#if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_ANDROID
       var glTextureBuffer = new GlTextureBuffer(GetTextureName(), width, height, gpuBufferformat, OnReleaseTextureFrame, glContext);
       return new GpuBuffer(glTextureBuffer);
+#else
+      throw new NotSupportedException("This method is only supported on Linux or Android");
+#endif
     }
 
     public void RemoveAllReleaseListeners() {

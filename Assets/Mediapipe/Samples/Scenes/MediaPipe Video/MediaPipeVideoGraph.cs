@@ -29,6 +29,7 @@ namespace Mediapipe.Unity.MediaPipeVideo {
 
     public Status StartRunAsync(ImageSource imageSource) {
       if (configType != ConfigType.OpenGLES) {
+        InitializeOutputStreams();
         outputVideoStream.AddListener(OutputVideoCallback, true).AssertOk();
       }
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));

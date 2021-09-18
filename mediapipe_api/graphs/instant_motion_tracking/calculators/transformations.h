@@ -7,7 +7,7 @@
 
 extern "C" {
 
-MP_CAPI(MpReturnCode) mp__MakeAnchor3dVectorPacket___PA_i(const mediapipe::Anchor3d* value, int size, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeAnchor3dVectorPacket__PA_i(const mediapipe::Anchor3d* value, int size, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeAnchor3dVectorPacket_At__PA_i_Rt(const mediapipe::Anchor3d* value,
                                                                                   int size,
                                                                                   mediapipe::Timestamp* timestamp,

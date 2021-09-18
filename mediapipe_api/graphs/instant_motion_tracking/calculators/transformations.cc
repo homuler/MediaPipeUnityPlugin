@@ -1,6 +1,6 @@
 #include "mediapipe_api/graphs/instant_motion_tracking/calculators/transformations.h"
 
-MpReturnCode mp__MakeAnchor3dVectorPacket___PA_i(const mediapipe::Anchor3d* value, int size, mediapipe::Packet** packet_out) {
+MpReturnCode mp__MakeAnchor3dVectorPacket__PA_i(const mediapipe::Anchor3d* value, int size, mediapipe::Packet** packet_out) {
   TRY {
     std::vector<mediapipe::Anchor3d> vector {};
     for (auto i = 0; i < size; ++i) {
