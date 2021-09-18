@@ -19,14 +19,12 @@ namespace Mediapipe.Unity.InstantMotionTracking {
     protected long prevTrackedAnchorDataMicrosec = 0;
 
     public override Status StartRun(ImageSource imageSource) {
-      ResetAnchor();
       InitializeOutputStreams();
       trackedAnchorDataStream.StartPolling(true).AssertOk();
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
     public Status StartRunAsync(ImageSource imageSource) {
-      ResetAnchor();
       InitializeOutputStreams();
       trackedAnchorDataStream.AddListener(TrackedAnchorDataCallback, true).AssertOk();
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));

@@ -81,6 +81,8 @@ namespace Mediapipe.Unity.InstantMotionTracking {
         yield break;
       }
 
+      graphRunner.ResetAnchor();
+
       if (runningMode == RunningMode.Async) {
         graphRunner.OnTrackedAnchorDataOutput.AddListener(OnTrackedAnchorDataOutput);
         graphRunner.StartRunAsync(imageSource).AssertOk();
@@ -93,6 +95,7 @@ namespace Mediapipe.Unity.InstantMotionTracking {
       textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
 
       trackedAnchorDataAnnotationController.isMirrored = imageSource.isMirrored;
+      trackedAnchorDataAnnotationController.ResetAnchor();
 
       while (true) {
         yield return new WaitWhile(() => isPaused);

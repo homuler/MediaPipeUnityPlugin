@@ -9,8 +9,7 @@ namespace Mediapipe.Unity {
 
     List<Anchor3d> currentTarget;
     Gyroscope gyroscope;
-
-    [HideInInspector] public Quaternion defaultRotation = Quaternion.identity;
+    Quaternion defaultRotation = Quaternion.identity;
 
     protected override void Start() {
       base.Start();
@@ -23,7 +22,12 @@ namespace Mediapipe.Unity {
 
     public void ResetAnchor() {
       if (gyroscope != null) {
-        defaultRotation = GyroToUnity(gyroscope.attitude);
+        // Assume Landscape Left mode
+        // TODO: consider screen's rotation
+        var screenRotation = Quaternion.Euler(90, 0, -90);
+        var currentRotation = GyroToUnity(gyroscope.attitude);
+        var defaultYAngle = Quaternion.Inverse(screenRotation * currentRotation).eulerAngles.y;
+        defaultRotation = Quaternion.Euler(90, defaultYAngle, -90);
       }
     }
 
@@ -39,9 +43,9 @@ namespace Mediapipe.Unity {
     protected override void SyncNow() {
       isStale = false;
 
-      var rotation = gyroscope == null ? Quaternion.identity : GyroToUnity(gyroscope.attitude);
+      var currentRotation = gyroscope == null ? Quaternion.identity : GyroToUnity(gyroscope.attitude);
       var anchor3d = currentTarget == null || currentTarget.Count < 1 ? null : (Anchor3d?)currentTarget[0]; // at most one anchor
-      annotation.Draw(anchor3d, Quaternion.Inverse(defaultRotation) * rotation, cameraPosition, defaultDepth, visualizeZ);
+      annotation.Draw(anchor3d, Quaternion.Inverse(defaultRotation * currentRotation), cameraPosition, defaultDepth, visualizeZ);
     }
 
     void ApplyTranslateZ(float translateZ) {
