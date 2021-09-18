@@ -67,7 +67,9 @@ Also note that you need to build native libraries for Desktop CPU or GPU to run 
 1. Run a Docker container
     ```sh
     # Run with `Packages` directory mounted to the container
-    docker run --mount type=bind,src=$PWD/Packages,dst=/home/mediapipe/Packages \
+    docker run \
+        --mount type=bind,src=$PWD/Packages,dst=/home/mediapipe/Packages \
+        --mount type=bind,src=$PWD/Assets,dst=/home/mediapipe/Assets \
         -it mediapipe_unity:latest
     ```
 
@@ -163,8 +165,9 @@ If the command finishes successfully, required files will be installed to your h
     ```bat
     Rem Run with `Packages` directory mounted to the container
     Rem Specify `--cpus` and `--memory` options according to your machine.
-    docker run --cpus=16 --memory=8192m ^
+    docker run --cpus=16 --memory=12288m ^
         --mount type=bind,src=%CD%\Packages,dst=C:\mediapipe\Packages ^
+        --mount type=bind,src=%CD%\Assets,dst=C:\mediapipe\Assets ^
         -it mediapipe_unity:windows
     ```
 
@@ -195,6 +198,7 @@ If the command finishes successfully, required files will be installed to your h
     Rem Specify `--cpus` and `--memory` options according to your machine.
     docker run --cpus=16 --memory=8192m ^
         --mount type=bind,src=%CD%\Packages,dst=/home/mediapipe/Packages ^
+        --mount type=bind,src=%CD%\Assets,dst=C:\mediapipe\Assets ^
         -it mediapipe_unity:linux
     ```
 
