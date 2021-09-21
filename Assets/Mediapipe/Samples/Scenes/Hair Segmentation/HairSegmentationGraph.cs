@@ -50,6 +50,13 @@ namespace Mediapipe.Unity.HairSegmentation {
       }).mpPtr;
     }
 
+
+#if UNITY_IOS
+    protected override ConfigType DetectConfigType() {
+      return ConfigType.CPU;
+    }
+#endif
+
     protected override IList<WaitForResult> RequestDependentAssets() {
       return new List<WaitForResult> {
         WaitForAsset("hair_segmentation.bytes"),
