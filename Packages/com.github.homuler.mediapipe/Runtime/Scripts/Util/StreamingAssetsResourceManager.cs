@@ -24,11 +24,7 @@ namespace Mediapipe.Unity {
       // It's safe to update static members because at most one RsourceManager can be initialized.
       relativePath = path;
       assetPathRoot = Path.Combine(Application.streamingAssetsPath, relativePath);
-#if (!UNITY_ANDROID && !UNITY_WEBGL) || UNITY_EDITOR
-      cachePathRoot = assetPathRoot;
-#else
       cachePathRoot = Path.Combine(Application.persistentDataPath, relativePath);
-#endif
     }
 
     public StreamingAssetsResourceManager() : this("") {}
@@ -125,6 +121,10 @@ namespace Mediapipe.Unity {
     }
 
     static string GetCachePathFor(string assetName) {
+      var assetPath = GetAssetPathFor(assetName);
+      if (File.Exists(assetPath)) {
+        return assetPath;
+      }
       return Path.Combine(cachePathRoot, assetName);
     }
   }
