@@ -80,6 +80,7 @@ namespace Mediapipe.Unity.UI {
       SourceInput.onValueChanged.AddListener(delegate {
         imageSource.SelectSource(SourceInput.value);
         isChanged = true;
+        InitializeResolution();
       });
     }
 

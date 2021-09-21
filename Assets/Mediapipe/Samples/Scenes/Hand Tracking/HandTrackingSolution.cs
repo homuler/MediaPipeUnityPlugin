@@ -63,7 +63,7 @@ namespace Mediapipe.Unity.HandTracking {
         yield break;
       }
       // NOTE: The screen will be resized later, keeping the aspect ratio.
-      screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
+      SetupScreen(screen, imageSource);
       screen.texture = imageSource.GetCurrentTexture();
 
       Logger.LogInfo(TAG, $"Max Num Hands = {maxNumHands}");

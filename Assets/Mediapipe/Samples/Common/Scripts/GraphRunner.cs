@@ -251,7 +251,7 @@ namespace Mediapipe.Unity {
       // Transformation from Unity Coordinate to Image Coordinate
       var shouldBeFlippedVertically = !imageSource.isVerticallyFlipped;
 
-      var inputRotation = shouldBeFlippedHorizontally && shouldBeFlippedVertically ? 180 : 0;
+      var inputRotation = ((shouldBeFlippedHorizontally && shouldBeFlippedVertically ? 180 : 0) - imageSource.rotation + 360) % 360;
       var inputHorizontallyFlipped = shouldBeFlippedHorizontally && !shouldBeFlippedVertically;
       var inputVerticallyFlipped = shouldBeFlippedVertically && !shouldBeFlippedHorizontally;
 

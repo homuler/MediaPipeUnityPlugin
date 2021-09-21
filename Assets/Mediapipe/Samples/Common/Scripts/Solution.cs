@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Mediapipe.Unity {
   public abstract class Solution : MonoBehaviour {
@@ -49,6 +50,14 @@ namespace Mediapipe.Unity {
     /// </summary>
     public virtual void Stop() {
       isPaused = true;
+    }
+
+    protected static void SetupScreen(RawImage screen, ImageSource imageSource) {
+      screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
+      screen.rectTransform.localEulerAngles = new Vector3(0, 0, -imageSource.rotation);
+      if (imageSource.isVerticallyFlipped) {
+        screen.uvRect = new UnityEngine.Rect(0, 1, 1, -1);
+      }
     }
 
     protected static void ReadFromImageSource(TextureFrame textureFrame, RunningMode runningMode, GraphRunner.ConfigType configType) {

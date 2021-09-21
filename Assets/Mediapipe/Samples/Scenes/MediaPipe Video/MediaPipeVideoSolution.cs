@@ -67,7 +67,7 @@ namespace Mediapipe.Unity.MediaPipeVideo {
         yield break;
       }
       // NOTE: The screen will be resized later, keeping the aspect ratio.
-      screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
+      SetupScreen(screen, imageSource);
 
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
