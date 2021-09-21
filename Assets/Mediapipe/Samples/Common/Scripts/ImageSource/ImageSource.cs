@@ -67,8 +67,10 @@ namespace Mediapipe.Unity {
     ///   If <see cref="type" /> does not support frame rate, it returns zero.
     /// </remarks>
     public virtual double frameRate { get { return resolution.frameRate; } }
-    public float focalLengthPx { get { return 2.0f; } } // TODO: calculate at runtime
+    public float focalLengthPx { get; } = 2.0f; // TODO: calculate at runtime
     public virtual bool isMirrored { get; set; } = false;
+    public virtual bool isVerticallyMirrored { get; } = false;
+    public virtual int rotation { get; } = 0;
 
     public abstract SourceType type { get; }
     public abstract string sourceName { get; }

@@ -92,6 +92,8 @@ namespace Mediapipe.Unity.FaceDetection {
         yield return textureFrameRequest;
         var textureFrame = textureFrameRequest.result;
 
+        Logger.LogDebug($"rotation = {imageSource.rotation}, vertically mirrored = {imageSource.isVerticallyMirrored}");
+
         // Copy current image to TextureFrame
         ReadFromImageSource(textureFrame, runningMode, graphRunner.configType);
 
