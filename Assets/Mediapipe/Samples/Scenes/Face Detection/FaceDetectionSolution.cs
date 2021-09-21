@@ -83,7 +83,7 @@ namespace Mediapipe.Unity.FaceDetection {
       // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
       textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
 
-      faceDetectionsAnnotationController.isMirrored = imageSource.isMirrored;
+      faceDetectionsAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
 
       while (true) {
         yield return new WaitWhile(() => isPaused);
@@ -91,8 +91,6 @@ namespace Mediapipe.Unity.FaceDetection {
         var textureFrameRequest = textureFramePool.WaitForNextTextureFrame();
         yield return textureFrameRequest;
         var textureFrame = textureFrameRequest.result;
-
-        Logger.LogDebug($"rotation = {imageSource.rotation}, vertically mirrored = {imageSource.isVerticallyMirrored}");
 
         // Copy current image to TextureFrame
         ReadFromImageSource(textureFrame, runningMode, graphRunner.configType);

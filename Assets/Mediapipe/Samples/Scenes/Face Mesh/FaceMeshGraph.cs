@@ -114,16 +114,9 @@ namespace Mediapipe.Unity.FaceMesh {
 
     SidePacket BuildSidePacket(ImageSource imageSource) {
       var sidePacket = new SidePacket();
-      sidePacket.Emplace("num_faces", new IntPacket(maxNumFaces));
 
-      // Coordinate transformation from Unity to MediaPipe
-      if (imageSource.isMirrored) {
-        sidePacket.Emplace("input_rotation", new IntPacket(180));
-        sidePacket.Emplace("input_vertically_flipped", new BoolPacket(false));
-      } else {
-        sidePacket.Emplace("input_rotation", new IntPacket(0));
-        sidePacket.Emplace("input_vertically_flipped", new BoolPacket(true));
-      }
+      SetImageTransformationOptions(sidePacket, imageSource);
+      sidePacket.Emplace("num_faces", new IntPacket(maxNumFaces));
 
       return sidePacket;
     }

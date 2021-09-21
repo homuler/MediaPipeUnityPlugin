@@ -76,7 +76,7 @@ namespace Mediapipe.Unity.HairSegmentation {
       // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
       textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
 
-      hairMaskAnnotationController.isMirrored = imageSource.isMirrored;
+      hairMaskAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
       hairMaskAnnotationController.InitScreen();
 
       while (true) {

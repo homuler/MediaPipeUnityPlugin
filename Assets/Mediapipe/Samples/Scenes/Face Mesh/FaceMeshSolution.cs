@@ -88,9 +88,9 @@ namespace Mediapipe.Unity.FaceMesh {
       // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
       textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
 
-      faceDetectionsAnnotationController.isMirrored = imageSource.isMirrored;
-      faceRectsFromLandmarksAnnotationController.isMirrored = imageSource.isMirrored;
-      multiFaceLandmarksAnnotationController.isMirrored = imageSource.isMirrored;
+      faceDetectionsAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
+      faceRectsFromLandmarksAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
+      multiFaceLandmarksAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
 
       while (true) {
         yield return new WaitWhile(() => isPaused);

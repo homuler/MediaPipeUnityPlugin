@@ -268,18 +268,11 @@ namespace Mediapipe.Unity.Holistic {
 
     SidePacket BuildSidePacket(ImageSource imageSource) {
       var sidePacket = new SidePacket();
+
+      SetImageTransformationOptions(sidePacket, imageSource);
       sidePacket.Emplace("enable_iris_detection", new BoolPacket(detectIris));
       sidePacket.Emplace("model_complexity", new IntPacket((int)modelComplexity));
       sidePacket.Emplace("smooth_landmarks", new BoolPacket(smoothLandmarks));
-
-      // Coordinate transformation from Unity to MediaPipe
-      if (imageSource.isMirrored) {
-        sidePacket.Emplace("input_rotation", new IntPacket(180));
-        sidePacket.Emplace("input_vertically_flipped", new BoolPacket(false));
-      } else {
-        sidePacket.Emplace("input_rotation", new IntPacket(0));
-        sidePacket.Emplace("input_vertically_flipped", new BoolPacket(true));
-      }
 
       return sidePacket;
     }

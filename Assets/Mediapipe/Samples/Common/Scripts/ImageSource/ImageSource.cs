@@ -68,8 +68,8 @@ namespace Mediapipe.Unity {
     /// </remarks>
     public virtual double frameRate { get { return resolution.frameRate; } }
     public float focalLengthPx { get; } = 2.0f; // TODO: calculate at runtime
-    public virtual bool isMirrored { get; set; } = false;
-    public virtual bool isVerticallyMirrored { get; } = false;
+    public virtual bool isHorizontallyFlipped { get; set; } = false;
+    public virtual bool isVerticallyFlipped { get; } = false;
     public virtual int rotation { get; } = 0;
 
     public abstract SourceType type { get; }

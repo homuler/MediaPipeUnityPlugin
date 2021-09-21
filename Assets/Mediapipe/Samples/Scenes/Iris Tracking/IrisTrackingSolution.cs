@@ -81,9 +81,9 @@ namespace Mediapipe.Unity.IrisTracking {
       // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
       textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
 
-      faceDetectionsAnnotationController.isMirrored = imageSource.isMirrored;
-      faceRectAnnotationController.isMirrored = imageSource.isMirrored;
-      faceLandmarksWithIrisAnnotationController.isMirrored = imageSource.isMirrored;
+      faceDetectionsAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
+      faceRectAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
+      faceLandmarksWithIrisAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
 
       while (true) {
         yield return new WaitWhile(() => isPaused);

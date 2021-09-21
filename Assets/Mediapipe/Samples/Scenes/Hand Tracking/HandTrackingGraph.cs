@@ -159,17 +159,9 @@ namespace Mediapipe.Unity.HandTracking {
 
     SidePacket BuildSidePacket(ImageSource imageSource) {
       var sidePacket = new SidePacket();
-      sidePacket.Emplace("num_hands", new IntPacket(maxNumHands));
 
-      // Coordinate transformation from Unity to MediaPipe
-      // Filps the input image if it's **not** mirrored, because MediaPipe assumes that the the input is vertically flipped,
-      if (imageSource.isMirrored) {
-        sidePacket.Emplace("input_rotation", new IntPacket(0));
-        sidePacket.Emplace("input_vertically_flipped", new BoolPacket(true));
-      } else {
-        sidePacket.Emplace("input_rotation", new IntPacket(180));
-        sidePacket.Emplace("input_vertically_flipped", new BoolPacket(false));
-      }
+      SetImageTransformationOptions(sidePacket, imageSource, true);
+      sidePacket.Emplace("num_hands", new IntPacket(maxNumHands));
 
       return sidePacket;
     }

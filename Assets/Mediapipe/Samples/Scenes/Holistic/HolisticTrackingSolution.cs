@@ -105,10 +105,10 @@ namespace Mediapipe.Unity.Holistic {
       // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
       textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
 
-      poseDetectionAnnotationController.isMirrored = imageSource.isMirrored;
-      holisticAnnotationController.isMirrored = imageSource.isMirrored;
-      poseWorldLandmarksAnnotationController.isMirrored = imageSource.isMirrored;
-      poseRoiAnnotationController.isMirrored = imageSource.isMirrored;
+      poseDetectionAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
+      holisticAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
+      poseWorldLandmarksAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
+      poseRoiAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
 
       while (true) {
         yield return new WaitWhile(() => isPaused);

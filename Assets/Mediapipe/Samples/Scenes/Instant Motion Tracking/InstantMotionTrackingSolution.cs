@@ -51,7 +51,7 @@ namespace Mediapipe.Unity.InstantMotionTracking {
 
         if (RectTransformUtility.RectangleContainsScreenPoint(rectTransform, Input.mousePosition, Camera.main)) {
           if (RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, Camera.main, out var localPoint)) {
-            var normalizedPoint = rectTransform.GetNormalizedPosition(localPoint, ImageSourceProvider.imageSource.isMirrored);
+            var normalizedPoint = rectTransform.GetNormalizedPosition(localPoint, ImageSourceProvider.imageSource.isHorizontallyFlipped);
             graphRunner.ResetAnchor(normalizedPoint.x, normalizedPoint.y);
             trackedAnchorDataAnnotationController.ResetAnchor();
           }
@@ -94,7 +94,7 @@ namespace Mediapipe.Unity.InstantMotionTracking {
       // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
       textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
 
-      trackedAnchorDataAnnotationController.isMirrored = imageSource.isMirrored;
+      trackedAnchorDataAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
       trackedAnchorDataAnnotationController.ResetAnchor();
 
       while (true) {

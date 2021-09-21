@@ -8,12 +8,12 @@ namespace Mediapipe.Unity.UI {
     const string _SourceTypePath = "Scroll View/Viewport/Contents/SourceType/Dropdown";
     const string _SourcePath = "Scroll View/Viewport/Contents/Source/Dropdown";
     const string _ResolutionPath = "Scroll View/Viewport/Contents/Resolution/Dropdown";
-    const string _IsMirroredPath = "Scroll View/Viewport/Contents/IsMirrored/Toggle";
+    const string _IsHorizontallyFlippedPath = "Scroll View/Viewport/Contents/IsHorizontallyFlipped/Toggle";
 
     Dropdown SourceTypeInput;
     Dropdown SourceInput;
     Dropdown ResolutionInput;
-    Toggle IsMirroredInput;
+    Toggle IsHorizontallyFlippedInput;
 
     bool isChanged;
 
@@ -29,7 +29,7 @@ namespace Mediapipe.Unity.UI {
       InitializeSourceType();
       InitializeSource();
       InitializeResolution();
-      InitializeIsMirrored();
+      InitializeIsHorizontallyFlipped();
     }
 
     void InitializeSourceType() {
@@ -112,13 +112,13 @@ namespace Mediapipe.Unity.UI {
       });
     }
 
-    void InitializeIsMirrored() {
-      IsMirroredInput = gameObject.transform.Find(_IsMirroredPath).gameObject.GetComponent<Toggle>();
+    void InitializeIsHorizontallyFlipped() {
+      IsHorizontallyFlippedInput = gameObject.transform.Find(_IsHorizontallyFlippedPath).gameObject.GetComponent<Toggle>();
 
       var imageSource = ImageSourceProvider.imageSource;
-      IsMirroredInput.isOn = imageSource.isMirrored;
-      IsMirroredInput.onValueChanged.AddListener(delegate {
-        imageSource.isMirrored = IsMirroredInput.isOn;
+      IsHorizontallyFlippedInput.isOn = imageSource.isHorizontallyFlipped;
+      IsHorizontallyFlippedInput.onValueChanged.AddListener(delegate {
+        imageSource.isHorizontallyFlipped = IsHorizontallyFlippedInput.isOn;
         isChanged = true;
       });
     }

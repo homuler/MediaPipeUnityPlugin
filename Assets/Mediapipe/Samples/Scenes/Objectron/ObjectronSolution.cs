@@ -95,10 +95,10 @@ namespace Mediapipe.Unity.Objectron {
 
       liftedObjectsAnnotationController.focalLength = graphRunner.focalLength;
       liftedObjectsAnnotationController.principalPoint = graphRunner.principalPoint;
-      liftedObjectsAnnotationController.isMirrored = imageSource.isMirrored;
+      liftedObjectsAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
 
-      multiBoxRectsAnnotationController.isMirrored = imageSource.isMirrored;
-      multiBoxLandmarksAnnotationController.isMirrored = imageSource.isMirrored;
+      multiBoxRectsAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
+      multiBoxLandmarksAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
 
       while (true) {
         yield return new WaitWhile(() => isPaused);

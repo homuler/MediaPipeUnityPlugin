@@ -114,16 +114,7 @@ namespace Mediapipe.Unity.IrisTracking {
 
     SidePacket BuildSidePacket(ImageSource imageSource) {
       var sidePacket = new SidePacket();
-
-      // Coordinate transformation from Unity to MediaPipe
-      if (imageSource.isMirrored) {
-        sidePacket.Emplace("input_rotation", new IntPacket(180));
-        sidePacket.Emplace("input_vertically_flipped", new BoolPacket(false));
-      } else {
-        sidePacket.Emplace("input_rotation", new IntPacket(0));
-        sidePacket.Emplace("input_vertically_flipped", new BoolPacket(true));
-      }
-
+      SetImageTransformationOptions(sidePacket, imageSource);
       return sidePacket;
     }
   }

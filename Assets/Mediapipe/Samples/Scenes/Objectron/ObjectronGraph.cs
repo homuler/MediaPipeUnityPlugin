@@ -139,17 +139,10 @@ namespace Mediapipe.Unity.Objectron {
 
     SidePacket BuildSidePacket(ImageSource imageSource) {
       var sidePacket = new SidePacket();
+
+      SetImageTransformationOptions(sidePacket, imageSource);
       sidePacket.Emplace("allowed_labels", new StringPacket(GetAllowedLabels(category)));
       sidePacket.Emplace("max_num_objects", new IntPacket(maxNumObjects));
-
-      // Coordinate transformation from Unity to MediaPipe
-      if (imageSource.isMirrored) {
-        sidePacket.Emplace("input_rotation", new IntPacket(180));
-        sidePacket.Emplace("input_vertically_flipped", new BoolPacket(false));
-      } else {
-        sidePacket.Emplace("input_rotation", new IntPacket(0));
-        sidePacket.Emplace("input_vertically_flipped", new BoolPacket(true));
-      }
 
       return sidePacket;
     }

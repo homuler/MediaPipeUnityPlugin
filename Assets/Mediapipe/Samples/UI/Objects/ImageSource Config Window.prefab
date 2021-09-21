@@ -1741,7 +1741,7 @@ GameObject:
   - component: {fileID: 9504816060662300}
   - component: {fileID: 2881643669154296436}
   m_Layer: 5
-  m_Name: IsMirrored
+  m_Name: IsHorizontallyFlipped
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3809,7 +3809,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Is Mirrored?
+  m_Text: Is Horizontally Flipped
 --- !u!114 &6648938771057324719
 MonoBehaviour:
   m_ObjectHideFlags: 0

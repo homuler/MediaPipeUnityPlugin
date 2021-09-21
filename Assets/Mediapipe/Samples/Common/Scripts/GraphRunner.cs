@@ -246,6 +246,20 @@ namespace Mediapipe.Unity {
       return CalculatorGraphConfig.Parser.ParseFromTextFormat(config.text);
     }
 
+    protected static void SetImageTransformationOptions(SidePacket sidePacket, ImageSource imageSource, bool expectedToBeMirrored = false) {
+      var shouldBeFlippedHorizontally = imageSource.isHorizontallyFlipped ^ expectedToBeMirrored;
+      // Transformation from Unity Coordinate to Image Coordinate
+      var shouldBeFlippedVertically = !imageSource.isVerticallyFlipped;
+
+      var inputRotation = shouldBeFlippedHorizontally && shouldBeFlippedVertically ? 180 : 0;
+      var inputHorizontallyFlipped = shouldBeFlippedHorizontally && !shouldBeFlippedVertically;
+      var inputVerticallyFlipped = shouldBeFlippedVertically && !shouldBeFlippedHorizontally;
+
+      sidePacket.Emplace("input_rotation", new IntPacket(inputRotation));
+      sidePacket.Emplace("input_horizontally_flipped", new BoolPacket(inputHorizontallyFlipped));
+      sidePacket.Emplace("input_vertically_flipped", new BoolPacket(inputVerticallyFlipped));
+    }
+
     protected virtual ConfigType DetectConfigType() {
       if (GpuManager.isInitialized) {
         if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES3 && openGlEsConfig != null) {

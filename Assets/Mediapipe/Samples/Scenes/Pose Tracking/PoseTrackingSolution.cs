@@ -94,10 +94,10 @@ namespace Mediapipe.Unity.PoseTracking {
       // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
       textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
 
-      poseDetectionAnnotationController.isMirrored = imageSource.isMirrored;
-      poseLandmarksAnnotationController.isMirrored = imageSource.isMirrored;
-      poseWorldLandmarksAnnotationController.isMirrored = imageSource.isMirrored;
-      roiFromLandmarksAnnotationController.isMirrored = imageSource.isMirrored;
+      poseDetectionAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
+      poseLandmarksAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
+      poseWorldLandmarksAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
+      roiFromLandmarksAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
 
       while (true) {
         yield return new WaitWhile(() => isPaused);

@@ -68,16 +68,9 @@ namespace Mediapipe.Unity.FaceDetection {
 
     SidePacket BuildSidePacket(ImageSource imageSource) {
       var sidePacket = new SidePacket();
-      sidePacket.Emplace("model_type", new IntPacket((int)modelType));
 
-      // Coordinate transformation from Unity to MediaPipe
-      if (imageSource.isMirrored) {
-        sidePacket.Emplace("input_rotation", new IntPacket(180));
-        sidePacket.Emplace("input_vertically_flipped", new BoolPacket(false));
-      } else {
-        sidePacket.Emplace("input_rotation", new IntPacket(0));
-        sidePacket.Emplace("input_vertically_flipped", new BoolPacket(true));
-      }
+      SetImageTransformationOptions(sidePacket, imageSource);
+      sidePacket.Emplace("model_type", new IntPacket((int)modelType));
 
       return sidePacket;
     }

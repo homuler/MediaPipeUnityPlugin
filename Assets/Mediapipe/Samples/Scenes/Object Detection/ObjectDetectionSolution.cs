@@ -77,7 +77,7 @@ namespace Mediapipe.Unity.ObjectDetection {
       // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
       textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
 
-      outputDetectionsAnnotationController.isMirrored = imageSource.isMirrored;
+      outputDetectionsAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
 
       while (true) {
         yield return new WaitWhile(() => isPaused);
