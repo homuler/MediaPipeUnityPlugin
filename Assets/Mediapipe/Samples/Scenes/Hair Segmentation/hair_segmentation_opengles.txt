@@ -161,7 +161,14 @@ node {
 }
 
 node: {
+  calculator: "ImageTransformationCalculator"
+  input_stream: "IMAGE_GPU:hair_mask_gpu"
+  input_side_packet: "ROTATION_DEGREES:output_rotation"
+  output_stream: "IMAGE_GPU:hair_mask_unrotated_gpu"
+}
+
+node: {
   calculator: "GpuBufferToImageFrameCalculator"
-  input_stream: "hair_mask_gpu"
+  input_stream: "hair_mask_unrotated_gpu"
   output_stream: "hair_mask"
 }

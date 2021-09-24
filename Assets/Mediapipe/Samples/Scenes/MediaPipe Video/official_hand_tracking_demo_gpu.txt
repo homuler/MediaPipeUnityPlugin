@@ -101,6 +101,7 @@ node {
 node: {
   calculator: "GlScalerCalculator"
   input_stream: "VIDEO:output_video_raw"
+  input_side_packet: "ROTATION:output_rotation"
   output_stream: "VIDEO:output_video_gpu"
   node_options: {
     [type.googleapis.com/mediapipe.GlScalerCalculatorOptions] {

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 namespace Mediapipe.Unity.PoseTracking {
   public class PoseTrackingSolution : Solution {
     [SerializeField] RawImage screen;
+    [SerializeField] RectTransform worldAnnotationArea;
     [SerializeField] DetectionAnnotationController poseDetectionAnnotationController;
     [SerializeField] PoseLandmarkListAnnotationController poseLandmarksAnnotationController;
     [SerializeField] PoseWorldLandmarkListAnnotationController poseWorldLandmarksAnnotationController;
@@ -69,6 +70,7 @@ namespace Mediapipe.Unity.PoseTracking {
       // NOTE: The screen will be resized later, keeping the aspect ratio.
       SetupScreen(screen, imageSource);
       screen.texture = imageSource.GetCurrentTexture();
+      worldAnnotationArea.localEulerAngles = imageSource.rotation.Reverse().GetEulerAngles();
 
       Logger.LogInfo(TAG, $"Model Complexity = {modelComplexity}");
       Logger.LogInfo(TAG, $"Smooth Landmarks = {smoothLandmarks}");
@@ -94,10 +96,10 @@ namespace Mediapipe.Unity.PoseTracking {
       // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
       textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
 
-      poseDetectionAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
-      poseLandmarksAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
-      poseWorldLandmarksAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
-      roiFromLandmarksAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
+      SetupAnnotationController(poseDetectionAnnotationController, imageSource);
+      SetupAnnotationController(poseLandmarksAnnotationController, imageSource);
+      SetupAnnotationController(poseWorldLandmarksAnnotationController, imageSource);
+      SetupAnnotationController(roiFromLandmarksAnnotationController, imageSource);
 
       while (true) {
         yield return new WaitWhile(() => isPaused);

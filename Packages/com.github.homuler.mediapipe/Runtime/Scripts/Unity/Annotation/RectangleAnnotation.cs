@@ -42,13 +42,13 @@ namespace Mediapipe.Unity {
 
     public void Draw(Rect target, Vector2 imageSize) {
       if (ActivateFor(target)) {
-        Draw(GetAnnotationLayer().GetRectVertices(target, imageSize, isMirrored));
+        Draw(GetAnnotationLayer().GetRectVertices(target, imageSize, rotationAngle, isMirrored));
       }
     }
 
     public void Draw(NormalizedRect target) {
       if (ActivateFor(target)) {
-        Draw(GetAnnotationLayer().GetRectVertices(target, isMirrored));
+        Draw(GetAnnotationLayer().GetRectVertices(target, rotationAngle, isMirrored));
       }
     }
 
@@ -56,11 +56,11 @@ namespace Mediapipe.Unity {
       if (ActivateFor(target)) {
         switch (target.Format) {
           case mplt.Format.BoundingBox: {
-            Draw(GetAnnotationLayer().GetRectVertices(target.BoundingBox, imageSize, isMirrored));
+            Draw(GetAnnotationLayer().GetRectVertices(target.BoundingBox, imageSize, rotationAngle, isMirrored));
             break;
           }
           case mplt.Format.RelativeBoundingBox: {
-            Draw(GetAnnotationLayer().GetRectVertices(target.RelativeBoundingBox, isMirrored));
+            Draw(GetAnnotationLayer().GetRectVertices(target.RelativeBoundingBox, rotationAngle, isMirrored));
             break;
           }
           default: {
@@ -74,7 +74,7 @@ namespace Mediapipe.Unity {
       if (ActivateFor(target)) {
         switch (target.Format) {
           case mplt.Format.RelativeBoundingBox: {
-            Draw(GetAnnotationLayer().GetRectVertices(target.RelativeBoundingBox, isMirrored));
+            Draw(GetAnnotationLayer().GetRectVertices(target.RelativeBoundingBox, rotationAngle, isMirrored));
             break;
           }
           default: {

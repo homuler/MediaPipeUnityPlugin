@@ -54,10 +54,15 @@ namespace Mediapipe.Unity {
 
     protected static void SetupScreen(RawImage screen, ImageSource imageSource) {
       screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
-      screen.rectTransform.localEulerAngles = new Vector3(0, 0, -imageSource.rotation);
+      screen.rectTransform.localEulerAngles = imageSource.rotation.Reverse().GetEulerAngles();
       if (imageSource.isVerticallyFlipped) {
         screen.uvRect = new UnityEngine.Rect(0, 1, 1, -1);
       }
+    }
+
+    protected static void SetupAnnotationController<T>(AnnotationController<T> annotationController, ImageSource imageSource, bool expectedToBeMirrored = false) where T : HierarchicalAnnotation {
+      annotationController.isMirrored = expectedToBeMirrored ^ imageSource.isHorizontallyFlipped;
+      annotationController.rotationAngle = imageSource.rotation.Reverse();
     }
 
     protected static void ReadFromImageSource(TextureFrame textureFrame, RunningMode runningMode, GraphRunner.ConfigType configType) {

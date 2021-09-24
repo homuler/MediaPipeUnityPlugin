@@ -93,12 +93,12 @@ namespace Mediapipe.Unity.Objectron {
       // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
       textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
 
+      SetupAnnotationController(liftedObjectsAnnotationController, imageSource);
       liftedObjectsAnnotationController.focalLength = graphRunner.focalLength;
       liftedObjectsAnnotationController.principalPoint = graphRunner.principalPoint;
-      liftedObjectsAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
 
-      multiBoxRectsAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
-      multiBoxLandmarksAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
+      SetupAnnotationController(multiBoxRectsAnnotationController, imageSource);
+      SetupAnnotationController(multiBoxLandmarksAnnotationController, imageSource);
 
       while (true) {
         yield return new WaitWhile(() => isPaused);

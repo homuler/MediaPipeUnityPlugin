@@ -35,7 +35,7 @@ namespace Mediapipe.Unity {
     public override int textureHeight { get { return !isPrepared ? 0 : webCamTexture.height; } }
 
     public override bool isVerticallyFlipped { get { return !isPrepared ? false : webCamTexture.videoVerticallyMirrored; } }
-    public override int rotation { get { return !isPrepared ? 0 : webCamTexture.videoRotationAngle; } }
+    public override RotationAngle rotation { get { return !isPrepared ? RotationAngle.Rotation0 : (RotationAngle)webCamTexture.videoRotationAngle; } }
 
     WebCamDevice? _webCamDevice;
     WebCamDevice? webCamDevice {

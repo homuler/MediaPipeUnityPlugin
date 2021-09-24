@@ -69,7 +69,11 @@ namespace Mediapipe.Unity.HairSegmentation {
 
     SidePacket BuildSidePacket(ImageSource imageSource) {
       var sidePacket = new SidePacket();
+
       SetImageTransformationOptions(sidePacket, imageSource);
+      var outputRotation = imageSource.isHorizontallyFlipped ? imageSource.rotation.Reverse() : imageSource.rotation;
+      sidePacket.Emplace("output_rotation", new IntPacket((int)outputRotation));
+
       return sidePacket;
     }
   }

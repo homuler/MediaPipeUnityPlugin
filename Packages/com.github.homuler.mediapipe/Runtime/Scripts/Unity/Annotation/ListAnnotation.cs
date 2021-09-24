@@ -43,6 +43,15 @@ namespace Mediapipe.Unity {
       }
     }
 
+    public override RotationAngle rotationAngle {
+      set {
+        foreach (var child in children) {
+          child.rotationAngle = value;
+        }
+        base.rotationAngle = value;
+      }
+    }
+
     protected virtual void Destroy() {
       foreach (var child in children) {
         Destroy(child);

@@ -47,6 +47,8 @@ namespace Mediapipe.Unity {
     }
     public long timeoutMillisec { get { return timeoutMicrosec / 1000; } }
 
+    public RotationAngle rotation { get; private set; } = 0;
+
     Stopwatch stopwatch;
     protected CalculatorGraph calculatorGraph { get; private set; }
     protected Timestamp currentTimestamp;
@@ -246,16 +248,24 @@ namespace Mediapipe.Unity {
       return CalculatorGraphConfig.Parser.ParseFromTextFormat(config.text);
     }
 
-    protected static void SetImageTransformationOptions(SidePacket sidePacket, ImageSource imageSource, bool expectedToBeMirrored = false) {
-      var shouldBeFlippedHorizontally = imageSource.isHorizontallyFlipped ^ expectedToBeMirrored;
-      // Transformation from Unity Coordinate to Image Coordinate
-      var shouldBeFlippedVertically = !imageSource.isVerticallyFlipped;
+    protected void SetImageTransformationOptions(SidePacket sidePacket, ImageSource imageSource, bool expectedToBeMirrored = false) {
+      // NOTE: The origin is left-bottom corner in Unity, and right-top corner in MediaPipe.
+      rotation = imageSource.rotation.Reverse();
+      var inputRotation = rotation;
+      var isInverted = CoordinateSystem.ImageCoordinate.IsInverted(rotation);
+      var shouldBeMirrored = imageSource.isHorizontallyFlipped ^ expectedToBeMirrored;
+      var inputHorizontallyFlipped = isInverted ^ shouldBeMirrored;
+      var inputVerticallyFlipped = !isInverted;
 
-      var inputRotation = ((shouldBeFlippedHorizontally && shouldBeFlippedVertically ? 180 : 0) - imageSource.rotation + 360) % 360;
-      var inputHorizontallyFlipped = shouldBeFlippedHorizontally && !shouldBeFlippedVertically;
-      var inputVerticallyFlipped = shouldBeFlippedVertically && !shouldBeFlippedHorizontally;
+      if ((inputHorizontallyFlipped && inputVerticallyFlipped) || rotation == RotationAngle.Rotation180) {
+        inputRotation = inputRotation.Add(RotationAngle.Rotation180);
+        inputHorizontallyFlipped = !inputHorizontallyFlipped;
+        inputVerticallyFlipped = !inputVerticallyFlipped;
+      }
 
-      sidePacket.Emplace("input_rotation", new IntPacket(inputRotation));
+      Logger.LogDebug($"input_rotation = {inputRotation}, input_horizontally_flipped = {inputHorizontallyFlipped}, input_vertically_flipped = {inputVerticallyFlipped}");
+
+      sidePacket.Emplace("input_rotation", new IntPacket((int)inputRotation));
       sidePacket.Emplace("input_horizontally_flipped", new BoolPacket(inputHorizontallyFlipped));
       sidePacket.Emplace("input_vertically_flipped", new BoolPacket(inputVerticallyFlipped));
     }

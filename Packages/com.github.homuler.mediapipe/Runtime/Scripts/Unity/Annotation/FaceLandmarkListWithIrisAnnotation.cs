@@ -19,6 +19,15 @@ namespace Mediapipe.Unity {
       }
     }
 
+    public override RotationAngle rotationAngle {
+      set {
+        faceLandmarkList.rotationAngle = value;
+        leftIrisLandmarkList.rotationAngle = value;
+        rightIrisLandmarkList.rotationAngle = value;
+        base.rotationAngle = value;
+      }
+    }
+
     public void DrawFaceLandmarkList(IList<NormalizedLandmark> target, bool visualizeZ = false) {
       if (ActivateFor(target)) {
         faceLandmarkList.Draw(target, visualizeZ);

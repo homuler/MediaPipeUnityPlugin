@@ -56,10 +56,12 @@ namespace Mediapipe.Unity {
     }
 
     public virtual bool isMirrored { get; set; }
+    public virtual RotationAngle rotationAngle { get; set; } = RotationAngle.Rotation0;
 
     protected S InstantiateChild<S>(GameObject prefab) where S : HierarchicalAnnotation {
       var annotation =  Instantiate(prefab, transform).GetComponent<S>();
       annotation.isMirrored = isMirrored;
+      annotation.rotationAngle = rotationAngle;
       return annotation;
     }
 

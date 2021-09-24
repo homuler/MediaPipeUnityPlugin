@@ -16,6 +16,15 @@ namespace Mediapipe.Unity {
       }
     }
 
+    public override RotationAngle rotationAngle {
+      set {
+        locationData.rotationAngle = value;
+        relativeKeypoints.rotationAngle = value;
+        label.rotationAngle = value;
+        base.rotationAngle = value;
+      }
+    }
+
     public void SetLineWidth(float lineWidth) {
       locationData.SetLineWidth(lineWidth);
     }
@@ -36,14 +45,17 @@ namespace Mediapipe.Unity {
 
         // Assume that location data's format is always RelativeBoundingBox
         // TODO: fix if there are cases where this assumption is not correct.
-        var rectVertices = GetAnnotationLayer().GetRectVertices(target.LocationData.RelativeBoundingBox, isMirrored);
+        var rectVertices = GetAnnotationLayer().GetRectVertices(target.LocationData.RelativeBoundingBox, rotationAngle, isMirrored);
         locationData.SetColor(GetColor(score, Mathf.Clamp(threshold, 0.0f, 1.0f)));
         locationData.Draw(rectVertices);
 
         var width = rectVertices[2].x - rectVertices[0].x;
-        var height = rectVertices[0].y - rectVertices[2].y;
+        var height = rectVertices[2].y - rectVertices[0].y;
         var labelText = target.Label.Count > 0 ? target.Label[0] : null;
-        label.Draw(labelText, rectVertices[1], color, width, height);
+        var vertexId = ((int)rotationAngle / 90 + 1) % 4;
+        var isInverted = ImageCoordinate.IsInverted(rotationAngle);
+        var (maxWidth, maxHeight) = isInverted ? (height, width) : (width, height);
+        label.Draw(labelText, rectVertices[vertexId], color, maxWidth, maxHeight);
 
         relativeKeypoints.Draw(target.LocationData.RelativeKeypoints);
       }

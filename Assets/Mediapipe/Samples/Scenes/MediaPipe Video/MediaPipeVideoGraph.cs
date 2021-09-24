@@ -99,6 +99,7 @@ namespace Mediapipe.Unity.MediaPipeVideo {
       var sidePacket = new SidePacket();
 
       SetImageTransformationOptions(sidePacket, imageSource, true);
+      sidePacket.Emplace("output_rotation", new IntPacket((int)imageSource.rotation));
       sidePacket.Emplace("num_hands", new IntPacket(maxNumHands));
 
       if (configType == ConfigType.OpenGLES) {

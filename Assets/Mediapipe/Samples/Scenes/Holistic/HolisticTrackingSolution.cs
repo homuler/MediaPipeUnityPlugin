@@ -5,6 +5,7 @@ using UnityEngine.UI;
 namespace Mediapipe.Unity.Holistic {
   public class HolisticTrackingSolution : Solution {
     [SerializeField] RawImage screen;
+    [SerializeField] RectTransform worldAnnotationArea;
     [SerializeField] DetectionAnnotationController poseDetectionAnnotationController;
     [SerializeField] HolisticLandmarkListAnnotationController holisticAnnotationController;
     [SerializeField] PoseWorldLandmarkListAnnotationController poseWorldLandmarksAnnotationController;
@@ -73,6 +74,7 @@ namespace Mediapipe.Unity.Holistic {
       // NOTE: The screen will be resized later, keeping the aspect ratio.
       SetupScreen(screen, imageSource);
       screen.texture = imageSource.GetCurrentTexture();
+      worldAnnotationArea.localEulerAngles = imageSource.rotation.Reverse().GetEulerAngles();
 
       Logger.LogInfo(TAG, $"Model Complexity = {modelComplexity}");
       Logger.LogInfo(TAG, $"Smooth Landmarks = {smoothLandmarks}");
@@ -105,10 +107,10 @@ namespace Mediapipe.Unity.Holistic {
       // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
       textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
 
-      poseDetectionAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
-      holisticAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
-      poseWorldLandmarksAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
-      poseRoiAnnotationController.isMirrored = imageSource.isHorizontallyFlipped;
+      SetupAnnotationController(poseDetectionAnnotationController, imageSource);
+      SetupAnnotationController(holisticAnnotationController, imageSource);
+      SetupAnnotationController(poseWorldLandmarksAnnotationController, imageSource);
+      SetupAnnotationController(poseRoiAnnotationController, imageSource);
 
       while (true) {
         yield return new WaitWhile(() => isPaused);

@@ -88,7 +88,7 @@ namespace Mediapipe.Unity {
 
     void ApplyDirection(Vector3 direction) {
       lineRenderer.SetPosition(1, _magnitude * direction);
-      cone.rotation = Quaternion.FromToRotation(Vector3.up, direction);
+      cone.localRotation = Quaternion.FromToRotation(Vector3.up, direction);
     }
 
     void ApplyMagnitude(float magnitude) {

@@ -79,7 +79,7 @@ node: {
 node {
   calculator: "PreviousLoopbackCalculator"
   input_stream: "MAIN:throttled_input_video"
-  input_stream: "LOOP:hair_mask"
+  input_stream: "LOOP:hair_mask_rotated"
   input_stream_info: {
     tag_index: "LOOP"
     back_edge: true
@@ -149,7 +149,7 @@ node {
   calculator: "TfLiteTensorsToSegmentationCalculator"
   input_stream: "TENSORS:segmentation_tensor"
   input_stream: "PREV_MASK:previous_hair_mask"
-  output_stream: "MASK:hair_mask"
+  output_stream: "MASK:hair_mask_rotated"
   node_options: {
     [type.googleapis.com/mediapipe.TfLiteTensorsToSegmentationCalculatorOptions] {
       tensor_width: 512
@@ -159,4 +159,11 @@ node {
       output_layer_index: 1
     }
   }
+}
+
+node: {
+  calculator: "ImageTransformationCalculator"
+  input_stream: "IMAGE:hair_mask_rotated"
+  input_side_packet: "ROTATION_DEGREES:output_rotation"
+  output_stream: "IMAGE:hair_mask"
 }

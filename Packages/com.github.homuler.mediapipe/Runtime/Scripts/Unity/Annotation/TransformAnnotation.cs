@@ -1,5 +1,5 @@
+using Mediapipe.Unity.CoordinateSystem;
 using UnityEngine;
-using System.Collections.Generic;
 
 namespace Mediapipe.Unity {
   public sealed class TransformAnnotation : HierarchicalAnnotation {
@@ -25,32 +25,28 @@ namespace Mediapipe.Unity {
     }
 
     public void Draw(Quaternion rotation, Vector3 scale, bool visualizeZ = true) {
-      DrawArrow(xArrow, rotation * Vector3.right, scale.x, visualizeZ);
-      DrawArrow(yArrow, rotation * Vector3.up, scale.y, visualizeZ);
-      DrawArrow(zArrow, rotation * Vector3.forward, scale.z, visualizeZ);
+      var q = Quaternion.Euler(0, 0, -(int)rotationAngle);
+      DrawArrow(xArrow, q * rotation * Vector3.right, scale.x, visualizeZ);
+      DrawArrow(yArrow, q * rotation * Vector3.up, scale.y, visualizeZ);
+      DrawArrow(zArrow, q * rotation * Vector3.forward, scale.z, visualizeZ);
     }
 
-    public void Draw(IList<float> rotation, Vector3 scale, bool visualizeZ = true) {
-      DrawArrow(xArrow, isMirrored ? -scale.x : scale.x, rotation[0], rotation[3], rotation[6], visualizeZ);
-      DrawArrow(yArrow, scale.y, rotation[1], rotation[4], rotation[7], visualizeZ);
-      DrawArrow(zArrow, scale.z, rotation[2], rotation[5], rotation[8], visualizeZ);
-    }
+    public void Draw(ObjectAnnotation target, Vector3 position, float arrowLengthScale = 1.0f, bool visualizeZ = true) {
+      origin = position;
 
-    Vector3 GetScaleVector() {
-      if (isMirrored) {
-        return new Vector3(-1, 1, 1);
-      }
-      return Vector3.one;
-    }
-
-    void DrawArrow(Arrow arrow, float scale, float rotationX, float rotationY, float rotationZ, bool visualizeZ) {
-      arrow.direction = Mathf.Sign(scale) * new Vector3(isMirrored ? -rotationX : rotationX, rotationY, visualizeZ ? rotationZ : 0);
-
-      var magnitude = Mathf.Abs(scale);
-      if (visualizeZ) {
-        magnitude *= Mathf.Sqrt(rotationX * rotationX + rotationY * rotationY) / Mathf.Sqrt(rotationX * rotationX + rotationY * rotationY + rotationZ * rotationZ);
-      }
-      arrow.magnitude = magnitude;
+      var isInverted = CameraCoordinate.IsInverted(rotationAngle);
+      var (xScale, yScale) = isInverted ? (target.Scale[1], target.Scale[0]) : (target.Scale[0], target.Scale[1]);
+      var zScale = target.Scale[2];
+      // convert from right-handed to left-handed
+      var isXReversed = CameraCoordinate.IsXReversed(rotationAngle, isMirrored);
+      var isYReversed = CameraCoordinate.IsYReversed(rotationAngle, isMirrored);
+      var rotation = target.Rotation;
+      var xDir = GetDirection(rotation[0], rotation[3], rotation[6], isXReversed, isYReversed, isInverted);
+      var yDir = GetDirection(rotation[1], rotation[4], rotation[7], isXReversed, isYReversed, isInverted);
+      var zDir = GetDirection(rotation[2], rotation[5], rotation[8], isXReversed, isYReversed, isInverted);
+      DrawArrow(xArrow, xDir, (isMirrored ? -1 : 1 ) * arrowLengthScale * xScale, visualizeZ);
+      DrawArrow(yArrow, yDir, arrowLengthScale * yScale, visualizeZ);
+      DrawArrow(zArrow, zDir, -arrowLengthScale * zScale, visualizeZ);
     }
 
     void DrawArrow(Arrow arrow, Vector3 normalizedDirection, float scale, bool visualizeZ) {
@@ -64,6 +60,11 @@ namespace Mediapipe.Unity {
       }
       arrow.direction = direction;
       arrow.magnitude = magnitude;
+    }
+
+    Vector3 GetDirection(float x, float y, float z, bool isXReversed, bool isYReversed, bool isInverted) {
+      var dir = isInverted ? new Vector3(y, x, z) : new Vector3(x, y, z);
+      return Vector3.Scale(dir, new Vector3(isXReversed ? -1 : 1, isYReversed ? -1 : 1, -1));
     }
   }
 }

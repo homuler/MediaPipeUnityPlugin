@@ -17,6 +17,14 @@ namespace Mediapipe.Unity {
       }
     }
 
+    public override RotationAngle rotationAngle {
+      set {
+        landmarkList.rotationAngle = value;
+        circle.rotationAngle = value;
+        base.rotationAngle = value;
+      }
+    }
+
     public void SetLandmarkColor(Color landmarkColor) {
       landmarkList.SetColor(landmarkColor);
     }
@@ -38,7 +46,7 @@ namespace Mediapipe.Unity {
         landmarkList.Draw(target, visualizeZ);
 
         var rectTransform = GetAnnotationLayer();
-        var center = rectTransform.GetLocalPosition(target[0], isMirrored);
+        var center = rectTransform.GetLocalPosition(target[0], rotationAngle, isMirrored);
         if (!visualizeZ) {
           center.z = 0.0f;
         }
@@ -58,8 +66,8 @@ namespace Mediapipe.Unity {
     }
 
     float CalculateDistance(RectTransform rectTransform, NormalizedLandmark a, NormalizedLandmark b) {
-      var aPos = rectTransform.GetLocalPosition(a, isMirrored);
-      var bPos = rectTransform.GetLocalPosition(b, isMirrored);
+      var aPos = rectTransform.GetLocalPosition(a, rotationAngle, isMirrored);
+      var bPos = rectTransform.GetLocalPosition(b, rotationAngle, isMirrored);
       aPos.z = 0.0f;
       bPos.z = 0.0f;
       return Vector3.Distance(aPos, bPos);

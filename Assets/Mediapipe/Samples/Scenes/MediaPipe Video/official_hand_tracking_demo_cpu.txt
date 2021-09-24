@@ -79,6 +79,7 @@ node {
 node: {
   calculator: "ImageTransformationCalculator"
   input_stream: "IMAGE:output_video_raw"
+  input_side_packet: "ROTATION:output_rotation"
   output_stream: "IMAGE:output_video"
   node_options: {
     [type.googleapis.com/mediapipe.ImageTransformationCalculatorOptions] {

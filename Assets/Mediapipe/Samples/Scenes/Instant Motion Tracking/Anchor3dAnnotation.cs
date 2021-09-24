@@ -13,6 +13,13 @@ namespace Mediapipe.Unity {
       }
     }
 
+    public override RotationAngle rotationAngle {
+      set {
+        transformAnnotation.rotationAngle = value;
+        base.rotationAngle = value;
+      }
+    }
+
     public void SetArrowCapScale(float arrowCapScale) {
       transformAnnotation.SetArrowCapScale(arrowCapScale);
     }
@@ -39,7 +46,7 @@ namespace Mediapipe.Unity {
       }
 
       var cameraDepth = Mathf.Abs(cameraPosition.z);
-      var anchorPoint2d = GetAnnotationLayer().GetLocalPosition(anchor3d, isMirrored);
+      var anchorPoint2d = GetAnnotationLayer().GetLocalPosition(anchor3d, rotationAngle, isMirrored);
       var anchorDepth = anchor3d.Z * defaultDepth;
 
       // Maybe it should be defined as a CameraCoordinate method

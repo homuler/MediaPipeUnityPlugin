@@ -1,3 +1,4 @@
+using Mediapipe.Unity.CoordinateSystem;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -40,6 +41,15 @@ namespace Mediapipe.Unity {
       }
     }
 
+    public override RotationAngle rotationAngle {
+      set {
+        pointListAnnotation.rotationAngle = value;
+        lineListAnnotation.rotationAngle = value;
+        transformAnnotation.rotationAngle = value;
+        base.rotationAngle = value;
+      }
+    }
+
     void Start() {
       pointListAnnotation.Fill(9);
       lineListAnnotation.Fill(connections, pointListAnnotation);
@@ -73,11 +83,7 @@ namespace Mediapipe.Unity {
       if (ActivateFor(target)) {
         pointListAnnotation.Draw(target.Keypoints, focalLength, principalPoint, zScale, visualizeZ);
         lineListAnnotation.Redraw();
-
-        var rect = GetAnnotationLayer().rect;
-        var scale = arrowLengthScale * new Vector3(target.Scale[0], target.Scale[1], -target.Scale[2]); // right-handed to left-handed
-        transformAnnotation.origin = pointListAnnotation[0].transform.localPosition;
-        transformAnnotation.Draw(target.Rotation, scale, visualizeZ);
+        transformAnnotation.Draw(target, pointListAnnotation[0].transform.localPosition, arrowLengthScale, visualizeZ);
       }
     }
   }

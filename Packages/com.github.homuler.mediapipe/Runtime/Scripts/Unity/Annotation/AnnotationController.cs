@@ -27,6 +27,15 @@ namespace Mediapipe.Unity {
       }
     }
 
+    public RotationAngle rotationAngle {
+      get { return annotation.rotationAngle; }
+      set {
+        if (annotation.rotationAngle != value) {
+          annotation.rotationAngle = value;
+        }
+      }
+    }
+
     protected virtual void Start() {
       if (!TryGetComponent<RectTransform>(out var _)) {
         Logger.LogVerbose(this.GetType().Name, $"Adding RectTransform to {gameObject.name}");

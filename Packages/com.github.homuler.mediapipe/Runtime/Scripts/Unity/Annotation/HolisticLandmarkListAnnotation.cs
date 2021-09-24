@@ -24,6 +24,19 @@ namespace Mediapipe.Unity {
       }
     }
 
+    public override RotationAngle rotationAngle {
+      set {
+        faceLandmarkList.rotationAngle = value;
+        poseLandmarkList.rotationAngle = value;
+        leftHandLandmarkList.rotationAngle = value;
+        rightHandLandmarkList.rotationAngle = value;
+        leftIrisLandmarkList.rotationAngle = value;
+        rightIrisLandmarkList.rotationAngle = value;
+        connectionList.rotationAngle = value;
+        base.rotationAngle = value;
+      }
+    }
+
     void Start() {
       leftHandLandmarkList.SetHandedness(HandLandmarkListAnnotation.Hand.Left);
       rightHandLandmarkList.SetHandedness(HandLandmarkListAnnotation.Hand.Right);

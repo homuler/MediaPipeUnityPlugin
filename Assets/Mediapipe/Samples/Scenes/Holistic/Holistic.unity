@@ -456,6 +456,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   screen: {fileID: 1375628860}
+  worldAnnotationArea: {fileID: 1936307554}
   poseDetectionAnnotationController: {fileID: 1375628863}
   holisticAnnotationController: {fileID: 1375628862}
   poseWorldLandmarksAnnotationController: {fileID: 1936307555}

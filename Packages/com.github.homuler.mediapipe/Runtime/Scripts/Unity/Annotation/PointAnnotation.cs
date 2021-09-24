@@ -34,7 +34,7 @@ namespace Mediapipe.Unity {
 
     public void Draw(Landmark target, Vector3 scale, bool visualizeZ = true) {
       if (ActivateFor(target)) {
-        var position = GetAnnotationLayer().GetLocalPosition(target, scale, isMirrored);
+        var position = GetAnnotationLayer().GetLocalPosition(target, scale, rotationAngle, isMirrored);
         if (!visualizeZ) {
           position.z = 0.0f;
         }
@@ -44,7 +44,7 @@ namespace Mediapipe.Unity {
 
     public void Draw(NormalizedLandmark target, bool visualizeZ = true) {
       if (ActivateFor(target)) {
-        var position = GetAnnotationLayer().GetLocalPosition(target, isMirrored);
+        var position = GetAnnotationLayer().GetLocalPosition(target, rotationAngle, isMirrored);
         if (!visualizeZ) {
           position.z = 0.0f;
         }
@@ -54,15 +54,14 @@ namespace Mediapipe.Unity {
 
     public void Draw(NormalizedPoint2D target) {
       if (ActivateFor(target)) {
-        var position = GetAnnotationLayer().GetLocalPosition(target, isMirrored);
+        var position = GetAnnotationLayer().GetLocalPosition(target, rotationAngle, isMirrored);
         transform.localPosition = position;
       }
     }
 
     public void Draw(Point3D target, Vector2 focalLength, Vector2 principalPoint, float zScale, bool visualizeZ = true) {
       if (ActivateFor(target)) {
-        // var position = CoordinateTransform.GetLocalPosition(GetAnnotationLayer(), target, focalLength, principalPoint, new Vector3(1, 1, zScale), isMirrored);
-        var position = GetAnnotationLayer().GetLocalPosition(target, focalLength, principalPoint, zScale, isMirrored);
+        var position = GetAnnotationLayer().GetLocalPosition(target, focalLength, principalPoint, zScale, rotationAngle, isMirrored);
         if (!visualizeZ) {
           position.z = 0.0f;
         }
@@ -80,7 +79,7 @@ namespace Mediapipe.Unity {
 
     public void Draw(mplt.RelativeKeypoint target, float threshold = 0.0f) {
       if (ActivateFor(target)) {
-        Draw(GetAnnotationLayer().GetLocalPosition(target, isMirrored));
+        Draw(GetAnnotationLayer().GetLocalPosition(target, rotationAngle, isMirrored));
         SetColor(GetColor(target.Score, threshold));
       }
     }

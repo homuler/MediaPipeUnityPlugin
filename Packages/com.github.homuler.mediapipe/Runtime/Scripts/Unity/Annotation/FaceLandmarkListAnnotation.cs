@@ -149,6 +149,14 @@ namespace Mediapipe.Unity {
       }
     }
 
+    public override RotationAngle rotationAngle {
+      set {
+        landmarkList.rotationAngle = value;
+        connectionList.rotationAngle = value;
+        base.rotationAngle = value;
+      }
+    }
+
     void Start() {
       landmarkList.Fill(landmarkCount);
       connectionList.Fill(connections, landmarkList);

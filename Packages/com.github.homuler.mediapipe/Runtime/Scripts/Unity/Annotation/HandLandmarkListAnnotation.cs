@@ -46,6 +46,14 @@ namespace Mediapipe.Unity {
       }
     }
 
+    public override RotationAngle rotationAngle {
+      set {
+        landmarkList.rotationAngle = value;
+        connectionList.rotationAngle = value;
+        base.rotationAngle = value;
+      }
+    }
+
     public PointAnnotation this[int index] {
       get { return landmarkList[index]; }
     }

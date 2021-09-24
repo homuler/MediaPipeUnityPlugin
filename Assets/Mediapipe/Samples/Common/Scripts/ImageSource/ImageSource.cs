@@ -70,7 +70,7 @@ namespace Mediapipe.Unity {
     public float focalLengthPx { get; } = 2.0f; // TODO: calculate at runtime
     public virtual bool isHorizontallyFlipped { get; set; } = false;
     public virtual bool isVerticallyFlipped { get; } = false;
-    public virtual int rotation { get; } = 0;
+    public virtual RotationAngle rotation { get; } = RotationAngle.Rotation0;
 
     public abstract SourceType type { get; }
     public abstract string sourceName { get; }

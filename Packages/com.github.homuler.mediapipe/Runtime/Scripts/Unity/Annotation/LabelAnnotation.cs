@@ -10,10 +10,11 @@ namespace Mediapipe.Unity {
       if (ActivateFor(text)) {
         // move to the front to show background plane.
         labelText.transform.localPosition = new Vector3(position.x, position.y, -1);
+        labelText.transform.localRotation = Quaternion.Euler(0, 0, -(int)rotationAngle);
         labelText.text = text;
         labelText.color = DecideTextColor(color);
         labelText.fontSize = GetFontSize(text, maxWidth, Mathf.Min(maxHeight, 48.0f));
-        
+
         var width = Mathf.Min(labelText.preferredWidth + 24, maxWidth); // add margin
         var height = labelText.preferredHeight;
         var rectTransform = labelText.GetComponent<RectTransform>();
