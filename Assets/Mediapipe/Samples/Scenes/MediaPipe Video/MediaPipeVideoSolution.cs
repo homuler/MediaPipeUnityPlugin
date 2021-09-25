@@ -67,7 +67,8 @@ namespace Mediapipe.Unity.MediaPipeVideo {
         yield break;
       }
       // NOTE: The screen will be resized later, keeping the aspect ratio.
-      SetupScreen(screen, imageSource);
+      screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
+      screen.rectTransform.localEulerAngles = imageSource.rotation.Reverse().GetEulerAngles();
 
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
