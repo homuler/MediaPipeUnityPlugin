@@ -22,6 +22,7 @@ namespace Mediapipe.Unity {
       texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
       texture.SetPixels32(colors);
       screen.texture = texture;
+      screen.color = new Color(1, 1, 1, 1);
     }
 
     public void SetColor(Color color) {
