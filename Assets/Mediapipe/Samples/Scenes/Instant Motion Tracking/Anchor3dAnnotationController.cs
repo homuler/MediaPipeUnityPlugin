@@ -3,17 +3,19 @@ using UnityEngine;
 
 namespace Mediapipe.Unity {
   public class Anchor3dAnnotationController : AnnotationController<Anchor3dAnnotation> {
-    [SerializeField] Vector3 cameraPosition = new Vector3(0, 0, -1000);
+    [SerializeField] Camera mainCamera;
     [SerializeField] float defaultDepth = 100.0f;
     [SerializeField] bool visualizeZ = true;
 
     List<Anchor3d> currentTarget;
     Gyroscope gyroscope;
     Quaternion defaultRotation = Quaternion.identity;
+    Vector3 cameraPosition;
 
     protected override void Start() {
       base.Start();
 
+      cameraPosition = 10 * (transform.worldToLocalMatrix * mainCamera.transform.position);
       if (SystemInfo.supportsGyroscope) {
         Input.gyro.enabled = true;
         gyroscope = Input.gyro;
