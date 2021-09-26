@@ -7,7 +7,7 @@ If you'd like to build them on your machine, below commands/tools/libraries are 
 
 - Python >= 3.9.0
 - Bazel >= 3.7.2, (< 4.0.0 for iOS)
-- GCC/G++ >= 8.0.0 (Linux, macOS)
+- GCC/G++ >= 8.0.0 (Linux, macOS), < 11.0
 - [NuGet](https://docs.microsoft.com/en-us/nuget/reference/nuget-exe-cli-reference)
 
 ## Platforms
@@ -32,20 +32,22 @@ Object Detection        | ✅      | ✅  | ✅          | ✅          | ✅   
 Box Tracking            | ✅      | ✅  | ✅          | ✅          | ✅     | ✅
 Instant Motion Tracking | ✅      | ✅  | ✅          | ✅          | ✅     | ✅
 Objectron               | ✅      | ✅  | ✅          | ✅          | ✅     | ✅
-KNIFT                   |         |     | ✅          |             |       |
+KNIFT                   |         |     |            |             |       |
 
 ## Installation Guide
 Run commands at the project root if not specified otherwise.\
 Also note that you need to build native libraries for Desktop CPU or GPU to run this plugin on UnityEditor.
 
-- [Docker for Linux (experimental)](#docker-for-linux-experimental)
+As long as Docker is available on your environment, Docker is always preferable.\
+Docker is only used to build native libraries, not at runtime, so there is no impact on performance.
+
+- [Docker for Linux](#docker-for-linux-experimental)
 - [Linux](#linux)
-- [Docker for Windows (experimental)](#docker-for-windows-experimental)
+- [Docker for Windows](#docker-for-windows-experimental)
 - [Windows](#windows)
 - [macOS](#macOS)
 
-
-### Docker for Linux (experimental)
+### Docker for Linux
 1. Build a Docker image
     ```sh
     docker build -t mediapipe_unity:latest . -f docker/linux/x86_64/Dockerfile
@@ -84,6 +86,7 @@ If the command finishes successfully, required files will be installed to your h
 
 ### Linux
 1. Install OpenCV and FFmpeg (optional)
+    You can skip this if you plan to build OpenCV with MediaPipe (see [Build Command](https://github.com/homuler/MediaPipeUnityPlugin#build-command) for more details).
 
     By default, it is assumed that OpenCV 3 is installed under `/usr` (e.g. `/usr/lib/libopencv_core.so`).\
     If your version or path is different, please edit [third_party/opencv_linux.BUILD](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/third_party/opencv_linux.BUILD) and [WORKSPACE](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/WORKSPACE).
@@ -143,7 +146,7 @@ If the command finishes successfully, required files will be installed to your h
 
 1. Run [build command](#build-command)
 
-### Docker for Windows (experimental)
+### Docker for Windows
 #### Desktop/UnityEditor
 1. Switch to windows containers
 
@@ -250,6 +253,9 @@ You cannot build native libraries for Android on Windows 10, so use [Docker for 
 1. Install [Homebrew](https://brew.sh)
 
 1. Install OpenCV 3 and FFmpeg (optional)
+    You can skip this if you plan to build OpenCV with MediaPipe (see [Build Command](https://github.com/homuler/MediaPipeUnityPlugin#build-command) for more details).
+    Note that you need to install Xcode in this case.
+
     ```sh
     brew install opencv@3
     brew uninstall --ignore-dependencies glog
@@ -313,11 +319,14 @@ Run `python build.py --help` and `python build.py build --help` for more details
 
 ## Run example scenes
 ### UnityEditor
-Select `Mediapipe/Samples/Scenes/DesktopDemo` and play.
+Select `Mediapipe/Samples/Scenes/Start Scene` and play.
 
 ### Desktop
-If you'd like to run graphs on CPU, uncheck `Use GPU` from the inspector window.
-![scene-director-use-gpu](https://user-images.githubusercontent.com/4690128/107133987-4f51b180-6931-11eb-8a75-4993a5c70cc1.png)
+If you've built native libraries for CPU (i.e. `--desktop cpu`), select `CPU` for inference mode from the Inspector Window.
+![preferable-inference-mode](https://user-images.githubusercontent.com/4690128/134795568-156f3d41-b46e-477f-a487-d04c99300c33.png)
+
+### Android, iOS
+Make sure that you select `GPU` for inference mode before building the app, because `CPU` inference mode is not supported currently.
 
 ## Troubleshooting
 ### DllNotFoundException: mediapipe_c
@@ -334,30 +343,15 @@ InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000_mediapipe/
 ```
 
 ### Debug MediaPipe
-If you set an environment variable `GLOG_v` before loading native libraries (e.g. `libmediapipe_c.so`),
-MediaPipe will output verbose logs to log files (e.g. `Editor.log`, `Player.log`).
+When debugging, you may want to read the MediaPipe log.
+If you set `Glog.logtostderr` to `true` before calling `Glog.Initialize`, MediaPipe will output logs to standard error, so you can check them from `Editor.log` or `Player.log`.\
+
+You can set various Glog flags as well. See https://github.com/google/glog#setting-flags for available options.
 
 ```cs
-
 void OnEnable() {
-    // see https://github.com/google/glog#setting-flags
-    System.Environment.SetEnvironmentVariable("GLOG_v", "2");
-}
-```
-
-You can also setup Glog so that it writes logs to files.
-
-```cs
-using System.IO;
-
-void OnEnable() {
-    var logDir = Path.Combine(Application.persistentDataPath, "Logs");
-
-    if (!Directory.Exists(logDir)) {
-      Directory.CreateDirectory(logDir);
-    }
-
-    Glog.Initialize("MediaPipeUnityPlugin", logDir);
+    Glog.logtosdderr = true;
+    Glog.Initialize("MediaPipeUnityPlugin");
 }
 
 void OnDisable() {
@@ -365,13 +359,10 @@ void OnDisable() {
 }
 ```
 
-
 ## TODO
 - [ ] Prepare API Documents
 - [ ] Implement cross-platform APIs to send images to MediaPipe
 - [ ] use CVPixelBuffer on iOS
-- [ ] Box Tracking (on Windows)
-- [ ] Objectron
 - [ ] KNIFT
 
 ## LICENSE
