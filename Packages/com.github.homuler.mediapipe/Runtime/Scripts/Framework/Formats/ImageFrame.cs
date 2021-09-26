@@ -134,14 +134,73 @@ namespace Mediapipe {
       return CopyToBuffer<float>(UnsafeNativeMethods.mp_ImageFrame__CopyToBuffer__Pf_i, bufferSize);
     }
 
-    [Obsolete("GetColor32s() is deprecated")]
-    public Color32[] GetColor32s(bool isFlipped = false) {
-      return Mediapipe.Format.FromBytePtr(MutablePixelData(), Format(), Width(), Height(), WidthStep(), isFlipped);
+    public Color32[] GetPixels32(bool flipVertically, Color32[] colors) {
+      var format = Format();
+
+      switch (format) {
+        case ImageFormat.Format.SRGB: {
+          ReadSRGBByteArray(MutablePixelData(), Width(), Height(), WidthStep(), flipVertically, ref colors);
+          return colors;
+        }
+        case ImageFormat.Format.SRGBA: {
+          ReadSRGBAByteArray(MutablePixelData(), Width(), Height(), WidthStep(), flipVertically, ref colors);
+          return colors;
+        }
+        default: {
+          throw new NotImplementedException($"Currently only SRGB and SRGBA format are supported: {format}");
+        }
+      }
     }
 
-    [Obsolete("FromPixels32() is deprecated")]
-    public static ImageFrame FromPixels32(Color32[] colors, int width, int height, bool isFlipped = false) {
-      return new ImageFrame(ImageFormat.Format.SRGBA, width, height, 4 * width, Mediapipe.Format.FromPixels32(colors, width, height, isFlipped));
+    public Color32[] GetPixels32(bool flipVertically = false) {
+      return GetPixels32(flipVertically, new Color32[Width() * Height()]);
+    }
+
+    /// <summary>
+    ///   Get the value of a specific channel only.
+    ///   It's useful when only one channel is used (e.g. Hair Segmentation mask).
+    /// </summary>
+    /// <param name="channelNumber">
+    ///   Specify from which channel the data will be retrieved.
+    ///   For example, if the format is RGB, 0 means R channel, 1 means G channel, and 2 means B channel.
+    /// </param>
+    /// <param name="colors" >
+    ///   The array to which the output data will be written.
+    /// </param>
+    public byte[] GetChannel(int channelNumber, bool flipVertically, byte[] colors) {
+      var format = Format();
+
+      switch (format) {
+        case ImageFormat.Format.SRGB: {
+          if (channelNumber < 0 || channelNumber > 3) {
+            throw new ArgumentException($"There are only 3 channels, but No. {channelNumber} is specified");
+          }
+          ReadChannel(MutablePixelData(), channelNumber, 3, Width(), Height(), WidthStep(), flipVertically, colors);
+          return colors;
+        }
+        case ImageFormat.Format.SRGBA: {
+          if (channelNumber < 0 || channelNumber > 4) {
+            throw new ArgumentException($"There are only 4 channels, but No. {channelNumber} is specified");
+          }
+          ReadChannel(MutablePixelData(), channelNumber, 4, Width(), Height(), WidthStep(), flipVertically, colors);
+          return colors;
+        }
+        default: {
+          throw new NotImplementedException($"Currently only SRGB and SRGBA format are supported: {format}");
+        }
+      }
+    }
+
+    /// <summary>
+    ///   Get the value of a specific channel only.
+    ///   It's useful when only one channel is used (e.g. Hair Segmentation mask).
+    /// </summary>
+    /// <param name="channelNumber">
+    ///   Specify from which channel the data will be retrieved.
+    ///   For example, if the format is RGB, 0 means R channel, 1 means G channel, and 2 means B channel.
+    /// </param>
+    public byte[] GetChannel(int channelNumber, bool flipVertically) {
+      return GetChannel(channelNumber, flipVertically, new byte[Width() * Height()]);
     }
 
     private delegate MpReturnCode CopyToBufferHandler(IntPtr ptr, IntPtr buffer, int bufferSize);
@@ -165,6 +224,137 @@ namespace Mediapipe {
         return value;
       } catch (MediaPipeException) {
         throw new FormatException($"Invalid image format: {Format()}");
+      }
+    }
+
+    /// <remarks>
+    ///   In the source array, pixels are laid out left to right, top to bottom,
+    ///   but in the returned array, left to right, top to bottom.
+    /// </remarks>
+    static void ReadSRGBByteArray(IntPtr ptr, int width, int height, int widthStep, bool flipVertically, ref Color32[] colors) {
+      if (colors.Length != width * height) {
+        throw new ArgumentException("colors length is invalid");
+      }
+      var padding = widthStep - 3 * width;
+
+      unsafe {
+        fixed (Color32* dest = colors) {
+          byte* pSrc = (byte*)ptr.ToPointer();
+
+          if (flipVertically) {
+            Color32* pDest = dest + colors.Length - 1;
+
+            for (var i = 0; i < height; i++) {
+              for (var j = 0; j < width; j++) {
+                byte r = *pSrc++;
+                byte g = *pSrc++;
+                byte b = *pSrc++;
+                *pDest-- = new Color32(r, g, b, 255);
+              }
+              pSrc += padding;
+            }
+          } else {
+            Color32 *pDest = dest + width * (height - 1);
+
+            for (var i = 0; i < height; i++) {
+              for (var j = 0; j < width; j++) {
+                byte r = *pSrc++;
+                byte g = *pSrc++;
+                byte b = *pSrc++;
+                *pDest++ = new Color32(r, g, b, 255);
+              }
+              pSrc += padding;
+              pDest -= 2 * width;
+            }
+          }
+        }
+      }
+    }
+
+    /// <remarks>
+    ///   In the source array, pixels are laid out left to right, top to bottom,
+    ///   but in the returned array, left to right, top to bottom.
+    /// </remarks>
+    static void ReadSRGBAByteArray(IntPtr ptr, int width, int height, int widthStep, bool flipVertically, ref Color32[] colors) {
+      if (colors.Length != width * height) {
+        throw new ArgumentException("colors length is invalid");
+      }
+      var padding = widthStep - 4 * width;
+
+      unsafe {
+        fixed (Color32* dest = colors) {
+          byte* pSrc = (byte*)ptr.ToPointer();
+
+          if (flipVertically) {
+            Color32* pDest = dest + colors.Length - 1;
+
+            for (var i = 0; i < height; i++) {
+              for (var j = 0; j < width; j++) {
+                byte r = *pSrc++;
+                byte g = *pSrc++;
+                byte b = *pSrc++;
+                byte a = *pSrc++;
+                *pDest-- = new Color32(r, g, b, a);
+              }
+              pSrc += padding;
+            }
+          } else {
+            Color32 *pDest = dest + width * (height - 1);
+
+            for (var i = 0; i < height; i++) {
+              for (var j = 0; j < width; j++) {
+                byte r = *pSrc++;
+                byte g = *pSrc++;
+                byte b = *pSrc++;
+                byte a = *pSrc++;
+                *pDest++ = new Color32(r, g, b, a);
+              }
+              pSrc += padding;
+              pDest -= 2 * width;
+            }
+          }
+        }
+      }
+    }
+
+    /// <remarks>
+    ///   In the source array, pixels are laid out left to right, top to bottom,
+    ///   but in the returned array, left to right, top to bottom.
+    /// </remarks>
+    static void ReadChannel(IntPtr ptr, int channelNumber, int channelCount, int width, int height, int widthStep, bool flipVertically, byte[] colors) {
+      if (colors.Length != width * height) {
+        throw new ArgumentException("colors length is invalid");
+      }
+      var padding = widthStep - channelCount * width;
+
+      unsafe {
+        fixed (byte* dest = colors) {
+          byte* pSrc = (byte*)ptr.ToPointer();
+          pSrc += channelNumber;
+
+          if (flipVertically) {
+            byte* pDest = dest + colors.Length - 1;
+
+            for (var i = 0; i < height; i++) {
+              for (var j = 0; j < width; j++) {
+                *pDest-- = *pSrc;
+                pSrc += channelCount;
+              }
+              pSrc += padding;
+            }
+          } else {
+            byte *pDest = dest + width * (height - 1);
+
+            for (var i = 0; i < height; i++) {
+              for (var j = 0; j < width; j++) {
+                *pDest++ = *pSrc;
+                pSrc += channelCount;
+              }
+              pSrc += padding;
+              pDest -= 2 * width;
+            }
+          }
+        }
       }
     }
   }

@@ -20,7 +20,7 @@ namespace Mediapipe {
       return Microseconds() == other.Microseconds();
     }
 
-    public override bool Equals(Object obj) {
+    public override bool Equals(System.Object obj) {
       Timestamp timestampObj = obj == null ? null : (obj as Timestamp);
 
       return timestampObj != null && Equals(timestampObj);

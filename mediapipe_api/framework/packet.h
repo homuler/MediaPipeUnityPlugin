@@ -10,6 +10,8 @@
 #include "mediapipe_api/common.h"
 #include "mediapipe_api/external/protobuf.h"
 
+namespace mp_api {
+
 template <typename T>
 class UnsafePacketHolder : public mediapipe::packet_internal::Holder<T> {
   using mediapipe::packet_internal::Holder<T>::ptr_;
@@ -20,6 +22,8 @@ class UnsafePacketHolder : public mediapipe::packet_internal::Holder<T> {
   }
 };
 
+}  // namespace mp_api
+
 extern "C" {
 
 typedef std::map<std::string, mediapipe::Packet> SidePacket;
@@ -28,6 +32,7 @@ typedef std::map<std::string, mediapipe::Packet> SidePacket;
 MP_CAPI(MpReturnCode) mp_Packet__(mediapipe::Packet** packet_out);
 MP_CAPI(void) mp_Packet__delete(mediapipe::Packet* packet);
 MP_CAPI(MpReturnCode) mp_Packet__At__Rt(mediapipe::Packet* packet, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
+MP_CAPI(bool) mp_Packet__IsEmpty(mediapipe::Packet* packet);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsProtoMessageLite(mediapipe::Packet* packet, absl::Status** status_out);
 MP_CAPI(MpReturnCode) mp_Packet__Timestamp(mediapipe::Packet* packet, mediapipe::Timestamp** timestamp_out);
 MP_CAPI(MpReturnCode) mp_Packet__DebugString(mediapipe::Packet* packet, const char** str_out);
@@ -86,7 +91,7 @@ MP_CAPI(int) mp_SidePacket__size(SidePacket* side_packet);
 
 }  // extern "C"
 
-template <class T>
+template <typename T>
 inline MpReturnCode mp_Packet__Consume(mediapipe::Packet* packet, absl::StatusOr<T>** status_or_value_out) {
   TRY_ALL {
     auto status_or_unique_ptr = packet->Consume<T>();
@@ -100,11 +105,11 @@ inline MpReturnCode mp_Packet__Consume(mediapipe::Packet* packet, absl::StatusOr
   } CATCH_ALL
 }
 
-template <class T>
+template <typename T>
 inline MpReturnCode mp_Packet__Get(mediapipe::Packet* packet, const T** value_out) {
   TRY_ALL {
     auto holder = packet->IsEmpty() ? nullptr : mediapipe::packet_internal::GetHolder(*packet)->As<T>();
-    auto unsafe_holder = static_cast<const UnsafePacketHolder<T>*>(holder);
+    auto unsafe_holder = static_cast<const mp_api::UnsafePacketHolder<T>*>(holder);
 
     if (unsafe_holder == nullptr) {
       absl::Status status = packet->ValidateAsType<T>();
@@ -115,20 +120,36 @@ inline MpReturnCode mp_Packet__Get(mediapipe::Packet* packet, const T** value_ou
   } CATCH_ALL
 }
 
-template <class T>
-inline MpReturnCode mp_Packet__GetSerializedProto(mediapipe::Packet* packet, mp_api::SerializedProto** value_out) {
+template <typename T>
+inline MpReturnCode mp_Packet__GetStructVector(mediapipe::Packet* packet, mp_api::StructArray<T>* value_out) {
   TRY_ALL {
-    auto proto = packet->Get<T>();
-    *value_out = SerializeProto(proto);
+    auto vec = packet->Get<std::vector<T>>();
+    auto size = vec.size();
+    auto data = new T[size];
+
+    for (auto i = 0; i < size; ++i) {
+      data[i] = vec[i];
+    }
+    value_out->data = data;
+    value_out->size = static_cast<int>(size);
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_ALL
 }
 
-template <class T>
-inline MpReturnCode mp_Packet__GetSerializedProtoVector(mediapipe::Packet* packet, mp_api::SerializedProtoVector** value_out) {
+template <typename T>
+inline MpReturnCode mp_Packet__GetSerializedProto(mediapipe::Packet* packet, mp_api::SerializedProto* value_out) {
+  TRY_ALL {
+    auto proto = packet->Get<T>();
+    SerializeProto(proto, value_out);
+    RETURN_CODE(MpReturnCode::Success);
+  } CATCH_ALL
+}
+
+template <typename T>
+inline MpReturnCode mp_Packet__GetSerializedProtoVector(mediapipe::Packet* packet, mp_api::StructArray<mp_api::SerializedProto>* value_out) {
   TRY_ALL {
     auto proto_vec = packet->Get<std::vector<T>>();
-    *value_out = SerializeProtoVector(proto_vec);
+    SerializeProtoVector(proto_vec, value_out);
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_ALL
 }

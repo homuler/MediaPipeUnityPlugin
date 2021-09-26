@@ -9,7 +9,7 @@ namespace Mediapipe {
     ///   However, IL2CPP does not support marshaling delegates that point to instance methods to native code,
     ///   so it receives also the texture name to specify the target instance.
     /// </remarks>
-    public delegate void DeletionCallback(UInt64 name, IntPtr glSyncToken);
+    public delegate void DeletionCallback(UInt32 name, IntPtr glSyncToken);
 
     public GlTextureBuffer(IntPtr ptr, bool isOwner = true) : base(isOwner) {
       sharedPtrHandle = new SharedPtr(ptr, isOwner);

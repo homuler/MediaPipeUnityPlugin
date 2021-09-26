@@ -3,10 +3,25 @@ using System.Runtime.InteropServices;
 namespace Mediapipe {
   internal static partial class UnsafeNativeMethods {
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode google_InitGoogleLogging__PKc(string name, string logDir);
+    public static extern MpReturnCode google_InitGoogleLogging__PKc(string name);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode google_ShutdownGoogleLogging();
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode glog_FLAGS_logtostderr([MarshalAs(UnmanagedType.I1)] bool value);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode glog_FLAGS_stderrthreshold(int threshold);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode glog_FLAGS_minloglevel(int level);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode glog_FLAGS_log_dir(string dir);
+
+    [DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode glog_FLAGS_v(int v);
 
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode glog_LOG_INFO__PKc(string str);

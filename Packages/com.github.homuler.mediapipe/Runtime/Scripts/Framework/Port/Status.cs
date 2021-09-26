@@ -28,11 +28,15 @@ namespace Mediapipe {
       UnsafeNativeMethods.absl_Status__delete(ptr);
     }
 
-    [Obsolete("IsOk() is deprecated, use ok")]
-    public bool IsOk() { return ok; }
-
+    bool? _ok;
     public bool ok {
-      get { return SafeNativeMethods.absl_Status__ok(mpPtr); }
+      get {
+        if (_ok is bool valueOfOk) {
+          return valueOfOk;
+        }
+        _ok = SafeNativeMethods.absl_Status__ok(mpPtr);
+        return (bool)_ok;
+      }
     }
 
     public void AssertOk() {

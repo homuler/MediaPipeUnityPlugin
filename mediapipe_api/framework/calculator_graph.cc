@@ -59,31 +59,33 @@ MpReturnCode mp_CalculatorGraph__Initialize__PKc_i_Rsp(mediapipe::CalculatorGrap
   } CATCH_ALL
 }
 
-MpReturnCode mp_CalculatorGraph__Config(mediapipe::CalculatorGraph* graph, mp_api::SerializedProto** config_out) {
+MpReturnCode mp_CalculatorGraph__Config(mediapipe::CalculatorGraph* graph, mp_api::SerializedProto* config_out) {
   TRY_ALL {
-    *config_out = SerializeProto(graph->Config());
+    SerializeProto(graph->Config(), config_out);
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_ALL
 }
 
-MP_CAPI(MpReturnCode) mp_CalculatorGraph__ObserveOutputStream__PKc_PF(mediapipe::CalculatorGraph* graph,
-                                                                      const char* stream_name,
-                                                                      NativePacketCallback* packet_callback,
-                                                                      absl::Status** status_out) {
-  TRY {
-    auto status = graph->ObserveOutputStream(stream_name, [packet_callback](const mediapipe::Packet& packet) -> ::absl::Status {
-      return absl::Status { std::move(*packet_callback(packet)) };
-    });
+MpReturnCode mp_CalculatorGraph__ObserveOutputStream__PKc_PF_b(mediapipe::CalculatorGraph* graph,
+                                                               const char* stream_name,
+                                                               NativePacketCallback* packet_callback,
+                                                               bool observe_timestamp_bounds,
+                                                               absl::Status** status_out) {
+  TRY_ALL {
+    auto status = graph->ObserveOutputStream(stream_name, [graph, packet_callback](const mediapipe::Packet& packet) -> ::absl::Status {
+      return absl::Status { std::move(*packet_callback(graph, packet)) };
+    }, observe_timestamp_bounds);
     *status_out = new absl::Status { std::move(status) };
     RETURN_CODE(MpReturnCode::Success);
-  } CATCH_EXCEPTION
+  } CATCH_ALL
 }
 
-MpReturnCode mp_CalculatorGraph__AddOutputStreamPoller__PKc(mediapipe::CalculatorGraph* graph,
-                                                            const char* stream_name,
-                                                            mediapipe::StatusOrPoller** status_or_poller_out) {
+MpReturnCode mp_CalculatorGraph__AddOutputStreamPoller__PKc_b(mediapipe::CalculatorGraph* graph,
+                                                              const char* stream_name,
+                                                              bool observe_timestamp_bounds,
+                                                              mediapipe::StatusOrPoller** status_or_poller_out) {
   TRY {
-    *status_or_poller_out = new mediapipe::StatusOrPoller { graph->AddOutputStreamPoller(stream_name) };
+    *status_or_poller_out = new mediapipe::StatusOrPoller { graph->AddOutputStreamPoller(stream_name, observe_timestamp_bounds) };
     RETURN_CODE(MpReturnCode::Success);
   } CATCH_EXCEPTION
 }

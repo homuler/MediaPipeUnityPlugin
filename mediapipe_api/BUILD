@@ -19,7 +19,9 @@ cc_library(
         "//mediapipe_api/framework/formats:rect",
         "//mediapipe_api/framework/port:logging",
         "//mediapipe_api/graphs/object_detection_3d/calculators:model_matrix",
+        "//mediapipe_api/graphs/instant_motion_tracking/calculators:transformations",
         "//mediapipe_api/modules/face_geometry/protos:face_geometry",
+        "//mediapipe_api/modules/objectron/calculators:annotation",
         "//mediapipe_api/util:resource_util",
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [],
@@ -86,10 +88,12 @@ cc_library(
         "@com_google_mediapipe//mediapipe/calculators/image:image_transformation_calculator",
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [
+            "//mediapipe_api/graphs/instant_motion_tracking/subgraphs:region_tracking_cpu",
             "//mediapipe_api/modules/iris_landmark:iris_landmarks_from_face_landmarks_cpu",
             "@com_google_mediapipe//mediapipe/graphs/face_detection:desktop_live_calculators",
             "@com_google_mediapipe//mediapipe/graphs/face_detection:face_detection_full_range_desktop_live_deps",
             "@com_google_mediapipe//mediapipe/graphs/face_mesh:desktop_live_calculators",
+            "@com_google_mediapipe//mediapipe/graphs/hair_segmentation:desktop_calculators",
             "@com_google_mediapipe//mediapipe/graphs/hand_tracking:desktop_tflite_calculators",
             "@com_google_mediapipe//mediapipe/graphs/holistic_tracking:holistic_tracking_cpu_graph_deps",
             "@com_google_mediapipe//mediapipe/graphs/iris_tracking:iris_tracking_cpu_deps",
@@ -141,8 +145,6 @@ pkg_zip(
 pkg_asset(
     name = "mediapipe_assets",
     srcs = [
-        "//mediapipe_api/graphs/instant_motion_tracking:assets",
-        "//mediapipe_api/graphs/object_detection_3d:assets",
         "@com_google_mediapipe//mediapipe/models:hair_segmentation.tflite",
         "@com_google_mediapipe//mediapipe/models:ssdlite_object_detection.tflite",
         "@com_google_mediapipe//mediapipe/models:ssdlite_object_detection_labelmap.txt",
@@ -191,6 +193,9 @@ pkg_zip(
         "//mediapipe_api/graphs/object_detection_3d/calculators:model_matrix_cs",
         "//mediapipe_api/modules/face_geometry/protos:face_geometry_cs",
         "//mediapipe_api/modules/face_geometry/protos:mesh_3d_cs",
+        "//mediapipe_api/modules/objectron/calculators:a_r_capture_metadata_cs",
+        "//mediapipe_api/modules/objectron/calculators:annotation_data_cs",
+        "//mediapipe_api/modules/objectron/calculators:object_cs",
     ],
     # TODO: keep directory structure
 )

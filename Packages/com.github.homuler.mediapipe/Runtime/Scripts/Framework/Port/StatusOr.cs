@@ -7,7 +7,7 @@ namespace Mediapipe {
     public abstract bool ok { get; }
     public abstract Status status { get; }
 
-    public virtual T ValueOr(T defaultValue) {
+    public virtual T ValueOr(T defaultValue = default(T)) {
       if (!ok) {
         return defaultValue;
       }

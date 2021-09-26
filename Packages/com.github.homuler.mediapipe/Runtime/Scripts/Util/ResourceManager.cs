@@ -1,7 +1,6 @@
 using System;
+using System.Collections;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Mediapipe {
   /// <summary>
@@ -16,9 +15,18 @@ namespace Mediapipe {
     public delegate bool ResourceProvider(string path, IntPtr output);
     public abstract ResourceProvider resourceProvider { get; }
 
+    static readonly object initLock = new object();
+    static bool isInitialized = false;
+
     public ResourceManager() {
-      SafeNativeMethods.mp__SetCustomGlobalPathResolver__P(pathResolver);
-      SafeNativeMethods.mp__SetCustomGlobalResourceProvider__P(resourceProvider);
+      lock(initLock) {
+        if (isInitialized) {
+          throw new InvalidOperationException("ResourceManager can be initialized only once");
+        }
+        SafeNativeMethods.mp__SetCustomGlobalPathResolver__P(pathResolver);
+        SafeNativeMethods.mp__SetCustomGlobalResourceProvider__P(resourceProvider);
+        isInitialized = true;
+      }
     }
 
     /// <param name="name">Asset name</param>
@@ -28,30 +36,14 @@ namespace Mediapipe {
     public abstract bool IsPrepared(string name);
 
     /// <summary>
-    ///   Saves <paramref name="name" /> as <paramref name="uniqueKey" /> to the device.
-    /// </summary>
-    /// <param name="uniqueKey">
-    ///   A unique key used to specify the asset.
-    ///   It will be the file name on the device storage.
-    /// </param>
-    /// <param name="overwrite">
-    ///   Specifies whether <paramref name="uniqueKey" /> will be overwritten if it already exists.
-    /// </param>
-    public abstract void PrepareAsset(string name, string uniqueKey, bool overwrite = true);
-
-    public void PrepareAsset(string name, bool overwrite = true) {
-      PrepareAsset(name, name, overwrite);
-    }
-
-    /// <summary>
     ///   Saves <paramref name="name" /> as <paramref name="uniqueKey" /> asynchronously.
     /// </summary>
     /// <param name="overwrite">
     ///   Specifies whether <paramref name="uniqueKey" /> will be overwritten if it already exists.
     /// </param>
-    public abstract Task PrepareAssetAsync(string name, string uniqueKey, bool overwrite = true);
+    public abstract IEnumerator PrepareAssetAsync(string name, string uniqueKey, bool overwrite = true);
 
-    public Task PrepareAssetAsync(string name, bool overwrite = true) {
+    public IEnumerator PrepareAssetAsync(string name, bool overwrite = true) {
       return PrepareAssetAsync(name, name, overwrite);
     }
 

@@ -30,13 +30,21 @@ enum class MpReturnCode : int {
 };
 
 namespace mp_api {
+
+template <typename T>
+struct StructArray {
+  T* data;
+  int size;
+};
+
 #ifndef _WIN32
   extern thread_local struct sigaction orig_act;
   extern thread_local sigjmp_buf abrt_jbuf;
 
   extern void sigabrt_handler(int sig);
 #endif
-}
+
+}  // namespace mp_api
 
 // TODO: make code more readable
 #define TRY             auto volatile _mp_return_code = MpReturnCode::Unset;\

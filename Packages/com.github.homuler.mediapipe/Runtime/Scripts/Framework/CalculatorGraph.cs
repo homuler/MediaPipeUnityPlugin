@@ -5,7 +5,7 @@ using Google.Protobuf;
 
 namespace Mediapipe {
   public class CalculatorGraph : MpResourceHandle {
-    public delegate IntPtr NativePacketCallback(IntPtr packetPtr);
+    public delegate IntPtr NativePacketCallback(IntPtr graphPtr, IntPtr packetPtr);
     public delegate Status PacketCallback<T, U>(T packet) where T : Packet<U>;
 
     public CalculatorGraph() : base() {
@@ -47,24 +47,24 @@ namespace Mediapipe {
 
     /// <remarks>Crashes if config is not set</remarks>
     public CalculatorGraphConfig Config() {
-      UnsafeNativeMethods.mp_CalculatorGraph__Config(mpPtr, out var serializedProtoPtr).Assert();
+      UnsafeNativeMethods.mp_CalculatorGraph__Config(mpPtr, out var serializedProto).Assert();
       GC.KeepAlive(this);
 
-      var config = Protobuf.DeserializeProto<CalculatorGraphConfig>(serializedProtoPtr, CalculatorGraphConfig.Parser);
-      UnsafeNativeMethods.mp_api_SerializedProto__delete(serializedProtoPtr);
+      var config = serializedProto.Deserialize(CalculatorGraphConfig.Parser);
+      serializedProto.Dispose();
 
       return config;
     }
 
-    public Status ObserveOutputStream(string streamName, NativePacketCallback nativePacketCallback) {
-      UnsafeNativeMethods.mp_CalculatorGraph__ObserveOutputStream__PKc_PF(mpPtr, streamName, nativePacketCallback, out var statusPtr).Assert();
+    public Status ObserveOutputStream(string streamName, NativePacketCallback nativePacketCallback, bool observeTimestampBounds = false) {
+      UnsafeNativeMethods.mp_CalculatorGraph__ObserveOutputStream__PKc_PF_b(mpPtr, streamName, nativePacketCallback, observeTimestampBounds, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       return new Status(statusPtr);
     }
 
-    public Status ObserveOutputStream<T, U>(string streamName, PacketCallback<T, U> packetCallback, out GCHandle callbackHandle) where T : Packet<U> {
-      NativePacketCallback nativePacketCallback = (IntPtr packetPtr) => {
+    public Status ObserveOutputStream<T, U>(string streamName, PacketCallback<T, U> packetCallback, bool observeTimestampBounds, out GCHandle callbackHandle) where T : Packet<U> {
+      NativePacketCallback nativePacketCallback = (IntPtr _graphPtr, IntPtr packetPtr) => {
         Status status = null;
         try {
           T packet = (T)Activator.CreateInstance(typeof(T), packetPtr, false);
@@ -76,11 +76,15 @@ namespace Mediapipe {
       };
       callbackHandle = GCHandle.Alloc(nativePacketCallback, GCHandleType.Pinned);
 
-      return ObserveOutputStream(streamName, nativePacketCallback);
+      return ObserveOutputStream(streamName, nativePacketCallback, observeTimestampBounds);
     }
 
-    public StatusOrPoller<T> AddOutputStreamPoller<T>(string streamName) {
-      UnsafeNativeMethods.mp_CalculatorGraph__AddOutputStreamPoller__PKc(mpPtr, streamName, out var statusOrPollerPtr).Assert();
+    public Status ObserveOutputStream<T, U>(string streamName, PacketCallback<T, U> packetCallback, out GCHandle callbackHandle) where T : Packet<U> {
+      return ObserveOutputStream(streamName, packetCallback, false, out callbackHandle);
+    }
+
+    public StatusOrPoller<T> AddOutputStreamPoller<T>(string streamName, bool observeTimestampBounds = false) {
+      UnsafeNativeMethods.mp_CalculatorGraph__AddOutputStreamPoller__PKc_b(mpPtr, streamName, observeTimestampBounds, out var statusOrPollerPtr).Assert();
 
       GC.KeepAlive(this);
       return new StatusOrPoller<T>(statusOrPollerPtr);

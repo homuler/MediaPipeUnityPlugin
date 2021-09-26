@@ -23,10 +23,7 @@ namespace Mediapipe {
     }
 
     public static GlTextureInfo GlTextureInfoFor(this GpuBufferFormat gpuBufferFormat, int plane, GlVersion glVersion = GlVersion.kGLES3) {
-      UnsafeNativeMethods.mp__GlTextureInfoForGpuBufferFormat__ui_i_ui(gpuBufferFormat, plane, glVersion, out var glTextureInfoPtr);
-      var glTextureInfo = Marshal.PtrToStructure<GlTextureInfo>(glTextureInfoPtr);
-      UnsafeNativeMethods.mp_GlTextureInfo__delete(glTextureInfoPtr);
-
+      UnsafeNativeMethods.mp__GlTextureInfoForGpuBufferFormat__ui_i_ui(gpuBufferFormat, plane, glVersion, out var glTextureInfo).Assert();
       return glTextureInfo;
     }
   }

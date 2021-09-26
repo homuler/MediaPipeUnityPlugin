@@ -8,8 +8,8 @@
 
 extern "C" {
 
-MP_CAPI(MpReturnCode) mp_Packet__GetFaceGeometry(mediapipe::Packet* packet, mp_api::SerializedProto** value_out);
-MP_CAPI(MpReturnCode) mp_Packet__GetFaceGeometryVector(mediapipe::Packet* packet, mp_api::SerializedProtoVector** value_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetFaceGeometry(mediapipe::Packet* packet, mp_api::SerializedProto* value_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetFaceGeometryVector(mediapipe::Packet* packet, mp_api::StructArray<mp_api::SerializedProto>* value_out);
 
 }  // extern "C"
 

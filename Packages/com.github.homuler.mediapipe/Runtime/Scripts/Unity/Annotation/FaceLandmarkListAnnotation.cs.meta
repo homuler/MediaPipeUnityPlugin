@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 1275dad009e98d9f490bd65e83f7eba5
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - normalizedLandmarkAnnotationPrefab: {fileID: 4620484168070760057, guid: fb7bdf41d4bd87715b9beaced80e72bb,
+      type: 3}
+  - normalizedLandmarkConnectionAnnotationPrefab: {fileID: 2214577441519754127, guid: 8e0120500049efdba90da8dcdc1130a2,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

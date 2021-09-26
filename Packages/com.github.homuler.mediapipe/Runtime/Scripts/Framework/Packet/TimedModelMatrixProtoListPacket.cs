@@ -6,11 +6,11 @@ namespace Mediapipe {
     public TimedModelMatrixProtoListPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
     public override TimedModelMatrixProtoList Get() {
-      UnsafeNativeMethods.mp_Packet__GetTimedModelMatrixProtoList(mpPtr, out var serializedProtoPtr).Assert();
+      UnsafeNativeMethods.mp_Packet__GetTimedModelMatrixProtoList(mpPtr, out var serializedProto).Assert();
       GC.KeepAlive(this);
 
-      var matrixProtoList = Protobuf.DeserializeProto<TimedModelMatrixProtoList>(serializedProtoPtr, TimedModelMatrixProtoList.Parser);
-      UnsafeNativeMethods.mp_api_SerializedProto__delete(serializedProtoPtr);
+      var matrixProtoList = serializedProto.Deserialize(TimedModelMatrixProtoList.Parser);
+      serializedProto.Dispose();
 
       return matrixProtoList;
     }

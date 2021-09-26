@@ -23,6 +23,10 @@ namespace Mediapipe {
       return (Packet<T>)Activator.CreateInstance(this.GetType(), packetPtr, true);
     }
 
+    public bool IsEmpty() {
+      return SafeNativeMethods.mp_Packet__IsEmpty(mpPtr);
+    }
+
     public Status ValidateAsProtoMessageLite() {
       UnsafeNativeMethods.mp_Packet__ValidateAsProtoMessageLite(mpPtr, out var statusPtr).Assert();
 

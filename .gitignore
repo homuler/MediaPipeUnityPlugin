@@ -3,12 +3,14 @@
 .vs/
 .DS_Store
 
-Temp/
-Logs/
-Library/
-CodeCoverage/
-obj/
-build/
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Cc]ode[Cc]overage/
 *.csproj
 *.sln
 

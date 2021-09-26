@@ -1,0 +1,60 @@
+# Images coming into and out of the graph.
+input_stream: "input_video"
+input_side_packet: "LABELS_CSV:allowed_labels"
+input_side_packet: "MAX_NUM_OBJECTS:max_num_objects"
+
+output_stream: "lifted_objects"
+output_stream: "multi_box_rects"
+output_stream: "multi_box_landmarks"
+
+# Generates side packet with max number of objects to detect/track.
+node {
+  calculator: "ConstantSidePacketCalculator"
+  output_side_packet: "PACKET:box_landmark_model_path"
+  node_options: {
+    [type.googleapis.com/mediapipe.ConstantSidePacketCalculatorOptions]: {
+      packet { string_value: "object_detection_3d.tflite" }
+    }
+  }
+}
+
+# Throttles the images flowing downstream for flow control. It passes through
+# the very first incoming image unaltered, and waits for downstream nodes
+# (calculators and subgraphs) in the graph to finish their tasks before it
+# passes through another image. All images that come in while waiting are
+# dropped, limiting the number of in-flight images in most part of the graph to
+# 1. This prevents the downstream nodes from queuing up incoming images and data
+# excessively, which leads to increased latency and memory usage, unwanted in
+# real-time mobile applications. It also eliminates unnecessarily computation,
+# e.g., the output produced by a node may get dropped downstream if the
+# subsequent nodes are still busy processing previous inputs.
+node {
+  calculator: "FlowLimiterCalculator"
+  input_stream: "input_video"
+  input_stream: "FINISHED:lifted_objects"
+  input_stream_info: {
+    tag_index: "FINISHED"
+    back_edge: true
+  }
+  output_stream: "throttled_input_video"
+}
+
+node: {
+  calculator: "ImageTransformationCalculator"
+  input_stream: "IMAGE:throttled_input_video"
+  input_side_packet: "ROTATION_DEGREES:input_rotation"
+  input_side_packet: "FLIP_HORIZONTALLY:input_horizontally_flipped"
+  input_side_packet: "FLIP_VERTICALLY:input_vertically_flipped"
+  output_stream: "IMAGE:transformed_input_video"
+}
+
+node {
+  calculator: "ObjectronCpuSubgraph"
+  input_stream: "IMAGE:transformed_input_video"
+  input_side_packet: "MODEL_PATH:box_landmark_model_path"
+  input_side_packet: "LABELS_CSV:allowed_labels"
+  input_side_packet: "MAX_NUM_OBJECTS:max_num_objects"
+  output_stream: "FRAME_ANNOTATION:lifted_objects"
+  output_stream: "MULTI_LANDMARKS:multi_box_landmarks"
+  output_stream: "NORM_RECTS:multi_box_rects"
+}

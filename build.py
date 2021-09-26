@@ -14,6 +14,7 @@ except ImportError:
 
 _BAZEL_BIN_PATH = 'bazel-bin'
 _BUILD_PATH = 'build'
+_STREAMING_ASSETS_PATH = os.path.join('Assets', 'StreamingAssets')
 _INSTALL_PATH = os.path.join('Packages', 'com.github.homuler.mediapipe', 'Runtime')
 
 class Console:
@@ -127,6 +128,9 @@ class BuildCommand(Command):
       self._unzip(
         os.path.join(_BAZEL_BIN_PATH, 'mediapipe_api', 'mediapipe_assets.zip'),
         os.path.join(_BUILD_PATH, 'Resources'))
+      self._unzip(
+        os.path.join(_BAZEL_BIN_PATH, 'mediapipe_api', 'mediapipe_assets.zip'),
+        _STREAMING_ASSETS_PATH)
 
       self.console.info('Built resource files')
 
@@ -297,6 +301,8 @@ class UninstallCommand(Command):
     self.protobuf = command_args.args.protobuf
 
   def run(self):
+    self._rmtree(_BUILD_PATH)
+
     if self.desktop:
       self.console.info('Uninstalling native libraries for Desktop...')
       for f in glob.glob(os.path.join(_INSTALL_PATH, 'Plugins', '*'), recursive=True):
@@ -325,6 +331,9 @@ class UninstallCommand(Command):
       for f in glob.glob(os.path.join(_INSTALL_PATH, 'Resources', '*'), recursive=True):
         if not f.endswith('.meta'):
           self._remove(f)
+
+      for f in glob.glob(os.path.join(_STREAMING_ASSETS_PATH, '*'), recursive=False):
+        self._remove(f)
 
     if self.protobuf:
       self.console.info('Uninstalling protobuf sources and dlls...')

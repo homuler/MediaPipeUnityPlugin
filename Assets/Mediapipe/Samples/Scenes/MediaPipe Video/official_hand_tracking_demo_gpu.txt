@@ -1,0 +1,117 @@
+# Copyright 2019 The MediaPipe Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Copied from mediapipe/graphs/hand_tracking/hand_tracking_mobile.pbtxt
+#
+# CHANGES:
+#   - `input_video` is ImageFrame (ImageFrameToGpuBufferCalculator converts it into GpuBuffer)
+#   - Add ImageTransformationCalculator and flips the input
+#   - Add GlScalerCalculator and flips the output
+#   - `output_video` is ImageFrame
+
+# MediaPipe graph that performs multi-hand tracking with TensorFlow Lite on GPU.
+# Used in the examples in
+# mediapipe/examples/android/src/java/com/mediapipe/apps/handtrackinggpu.
+
+# Input image. (ImageFrame)
+input_stream: "input_video"
+
+# Max number of hands to detect/process. (int)
+input_side_packet: "num_hands"
+
+# Output image. (ImageFrame)
+output_stream: "output_video"
+# Collection of detected/predicted hands, each represented as a list of
+# landmarks. (std::vector<NormalizedLandmarkList>)
+output_stream: "hand_landmarks"
+
+# Throttles the images flowing downstream for flow control. It passes through
+# the very first incoming image unaltered, and waits for downstream nodes
+# (calculators and subgraphs) in the graph to finish their tasks before it
+# passes through another image. All images that come in while waiting are
+# dropped, limiting the number of in-flight images in most part of the graph to
+# 1. This prevents the downstream nodes from queuing up incoming images and data
+# excessively, which leads to increased latency and memory usage, unwanted in
+# real-time mobile applications. It also eliminates unnecessarily computation,
+# e.g., the output produced by a node may get dropped downstream if the
+# subsequent nodes are still busy processing previous inputs.
+node {
+  calculator: "FlowLimiterCalculator"
+  input_stream: "input_video"
+  input_stream: "FINISHED:output_video"
+  input_stream_info: {
+    tag_index: "FINISHED"
+    back_edge: true
+  }
+  output_stream: "throttled_input_video"
+}
+
+node: {
+  calculator: "ImageFrameToGpuBufferCalculator"
+  input_stream: "throttled_input_video"
+  output_stream: "throttled_input_video_gpu"
+}
+
+node: {
+  calculator: "ImageTransformationCalculator"
+  input_stream: "IMAGE_GPU:throttled_input_video_gpu"
+  input_side_packet: "ROTATION_DEGREES:input_rotation"
+  input_side_packet: "FLIP_HORIZONTALLY:input_horizontally_flipped"
+  input_side_packet: "FLIP_VERTICALLY:input_vertically_flipped"
+  output_stream: "IMAGE_GPU:transformed_input_video"
+}
+
+# Detects/tracks hand landmarks.
+node {
+  calculator: "HandLandmarkTrackingGpu"
+  input_stream: "IMAGE:transformed_input_video"
+  input_side_packet: "NUM_HANDS:num_hands"
+  output_stream: "LANDMARKS:hand_landmarks"
+  output_stream: "HANDEDNESS:handedness"
+  output_stream: "PALM_DETECTIONS:palm_detections"
+  output_stream: "HAND_ROIS_FROM_LANDMARKS:hand_rects_from_landmarks"
+  output_stream: "HAND_ROIS_FROM_PALM_DETECTIONS:hand_rects_from_palm_detections"
+}
+
+# Subgraph that renders annotations and overlays them on top of the input
+# images (see hand_renderer_gpu.pbtxt).
+node {
+  calculator: "HandRendererSubgraph"
+  input_stream: "IMAGE:transformed_input_video"
+  input_stream: "DETECTIONS:palm_detections"
+  input_stream: "LANDMARKS:hand_landmarks"
+  input_stream: "HANDEDNESS:handedness"
+  input_stream: "NORM_RECTS:0:hand_rects_from_palm_detections"
+  input_stream: "NORM_RECTS:1:hand_rects_from_landmarks"
+  output_stream: "IMAGE:output_video_raw"
+}
+
+# Flip vertically because the output image is aligned from top-left to bottom-right.
+node: {
+  calculator: "GlScalerCalculator"
+  input_stream: "VIDEO:output_video_raw"
+  input_side_packet: "ROTATION:output_rotation"
+  output_stream: "VIDEO:output_video_gpu"
+  node_options: {
+    [type.googleapis.com/mediapipe.GlScalerCalculatorOptions] {
+      flip_vertical: true
+    }
+  }
+}
+
+node: {
+  calculator: "GpuBufferToImageFrameCalculator"
+  input_stream: "output_video_gpu"
+  output_stream: "output_video"
+}

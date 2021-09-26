@@ -20,7 +20,7 @@
 extern "C" {
 
 typedef std::map<std::string, mediapipe::Packet> SidePackets;
-typedef absl::Status* NativePacketCallback(const mediapipe::Packet&);
+typedef absl::Status* NativePacketCallback(mediapipe::CalculatorGraph* graph, const mediapipe::Packet&);
 
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__(mediapipe::CalculatorGraph** graph_out);
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__PKc(const char* text_format_config, mediapipe::CalculatorGraph** graph_out);
@@ -33,20 +33,22 @@ MP_CAPI(MpReturnCode) mp_CalculatorGraph__Initialize__PKc_i(mediapipe::Calculato
                                                             absl::Status** status_out);
 
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__Initialize__PKc_i_Rsp(mediapipe::CalculatorGraph* graph,
-                                                               const char* serialized_config,
-                                                               int size,
-                                                               SidePackets* side_packets,
-                                                               absl::Status** status_out);
+                                                                const char* serialized_config,
+                                                                int size,
+                                                                SidePackets* side_packets,
+                                                                absl::Status** status_out);
 
-MP_CAPI(MpReturnCode) mp_CalculatorGraph__Config(mediapipe::CalculatorGraph* graph, mp_api::SerializedProto** config_out);
-MP_CAPI(MpReturnCode) mp_CalculatorGraph__ObserveOutputStream__PKc_PF(mediapipe::CalculatorGraph* graph,
-                                                                      const char* stream_name,
-                                                                      NativePacketCallback* packet_callback,
-                                                                      absl::Status** status_out);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__Config(mediapipe::CalculatorGraph* graph, mp_api::SerializedProto* config_out);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__ObserveOutputStream__PKc_PF_b(mediapipe::CalculatorGraph* graph,
+                                                                        const char* stream_name,
+                                                                        NativePacketCallback* packet_callback,
+                                                                        bool observe_timestamp_bounds,
+                                                                        absl::Status** status_out);
 
-MP_CAPI(MpReturnCode) mp_CalculatorGraph__AddOutputStreamPoller__PKc(mediapipe::CalculatorGraph* graph,
-                                                                     const char* stream_name,
-                                                                     mediapipe::StatusOrPoller** status_or_poller_out);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__AddOutputStreamPoller__PKc_b(mediapipe::CalculatorGraph* graph,
+                                                                       const char* stream_name,
+                                                                       bool observe_timestamp_bounds,
+                                                                       mediapipe::StatusOrPoller** status_or_poller_out);
 
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__Run__Rsp(mediapipe::CalculatorGraph* graph,
                                                     SidePackets* side_packets,

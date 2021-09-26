@@ -1,0 +1,74 @@
+# Copyright 2019 The MediaPipe Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Copied from mediapipe/graphs/tracking/object_detection_tracking_mobile_gpu.pbtxt
+#
+# CHANGES:
+#   - `input_video` is ImageFrame (ImageFrameToGpuBufferCalculator converts it into GpuBuffer)
+#   - ImageTransformationCalculator rotates the input and flips the output
+#   - Remove RendererSubgraphGpu
+
+# MediaPipe graph that performs object detection and tracking with TensorFlow
+# Lite on GPU.
+# Used in the examples in
+# mediapipie/examples/android/src/java/com/mediapipe/apps/objecttrackinggpu
+
+# Images on GPU coming into and out of the graph.
+input_stream: "input_video"
+output_stream: "tracked_detections"
+
+node: {
+  calculator: "ImageFrameToGpuBufferCalculator"
+  input_stream: "input_video"
+  output_stream: "input_video_gpu"
+}
+
+node: {
+  calculator: "ImageTransformationCalculator"
+  input_stream: "IMAGE_GPU:input_video_gpu"
+  input_side_packet: "ROTATION_DEGREES:input_rotation"
+  input_side_packet: "FLIP_HORIZONTALLY:input_horizontally_flipped"
+  input_side_packet: "FLIP_VERTICALLY:input_vertically_flipped"
+  output_stream: "IMAGE_GPU:transformed_input_video"
+}
+
+# Resamples the images by specific frame rate. This calculator is used to
+# control the frequecy of subsequent calculators/subgraphs, e.g. less power
+# consumption for expensive process.
+node {
+  calculator: "PacketResamplerCalculator"
+  input_stream: "DATA:transformed_input_video"
+  output_stream: "DATA:throttled_input_video"
+  node_options: {
+    [type.googleapis.com/mediapipe.PacketResamplerCalculatorOptions] {
+      frame_rate: 5
+    }
+  }
+}
+
+
+# Subgraph that detections objects (see object_detection_gpu.pbtxt).
+node {
+  calculator: "ObjectDetectionSubgraphGpu"
+  input_stream: "IMAGE:throttled_input_video"
+  output_stream: "DETECTIONS:output_detections"
+}
+
+# Subgraph that tracks objects (see object_tracking_gpu.pbtxt).
+node {
+  calculator: "ObjectTrackingSubgraphGpu"
+  input_stream: "VIDEO:transformed_input_video"
+  input_stream: "DETECTIONS:output_detections"
+  output_stream: "DETECTIONS:tracked_detections"
+}

@@ -7,11 +7,11 @@ namespace Mediapipe {
     public FaceGeometryVectorPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
     public override List<FaceGeometry.FaceGeometry> Get() {
-      UnsafeNativeMethods.mp_Packet__GetFaceGeometryVector(mpPtr, out var serializedProtoVectorPtr).Assert();
+      UnsafeNativeMethods.mp_Packet__GetFaceGeometryVector(mpPtr, out var serializedProtoVector).Assert();
       GC.KeepAlive(this);
 
-      var geometries = Protobuf.DeserializeProtoVector<FaceGeometry.FaceGeometry>(serializedProtoVectorPtr, FaceGeometry.FaceGeometry.Parser);
-      UnsafeNativeMethods.mp_api_SerializedProtoVector__delete(serializedProtoVectorPtr);
+      var geometries = serializedProtoVector.Deserialize(FaceGeometry.FaceGeometry.Parser);
+      serializedProtoVector.Dispose();
 
       return geometries;
     }

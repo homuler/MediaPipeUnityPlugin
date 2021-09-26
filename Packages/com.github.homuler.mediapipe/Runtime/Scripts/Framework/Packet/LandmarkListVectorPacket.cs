@@ -7,11 +7,11 @@ namespace Mediapipe {
     public LandmarkListVectorPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
 
     public override List<LandmarkList> Get() {
-      UnsafeNativeMethods.mp_Packet__GetLandmarkListVector(mpPtr, out var serializedProtoVectorPtr).Assert();
+      UnsafeNativeMethods.mp_Packet__GetLandmarkListVector(mpPtr, out var serializedProtoVector).Assert();
       GC.KeepAlive(this);
 
-      var landmarkLists = Protobuf.DeserializeProtoVector<LandmarkList>(serializedProtoVectorPtr, LandmarkList.Parser);
-      UnsafeNativeMethods.mp_api_SerializedProtoVector__delete(serializedProtoVectorPtr);
+      var landmarkLists = serializedProtoVector.Deserialize(LandmarkList.Parser);
+      serializedProtoVector.Dispose();
 
       return landmarkLists;
     }
