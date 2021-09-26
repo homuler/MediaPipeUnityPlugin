@@ -93,8 +93,9 @@ namespace Mediapipe.Unity {
         Logger.LogWarning(TAG, "Current platform does not support GPU inference mode, so falling back to CPU mode");
       }
       inferenceMode = InferenceMode.CPU;
-#endif
+#else
       inferenceMode = preferableInferenceMode;
+#endif
     }
 
     void OnApplicationQuit() {
