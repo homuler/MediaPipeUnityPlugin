@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.7.0](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.6.2...v0.7.0) (2021-09-27)
+
+
+### Features
+
+* New Sample App ([#296](https://github.com/homuler/MediaPipeUnityPlugin/issues/296)) ([7bb877d](https://github.com/homuler/MediaPipeUnityPlugin/commit/7bb877de4887ad4bf23c72b39649c41bb3650d54))
+
+
+### Bug Fixes
+
+* cannot pass linker options to clang ([b8ea5c1](https://github.com/homuler/MediaPipeUnityPlugin/commit/b8ea5c1fb0b5f0eeebb5de731147d2db46a76e23))
+* PacketPresenceCalculator does not work with PoseTracking ([d58ab72](https://github.com/homuler/MediaPipeUnityPlugin/commit/d58ab72c8149fce183ce804aef2e218f74ff70dc))
+
 ### [0.6.2](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.6.1...v0.6.2) (2021-07-11)
 
 
