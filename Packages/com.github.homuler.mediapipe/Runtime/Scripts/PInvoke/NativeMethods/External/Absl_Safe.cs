@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 namespace Mediapipe {
   internal static partial class SafeNativeMethods {
     [Pure, DllImport (MediaPipeLibrary, ExactSpelling = true)]
+    [return: MarshalAs(UnmanagedType.I1)]
     public static extern bool absl_Status__ok(IntPtr status);
 
     [Pure, DllImport (MediaPipeLibrary, ExactSpelling = true)]

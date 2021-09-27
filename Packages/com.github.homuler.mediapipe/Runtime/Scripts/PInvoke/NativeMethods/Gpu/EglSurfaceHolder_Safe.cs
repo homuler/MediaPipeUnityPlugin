@@ -12,7 +12,7 @@ namespace Mediapipe {
     public static extern IntPtr mp_EglSurfaceHolderUniquePtr__release(IntPtr eglSurfaceHolder);
 
     [Pure, DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern void mp_EglSurfaceHolder__SetFlipY__b(IntPtr eglSurfaceHolder, bool flipY);
+    public static extern void mp_EglSurfaceHolder__SetFlipY__b(IntPtr eglSurfaceHolder, [MarshalAs(UnmanagedType.I1)]bool flipY);
 
     [Pure, DllImport (MediaPipeLibrary, ExactSpelling = true)]
     [return: MarshalAs(UnmanagedType.I1)]
