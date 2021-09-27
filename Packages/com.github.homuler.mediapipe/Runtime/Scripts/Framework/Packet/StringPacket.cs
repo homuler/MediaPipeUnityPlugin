@@ -34,7 +34,7 @@ namespace Mediapipe {
     }
 
     public byte[] GetByteArray() {
-      UnsafeNativeMethods.mp_Packet__GetByteString(mpPtr, out var strPtr, out int size);
+      UnsafeNativeMethods.mp_Packet__GetByteString(mpPtr, out var strPtr, out int size).Assert();
       GC.KeepAlive(this);
 
       var bytes = new byte[size];

@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-
-using pb = global::Google.Protobuf;
-
 namespace Mediapipe {
   internal static class Protobuf {
     static Protobuf() {

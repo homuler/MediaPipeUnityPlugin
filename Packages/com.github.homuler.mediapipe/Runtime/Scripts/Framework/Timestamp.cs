@@ -5,7 +5,7 @@ namespace Mediapipe {
     public Timestamp(IntPtr ptr) : base(ptr) {}
 
     public Timestamp(Int64 value) : base() {
-      UnsafeNativeMethods.mp_Timestamp__l(value, out var ptr);
+      UnsafeNativeMethods.mp_Timestamp__l(value, out var ptr).Assert();
       this.ptr = ptr;
     }
 
