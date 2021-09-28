@@ -14,16 +14,17 @@ namespace Tests {
 
     [Test, GpuOnly]
     public void GetCurrent_ShouldReturnCurrentContext_When_CalledInGlContext() {
-      var glCalculatorHelper = new GlCalculatorHelper();
-      glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
+      using (var glCalculatorHelper = new GlCalculatorHelper()) {
+        glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
 
-      glCalculatorHelper.RunInGlContext(() => {
-        var glContext = GlContext.GetCurrent();
+        glCalculatorHelper.RunInGlContext(() => {
+          var glContext = GlContext.GetCurrent();
 
-        Assert.NotNull(glContext);
-        Assert.True(glContext.IsCurrent());
-        return Status.Ok();
-      }).AssertOk();
+          Assert.NotNull(glContext);
+          Assert.True(glContext.IsCurrent());
+          return Status.Ok();
+        }).AssertOk();
+      }
     }
     #endregion
 
@@ -56,17 +57,11 @@ namespace Tests {
     #endregion
 
     private GlContext GetGlContext() {
-      GlContext glContext = null;
+      using (var glCalculatorHelper = new GlCalculatorHelper()) {
+        glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
 
-      var glCalculatorHelper = new GlCalculatorHelper();
-      glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
-
-      glCalculatorHelper.RunInGlContext(() => {
-        glContext = GlContext.GetCurrent();
-        return Status.Ok();
-      }).AssertOk();
-
-      return glContext;
+        return glCalculatorHelper.GetGlContext();
+      }
     }
   }
 }

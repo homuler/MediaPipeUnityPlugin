@@ -6,18 +6,18 @@ namespace Tests {
     #region Create
     [Test, GpuOnly]
     public void Create_ShouldReturnStatusOrGpuResources() {
-      var statusOrGpuResources = GpuResources.Create();
-
-      Assert.True(statusOrGpuResources.ok);
+      using (var statusOrGpuResources = GpuResources.Create()) {
+        Assert.True(statusOrGpuResources.ok);
+      }
     }
     #endregion
 
     #region #isDisposed
     [Test, GpuOnly]
     public void isDisposed_ShouldReturnFalse_When_NotDisposedYet() {
-      var gpuResources = GpuResources.Create().Value();
-
-      Assert.False(gpuResources.isDisposed);
+      using (var gpuResources = GpuResources.Create().Value()) {
+        Assert.False(gpuResources.isDisposed);
+      }
     }
 
     [Test, GpuOnly]
