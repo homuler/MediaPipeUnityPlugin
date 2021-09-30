@@ -15,23 +15,10 @@ string_flag(
     build_setting_default = "local",
 )
 
-string_list_flag(
-    name = "deps",
-    # Currently, the only meaningful value is "ffmpeg"
-    build_setting_default = [],
-)
-
 config_setting(
     name = "source_build",
     flag_values = {
         ":switch": "cmake",
-    },
-)
-
-config_setting(
-    name = "with_ffmpeg",
-    flag_values = {
-        ":deps": "ffmpeg",
     },
 )
 
@@ -58,9 +45,6 @@ alias(
     }),
 )
 
-# Note: this determines the order in which the libraries are passed to the
-# linker, so if library A depends on library B, library B must come _after_.
-# Hence core is at the bottom.
 OPENCV_MODULES = [
     "calib3d",
     "features2d",
@@ -92,6 +76,7 @@ cmake(
         "BUILD_LIST": ",".join(sorted(OPENCV_MODULES)),
         "BUILD_opencv_apps": "OFF",
         "BUILD_opencv_python": "OFF",
+        "BUILD_opencv_world": "ON",
         "BUILD_EXAMPLES": "OFF",
         "BUILD_PERF_TESTS": "OFF",
         "BUILD_TESTS": "OFF",
@@ -113,53 +98,80 @@ cmake(
         "WITH_WEBP": "OFF",
         "CV_ENABLE_INTRINSICS": "ON",
         "WITH_EIGEN": "ON",
-        # https://github.com/opencv/opencv/issues/19846
-        "WITH_LAPACK": "OFF",
-        "WITH_PTHREADS": "ON",
-        "WITH_PTHREADS_PF": "ON",
         "ENABLE_CCACHE": "OFF",
         # flags for static build
         "BUILD_SHARED_LIBS": "OFF",
         "OPENCV_SKIP_PYTHON_LOADER": "ON",
         "OPENCV_SKIP_VISIBILITY_HIDDEN": "ON",
     }, {
-        ":with_ffmpeg": { "WITH_FFMPEG": "ON" },
-        "//conditions:default": { "WITH_FFMPEG": "OFF" },
+        "@bazel_tools//src/conditions:windows": {
+            "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreadedDLL",
+            "CMAKE_CXX_FLAGS": "/std:c++14",
+            "WITH_LAPACK": "ON",
+            "WITH_FFMPEG": "OFF",
+        },
+        "//conditions:default": {
+            # https://github.com/opencv/opencv/issues/19846
+            "WITH_LAPACK": "OFF",
+            "WITH_PTHREADS": "ON",
+            "WITH_PTHREADS_PF": "ON",
+        },
     }),
     lib_source = "@opencv//:all",
+    generate_args = select({
+        "@com_google_mediapipe//mediapipe:windows": [
+            "-G \"Visual Studio 16 2019\"",
+            "-A x64",
+        ],
+        "//conditions:default": [],
+    }),
     build_args = [
+        "--verbose",
         "--parallel",
     ] + select({
         "@bazel_tools//src/conditions:darwin": ["`sysctl -n hw.ncpu`"],
         "//conditions:default" : ["`nproc`"],
     }),
-    out_static_libs = ["libopencv_%s.a" % (module) for module in OPENCV_MODULES],
+    out_lib_dir = select({
+        "@bazel_tools//src/conditions:windows": "x64/vc16/staticlib",
+        "//conditions:default": "lib",
+    }),
+    out_static_libs = select({
+        "@bazel_tools//src/conditions:windows": ["opencv_world3410.lib"],
+        "//conditions:default": ["libopencv_world.a"],
+    }),
 )
 
 cc_library(
     name = "opencv_from_source",
-    srcs = [
-        "libopencv_%s.a" % (module) for module in OPENCV_MODULES
-    ] + [
-        "lib%s.a" % (lib) for lib in OPENCV_3RDPARTY_LIBS
-    ],
+    srcs = select({
+        "@bazel_tools//src/conditions:windows": ["opencv_world3410.lib"],
+        "//conditions:default": ["libopencv_%s.a" % (module) for module in OPENCV_MODULES],
+    }) + select({
+        "@bazel_tools//src/conditions:windows": ["%s.lib" % (lib) for lib in OPENCV_3RDPARTY_LIBS],
+        "//conditions:default": ["lib%s.a" % (lib) for lib in OPENCV_3RDPARTY_LIBS],
+    }),
     hdrs = glob(["include/opencv2/**/*.h*"]),
     includes = ["include/"],
-    deps = [
-        ":opencv_cmake",
-    ] + select({
-        ":with_ffmpeg": ["@//third_party:libffmpeg"],
-        "//conditions:default": [],
+    deps = [":opencv_cmake"],
+    data = select({
+        "@bazel_tools//src/conditions:windows": [
+            ":opencv_static_libs_win",
+        ],
+        "//conditions:default": [
+            ":opencv_static_libs",
+            ":opencv_3rdparty_libs",
+        ],
     }),
-    data = [
-        ":opencv_static_libs",
-        ":opencv_3rdparty_libs",
-    ],
-    linkopts = [
-        "-ldl",
-        "-lm",
-        "-lpthread",
-    ] + select({
+    linkopts = select({
+        "@bazel_tools//src/conditions:windows": [],
+        "//conditions:default": [
+            "-ldl",
+            "-lm",
+            "-lpthread",
+        ],
+    }) + select({
+        "@bazel_tools//src/conditions:windows": [],
         "@bazel_tools//src/conditions:darwin": [],
         "//conditions:default": ["-lrt"],
     }),
@@ -174,8 +186,15 @@ filegroup(
 genrule(
     name = "opencv_static_libs",
     srcs = [":opencv_gen_dir"],
-    outs = ["libopencv_%s.a" % (lib) for lib in OPENCV_MODULES],
-    cmd = "cp $</lib/*.a $(@D)",
+    outs = ["libopencv_world.a"],
+    cmd = "cp $</lib/libopencv_world.a $(@D)",
+)
+
+genrule(
+    name = "opencv_static_libs_win",
+    srcs = [":opencv_gen_dir"],
+    outs = ["opencv_world3410.lib"] + ["%s.lib" % (lib) for lib in OPENCV_3RDPARTY_LIBS],
+    cmd = "cp -f $</x64/vc16/staticlib/*.lib $(@D)",
 )
 
 genrule(

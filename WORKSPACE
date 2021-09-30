@@ -83,9 +83,9 @@ http_archive(
 
 http_archive(
    name = "rules_foreign_cc",
-   strip_prefix = "rules_foreign_cc-0.2.0",
-   sha256 = "e60cfd0a8426fa4f5fd2156e768493ca62b87d125cb35e94c44e79a3f0d8635f",
-   url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.2.0.zip",
+   strip_prefix = "rules_foreign_cc-0.6.0",
+   sha256 = "30c970bfaeda3485100c62b13093da2be2c70ed99ec8d30f4fac6dd37cb25f34",
+   url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.6.0.zip",
 )
 
 load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
@@ -228,6 +228,12 @@ http_archive(
 http_archive(
     name = "opencv",
     build_file = "@//third_party:opencv.BUILD",
+    patches = [
+        "@//third_party:opencv_cmake.diff",
+    ],
+    patch_args = [
+        "-p1",
+    ],
     sha256 = "1ed6f5b02a7baf14daca04817566e7c98ec668cec381e0edf534fa49f10f58a2",
     strip_prefix = "opencv-3.4.10",
     urls = ["https://github.com/opencv/opencv/archive/3.4.10.tar.gz"],
