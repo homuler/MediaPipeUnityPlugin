@@ -146,7 +146,7 @@ cc_library(
     name = "opencv_from_source",
     srcs = select({
         "@bazel_tools//src/conditions:windows": ["opencv_world3410.lib"],
-        "//conditions:default": ["libopencv_%s.a" % (module) for module in OPENCV_MODULES],
+        "//conditions:default": ["libopencv_world.a"],
     }) + select({
         "@bazel_tools//src/conditions:windows": ["%s.lib" % (lib) for lib in OPENCV_3RDPARTY_LIBS],
         "//conditions:default": ["lib%s.a" % (lib) for lib in OPENCV_3RDPARTY_LIBS],
