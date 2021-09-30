@@ -443,6 +443,7 @@ http_archive(
     patches = [
         "@com_google_mediapipe//third_party:org_tensorflow_compatibility_fixes.diff",
         "@com_google_mediapipe//third_party:org_tensorflow_objc_cxx17.diff",
+        "@//third_party:tensorflow_python_path.diff",
     ],
     patch_args = [
         "-p1",
