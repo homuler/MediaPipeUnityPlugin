@@ -119,7 +119,7 @@ cmake(
     }),
     lib_source = "@opencv//:all",
     generate_args = select({
-        "@com_google_mediapipe//mediapipe:windows": [
+        "@bazel_tools//src/conditions:windows": [
             "-G \"Visual Studio 16 2019\"",
             "-A x64",
         ],
