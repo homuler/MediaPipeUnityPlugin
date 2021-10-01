@@ -22,6 +22,12 @@ config_setting(
     },
 )
 
+config_setting(
+    name = "windows_dbg",
+    values = { "compilation_mode": "dbg" },
+    constraint_values = ["@platforms//os:windows"],
+)
+
 alias(
     name = "opencv",
     actual = select({
@@ -70,7 +76,6 @@ cmake(
     # Values to be passed as -Dkey=value on the CMake command line;
     # here are serving to provide some CMake script configuration options
     cache_entries = concat_dict_and_select({
-        "CMAKE_BUILD_TYPE": "Release",
         # The module list is always sorted alphabetically so that we do not
         # cause a rebuild when changing the link order.
         "BUILD_LIST": ",".join(sorted(OPENCV_MODULES)),
@@ -105,12 +110,10 @@ cmake(
         "OPENCV_SKIP_VISIBILITY_HIDDEN": "ON",
     }, {
         "@bazel_tools//src/conditions:windows": {
-            "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreadedDLL",
             "CMAKE_CXX_FLAGS": "/std:c++14",
             # required to link to .dll statically
             "BUILD_WITH_STATIC_CRT": "OFF",
             "WITH_LAPACK": "ON",
-            "WITH_FFMPEG": "OFF",
         },
         "//conditions:default": {
             # https://github.com/opencv/opencv/issues/19846
@@ -139,6 +142,7 @@ cmake(
         "//conditions:default": "lib",
     }),
     out_static_libs = select({
+        ":windows_dbg": ["opencv_world3410d.lib"],
         "@bazel_tools//src/conditions:windows": ["opencv_world3410.lib"],
         "//conditions:default": ["libopencv_world.a"],
     }),
@@ -147,9 +151,11 @@ cmake(
 cc_library(
     name = "opencv_from_source",
     srcs = select({
+        ":windows_dbg": ["opencv_world3410d.lib"],
         "@bazel_tools//src/conditions:windows": ["opencv_world3410.lib"],
         "//conditions:default": ["libopencv_world.a"],
     }) + select({
+        ":windows_dbg": ["%sd.lib" % (lib) for lib in OPENCV_3RDPARTY_LIBS],
         "@bazel_tools//src/conditions:windows": ["%s.lib" % (lib) for lib in OPENCV_3RDPARTY_LIBS],
         "//conditions:default": ["lib%s.a" % (lib) for lib in OPENCV_3RDPARTY_LIBS],
     }),
@@ -157,6 +163,9 @@ cc_library(
     includes = ["include/"],
     deps = [":opencv_cmake"],
     data = select({
+        ":windows_dbg": [
+            ":opencv_static_libs_win_dbg",
+        ],
         "@bazel_tools//src/conditions:windows": [
             ":opencv_static_libs_win",
         ],
@@ -193,6 +202,13 @@ genrule(
 )
 
 genrule(
+    name = "opencv_3rdparty_libs",
+    srcs = [":opencv_gen_dir"],
+    outs = ["lib%s.a" % (lib) for lib in OPENCV_3RDPARTY_LIBS],
+    cmd = "cp $</share/OpenCV/3rdparty/lib/*.a $(@D)",
+)
+
+genrule(
     name = "opencv_static_libs_win",
     srcs = [":opencv_gen_dir"],
     outs = ["opencv_world3410.lib"] + ["%s.lib" % (lib) for lib in OPENCV_3RDPARTY_LIBS],
@@ -200,8 +216,8 @@ genrule(
 )
 
 genrule(
-    name = "opencv_3rdparty_libs",
+    name = "opencv_static_libs_win_dbg",
     srcs = [":opencv_gen_dir"],
-    outs = ["lib%s.a" % (lib) for lib in OPENCV_3RDPARTY_LIBS],
-    cmd = "cp $</share/OpenCV/3rdparty/lib/*.a $(@D)",
+    outs = ["opencv_world3410d.lib"] + ["%sd.lib" % (lib) for lib in OPENCV_3RDPARTY_LIBS],
+    cmd = "cp -f $</x64/vc16/staticlib/*.lib $(@D)",
 )
