@@ -107,6 +107,8 @@ cmake(
         "@bazel_tools//src/conditions:windows": {
             "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreadedDLL",
             "CMAKE_CXX_FLAGS": "/std:c++14",
+            # required to link to .dll statically
+            "BUILD_WITH_STATIC_CRT": "OFF",
             "WITH_LAPACK": "ON",
             "WITH_FFMPEG": "OFF",
         },

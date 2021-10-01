@@ -228,12 +228,6 @@ http_archive(
 http_archive(
     name = "opencv",
     build_file = "@//third_party:opencv.BUILD",
-    patches = [
-        "@//third_party:opencv_cmake.diff",
-    ],
-    patch_args = [
-        "-p1",
-    ],
     sha256 = "1ed6f5b02a7baf14daca04817566e7c98ec668cec381e0edf534fa49f10f58a2",
     strip_prefix = "opencv-3.4.10",
     urls = ["https://github.com/opencv/opencv/archive/3.4.10.tar.gz"],
