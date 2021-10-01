@@ -85,7 +85,7 @@ Docker is only used to build native libraries, not at runtime, so there is no im
 If the command finishes successfully, required files will be installed to your host machine.
 
 ### Linux
-1. Install OpenCV and FFmpeg (optional)
+1. (Optional, Deprecated) Install OpenCV and FFmpeg
     You can skip this if you plan to build OpenCV with MediaPipe (see [Build Command](https://github.com/homuler/MediaPipeUnityPlugin#build-command) for more details).
 
     By default, it is assumed that OpenCV 3 is installed under `/usr` (e.g. `/usr/lib/libopencv_core.so`).\
@@ -173,7 +173,7 @@ If the command finishes successfully, required files will be installed to your h
 
 1. Run [build command](#build-command) inside the container
     ```bat
-    python build.py build --desktop cpu --include_opencv_libs -v
+    python build.py build --desktop cpu --opencv=cmake -v
     ```
 
 If the command finishes successfully, required files will be installed to your host machine.
@@ -214,7 +214,7 @@ If the command finishes successfully, required files will be installed to your h
 1. Follow [mediapipe's installation guide](https://google.github.io/mediapipe/getting_started/install.html#installing-on-windows) and
     install MSYS2, Python, Visual C++ Build Tools 2019, WinSDK and Bazel (step1 ~ step6).
 
-1. Install Opencv
+1. (Optional) Install Opencv
 
     By default, it is assumed that OpenCV 3.4.10 is installed under `C:\opencv`.\
     If your version or path is different, please edit [third_party/opencv_windows.BUILD](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/third_party/opencv_windows.BUILD) and [WORKSPACE](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/WORKSPACE).
@@ -232,7 +232,7 @@ If the command finishes successfully, required files will be installed to your h
     ```
 
 1. Set `PYTHON_BIN_PATH`
-    ```sh
+    ```bat
     set PYTHON_BIN_PATH=C:\path\to\python.exe
     ```
 
@@ -241,6 +241,8 @@ If the command finishes successfully, required files will be installed to your h
 
 1. Run [build command](#build-command)
     ```bat
+    python build.py build --desktop cpu --opencv=cmake -v
+    Rem or if you'd like to use local OpenCV
     python build.py build --desktop cpu --include_opencv_libs -v
     ```
 
@@ -252,7 +254,7 @@ You cannot build native libraries for Android on Windows 10, so use [Docker for 
 ### macOS
 1. Install [Homebrew](https://brew.sh)
 
-1. Install OpenCV 3 and FFmpeg (optional)
+1. (Optional) Install OpenCV 3 and FFmpeg
     You can skip this if you plan to build OpenCV with MediaPipe (see [Build Command](https://github.com/homuler/MediaPipeUnityPlugin#build-command) for more details).
     Note that you need to install Xcode in this case.
 
@@ -303,11 +305,7 @@ python build.py build --desktop gpu -v
 # If you've not installed OpenCV locally, you need to build OpenCV from sources for Desktop.
 python build.py build --desktop gpu --opencv=cmake -v
 
-# If FFmpeg is installed, you can build OpenCV with FFmpeg.
-python build.py build --desktop gpu --opencv=cmake --opencv_deps=ffmpeg -v
-
 # Build for Desktop with GPU disabled, and copy OpenCV shared libraries to `Packages`.
-# If you use Windows 10, you would run this command.
 python build.py build --desktop cpu --include_opencv_libs -v
 
 # Build for Desktop, Android, and iOS
