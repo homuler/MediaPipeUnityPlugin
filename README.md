@@ -328,12 +328,50 @@ If you've built native libraries for CPU (i.e. `--desktop cpu`), select `CPU` fo
 ### Android, iOS
 Make sure that you select `GPU` for inference mode before building the app, because `CPU` inference mode is not supported currently.
 
-## Troubleshooting
+## FAQ
 ### DllNotFoundException: mediapipe_c
-OpenCV's path may not be configured properly.
+This error can occur for a variety of reasons, so it is necessary to isolate the cause.
 
-If you're sure the path is correct, please check on **Load on startup** in the plugin inspector, click **Apply** button, and restart Unity Editor.\
-Some helpful logs will be output in the console.
+#### 1. Native libraries are not built yet
+If native libraries (`libmediapipe_c.{so,dylib,dll}` / `mediapipe_android.aar` / `MediaPipeUnity.Framework`) are not built yet,
+this error can occur because Unity cannot load them.
+
+If they don't exist under `Packages/com.github.homuler.mediapipe/Runtime/Plugins`, run [build command](#build-command) first, and make sure that this command finishes successfully.
+
+#### 2. Native libraries are incompatible with your machine
+Libraries built on Linux machines won't work on your Windows machine.
+If you'd like to run the plugin on Windows, you need to build `libmediapipe_c.dll` on Windows.
+
+#### 3. Dependent libraries are not linked
+This error typically also occurs when OpenCV is incorrectly configured.
+See `opencv_linux.BUILD` / `opencv_windows.BUILD` and check if the path is correct (if not, edit the BUILD file).\
+You can also build and link OpenCV statically with `--opencv=cmake` option instead.
+
+Tips:\
+In this case, when you check on [Load on startup](https://docs.unity3d.com/Manual/PluginInspector.html) and click `Apply` button,
+error logs like the following will be output.
+```txt
+Plugins: Couldn't open Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.so, error:  Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.so: undefined symbol: _ZN2cv8fastFreeEPv
+```
+
+#### 4. Dependent libraries do not exist
+When you build an app and copy to another machine, you need to bundle dependent libraries with it.
+
+For example, when you build `libmediapipe_c.so` with `--opencv=local`, OpenCV is dynamically linked to `libmediapipe_c.so`.\
+To use this on another machine, OpenCV must be installed to the machine too.\
+In this case, the recommended way is to build `libmediapipe_c.so` with `--opencv=cmake`.
+
+If you are unsure of the cause, try checking the dependent libraries using `ldd` command, etc.
+
+#### 5. Dependent libraries are not loaded
+On Windows, when you're using local OpenCV (i.e. `--opencv=local`), `opencv_3410world.dll` must be loaded **before** `libmediapipe_c.so`.\
+Unfortunately, currently no easy way to do this is known.\
+As a workaround, try loading both `opencv_3410world.dll` and `libmediapipe_c.dll` on startup.
+
+![load-on-startup](https://user-images.githubusercontent.com/4690128/135591282-8a2011b1-9ae8-4a6a-a5fb-cc3a21f1125f.png)
+
+`DllNotFoundException` will be thrown even after restarting UnityEditor, but you can ignore it safely if everything else is going well.\
+If you still cannot run sample scenes, the cause is probably something else.
 
 ### InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000
 If you encounter an error like below and you use OpenGL Core as the Unity's graphics APIs, please try Vulkan.
@@ -342,9 +380,9 @@ If you encounter an error like below and you use OpenGL Core as the Unity's grap
 InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000_mediapipe/mediapipe/gpu/gl_context_egl.cc:261)
 ```
 
-### Debug MediaPipe
+### How to debug?
 When debugging, you may want to read the MediaPipe log.
-If you set `Glog.logtostderr` to `true` before calling `Glog.Initialize`, MediaPipe will output logs to standard error, so you can check them from `Editor.log` or `Player.log`.\
+If you set `true` to `Glog.logtostderr` before calling `Glog.Initialize`, MediaPipe will output logs to standard error, so you can check them from `Editor.log` or `Player.log`.
 
 You can set various Glog flags as well. See https://github.com/google/glog#setting-flags for available options.
 
