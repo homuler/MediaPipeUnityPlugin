@@ -15,6 +15,7 @@ except ImportError:
 _BAZEL_BIN_PATH = 'bazel-bin'
 _BUILD_PATH = 'build'
 _NUGET_PATH = '.nuget'
+_ANALYZER_PATH = os.path.join('Assets', 'Analyzers')
 _STREAMING_ASSETS_PATH = os.path.join('Assets', 'StreamingAssets')
 _INSTALL_PATH = os.path.join('Packages', 'com.github.homuler.mediapipe', 'Runtime')
 
@@ -99,6 +100,7 @@ class BuildCommand(Command):
     self.android = command_args.args.android
     self.ios= command_args.args.ios
     self.resources = command_args.args.resources
+    self.analyzers = command_args.args.analyzers
     self.opencv = command_args.args.opencv
     self.include_opencv_libs = command_args.args.include_opencv_libs
 
@@ -113,7 +115,7 @@ class BuildCommand(Command):
       os.path.join(_BUILD_PATH, 'Scripts', 'Protobuf'))
     self.console.info('Built protobuf sources')
 
-    self.console.info('Downloading protobuf dlls...')
+    self.console.info('Downloading dlls...')
     self._run_command(self._build_proto_dlls_commands())
 
     for f in glob.glob(os.path.join(_NUGET_PATH, '**', 'lib', 'netstandard2.0', '*.dll'), recursive=True):
@@ -170,9 +172,16 @@ class BuildCommand(Command):
 
       self.console.info('Built native libraries for iOS')
 
-    self.console.info('Installing...')
+    self.console.info('Installing built resources...')
     # _copytree fails on Windows, so run `cp -r` instead.
     self._copytree(_BUILD_PATH, _INSTALL_PATH)
+
+    # install analyzers
+    if self.analyzers:
+      self.console.info('Installing Roslyn Analyzers...')
+      for f in glob.glob(os.path.join(_NUGET_PATH, '**', 'analyzers', 'dotnet', 'cs', '*.dll'), recursive=True):
+        self._copy(f, _ANALYZER_PATH)
+
     self.console.info('Installed')
 
   def _is_windows(self):
@@ -325,6 +334,7 @@ class UninstallCommand(Command):
     self.ios = command_args.args.ios
     self.resources = command_args.args.resources
     self.protobuf = command_args.args.protobuf
+    self.analyzers = command_args.args.analyzers
 
   def run(self):
     self._rmtree(_BUILD_PATH)
@@ -371,6 +381,12 @@ class UninstallCommand(Command):
         if not f.endswith('.meta'):
           self._remove(f)
 
+    if self.analyzers:
+      self.console.info('Uninstalling analyzers...')
+
+      for f in glob.glob(os.path.join(_ANALYZER_PATH, '*.dll'), recursive=True):
+        self._remove(f)
+
 
 class HelpCommand(Command):
   def __init__(self, args):
@@ -393,6 +409,7 @@ class Argument:
     build_command_parser.add_argument('--android', choices=['arm', 'arm64'])
     build_command_parser.add_argument('--ios', choices=['arm64'])
     build_command_parser.add_argument('--resources', action=argparse.BooleanOptionalAction, default=True)
+    build_command_parser.add_argument('--analyzers', action=argparse.BooleanOptionalAction, default=False)
     build_command_parser.add_argument('--compilation_mode', '-c', choices=['fastbuild', 'opt', 'dbg'], default='opt')
     build_command_parser.add_argument('--opencv', choices=['local', 'cmake'], default='local', help='Decide to which OpenCV to link for Desktop native libraries')
     build_command_parser.add_argument('--include_opencv_libs', action='store_true', help='Include OpenCV\'s native libraries for Desktop')
@@ -408,6 +425,7 @@ class Argument:
     uninstall_command_parser.add_argument('--ios', action=argparse.BooleanOptionalAction, default=True)
     uninstall_command_parser.add_argument('--resources', action=argparse.BooleanOptionalAction, default=True)
     uninstall_command_parser.add_argument('--protobuf', action=argparse.BooleanOptionalAction, default=True)
+    uninstall_command_parser.add_argument('--analyzers', action=argparse.BooleanOptionalAction, default=True)
     uninstall_command_parser.add_argument('--verbose', '-v', action='count', default=0)
 
     self.args = self.argument_parser.parse_args()
