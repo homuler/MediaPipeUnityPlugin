@@ -2,11 +2,14 @@ using Mediapipe;
 using NUnit.Framework;
 using System;
 
-namespace Tests {
-  public class BoolPacketTest {
+namespace Tests
+{
+  public class BoolPacketTest
+  {
     #region Constructor
     [Test, SignalAbort]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithNoArguments() {
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithNoArguments()
+    {
       var packet = new BoolPacket();
 
       Assert.AreEqual(packet.ValidateAsType().code, Status.StatusCode.Internal);
@@ -15,7 +18,8 @@ namespace Tests {
     }
 
     [Test]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithTrue() {
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithTrue()
+    {
       var packet = new BoolPacket(true);
 
       Assert.True(packet.ValidateAsType().ok);
@@ -24,7 +28,8 @@ namespace Tests {
     }
 
     [Test]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithFalse() {
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithFalse()
+    {
       var packet = new BoolPacket(false);
 
       Assert.True(packet.ValidateAsType().ok);
@@ -33,7 +38,8 @@ namespace Tests {
     }
 
     [Test]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithValueAndTimestamp() {
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithValueAndTimestamp()
+    {
       var timestamp = new Timestamp(1);
       var packet = new BoolPacket(true, timestamp);
 
@@ -45,14 +51,16 @@ namespace Tests {
 
     #region #isDisposed
     [Test]
-    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet() {
+    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet()
+    {
       var packet = new BoolPacket();
 
       Assert.False(packet.isDisposed);
     }
 
     [Test]
-    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed() {
+    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed()
+    {
       var packet = new BoolPacket();
       packet.Dispose();
 
@@ -62,7 +70,8 @@ namespace Tests {
 
     #region #Consume
     [Test]
-    public void Consume_ShouldThrowNotSupportedException() {
+    public void Consume_ShouldThrowNotSupportedException()
+    {
       var packet = new BoolPacket();
 
       Assert.Throws<NotSupportedException>(() => { packet.Consume(); });
@@ -71,7 +80,8 @@ namespace Tests {
 
     #region #DebugTypeName
     [Test]
-    public void DebugTypeName_ShouldReturnBool_When_ValueIsSet() {
+    public void DebugTypeName_ShouldReturnBool_When_ValueIsSet()
+    {
       var packet = new BoolPacket(true);
 
       Assert.AreEqual(packet.DebugTypeName(), "bool");

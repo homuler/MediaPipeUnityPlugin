@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 
-namespace Mediapipe.Unity.HandTracking {
-  public class HandTrackingValue {
+namespace Mediapipe.Unity.HandTracking
+{
+  public class HandTrackingValue
+  {
     public readonly List<Detection> palmDetections;
     public readonly List<NormalizedRect> handRectsFromPalmDetections;
     public readonly List<NormalizedLandmarkList> handLandmarks;
@@ -9,7 +11,8 @@ namespace Mediapipe.Unity.HandTracking {
     public readonly List<ClassificationList> handedness;
 
     public HandTrackingValue(List<Detection> palmDetections, List<NormalizedRect> handRectsFromPalmDetections,
-                             List<NormalizedLandmarkList> handLandmarks, List<NormalizedRect> handRectsFromLandmarks, List<ClassificationList> handedness) {
+                             List<NormalizedLandmarkList> handLandmarks, List<NormalizedRect> handRectsFromLandmarks, List<ClassificationList> handedness)
+    {
       this.palmDetections = palmDetections;
       this.handRectsFromPalmDetections = handRectsFromPalmDetections;
       this.handLandmarks = handLandmarks;

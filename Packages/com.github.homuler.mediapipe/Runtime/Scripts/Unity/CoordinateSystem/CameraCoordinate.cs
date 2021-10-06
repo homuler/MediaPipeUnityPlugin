@@ -1,6 +1,7 @@
 using UnityEngine;
 
-namespace Mediapipe.Unity.CoordinateSystem {
+namespace Mediapipe.Unity.CoordinateSystem
+{
   /// <summary>
   ///   This class provides helper methods for converting camera coordinate values to local coordinate values in Unity.
   ///   See <see cref="https://google.github.io/mediapipe/solutions/objectron.html#coordinate-systems" /> for more details.
@@ -8,7 +9,8 @@ namespace Mediapipe.Unity.CoordinateSystem {
   /// <remarks>
   ///   Assume that the origin is common to the two coordinate systems.
   /// </remarks>
-  public static class CameraCoordinate {
+  public static class CameraCoordinate
+  {
     /// <summary>
     ///   Convert from camera coordinates to local coordinates in Unity.
     /// </summary>
@@ -23,7 +25,8 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// <param name="zScale">Ratio of Z values in camera coordinates to local coordinates in Unity</param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3 GetLocalPosition(RectTransform rectTransform, float x, float y, float z, Vector2 focalLength, Vector2 principalPoint, float zScale, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector3 GetLocalPosition(RectTransform rectTransform, float x, float y, float z, Vector2 focalLength, Vector2 principalPoint, float zScale, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       var pixelX = (-focalLength.x * x / z + principalPoint.x) / 2;
       var pixelY = (focalLength.y * y / z + principalPoint.y) / 2;
       // Reverse the sign of Z because camera coordinate system is right-handed
@@ -42,25 +45,31 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// <param name="zScale">Ratio of values in camera coordinates to local coordinates in Unity</param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3 GetLocalPosition(this RectTransform rectTransform, Point3D point3d, Vector2 focalLength, Vector2 principalPoint, float zScale, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector3 GetLocalPosition(this RectTransform rectTransform, Point3D point3d, Vector2 focalLength, Vector2 principalPoint, float zScale, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       return GetLocalPosition(rectTransform, point3d.X, point3d.Y, point3d.Z, focalLength, principalPoint, zScale, imageRotation, isMirrored);
     }
 
-    public static bool IsXReversed(RotationAngle rotationAngle, bool isMirrored = false) {
-      if (isMirrored) {
+    public static bool IsXReversed(RotationAngle rotationAngle, bool isMirrored = false)
+    {
+      if (isMirrored)
+      {
         return rotationAngle == RotationAngle.Rotation0 || rotationAngle == RotationAngle.Rotation270;
       }
       return rotationAngle == RotationAngle.Rotation180 || rotationAngle == RotationAngle.Rotation270;
     }
 
-    public static bool IsYReversed(RotationAngle rotationAngle, bool isMirrored = false) {
-      if (isMirrored) {
+    public static bool IsYReversed(RotationAngle rotationAngle, bool isMirrored = false)
+    {
+      if (isMirrored)
+      {
         return rotationAngle == RotationAngle.Rotation180 || rotationAngle == RotationAngle.Rotation270;
       }
       return rotationAngle == RotationAngle.Rotation90 || rotationAngle == RotationAngle.Rotation180;
     }
 
-    public static bool IsInverted(RotationAngle rotationAngle) {
+    public static bool IsInverted(RotationAngle rotationAngle)
+    {
       return rotationAngle == RotationAngle.Rotation90 || rotationAngle == RotationAngle.Rotation270;
     }
   }

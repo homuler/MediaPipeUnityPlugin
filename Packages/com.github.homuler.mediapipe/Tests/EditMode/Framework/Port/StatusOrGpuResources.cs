@@ -1,11 +1,14 @@
 using Mediapipe;
 using NUnit.Framework;
 
-namespace Tests {
-  public class StatusOrGpuResourcesTest {
+namespace Tests
+{
+  public class StatusOrGpuResourcesTest
+  {
     #region #status
     [Test, GpuOnly]
-    public void status_ShouldReturnOk_When_StatusIsOk() {
+    public void status_ShouldReturnOk_When_StatusIsOk()
+    {
       var statusOrGpuResources = GpuResources.Create();
 
       Assert.AreEqual(statusOrGpuResources.status.code, Status.StatusCode.Ok);
@@ -14,14 +17,16 @@ namespace Tests {
 
     #region #isDisposed
     [Test, GpuOnly]
-    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet() {
+    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet()
+    {
       var statusOrGpuResources = GpuResources.Create();
 
       Assert.False(statusOrGpuResources.isDisposed);
     }
 
     [Test, GpuOnly]
-    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed() {
+    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed()
+    {
       var statusOrGpuResources = GpuResources.Create();
       statusOrGpuResources.Dispose();
 
@@ -31,7 +36,8 @@ namespace Tests {
 
     #region #Value
     [Test, GpuOnly]
-    public void Value_ShouldReturnGpuResources_When_StatusIsOk() {
+    public void Value_ShouldReturnGpuResources_When_StatusIsOk()
+    {
       var statusOrGpuResources = GpuResources.Create();
       Assert.True(statusOrGpuResources.ok);
 

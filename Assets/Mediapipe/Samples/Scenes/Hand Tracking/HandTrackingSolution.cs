@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mediapipe.Unity.HandTracking {
-  public class HandTrackingSolution : Solution {
+namespace Mediapipe.Unity.HandTracking
+{
+  public class HandTrackingSolution : Solution
+  {
     [SerializeField] RawImage screen;
     [SerializeField] DetectionListAnnotationController palmDetectionsAnnotationController;
     [SerializeField] NormalizedRectListAnnotationController handRectsFromPalmDetectionsAnnotationController;
@@ -17,48 +19,57 @@ namespace Mediapipe.Unity.HandTracking {
 
     public RunningMode runningMode;
 
-    public int maxNumHands {
+    public int maxNumHands
+    {
       get { return graphRunner.maxNumHands; }
       set { graphRunner.maxNumHands = value; }
     }
 
-    public long timeoutMillisec {
+    public long timeoutMillisec
+    {
       get { return graphRunner.timeoutMillisec; }
       set { graphRunner.SetTimeoutMillisec(value); }
     }
 
-    public override void Play() {
-      if (coroutine != null) {
+    public override void Play()
+    {
+      if (coroutine != null)
+      {
         Stop();
       }
       base.Play();
       coroutine = StartCoroutine(Run());
     }
 
-    public override void Pause() {
+    public override void Pause()
+    {
       base.Pause();
       ImageSourceProvider.imageSource.Pause();
     }
 
-    public override void Resume() {
+    public override void Resume()
+    {
       base.Resume();
       StartCoroutine(ImageSourceProvider.imageSource.Resume());
     }
 
-    public override void Stop() {
+    public override void Stop()
+    {
       base.Stop();
       StopCoroutine(coroutine);
       ImageSourceProvider.imageSource.Stop();
       graphRunner.Stop();
     }
 
-    IEnumerator Run() {
+    IEnumerator Run()
+    {
       var graphInitRequest = graphRunner.WaitForInit();
       var imageSource = ImageSourceProvider.imageSource;
 
       yield return imageSource.Play();
 
-      if (!imageSource.isPrepared) {
+      if (!imageSource.isPrepared)
+      {
         Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
         yield break;
       }
@@ -70,19 +81,23 @@ namespace Mediapipe.Unity.HandTracking {
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
       yield return graphInitRequest;
-      if (graphInitRequest.isError) {
+      if (graphInitRequest.isError)
+      {
         Logger.LogError(TAG, graphInitRequest.error);
         yield break;
       }
 
-      if (runningMode == RunningMode.Async) {
+      if (runningMode == RunningMode.Async)
+      {
         graphRunner.OnPalmDetectectionsOutput.AddListener(OnPalmDetectectionsOutput);
         graphRunner.OnHandRectsFromPalmDetectionsOutput.AddListener(OnHandRectsFromPalmDetectionsOutput);
         graphRunner.OnHandLandmarksOutput.AddListener(OnHandLandmarksOutput);
         graphRunner.OnHandRectsFromLandmarksOutput.AddListener(OnHandRectsFromLandmarksOutput);
         graphRunner.OnHandednessOutput.AddListener(OnHandednessOutput);
         graphRunner.StartRunAsync(imageSource).AssertOk();
-      } else {
+      }
+      else
+      {
         graphRunner.StartRun(imageSource).AssertOk();
       }
 
@@ -96,7 +111,8 @@ namespace Mediapipe.Unity.HandTracking {
       SetupAnnotationController(handLandmarksAnnotationController, imageSource, true);
       SetupAnnotationController(handRectsFromLandmarksAnnotationController, imageSource, true);
 
-      while (true) {
+      while (true)
+      {
         yield return new WaitWhile(() => isPaused);
 
         var textureFrameRequest = textureFramePool.WaitForNextTextureFrame();
@@ -108,7 +124,8 @@ namespace Mediapipe.Unity.HandTracking {
 
         graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 
-        if (runningMode == RunningMode.Sync) {
+        if (runningMode == RunningMode.Sync)
+        {
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = graphRunner.FetchNextValue();
           palmDetectionsAnnotationController.DrawNow(value.palmDetections);
@@ -121,23 +138,28 @@ namespace Mediapipe.Unity.HandTracking {
       }
     }
 
-    void OnPalmDetectectionsOutput(List<Detection> palmDetections) {
+    void OnPalmDetectectionsOutput(List<Detection> palmDetections)
+    {
       palmDetectionsAnnotationController.DrawLater(palmDetections);
     }
 
-    void OnHandRectsFromPalmDetectionsOutput(List<NormalizedRect> handRectsFromPalmDetections) {
+    void OnHandRectsFromPalmDetectionsOutput(List<NormalizedRect> handRectsFromPalmDetections)
+    {
       handRectsFromPalmDetectionsAnnotationController.DrawLater(handRectsFromPalmDetections);
     }
 
-    void OnHandLandmarksOutput(List<NormalizedLandmarkList> handLandmarks) {
+    void OnHandLandmarksOutput(List<NormalizedLandmarkList> handLandmarks)
+    {
       handLandmarksAnnotationController.DrawLater(handLandmarks);
     }
 
-    void OnHandRectsFromLandmarksOutput(List<NormalizedRect> handRectsFromLandmarks) {
+    void OnHandRectsFromLandmarksOutput(List<NormalizedRect> handRectsFromLandmarks)
+    {
       handRectsFromLandmarksAnnotationController.DrawLater(handRectsFromLandmarks);
     }
 
-    void OnHandednessOutput(List<ClassificationList> handedness) {
+    void OnHandednessOutput(List<ClassificationList> handedness)
+    {
       handLandmarksAnnotationController.DrawLater(handedness);
     }
   }

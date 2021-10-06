@@ -4,8 +4,10 @@ using UnityEngine;
 
 using Stopwatch = System.Diagnostics.Stopwatch;
 
-namespace Mediapipe.Unity {
-  public class WaitForResult : CustomYieldInstruction {
+namespace Mediapipe.Unity
+{
+  public class WaitForResult : CustomYieldInstruction
+  {
     public object result { get; private set; }
 
     protected object tmpResult;
@@ -17,31 +19,40 @@ namespace Mediapipe.Unity {
 
     public bool isError { get; private set; } = false;
     public Exception error { get; private set; }
-    public override bool keepWaiting {
+    public override bool keepWaiting
+    {
       get { return !isDone && !isError; }
     }
 
-    public WaitForResult(MonoBehaviour runner, IEnumerator inner, long timeoutMillisec = Int64.MaxValue) {
+    public WaitForResult(MonoBehaviour runner, IEnumerator inner, long timeoutMillisec = Int64.MaxValue)
+    {
       this.runner = runner;
       this.inner = inner;
       coroutine = runner.StartCoroutine(Run(timeoutMillisec));
     }
 
-    IEnumerator Run(long timeoutMillisec) {
+    IEnumerator Run(long timeoutMillisec)
+    {
       Stopwatch stopwatch = new Stopwatch();
       stopwatch.Start();
 
-      while(true) {
-        try {
-          if (stopwatch.ElapsedMilliseconds > timeoutMillisec) {
+      while (true)
+      {
+        try
+        {
+          if (stopwatch.ElapsedMilliseconds > timeoutMillisec)
+          {
             runner.StopCoroutine(coroutine);
             throw new TimeoutException($"{stopwatch.ElapsedMilliseconds}ms has passed");
           }
-          if (!inner.MoveNext()) {
+          if (!inner.MoveNext())
+          {
             break;
           }
           tmpResult = inner.Current;
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
           isError = true;
           error = e;
           yield break;
@@ -51,18 +62,21 @@ namespace Mediapipe.Unity {
       Done(tmpResult);
     }
 
-    protected virtual void Done(object result) {
+    protected virtual void Done(object result)
+    {
       this.result = result;
       isDone = true;
     }
   }
 
-  public class WaitForResult<T> : WaitForResult {
+  public class WaitForResult<T> : WaitForResult
+  {
     public new T result { get; private set; }
 
-    public WaitForResult(MonoBehaviour runner, IEnumerator inner, long timeoutMillisec = Int64.MaxValue) : base(runner, inner, timeoutMillisec) {}
+    public WaitForResult(MonoBehaviour runner, IEnumerator inner, long timeoutMillisec = Int64.MaxValue) : base(runner, inner, timeoutMillisec) { }
 
-    protected override void Done(object result) {
+    protected override void Done(object result)
+    {
       this.result = (T)result;
       isDone = true;
     }

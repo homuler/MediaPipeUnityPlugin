@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
-namespace Mediapipe.Unity.PoseTracking {
-  public class PoseTrackingGraph : GraphRunner {
-    public enum ModelComplexity {
+namespace Mediapipe.Unity.PoseTracking
+{
+  public class PoseTrackingGraph : GraphRunner
+  {
+    public enum ModelComplexity
+    {
       Lite = 0,
       Full = 1,
       Heavy = 2,
@@ -35,7 +38,8 @@ namespace Mediapipe.Unity.PoseTracking {
     protected long prevPoseWorldLandmarksMicrosec = 0;
     protected long prevRoiFromLandmarksMicrosec = 0;
 
-    public override Status StartRun(ImageSource imageSource) {
+    public override Status StartRun(ImageSource imageSource)
+    {
       InitializeOutputStreams();
 
       poseDetectionStream.StartPolling(true).AssertOk();
@@ -46,7 +50,8 @@ namespace Mediapipe.Unity.PoseTracking {
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
-    public Status StartRunAsync(ImageSource imageSource) {
+    public Status StartRunAsync(ImageSource imageSource)
+    {
       InitializeOutputStreams();
 
       poseDetectionStream.AddListener(PoseDetectionCallback, true).AssertOk();
@@ -57,7 +62,8 @@ namespace Mediapipe.Unity.PoseTracking {
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
-    public override void Stop() {
+    public override void Stop()
+    {
       base.Stop();
       OnPoseDetectionOutput.RemoveAllListeners();
       OnPoseLandmarksOutput.RemoveAllListeners();
@@ -65,11 +71,13 @@ namespace Mediapipe.Unity.PoseTracking {
       OnRoiFromLandmarksOutput.RemoveAllListeners();
     }
 
-    public Status AddTextureFrameToInputStream(TextureFrame textureFrame) {
+    public Status AddTextureFrameToInputStream(TextureFrame textureFrame)
+    {
       return AddTextureFrameToInputStream(inputStreamName, textureFrame);
     }
 
-    public PoseTrackingValue FetchNextValue() {
+    public PoseTrackingValue FetchNextValue()
+    {
       poseDetectionStream.TryGetNext(out var poseDetection);
       poseLandmarksStream.TryGetNext(out var poseLandmarks);
       poseWorldLandmarksStream.TryGetNext(out var poseWorldLandmarks);
@@ -84,10 +92,14 @@ namespace Mediapipe.Unity.PoseTracking {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr PoseDetectionCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) => {
-        using (var packet = new DetectionPacket(ptr, false)) {
-          if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevPoseDetectionMicrosec, out var value)) {
+    static IntPtr PoseDetectionCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) =>
+      {
+        using (var packet = new DetectionPacket(ptr, false))
+        {
+          if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevPoseDetectionMicrosec, out var value))
+          {
             poseTrackingGraph.OnPoseDetectionOutput.Invoke(value);
           }
         }
@@ -95,10 +107,14 @@ namespace Mediapipe.Unity.PoseTracking {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr PoseLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) => {
-        using (var packet = new NormalizedLandmarkListPacket(ptr, false)) {
-          if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevPoseLandmarksMicrosec, out var value)) {
+    static IntPtr PoseLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) =>
+      {
+        using (var packet = new NormalizedLandmarkListPacket(ptr, false))
+        {
+          if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevPoseLandmarksMicrosec, out var value))
+          {
             poseTrackingGraph.OnPoseLandmarksOutput.Invoke(value);
           }
         }
@@ -106,10 +122,14 @@ namespace Mediapipe.Unity.PoseTracking {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr PoseWorldLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) => {
-        using (var packet = new LandmarkListPacket(ptr, false)) {
-          if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevPoseWorldLandmarksMicrosec, out var value)) {
+    static IntPtr PoseWorldLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) =>
+      {
+        using (var packet = new LandmarkListPacket(ptr, false))
+        {
+          if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevPoseWorldLandmarksMicrosec, out var value))
+          {
             poseTrackingGraph.OnPoseWorldLandmarksOutput.Invoke(value);
           }
         }
@@ -117,41 +137,54 @@ namespace Mediapipe.Unity.PoseTracking {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr RoiFromLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) => {
-        using (var packet = new NormalizedRectPacket(ptr, false)) {
-          if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevRoiFromLandmarksMicrosec, out var value)) {
+    static IntPtr RoiFromLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) =>
+      {
+        using (var packet = new NormalizedRectPacket(ptr, false))
+        {
+          if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevRoiFromLandmarksMicrosec, out var value))
+          {
             poseTrackingGraph.OnRoiFromLandmarksOutput.Invoke(value);
           }
         }
       }).mpPtr;
     }
 
-    protected override IList<WaitForResult> RequestDependentAssets() {
+    protected override IList<WaitForResult> RequestDependentAssets()
+    {
       return new List<WaitForResult> {
         WaitForAsset("pose_detection.bytes"),
         WaitForPoseLandmarkModel(),
       };
     }
 
-    protected void InitializeOutputStreams() {
+    protected void InitializeOutputStreams()
+    {
       poseDetectionStream = new OutputStream<DetectionPacket, Detection>(calculatorGraph, poseDetectionStreamName);
       poseLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, poseLandmarksStreamName);
       poseWorldLandmarksStream = new OutputStream<LandmarkListPacket, LandmarkList>(calculatorGraph, poseWorldLandmarksStreamName);
       roiFromLandmarksStream = new OutputStream<NormalizedRectPacket, NormalizedRect>(calculatorGraph, roiFromLandmarksStreamName);
     }
 
-    WaitForResult WaitForPoseLandmarkModel() {
-      if (modelComplexity == ModelComplexity.Lite) {
+    WaitForResult WaitForPoseLandmarkModel()
+    {
+      if (modelComplexity == ModelComplexity.Lite)
+      {
         return WaitForAsset("pose_landmark_lite.bytes");
-      } else if (modelComplexity == ModelComplexity.Full) {
+      }
+      else if (modelComplexity == ModelComplexity.Full)
+      {
         return WaitForAsset("pose_landmark_full.bytes");
-      } else {
+      }
+      else
+      {
         return WaitForAsset("pose_landmark_heavy.bytes");
       }
     }
 
-    SidePacket BuildSidePacket(ImageSource imageSource) {
+    SidePacket BuildSidePacket(ImageSource imageSource)
+    {
       var sidePacket = new SidePacket();
 
       SetImageTransformationOptions(sidePacket, imageSource);

@@ -2,8 +2,10 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mediapipe.Unity.PoseTracking {
-  public class PoseTrackingSolution : Solution {
+namespace Mediapipe.Unity.PoseTracking
+{
+  public class PoseTrackingSolution : Solution
+  {
     [SerializeField] RawImage screen;
     [SerializeField] RectTransform worldAnnotationArea;
     [SerializeField] DetectionAnnotationController poseDetectionAnnotationController;
@@ -17,53 +19,63 @@ namespace Mediapipe.Unity.PoseTracking {
 
     public RunningMode runningMode;
 
-    public PoseTrackingGraph.ModelComplexity modelComplexity {
+    public PoseTrackingGraph.ModelComplexity modelComplexity
+    {
       get { return graphRunner.modelComplexity; }
       set { graphRunner.modelComplexity = value; }
     }
 
-    public bool smoothLandmarks {
+    public bool smoothLandmarks
+    {
       get { return graphRunner.smoothLandmarks; }
       set { graphRunner.smoothLandmarks = value; }
     }
 
-    public long timeoutMillisec {
+    public long timeoutMillisec
+    {
       get { return graphRunner.timeoutMillisec; }
       set { graphRunner.SetTimeoutMillisec(value); }
     }
 
-    public override void Play() {
-      if (coroutine != null) {
+    public override void Play()
+    {
+      if (coroutine != null)
+      {
         Stop();
       }
       base.Play();
       coroutine = StartCoroutine(Run());
     }
 
-    public override void Pause() {
+    public override void Pause()
+    {
       base.Pause();
       ImageSourceProvider.imageSource.Pause();
     }
 
-    public override void Resume() {
+    public override void Resume()
+    {
       base.Resume();
       StartCoroutine(ImageSourceProvider.imageSource.Resume());
     }
 
-    public override void Stop() {
+    public override void Stop()
+    {
       base.Stop();
       StopCoroutine(coroutine);
       ImageSourceProvider.imageSource.Stop();
       graphRunner.Stop();
     }
 
-    IEnumerator Run() {
+    IEnumerator Run()
+    {
       var graphInitRequest = graphRunner.WaitForInit();
       var imageSource = ImageSourceProvider.imageSource;
 
       yield return imageSource.Play();
 
-      if (!imageSource.isPrepared) {
+      if (!imageSource.isPrepared)
+      {
         Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
         yield break;
       }
@@ -77,18 +89,22 @@ namespace Mediapipe.Unity.PoseTracking {
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
       yield return graphInitRequest;
-      if (graphInitRequest.isError) {
+      if (graphInitRequest.isError)
+      {
         Logger.LogError(TAG, graphInitRequest.error);
         yield break;
       }
 
-      if (runningMode == RunningMode.Async) {
+      if (runningMode == RunningMode.Async)
+      {
         graphRunner.OnPoseDetectionOutput.AddListener(OnPoseDetectionOutput);
         graphRunner.OnPoseLandmarksOutput.AddListener(OnPoseLandmarksOutput);
         graphRunner.OnPoseWorldLandmarksOutput.AddListener(OnPoseWorldLandmarksOutput);
         graphRunner.OnRoiFromLandmarksOutput.AddListener(OnRoiFromLandmarksOutput);
         graphRunner.StartRunAsync(imageSource).AssertOk();
-      } else {
+      }
+      else
+      {
         graphRunner.StartRun(imageSource).AssertOk();
       }
 
@@ -101,7 +117,8 @@ namespace Mediapipe.Unity.PoseTracking {
       SetupAnnotationController(poseWorldLandmarksAnnotationController, imageSource);
       SetupAnnotationController(roiFromLandmarksAnnotationController, imageSource);
 
-      while (true) {
+      while (true)
+      {
         yield return new WaitWhile(() => isPaused);
 
         var textureFrameRequest = textureFramePool.WaitForNextTextureFrame();
@@ -113,7 +130,8 @@ namespace Mediapipe.Unity.PoseTracking {
 
         graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 
-        if (runningMode == RunningMode.Sync) {
+        if (runningMode == RunningMode.Sync)
+        {
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = graphRunner.FetchNextValue();
           poseDetectionAnnotationController.DrawNow(value.poseDetection);
@@ -126,19 +144,23 @@ namespace Mediapipe.Unity.PoseTracking {
       }
     }
 
-    void OnPoseDetectionOutput(Detection poseDetection) {
+    void OnPoseDetectionOutput(Detection poseDetection)
+    {
       poseDetectionAnnotationController.DrawLater(poseDetection);
     }
 
-    void OnPoseLandmarksOutput(NormalizedLandmarkList poseLandmarks) {
+    void OnPoseLandmarksOutput(NormalizedLandmarkList poseLandmarks)
+    {
       poseLandmarksAnnotationController.DrawLater(poseLandmarks);
     }
 
-    void OnPoseWorldLandmarksOutput(LandmarkList poseWorldLandmarks) {
+    void OnPoseWorldLandmarksOutput(LandmarkList poseWorldLandmarks)
+    {
       poseWorldLandmarksAnnotationController.DrawLater(poseWorldLandmarks);
     }
 
-    void OnRoiFromLandmarksOutput(NormalizedRect roiFromLandmarks) {
+    void OnRoiFromLandmarksOutput(NormalizedRect roiFromLandmarks)
+    {
       roiFromLandmarksAnnotationController.DrawLater(roiFromLandmarks);
     }
   }

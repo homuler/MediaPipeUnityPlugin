@@ -2,11 +2,13 @@ using UnityEngine;
 
 using mplt = global::Mediapipe.LocationData.Types;
 
-namespace Mediapipe.Unity.CoordinateSystem {
+namespace Mediapipe.Unity.CoordinateSystem
+{
   /// <summary>
   ///   This class provides helper methods for converting from image coordinate values to local coordinate values in Unity, and vice versa.
   /// </summary>
-  public static class ImageCoordinate {
+  public static class ImageCoordinate
+  {
     /// <summary>
     ///   Convert from image coordinates to local coordinates in Unity.
     /// </summary>
@@ -19,7 +21,8 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// <param name="imageSize">Image size in pixels</param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3 GetLocalPosition(RectTransform rectTransform, int x, int y, int z, Vector2 imageSize, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector3 GetLocalPosition(RectTransform rectTransform, int x, int y, int z, Vector2 imageSize, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       var rect = rectTransform.rect;
       var isInverted = IsInverted(imageRotation);
       var (rectX, rectY) = isInverted ? (y, x) : (x, y);
@@ -40,7 +43,8 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// <param name="imageSize">Image size in pixels</param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3 GetLocalPosition(RectTransform rectTransform, int x, int y, int z, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector3 GetLocalPosition(RectTransform rectTransform, int x, int y, int z, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       return GetLocalPosition(rectTransform, x, y, z, new Vector2(rectTransform.rect.width, rectTransform.rect.height), imageRotation, isMirrored);
     }
 
@@ -55,7 +59,8 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// <param name="imageSize">Image size in pixels</param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector2 GetLocalPosition(RectTransform rectTransform, int x, int y, Vector2 imageSize, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector2 GetLocalPosition(RectTransform rectTransform, int x, int y, Vector2 imageSize, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       return GetLocalPosition(rectTransform, x, y, 0, imageSize, imageRotation, isMirrored);
     }
 
@@ -72,7 +77,8 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// <param name="zScale">Ratio of Z value in image coordinates to local coordinates in Unity</param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3 GetLocalPositionNormalized(RectTransform rectTransform, float normalizedX, float normalizedY, float normalizedZ, float zScale, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector3 GetLocalPositionNormalized(RectTransform rectTransform, float normalizedX, float normalizedY, float normalizedZ, float zScale, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       var rect = rectTransform.rect;
       var isInverted = IsInverted(imageRotation);
       var (nx, ny) = isInverted ? (normalizedY, normalizedX) : (normalizedX, normalizedY);
@@ -94,7 +100,8 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// <param name="normalizedZ">Normalized z value in the image coordinate system</param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3 GetLocalPositionNormalized(RectTransform rectTransform, float normalizedX, float normalizedY, float normalizedZ, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector3 GetLocalPositionNormalized(RectTransform rectTransform, float normalizedX, float normalizedY, float normalizedZ, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       // Z usually uses roughly the same scale as X
       var zScale = IsInverted(imageRotation) ? rectTransform.rect.height : rectTransform.rect.width;
       return GetLocalPositionNormalized(rectTransform, normalizedX, normalizedY, normalizedZ, zScale, imageRotation, isMirrored);
@@ -111,7 +118,8 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// <param name="normalizedY">Normalized y value in the image coordinate system</param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector2 GetLocalPositionNormalized(RectTransform rectTransform, float normalizedX, float normalizedY, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector2 GetLocalPositionNormalized(RectTransform rectTransform, float normalizedX, float normalizedY, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       return GetLocalPositionNormalized(rectTransform, normalizedX, normalizedY, 0.0f, imageRotation, isMirrored);
     }
 
@@ -130,7 +138,8 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// <param name="imageSize">Image size in pixels</param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3[] GetRectVertices(RectTransform rectTransform, int xMin, int yMin, int width, int height, Vector2 imageSize, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector3[] GetRectVertices(RectTransform rectTransform, int xMin, int yMin, int width, int height, Vector2 imageSize, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       var p = GetLocalPosition(rectTransform, xMin, yMin + height, imageSize, imageRotation, isMirrored);
       var q = GetLocalPosition(rectTransform, xMin + width, yMin, imageSize, imageRotation, isMirrored);
       return GetRectVertices(p, q);
@@ -149,7 +158,8 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// <param name="normalizedHeight">Normalized height</param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3[] GetRectVerticesNormalized(RectTransform rectTransform, float normalizedXMin, float normalizedYMin, float normalizedWidth, float normalizedHeight, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector3[] GetRectVerticesNormalized(RectTransform rectTransform, float normalizedXMin, float normalizedYMin, float normalizedWidth, float normalizedHeight, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       var p = GetLocalPositionNormalized(rectTransform, normalizedXMin, normalizedYMin + normalizedHeight, imageRotation, isMirrored);
       var q = GetLocalPositionNormalized(rectTransform, normalizedXMin + normalizedWidth, normalizedYMin, imageRotation, isMirrored);
       return GetRectVertices(p, q);
@@ -168,7 +178,8 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// <param name="imageSize">Image size in pixels</param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3[] GetRotatedRectVertices(RectTransform rectTransform, int xCenter, int yCenter, int width, int height, float rotation, Vector2 imageSize, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector3[] GetRotatedRectVertices(RectTransform rectTransform, int xCenter, int yCenter, int width, int height, float rotation, Vector2 imageSize, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       var isInverted = IsInverted(imageRotation);
       var (rectWidth, rectHeight) = IsInverted(imageRotation) ? (height, width) : (width, height);
 
@@ -201,7 +212,8 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// <param name="rotation">Clockwise rotation angle in radians</param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3[] GetRotatedRectVerticesNormalized(RectTransform rectTransform, float normalizedXCenter, float normalizedYCenter, float normalizedWidth, float normalizedHeight, float rotation, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector3[] GetRotatedRectVerticesNormalized(RectTransform rectTransform, float normalizedXCenter, float normalizedYCenter, float normalizedWidth, float normalizedHeight, float rotation, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       var rect = rectTransform.rect;
       var isInverted = IsInverted(imageRotation);
       var width = rect.width * (isInverted ? normalizedHeight : normalizedWidth);
@@ -222,7 +234,8 @@ namespace Mediapipe.Unity.CoordinateSystem {
       };
     }
 
-    static Vector3[] GetRectVertices(Vector2 p, Vector2 q) {
+    static Vector3[] GetRectVertices(Vector2 p, Vector2 q)
+    {
       var leftX = Mathf.Min(p.x, q.x);
       var rightX = Mathf.Max(p.x, q.x);
       var bottomY = Mathf.Min(p.y, q.y);
@@ -244,7 +257,8 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// </param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector2 GetLocalPosition(this RectTransform rectTransform, mplt.RelativeKeypoint relativeKeypoint, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector2 GetLocalPosition(this RectTransform rectTransform, mplt.RelativeKeypoint relativeKeypoint, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       return GetLocalPositionNormalized(rectTransform, relativeKeypoint.X, relativeKeypoint.Y, imageRotation, isMirrored);
     }
 
@@ -256,7 +270,8 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// </param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3 GetLocalPosition(this RectTransform rectTransform, NormalizedLandmark normalizedLandmark, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector3 GetLocalPosition(this RectTransform rectTransform, NormalizedLandmark normalizedLandmark, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       return GetLocalPositionNormalized(rectTransform, normalizedLandmark.X, normalizedLandmark.Y, normalizedLandmark.Z, imageRotation, isMirrored);
     }
 
@@ -268,7 +283,8 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// </param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3 GetLocalPosition(this RectTransform rectTransform, NormalizedPoint2D point2d, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector3 GetLocalPosition(this RectTransform rectTransform, NormalizedPoint2D point2d, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       return GetLocalPositionNormalized(rectTransform, point2d.X, point2d.Y, imageRotation, isMirrored);
     }
 
@@ -280,7 +296,8 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// </param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector2 GetLocalPosition(this RectTransform rectTransform, Anchor3d anchor3d, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector2 GetLocalPosition(this RectTransform rectTransform, Anchor3d anchor3d, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       return GetLocalPositionNormalized(rectTransform, anchor3d.X, anchor3d.Y, imageRotation, isMirrored);
     }
 
@@ -301,8 +318,10 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// </param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3 GetLocalPosition(this RectTransform rectTransform, Anchor3d anchor3d, Vector3 cameraPosition, float defaultDepth, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
-      if (Mathf.Approximately(cameraPosition.z, 0.0f)) {
+    public static Vector3 GetLocalPosition(this RectTransform rectTransform, Anchor3d anchor3d, Vector3 cameraPosition, float defaultDepth, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
+      if (Mathf.Approximately(cameraPosition.z, 0.0f))
+      {
         throw new System.ArgumentException("Z value of the camera position must not be zero");
       }
 
@@ -327,7 +346,8 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// <param name="imageSize">Image size in pixels</param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3[] GetRectVertices(this RectTransform rectTransform, mplt.BoundingBox boundingBox, Vector2 imageSize, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector3[] GetRectVertices(this RectTransform rectTransform, mplt.BoundingBox boundingBox, Vector2 imageSize, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       return GetRectVertices(rectTransform, boundingBox.Xmin, boundingBox.Ymin, boundingBox.Width, boundingBox.Height, imageSize, imageRotation, isMirrored);
     }
 
@@ -340,7 +360,8 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// </param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3[] GetRectVertices(this RectTransform rectTransform, mplt.RelativeBoundingBox boundingBox, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector3[] GetRectVertices(this RectTransform rectTransform, mplt.RelativeBoundingBox boundingBox, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       return GetRectVerticesNormalized(rectTransform, boundingBox.Xmin, boundingBox.Ymin, boundingBox.Width, boundingBox.Height, imageRotation, isMirrored);
     }
 
@@ -354,7 +375,8 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// <param name="imageSize">Image size in pixels</param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3[] GetRectVertices(this RectTransform rectTransform, Rect rect, Vector2 imageSize, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector3[] GetRectVertices(this RectTransform rectTransform, Rect rect, Vector2 imageSize, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       return GetRotatedRectVertices(rectTransform, rect.XCenter, rect.YCenter, rect.Width, rect.Height, rect.Rotation, imageSize, imageRotation, isMirrored);
     }
 
@@ -367,11 +389,13 @@ namespace Mediapipe.Unity.CoordinateSystem {
     /// </param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3[] GetRectVertices(this RectTransform rectTransform, NormalizedRect normalizedRect, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector3[] GetRectVertices(this RectTransform rectTransform, NormalizedRect normalizedRect, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       return GetRotatedRectVerticesNormalized(rectTransform, normalizedRect.XCenter, normalizedRect.YCenter, normalizedRect.Width, normalizedRect.Height, normalizedRect.Rotation, imageRotation, isMirrored);
     }
 
-    public static Vector2 GetNormalizedPosition(this RectTransform rectTransform, Vector2 localPosition, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false) {
+    public static Vector2 GetNormalizedPosition(this RectTransform rectTransform, Vector2 localPosition, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
       var rect = rectTransform.rect;
       var normalizedX = IsXReversed(imageRotation, isMirrored) ? Mathf.InverseLerp(rect.width / 2, -rect.width / 2, localPosition.x) : Mathf.InverseLerp(-rect.width / 2, rect.width / 2, localPosition.x);
       var normalizedY = IsYReversed(imageRotation, isMirrored) ? Mathf.InverseLerp(rect.height / 2, -rect.height / 2, localPosition.y) : Mathf.InverseLerp(-rect.height / 2, rect.height / 2, localPosition.y);
@@ -383,8 +407,10 @@ namespace Mediapipe.Unity.CoordinateSystem {
     ///   For example, if <paramref name="rotationAngle" /> is <see cref="RotationAngle.Rotation90" /> and <paramRef name="isMirrored" /> is <c>False</c>, this returns <c>True</c>
     ///   because the original Y axis will be exactly opposite the X axis in Unity coordinates if the image is rotated back.
     /// </summary>
-    public static bool IsXReversed(RotationAngle rotationAngle, bool isMirrored = false) {
-      if (isMirrored) {
+    public static bool IsXReversed(RotationAngle rotationAngle, bool isMirrored = false)
+    {
+      if (isMirrored)
+      {
         return rotationAngle == RotationAngle.Rotation0 || rotationAngle == RotationAngle.Rotation90;
       }
       return rotationAngle == RotationAngle.Rotation90 || rotationAngle == RotationAngle.Rotation180;
@@ -395,14 +421,17 @@ namespace Mediapipe.Unity.CoordinateSystem {
     ///   For example, if <paramref name="rotationAngle" /> is <see cref="RotationAngle.Rotation90" /> and <paramRef name="isMirrored" /> is <c>False</c>, this returns <c>True</c>
     ///   because the original X axis will be exactly opposite the Y axis in Unity coordinates if the image is rotated back.
     /// </summary>
-    public static bool IsYReversed(RotationAngle rotationAngle, bool isMirrored = false) {
-      if (isMirrored) {
+    public static bool IsYReversed(RotationAngle rotationAngle, bool isMirrored = false)
+    {
+      if (isMirrored)
+      {
         return rotationAngle == RotationAngle.Rotation0 || rotationAngle == RotationAngle.Rotation270;
       }
       return rotationAngle == RotationAngle.Rotation0 || rotationAngle == RotationAngle.Rotation90;
     }
 
-    public static bool IsInverted(RotationAngle rotationAngle) {
+    public static bool IsInverted(RotationAngle rotationAngle)
+    {
       return rotationAngle == RotationAngle.Rotation90 || rotationAngle == RotationAngle.Rotation270;
     }
   }

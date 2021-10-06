@@ -1,18 +1,22 @@
 using Mediapipe;
 using NUnit.Framework;
 
-namespace Tests {
-  public class TimestampTest {
+namespace Tests
+{
+  public class TimestampTest
+  {
     #region #isDisposed
     [Test]
-    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet() {
+    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet()
+    {
       var timestamp = new Timestamp(1);
 
       Assert.False(timestamp.isDisposed);
     }
 
     [Test]
-    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed() {
+    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed()
+    {
       var timestamp = new Timestamp(1);
       timestamp.Dispose();
 
@@ -22,7 +26,8 @@ namespace Tests {
 
     #region #Value
     [Test]
-    public void Value_ShouldReturnValue() {
+    public void Value_ShouldReturnValue()
+    {
       var timestamp = new Timestamp(10);
 
       Assert.AreEqual(timestamp.Value(), 10);
@@ -31,7 +36,8 @@ namespace Tests {
 
     #region #Seconds
     [Test]
-    public void Seconds_ShouldReturnValueInSeconds() {
+    public void Seconds_ShouldReturnValueInSeconds()
+    {
       var timestamp = new Timestamp(1_000_000);
 
       Assert.AreEqual(timestamp.Seconds(), 1d, 1e-9);
@@ -40,7 +46,8 @@ namespace Tests {
 
     #region #Microseconds
     [Test]
-    public void Microseconds_ShouldReturnValueInMicroseconds() {
+    public void Microseconds_ShouldReturnValueInMicroseconds()
+    {
       var timestamp = new Timestamp(1_000_000);
 
       Assert.AreEqual(timestamp.Microseconds(), 1_000_000);
@@ -49,21 +56,24 @@ namespace Tests {
 
     #region #IsSpecialValue
     [Test]
-    public void IsSpecialValue_ShouldReturnFalse_When_ValueIsInRange() {
+    public void IsSpecialValue_ShouldReturnFalse_When_ValueIsInRange()
+    {
       var timestamp = new Timestamp(1);
 
       Assert.False(timestamp.IsSpecialValue());
     }
 
     [Test]
-    public void IsSpecialValue_ShouldReturnTrue_When_TimestampIsUnset() {
+    public void IsSpecialValue_ShouldReturnTrue_When_TimestampIsUnset()
+    {
       var timestamp = Timestamp.Unset();
 
       Assert.True(timestamp.IsSpecialValue());
     }
 
     [Test]
-    public void IsSpecialValue_ShouldReturnTrue_When_TimestampIsUnstarted() {
+    public void IsSpecialValue_ShouldReturnTrue_When_TimestampIsUnstarted()
+    {
       var timestamp = Timestamp.Unstarted();
 
       Assert.True(timestamp.IsSpecialValue());
@@ -72,35 +82,40 @@ namespace Tests {
 
     #region #IsRangeValue
     [Test]
-    public void IsRangeValue_ShouldReturnTrue_When_ValueIsInRange() {
+    public void IsRangeValue_ShouldReturnTrue_When_ValueIsInRange()
+    {
       var timestamp = new Timestamp(1);
 
       Assert.True(timestamp.IsRangeValue());
     }
 
     [Test]
-    public void IsRangeValue_ShouldReturnFalse_When_TimestampIsPreStream() {
+    public void IsRangeValue_ShouldReturnFalse_When_TimestampIsPreStream()
+    {
       var timestamp = Timestamp.PreStream();
 
       Assert.False(timestamp.IsRangeValue());
     }
 
     [Test]
-    public void IsRangeValue_ShouldReturnFalse_When_TimestampIsPostStream() {
+    public void IsRangeValue_ShouldReturnFalse_When_TimestampIsPostStream()
+    {
       var timestamp = Timestamp.PostStream();
 
       Assert.False(timestamp.IsRangeValue());
     }
 
     [Test]
-    public void IsRangeValue_ShouldReturnTrue_When_TimestampIsMin() {
+    public void IsRangeValue_ShouldReturnTrue_When_TimestampIsMin()
+    {
       var timestamp = Timestamp.Min();
 
       Assert.True(timestamp.IsRangeValue());
     }
 
     [Test]
-    public void IsRangeValue_ShouldReturnTrue_When_TimestampIsMax() {
+    public void IsRangeValue_ShouldReturnTrue_When_TimestampIsMax()
+    {
       var timestamp = Timestamp.Max();
 
       Assert.True(timestamp.IsRangeValue());
@@ -109,21 +124,24 @@ namespace Tests {
 
     #region #IsAllowedInStream
     [Test]
-    public void IsAllowedInStream_ShouldReturnTrue_When_ValueIsInRange() {
+    public void IsAllowedInStream_ShouldReturnTrue_When_ValueIsInRange()
+    {
       var timestamp = new Timestamp(1);
 
       Assert.True(timestamp.IsAllowedInStream());
     }
 
     [Test]
-    public void IsAllowedInStream_ShouldReturnFalse_When_TimestampIsOneOverPostStream() {
+    public void IsAllowedInStream_ShouldReturnFalse_When_TimestampIsOneOverPostStream()
+    {
       var timestamp = Timestamp.OneOverPostStream();
 
       Assert.False(timestamp.IsAllowedInStream());
     }
 
     [Test]
-    public void IsAllowedInStream_ShouldReturnFalse_When_TimestampIsDone() {
+    public void IsAllowedInStream_ShouldReturnFalse_When_TimestampIsDone()
+    {
       var timestamp = Timestamp.Done();
 
       Assert.False(timestamp.IsAllowedInStream());
@@ -132,14 +150,16 @@ namespace Tests {
 
     #region #DebugString
     [Test]
-    public void DebugString_ShouldReturnDebugString() {
+    public void DebugString_ShouldReturnDebugString()
+    {
       var timestamp = new Timestamp(1);
 
       Assert.AreEqual(timestamp.DebugString(), "1");
     }
 
     [Test]
-    public void DebugString_ShouldReturnDebugString_When_TimestampIsUnset() {
+    public void DebugString_ShouldReturnDebugString_When_TimestampIsUnset()
+    {
       var timestamp = Timestamp.Unset();
 
       Assert.AreEqual(timestamp.DebugString(), "Timestamp::Unset()");
@@ -148,7 +168,8 @@ namespace Tests {
 
     #region #NextAllowedInStream
     [Test]
-    public void NextAllowedInStream_ShouldReturnNextTimestamp_When_ValueIsInRange() {
+    public void NextAllowedInStream_ShouldReturnNextTimestamp_When_ValueIsInRange()
+    {
       var timestamp = new Timestamp(1);
       var nextTimestamp = timestamp.NextAllowedInStream();
 
@@ -156,7 +177,8 @@ namespace Tests {
     }
 
     [Test]
-    public void NextAllowedInStream_ShouldReturnOneOverPostStream_When_TimestampIsPostStream() {
+    public void NextAllowedInStream_ShouldReturnOneOverPostStream_When_TimestampIsPostStream()
+    {
       var timestamp = Timestamp.PostStream();
       var nextTimestamp = timestamp.NextAllowedInStream();
 
@@ -166,7 +188,8 @@ namespace Tests {
 
     #region #PreviousAllowedInStream
     [Test]
-    public void PreviousAllowedInStream_ShouldReturnPreviousTimestamp_When_ValueIsInRange() {
+    public void PreviousAllowedInStream_ShouldReturnPreviousTimestamp_When_ValueIsInRange()
+    {
       var timestamp = new Timestamp(1);
       var nextTimestamp = timestamp.PreviousAllowedInStream();
 
@@ -174,7 +197,8 @@ namespace Tests {
     }
 
     [Test]
-    public void PreviousAllowedInStream_ShouldReturnUnstarted_When_TimestampIsPreStream() {
+    public void PreviousAllowedInStream_ShouldReturnUnstarted_When_TimestampIsPreStream()
+    {
       var timestamp = Timestamp.PreStream();
       var nextTimestamp = timestamp.PreviousAllowedInStream();
 
@@ -184,7 +208,8 @@ namespace Tests {
 
     #region #FromSeconds
     [Test]
-    public void FromSeconds_ShouldReturnTimestamp() {
+    public void FromSeconds_ShouldReturnTimestamp()
+    {
       var timestamp = Timestamp.FromSeconds(1d);
 
       Assert.AreEqual(timestamp.Microseconds(), 1_000_000);

@@ -1,8 +1,10 @@
 using Mediapipe;
 using NUnit.Framework;
 
-namespace Tests {
-  public class CalculatorGraphTest {
+namespace Tests
+{
+  public class CalculatorGraphTest
+  {
     private static string validConfigText = @"node {
   calculator: ""PassThroughCalculator""
   input_stream: ""in""
@@ -19,12 +21,14 @@ output_stream: ""out""
 
     #region Constructor
     [Test]
-    public void Ctor_ShouldInstantiateCalculatorGraph_When_CalledWithNoArguments() {
+    public void Ctor_ShouldInstantiateCalculatorGraph_When_CalledWithNoArguments()
+    {
       Assert.DoesNotThrow(() => { new CalculatorGraph(); });
     }
 
     [Test]
-    public void Ctor_ShouldInstantiateCalculatorGraph_When_CalledWithConfigText() {
+    public void Ctor_ShouldInstantiateCalculatorGraph_When_CalledWithConfigText()
+    {
       var graph = new CalculatorGraph(validConfigText);
       var config = graph.Config();
 
@@ -35,14 +39,16 @@ output_stream: ""out""
 
     #region #isDisposed
     [Test]
-    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet() {
+    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet()
+    {
       var graph = new CalculatorGraph();
 
       Assert.False(graph.isDisposed);
     }
 
     [Test]
-    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed() {
+    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed()
+    {
       var graph = new CalculatorGraph();
       graph.Dispose();
 
@@ -52,7 +58,8 @@ output_stream: ""out""
 
     #region #Initialize
     [Test]
-    public void Initialize_ShouldReturnOk_When_CalledWithConfig_And_ConfigIsNotSet() {
+    public void Initialize_ShouldReturnOk_When_CalledWithConfig_And_ConfigIsNotSet()
+    {
       var graph = new CalculatorGraph();
       var status = graph.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(validConfigText));
       Assert.True(status.ok);
@@ -63,7 +70,8 @@ output_stream: ""out""
     }
 
     [Test]
-    public void Initialize_ShouldReturnInternalError_When_CalledWithConfig_And_ConfigIsSet() {
+    public void Initialize_ShouldReturnInternalError_When_CalledWithConfig_And_ConfigIsSet()
+    {
       var graph = new CalculatorGraph(validConfigText);
       var status = graph.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(validConfigText));
 
@@ -71,7 +79,8 @@ output_stream: ""out""
     }
 
     [Test]
-    public void Initialize_ShouldReturnOk_When_CalledWithConfigAndSidePacket_And_ConfigIsNotSet() {
+    public void Initialize_ShouldReturnOk_When_CalledWithConfigAndSidePacket_And_ConfigIsNotSet()
+    {
       var graph = new CalculatorGraph();
       var config = CalculatorGraphConfig.Parser.ParseFromTextFormat(validConfigText);
       var sidePacket = new SidePacket();
@@ -82,7 +91,8 @@ output_stream: ""out""
     }
 
     [Test]
-    public void Initialize_ShouldReturnInternalError_When_CalledWithConfigAndSidePacket_And_ConfigIsSet() {
+    public void Initialize_ShouldReturnInternalError_When_CalledWithConfigAndSidePacket_And_ConfigIsSet()
+    {
       var graph = new CalculatorGraph(validConfigText);
       var config = CalculatorGraphConfig.Parser.ParseFromTextFormat(validConfigText);
       var sidePacket = new SidePacket();
@@ -95,8 +105,10 @@ output_stream: ""out""
 
     #region lifecycle
     [Test]
-    public void LifecycleMethods_ShouldControlGraphLifeCycle() {
-      using (var graph = new CalculatorGraph(validConfigText)) {
+    public void LifecycleMethods_ShouldControlGraphLifeCycle()
+    {
+      using (var graph = new CalculatorGraph(validConfigText))
+      {
         Assert.True(graph.StartRun().ok);
         Assert.False(graph.GraphInputStreamsClosed());
 
@@ -109,8 +121,10 @@ output_stream: ""out""
     }
 
     [Test]
-    public void Cancel_ShouldCancelGraph() {
-      using (var graph = new CalculatorGraph(validConfigText)) {
+    public void Cancel_ShouldCancelGraph()
+    {
+      using (var graph = new CalculatorGraph(validConfigText))
+      {
         Assert.True(graph.StartRun().ok);
         graph.Cancel();
         Assert.AreEqual(graph.WaitUntilDone().code, Status.StatusCode.Cancelled);

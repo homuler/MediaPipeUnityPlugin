@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
-namespace Mediapipe.Unity.Holistic {
-  public class HolisticTrackingGraph : GraphRunner {
-    public enum ModelComplexity {
+namespace Mediapipe.Unity.Holistic
+{
+  public class HolisticTrackingGraph : GraphRunner
+  {
+    public enum ModelComplexity
+    {
       Lite = 0,
       Full = 1,
       Heavy = 2,
@@ -56,7 +59,8 @@ namespace Mediapipe.Unity.Holistic {
     protected long prevPoseWorldLandmarksMicrosec = 0;
     protected long prevPoseRoiMicrosec = 0;
 
-    public override Status StartRun(ImageSource imageSource) {
+    public override Status StartRun(ImageSource imageSource)
+    {
       InitializeOutputStreams();
 
       poseDetectionStream.StartPolling(true).AssertOk();
@@ -72,7 +76,8 @@ namespace Mediapipe.Unity.Holistic {
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
-    public Status StartRunAsync(ImageSource imageSource) {
+    public Status StartRunAsync(ImageSource imageSource)
+    {
       InitializeOutputStreams();
 
       poseDetectionStream.AddListener(PoseDetectionCallback, true).AssertOk();
@@ -88,7 +93,8 @@ namespace Mediapipe.Unity.Holistic {
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
-    public override void Stop() {
+    public override void Stop()
+    {
       base.Stop();
       OnPoseDetectionOutput.RemoveAllListeners();
       OnPoseLandmarksOutput.RemoveAllListeners();
@@ -101,11 +107,13 @@ namespace Mediapipe.Unity.Holistic {
       OnPoseRoiOutput.RemoveAllListeners();
     }
 
-    public Status AddTextureFrameToInputStream(TextureFrame textureFrame) {
+    public Status AddTextureFrameToInputStream(TextureFrame textureFrame)
+    {
       return AddTextureFrameToInputStream(inputStreamName, textureFrame);
     }
 
-    public HolisticTrackingValue FetchNextValue() {
+    public HolisticTrackingValue FetchNextValue()
+    {
       poseDetectionStream.TryGetNext(out var poseDetection);
       poseLandmarksStream.TryGetNext(out var poseLandmarks);
       faceLandmarksStream.TryGetNext(out var faceLandmarks);
@@ -132,10 +140,14 @@ namespace Mediapipe.Unity.Holistic {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr PoseDetectionCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) => {
-        using (var packet = new DetectionPacket(ptr, false)) {
-          if (holisticTrackingGraph.TryGetPacketValue(packet, ref holisticTrackingGraph.prevPoseDetectionMicrosec, out var value)) {
+    static IntPtr PoseDetectionCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
+      {
+        using (var packet = new DetectionPacket(ptr, false))
+        {
+          if (holisticTrackingGraph.TryGetPacketValue(packet, ref holisticTrackingGraph.prevPoseDetectionMicrosec, out var value))
+          {
             holisticTrackingGraph.OnPoseDetectionOutput.Invoke(value);
           }
         }
@@ -143,10 +155,14 @@ namespace Mediapipe.Unity.Holistic {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr PoseLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) => {
-        using (var packet = new NormalizedLandmarkListPacket(ptr, false)) {
-          if (holisticTrackingGraph.TryGetPacketValue(packet, ref holisticTrackingGraph.prevPoseLandmarksMicrosec, out var value)) {
+    static IntPtr PoseLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
+      {
+        using (var packet = new NormalizedLandmarkListPacket(ptr, false))
+        {
+          if (holisticTrackingGraph.TryGetPacketValue(packet, ref holisticTrackingGraph.prevPoseLandmarksMicrosec, out var value))
+          {
             holisticTrackingGraph.OnPoseLandmarksOutput.Invoke(value);
           }
         }
@@ -154,10 +170,14 @@ namespace Mediapipe.Unity.Holistic {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr FaceLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) => {
-        using (var packet = new NormalizedLandmarkListPacket(ptr, false)) {
-          if (holisticTrackingGraph.TryGetPacketValue(packet, ref holisticTrackingGraph.prevFaceLandmarksMicrosec, out var value)) {
+    static IntPtr FaceLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
+      {
+        using (var packet = new NormalizedLandmarkListPacket(ptr, false))
+        {
+          if (holisticTrackingGraph.TryGetPacketValue(packet, ref holisticTrackingGraph.prevFaceLandmarksMicrosec, out var value))
+          {
             holisticTrackingGraph.OnFaceLandmarksOutput.Invoke(value);
           }
         }
@@ -165,10 +185,14 @@ namespace Mediapipe.Unity.Holistic {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr LeftHandLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) => {
-        using (var packet = new NormalizedLandmarkListPacket(ptr, false)) {
-          if (holisticTrackingGraph.TryGetPacketValue(packet, ref holisticTrackingGraph.prevLeftHandLandmarksMicrosec, out var value)) {
+    static IntPtr LeftHandLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
+      {
+        using (var packet = new NormalizedLandmarkListPacket(ptr, false))
+        {
+          if (holisticTrackingGraph.TryGetPacketValue(packet, ref holisticTrackingGraph.prevLeftHandLandmarksMicrosec, out var value))
+          {
             holisticTrackingGraph.OnLeftHandLandmarksOutput.Invoke(value);
           }
         }
@@ -176,10 +200,14 @@ namespace Mediapipe.Unity.Holistic {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr RightHandLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) => {
-        using (var packet = new NormalizedLandmarkListPacket(ptr, false)) {
-          if (holisticTrackingGraph.TryGetPacketValue(packet, ref holisticTrackingGraph.prevRightHandLandmarksMicrosec, out var value)) {
+    static IntPtr RightHandLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
+      {
+        using (var packet = new NormalizedLandmarkListPacket(ptr, false))
+        {
+          if (holisticTrackingGraph.TryGetPacketValue(packet, ref holisticTrackingGraph.prevRightHandLandmarksMicrosec, out var value))
+          {
             holisticTrackingGraph.OnRightHandLandmarksOutput.Invoke(value);
           }
         }
@@ -187,10 +215,14 @@ namespace Mediapipe.Unity.Holistic {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr LeftIrisLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) => {
-        using (var packet = new NormalizedLandmarkListPacket(ptr, false)) {
-          if (holisticTrackingGraph.TryGetPacketValue(packet, ref holisticTrackingGraph.prevLeftIrisLandmarksMicrosec, out var value)) {
+    static IntPtr LeftIrisLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
+      {
+        using (var packet = new NormalizedLandmarkListPacket(ptr, false))
+        {
+          if (holisticTrackingGraph.TryGetPacketValue(packet, ref holisticTrackingGraph.prevLeftIrisLandmarksMicrosec, out var value))
+          {
             holisticTrackingGraph.OnLeftIrisLandmarksOutput.Invoke(value);
           }
         }
@@ -198,10 +230,14 @@ namespace Mediapipe.Unity.Holistic {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr RightIrisLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) => {
-        using (var packet = new NormalizedLandmarkListPacket(ptr, false)) {
-          if (holisticTrackingGraph.TryGetPacketValue(packet, ref holisticTrackingGraph.prevRightIrisLandmarksMicrosec, out var value)) {
+    static IntPtr RightIrisLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
+      {
+        using (var packet = new NormalizedLandmarkListPacket(ptr, false))
+        {
+          if (holisticTrackingGraph.TryGetPacketValue(packet, ref holisticTrackingGraph.prevRightIrisLandmarksMicrosec, out var value))
+          {
             holisticTrackingGraph.OnRightIrisLandmarksOutput.Invoke(value);
           }
         }
@@ -209,10 +245,14 @@ namespace Mediapipe.Unity.Holistic {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr PoseWorldLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) => {
-        using (var packet = new LandmarkListPacket(ptr, false)) {
-          if (holisticTrackingGraph.TryGetPacketValue(packet, ref holisticTrackingGraph.prevPoseWorldLandmarksMicrosec, out var value)) {
+    static IntPtr PoseWorldLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
+      {
+        using (var packet = new LandmarkListPacket(ptr, false))
+        {
+          if (holisticTrackingGraph.TryGetPacketValue(packet, ref holisticTrackingGraph.prevPoseWorldLandmarksMicrosec, out var value))
+          {
             holisticTrackingGraph.OnPoseWorldLandmarksOutput.Invoke(value);
           }
         }
@@ -220,17 +260,22 @@ namespace Mediapipe.Unity.Holistic {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr PoseRoiCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) => {
-        using (var packet = new NormalizedRectPacket(ptr, false)) {
-          if (holisticTrackingGraph.TryGetPacketValue(packet, ref holisticTrackingGraph.prevPoseRoiMicrosec, out var value)) {
+    static IntPtr PoseRoiCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
+      {
+        using (var packet = new NormalizedRectPacket(ptr, false))
+        {
+          if (holisticTrackingGraph.TryGetPacketValue(packet, ref holisticTrackingGraph.prevPoseRoiMicrosec, out var value))
+          {
             holisticTrackingGraph.OnPoseRoiOutput.Invoke(value);
           }
         }
       }).mpPtr;
     }
 
-    protected override IList<WaitForResult> RequestDependentAssets() {
+    protected override IList<WaitForResult> RequestDependentAssets()
+    {
       return new List<WaitForResult> {
         WaitForAsset("face_detection_short_range.bytes"),
         WaitForAsset("face_landmark.bytes"),
@@ -244,17 +289,24 @@ namespace Mediapipe.Unity.Holistic {
       };
     }
 
-    WaitForResult WaitForPoseLandmarkModel() {
-      if (modelComplexity == ModelComplexity.Lite) {
+    WaitForResult WaitForPoseLandmarkModel()
+    {
+      if (modelComplexity == ModelComplexity.Lite)
+      {
         return WaitForAsset("pose_landmark_lite.bytes");
-      } else if (modelComplexity == ModelComplexity.Full) {
+      }
+      else if (modelComplexity == ModelComplexity.Full)
+      {
         return WaitForAsset("pose_landmark_full.bytes");
-      } else {
+      }
+      else
+      {
         return WaitForAsset("pose_landmark_heavy.bytes");
       }
     }
 
-    protected void InitializeOutputStreams() {
+    protected void InitializeOutputStreams()
+    {
       poseDetectionStream = new OutputStream<DetectionPacket, Detection>(calculatorGraph, poseDetectionStreamName);
       poseLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, poseLandmarksStreamName);
       faceLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, faceLandmarksStreamName);
@@ -266,7 +318,8 @@ namespace Mediapipe.Unity.Holistic {
       poseRoiStream = new OutputStream<NormalizedRectPacket, NormalizedRect>(calculatorGraph, poseRoiStreamName);
     }
 
-    SidePacket BuildSidePacket(ImageSource imageSource) {
+    SidePacket BuildSidePacket(ImageSource imageSource)
+    {
       var sidePacket = new SidePacket();
 
       SetImageTransformationOptions(sidePacket, imageSource);

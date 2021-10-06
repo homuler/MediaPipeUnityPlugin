@@ -1,14 +1,18 @@
 using System;
 
-namespace Mediapipe {
-  public abstract class StatusOr<T> : MpResourceHandle {
-    public StatusOr(IntPtr ptr) : base(ptr) {}
+namespace Mediapipe
+{
+  public abstract class StatusOr<T> : MpResourceHandle
+  {
+    public StatusOr(IntPtr ptr) : base(ptr) { }
 
     public abstract bool ok { get; }
     public abstract Status status { get; }
 
-    public virtual T ValueOr(T defaultValue = default(T)) {
-      if (!ok) {
+    public virtual T ValueOr(T defaultValue = default(T))
+    {
+      if (!ok)
+      {
         return defaultValue;
       }
 

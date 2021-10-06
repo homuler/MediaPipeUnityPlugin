@@ -3,52 +3,63 @@
 using System;
 using System.Threading;
 
-namespace Mediapipe {
-  public abstract class DisposableObject : IDisposable {
+namespace Mediapipe
+{
+  public abstract class DisposableObject : IDisposable
+  {
     private volatile int disposeSignaled = 0;
 
     public bool isDisposed { get; protected set; }
     protected bool isOwner { get; private set; }
 
-    protected DisposableObject() : this(true) {}
+    protected DisposableObject() : this(true) { }
 
-    protected DisposableObject(bool isOwner) {
+    protected DisposableObject(bool isOwner)
+    {
       isDisposed = false;
       this.isOwner = isOwner;
     }
 
-    public void Dispose() {
+    public void Dispose()
+    {
       Dispose(true);
       GC.SuppressFinalize(this);
     }
 
-    protected virtual void Dispose(bool disposing) {
-      if (Interlocked.Exchange(ref disposeSignaled, 1) != 0) {
+    protected virtual void Dispose(bool disposing)
+    {
+      if (Interlocked.Exchange(ref disposeSignaled, 1) != 0)
+      {
         return;
       }
 
       isDisposed = true;
 
-      if (disposing) {
+      if (disposing)
+      {
         DisposeManaged();
       }
       DisposeUnmanaged();
     }
 
-    ~DisposableObject() {
+    ~DisposableObject()
+    {
       Dispose(false);
     }
 
-    protected virtual void DisposeManaged() {}
+    protected virtual void DisposeManaged() { }
 
-    protected virtual void DisposeUnmanaged() {}
+    protected virtual void DisposeUnmanaged() { }
 
-    public void TransferOwnership() {
+    public void TransferOwnership()
+    {
       isOwner = false;
     }
 
-    public void ThrowIfDisposed() {
-      if (isDisposed) {
+    public void ThrowIfDisposed()
+    {
+      if (isDisposed)
+      {
         throw new ObjectDisposedException(GetType().FullName);
       }
     }

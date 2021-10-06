@@ -2,22 +2,28 @@ using Mediapipe;
 using NUnit.Framework;
 using System;
 
-namespace Tests {
-  public class GlContextTest {
+namespace Tests
+{
+  public class GlContextTest
+  {
     #region .GetCurrent
     [Test, GpuOnly]
-    public void GetCurrent_ShouldReturnNull_When_CalledOutOfGlContext() {
+    public void GetCurrent_ShouldReturnNull_When_CalledOutOfGlContext()
+    {
       var glContext = GlContext.GetCurrent();
 
       Assert.Null(glContext);
     }
 
     [Test, GpuOnly]
-    public void GetCurrent_ShouldReturnCurrentContext_When_CalledInGlContext() {
-      using (var glCalculatorHelper = new GlCalculatorHelper()) {
+    public void GetCurrent_ShouldReturnCurrentContext_When_CalledInGlContext()
+    {
+      using (var glCalculatorHelper = new GlCalculatorHelper())
+      {
         glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
 
-        glCalculatorHelper.RunInGlContext(() => {
+        glCalculatorHelper.RunInGlContext(() =>
+        {
           var glContext = GlContext.GetCurrent();
 
           Assert.NotNull(glContext);
@@ -29,7 +35,8 @@ namespace Tests {
     #endregion
 
     #region #IsCurrent
-    public void IsCurrent_ShouldReturnFalse_When_CalledOutOfGlContext() {
+    public void IsCurrent_ShouldReturnFalse_When_CalledOutOfGlContext()
+    {
       var glContext = GetGlContext();
 
       Assert.False(glContext.IsCurrent());
@@ -38,7 +45,8 @@ namespace Tests {
 
     #region properties
     [Test, GpuOnly]
-    public void ShouldReturnProperties() {
+    public void ShouldReturnProperties()
+    {
       var glContext = GetGlContext();
 
 #if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_ANDROID
@@ -56,8 +64,10 @@ namespace Tests {
     }
     #endregion
 
-    private GlContext GetGlContext() {
-      using (var glCalculatorHelper = new GlCalculatorHelper()) {
+    private GlContext GetGlContext()
+    {
+      using (var glCalculatorHelper = new GlCalculatorHelper())
+      {
         glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
 
         return glCalculatorHelper.GetGlContext();

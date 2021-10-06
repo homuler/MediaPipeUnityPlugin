@@ -4,10 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-namespace Mediapipe.Unity {
-  public class Bootstrap : MonoBehaviour {
+namespace Mediapipe.Unity
+{
+  public class Bootstrap : MonoBehaviour
+  {
     [System.Serializable]
-    public enum AssetLoaderType {
+    public enum AssetLoaderType
+    {
       StreamingAssets,
       AssetBundle,
       Local,
@@ -26,7 +29,8 @@ namespace Mediapipe.Unity {
     public bool isFinished { get; private set; }
     bool isGlogInitialized;
 
-    IEnumerator Start() {
+    IEnumerator Start()
+    {
       Logger.SetLogger(new MemoizedLogger(100));
       Logger.minLogLevel = Logger.LogLevel.Debug;
 
@@ -37,9 +41,12 @@ namespace Mediapipe.Unity {
       Logger.LogInfo(TAG, "Setting global flags...");
       GlobalConfigManager.SetFlags();
 
-      if (enableGlog) {
-        if (Glog.logDir != null) {
-          if (!Directory.Exists(Glog.logDir)) {
+      if (enableGlog)
+      {
+        if (Glog.logDir != null)
+        {
+          if (!Directory.Exists(Glog.logDir))
+          {
             Directory.CreateDirectory(Glog.logDir);
           }
           Logger.LogVerbose(TAG, $"Glog will output files under {Glog.logDir}");
@@ -49,28 +56,33 @@ namespace Mediapipe.Unity {
       }
 
       Logger.LogInfo(TAG, "Initializing AssetLoader...");
-      switch (assetLoaderType) {
-        case AssetLoaderType.AssetBundle: {
-          AssetLoader.Provide(new AssetBundleResourceManager(Path.Combine(Application.streamingAssetsPath, "mediapipe")));
-          break;
-        }
-        case AssetLoaderType.StreamingAssets: {
-          AssetLoader.Provide(new StreamingAssetsResourceManager());
-          break;
-        }
-        default: {
+      switch (assetLoaderType)
+      {
+        case AssetLoaderType.AssetBundle:
+          {
+            AssetLoader.Provide(new AssetBundleResourceManager(Path.Combine(Application.streamingAssetsPath, "mediapipe")));
+            break;
+          }
+        case AssetLoaderType.StreamingAssets:
+          {
+            AssetLoader.Provide(new StreamingAssetsResourceManager());
+            break;
+          }
+        default:
+          {
 #if UNITY_EDITOR
-          AssetLoader.Provide(new LocalResourceManager());
-          break;
+            AssetLoader.Provide(new LocalResourceManager());
+            break;
 #else
           Logger.LogError("LocalResourceManager is only supported on UnityEditor");
           yield break;
 #endif
-        }
+          }
       }
 
       DecideInferenceMode();
-      if (inferenceMode == InferenceMode.GPU) {
+      if (inferenceMode == InferenceMode.GPU)
+      {
         Logger.LogInfo(TAG, "Initializing GPU resources...");
         yield return GpuManager.Initialize();
       }
@@ -87,7 +99,8 @@ namespace Mediapipe.Unity {
       yield return new WaitUntil(() => sceneLoadReq.isDone);
     }
 
-    void DecideInferenceMode() {
+    void DecideInferenceMode()
+    {
 #if UNITY_EDITOR_OSX || UNITY_EDITOR_WIN
       if (preferableInferenceMode == InferenceMode.GPU) {
         Logger.LogWarning(TAG, "Current platform does not support GPU inference mode, so falling back to CPU mode");
@@ -98,10 +111,12 @@ namespace Mediapipe.Unity {
 #endif
     }
 
-    void OnApplicationQuit() {
+    void OnApplicationQuit()
+    {
       GpuManager.Shutdown();
 
-      if (isGlogInitialized) {
+      if (isGlogInitialized)
+      {
         Glog.Shutdown();
       }
 

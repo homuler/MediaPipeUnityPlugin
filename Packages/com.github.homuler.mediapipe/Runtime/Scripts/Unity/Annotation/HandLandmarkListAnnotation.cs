@@ -1,14 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Mediapipe.Unity {
-  public sealed class HandLandmarkListAnnotation : HierarchicalAnnotation {
+namespace Mediapipe.Unity
+{
+  public sealed class HandLandmarkListAnnotation : HierarchicalAnnotation
+  {
     [SerializeField] PointListAnnotation landmarkList;
     [SerializeField] ConnectionListAnnotation connectionList;
     [SerializeField] Color leftLandmarkColor = Color.green;
     [SerializeField] Color rightLandmarkColor = Color.green;
 
-    public enum Hand {
+    public enum Hand
+    {
       Left,
       Right,
     }
@@ -38,83 +41,106 @@ namespace Mediapipe.Unity {
       (19, 20),
     };
 
-    public override bool isMirrored {
-      set {
+    public override bool isMirrored
+    {
+      set
+      {
         landmarkList.isMirrored = value;
         connectionList.isMirrored = value;
         base.isMirrored = value;
       }
     }
 
-    public override RotationAngle rotationAngle {
-      set {
+    public override RotationAngle rotationAngle
+    {
+      set
+      {
         landmarkList.rotationAngle = value;
         connectionList.rotationAngle = value;
         base.rotationAngle = value;
       }
     }
 
-    public PointAnnotation this[int index] {
+    public PointAnnotation this[int index]
+    {
       get { return landmarkList[index]; }
     }
 
-    void Start() {
+    void Start()
+    {
       landmarkList.SetColor(leftLandmarkColor); // assume it's left hand by default
       landmarkList.Fill(landmarkCount);
 
       connectionList.Fill(connections, landmarkList);
     }
 
-    public void SetLeftLandmarkColor(Color leftLandmarkColor) {
+    public void SetLeftLandmarkColor(Color leftLandmarkColor)
+    {
       this.leftLandmarkColor = leftLandmarkColor;
     }
 
-    public void SetRightLandmarkColor(Color rightLandmarkColor) {
+    public void SetRightLandmarkColor(Color rightLandmarkColor)
+    {
       this.rightLandmarkColor = rightLandmarkColor;
     }
 
-    public void SetLandmarkRadius(float landmarkRadius) {
+    public void SetLandmarkRadius(float landmarkRadius)
+    {
       landmarkList.SetRadius(landmarkRadius);
     }
 
-    public void SetConnectionColor(Color connectionColor) {
+    public void SetConnectionColor(Color connectionColor)
+    {
       connectionList.SetColor(connectionColor);
     }
 
-    public void SetConnectionWidth(float connectionWidth) {
+    public void SetConnectionWidth(float connectionWidth)
+    {
       connectionList.SetLineWidth(connectionWidth);
     }
 
-    public void SetHandedness(Hand handedness) {
-      if (handedness == Hand.Left) {
+    public void SetHandedness(Hand handedness)
+    {
+      if (handedness == Hand.Left)
+      {
         landmarkList.SetColor(leftLandmarkColor);
-      } else if (handedness == Hand.Right) {
+      }
+      else if (handedness == Hand.Right)
+      {
         landmarkList.SetColor(rightLandmarkColor);
       }
     }
 
-    public void SetHandedness(IList<Classification> handedness) {
-      if (handedness == null || handedness.Count == 0 || handedness[0].Label == "Left") {
+    public void SetHandedness(IList<Classification> handedness)
+    {
+      if (handedness == null || handedness.Count == 0 || handedness[0].Label == "Left")
+      {
         SetHandedness(Hand.Left);
-      } else if (handedness[0].Label == "Right") {
+      }
+      else if (handedness[0].Label == "Right")
+      {
         SetHandedness(Hand.Right);
       }
       // ignore unknown label
     }
 
-    public void SetHandedness(ClassificationList handedness) {
+    public void SetHandedness(ClassificationList handedness)
+    {
       SetHandedness(handedness.Classification);
     }
 
-    public void Draw(IList<NormalizedLandmark> target, bool visualizeZ = false) {
-      if (ActivateFor(target)) {
+    public void Draw(IList<NormalizedLandmark> target, bool visualizeZ = false)
+    {
+      if (ActivateFor(target))
+      {
         landmarkList.Draw(target, visualizeZ);
         // Draw explicitly because connection annotation's targets remain the same.
         connectionList.Redraw();
       }
     }
 
-    public void Draw(NormalizedLandmarkList target, bool visualizeZ = false) {
+    public void Draw(NormalizedLandmarkList target, bool visualizeZ = false)
+    {
       Draw(target?.Landmark, visualizeZ);
     }
   }

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mediapipe.Unity.FaceMesh {
-  public class FaceMeshSolution : Solution {
+namespace Mediapipe.Unity.FaceMesh
+{
+  public class FaceMeshSolution : Solution
+  {
     [SerializeField] RawImage screen;
     [SerializeField] DetectionListAnnotationController faceDetectionsAnnotationController;
     [SerializeField] MultiFaceLandmarkListAnnotationController multiFaceLandmarksAnnotationController;
@@ -16,48 +18,57 @@ namespace Mediapipe.Unity.FaceMesh {
 
     public RunningMode runningMode;
 
-    public int maxNumFaces {
+    public int maxNumFaces
+    {
       get { return graphRunner.maxNumFaces; }
       set { graphRunner.maxNumFaces = value; }
     }
 
-    public long timeoutMillisec {
+    public long timeoutMillisec
+    {
       get { return graphRunner.timeoutMillisec; }
       set { graphRunner.SetTimeoutMillisec(value); }
     }
 
-    public override void Play() {
-      if (coroutine != null) {
+    public override void Play()
+    {
+      if (coroutine != null)
+      {
         Stop();
       }
       base.Play();
       coroutine = StartCoroutine(Run());
     }
 
-    public override void Pause() {
+    public override void Pause()
+    {
       base.Pause();
       ImageSourceProvider.imageSource.Pause();
     }
 
-    public override void Resume() {
+    public override void Resume()
+    {
       base.Resume();
       StartCoroutine(ImageSourceProvider.imageSource.Resume());
     }
 
-    public override void Stop() {
+    public override void Stop()
+    {
       base.Stop();
       StopCoroutine(coroutine);
       ImageSourceProvider.imageSource.Stop();
       graphRunner.Stop();
     }
 
-    IEnumerator Run() {
+    IEnumerator Run()
+    {
       var graphInitRequest = graphRunner.WaitForInit();
       var imageSource = ImageSourceProvider.imageSource;
 
       yield return imageSource.Play();
 
-      if (!imageSource.isPrepared) {
+      if (!imageSource.isPrepared)
+      {
         Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
         yield break;
       }
@@ -70,17 +81,21 @@ namespace Mediapipe.Unity.FaceMesh {
 
       // Wait for completion of loading of dependent files, etc.
       yield return graphInitRequest;
-      if (graphInitRequest.isError) {
+      if (graphInitRequest.isError)
+      {
         Logger.LogError(TAG, graphInitRequest.error);
         yield break;
       }
 
-      if (runningMode == RunningMode.Async) {
+      if (runningMode == RunningMode.Async)
+      {
         graphRunner.OnFaceDetectionsOutput.AddListener(OnFaceDetectionsOutput);
         graphRunner.OnMultiFaceLandmarksOutput.AddListener(OnMultiFaceLandmarksOutput);
         graphRunner.OnFaceRectsFromLandmarksOutput.AddListener(OnFaceRectsFromLandmarksOutput);
         graphRunner.StartRunAsync(imageSource).AssertOk();
-      } else {
+      }
+      else
+      {
         graphRunner.StartRun(imageSource).AssertOk();
       }
 
@@ -92,7 +107,8 @@ namespace Mediapipe.Unity.FaceMesh {
       SetupAnnotationController(faceRectsFromLandmarksAnnotationController, imageSource);
       SetupAnnotationController(multiFaceLandmarksAnnotationController, imageSource);
 
-      while (true) {
+      while (true)
+      {
         yield return new WaitWhile(() => isPaused);
 
         var textureFrameRequest = textureFramePool.WaitForNextTextureFrame();
@@ -104,7 +120,8 @@ namespace Mediapipe.Unity.FaceMesh {
 
         graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 
-        if (runningMode == RunningMode.Sync) {
+        if (runningMode == RunningMode.Sync)
+        {
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = graphRunner.FetchNextValue();
           faceDetectionsAnnotationController.DrawNow(value.faceDetections);
@@ -116,15 +133,18 @@ namespace Mediapipe.Unity.FaceMesh {
       }
     }
 
-    void OnFaceDetectionsOutput(List<Detection> faceDetections) {
+    void OnFaceDetectionsOutput(List<Detection> faceDetections)
+    {
       faceDetectionsAnnotationController.DrawLater(faceDetections);
     }
 
-    void OnMultiFaceLandmarksOutput(List<NormalizedLandmarkList> multiFaceLandmarks) {
+    void OnMultiFaceLandmarksOutput(List<NormalizedLandmarkList> multiFaceLandmarks)
+    {
       multiFaceLandmarksAnnotationController.DrawLater(multiFaceLandmarks);
     }
 
-    void OnFaceRectsFromLandmarksOutput(List<NormalizedRect> faceRectsFromLandmarks) {
+    void OnFaceRectsFromLandmarksOutput(List<NormalizedRect> faceRectsFromLandmarks)
+    {
       faceRectsFromLandmarksAnnotationController.DrawLater(faceRectsFromLandmarks);
     }
   }

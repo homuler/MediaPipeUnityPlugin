@@ -1,8 +1,11 @@
 using System;
 
-namespace Mediapipe {
-  public class Status : MpResourceHandle {
-    public enum StatusCode : int {
+namespace Mediapipe
+{
+  public class Status : MpResourceHandle
+  {
+    public enum StatusCode : int
+    {
       Ok = 0,
       Cancelled = 1,
       Unknown = 2,
@@ -22,16 +25,20 @@ namespace Mediapipe {
       Unauthenticated = 16,
     }
 
-    public Status(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
+    public Status(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
-    protected override void DeleteMpPtr() {
+    protected override void DeleteMpPtr()
+    {
       UnsafeNativeMethods.absl_Status__delete(ptr);
     }
 
     bool? _ok;
-    public bool ok {
-      get {
-        if (_ok is bool valueOfOk) {
+    public bool ok
+    {
+      get
+      {
+        if (_ok is bool valueOfOk)
+        {
           return valueOfOk;
         }
         _ok = SafeNativeMethods.absl_Status__ok(mpPtr);
@@ -39,40 +46,49 @@ namespace Mediapipe {
       }
     }
 
-    public void AssertOk() {
-      if (!ok) {
+    public void AssertOk()
+    {
+      if (!ok)
+      {
         throw new MediaPipeException(ToString());
       }
     }
 
-    public StatusCode code {
+    public StatusCode code
+    {
       get { return (StatusCode)rawCode; }
     }
 
-    public int rawCode {
+    public int rawCode
+    {
       get { return SafeNativeMethods.absl_Status__raw_code(mpPtr); }
     }
 
-    public override string ToString() {
+    public override string ToString()
+    {
       return MarshalStringFromNative(UnsafeNativeMethods.absl_Status__ToString);
     }
 
-    public static Status Build(StatusCode code, string message, bool isOwner = true) {
+    public static Status Build(StatusCode code, string message, bool isOwner = true)
+    {
       UnsafeNativeMethods.absl_Status__i_PKc((int)code, message, out var ptr).Assert();
 
       return new Status(ptr, isOwner);
     }
 
-    public static Status Ok(bool isOwner = true) {
+    public static Status Ok(bool isOwner = true)
+    {
       return Status.Build(StatusCode.Ok, "", isOwner);
     }
 
-    public static Status FailedPrecondition(string message = "", bool isOwner = true) {
+    public static Status FailedPrecondition(string message = "", bool isOwner = true)
+    {
       return Status.Build(StatusCode.FailedPrecondition, message, isOwner);
     }
 
     [Obsolete("GetPtr is deprecated, use mpPtr")]
-    public IntPtr GetPtr() {
+    public IntPtr GetPtr()
+    {
       return mpPtr;
     }
   }

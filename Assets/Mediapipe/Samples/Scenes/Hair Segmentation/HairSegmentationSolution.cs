@@ -2,8 +2,10 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mediapipe.Unity.HairSegmentation {
-  public class HairSegmentationSolution : Solution {
+namespace Mediapipe.Unity.HairSegmentation
+{
+  public class HairSegmentationSolution : Solution
+  {
     [SerializeField] RawImage screen;
     [SerializeField] MaskAnnotationController hairMaskAnnotationController;
     [SerializeField] HairSegmentationGraph graphRunner;
@@ -13,43 +15,51 @@ namespace Mediapipe.Unity.HairSegmentation {
 
     public RunningMode runningMode;
 
-    public long timeoutMillisec {
+    public long timeoutMillisec
+    {
       get { return graphRunner.timeoutMillisec; }
       set { graphRunner.SetTimeoutMillisec(value); }
     }
 
-    public override void Play() {
-      if (coroutine != null) {
+    public override void Play()
+    {
+      if (coroutine != null)
+      {
         Stop();
       }
       base.Play();
       coroutine = StartCoroutine(Run());
     }
 
-    public override void Pause() {
+    public override void Pause()
+    {
       base.Pause();
       ImageSourceProvider.imageSource.Pause();
     }
 
-    public override void Resume() {
+    public override void Resume()
+    {
       base.Resume();
       StartCoroutine(ImageSourceProvider.imageSource.Resume());
     }
 
-    public override void Stop() {
+    public override void Stop()
+    {
       base.Stop();
       StopCoroutine(coroutine);
       ImageSourceProvider.imageSource.Stop();
       graphRunner.Stop();
     }
 
-    IEnumerator Run() {
+    IEnumerator Run()
+    {
       var graphInitRequest = graphRunner.WaitForInit();
       var imageSource = ImageSourceProvider.imageSource;
 
       yield return imageSource.Play();
 
-      if (!imageSource.isPrepared) {
+      if (!imageSource.isPrepared)
+      {
         Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
         yield break;
       }
@@ -60,15 +70,19 @@ namespace Mediapipe.Unity.HairSegmentation {
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
       yield return graphInitRequest;
-      if (graphInitRequest.isError) {
+      if (graphInitRequest.isError)
+      {
         Logger.LogError(TAG, graphInitRequest.error);
         yield break;
       }
 
-      if (runningMode == RunningMode.Async) {
+      if (runningMode == RunningMode.Async)
+      {
         graphRunner.OnHairMaskOutput.AddListener(OnHairMaskOutput);
         graphRunner.StartRunAsync(imageSource).AssertOk();
-      } else {
+      }
+      else
+      {
         graphRunner.StartRun(imageSource).AssertOk();
       }
 
@@ -79,7 +93,8 @@ namespace Mediapipe.Unity.HairSegmentation {
       SetupAnnotationController(hairMaskAnnotationController, imageSource);
       hairMaskAnnotationController.InitScreen();
 
-      while (true) {
+      while (true)
+      {
         yield return new WaitWhile(() => isPaused);
 
         var textureFrameRequest = textureFramePool.WaitForNextTextureFrame();
@@ -91,7 +106,8 @@ namespace Mediapipe.Unity.HairSegmentation {
 
         graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 
-        if (runningMode == RunningMode.Sync) {
+        if (runningMode == RunningMode.Sync)
+        {
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var hairMask = graphRunner.FetchNextValue();
           hairMaskAnnotationController.DrawNow(hairMask);
@@ -101,7 +117,8 @@ namespace Mediapipe.Unity.HairSegmentation {
       }
     }
 
-    void OnHairMaskOutput(ImageFrame hairMask) {
+    void OnHairMaskOutput(ImageFrame hairMask)
+    {
       hairMaskAnnotationController.DrawLater(hairMask);
     }
   }

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mediapipe.Unity.FaceDetection {
-  public class FaceDetectionSolution : Solution {
+namespace Mediapipe.Unity.FaceDetection
+{
+  public class FaceDetectionSolution : Solution
+  {
     [SerializeField] RawImage screen;
     [SerializeField] DetectionListAnnotationController faceDetectionsAnnotationController;
     [SerializeField] FaceDetectionGraph graphRunner;
@@ -14,48 +16,57 @@ namespace Mediapipe.Unity.FaceDetection {
 
     public RunningMode runningMode;
 
-    public FaceDetectionGraph.ModelType modelType {
+    public FaceDetectionGraph.ModelType modelType
+    {
       get { return graphRunner.modelType; }
       set { graphRunner.modelType = value; }
     }
 
-    public long timeoutMillisec {
+    public long timeoutMillisec
+    {
       get { return graphRunner.timeoutMillisec; }
       set { graphRunner.SetTimeoutMillisec(value); }
     }
 
-    public override void Play() {
-      if (coroutine != null) {
+    public override void Play()
+    {
+      if (coroutine != null)
+      {
         Stop();
       }
       base.Play();
       coroutine = StartCoroutine(Run());
     }
 
-    public override void Pause() {
+    public override void Pause()
+    {
       base.Pause();
       ImageSourceProvider.imageSource.Pause();
     }
 
-    public override void Resume() {
+    public override void Resume()
+    {
       base.Resume();
       StartCoroutine(ImageSourceProvider.imageSource.Resume());
     }
 
-    public override void Stop() {
+    public override void Stop()
+    {
       base.Stop();
       StopCoroutine(coroutine);
       ImageSourceProvider.imageSource.Stop();
       graphRunner.Stop();
     }
 
-    IEnumerator Run() {
+    IEnumerator Run()
+    {
       var graphInitRequest = graphRunner.WaitForInit();
       var imageSource = ImageSourceProvider.imageSource;
 
       yield return imageSource.Play();
 
-      if (!imageSource.isPrepared) {
+      if (!imageSource.isPrepared)
+      {
         Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
         yield break;
       }
@@ -67,15 +78,19 @@ namespace Mediapipe.Unity.FaceDetection {
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
       yield return graphInitRequest;
-      if (graphInitRequest.isError) {
+      if (graphInitRequest.isError)
+      {
         Logger.LogError(TAG, graphInitRequest.error);
         yield break;
       }
 
-      if (runningMode == RunningMode.Async) {
+      if (runningMode == RunningMode.Async)
+      {
         graphRunner.OnFaceDetectionsOutput.AddListener(OnFaceDetectionsOutput);
         graphRunner.StartRunAsync(imageSource).AssertOk();
-      } else {
+      }
+      else
+      {
         graphRunner.StartRun(imageSource).AssertOk();
       }
 
@@ -85,7 +100,8 @@ namespace Mediapipe.Unity.FaceDetection {
 
       SetupAnnotationController(faceDetectionsAnnotationController, imageSource);
 
-      while (true) {
+      while (true)
+      {
         yield return new WaitWhile(() => isPaused);
 
         var textureFrameRequest = textureFramePool.WaitForNextTextureFrame();
@@ -97,7 +113,8 @@ namespace Mediapipe.Unity.FaceDetection {
 
         graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 
-        if (runningMode == RunningMode.Sync) {
+        if (runningMode == RunningMode.Sync)
+        {
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var detections = graphRunner.FetchNextValue();
           faceDetectionsAnnotationController.DrawNow(detections);
@@ -107,7 +124,8 @@ namespace Mediapipe.Unity.FaceDetection {
       }
     }
 
-    void OnFaceDetectionsOutput(List<Detection> detections) {
+    void OnFaceDetectionsOutput(List<Detection> detections)
+    {
       faceDetectionsAnnotationController.DrawLater(detections);
     }
   }

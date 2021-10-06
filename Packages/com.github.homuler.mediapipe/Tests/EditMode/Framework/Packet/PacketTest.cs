@@ -1,11 +1,14 @@
 using Mediapipe;
 using NUnit.Framework;
 
-namespace Tests {
-  public class PacketTest {
+namespace Tests
+{
+  public class PacketTest
+  {
     #region #At
     [Test]
-    public void At_ShouldReturnNewPacketWithTimestamp() {
+    public void At_ShouldReturnNewPacketWithTimestamp()
+    {
       var timestamp = new Timestamp(1);
       var packet = new BoolPacket(true).At(timestamp);
 
@@ -26,7 +29,8 @@ namespace Tests {
 
     #region #DebugString
     [Test]
-    public void DebugString_ShouldReturnDebugString_When_InstantiatedWithDefaultConstructor() {
+    public void DebugString_ShouldReturnDebugString_When_InstantiatedWithDefaultConstructor()
+    {
       var packet = new BoolPacket();
 
       Assert.AreEqual(packet.DebugString(), "mediapipe::Packet with timestamp: Timestamp::Unset() and no data");
@@ -35,7 +39,8 @@ namespace Tests {
 
     #region #DebugTypeName
     [Test]
-    public void DebugTypeName_ShouldReturnTypeName_When_ValueIsNotSet() {
+    public void DebugTypeName_ShouldReturnTypeName_When_ValueIsNotSet()
+    {
       var packet = new BoolPacket();
 
       Assert.AreEqual(packet.DebugTypeName(), "{empty}");
@@ -44,7 +49,8 @@ namespace Tests {
 
     #region #RegisteredTypeName
     [Test]
-    public void RegisteredTypeName_ShouldReturnEmptyString() {
+    public void RegisteredTypeName_ShouldReturnEmptyString()
+    {
       var packet = new BoolPacket();
 
       Assert.AreEqual(packet.RegisteredTypeName(), "");
@@ -53,7 +59,8 @@ namespace Tests {
 
     #region #ValidateAsProtoMessageLite
     [Test]
-    public void ValidateAsProtoMessageLite_ShouldReturnInvalidArgument_When_ValueIsBool() {
+    public void ValidateAsProtoMessageLite_ShouldReturnInvalidArgument_When_ValueIsBool()
+    {
       var packet = new BoolPacket(true);
 
       Assert.AreEqual(packet.ValidateAsProtoMessageLite().code, Status.StatusCode.InvalidArgument);

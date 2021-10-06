@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace Mediapipe {
-  public class FaceGeometryVectorPacket : Packet<List<FaceGeometry.FaceGeometry>> {
-    public FaceGeometryVectorPacket() : base() {}
-    public FaceGeometryVectorPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
+namespace Mediapipe
+{
+  public class FaceGeometryVectorPacket : Packet<List<FaceGeometry.FaceGeometry>>
+  {
+    public FaceGeometryVectorPacket() : base() { }
+    public FaceGeometryVectorPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
-    public override List<FaceGeometry.FaceGeometry> Get() {
+    public override List<FaceGeometry.FaceGeometry> Get()
+    {
       UnsafeNativeMethods.mp_Packet__GetFaceGeometryVector(mpPtr, out var serializedProtoVector).Assert();
       GC.KeepAlive(this);
 
@@ -16,7 +19,8 @@ namespace Mediapipe {
       return geometries;
     }
 
-    public override StatusOr<List<FaceGeometry.FaceGeometry>> Consume() {
+    public override StatusOr<List<FaceGeometry.FaceGeometry>> Consume()
+    {
       throw new NotSupportedException();
     }
   }

@@ -1,8 +1,10 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Mediapipe {
-  public enum GpuBufferFormat : UInt32 {
+namespace Mediapipe
+{
+  public enum GpuBufferFormat : UInt32
+  {
     kUnknown = 0,
     kBGRA32 = ('B' << 24) + ('G' << 16) + ('R' << 8) + ('A'),
     kGrayFloat32 = ('L' << 24) + ('0' << 16) + ('0' << 8) + ('f'),
@@ -17,12 +19,15 @@ namespace Mediapipe {
     kRGBAFloat128 = ('R' << 24) + ('G' << 16) + ('f' << 8) + ('A'),
   }
 
-  public static class GpuBufferFormatExtension {
-    public static ImageFormat.Format ImageFormatFor(this GpuBufferFormat gpuBufferFormat) {
+  public static class GpuBufferFormatExtension
+  {
+    public static ImageFormat.Format ImageFormatFor(this GpuBufferFormat gpuBufferFormat)
+    {
       return SafeNativeMethods.mp__ImageFormatForGpuBufferFormat__ui(gpuBufferFormat);
     }
 
-    public static GlTextureInfo GlTextureInfoFor(this GpuBufferFormat gpuBufferFormat, int plane, GlVersion glVersion = GlVersion.kGLES3) {
+    public static GlTextureInfo GlTextureInfoFor(this GpuBufferFormat gpuBufferFormat, int plane, GlVersion glVersion = GlVersion.kGLES3)
+    {
       UnsafeNativeMethods.mp__GlTextureInfoForGpuBufferFormat__ui_i_ui(gpuBufferFormat, plane, glVersion, out var glTextureInfo).Assert();
       return glTextureInfo;
     }

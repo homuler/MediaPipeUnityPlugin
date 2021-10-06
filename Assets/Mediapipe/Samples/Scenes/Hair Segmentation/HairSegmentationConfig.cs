@@ -4,8 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using Mediapipe.Unity.UI;
 
-namespace Mediapipe.Unity.HairSegmentation.UI {
-  public class HairSegmentationConfig : ModalContents {
+namespace Mediapipe.Unity.HairSegmentation.UI
+{
+  public class HairSegmentationConfig : ModalContents
+  {
     const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
     const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
 
@@ -15,33 +17,40 @@ namespace Mediapipe.Unity.HairSegmentation.UI {
 
     bool isChanged;
 
-    void Start() {
+    void Start()
+    {
       solution = GameObject.Find("Solution").GetComponent<HairSegmentationSolution>();
       InitializeContents();
     }
 
-    public override void Exit() {
+    public override void Exit()
+    {
       GetModal().CloseAndResume(isChanged);
     }
 
-    public void SwitchRunningMode() {
+    public void SwitchRunningMode()
+    {
       solution.runningMode = (RunningMode)RunningModeInput.value;
       isChanged = true;
     }
 
-    public void SetTimeoutMillisec() {
-      if (int.TryParse(TimeoutMillisecInput.text, out var value)) {
+    public void SetTimeoutMillisec()
+    {
+      if (int.TryParse(TimeoutMillisecInput.text, out var value))
+      {
         solution.timeoutMillisec = value;
         isChanged = true;
       }
     }
 
-    void InitializeContents() {
+    void InitializeContents()
+    {
       InitializeRunningMode();
       InitializeTimeoutMillisec();
     }
 
-    void InitializeRunningMode() {
+    void InitializeRunningMode()
+    {
       RunningModeInput = gameObject.transform.Find(_RunningModePath).gameObject.GetComponent<Dropdown>();
       RunningModeInput.ClearOptions();
 
@@ -51,14 +60,16 @@ namespace Mediapipe.Unity.HairSegmentation.UI {
       var currentRunningMode = solution.runningMode;
       var defaultValue = options.FindIndex(option => option == currentRunningMode.ToString());
 
-      if (defaultValue >= 0) {
+      if (defaultValue >= 0)
+      {
         RunningModeInput.value = defaultValue;
       }
 
       RunningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
     }
 
-    void InitializeTimeoutMillisec() {
+    void InitializeTimeoutMillisec()
+    {
       TimeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
       TimeoutMillisecInput.text = solution.timeoutMillisec.ToString();
       TimeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });

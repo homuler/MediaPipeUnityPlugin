@@ -6,8 +6,10 @@ using UnityEngine;
 using System.Runtime.InteropServices;
 #endif
 
-namespace Mediapipe.Unity {
-  public static class GpuManager {
+namespace Mediapipe.Unity
+{
+  public static class GpuManager
+  {
     static readonly string TAG = typeof(GpuManager).Name;
 
     delegate void PluginCallback(int eventId);
@@ -21,9 +23,12 @@ namespace Mediapipe.Unity {
 
     public static bool isInitialized { get; private set; }
 
-    public static IEnumerator Initialize() {
-      lock(setupLock) {
-        if (isInitialized) {
+    public static IEnumerator Initialize()
+    {
+      lock (setupLock)
+      {
+        if (isInitialized)
+        {
           Logger.LogWarning(TAG, "Already set up");
           yield break;
         }
@@ -39,23 +44,29 @@ namespace Mediapipe.Unity {
 #endif
 
         var count = 1000;
-        yield return new WaitUntil(() => {
+        yield return new WaitUntil(() =>
+        {
           return --count < 0 || isContextInitialized;
         });
 
-        if (!isContextInitialized) {
+        if (!isContextInitialized)
+        {
           throw new TimeoutException("Failed to get GlContext");
         }
 
 #if UNITY_ANDROID
-        if (currentContext == IntPtr.Zero) {
+        if (currentContext == IntPtr.Zero)
+        {
           Logger.LogWarning(TAG, "EGL context is not found, so MediaPipe won't share their EGL contexts with Unity");
-        } else {
+        }
+        else
+        {
           Logger.LogVerbose(TAG, $"EGL context is found: {currentContext}");
         }
 #endif
 
-        try {
+        try
+        {
           Logger.LogInfo(TAG, "Initializing GpuResources...");
           gpuResources = GpuResources.Create(currentContext).Value();
 
@@ -64,7 +75,9 @@ namespace Mediapipe.Unity {
           glCalculatorHelper.InitializeForTest(gpuResources);
 
           isInitialized = true;
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
           Logger.LogException(e);
           Logger.LogError(TAG, "Failed to create GpuResources. If your native library is built for CPU, change 'Preferable Inference Mode' to CPU from the Inspector Window for Bootstrap");
         }
@@ -78,19 +91,22 @@ namespace Mediapipe.Unity {
     ///   This has to be called once GPU resources are used by CalculatorGraph.
     ///   Otherwise, UnityEditor will freeze.
     /// </remarks>
-    public static void Shutdown() {
-      if (gpuResources != null) {
+    public static void Shutdown()
+    {
+      if (gpuResources != null)
+      {
         gpuResources.Dispose();
         gpuResources = null;
       }
 
-      if (glCalculatorHelper != null) {
+      if (glCalculatorHelper != null)
+      {
         glCalculatorHelper.Dispose();
         glCalculatorHelper = null;
       }
     }
 
-// Currently, it works only on Android
+    // Currently, it works only on Android
 #if UNITY_ANDROID && !UNITY_EDITOR
     [AOT.MonoPInvokeCallback(typeof(PluginCallback))]
     static void GetCurrentContext(int eventId) {

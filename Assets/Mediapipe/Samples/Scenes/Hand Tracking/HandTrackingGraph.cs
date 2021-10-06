@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
-namespace Mediapipe.Unity.HandTracking {
-  public class HandTrackingGraph : GraphRunner {
+namespace Mediapipe.Unity.HandTracking
+{
+  public class HandTrackingGraph : GraphRunner
+  {
     public int maxNumHands = 2;
 
     public UnityEvent<List<Detection>> OnPalmDetectectionsOutput = new UnityEvent<List<Detection>>();
@@ -19,20 +21,21 @@ namespace Mediapipe.Unity.HandTracking {
     const string handLandmarksStreamName = "hand_landmarks";
     const string handRectsFromLandmarksStreamName = "hand_rects_from_landmarks";
     const string handednessStreamName = "handedness";
-  
+
     OutputStream<DetectionVectorPacket, List<Detection>> palmDetectionsStream;
     OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>> handRectsFromPalmDetectionsStream;
     OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>> handLandmarksStream;
     OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>> handRectsFromLandmarksStream;
     OutputStream<ClassificationListVectorPacket, List<ClassificationList>> handednessStream;
-  
+
     protected long prevPalmDetectionMicrosec = 0;
     protected long prevHandRectsFromPalmDetectionsMicrosec = 0;
     protected long prevHandLandmarksMicrosec = 0;
     protected long prevHandRectsFromLandmarksMicrosec = 0;
     protected long prevHandednessMicrosec = 0;
 
-    public override Status StartRun(ImageSource imageSource) {
+    public override Status StartRun(ImageSource imageSource)
+    {
       InitializeOutputStreams();
 
       palmDetectionsStream.StartPolling(true).AssertOk();
@@ -44,7 +47,8 @@ namespace Mediapipe.Unity.HandTracking {
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
-    public Status StartRunAsync(ImageSource imageSource) {
+    public Status StartRunAsync(ImageSource imageSource)
+    {
       InitializeOutputStreams();
 
       palmDetectionsStream.AddListener(PalmDetectionsCallback, true).AssertOk();
@@ -56,7 +60,8 @@ namespace Mediapipe.Unity.HandTracking {
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
-    public override void Stop() {
+    public override void Stop()
+    {
       base.Stop();
       OnPalmDetectectionsOutput.RemoveAllListeners();
       OnHandRectsFromPalmDetectionsOutput.RemoveAllListeners();
@@ -65,11 +70,13 @@ namespace Mediapipe.Unity.HandTracking {
       OnHandednessOutput.RemoveAllListeners();
     }
 
-    public Status AddTextureFrameToInputStream(TextureFrame textureFrame) {
+    public Status AddTextureFrameToInputStream(TextureFrame textureFrame)
+    {
       return AddTextureFrameToInputStream(inputStreamName, textureFrame);
     }
 
-    public HandTrackingValue FetchNextValue() {
+    public HandTrackingValue FetchNextValue()
+    {
       palmDetectionsStream.TryGetNext(out var palmDetections);
       handRectsFromPalmDetectionsStream.TryGetNext(out var handRectsFromPalmDetections);
       handLandmarksStream.TryGetNext(out var handLandmarks);
@@ -86,10 +93,14 @@ namespace Mediapipe.Unity.HandTracking {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr PalmDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) => {
-        using (var packet = new DetectionVectorPacket(ptr, false)) {
-          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevPalmDetectionMicrosec, out var value)) {
+    static IntPtr PalmDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) =>
+      {
+        using (var packet = new DetectionVectorPacket(ptr, false))
+        {
+          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevPalmDetectionMicrosec, out var value))
+          {
             handTrackingGraph.OnPalmDetectectionsOutput.Invoke(value);
           }
         }
@@ -97,10 +108,14 @@ namespace Mediapipe.Unity.HandTracking {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr HandRectsFromPalmDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) => {
-        using (var packet = new NormalizedRectVectorPacket(ptr, false)) {
-          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandRectsFromPalmDetectionsMicrosec, out var value)) {
+    static IntPtr HandRectsFromPalmDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) =>
+      {
+        using (var packet = new NormalizedRectVectorPacket(ptr, false))
+        {
+          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandRectsFromPalmDetectionsMicrosec, out var value))
+          {
             handTrackingGraph.OnHandRectsFromPalmDetectionsOutput.Invoke(value);
           }
         }
@@ -108,10 +123,14 @@ namespace Mediapipe.Unity.HandTracking {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr HandLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) => {
-        using (var packet = new NormalizedLandmarkListVectorPacket(ptr, false)) {
-          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandLandmarksMicrosec, out var value)) {
+    static IntPtr HandLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) =>
+      {
+        using (var packet = new NormalizedLandmarkListVectorPacket(ptr, false))
+        {
+          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandLandmarksMicrosec, out var value))
+          {
             handTrackingGraph.OnHandLandmarksOutput.Invoke(value);
           }
         }
@@ -119,10 +138,14 @@ namespace Mediapipe.Unity.HandTracking {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr HandRectsFromLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) => {
-        using (var packet = new NormalizedRectVectorPacket(ptr, false)) {
-          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandRectsFromLandmarksMicrosec, out var value)) {
+    static IntPtr HandRectsFromLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) =>
+      {
+        using (var packet = new NormalizedRectVectorPacket(ptr, false))
+        {
+          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandRectsFromLandmarksMicrosec, out var value))
+          {
             handTrackingGraph.OnHandRectsFromLandmarksOutput.Invoke(value);
           }
         }
@@ -130,17 +153,22 @@ namespace Mediapipe.Unity.HandTracking {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr HandednessCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) => {
-        using (var packet = new ClassificationListVectorPacket(ptr, false)) {
-          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandednessMicrosec, out var value)) {
+    static IntPtr HandednessCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) =>
+      {
+        using (var packet = new ClassificationListVectorPacket(ptr, false))
+        {
+          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandednessMicrosec, out var value))
+          {
             handTrackingGraph.OnHandednessOutput.Invoke(value);
           }
         }
       }).mpPtr;
     }
 
-    protected override IList<WaitForResult> RequestDependentAssets() {
+    protected override IList<WaitForResult> RequestDependentAssets()
+    {
       return new List<WaitForResult> {
         WaitForAsset("hand_landmark.bytes"),
         WaitForAsset("hand_recrop.bytes"),
@@ -149,7 +177,8 @@ namespace Mediapipe.Unity.HandTracking {
       };
     }
 
-    protected void InitializeOutputStreams() {
+    protected void InitializeOutputStreams()
+    {
       palmDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, palmDetectionsStreamName);
       handRectsFromPalmDetectionsStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, handRectsFromPalmDetectionsStreamName);
       handLandmarksStream = new OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(calculatorGraph, handLandmarksStreamName);
@@ -157,7 +186,8 @@ namespace Mediapipe.Unity.HandTracking {
       handednessStream = new OutputStream<ClassificationListVectorPacket, List<ClassificationList>>(calculatorGraph, handednessStreamName);
     }
 
-    SidePacket BuildSidePacket(ImageSource imageSource) {
+    SidePacket BuildSidePacket(ImageSource imageSource)
+    {
       var sidePacket = new SidePacket();
 
       SetImageTransformationOptions(sidePacket, imageSource, true);

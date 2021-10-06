@@ -1,5 +1,7 @@
-namespace Mediapipe {
-  public enum MpReturnCode : int {
+namespace Mediapipe
+{
+  public enum MpReturnCode : int
+  {
     Success = 0,
     /// <summary>A standard exception is thrown</summary>
     StandardError = 1,
@@ -11,16 +13,21 @@ namespace Mediapipe {
     Aborted = 134,
   }
 
-  public static class MpReturnCodeExtension {
-    public static void Assert(this MpReturnCode code) {
-      switch (code) {
+  public static class MpReturnCodeExtension
+  {
+    public static void Assert(this MpReturnCode code)
+    {
+      switch (code)
+      {
         case MpReturnCode.Success: return;
-        case MpReturnCode.Aborted: {
-          throw new MediaPipeException("MediaPipe Aborted, refer glog files for more details");
-        }
-        default: {
-          throw new MediaPipePluginException($"Failed to call a native function (code={code})");
-        }
+        case MpReturnCode.Aborted:
+          {
+            throw new MediaPipeException("MediaPipe Aborted, refer glog files for more details");
+          }
+        default:
+          {
+            throw new MediaPipePluginException($"Failed to call a native function (code={code})");
+          }
       }
     }
   }

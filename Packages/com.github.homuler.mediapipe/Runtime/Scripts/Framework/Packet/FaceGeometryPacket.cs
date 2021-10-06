@@ -1,11 +1,14 @@
 using System;
 
-namespace Mediapipe {
-  public class FaceGeometryPacket : Packet<FaceGeometry.FaceGeometry> {
-    public FaceGeometryPacket() : base() {}
-    public FaceGeometryPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
+namespace Mediapipe
+{
+  public class FaceGeometryPacket : Packet<FaceGeometry.FaceGeometry>
+  {
+    public FaceGeometryPacket() : base() { }
+    public FaceGeometryPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
-    public override FaceGeometry.FaceGeometry Get() {
+    public override FaceGeometry.FaceGeometry Get()
+    {
       UnsafeNativeMethods.mp_Packet__GetFaceGeometry(mpPtr, out var serializedProto).Assert();
       GC.KeepAlive(this);
 
@@ -15,7 +18,8 @@ namespace Mediapipe {
       return geometry;
     }
 
-    public override StatusOr<FaceGeometry.FaceGeometry> Consume() {
+    public override StatusOr<FaceGeometry.FaceGeometry> Consume()
+    {
       throw new NotSupportedException();
     }
   }

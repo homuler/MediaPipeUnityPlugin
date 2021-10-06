@@ -3,27 +3,33 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 
-namespace Mediapipe.Unity {
-  public abstract class ImageSource : MonoBehaviour {
+namespace Mediapipe.Unity
+{
+  public abstract class ImageSource : MonoBehaviour
+  {
     [System.Serializable]
-    public struct ResolutionStruct {
+    public struct ResolutionStruct
+    {
       public int width;
       public int height;
       public double frameRate;
 
-      public ResolutionStruct(int width, int height, double frameRate) {
+      public ResolutionStruct(int width, int height, double frameRate)
+      {
         this.width = width;
         this.height = height;
         this.frameRate = frameRate;
       }
 
-      public ResolutionStruct(Resolution resolution) {
+      public ResolutionStruct(Resolution resolution)
+      {
         this.width = resolution.width;
         this.height = resolution.height;
         this.frameRate = resolution.refreshRate;
       }
 
-      public Resolution ToResolution() {
+      public Resolution ToResolution()
+      {
         var resolution = new Resolution();
 
         resolution.width = width;
@@ -33,13 +39,15 @@ namespace Mediapipe.Unity {
         return resolution;
       }
 
-      public override string ToString() {
+      public override string ToString()
+      {
         var aspectRatio = $"{width}x{height}";
         return frameRate > 0 ? $"{aspectRatio} ({frameRate.ToString("#.##")}Hz)" : aspectRatio;
       }
     }
 
-    public enum SourceType {
+    public enum SourceType
+    {
       Camera = 0,
       Image = 1,
       Video = 2,
@@ -53,9 +61,12 @@ namespace Mediapipe.Unity {
     /// <returns>
     ///   <see cref="TextureFormat" /> that is compatible with the current texture.
     /// </returns>
-    public TextureFormat textureFormat {
-      get {
-        if (!isPrepared) {
+    public TextureFormat textureFormat
+    {
+      get
+      {
+        if (!isPrepared)
+        {
           throw new InvalidOperationException("ImageSource is not prepared");
         }
         return TextureFormatFor(GetCurrentTexture());
@@ -103,10 +114,12 @@ namespace Mediapipe.Unity {
     ///   You need to call <see cref="Play" /> for the change to take effect.
     /// </remarks>
     /// <param name="resolutionId">The index of <see cref="availableResolutions" /></param>
-    public void SelectResolution(int resolutionId) {
+    public void SelectResolution(int resolutionId)
+    {
       var resolutions = availableResolutions;
 
-      if (resolutionId < 0 || resolutionId >= resolutions.Length) {
+      if (resolutionId < 0 || resolutionId >= resolutions.Length)
+      {
         throw new ArgumentException($"Invalid resolution ID: {resolutionId}");
       }
 
@@ -154,7 +167,8 @@ namespace Mediapipe.Unity {
     /// </returns>
     public abstract Texture GetCurrentTexture();
 
-    protected static TextureFormat TextureFormatFor(Texture texture) {
+    protected static TextureFormat TextureFormatFor(Texture texture)
+    {
       return GraphicsFormatUtility.GetTextureFormat(texture.graphicsFormat);
     }
   }

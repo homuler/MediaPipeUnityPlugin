@@ -1,9 +1,11 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Mediapipe {
+namespace Mediapipe
+{
   [StructLayout(LayoutKind.Sequential)]
-  public struct GlTextureInfo {
+  public struct GlTextureInfo
+  {
     public int glInternalFormat;
     public UInt32 glFormat;
     public UInt32 glType;

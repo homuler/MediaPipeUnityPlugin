@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
-namespace Mediapipe.Unity.FaceDetection {
-  public class FaceDetectionGraph : GraphRunner {
-    public enum ModelType {
+namespace Mediapipe.Unity.FaceDetection
+{
+  public class FaceDetectionGraph : GraphRunner
+  {
+    public enum ModelType
+    {
       ShortRange = 0,
       FullRangeSparse = 1,
     }
@@ -17,56 +20,68 @@ namespace Mediapipe.Unity.FaceDetection {
     OutputStream<DetectionVectorPacket, List<Detection>> faceDetectionsStream;
     protected long prevFaceDetectionsMicrosec = 0;
 
-    public override Status StartRun(ImageSource imageSource) {
+    public override Status StartRun(ImageSource imageSource)
+    {
       InitializeOutputStreams();
       faceDetectionsStream.StartPolling(true).AssertOk();
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
-    public Status StartRunAsync(ImageSource imageSource) {
+    public Status StartRunAsync(ImageSource imageSource)
+    {
       InitializeOutputStreams();
       faceDetectionsStream.AddListener(FaceDetectionsCallback, true).AssertOk();
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
-    public override void Stop() {
+    public override void Stop()
+    {
       base.Stop();
       OnFaceDetectionsOutput.RemoveAllListeners();
     }
 
-    public Status AddTextureFrameToInputStream(TextureFrame textureFrame) {
+    public Status AddTextureFrameToInputStream(TextureFrame textureFrame)
+    {
       return AddTextureFrameToInputStream(inputStreamName, textureFrame);
     }
 
-    public List<Detection> FetchNextValue() {
+    public List<Detection> FetchNextValue()
+    {
       faceDetectionsStream.TryGetNext(out var faceDetections);
       OnFaceDetectionsOutput.Invoke(faceDetections);
       return faceDetections;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr FaceDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<FaceDetectionGraph>(graphPtr, packetPtr, (faceDetectionGraph, ptr) => {
-        using (var packet = new DetectionVectorPacket(ptr, false)) {
-          if (faceDetectionGraph.TryGetPacketValue(packet, ref faceDetectionGraph.prevFaceDetectionsMicrosec, out var value)) {
+    static IntPtr FaceDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<FaceDetectionGraph>(graphPtr, packetPtr, (faceDetectionGraph, ptr) =>
+      {
+        using (var packet = new DetectionVectorPacket(ptr, false))
+        {
+          if (faceDetectionGraph.TryGetPacketValue(packet, ref faceDetectionGraph.prevFaceDetectionsMicrosec, out var value))
+          {
             faceDetectionGraph.OnFaceDetectionsOutput.Invoke(value);
           }
         }
       }).mpPtr;
     }
 
-    protected override IList<WaitForResult> RequestDependentAssets() {
+    protected override IList<WaitForResult> RequestDependentAssets()
+    {
       return new List<WaitForResult> {
         WaitForAsset("face_detection_short_range.bytes"),
         WaitForAsset("face_detection_full_range_sparse.bytes"),
       };
     }
 
-    protected void InitializeOutputStreams() {
+    protected void InitializeOutputStreams()
+    {
       faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, faceDetectionsStreamName);
     }
 
-    SidePacket BuildSidePacket(ImageSource imageSource) {
+    SidePacket BuildSidePacket(ImageSource imageSource)
+    {
       var sidePacket = new SidePacket();
 
       SetImageTransformationOptions(sidePacket, imageSource);

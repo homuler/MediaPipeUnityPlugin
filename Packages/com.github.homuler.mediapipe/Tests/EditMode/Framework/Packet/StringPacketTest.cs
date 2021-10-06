@@ -3,11 +3,14 @@ using NUnit.Framework;
 using System;
 using System.Text.RegularExpressions;
 
-namespace Tests {
-  public class StringPacketTest {
+namespace Tests
+{
+  public class StringPacketTest
+  {
     #region Constructor
     [Test, SignalAbort]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithNoArguments() {
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithNoArguments()
+    {
       var packet = new StringPacket();
 
       Assert.AreEqual(packet.ValidateAsType().code, Status.StatusCode.Internal);
@@ -16,7 +19,8 @@ namespace Tests {
     }
 
     [Test]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithString() {
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithString()
+    {
       var packet = new StringPacket("test");
 
       Assert.True(packet.ValidateAsType().ok);
@@ -25,7 +29,8 @@ namespace Tests {
     }
 
     [Test]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithByteArray() {
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithByteArray()
+    {
       byte[] bytes = new byte[] { (byte)'t', (byte)'e', (byte)'s', (byte)'t' };
       var packet = new StringPacket(bytes);
 
@@ -35,7 +40,8 @@ namespace Tests {
     }
 
     [Test]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithStringAndTimestamp() {
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithStringAndTimestamp()
+    {
       var timestamp = new Timestamp(1);
       var packet = new StringPacket("test", timestamp);
 
@@ -45,7 +51,8 @@ namespace Tests {
     }
 
     [Test]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithByteArrayAndTimestamp() {
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithByteArrayAndTimestamp()
+    {
       var timestamp = new Timestamp(1);
       byte[] bytes = new byte[] { (byte)'t', (byte)'e', (byte)'s', (byte)'t' };
       var packet = new StringPacket(bytes, timestamp);
@@ -58,14 +65,16 @@ namespace Tests {
 
     #region #isDisposed
     [Test]
-    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet() {
+    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet()
+    {
       var packet = new StringPacket();
 
       Assert.False(packet.isDisposed);
     }
 
     [Test]
-    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed() {
+    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed()
+    {
       var packet = new StringPacket();
       packet.Dispose();
 
@@ -75,7 +84,8 @@ namespace Tests {
 
     #region #GetByteArray
     [Test]
-    public void GetByteArray_ShouldReturnByteArray() {
+    public void GetByteArray_ShouldReturnByteArray()
+    {
       byte[] bytes = new byte[] { (byte)'a', (byte)'b', 0, (byte)'c' };
       var packet = new StringPacket(bytes);
 
@@ -86,7 +96,8 @@ namespace Tests {
 
     #region #Consume
     [Test]
-    public void Consume_ShouldThrowNotSupportedException() {
+    public void Consume_ShouldThrowNotSupportedException()
+    {
       var packet = new StringPacket();
 
       Assert.Throws<NotSupportedException>(() => { packet.Consume(); });
@@ -95,7 +106,8 @@ namespace Tests {
 
     #region #DebugTypeName
     [Test]
-    public void DebugTypeName_ShouldReturnString_When_ValueIsSet() {
+    public void DebugTypeName_ShouldReturnString_When_ValueIsSet()
+    {
       var packet = new StringPacket("test");
       var regex = new Regex("string");
 

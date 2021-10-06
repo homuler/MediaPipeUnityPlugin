@@ -4,11 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
 
-public class UnicodeInlineText : Text {
+public class UnicodeInlineText : Text
+{
   private bool disableDirty = false;
   private Regex regexp = new Regex(@"\\u(?<Value>[a-zA-Z0-9]+)");
 
-  protected override void OnPopulateMesh(VertexHelper vh) {
+  protected override void OnPopulateMesh(VertexHelper vh)
+  {
     string cache = text;
     disableDirty = true;
     text = Decode(text);
@@ -17,21 +19,25 @@ public class UnicodeInlineText : Text {
     disableDirty = false;
   }
 
-  private string Decode(string value) {
+  private string Decode(string value)
+  {
     return regexp.Replace(value, m => ((char)int.Parse(m.Groups["Value"].Value, System.Globalization.NumberStyles.HexNumber)).ToString());
   }
 
-  public override void SetLayoutDirty() {
+  public override void SetLayoutDirty()
+  {
     if (disableDirty) return;
     base.SetLayoutDirty();
   }
 
-  public override void SetVerticesDirty() {
+  public override void SetVerticesDirty()
+  {
     if (disableDirty) return;
     base.SetVerticesDirty();
   }
 
-  public override void SetMaterialDirty() {
+  public override void SetMaterialDirty()
+  {
     if (disableDirty) return;
     base.SetMaterialDirty();
   }

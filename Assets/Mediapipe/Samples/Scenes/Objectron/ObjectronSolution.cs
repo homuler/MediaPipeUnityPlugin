@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mediapipe.Unity.Objectron {
-  public class ObjectronSolution : Solution {
+namespace Mediapipe.Unity.Objectron
+{
+  public class ObjectronSolution : Solution
+  {
     [SerializeField] RawImage screen;
     [SerializeField] ObjectronGraph graphRunner;
     [SerializeField] FrameAnnotationController liftedObjectsAnnotationController;
@@ -14,55 +16,65 @@ namespace Mediapipe.Unity.Objectron {
 
     Coroutine coroutine;
 
-    public ObjectronGraph.Category category {
+    public ObjectronGraph.Category category
+    {
       get { return graphRunner.category; }
       set { graphRunner.category = value; }
     }
 
-    public int maxNumObjects {
+    public int maxNumObjects
+    {
       get { return graphRunner.maxNumObjects; }
       set { graphRunner.maxNumObjects = value; }
     }
 
-    public long timeoutMillisec {
+    public long timeoutMillisec
+    {
       get { return graphRunner.timeoutMillisec; }
       set { graphRunner.SetTimeoutMillisec(value); }
     }
 
     public RunningMode runningMode;
 
-    public override void Play() {
-      if (coroutine != null) {
+    public override void Play()
+    {
+      if (coroutine != null)
+      {
         Stop();
       }
       base.Play();
       coroutine = StartCoroutine(Run());
     }
 
-    public override void Pause() {
+    public override void Pause()
+    {
       base.Pause();
       ImageSourceProvider.imageSource.Pause();
     }
 
-    public override void Resume() {
+    public override void Resume()
+    {
       base.Resume();
       StartCoroutine(ImageSourceProvider.imageSource.Resume());
     }
 
-    public override void Stop() {
+    public override void Stop()
+    {
       base.Stop();
       StopCoroutine(coroutine);
       ImageSourceProvider.imageSource.Stop();
       graphRunner.Stop();
     }
 
-    IEnumerator Run() {
+    IEnumerator Run()
+    {
       var graphInitRequest = graphRunner.WaitForInit();
       var imageSource = ImageSourceProvider.imageSource;
 
       yield return imageSource.Play();
 
-      if (!imageSource.isPrepared) {
+      if (!imageSource.isPrepared)
+      {
         Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
         yield break;
       }
@@ -75,17 +87,21 @@ namespace Mediapipe.Unity.Objectron {
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
       yield return graphInitRequest;
-      if (graphInitRequest.isError) {
+      if (graphInitRequest.isError)
+      {
         Logger.LogError(TAG, graphInitRequest.error);
         yield break;
       }
 
-      if (runningMode == RunningMode.Async) {
+      if (runningMode == RunningMode.Async)
+      {
         graphRunner.OnLiftedObjectsOutput.AddListener(OnLiftedObjectsOutput);
         graphRunner.OnMultiBoxRectsOutput.AddListener(OnMultiBoxRectsOutput);
         graphRunner.OnMultiBoxLandmarksOutput.AddListener(OnMultiBoxLandmarksOutput);
         graphRunner.StartRunAsync(imageSource).AssertOk();
-      } else {
+      }
+      else
+      {
         graphRunner.StartRun(imageSource).AssertOk();
       }
 
@@ -100,7 +116,8 @@ namespace Mediapipe.Unity.Objectron {
       SetupAnnotationController(multiBoxRectsAnnotationController, imageSource);
       SetupAnnotationController(multiBoxLandmarksAnnotationController, imageSource);
 
-      while (true) {
+      while (true)
+      {
         yield return new WaitWhile(() => isPaused);
 
         var textureFrameRequest = textureFramePool.WaitForNextTextureFrame();
@@ -112,7 +129,8 @@ namespace Mediapipe.Unity.Objectron {
 
         graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 
-        if (runningMode == RunningMode.Sync) {
+        if (runningMode == RunningMode.Sync)
+        {
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = graphRunner.FetchNextValue();
           liftedObjectsAnnotationController.DrawNow(value.liftedObjects);
@@ -124,15 +142,18 @@ namespace Mediapipe.Unity.Objectron {
       }
     }
 
-    void OnLiftedObjectsOutput(FrameAnnotation liftedObjects) {
+    void OnLiftedObjectsOutput(FrameAnnotation liftedObjects)
+    {
       liftedObjectsAnnotationController.DrawLater(liftedObjects);
     }
 
-    void OnMultiBoxRectsOutput(List<NormalizedRect> multiBoxRects) {
+    void OnMultiBoxRectsOutput(List<NormalizedRect> multiBoxRects)
+    {
       multiBoxRectsAnnotationController.DrawLater(multiBoxRects);
     }
 
-    void OnMultiBoxLandmarksOutput(List<NormalizedLandmarkList> multiBoxLandmarks) {
+    void OnMultiBoxLandmarksOutput(List<NormalizedLandmarkList> multiBoxLandmarks)
+    {
       multiBoxLandmarksAnnotationController.DrawLater(multiBoxLandmarks);
     }
   }

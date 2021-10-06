@@ -1,5 +1,7 @@
-namespace Mediapipe.Unity {
-  public class HolisticTrackingValue {
+namespace Mediapipe.Unity
+{
+  public class HolisticTrackingValue
+  {
     public readonly Detection poseDetection;
     public readonly NormalizedLandmarkList poseLandmarks;
     public readonly NormalizedLandmarkList faceLandmarks;
@@ -10,10 +12,11 @@ namespace Mediapipe.Unity {
     public readonly LandmarkList poseWorldLandmarks;
     public readonly NormalizedRect poseRoi;
 
-    public HolisticTrackingValue(Detection poseDetection, NormalizedLandmarkList poseLandmarks, 
-                                 NormalizedLandmarkList faceLandmarks,  NormalizedLandmarkList leftHandLandmarks, NormalizedLandmarkList rightHandLandmarks,
+    public HolisticTrackingValue(Detection poseDetection, NormalizedLandmarkList poseLandmarks,
+                                 NormalizedLandmarkList faceLandmarks, NormalizedLandmarkList leftHandLandmarks, NormalizedLandmarkList rightHandLandmarks,
                                  NormalizedLandmarkList leftIrisLandmarks, NormalizedLandmarkList rightIrisLandmarks,
-                                 LandmarkList poseWorldLandmarks, NormalizedRect poseRoi) {
+                                 LandmarkList poseWorldLandmarks, NormalizedRect poseRoi)
+    {
       this.poseDetection = poseDetection;
       this.poseLandmarks = poseLandmarks;
       this.faceLandmarks = faceLandmarks;

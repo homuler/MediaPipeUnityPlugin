@@ -1,7 +1,9 @@
 using UnityEngine;
 
-namespace Mediapipe.Unity {
-  public class FrameAnnotationController : AnnotationController<CuboidListAnnotation> {
+namespace Mediapipe.Unity
+{
+  public class FrameAnnotationController : AnnotationController<CuboidListAnnotation>
+  {
     [SerializeField] bool visualizeZ = true;
     [SerializeField] float translateZ = -10.0f;
     [SerializeField] float scaleZ = 1.0f;
@@ -11,33 +13,42 @@ namespace Mediapipe.Unity {
 
     FrameAnnotation currentTarget;
 
-    protected override void Start() {
+    protected override void Start()
+    {
       base.Start();
       ApplyTranslateZ(translateZ);
     }
 
-    void OnValidate() {
+    void OnValidate()
+    {
       ApplyTranslateZ(translateZ);
     }
 
-    public void DrawNow(FrameAnnotation target) {
+    public void DrawNow(FrameAnnotation target)
+    {
       currentTarget = target;
       SyncNow();
     }
 
-    public void DrawLater(FrameAnnotation target) {
+    public void DrawLater(FrameAnnotation target)
+    {
       UpdateCurrentTarget(target, ref currentTarget);
     }
 
-    protected override void SyncNow() {
+    protected override void SyncNow()
+    {
       isStale = false;
       annotation.Draw(currentTarget, focalLength, principalPoint, scaleZ, visualizeZ);
     }
 
-    void ApplyTranslateZ(float translateZ) {
-      if (visualizeZ) {
+    void ApplyTranslateZ(float translateZ)
+    {
+      if (visualizeZ)
+      {
         annotation.transform.localPosition = new Vector3(0, 0, translateZ);
-      } else {
+      }
+      else
+      {
         annotation.transform.localPosition = Vector3.zero;
       }
     }

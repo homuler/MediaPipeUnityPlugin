@@ -1,40 +1,51 @@
 using Mediapipe.Unity.CoordinateSystem;
 using UnityEngine;
 
-namespace Mediapipe.Unity {
-  public sealed class Anchor3dAnnotation : HierarchicalAnnotation {
+namespace Mediapipe.Unity
+{
+  public sealed class Anchor3dAnnotation : HierarchicalAnnotation
+  {
     [SerializeField] TransformAnnotation transformAnnotation;
     [SerializeField] PointAnnotation pointAnnotation;
     [SerializeField] float arrowLengthScale = 1.0f;
 
-    public override bool isMirrored {
-      set {
+    public override bool isMirrored
+    {
+      set
+      {
         transformAnnotation.isMirrored = value;
         base.isMirrored = value;
       }
     }
 
-    public override RotationAngle rotationAngle {
-      set {
+    public override RotationAngle rotationAngle
+    {
+      set
+      {
         transformAnnotation.rotationAngle = value;
         base.rotationAngle = value;
       }
     }
 
-    public void SetArrowCapScale(float arrowCapScale) {
+    public void SetArrowCapScale(float arrowCapScale)
+    {
       transformAnnotation.SetArrowCapScale(arrowCapScale);
     }
 
-    public void SetArrowLengthScale(float arrowLengthScale) {
+    public void SetArrowLengthScale(float arrowLengthScale)
+    {
       this.arrowLengthScale = arrowLengthScale;
     }
 
-    public void SetArrowWidth(float arrowWidth) {
+    public void SetArrowWidth(float arrowWidth)
+    {
       transformAnnotation.SetArrowWidth(arrowWidth);
     }
 
-    public void Draw(Anchor3d? target, Quaternion rotation, Vector3 cameraPosition, float defaultDepth, bool visualizeZ = true) {
-      if (ActivateFor(target)) {
+    public void Draw(Anchor3d? target, Quaternion rotation, Vector3 cameraPosition, float defaultDepth, bool visualizeZ = true)
+    {
+      if (ActivateFor(target))
+      {
         var rect = GetAnnotationLayer().rect;
         var anchor3d = (Anchor3d)target;
         var anchor2dPosition = GetAnnotationLayer().GetLocalPosition(anchor3d, rotationAngle, isMirrored);
@@ -46,8 +57,10 @@ namespace Mediapipe.Unity {
       }
     }
 
-    Vector3 GetAnchorPositionInRay(Vector2 anchorPosition, float anchorDepth, Vector3 cameraPosition) {
-      if (Mathf.Approximately(cameraPosition.z, 0.0f)) {
+    Vector3 GetAnchorPositionInRay(Vector2 anchorPosition, float anchorDepth, Vector3 cameraPosition)
+    {
+      if (Mathf.Approximately(cameraPosition.z, 0.0f))
+      {
         throw new System.ArgumentException("Z value of the camera position must not be zero");
       }
 

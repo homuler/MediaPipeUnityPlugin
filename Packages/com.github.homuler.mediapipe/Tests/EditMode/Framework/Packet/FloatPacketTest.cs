@@ -2,11 +2,14 @@ using Mediapipe;
 using NUnit.Framework;
 using System;
 
-namespace Tests {
-  public class FloatPacketTest {
+namespace Tests
+{
+  public class FloatPacketTest
+  {
     #region Constructor
     [Test, SignalAbort]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithNoArguments() {
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithNoArguments()
+    {
       var packet = new FloatPacket();
 
       Assert.AreEqual(packet.ValidateAsType().code, Status.StatusCode.Internal);
@@ -15,7 +18,8 @@ namespace Tests {
     }
 
     [Test]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithValue() {
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithValue()
+    {
       var packet = new FloatPacket(0.01f);
 
       Assert.True(packet.ValidateAsType().ok);
@@ -24,7 +28,8 @@ namespace Tests {
     }
 
     [Test]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithValueAndTimestamp() {
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithValueAndTimestamp()
+    {
       var timestamp = new Timestamp(1);
       var packet = new FloatPacket(0.01f, timestamp);
 
@@ -36,14 +41,16 @@ namespace Tests {
 
     #region #isDisposed
     [Test]
-    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet() {
+    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet()
+    {
       var packet = new FloatPacket();
 
       Assert.False(packet.isDisposed);
     }
 
     [Test]
-    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed() {
+    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed()
+    {
       var packet = new FloatPacket();
       packet.Dispose();
 
@@ -53,7 +60,8 @@ namespace Tests {
 
     #region #Consume
     [Test]
-    public void Consume_ShouldThrowNotSupportedException() {
+    public void Consume_ShouldThrowNotSupportedException()
+    {
       var packet = new FloatPacket();
 
       Assert.Throws<NotSupportedException>(() => { packet.Consume(); });
@@ -62,7 +70,8 @@ namespace Tests {
 
     #region #DebugTypeName
     [Test]
-    public void DebugTypeName_ShouldReturnFloat_When_ValueIsSet() {
+    public void DebugTypeName_ShouldReturnFloat_When_ValueIsSet()
+    {
       var packet = new FloatPacket(0.01f);
 
       Assert.AreEqual(packet.DebugTypeName(), "float");

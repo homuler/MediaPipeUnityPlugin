@@ -1,18 +1,22 @@
 using Mediapipe;
 using NUnit.Framework;
 
-namespace Tests {
-  public class SidePacketTest {
+namespace Tests
+{
+  public class SidePacketTest
+  {
     #region #size
     [Test]
-    public void size_ShouldReturnZero_When_Initialized() {
+    public void size_ShouldReturnZero_When_Initialized()
+    {
       var sidePacket = new SidePacket();
 
       Assert.AreEqual(sidePacket.size, 0);
     }
 
     [Test]
-    public void size_ShouldReturnSize_When_AfterPacketsAreEmplaced() {
+    public void size_ShouldReturnSize_When_AfterPacketsAreEmplaced()
+    {
       var sidePacket = new SidePacket();
       var flagPacket = new BoolPacket(true);
       var valuePacket = new FloatPacket(1.0f);
@@ -26,7 +30,8 @@ namespace Tests {
 
     #region #Emplace
     [Test]
-    public void Emplace_ShouldInsertAndDisposePacket() {
+    public void Emplace_ShouldInsertAndDisposePacket()
+    {
       var sidePacket = new SidePacket();
       Assert.AreEqual(sidePacket.size, 0);
       Assert.IsNull(sidePacket.At<FloatPacket>("value"));
@@ -40,7 +45,8 @@ namespace Tests {
     }
 
     [Test]
-    public void Emplace_ShouldIgnoreValue_When_KeyExists() {
+    public void Emplace_ShouldIgnoreValue_When_KeyExists()
+    {
       var sidePacket = new SidePacket();
 
       var oldValuePacket = new FloatPacket(1.0f);
@@ -55,7 +61,8 @@ namespace Tests {
 
     #region #Erase
     [Test]
-    public void Erase_ShouldDoNothing_When_KeyDoesNotExist() {
+    public void Erase_ShouldDoNothing_When_KeyDoesNotExist()
+    {
       var sidePacket = new SidePacket();
       sidePacket.Erase("value");
 
@@ -63,7 +70,8 @@ namespace Tests {
     }
 
     [Test]
-    public void Erase_ShouldEraseKey_When_KeyExists() {
+    public void Erase_ShouldEraseKey_When_KeyExists()
+    {
       var sidePacket = new SidePacket();
       sidePacket.Emplace("value", new BoolPacket(true));
       Assert.AreEqual(sidePacket.size, 1);
@@ -75,7 +83,8 @@ namespace Tests {
 
     #region #Clear
     [Test]
-    public void Clear_ShouldDoNothing_When_SizeIsZero() {
+    public void Clear_ShouldDoNothing_When_SizeIsZero()
+    {
       var sidePacket = new SidePacket();
       sidePacket.Clear();
 
@@ -83,7 +92,8 @@ namespace Tests {
     }
 
     [Test]
-    public void Clear_ShouldClearAllKeys_When_SizeIsNotZero() {
+    public void Clear_ShouldClearAllKeys_When_SizeIsNotZero()
+    {
       var sidePacket = new SidePacket();
       sidePacket.Emplace("flag", new BoolPacket(true));
       sidePacket.Emplace("value", new FloatPacket(1.0f));

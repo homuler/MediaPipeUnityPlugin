@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Mediapipe.Unity.Objectron {
-  public class ObjectronGraph : GraphRunner {
+namespace Mediapipe.Unity.Objectron
+{
+  public class ObjectronGraph : GraphRunner
+  {
     [Serializable]
-    public enum Category {
+    public enum Category
+    {
       Camera,
       Chair,
       Cup,
@@ -16,16 +19,20 @@ namespace Mediapipe.Unity.Objectron {
     public Category category;
     public int maxNumObjects = 5;
 
-    public Vector2 focalLength {
-      get {
-        if (inferenceMode == InferenceMode.GPU) {
+    public Vector2 focalLength
+    {
+      get
+      {
+        if (inferenceMode == InferenceMode.GPU)
+        {
           return new Vector2(2.0975f, 1.5731f);  // magic numbers MediaPipe uses internally
         }
         return Vector2.one;
       }
     }
 
-    public Vector2 principalPoint {
+    public Vector2 principalPoint
+    {
       get { return Vector2.zero; }
     }
 
@@ -47,7 +54,8 @@ namespace Mediapipe.Unity.Objectron {
     protected long prevMultiBoxRectsMicrosec = 0;
     protected long prevMultiBoxLandmarksMicrosec = 0;
 
-    public override Status StartRun(ImageSource imageSource) {
+    public override Status StartRun(ImageSource imageSource)
+    {
       InitializeOutputStreams();
 
       liftedObjectsStream.StartPolling(true).AssertOk();
@@ -57,9 +65,10 @@ namespace Mediapipe.Unity.Objectron {
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
-    public Status StartRunAsync(ImageSource imageSource) {
+    public Status StartRunAsync(ImageSource imageSource)
+    {
       InitializeOutputStreams();
-  
+
       liftedObjectsStream.AddListener(LiftedObjectsCallback, true).AssertOk();
       multiBoxRectsStream.AddListener(MultiBoxRectsCallback, true).AssertOk();
       multiBoxLandmarksStream.AddListener(MultiBoxLandmarksCallback, true).AssertOk();
@@ -67,18 +76,21 @@ namespace Mediapipe.Unity.Objectron {
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
-    public override void Stop() {
+    public override void Stop()
+    {
       base.Stop();
       OnLiftedObjectsOutput.RemoveAllListeners();
       OnMultiBoxRectsOutput.RemoveAllListeners();
       OnMultiBoxLandmarksOutput.RemoveAllListeners();
     }
 
-    public Status AddTextureFrameToInputStream(TextureFrame textureFrame) {
+    public Status AddTextureFrameToInputStream(TextureFrame textureFrame)
+    {
       return AddTextureFrameToInputStream(inputStreamName, textureFrame);
     }
 
-    public ObjectronValue FetchNextValue() {
+    public ObjectronValue FetchNextValue()
+    {
       liftedObjectsStream.TryGetNext(out var liftedObjects);
       multiBoxRectsStream.TryGetNext(out var multiBoxRects);
       multiBoxLandmarksStream.TryGetNext(out var multiBoxLandmarks);
@@ -91,10 +103,14 @@ namespace Mediapipe.Unity.Objectron {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr LiftedObjectsCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<ObjectronGraph>(graphPtr, packetPtr, (objectronGraph, ptr) => {
-        using (var packet = new FrameAnnotationPacket(ptr, false)) {
-          if (objectronGraph.TryGetPacketValue(packet, ref objectronGraph.prevLiftedObjectsMicrosec, out var value)) {
+    static IntPtr LiftedObjectsCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<ObjectronGraph>(graphPtr, packetPtr, (objectronGraph, ptr) =>
+      {
+        using (var packet = new FrameAnnotationPacket(ptr, false))
+        {
+          if (objectronGraph.TryGetPacketValue(packet, ref objectronGraph.prevLiftedObjectsMicrosec, out var value))
+          {
             objectronGraph.OnLiftedObjectsOutput.Invoke(value);
           }
         }
@@ -102,10 +118,14 @@ namespace Mediapipe.Unity.Objectron {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr MultiBoxRectsCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<ObjectronGraph>(graphPtr, packetPtr, (objectronGraph, ptr) => {
-        using (var packet = new NormalizedRectVectorPacket(ptr, false)) {
-          if (objectronGraph.TryGetPacketValue(packet, ref objectronGraph.prevMultiBoxRectsMicrosec, out var value)) {
+    static IntPtr MultiBoxRectsCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<ObjectronGraph>(graphPtr, packetPtr, (objectronGraph, ptr) =>
+      {
+        using (var packet = new NormalizedRectVectorPacket(ptr, false))
+        {
+          if (objectronGraph.TryGetPacketValue(packet, ref objectronGraph.prevMultiBoxRectsMicrosec, out var value))
+          {
             objectronGraph.OnMultiBoxRectsOutput.Invoke(value);
           }
         }
@@ -113,17 +133,22 @@ namespace Mediapipe.Unity.Objectron {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr MultiBoxLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<ObjectronGraph>(graphPtr, packetPtr, (objectronGraph, ptr) => {
-        using (var packet = new NormalizedLandmarkListVectorPacket(ptr, false)) {
-          if (objectronGraph.TryGetPacketValue(packet, ref objectronGraph.prevMultiBoxLandmarksMicrosec, out var value)) {
+    static IntPtr MultiBoxLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<ObjectronGraph>(graphPtr, packetPtr, (objectronGraph, ptr) =>
+      {
+        using (var packet = new NormalizedLandmarkListVectorPacket(ptr, false))
+        {
+          if (objectronGraph.TryGetPacketValue(packet, ref objectronGraph.prevMultiBoxLandmarksMicrosec, out var value))
+          {
             objectronGraph.OnMultiBoxLandmarksOutput.Invoke(value);
           }
         }
       }).mpPtr;
     }
 
-    protected override IList<WaitForResult> RequestDependentAssets() {
+    protected override IList<WaitForResult> RequestDependentAssets()
+    {
       return new List<WaitForResult> {
         WaitForAsset("object_detection_ssd_mobilenetv2_oidv4_fp16.bytes"),
         WaitForAsset("object_detection_oidv4_labelmap.txt"),
@@ -131,13 +156,15 @@ namespace Mediapipe.Unity.Objectron {
       };
     }
 
-    protected void InitializeOutputStreams() {
+    protected void InitializeOutputStreams()
+    {
       liftedObjectsStream = new OutputStream<FrameAnnotationPacket, FrameAnnotation>(calculatorGraph, liftedObjectsStreamName);
       multiBoxRectsStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, multiBoxRectsStreamName);
       multiBoxLandmarksStream = new OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(calculatorGraph, multiBoxLandmarksStreamName);
     }
 
-    SidePacket BuildSidePacket(ImageSource imageSource) {
+    SidePacket BuildSidePacket(ImageSource imageSource)
+    {
       var sidePacket = new SidePacket();
 
       SetImageTransformationOptions(sidePacket, imageSource);
@@ -147,37 +174,49 @@ namespace Mediapipe.Unity.Objectron {
       return sidePacket;
     }
 
-    string GetAllowedLabels(Category category) {
-      switch (category) {
-        case Category.Camera: {
-          return "Camera";
-        }
-        case Category.Chair: {
-          return "Chair";
-        }
-        case Category.Cup: {
-          return "Coffee cup,Mug";
-        }
-        default: {
-          return "Footwear";
-        }
+    string GetAllowedLabels(Category category)
+    {
+      switch (category)
+      {
+        case Category.Camera:
+          {
+            return "Camera";
+          }
+        case Category.Chair:
+          {
+            return "Chair";
+          }
+        case Category.Cup:
+          {
+            return "Coffee cup,Mug";
+          }
+        default:
+          {
+            return "Footwear";
+          }
       }
     }
 
-    string GetModelAssetName(Category category) {
-      switch (category) {
-        case Category.Camera: {
-          return "object_detection_3d_camera.bytes";
-        }
-        case Category.Chair: {
-          return "object_detection_3d_chair.bytes";
-        }
-        case Category.Cup: {
-          return "object_detection_3d_chair.bytes";
-        }
-        default: {
-          return "object_detection_3d_sneakers.bytes";
-        }
+    string GetModelAssetName(Category category)
+    {
+      switch (category)
+      {
+        case Category.Camera:
+          {
+            return "object_detection_3d_camera.bytes";
+          }
+        case Category.Chair:
+          {
+            return "object_detection_3d_chair.bytes";
+          }
+        case Category.Cup:
+          {
+            return "object_detection_3d_chair.bytes";
+          }
+        default:
+          {
+            return "object_detection_3d_sneakers.bytes";
+          }
       }
     }
   }

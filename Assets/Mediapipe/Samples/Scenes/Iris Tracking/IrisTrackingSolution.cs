@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mediapipe.Unity.IrisTracking {
-  public class IrisTrackingSolution : Solution {
+namespace Mediapipe.Unity.IrisTracking
+{
+  public class IrisTrackingSolution : Solution
+  {
     [SerializeField] RawImage screen;
     [SerializeField] DetectionListAnnotationController faceDetectionsAnnotationController;
     [SerializeField] NormalizedRectAnnotationController faceRectAnnotationController;
@@ -16,43 +18,51 @@ namespace Mediapipe.Unity.IrisTracking {
 
     public RunningMode runningMode;
 
-    public long timeoutMillisec {
+    public long timeoutMillisec
+    {
       get { return graphRunner.timeoutMillisec; }
       set { graphRunner.SetTimeoutMillisec(value); }
     }
 
-    public override void Play() {
-      if (coroutine != null) {
+    public override void Play()
+    {
+      if (coroutine != null)
+      {
         Stop();
       }
       base.Play();
       coroutine = StartCoroutine(Run());
     }
 
-    public override void Pause() {
+    public override void Pause()
+    {
       base.Pause();
       ImageSourceProvider.imageSource.Pause();
     }
 
-    public override void Resume() {
+    public override void Resume()
+    {
       base.Resume();
       StartCoroutine(ImageSourceProvider.imageSource.Resume());
     }
 
-    public override void Stop() {
+    public override void Stop()
+    {
       base.Stop();
       StopCoroutine(coroutine);
       ImageSourceProvider.imageSource.Stop();
       graphRunner.Stop();
     }
 
-    IEnumerator Run() {
+    IEnumerator Run()
+    {
       var graphInitRequest = graphRunner.WaitForInit();
       var imageSource = ImageSourceProvider.imageSource;
 
       yield return imageSource.Play();
 
-      if (!imageSource.isPrepared) {
+      if (!imageSource.isPrepared)
+      {
         Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
         yield break;
       }
@@ -63,17 +73,21 @@ namespace Mediapipe.Unity.IrisTracking {
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
       yield return graphInitRequest;
-      if (graphInitRequest.isError) {
+      if (graphInitRequest.isError)
+      {
         Logger.LogError(TAG, graphInitRequest.error);
         yield break;
       }
 
-      if (runningMode == RunningMode.Async) {
+      if (runningMode == RunningMode.Async)
+      {
         graphRunner.OnFaceDetectionsOutput.AddListener(OnFaceDetectionsOutput);
         graphRunner.OnFaceRectOutput.AddListener(OnFaceRectOutput);
         graphRunner.OnFaceLandmarksWithIrisOutput.AddListener(OnFaceLandmarksWithIrisOutput);
         graphRunner.StartRunAsync(imageSource).AssertOk();
-      } else {
+      }
+      else
+      {
         graphRunner.StartRun(imageSource).AssertOk();
       }
 
@@ -85,7 +99,8 @@ namespace Mediapipe.Unity.IrisTracking {
       SetupAnnotationController(faceRectAnnotationController, imageSource);
       SetupAnnotationController(faceLandmarksWithIrisAnnotationController, imageSource);
 
-      while (true) {
+      while (true)
+      {
         yield return new WaitWhile(() => isPaused);
 
         var textureFrameRequest = textureFramePool.WaitForNextTextureFrame();
@@ -97,7 +112,8 @@ namespace Mediapipe.Unity.IrisTracking {
 
         graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 
-        if (runningMode == RunningMode.Sync) {
+        if (runningMode == RunningMode.Sync)
+        {
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = graphRunner.FetchNextValue();
           faceDetectionsAnnotationController.DrawNow(value.faceDetections);
@@ -109,15 +125,18 @@ namespace Mediapipe.Unity.IrisTracking {
       }
     }
 
-    void OnFaceDetectionsOutput(List<Detection> faceDetections) {
+    void OnFaceDetectionsOutput(List<Detection> faceDetections)
+    {
       faceDetectionsAnnotationController.DrawLater(faceDetections);
     }
 
-    void OnFaceRectOutput(NormalizedRect faceRect) {
+    void OnFaceRectOutput(NormalizedRect faceRect)
+    {
       faceRectAnnotationController.DrawLater(faceRect);
     }
 
-    void OnFaceLandmarksWithIrisOutput(NormalizedLandmarkList faceLandmarkListWithIris) {
+    void OnFaceLandmarksWithIrisOutput(NormalizedLandmarkList faceLandmarkListWithIris)
+    {
       faceLandmarksWithIrisAnnotationController.DrawLater(faceLandmarkListWithIris);
     }
   }

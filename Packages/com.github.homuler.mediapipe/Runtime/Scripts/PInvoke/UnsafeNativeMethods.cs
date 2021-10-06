@@ -1,8 +1,10 @@
 using System.Security;
 
-namespace Mediapipe {
+namespace Mediapipe
+{
   [SuppressUnmanagedCodeSecurityAttribute]
-  internal static partial class UnsafeNativeMethods {
+  internal static partial class UnsafeNativeMethods
+  {
     private const string MediaPipeLibrary =
 #if UNITY_EDITOR
       "mediapipe_c";

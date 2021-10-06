@@ -2,23 +2,29 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace Mediapipe {
+namespace Mediapipe
+{
   [StructLayout(LayoutKind.Sequential)]
-  internal struct Anchor3dVector {
+  internal struct Anchor3dVector
+  {
     public IntPtr data;
     public int size;
 
-    public void Dispose() {
+    public void Dispose()
+    {
       UnsafeNativeMethods.mp_Anchor3dArray__delete(data);
     }
 
-    public List<Anchor3d> ToList() {
+    public List<Anchor3d> ToList()
+    {
       var anchors = new List<Anchor3d>(size);
 
-      unsafe {
+      unsafe
+      {
         Anchor3d* anchorPtr = (Anchor3d*)data;
 
-        for (var i = 0; i < size; i++) {
+        for (var i = 0; i < size; i++)
+        {
           anchors.Add(Marshal.PtrToStructure<Anchor3d>((IntPtr)anchorPtr++));
         }
       }

@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Mediapipe.Unity {
-  public sealed class HolisticLandmarkListAnnotation : HierarchicalAnnotation {
+namespace Mediapipe.Unity
+{
+  public sealed class HolisticLandmarkListAnnotation : HierarchicalAnnotation
+  {
     [SerializeField] FaceLandmarkListAnnotation faceLandmarkList;
     [SerializeField] PoseLandmarkListAnnotation poseLandmarkList;
     [SerializeField] HandLandmarkListAnnotation leftHandLandmarkList;
@@ -11,8 +13,10 @@ namespace Mediapipe.Unity {
     [SerializeField] IrisLandmarkListAnnotation rightIrisLandmarkList;
     [SerializeField] ConnectionListAnnotation connectionList;
 
-    public override bool isMirrored {
-      set {
+    public override bool isMirrored
+    {
+      set
+      {
         faceLandmarkList.isMirrored = value;
         poseLandmarkList.isMirrored = value;
         leftHandLandmarkList.isMirrored = value;
@@ -24,8 +28,10 @@ namespace Mediapipe.Unity {
       }
     }
 
-    public override RotationAngle rotationAngle {
-      set {
+    public override RotationAngle rotationAngle
+    {
+      set
+      {
         faceLandmarkList.rotationAngle = value;
         poseLandmarkList.rotationAngle = value;
         leftHandLandmarkList.rotationAngle = value;
@@ -37,7 +43,8 @@ namespace Mediapipe.Unity {
       }
     }
 
-    void Start() {
+    void Start()
+    {
       leftHandLandmarkList.SetHandedness(HandLandmarkListAnnotation.Hand.Left);
       rightHandLandmarkList.SetHandedness(HandLandmarkListAnnotation.Hand.Right);
       connectionList.Fill(2); // left/right wrist joint
@@ -45,15 +52,19 @@ namespace Mediapipe.Unity {
 
     public void Draw(IList<NormalizedLandmark> faceLandmarks, IList<NormalizedLandmark> poseLandmarks,
                      IList<NormalizedLandmark> leftHandLandmarks, IList<NormalizedLandmark> rightHandLandmarks,
-                     IList<NormalizedLandmark> leftIrisLandmarks, IList<NormalizedLandmark> rightIrisLandmarks, bool visualizeZ = false, int circleVertices = 128) {
+                     IList<NormalizedLandmark> leftIrisLandmarks, IList<NormalizedLandmark> rightIrisLandmarks, bool visualizeZ = false, int circleVertices = 128)
+    {
       var mask = PoseLandmarkListAnnotation.BodyParts.All;
-      if (faceLandmarks != null) {
+      if (faceLandmarks != null)
+      {
         mask ^= PoseLandmarkListAnnotation.BodyParts.Face;
       }
-      if (leftHandLandmarks != null) {
+      if (leftHandLandmarks != null)
+      {
         mask ^= PoseLandmarkListAnnotation.BodyParts.LeftHand;
       }
-      if (rightHandLandmarks != null) {
+      if (rightHandLandmarks != null)
+      {
         mask ^= PoseLandmarkListAnnotation.BodyParts.RightHand;
       }
       faceLandmarkList.Draw(faceLandmarks, visualizeZ);
@@ -67,18 +78,22 @@ namespace Mediapipe.Unity {
 
     public void Draw(NormalizedLandmarkList faceLandmarks, NormalizedLandmarkList poseLandmarks,
                      NormalizedLandmarkList leftHandLandmarks, NormalizedLandmarkList rightHandLandmarks,
-                     NormalizedLandmarkList leftIrisLandmarks, NormalizedLandmarkList rightIrisLandmarks, bool visualizeZ = false, int circleVertices = 128) {
+                     NormalizedLandmarkList leftIrisLandmarks, NormalizedLandmarkList rightIrisLandmarks, bool visualizeZ = false, int circleVertices = 128)
+    {
       Draw(
         faceLandmarks?.Landmark, poseLandmarks?.Landmark, leftHandLandmarks?.Landmark, rightHandLandmarks?.Landmark, leftIrisLandmarks?.Landmark, rightIrisLandmarks?.Landmark, visualizeZ
       );
     }
 
-    void RedrawWristJoints() {
-      if (connectionList[0].isEmpty) {
+    void RedrawWristJoints()
+    {
+      if (connectionList[0].isEmpty)
+      {
         // connect left elbow and wrist
         connectionList[0].Draw(new Connection(poseLandmarkList[13], leftHandLandmarkList[0]));
       }
-      if (connectionList[1].isEmpty) {
+      if (connectionList[1].isEmpty)
+      {
         // connect right elbow and wrist
         connectionList[1].Draw(new Connection(poseLandmarkList[14], rightHandLandmarkList[0]));
       }

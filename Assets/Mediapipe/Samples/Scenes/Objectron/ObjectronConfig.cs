@@ -4,8 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using Mediapipe.Unity.UI;
 
-namespace Mediapipe.Unity.Objectron.UI {
-  public class ObjectronConfig : ModalContents {
+namespace Mediapipe.Unity.Objectron.UI
+{
+  public class ObjectronConfig : ModalContents
+  {
     const string _CategoryPath = "Scroll View/Viewport/Contents/Category/Dropdown";
     const string _MaxNumObjectsPath = "Scroll View/Viewport/Contents/Max Num Objects/InputField";
     const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
@@ -19,47 +21,57 @@ namespace Mediapipe.Unity.Objectron.UI {
 
     bool isChanged;
 
-    void Start() {
+    void Start()
+    {
       solution = GameObject.Find("Solution").GetComponent<ObjectronSolution>();
       InitializeContents();
     }
 
-    public override void Exit() {
+    public override void Exit()
+    {
       GetModal().CloseAndResume(isChanged);
     }
 
-    public void SwitchCategory() {
+    public void SwitchCategory()
+    {
       solution.category = (ObjectronGraph.Category)CategoryInput.value;
       isChanged = true;
     }
 
-    public void UpdateMaxNumObjects() {
-      if (int.TryParse(MaxNumObjectsInput.text, out var value)) {
+    public void UpdateMaxNumObjects()
+    {
+      if (int.TryParse(MaxNumObjectsInput.text, out var value))
+      {
         solution.maxNumObjects = Mathf.Max(0, value);
         isChanged = true;
       }
     }
 
-    public void SetTimeoutMillisec() {
-      if (int.TryParse(TimeoutMillisecInput.text, out var value)) {
+    public void SetTimeoutMillisec()
+    {
+      if (int.TryParse(TimeoutMillisecInput.text, out var value))
+      {
         solution.timeoutMillisec = value;
         isChanged = true;
       }
     }
 
-    public void SwitchRunningMode() {
+    public void SwitchRunningMode()
+    {
       solution.runningMode = (RunningMode)RunningModeInput.value;
       isChanged = true;
     }
 
-    void InitializeContents() {
+    void InitializeContents()
+    {
       InitializeCategory();
       InitializeRunningMode();
       InitializeMaxNumObjects();
       InitializeTimeoutMillisec();
     }
 
-    void InitializeCategory() {
+    void InitializeCategory()
+    {
       CategoryInput = gameObject.transform.Find(_CategoryPath).gameObject.GetComponent<Dropdown>();
       CategoryInput.ClearOptions();
 
@@ -69,20 +81,23 @@ namespace Mediapipe.Unity.Objectron.UI {
       var currentCategory = solution.category;
       var defaultValue = options.FindIndex(option => option == currentCategory.ToString());
 
-      if (defaultValue >= 0) {
+      if (defaultValue >= 0)
+      {
         CategoryInput.value = defaultValue;
       }
 
       CategoryInput.onValueChanged.AddListener(delegate { SwitchCategory(); });
     }
 
-    void InitializeMaxNumObjects() {
+    void InitializeMaxNumObjects()
+    {
       MaxNumObjectsInput = gameObject.transform.Find(_MaxNumObjectsPath).gameObject.GetComponent<InputField>();
       MaxNumObjectsInput.text = solution.maxNumObjects.ToString();
       MaxNumObjectsInput.onEndEdit.AddListener(delegate { UpdateMaxNumObjects(); });
     }
 
-    void InitializeRunningMode() {
+    void InitializeRunningMode()
+    {
       RunningModeInput = gameObject.transform.Find(_RunningModePath).gameObject.GetComponent<Dropdown>();
       RunningModeInput.ClearOptions();
 
@@ -92,14 +107,16 @@ namespace Mediapipe.Unity.Objectron.UI {
       var currentRunningMode = solution.runningMode;
       var defaultValue = options.FindIndex(option => option == currentRunningMode.ToString());
 
-      if (defaultValue >= 0) {
+      if (defaultValue >= 0)
+      {
         RunningModeInput.value = defaultValue;
       }
 
       RunningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
     }
 
-    void InitializeTimeoutMillisec() {
+    void InitializeTimeoutMillisec()
+    {
       TimeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
       TimeoutMillisecInput.text = solution.timeoutMillisec.ToString();
       TimeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });

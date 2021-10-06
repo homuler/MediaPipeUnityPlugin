@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Mediapipe.Unity {
-  public sealed class FaceLandmarkListAnnotation : HierarchicalAnnotation {
+namespace Mediapipe.Unity
+{
+  public sealed class FaceLandmarkListAnnotation : HierarchicalAnnotation
+  {
     [SerializeField] PointListAnnotation landmarkList;
     [SerializeField] ConnectionListAnnotation connectionList;
 
@@ -63,8 +65,8 @@ namespace Mediapipe.Unity {
       (157, 173),
       (173, 133),
       // Left Eyebrow
-      (46, 53), 
-      (53, 52), 
+      (46, 53),
+      (53, 52),
       (52, 65),
       (65, 55),
       (70, 63),
@@ -141,52 +143,64 @@ namespace Mediapipe.Unity {
       (409, 291),
     };
 
-    public override bool isMirrored {
-      set {
+    public override bool isMirrored
+    {
+      set
+      {
         landmarkList.isMirrored = value;
         connectionList.isMirrored = value;
         base.isMirrored = value;
       }
     }
 
-    public override RotationAngle rotationAngle {
-      set {
+    public override RotationAngle rotationAngle
+    {
+      set
+      {
         landmarkList.rotationAngle = value;
         connectionList.rotationAngle = value;
         base.rotationAngle = value;
       }
     }
 
-    void Start() {
+    void Start()
+    {
       landmarkList.Fill(landmarkCount);
       connectionList.Fill(connections, landmarkList);
     }
 
-    public void SetLandmarkColor(Color landmarkColor) {
+    public void SetLandmarkColor(Color landmarkColor)
+    {
       landmarkList.SetColor(landmarkColor);
     }
 
-    public void SetLandmarkRadius(float landmarkRadius) {
+    public void SetLandmarkRadius(float landmarkRadius)
+    {
       landmarkList.SetRadius(landmarkRadius);
     }
 
-    public void SetConnectionColor(Color connectionColor) {
+    public void SetConnectionColor(Color connectionColor)
+    {
       connectionList.SetColor(connectionColor);
     }
 
-    public void SetConnectionWidth(float connectionWidth) {
+    public void SetConnectionWidth(float connectionWidth)
+    {
       connectionList.SetLineWidth(connectionWidth);
     }
 
-    public void Draw(IList<NormalizedLandmark> target, bool visualizeZ = false) {
-      if (ActivateFor(target)) {
+    public void Draw(IList<NormalizedLandmark> target, bool visualizeZ = false)
+    {
+      if (ActivateFor(target))
+      {
         landmarkList.Draw(target, visualizeZ);
         // Draw explicitly because connection annotation's targets remain the same.
         connectionList.Redraw();
       }
     }
 
-    public void Draw(NormalizedLandmarkList target, bool visualizeZ = false) {
+    public void Draw(NormalizedLandmarkList target, bool visualizeZ = false)
+    {
       Draw(target?.Landmark, visualizeZ);
     }
   }

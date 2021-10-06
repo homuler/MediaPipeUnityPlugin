@@ -7,9 +7,12 @@ using UnityEngine.Rendering;
 
 using Stopwatch = System.Diagnostics.Stopwatch;
 
-namespace Mediapipe.Unity {
-  public abstract class GraphRunner : MonoBehaviour {
-    public enum ConfigType {
+namespace Mediapipe.Unity
+{
+  public abstract class GraphRunner : MonoBehaviour
+  {
+    public enum ConfigType
+    {
       None,
       CPU,
       GPU,
@@ -26,13 +29,17 @@ namespace Mediapipe.Unity {
     static readonly GlobalInstanceTable<int, GraphRunner> instanceTable = new GlobalInstanceTable<int, GraphRunner>(5);
     static readonly Dictionary<IntPtr, int> nameTable = new Dictionary<IntPtr, int>();
 
-    public InferenceMode inferenceMode {
+    public InferenceMode inferenceMode
+    {
       get { return configType == ConfigType.CPU ? InferenceMode.CPU : InferenceMode.GPU; }
     }
     public ConfigType configType { get; private set; }
-    public TextAsset config {
-      get {
-        switch (configType) {
+    public TextAsset config
+    {
+      get
+      {
+        switch (configType)
+        {
           case ConfigType.CPU: return cpuConfig;
           case ConfigType.GPU: return gpuConfig;
           case ConfigType.OpenGLES: return openGlEsConfig;
@@ -41,7 +48,8 @@ namespace Mediapipe.Unity {
       }
     }
 
-    public long timeoutMicrosec {
+    public long timeoutMicrosec
+    {
       get { return _timeoutMicrosec; }
       private set { _timeoutMicrosec = value; }
     }
@@ -59,23 +67,28 @@ namespace Mediapipe.Unity {
     protected TextureFrame currentTextureFrame;
 #endif
 
-    protected virtual void Start() {
+    protected virtual void Start()
+    {
       instanceTable.Add(GetInstanceID(), this);
     }
 
-    protected virtual void OnDestroy() {
+    protected virtual void OnDestroy()
+    {
       Stop();
     }
 
-    public WaitForResult WaitForInit() {
+    public WaitForResult WaitForInit()
+    {
       return new WaitForResult(this, Initialize());
     }
 
-    public virtual IEnumerator Initialize() {
+    public virtual IEnumerator Initialize()
+    {
       configType = DetectConfigType();
       Logger.LogInfo(TAG, $"Using {configType} config");
 
-      if (configType == ConfigType.None) {
+      if (configType == ConfigType.None)
+      {
         throw new InvalidOperationException("Failed to detect config. Check if config is set to GraphRunner");
       }
 
@@ -88,8 +101,10 @@ namespace Mediapipe.Unity {
       yield return new WaitWhile(() => assetRequests.Any((request) => request.keepWaiting));
 
       var errors = assetRequests.Where((request) => request.isError).Select((request) => request.error).ToList();
-      if (errors.Count > 0) {
-        foreach (var error in errors) {
+      if (errors.Count > 0)
+      {
+        foreach (var error in errors)
+        {
           Logger.LogError(TAG, error);
         }
         throw new InternalException("Failed to prepare dependent assets");
@@ -98,18 +113,23 @@ namespace Mediapipe.Unity {
 
     public abstract Status StartRun(ImageSource imageSource);
 
-    public virtual void Stop() {
+    public virtual void Stop()
+    {
       if (calculatorGraph == null) { return; }
 
       // TODO: not to call CloseAllPacketSources if calculatorGraph has not started.
-      using (var status = calculatorGraph.CloseAllPacketSources()) {
-        if (!status.ok) {
+      using (var status = calculatorGraph.CloseAllPacketSources())
+      {
+        if (!status.ok)
+        {
           Logger.LogError(TAG, status.ToString());
         }
       }
 
-      using (var status = calculatorGraph.WaitUntilDone()) {
-        if (!status.ok) {
+      using (var status = calculatorGraph.WaitUntilDone())
+      {
+        if (!status.ok)
+        {
           Logger.LogError(TAG, status.ToString());
         }
       }
@@ -118,19 +138,23 @@ namespace Mediapipe.Unity {
       calculatorGraph.Dispose();
       calculatorGraph = null;
 
-      if (stopwatch != null && stopwatch.IsRunning) {
+      if (stopwatch != null && stopwatch.IsRunning)
+      {
         stopwatch.Stop();
       }
     }
 
-    public Status AddPacketToInputStream<T>(string streamName, Packet<T> packet) {
+    public Status AddPacketToInputStream<T>(string streamName, Packet<T> packet)
+    {
       return calculatorGraph.AddPacketToInputStream(streamName, packet);
     }
 
-    public Status AddTextureFrameToInputStream(string streamName, TextureFrame textureFrame) {
+    public Status AddTextureFrameToInputStream(string streamName, TextureFrame textureFrame)
+    {
       currentTimestamp = GetCurrentTimestamp();
 
-      if (configType == ConfigType.OpenGLES) {
+      if (configType == ConfigType.OpenGLES)
+      {
         var gpuBuffer = textureFrame.BuildGpuBuffer(GpuManager.glCalculatorHelper.GetGlContext());
         return calculatorGraph.AddPacketToInputStream(streamName, new GpuBufferPacket(gpuBuffer, currentTimestamp));
       }
@@ -141,49 +165,62 @@ namespace Mediapipe.Unity {
       return AddPacketToInputStream(streamName, new ImageFramePacket(imageFrame, currentTimestamp));
     }
 
-    public void SetTimeoutMicrosec(long timeoutMicrosec) {
+    public void SetTimeoutMicrosec(long timeoutMicrosec)
+    {
       this.timeoutMicrosec = (long)Mathf.Max(0, timeoutMicrosec);
     }
 
-    public void SetTimeoutMillisec(long timeoutMillisec) {
+    public void SetTimeoutMillisec(long timeoutMillisec)
+    {
       SetTimeoutMicrosec(1000 * timeoutMillisec);
     }
 
-    protected static bool TryGetGraphRunner(IntPtr graphPtr, out GraphRunner graphRunner) {
+    protected static bool TryGetGraphRunner(IntPtr graphPtr, out GraphRunner graphRunner)
+    {
       var isInstanceIdFound = nameTable.TryGetValue(graphPtr, out var instanceId);
 
-      if (isInstanceIdFound) {
+      if (isInstanceIdFound)
+      {
         return instanceTable.TryGetValue(instanceId, out graphRunner);
       }
       graphRunner = null;
       return false;
     }
 
-    protected static Status InvokeIfGraphRunnerFound<T>(IntPtr graphPtr, IntPtr packetPtr, Action<T, IntPtr> action) where T : GraphRunner {
-      try {
+    protected static Status InvokeIfGraphRunnerFound<T>(IntPtr graphPtr, IntPtr packetPtr, Action<T, IntPtr> action) where T : GraphRunner
+    {
+      try
+      {
         var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound) {
+        if (!isFound)
+        {
           return Status.FailedPrecondition("Graph runner is not found");
         }
         var graph = (T)graphRunner;
         action(graph, packetPtr);
         return Status.Ok();
-      } catch (Exception e) {
+      }
+      catch (Exception e)
+      {
         return Status.FailedPrecondition(e.ToString());
       }
     }
 
-    protected static Status InvokeIfGraphRunnerFound<T>(IntPtr graphPtr, Action<T> action) where T : GraphRunner {
+    protected static Status InvokeIfGraphRunnerFound<T>(IntPtr graphPtr, Action<T> action) where T : GraphRunner
+    {
       return InvokeIfGraphRunnerFound<T>(graphPtr, IntPtr.Zero, (graph, ptr) => { action(graph); });
     }
 
-    protected bool TryGetPacketValue<T>(Packet<T> packet, ref long prevMicrosec, out T value) where T : class {
+    protected bool TryGetPacketValue<T>(Packet<T> packet, ref long prevMicrosec, out T value) where T : class
+    {
       long currentMicrosec = 0;
-      using (var timestamp = packet.Timestamp()) {
+      using (var timestamp = packet.Timestamp())
+      {
         currentMicrosec = timestamp.Microseconds();
       }
 
-      if (!packet.IsEmpty()) {
+      if (!packet.IsEmpty())
+      {
         prevMicrosec = currentMicrosec;
         value = packet.Get();
         return true;
@@ -193,13 +230,16 @@ namespace Mediapipe.Unity {
       return currentMicrosec - prevMicrosec > timeoutMicrosec;
     }
 
-    protected bool TryConsumePacketValue<T>(Packet<T> packet, ref long prevMicrosec, out T value) where T : class {
+    protected bool TryConsumePacketValue<T>(Packet<T> packet, ref long prevMicrosec, out T value) where T : class
+    {
       long currentMicrosec = 0;
-      using (var timestamp = packet.Timestamp()) {
+      using (var timestamp = packet.Timestamp())
+      {
         currentMicrosec = timestamp.Microseconds();
       }
 
-      if (!packet.IsEmpty()) {
+      if (!packet.IsEmpty())
+      {
         prevMicrosec = currentMicrosec;
         var statusOrValue = packet.Consume();
 
@@ -211,15 +251,18 @@ namespace Mediapipe.Unity {
       return currentMicrosec - prevMicrosec > timeoutMicrosec;
     }
 
-    protected Timestamp GetCurrentTimestamp() {
-      if (stopwatch == null || !stopwatch.IsRunning) {
+    protected Timestamp GetCurrentTimestamp()
+    {
+      if (stopwatch == null || !stopwatch.IsRunning)
+      {
         return Timestamp.Unset();
       }
       var microseconds = (stopwatch.ElapsedTicks) / (TimeSpan.TicksPerMillisecond / 1000);
       return new Timestamp(microseconds);
     }
 
-    protected Status InitializeCalculatorGraph() {
+    protected Status InitializeCalculatorGraph()
+    {
       calculatorGraph = new CalculatorGraph();
       nameTable.Add(calculatorGraph.mpPtr, GetInstanceID());
 
@@ -230,25 +273,31 @@ namespace Mediapipe.Unity {
       //   However, if the config format is invalid, this code does not initialize CalculatorGraph and does not throw exceptions either.
       //   The problem is that if you call ObserveStreamOutput in this state, the program will crash.
       //   The following code is not very efficient, but it will return Non-OK status when an invalid configuration is given.
-      try {
+      try
+      {
         var calculatorGraphConfig = GetCalculatorGraphConfig();
         var status = calculatorGraph.Initialize(calculatorGraphConfig);
 
-        if (!status.ok || inferenceMode == InferenceMode.CPU) {
+        if (!status.ok || inferenceMode == InferenceMode.CPU)
+        {
           return status;
         }
 
         return calculatorGraph.SetGpuResources(GpuManager.gpuResources);
-      } catch (Exception e) {
+      }
+      catch (Exception e)
+      {
         return Status.FailedPrecondition(e.ToString());
       }
     }
 
-    protected virtual CalculatorGraphConfig GetCalculatorGraphConfig() {
+    protected virtual CalculatorGraphConfig GetCalculatorGraphConfig()
+    {
       return CalculatorGraphConfig.Parser.ParseFromTextFormat(config.text);
     }
 
-    protected void SetImageTransformationOptions(SidePacket sidePacket, ImageSource imageSource, bool expectedToBeMirrored = false) {
+    protected void SetImageTransformationOptions(SidePacket sidePacket, ImageSource imageSource, bool expectedToBeMirrored = false)
+    {
       // NOTE: The origin is left-bottom corner in Unity, and right-top corner in MediaPipe.
       rotation = imageSource.rotation.Reverse();
       var inputRotation = rotation;
@@ -257,7 +306,8 @@ namespace Mediapipe.Unity {
       var inputHorizontallyFlipped = isInverted ^ shouldBeMirrored;
       var inputVerticallyFlipped = !isInverted;
 
-      if ((inputHorizontallyFlipped && inputVerticallyFlipped) || rotation == RotationAngle.Rotation180) {
+      if ((inputHorizontallyFlipped && inputVerticallyFlipped) || rotation == RotationAngle.Rotation180)
+      {
         inputRotation = inputRotation.Add(RotationAngle.Rotation180);
         inputHorizontallyFlipped = !inputHorizontallyFlipped;
         inputVerticallyFlipped = !inputVerticallyFlipped;
@@ -270,40 +320,50 @@ namespace Mediapipe.Unity {
       sidePacket.Emplace("input_vertically_flipped", new BoolPacket(inputVerticallyFlipped));
     }
 
-    protected virtual ConfigType DetectConfigType() {
-      if (GpuManager.isInitialized) {
-        if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES3 && openGlEsConfig != null) {
+    protected virtual ConfigType DetectConfigType()
+    {
+      if (GpuManager.isInitialized)
+      {
+        if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES3 && openGlEsConfig != null)
+        {
           return ConfigType.OpenGLES;
         }
-        if (gpuConfig != null) {
+        if (gpuConfig != null)
+        {
           return ConfigType.GPU;
         }
       }
-      if (cpuConfig != null) {
+      if (cpuConfig != null)
+      {
         return ConfigType.CPU;
       }
       return ConfigType.None;
     }
 
-    protected WaitForResult WaitForAsset(string assetName, string uniqueKey, long timeoutMillisec, bool overwrite = false) {
+    protected WaitForResult WaitForAsset(string assetName, string uniqueKey, long timeoutMillisec, bool overwrite = false)
+    {
       return new WaitForResult(this, AssetLoader.PrepareAssetAsync(assetName, uniqueKey, overwrite), timeoutMillisec);
     }
 
-    protected WaitForResult WaitForAsset(string assetName, long timeoutMillisec, bool overwrite = false) {
+    protected WaitForResult WaitForAsset(string assetName, long timeoutMillisec, bool overwrite = false)
+    {
       return WaitForAsset(assetName, assetName, timeoutMillisec, overwrite);
     }
 
-    protected WaitForResult WaitForAsset(string assetName, string uniqueKey, bool overwrite = false) {
+    protected WaitForResult WaitForAsset(string assetName, string uniqueKey, bool overwrite = false)
+    {
       return new WaitForResult(this, AssetLoader.PrepareAssetAsync(assetName, uniqueKey, overwrite));
     }
 
-    protected WaitForResult WaitForAsset(string assetName, bool overwrite = false) {
+    protected WaitForResult WaitForAsset(string assetName, bool overwrite = false)
+    {
       return WaitForAsset(assetName, assetName, overwrite);
     }
 
     protected abstract IList<WaitForResult> RequestDependentAssets();
 
-    protected class OutputStream<TPacket, TValue> where TPacket : Packet<TValue>, new() {
+    protected class OutputStream<TPacket, TValue> where TPacket : Packet<TValue>, new()
+    {
       readonly CalculatorGraph calculatorGraph;
 
       readonly string streamName;
@@ -316,44 +376,53 @@ namespace Mediapipe.Unity {
 
       bool canFreeze { get { return presenceStreamName != null; } }
 
-      public OutputStream(CalculatorGraph calculatorGraph, string streamName) {
+      public OutputStream(CalculatorGraph calculatorGraph, string streamName)
+      {
         this.calculatorGraph = calculatorGraph;
         this.streamName = streamName;
       }
 
-      public Status StartPolling(bool observeTimestampBounds = false) {
+      public Status StartPolling(bool observeTimestampBounds = false)
+      {
         this.outputPacket = new TPacket();
 
         var statusOrPoller = calculatorGraph.AddOutputStreamPoller<TValue>(streamName, observeTimestampBounds);
         var status = statusOrPoller.status;
-        if (status.ok) {
+        if (status.ok)
+        {
           this.poller = statusOrPoller.Value();
         }
         return status;
       }
 
-      public Status StartPolling(string presenceStreamName) {
+      public Status StartPolling(string presenceStreamName)
+      {
         this.presenceStreamName = presenceStreamName;
         var status = this.StartPolling(false);
 
-        if (status.ok) {
+        if (status.ok)
+        {
           this.presencePacket = new BoolPacket();
 
           var statusOrPresencePoller = calculatorGraph.AddOutputStreamPoller<bool>(presenceStreamName);
           status = statusOrPresencePoller.status;
-          if (status.ok) {
+          if (status.ok)
+          {
             this.presencePoller = statusOrPresencePoller.Value();
           }
         }
         return status;
       }
 
-      public Status AddListener(CalculatorGraph.NativePacketCallback callback, bool observeTimestampBounds = false) {
+      public Status AddListener(CalculatorGraph.NativePacketCallback callback, bool observeTimestampBounds = false)
+      {
         return calculatorGraph.ObserveOutputStream(streamName, callback, observeTimestampBounds);
       }
 
-      public bool TryGetNext(out TValue value) {
-        if (HasNextValue()) {
+      public bool TryGetNext(out TValue value)
+      {
+        if (HasNextValue())
+        {
           value = outputPacket.Get();
           return true;
         }
@@ -361,13 +430,17 @@ namespace Mediapipe.Unity {
         return false;
       }
 
-      public bool TryGetLatest(out TValue value) {
-        if (HasNextValue()) {
+      public bool TryGetLatest(out TValue value)
+      {
+        if (HasNextValue())
+        {
           var queueSize = poller.QueueSize();
 
           // Assume that queue size will not be reduced from another thread.
-          while (queueSize-- > 0) {
-            if (!Next()) {
+          while (queueSize-- > 0)
+          {
+            if (!Next())
+            {
               value = default(TValue);
               return false;
             }
@@ -379,9 +452,12 @@ namespace Mediapipe.Unity {
         return false;
       }
 
-      bool HasNextValue() {
-        if (canFreeze) {
-          if (!NextPresence() || presencePacket.IsEmpty() || !presencePacket.Get()) {
+      bool HasNextValue()
+      {
+        if (canFreeze)
+        {
+          if (!NextPresence() || presencePacket.IsEmpty() || !presencePacket.Get())
+          {
             // NOTE: IsEmpty() should always return false
             return false;
           }
@@ -389,16 +465,20 @@ namespace Mediapipe.Unity {
         return Next() && !outputPacket.IsEmpty();
       }
 
-      bool NextPresence() {
+      bool NextPresence()
+      {
         return Next(presencePoller, presencePacket, presenceStreamName);
       }
 
-      bool Next() {
+      bool Next()
+      {
         return Next(poller, outputPacket, streamName);
       }
 
-      static bool Next<T>(OutputStreamPoller<T> poller, Packet<T> packet, string streamName) {
-        if (!poller.Next(packet)) {
+      static bool Next<T>(OutputStreamPoller<T> poller, Packet<T> packet, string streamName)
+      {
+        if (!poller.Next(packet))
+        {
           Logger.LogWarning($"Failed to get next value from {streamName}, so there may be errors inside the calculatorGraph. See logs for more details");
           return false;
         }

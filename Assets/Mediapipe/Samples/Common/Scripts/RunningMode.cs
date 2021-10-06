@@ -1,6 +1,8 @@
-namespace Mediapipe.Unity {
+namespace Mediapipe.Unity
+{
   [System.Serializable]
-  public enum RunningMode {
+  public enum RunningMode
+  {
     Async,
     Sync,
   }

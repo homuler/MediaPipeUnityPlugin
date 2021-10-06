@@ -1,9 +1,12 @@
 using UnityEngine;
 
-namespace Mediapipe.Unity {
-  public class AutoFit : MonoBehaviour {
+namespace Mediapipe.Unity
+{
+  public class AutoFit : MonoBehaviour
+  {
     [System.Serializable]
-    public enum FitMode {
+    public enum FitMode
+    {
       Expand,
       Shrink,
       FitWidth,
@@ -12,9 +15,11 @@ namespace Mediapipe.Unity {
 
     [SerializeField] FitMode fitMode;
 
-    void LateUpdate() {
+    void LateUpdate()
+    {
       var rectTransform = GetComponent<RectTransform>();
-      if (rectTransform.rect.width == 0 || rectTransform.rect.height == 0) {
+      if (rectTransform.rect.width == 0 || rectTransform.rect.height == 0)
+      {
         return;
       }
 
@@ -25,7 +30,8 @@ namespace Mediapipe.Unity {
       var w = parentRect.width;
       var h = height * ratio;
 
-      if (fitMode == FitMode.FitWidth || (fitMode == FitMode.Expand && h >= parentRect.height) || (fitMode == FitMode.Shrink && h <= parentRect.height)) {
+      if (fitMode == FitMode.FitWidth || (fitMode == FitMode.Expand && h >= parentRect.height) || (fitMode == FitMode.Shrink && h <= parentRect.height))
+      {
         rectTransform.offsetMin *= ratio;
         rectTransform.offsetMax *= ratio;
         return;
@@ -39,7 +45,8 @@ namespace Mediapipe.Unity {
       rectTransform.offsetMax *= ratio;
     }
 
-    (float, float) GetBoundingBoxSize(RectTransform rectTransform) {
+    (float, float) GetBoundingBoxSize(RectTransform rectTransform)
+    {
       var rect = rectTransform.rect;
       var center = rect.center;
       var topLeftRel = new Vector2(rect.xMin - center.x, rect.yMin - center.y);

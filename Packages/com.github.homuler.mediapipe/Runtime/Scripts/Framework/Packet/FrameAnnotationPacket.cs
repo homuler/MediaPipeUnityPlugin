@@ -1,11 +1,14 @@
 using System;
 
-namespace Mediapipe {
-  public class FrameAnnotationPacket : Packet<FrameAnnotation> {
-    public FrameAnnotationPacket() : base() {}
-    public FrameAnnotationPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) {}
+namespace Mediapipe
+{
+  public class FrameAnnotationPacket : Packet<FrameAnnotation>
+  {
+    public FrameAnnotationPacket() : base() { }
+    public FrameAnnotationPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
-    public override FrameAnnotation Get() {
+    public override FrameAnnotation Get()
+    {
       UnsafeNativeMethods.mp_Packet__GetFrameAnnotation(mpPtr, out var serializedProto).Assert();
       GC.KeepAlive(this);
 
@@ -15,7 +18,8 @@ namespace Mediapipe {
       return frameAnnotation;
     }
 
-    public override StatusOr<FrameAnnotation> Consume() {
+    public override StatusOr<FrameAnnotation> Consume()
+    {
       throw new NotSupportedException();
     }
   }

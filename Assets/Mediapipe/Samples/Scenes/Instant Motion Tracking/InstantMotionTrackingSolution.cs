@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mediapipe.Unity.InstantMotionTracking {
-  public class InstantMotionTrackingSolution : Solution {
+namespace Mediapipe.Unity.InstantMotionTracking
+{
+  public class InstantMotionTrackingSolution : Solution
+  {
     [SerializeField] RawImage screen;
     [SerializeField] Anchor3dAnnotationController trackedAnchorDataAnnotationController;
     [SerializeField] RegionTrackingGraph graphRunner;
@@ -13,44 +15,54 @@ namespace Mediapipe.Unity.InstantMotionTracking {
 
     Coroutine coroutine;
 
-    public long timeoutMillisec {
+    public long timeoutMillisec
+    {
       get { return graphRunner.timeoutMillisec; }
       set { graphRunner.SetTimeoutMillisec(value); }
     }
 
     public RunningMode runningMode;
 
-    public override void Play() {
-      if (coroutine != null) {
+    public override void Play()
+    {
+      if (coroutine != null)
+      {
         Stop();
       }
       base.Play();
       coroutine = StartCoroutine(Run());
     }
 
-    public override void Pause() {
+    public override void Pause()
+    {
       base.Pause();
       ImageSourceProvider.imageSource.Pause();
     }
 
-    public override void Resume() {
+    public override void Resume()
+    {
       base.Resume();
       StartCoroutine(ImageSourceProvider.imageSource.Resume());
     }
 
-    public override void Stop() {
+    public override void Stop()
+    {
       base.Stop();
       StopCoroutine(coroutine);
       ImageSourceProvider.imageSource.Stop();
       graphRunner.Stop();
     }
 
-    void Update() {
-      if (Input.GetMouseButtonDown(0)) {
+    void Update()
+    {
+      if (Input.GetMouseButtonDown(0))
+      {
         var rectTransform = screen.GetComponent<RectTransform>();
 
-        if (RectTransformUtility.RectangleContainsScreenPoint(rectTransform, Input.mousePosition, Camera.main)) {
-          if (RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, Camera.main, out var localPoint)) {
+        if (RectTransformUtility.RectangleContainsScreenPoint(rectTransform, Input.mousePosition, Camera.main))
+        {
+          if (RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, Camera.main, out var localPoint))
+          {
             var normalizedPoint = rectTransform.GetNormalizedPosition(localPoint, graphRunner.rotation, ImageSourceProvider.imageSource.isHorizontallyFlipped);
             graphRunner.ResetAnchor(normalizedPoint.x, normalizedPoint.y);
             trackedAnchorDataAnnotationController.ResetAnchor();
@@ -59,13 +71,15 @@ namespace Mediapipe.Unity.InstantMotionTracking {
       }
     }
 
-    IEnumerator Run() {
+    IEnumerator Run()
+    {
       var graphInitRequest = graphRunner.WaitForInit();
       var imageSource = ImageSourceProvider.imageSource;
 
       yield return imageSource.Play();
 
-      if (!imageSource.isPrepared) {
+      if (!imageSource.isPrepared)
+      {
         Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
         yield break;
       }
@@ -76,17 +90,21 @@ namespace Mediapipe.Unity.InstantMotionTracking {
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
       yield return graphInitRequest;
-      if (graphInitRequest.isError) {
+      if (graphInitRequest.isError)
+      {
         Logger.LogError(TAG, graphInitRequest.error);
         yield break;
       }
 
       graphRunner.ResetAnchor();
 
-      if (runningMode == RunningMode.Async) {
+      if (runningMode == RunningMode.Async)
+      {
         graphRunner.OnTrackedAnchorDataOutput.AddListener(OnTrackedAnchorDataOutput);
         graphRunner.StartRunAsync(imageSource).AssertOk();
-      } else {
+      }
+      else
+      {
         graphRunner.StartRun(imageSource).AssertOk();
       }
 
@@ -97,7 +115,8 @@ namespace Mediapipe.Unity.InstantMotionTracking {
       SetupAnnotationController(trackedAnchorDataAnnotationController, imageSource);
       trackedAnchorDataAnnotationController.ResetAnchor();
 
-      while (true) {
+      while (true)
+      {
         yield return new WaitWhile(() => isPaused);
 
         var textureFrameRequest = textureFramePool.WaitForNextTextureFrame();
@@ -109,7 +128,8 @@ namespace Mediapipe.Unity.InstantMotionTracking {
 
         graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 
-        if (runningMode == RunningMode.Sync) {
+        if (runningMode == RunningMode.Sync)
+        {
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = graphRunner.FetchNextValue();
           trackedAnchorDataAnnotationController.DrawNow(value);
@@ -119,7 +139,8 @@ namespace Mediapipe.Unity.InstantMotionTracking {
       }
     }
 
-    void OnTrackedAnchorDataOutput(List<Anchor3d> trackedAnchorData) {
+    void OnTrackedAnchorDataOutput(List<Anchor3d> trackedAnchorData)
+    {
       trackedAnchorDataAnnotationController.DrawLater(trackedAnchorData);
     }
   }

@@ -2,64 +2,83 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Mediapipe.Unity {
-  public abstract class ListAnnotation<T> : HierarchicalAnnotation where T : HierarchicalAnnotation {
+namespace Mediapipe.Unity
+{
+  public abstract class ListAnnotation<T> : HierarchicalAnnotation where T : HierarchicalAnnotation
+  {
     [SerializeField] GameObject annotationPrefab;
 
     List<T> _children;
-    protected List<T> children {
-      get {
-        if (_children == null) {
+    protected List<T> children
+    {
+      get
+      {
+        if (_children == null)
+        {
           _children = new List<T>();
         }
         return _children;
       }
     }
 
-    public T this[int index] {
+    public T this[int index]
+    {
       get { return children[index]; }
     }
 
-    public int count {
+    public int count
+    {
       get { return children.Count; }
     }
 
-    public void Fill(int count) {
-      while (children.Count < count) {
+    public void Fill(int count)
+    {
+      while (children.Count < count)
+      {
         children.Add(InstantiateChild(false));
       }
     }
 
-    public void Add(T element) {
+    public void Add(T element)
+    {
       children.Add(element);
     }
 
-    public override bool isMirrored {
-      set {
-        foreach (var child in children) {
+    public override bool isMirrored
+    {
+      set
+      {
+        foreach (var child in children)
+        {
           child.isMirrored = value;
         }
         base.isMirrored = value;
       }
     }
 
-    public override RotationAngle rotationAngle {
-      set {
-        foreach (var child in children) {
+    public override RotationAngle rotationAngle
+    {
+      set
+      {
+        foreach (var child in children)
+        {
           child.rotationAngle = value;
         }
         base.rotationAngle = value;
       }
     }
 
-    protected virtual void Destroy() {
-      foreach (var child in children) {
+    protected virtual void Destroy()
+    {
+      foreach (var child in children)
+      {
         Destroy(child);
       }
       _children = null;
     }
 
-    protected virtual T InstantiateChild(bool isActive = true) {
+    protected virtual T InstantiateChild(bool isActive = true)
+    {
       var annotation = base.InstantiateChild<T>(annotationPrefab);
       annotation.SetActive(isActive);
       return annotation;
@@ -74,19 +93,25 @@ namespace Mediapipe.Unity {
     ///   The 1st argument is <typeparamref name="T" />, that is an ith element in <see cref="children" />.
     ///   The 2nd argument is <typeparamref name="S" />, that is also an ith element in <paramref name="argumentList" />.
     /// </param>
-    protected void CallActionForAll<S>(IList<S> argumentList, Action<T, S> action) {
-      for (var i = 0; i < Mathf.Max(children.Count, argumentList.Count); i++) {
-        if (i >= argumentList.Count) {
+    protected void CallActionForAll<S>(IList<S> argumentList, Action<T, S> action)
+    {
+      for (var i = 0; i < Mathf.Max(children.Count, argumentList.Count); i++)
+      {
+        if (i >= argumentList.Count)
+        {
           // children.Count > argumentList.Count
           action(children[i], default(S));
           continue;
         }
 
         // reset annotations
-        if (i >= children.Count) {
+        if (i >= children.Count)
+        {
           // children.Count < argumentList.Count
           children.Add(InstantiateChild());
-        } else if (children[i] == null) {
+        }
+        else if (children[i] == null)
+        {
           // child is not initialized yet
           children[i] = InstantiateChild();
         }

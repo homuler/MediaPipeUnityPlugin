@@ -2,8 +2,10 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mediapipe.Unity.Holistic {
-  public class HolisticTrackingSolution : Solution {
+namespace Mediapipe.Unity.Holistic
+{
+  public class HolisticTrackingSolution : Solution
+  {
     [SerializeField] RawImage screen;
     [SerializeField] RectTransform worldAnnotationArea;
     [SerializeField] DetectionAnnotationController poseDetectionAnnotationController;
@@ -16,58 +18,69 @@ namespace Mediapipe.Unity.Holistic {
     Coroutine coroutine;
 
     public RunningMode runningMode;
-    public HolisticTrackingGraph.ModelComplexity modelComplexity {
+    public HolisticTrackingGraph.ModelComplexity modelComplexity
+    {
       get { return graphRunner.modelComplexity; }
       set { graphRunner.modelComplexity = value; }
     }
 
-    public bool smoothLandmarks {
+    public bool smoothLandmarks
+    {
       get { return graphRunner.smoothLandmarks; }
       set { graphRunner.smoothLandmarks = value; }
     }
 
-    public bool detectIris {
+    public bool detectIris
+    {
       get { return graphRunner.detectIris; }
       set { graphRunner.detectIris = value; }
     }
 
-    public long timeoutMillisec {
+    public long timeoutMillisec
+    {
       get { return graphRunner.timeoutMillisec; }
       set { graphRunner.SetTimeoutMillisec(value); }
     }
 
-    public override void Play() {
-      if (coroutine != null) {
+    public override void Play()
+    {
+      if (coroutine != null)
+      {
         Stop();
       }
       base.Play();
       coroutine = StartCoroutine(Run());
     }
 
-    public override void Pause() {
+    public override void Pause()
+    {
       base.Pause();
       ImageSourceProvider.imageSource.Pause();
     }
 
-    public override void Resume() {
+    public override void Resume()
+    {
       base.Resume();
       StartCoroutine(ImageSourceProvider.imageSource.Resume());
     }
 
-    public override void Stop() {
+    public override void Stop()
+    {
       base.Stop();
       StopCoroutine(coroutine);
       ImageSourceProvider.imageSource.Stop();
       graphRunner.Stop();
     }
 
-    IEnumerator Run() {
+    IEnumerator Run()
+    {
       var graphInitRequest = graphRunner.WaitForInit();
       var imageSource = ImageSourceProvider.imageSource;
 
       yield return imageSource.Play();
 
-      if (!imageSource.isPrepared) {
+      if (!imageSource.isPrepared)
+      {
         Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
         yield break;
       }
@@ -83,12 +96,14 @@ namespace Mediapipe.Unity.Holistic {
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
       yield return graphInitRequest;
-      if (graphInitRequest.isError) {
+      if (graphInitRequest.isError)
+      {
         Logger.LogError(TAG, graphInitRequest.error);
         yield break;
       }
 
-      if (runningMode == RunningMode.Async) {
+      if (runningMode == RunningMode.Async)
+      {
         graphRunner.OnPoseDetectionOutput.AddListener(OnPoseDetectionOutput);
         graphRunner.OnFaceLandmarksOutput.AddListener(OnFaceLandmarksOutput);
         graphRunner.OnPoseLandmarksOutput.AddListener(OnPoseLandmarksOutput);
@@ -99,7 +114,9 @@ namespace Mediapipe.Unity.Holistic {
         graphRunner.OnPoseWorldLandmarksOutput.AddListener(OnPoseWorldLandmarksOutput);
         graphRunner.OnPoseRoiOutput.AddListener(OnPoseRoiOutput);
         graphRunner.StartRunAsync(imageSource).AssertOk();
-      } else {
+      }
+      else
+      {
         graphRunner.StartRun(imageSource).AssertOk();
       }
 
@@ -112,7 +129,8 @@ namespace Mediapipe.Unity.Holistic {
       SetupAnnotationController(poseWorldLandmarksAnnotationController, imageSource);
       SetupAnnotationController(poseRoiAnnotationController, imageSource);
 
-      while (true) {
+      while (true)
+      {
         yield return new WaitWhile(() => isPaused);
 
         var textureFrameRequest = textureFramePool.WaitForNextTextureFrame();
@@ -124,7 +142,8 @@ namespace Mediapipe.Unity.Holistic {
 
         graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 
-        if (runningMode == RunningMode.Sync) {
+        if (runningMode == RunningMode.Sync)
+        {
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = graphRunner.FetchNextValue();
           poseDetectionAnnotationController.DrawNow(value.poseDetection);
@@ -137,39 +156,48 @@ namespace Mediapipe.Unity.Holistic {
       }
     }
 
-    void OnPoseDetectionOutput(Detection poseDetection) {
+    void OnPoseDetectionOutput(Detection poseDetection)
+    {
       poseDetectionAnnotationController.DrawLater(poseDetection);
     }
 
-    void OnFaceLandmarksOutput(NormalizedLandmarkList faceLandmarks) {
+    void OnFaceLandmarksOutput(NormalizedLandmarkList faceLandmarks)
+    {
       holisticAnnotationController.DrawFaceLandmarkListLater(faceLandmarks);
     }
 
-    void OnPoseLandmarksOutput(NormalizedLandmarkList poseLandmarks) {
+    void OnPoseLandmarksOutput(NormalizedLandmarkList poseLandmarks)
+    {
       holisticAnnotationController.DrawPoseLandmarkListLater(poseLandmarks);
     }
 
-    void OnLeftHandLandmarksOutput(NormalizedLandmarkList leftHandLandmarks) {
+    void OnLeftHandLandmarksOutput(NormalizedLandmarkList leftHandLandmarks)
+    {
       holisticAnnotationController.DrawLeftHandLandmarkListLater(leftHandLandmarks);
     }
 
-    void OnRightHandLandmarksOutput(NormalizedLandmarkList rightHandLandmarks) {
+    void OnRightHandLandmarksOutput(NormalizedLandmarkList rightHandLandmarks)
+    {
       holisticAnnotationController.DrawRightHandLandmarkListLater(rightHandLandmarks);
     }
 
-    void OnLeftIrisLandmarksOutput(NormalizedLandmarkList leftIrisLandmarks) {
+    void OnLeftIrisLandmarksOutput(NormalizedLandmarkList leftIrisLandmarks)
+    {
       holisticAnnotationController.DrawLeftIrisLandmarkListLater(leftIrisLandmarks);
     }
 
-    void OnRightIrisLandmarksOutput(NormalizedLandmarkList rightIrisLandmarks) {
+    void OnRightIrisLandmarksOutput(NormalizedLandmarkList rightIrisLandmarks)
+    {
       holisticAnnotationController.DrawRightIrisLandmarkListLater(rightIrisLandmarks);
     }
 
-    void OnPoseWorldLandmarksOutput(LandmarkList poseWorldLandmarks) {
+    void OnPoseWorldLandmarksOutput(LandmarkList poseWorldLandmarks)
+    {
       poseWorldLandmarksAnnotationController.DrawLater(poseWorldLandmarks);
     }
 
-    void OnPoseRoiOutput(NormalizedRect roiFromLandmarks) {
+    void OnPoseRoiOutput(NormalizedRect roiFromLandmarks)
+    {
       poseRoiAnnotationController.DrawLater(roiFromLandmarks);
     }
   }

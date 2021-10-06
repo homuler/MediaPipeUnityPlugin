@@ -2,11 +2,14 @@ using Mediapipe;
 using NUnit.Framework;
 using System;
 
-namespace Tests {
-  public class FloatArrayPacketTest {
+namespace Tests
+{
+  public class FloatArrayPacketTest
+  {
     #region Constructor
     [Test, SignalAbort]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithNoArguments() {
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithNoArguments()
+    {
       var packet = new FloatArrayPacket();
       packet.Length = 0;
 
@@ -16,8 +19,9 @@ namespace Tests {
     }
 
     [Test]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithEmptyArray() {
-      float[] array = {};
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithEmptyArray()
+    {
+      float[] array = { };
       var packet = new FloatArrayPacket(array);
 
       Assert.True(packet.ValidateAsType().ok);
@@ -26,7 +30,8 @@ namespace Tests {
     }
 
     [Test]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithArray() {
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithArray()
+    {
       float[] array = { 0.01f };
       var packet = new FloatArrayPacket(array);
 
@@ -36,7 +41,8 @@ namespace Tests {
     }
 
     [Test]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithValueAndTimestamp() {
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithValueAndTimestamp()
+    {
       var timestamp = new Timestamp(1);
       float[] array = { 0.01f, 0.02f };
       var packet = new FloatArrayPacket(array, timestamp);
@@ -49,14 +55,16 @@ namespace Tests {
 
     #region #isDisposed
     [Test]
-    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet() {
+    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet()
+    {
       var packet = new FloatArrayPacket();
 
       Assert.False(packet.isDisposed);
     }
 
     [Test]
-    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed() {
+    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed()
+    {
       var packet = new FloatArrayPacket();
       packet.Dispose();
 
@@ -66,7 +74,8 @@ namespace Tests {
 
     #region #Consume
     [Test]
-    public void Consume_ShouldThrowNotSupportedException() {
+    public void Consume_ShouldThrowNotSupportedException()
+    {
       var packet = new FloatArrayPacket();
 
       Assert.Throws<NotSupportedException>(() => { packet.Consume(); });
@@ -75,7 +84,8 @@ namespace Tests {
 
     #region #DebugTypeName
     [Test]
-    public void DebugTypeName_ShouldReturnFloat_When_ValueIsSet() {
+    public void DebugTypeName_ShouldReturnFloat_When_ValueIsSet()
+    {
       float[] array = { 0.01f };
       var packet = new FloatArrayPacket(array);
 

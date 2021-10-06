@@ -1,11 +1,14 @@
 using Mediapipe;
 using NUnit.Framework;
 
-namespace Tests {
-  public class StatusOrImageFrameTest {
+namespace Tests
+{
+  public class StatusOrImageFrameTest
+  {
     #region #status
     [Test]
-    public void status_ShouldReturnOk_When_StatusIsOk() {
+    public void status_ShouldReturnOk_When_StatusIsOk()
+    {
       var statusOrImageFrame = InitializeSubject();
 
       Assert.True(statusOrImageFrame.ok);
@@ -15,14 +18,16 @@ namespace Tests {
 
     #region #isDisposed
     [Test]
-    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet() {
+    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet()
+    {
       var statusOrImageFrame = InitializeSubject();
 
       Assert.False(statusOrImageFrame.isDisposed);
     }
 
     [Test]
-    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed() {
+    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed()
+    {
       var statusOrImageFrame = InitializeSubject();
       statusOrImageFrame.Dispose();
 
@@ -32,7 +37,8 @@ namespace Tests {
 
     #region #Value
     [Test]
-    public void Value_ShouldReturnImageFrame_When_StatusIsOk() {
+    public void Value_ShouldReturnImageFrame_When_StatusIsOk()
+    {
       var statusOrImageFrame = InitializeSubject();
       Assert.True(statusOrImageFrame.ok);
 
@@ -43,7 +49,8 @@ namespace Tests {
     }
     #endregion
 
-    private StatusOrImageFrame InitializeSubject() {
+    private StatusOrImageFrame InitializeSubject()
+    {
       var imageFrame = new ImageFrame(ImageFormat.Format.SBGRA, 10, 10);
       var packet = new ImageFramePacket(imageFrame, new Timestamp(1));
 

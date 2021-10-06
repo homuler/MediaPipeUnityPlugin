@@ -1,7 +1,9 @@
 using System;
 
-namespace Mediapipe {
-  public interface IMpResourceHandle : IDisposable {
+namespace Mediapipe
+{
+  public interface IMpResourceHandle : IDisposable
+  {
     IntPtr mpPtr { get; }
 
     /// <summary>
