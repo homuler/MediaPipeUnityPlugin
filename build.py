@@ -14,6 +14,7 @@ except ImportError:
 
 _BAZEL_BIN_PATH = 'bazel-bin'
 _BUILD_PATH = 'build'
+_NUGET_PATH = '.nuget'
 _STREAMING_ASSETS_PATH = os.path.join('Assets', 'StreamingAssets')
 _INSTALL_PATH = os.path.join('Packages', 'com.github.homuler.mediapipe', 'Runtime')
 
@@ -115,7 +116,7 @@ class BuildCommand(Command):
     self.console.info('Downloading protobuf dlls...')
     self._run_command(self._build_proto_dlls_commands())
 
-    for f in glob.glob(os.path.join('.nuget', '**', 'lib', 'netstandard2.0', '*.dll'), recursive=True):
+    for f in glob.glob(os.path.join(_NUGET_PATH, '**', 'lib', 'netstandard2.0', '*.dll'), recursive=True):
       basename = os.path.basename(f)
       self._copy(f, os.path.join(_BUILD_PATH, 'Plugins', 'Protobuf', basename))
 
@@ -302,7 +303,7 @@ class BuildCommand(Command):
     return commands
 
   def _build_proto_dlls_commands(self):
-    return ['nuget', 'install', '-o', '.nuget', '-Source', 'https://api.nuget.org/v3/index.json']
+    return ['nuget', 'install', '-o', _NUGET_PATH, '-Source', 'https://api.nuget.org/v3/index.json']
 
 
 class CleanCommand(Command):
@@ -311,6 +312,7 @@ class CleanCommand(Command):
 
   def run(self):
     self._rmtree(_BUILD_PATH)
+    self._rmtree(_NUGET_PATH)
     self._run_command(['bazel', 'clean', '--expunge'])
 
 
