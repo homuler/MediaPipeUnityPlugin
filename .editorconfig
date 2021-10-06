@@ -1,0 +1,195 @@
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+insert_final_newline = true
+
+# Solution Files
+[*.sln]
+indent_style = tab
+
+# XML Project Files
+[*.csproj]
+indent_size = 2
+
+# XML Configuration Files
+[*.{xml,config}]
+indent_size = 2
+
+# JSON Files
+[*.json]
+indent_size = 2
+
+# Dockerfile
+[Dockerfile*]
+indent_size = 4
+
+# Bazel Files
+[BUILD,WORKSPACE]
+indent_size = 4
+
+# Source Files
+[*.{bzl,cpp,cs,h,py}]
+indent_size = 2
+
+[*.cs]
+# Default Severity
+dotnet_analyzer_diagnostic.severity = warning
+
+##################
+# Language rules #
+##################
+
+## this and Me preferences (IDE0003 and IDE0009)
+dotnet_style_qualification_for_event = false:suggestion
+dotnet_style_qualification_for_field = false:suggestion
+dotnet_style_qualification_for_method = false:suggestion
+dotnet_style_qualification_for_property = false:suggestion
+
+## Use language keywords instead of framework type names for type references (IDE0049)
+dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
+
+## Modifier preferences
+### Add accessibility modifiers (IDE0040)
+dotnet_style_require_accessibility_modifiers = always
+
+### Order modifiers (IDE0036)
+csharp_preferred_modifier_order = public, private, protected, internal, static, extern, new, virtual, abstract, sealed, override, readonly, unsafe, volatile, async:suggestion
+
+### Make struct fields writable (IDE0064)
+dotnet_diagnostic.IDE0064.severity = warning
+
+## Parentheses preferences
+
+## Expression-level preferences
+### Convert anonymous type to tuple (IDE0050)
+dotnet_diagnostic.IDE0050.severity = suggestion
+
+### Convert typeof to nameof (IDE0082)
+dotnet_diagnostic.IDE0082.severity = suggestion
+
+## Null-checking preferences
+
+## File header preferences
+### Require file header (IDE0073)
+file_header_template = MIT License\n\nCopyright (c) 2020 homuler\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the "Software"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n\n
+
+## 'var' preferences (IDE0007 and IDE0008)
+csharp_style_var_for_built_in_types = true
+csharp_style_var_when_type_is_apparent = true
+csharp_style_var_elsewhere = true
+
+## Expression-bodied members
+
+## Pattern matching preferences
+
+## Code block preferences
+csharp_prefer_simple_using_statement = false
+
+## 'using' directive preferences
+
+#########################
+# Unnecessary code rules
+#########################
+
+##################
+# Formatting rules
+##################
+
+# Code style rules
+
+# camel case style
+dotnet_naming_style.camel_case_style.capitalization = camel_case
+
+# pascal case style
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+
+# prefix_interface_with_i_style - Interfaces must be PascalCase and the first character of an interface must be an 'I'
+dotnet_naming_style.prefix_interface_with_i_style.capitalization = pascal_case
+dotnet_naming_style.prefix_interface_with_i_style.required_prefix = I
+# prefix_type_parameters_with_t_style - Generic Type Parameters must be PascalCase and the first character must be a 'T'
+dotnet_naming_style.prefix_type_parameters_with_t_style.capitalization = pascal_case
+dotnet_naming_style.prefix_type_parameters_with_t_style.required_prefix = T
+
+##############
+# Naming rules
+##############
+# Namespaces
+dotnet_naming_symbols.namespace_symbol.applicable_kinds = namespace
+dotnet_naming_rule.namespaces_must_be_pascal_case.symbols = namespace_symbol
+dotnet_naming_rule.namespaces_must_be_pascal_case.style = pascal_case_style
+
+# Classes, Structs & Enums
+dotnet_naming_symbols.type_symbol.applicable_kinds = class, struct, enum
+dotnet_naming_symbols.type_symbol.applicable_accessibilities = *
+dotnet_naming_rule.types_must_be_pascal_case.symbols = type_symbol
+dotnet_naming_rule.types_must_be_pascal_case.style = pascal_case_style
+dotnet_naming_rule.types_must_be_pascal_case.severity = warning
+
+# Interfaces
+dotnet_naming_symbols.interface_symbol.applicable_kinds = interface
+dotnet_naming_symbols.interface_symbol.applicable_accessibilities = *
+dotnet_naming_symbols.interface_symbol.required_prefix = I
+dotnet_naming_rule.interfaces_must_be_pascal_case.symbols = interface_symbol
+dotnet_naming_rule.interfaces_must_be_pascal_case.style = pascal_case_style
+dotnet_naming_rule.interfaces_must_be_pascal_case.severity = warning
+
+# Delegates
+dotnet_naming_symbols.delegate_symbol.applicable_kinds = delegate
+dotnet_naming_symbols.delegate_symbol.applicable_accessibilities = *
+dotnet_naming_symbols.delegate_symbol.required_suffix = Callback
+dotnet_naming_rule.delegates_must_be_pascal_case.symbols = delegate_symbol
+dotnet_naming_rule.delegates_must_be_pascal_case.style = pascal_case_style
+dotnet_naming_rule.delegates_must_be_pascal_case.severity = warning
+
+# Methods
+dotnet_naming_symbols.method_symbol.applicable_kinds = method
+dotnet_naming_symbols.method_symbol.applicable_accessibilities = *
+dotnet_naming_rule.methods_must_be_pascal_case.symbols = method_symbol
+dotnet_naming_rule.methods_must_be_pascal_case.style = pascal_case_style
+dotnet_naming_rule.methods_must_be_pascal_case.severity = warning
+
+# Static Fields
+dotnet_naming_symbols.static_field_symbol.applicable_kinds = field
+dotnet_naming_symbols.static_field_symbol.applicable_accessibilities = *
+dotnet_naming_symbols.static_field_symbol.required_modifiers = static
+dotnet_naming_rule.static_fields_must_be_pascal_case.symbols = static_field_symbol
+dotnet_naming_rule.static_fields_must_be_pascal_case.style = pascal_case_style
+dotnet_naming_rule.static_fields_must_be_pascal_case.severity = warning
+
+# Fields
+dotnet_naming_symbols.field_symbol.applicable_kinds = field
+dotnet_naming_symbols.field_symbol.applicable_accessibilities = *
+dotnet_naming_rule.fields_must_be_camel_case.symbols = field_symbol
+dotnet_naming_rule.fields_must_be_camel_case.style = camel_case_style
+dotnet_naming_rule.fields_must_be_camel_case.severity = warning
+
+# Properties
+dotnet_naming_symbols.property_symbol.applicable_kinds = property
+dotnet_naming_symbols.property_symbol.applicable_accessibilities = *
+dotnet_naming_rule.properties_must_be_pascal_case.symbols = property_symbol
+dotnet_naming_rule.properties_must_be_pascal_case.style = pascal_case_style
+dotnet_naming_rule.properties_must_be_pascal_case.severity = warning
+
+# Parameters
+dotnet_naming_symbols.parameter_symbol.applicable_kinds = parameter
+dotnet_naming_symbols.parameter_symbol.applicable_accessibilities = *
+dotnet_naming_rule.parameters_must_be_camel_case.symbols = parameter_symbol
+dotnet_naming_rule.parameters_must_be_camel_case.style = camel_case_style
+dotnet_naming_rule.parameters_must_be_camel_case.severity = warning
+
+# Event
+dotnet_naming_symbols.event_symbol.applicable_kinds = event
+dotnet_naming_symbols.event_symbol.applicable_accessibilities = *
+dotnet_naming_symbols.event_symbol.required_prefix = On
+dotnet_naming_rule.events_must_be_pascal_case.symbols = event_symbol
+dotnet_naming_rule.events_must_be_pascal_case.style = pascal_case_style
+dotnet_naming_rule.events_must_be_pascal_case.severity = warning
+
+# Type Parameters
+dotnet_naming_symbols.type_parameter_symbol.applicable_kinds = type_parameter
+dotnet_naming_symbols.type_parameter_symbol.required_prefix = T
+dotnet_naming_rule.type_parameters_must_be_pascal_case.symbols = type_parameter_symbol
+dotnet_naming_rule.type_parameters_must_be_pascal_case.style = pascal_case_style
+dotnet_naming_rule.type_parameters_must_be_pascal_case.severity = warning
