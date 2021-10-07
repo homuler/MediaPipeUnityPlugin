@@ -1,18 +1,27 @@
-load("@bazel_skylib//rules:common_settings.bzl", "string_flag", "string_list_flag")
+# Copyright (c) 2021 homuler
+#
+# Use of this source code is governed by an MIT-style
+# license that can be found in the LICENSE file or at
+# https://opensource.org/licenses/MIT.
+
+load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 load("@mediapipe_api//mediapipe_api:defs.bzl", "concat_dict_and_select")
 
 package(default_visibility = ["//visibility:public"])
 
 filegroup(
-  name = "all",
-  srcs = glob(["**"]),
+    name = "all",
+    srcs = glob(["**"]),
 )
 
 string_flag(
     name = "switch",
-    values = ["local", "cmake"],
     build_setting_default = "local",
+    values = [
+        "local",
+        "cmake",
+    ],
 )
 
 config_setting(
@@ -24,8 +33,8 @@ config_setting(
 
 config_setting(
     name = "windows_dbg",
-    values = { "compilation_mode": "dbg" },
     constraint_values = ["@platforms//os:windows"],
+    values = {"compilation_mode": "dbg"},
 )
 
 alias(
@@ -73,56 +82,65 @@ OPENCV_3RDPARTY_LIBS = [
 
 cmake(
     name = "opencv_cmake",
+    build_args = [
+        "--verbose",
+        "--parallel",
+    ] + select({
+        "@bazel_tools//src/conditions:darwin": ["`sysctl -n hw.ncpu`"],
+        "//conditions:default": ["`nproc`"],
+    }),
     # Values to be passed as -Dkey=value on the CMake command line;
     # here are serving to provide some CMake script configuration options
-    cache_entries = concat_dict_and_select({
-        # The module list is always sorted alphabetically so that we do not
-        # cause a rebuild when changing the link order.
-        "BUILD_LIST": ",".join(sorted(OPENCV_MODULES)),
-        "BUILD_opencv_apps": "OFF",
-        "BUILD_opencv_python": "OFF",
-        "BUILD_opencv_world": "ON",
-        "BUILD_EXAMPLES": "OFF",
-        "BUILD_PERF_TESTS": "OFF",
-        "BUILD_TESTS": "OFF",
-        "BUILD_JPEG": "ON",
-        "BUILD_OPENEXR": "ON",
-        "BUILD_PNG": "ON",
-        "BUILD_TIFF": "ON",
-        "BUILD_ZLIB": "ON",
-        "WITH_1394": "OFF",
-        "WITH_FFMPEG": "OFF",
-        "WITH_GSTREAMER": "OFF",
-        "WITH_GTK": "OFF",
-        # Some symbols in ippicv and ippiw cannot be resolved, and they are excluded currently in the first place.
-        # https://github.com/opencv/opencv/pull/16505
-        "WITH_IPP": "OFF",
-        "WITH_ITT": "OFF",
-        "WITH_JASPER": "OFF",
-        "WITH_V4L": "OFF",
-        "WITH_WEBP": "OFF",
-        "CV_ENABLE_INTRINSICS": "ON",
-        "WITH_EIGEN": "ON",
-        "ENABLE_CCACHE": "OFF",
-        # flags for static build
-        "BUILD_SHARED_LIBS": "OFF",
-        "OPENCV_SKIP_PYTHON_LOADER": "ON",
-        "OPENCV_SKIP_VISIBILITY_HIDDEN": "ON",
-    }, {
-        "@bazel_tools//src/conditions:windows": {
-            "CMAKE_CXX_FLAGS": "/std:c++14",
-            # required to link to .dll statically
-            "BUILD_WITH_STATIC_CRT": "OFF",
-            "WITH_LAPACK": "ON",
+    cache_entries = concat_dict_and_select(
+        {
+            # The module list is always sorted alphabetically so that we do not
+            # cause a rebuild when changing the link order.
+            "BUILD_LIST": ",".join(sorted(OPENCV_MODULES)),
+            "BUILD_opencv_apps": "OFF",
+            "BUILD_opencv_python": "OFF",
+            "BUILD_opencv_world": "ON",
+            "BUILD_EXAMPLES": "OFF",
+            "BUILD_PERF_TESTS": "OFF",
+            "BUILD_TESTS": "OFF",
+            "BUILD_JPEG": "ON",
+            "BUILD_OPENEXR": "ON",
+            "BUILD_PNG": "ON",
+            "BUILD_TIFF": "ON",
+            "BUILD_ZLIB": "ON",
+            "WITH_1394": "OFF",
+            "WITH_FFMPEG": "OFF",
+            "WITH_GSTREAMER": "OFF",
+            "WITH_GTK": "OFF",
+            # Some symbols in ippicv and ippiw cannot be resolved, and they are excluded currently in the first place.
+            # https://github.com/opencv/opencv/pull/16505
+            "WITH_IPP": "OFF",
+            "WITH_ITT": "OFF",
+            "WITH_JASPER": "OFF",
+            "WITH_V4L": "OFF",
+            "WITH_WEBP": "OFF",
+            "CV_ENABLE_INTRINSICS": "ON",
+            "WITH_EIGEN": "ON",
+            "ENABLE_CCACHE": "OFF",
+            # flags for static build
+            "BUILD_SHARED_LIBS": "OFF",
+            "OPENCV_SKIP_PYTHON_LOADER": "ON",
+            "OPENCV_SKIP_VISIBILITY_HIDDEN": "ON",
         },
-        "//conditions:default": {
-            # https://github.com/opencv/opencv/issues/19846
-            "WITH_LAPACK": "OFF",
-            "WITH_PTHREADS": "ON",
-            "WITH_PTHREADS_PF": "ON",
+        {
+            "@bazel_tools//src/conditions:windows": {
+                "CMAKE_CXX_FLAGS": "/std:c++14",
+                # required to link to .dll statically
+                "BUILD_WITH_STATIC_CRT": "OFF",
+                "WITH_LAPACK": "ON",
+            },
+            "//conditions:default": {
+                # https://github.com/opencv/opencv/issues/19846
+                "WITH_LAPACK": "OFF",
+                "WITH_PTHREADS": "ON",
+                "WITH_PTHREADS_PF": "ON",
+            },
         },
-    }),
-    lib_source = "@opencv//:all",
+    ),
     generate_args = select({
         "@bazel_tools//src/conditions:windows": [
             "-G \"Visual Studio 16 2019\"",
@@ -130,13 +148,7 @@ cmake(
         ],
         "//conditions:default": [],
     }),
-    build_args = [
-        "--verbose",
-        "--parallel",
-    ] + select({
-        "@bazel_tools//src/conditions:darwin": ["`sysctl -n hw.ncpu`"],
-        "//conditions:default" : ["`nproc`"],
-    }),
+    lib_source = "@opencv//:all",
     out_lib_dir = select({
         "@bazel_tools//src/conditions:windows": "x64/vc16/staticlib",
         "//conditions:default": "lib",
@@ -155,13 +167,11 @@ cc_library(
         "@bazel_tools//src/conditions:windows": ["opencv_world3410.lib"],
         "//conditions:default": ["libopencv_world.a"],
     }) + select({
-        ":windows_dbg": ["%sd.lib" % (lib) for lib in OPENCV_3RDPARTY_LIBS],
-        "@bazel_tools//src/conditions:windows": ["%s.lib" % (lib) for lib in OPENCV_3RDPARTY_LIBS],
-        "//conditions:default": ["lib%s.a" % (lib) for lib in OPENCV_3RDPARTY_LIBS],
+        ":windows_dbg": ["%sd.lib" % lib for lib in OPENCV_3RDPARTY_LIBS],
+        "@bazel_tools//src/conditions:windows": ["%s.lib" % lib for lib in OPENCV_3RDPARTY_LIBS],
+        "//conditions:default": ["lib%s.a" % lib for lib in OPENCV_3RDPARTY_LIBS],
     }),
     hdrs = glob(["include/opencv2/**/*.h*"]),
-    includes = ["include/"],
-    deps = [":opencv_cmake"],
     data = select({
         ":windows_dbg": [
             ":opencv_static_libs_win_dbg",
@@ -174,6 +184,7 @@ cc_library(
             ":opencv_3rdparty_libs",
         ],
     }),
+    includes = ["include/"],
     linkopts = select({
         "@bazel_tools//src/conditions:windows": [],
         "//conditions:default": [
@@ -186,12 +197,13 @@ cc_library(
         "@bazel_tools//src/conditions:darwin": [],
         "//conditions:default": ["-lrt"],
     }),
+    deps = [":opencv_cmake"],
 )
 
 filegroup(
-  name = "opencv_gen_dir",
-  srcs = [":opencv_cmake"],
-  output_group = "gen_dir",
+    name = "opencv_gen_dir",
+    srcs = [":opencv_cmake"],
+    output_group = "gen_dir",
 )
 
 genrule(
@@ -204,20 +216,20 @@ genrule(
 genrule(
     name = "opencv_3rdparty_libs",
     srcs = [":opencv_gen_dir"],
-    outs = ["lib%s.a" % (lib) for lib in OPENCV_3RDPARTY_LIBS],
+    outs = ["lib%s.a" % lib for lib in OPENCV_3RDPARTY_LIBS],
     cmd = "cp $</share/OpenCV/3rdparty/lib/*.a $(@D)",
 )
 
 genrule(
     name = "opencv_static_libs_win",
     srcs = [":opencv_gen_dir"],
-    outs = ["opencv_world3410.lib"] + ["%s.lib" % (lib) for lib in OPENCV_3RDPARTY_LIBS],
+    outs = ["opencv_world3410.lib"] + ["%s.lib" % lib for lib in OPENCV_3RDPARTY_LIBS],
     cmd = "cp -f $</x64/vc16/staticlib/*.lib $(@D)",
 )
 
 genrule(
     name = "opencv_static_libs_win_dbg",
     srcs = [":opencv_gen_dir"],
-    outs = ["opencv_world3410d.lib"] + ["%sd.lib" % (lib) for lib in OPENCV_3RDPARTY_LIBS],
+    outs = ["opencv_world3410d.lib"] + ["%sd.lib" % lib for lib in OPENCV_3RDPARTY_LIBS],
     cmd = "cp -f $</x64/vc16/staticlib/*.lib $(@D)",
 )

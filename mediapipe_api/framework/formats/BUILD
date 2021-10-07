@@ -1,18 +1,24 @@
+# Copyright (c) 2021 homuler
+#
+# Use of this source code is governed by an MIT-style
+# license that can be found in the LICENSE file or at
+# https://opensource.org/licenses/MIT.
+
+load("//mediapipe_api:csharp_proto_src.bzl", "csharp_proto_src")
+
 package(
     default_visibility = ["//visibility:public"],
 )
-
-load("//mediapipe_api:csharp_proto_src.bzl", "csharp_proto_src")
 
 cc_library(
     name = "classification",
     srcs = ["classification.cc"],
     hdrs = ["classification.h"],
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats:classification_cc_proto",
         "//mediapipe_api:common",
         "//mediapipe_api/external:protobuf",
         "//mediapipe_api/framework:packet",
+        "@com_google_mediapipe//mediapipe/framework/formats:classification_cc_proto",
     ],
     alwayslink = True,
 )
@@ -22,10 +28,10 @@ cc_library(
     srcs = ["detection.cc"],
     hdrs = ["detection.h"],
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats:detection_cc_proto",
         "//mediapipe_api:common",
         "//mediapipe_api/external:protobuf",
         "//mediapipe_api/framework:packet",
+        "@com_google_mediapipe//mediapipe/framework/formats:detection_cc_proto",
     ],
     alwayslink = True,
 )
@@ -35,11 +41,11 @@ cc_library(
     srcs = ["image_frame.cc"],
     hdrs = ["image_frame.h"],
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats:image_frame",
         "//mediapipe_api:common",
-        "//mediapipe_api/framework:packet",
         "//mediapipe_api/external/absl:status",
         "//mediapipe_api/external/absl:statusor",
+        "//mediapipe_api/framework:packet",
+        "@com_google_mediapipe//mediapipe/framework/formats:image_frame",
     ],
     alwayslink = True,
 )
@@ -49,10 +55,10 @@ cc_library(
     srcs = ["landmark.cc"],
     hdrs = ["landmark.h"],
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats:landmark_cc_proto",
         "//mediapipe_api:common",
         "//mediapipe_api/external:protobuf",
         "//mediapipe_api/framework:packet",
+        "@com_google_mediapipe//mediapipe/framework/formats:landmark_cc_proto",
     ],
     alwayslink = True,
 )
@@ -62,10 +68,10 @@ cc_library(
     srcs = ["rect.cc"],
     hdrs = ["rect.h"],
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats:rect_cc_proto",
         "//mediapipe_api:common",
         "//mediapipe_api/external:protobuf",
         "//mediapipe_api/framework:packet",
+        "@com_google_mediapipe//mediapipe/framework/formats:rect_cc_proto",
     ],
     alwayslink = True,
 )
@@ -122,9 +128,9 @@ csharp_proto_src(
 
 csharp_proto_src(
     name = "rasterization_cs",
+    import_prefix = "Annotation",
     proto_src = "mediapipe/framework/formats/annotation/rasterization.proto",
     deps = [
         "@com_google_mediapipe//mediapipe/framework/formats/annotation:protos_src",
     ],
-    import_prefix = "Annotation",
 )

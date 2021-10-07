@@ -22,18 +22,24 @@
 #  - not to generate *Proto.java
 #  - .so files are placed under lib/
 
+"""AAR Generator
+
+Macro to generate AAR, including libmediapipe_jni.so
+"""
+
 load("@build_bazel_rules_android//android:rules.bzl", "android_binary", "android_library")
 
 def mediapipe_aar(name, package = "com.github.homuler.mediapipe", srcs = [], deps = [], jni_deps = [], assets = [], assets_dir = ""):
     """Generate MediaPipeUnityPlugin AAR.
 
     Args:
-      name: the name of the AAR.
+      package: package name
+      name: the name of the AAR
       srcs: java source files
       deps: aar's dependencies (e.g. .so files)
       jni_deps: additional dependencies that will be linked to libmediapipe_jni.so
       assets: additional assets to be included into the archive.
-      assets_dir: path where the assets will the packaged.
+      assets_dir: path where the assets will the packaged
     """
     native.cc_binary(
         name = "libmediapipe_jni.so",

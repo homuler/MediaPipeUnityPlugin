@@ -1,8 +1,14 @@
+# Copyright (c) 2021 homuler
+#
+# Use of this source code is governed by an MIT-style
+# license that can be found in the LICENSE file or at
+# https://opensource.org/licenses/MIT.
+
+load("//mediapipe_api:csharp_proto_src.bzl", "csharp_proto_src")
+
 package(
     default_visibility = ["//visibility:public"],
 )
-
-load("//mediapipe_api:csharp_proto_src.bzl", "csharp_proto_src")
 
 cc_library(
     name = "calculator",
@@ -53,9 +59,9 @@ cc_library(
     srcs = ["packet.cc"],
     hdrs = ["packet.h"],
     deps = [
-        "@com_google_mediapipe//mediapipe/framework:packet",
         "//mediapipe_api:common",
         "//mediapipe_api/external:protobuf",
+        "@com_google_mediapipe//mediapipe/framework:packet",
     ],
     alwayslink = True,
 )
@@ -65,8 +71,8 @@ cc_library(
     srcs = ["timestamp.cc"],
     hdrs = ["timestamp.h"],
     deps = [
-        "@com_google_mediapipe//mediapipe/framework:timestamp",
         "//mediapipe_api:common",
+        "@com_google_mediapipe//mediapipe/framework:timestamp",
     ],
     alwayslink = True,
 )
