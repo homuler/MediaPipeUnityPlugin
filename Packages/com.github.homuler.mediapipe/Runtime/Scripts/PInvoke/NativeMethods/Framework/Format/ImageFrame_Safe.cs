@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
@@ -16,7 +22,7 @@ namespace Mediapipe
 
     [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_ImageFrame__IsAligned__ui(
-        IntPtr imageFrame, UInt32 alignmentBoundary, [MarshalAs(UnmanagedType.I1)] out bool value);
+        IntPtr imageFrame, uint alignmentBoundary, [MarshalAs(UnmanagedType.I1)] out bool value);
 
     [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern ImageFormat.Format mp_ImageFrame__Format(IntPtr imageFrame);

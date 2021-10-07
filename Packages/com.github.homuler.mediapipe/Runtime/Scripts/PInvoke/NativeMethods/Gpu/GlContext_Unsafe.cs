@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Runtime.InteropServices;
 
@@ -24,7 +30,7 @@ namespace Mediapipe
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_GlContext_Create__ui_b(
-        UInt32 shareContext, [MarshalAs(UnmanagedType.I1)] bool createThread, out IntPtr statusOrSharedGlContext);
+        uint shareContext, [MarshalAs(UnmanagedType.I1)] bool createThread, out IntPtr statusOrSharedGlContext);
 
 #if UNITY_IOS
     [DllImport (MediaPipeLibrary, ExactSpelling = true)]

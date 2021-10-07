@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 namespace Mediapipe
 {
   public enum MpReturnCode : int
@@ -24,9 +30,22 @@ namespace Mediapipe
           {
             throw new MediaPipeException("MediaPipe Aborted, refer glog files for more details");
           }
+        case MpReturnCode.StandardError:
+          {
+            throw new MediaPipePluginException($"Exception is thrown in Unmanaged Code");
+          }
+        case MpReturnCode.UnknownError:
+          {
+            throw new MediaPipePluginException($"Unknown exception is thrown in Unmanaged Code");
+          }
+        case MpReturnCode.Unset:
+          {
+            // Bug
+            throw new MediaPipePluginException($"Failed to call a native function, but the reason is unknown");
+          }
         default:
           {
-            throw new MediaPipePluginException($"Failed to call a native function (code={code})");
+            throw new MediaPipePluginException($"Failed to call a native function, but the reason is undefined");
           }
       }
     }

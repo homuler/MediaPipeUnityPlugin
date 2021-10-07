@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
@@ -8,10 +14,10 @@ namespace Mediapipe
   {
     #region GlTextureBuffer
     [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern UInt32 mp_GlTextureBuffer__name(IntPtr glTextureBuffer);
+    public static extern uint mp_GlTextureBuffer__name(IntPtr glTextureBuffer);
 
     [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern UInt32 mp_GlTextureBuffer__target(IntPtr glTextureBuffer);
+    public static extern uint mp_GlTextureBuffer__target(IntPtr glTextureBuffer);
 
     [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern int mp_GlTextureBuffer__width(IntPtr glTextureBuffer);

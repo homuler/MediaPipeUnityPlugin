@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Runtime.InteropServices;
 
@@ -9,6 +15,6 @@ namespace Mediapipe
     public static extern void glFlush();
 
     [DllImport(MediaPipeLibrary)]
-    public static extern void glReadPixels(int x, int y, int width, int height, UInt32 glFormat, UInt32 glType, IntPtr pixels);
+    public static extern void glReadPixels(int x, int y, int width, int height, uint glFormat, uint glType, IntPtr pixels);
   }
 }

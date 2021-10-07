@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Runtime.InteropServices;
 
@@ -37,7 +43,7 @@ namespace Mediapipe
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_SharedGlTextureBuffer__ui_ui_i_i_ui_PF_PSgc(
-        UInt32 target, UInt32 name, int width, int height, GpuBufferFormat format,
+        uint target, uint name, int width, int height, GpuBufferFormat format,
         [MarshalAs(UnmanagedType.FunctionPtr)] GlTextureBuffer.DeletionCallback deletionCallback,
         IntPtr producerContext, out IntPtr sharedGlTextureBuffer);
     #endregion

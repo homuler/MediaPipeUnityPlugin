@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Runtime.InteropServices;
 
@@ -10,7 +16,7 @@ namespace Mediapipe
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_ImageFrame__ui_i_i_ui(
-        ImageFormat.Format format, int width, int height, UInt32 alignmentBoundary, out IntPtr imageFrame);
+        ImageFormat.Format format, int width, int height, uint alignmentBoundary, out IntPtr imageFrame);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_ImageFrame__ui_i_i_i_Pui8_PF(
