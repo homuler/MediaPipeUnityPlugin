@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 
 namespace Mediapipe
@@ -24,7 +30,7 @@ namespace Mediapipe
       UnsafeNativeMethods.mp_Packet__At__Rt(mpPtr, timestamp.mpPtr, out var packetPtr).Assert();
 
       GC.KeepAlive(timestamp);
-      return (Packet<T>)Activator.CreateInstance(this.GetType(), packetPtr, true);
+      return (Packet<T>)Activator.CreateInstance(GetType(), packetPtr, true);
     }
 
     public bool IsEmpty()
@@ -63,7 +69,7 @@ namespace Mediapipe
     {
       var typeName = MarshalStringFromNative(UnsafeNativeMethods.mp_Packet__RegisteredTypeName);
 
-      return typeName == null ? "" : typeName;
+      return typeName ?? "";
     }
 
     public string DebugTypeName()

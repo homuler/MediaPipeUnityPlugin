@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 
 namespace Mediapipe
@@ -15,10 +21,7 @@ namespace Mediapipe
       UnsafeNativeMethods.mp_SidePacket__delete(ptr);
     }
 
-    public int size
-    {
-      get { return SafeNativeMethods.mp_SidePacket__size(mpPtr); }
-    }
+    public int size => SafeNativeMethods.mp_SidePacket__size(mpPtr);
 
     /// TODO: force T to be Packet
     /// <remarks>Make sure that the type of the returned packet value is correct</remarks>
@@ -28,7 +31,7 @@ namespace Mediapipe
 
       if (packetPtr == IntPtr.Zero)
       {
-        return default(T); // null
+        return default; // null
       }
 
       GC.KeepAlive(this);

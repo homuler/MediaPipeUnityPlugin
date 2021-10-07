@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Runtime.InteropServices;
 
@@ -42,7 +48,7 @@ namespace Mediapipe
 
     public byte[] GetByteArray()
     {
-      UnsafeNativeMethods.mp_Packet__GetByteString(mpPtr, out var strPtr, out int size).Assert();
+      UnsafeNativeMethods.mp_Packet__GetByteString(mpPtr, out var strPtr, out var size).Assert();
       GC.KeepAlive(this);
 
       var bytes = new byte[size];

@@ -1,22 +1,28 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 
 namespace Mediapipe
 {
   public class FloatArrayPacket : Packet<float[]>
   {
-    int _Length = -1;
+    private int _length = -1;
 
-    public int Length
+    public int length
     {
-      get { return _Length; }
+      get => _length;
       set
       {
-        if (_Length >= 0)
+        if (_length >= 0)
         {
           throw new InvalidOperationException("Length is already set and cannot be changed");
         }
 
-        _Length = value;
+        _length = value;
       }
     }
 
@@ -28,7 +34,7 @@ namespace Mediapipe
     {
       UnsafeNativeMethods.mp__MakeFloatArrayPacket__Pf_i(value, value.Length, out var ptr).Assert();
       this.ptr = ptr;
-      Length = value.Length;
+      length = value.Length;
     }
 
     public FloatArrayPacket(float[] value, Timestamp timestamp) : base()
@@ -36,21 +42,21 @@ namespace Mediapipe
       UnsafeNativeMethods.mp__MakeFloatArrayPacket_At__Pf_i_Rt(value, value.Length, timestamp.mpPtr, out var ptr).Assert();
       GC.KeepAlive(timestamp);
       this.ptr = ptr;
-      Length = value.Length;
+      length = value.Length;
     }
 
     public override float[] Get()
     {
-      if (Length < 0)
+      if (length < 0)
       {
         throw new InvalidOperationException("The array's length is unknown, set Length first");
       }
 
-      var result = new float[Length];
+      var result = new float[length];
 
       unsafe
       {
-        float* src = (float*)GetArrayPtr();
+        var src = (float*)GetArrayPtr();
 
         for (var i = 0; i < result.Length; i++)
         {

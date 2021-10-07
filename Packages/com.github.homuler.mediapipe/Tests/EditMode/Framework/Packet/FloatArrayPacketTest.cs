@@ -11,7 +11,7 @@ namespace Tests
     public void Ctor_ShouldInstantiatePacket_When_CalledWithNoArguments()
     {
       var packet = new FloatArrayPacket();
-      packet.Length = 0;
+      packet.length = 0;
 
       Assert.AreEqual(packet.ValidateAsType().Code(), Status.StatusCode.Internal);
       Assert.Throws<MediaPipeException>(() => { packet.Get(); });
