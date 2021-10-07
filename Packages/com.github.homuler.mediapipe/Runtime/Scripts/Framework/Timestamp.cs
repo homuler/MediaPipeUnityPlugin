@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 
 namespace Mediapipe
@@ -6,7 +12,7 @@ namespace Mediapipe
   {
     public Timestamp(IntPtr ptr) : base(ptr) { }
 
-    public Timestamp(Int64 value) : base()
+    public Timestamp(long value) : base()
     {
       UnsafeNativeMethods.mp_Timestamp__l(value, out var ptr).Assert();
       this.ptr = ptr;
@@ -20,45 +26,37 @@ namespace Mediapipe
     #region IEquatable<Timestamp>
     public bool Equals(Timestamp other)
     {
-      if (other == null) { return false; }
-
-      return Microseconds() == other.Microseconds();
+      return other != null && Microseconds() == other.Microseconds();
     }
 
+#pragma warning disable IDE0049
     public override bool Equals(System.Object obj)
     {
-      Timestamp timestampObj = obj == null ? null : (obj as Timestamp);
+      var timestampObj = obj == null ? null : (obj as Timestamp);
 
       return timestampObj != null && Equals(timestampObj);
     }
+#pragma warning restore IDE0049
 
+#pragma warning disable IDE0002
     public static bool operator ==(Timestamp x, Timestamp y)
     {
-      if (((object)x) == null || ((object)y) == null)
-      {
-        return Object.Equals(x, y);
-      }
-
-      return x.Equals(y);
+      return (((object)x) == null || ((object)y) == null) ? System.Object.Equals(x, y) : x.Equals(y);
     }
 
     public static bool operator !=(Timestamp x, Timestamp y)
     {
-      if (((object)x) == null || ((object)y) == null)
-      {
-        return !Object.Equals(x, y);
-      }
-
-      return !(x.Equals(y));
+      return (((object)x) == null || ((object)y) == null) ? !System.Object.Equals(x, y) : !x.Equals(y);
     }
+#pragma warning restore IDE0002
 
     public override int GetHashCode()
     {
-      return this.Microseconds().GetHashCode();
+      return Microseconds().GetHashCode();
     }
     #endregion
 
-    public Int64 Value()
+    public long Value()
     {
       return SafeNativeMethods.mp_Timestamp__Value(mpPtr);
     }
@@ -68,7 +66,7 @@ namespace Mediapipe
       return SafeNativeMethods.mp_Timestamp__Seconds(mpPtr);
     }
 
-    public Int64 Microseconds()
+    public long Microseconds()
     {
       return SafeNativeMethods.mp_Timestamp__Microseconds(mpPtr);
     }
