@@ -1,8 +1,15 @@
-#ifndef C_MEDIAPIPE_API_GPU_GL_CONTEXT_H_
-#define C_MEDIAPIPE_API_GPU_GL_CONTEXT_H_
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
+#ifndef MEDIAPIPE_API_GPU_GL_CONTEXT_H_
+#define MEDIAPIPE_API_GPU_GL_CONTEXT_H_
 
 #include <memory>
 #include <utility>
+
 #include "mediapipe/gpu/gl_context.h"
 #include "mediapipe_api/common.h"
 #include "mediapipe_api/external/absl/statusor.h"
@@ -18,16 +25,12 @@ MP_CAPI(void) mp_SharedGlContext__reset(SharedGlContext* shared_gl_context);
 
 MP_CAPI(MpReturnCode) mp_GlContext_GetCurrent(SharedGlContext** shared_gl_context_out);
 MP_CAPI(MpReturnCode) mp_GlContext_Create__P_b(bool create_thread, StatusOrSharedGlContext** status_or_shared_gl_context_out);
-MP_CAPI(MpReturnCode) mp_GlContext_Create__Rgc_b(mediapipe::GlContext* share_context,
-                                                 bool create_thread,
+MP_CAPI(MpReturnCode) mp_GlContext_Create__Rgc_b(mediapipe::GlContext* share_context, bool create_thread,
                                                  StatusOrSharedGlContext** status_or_shared_gl_context_out);
-MP_CAPI(MpReturnCode) mp_GlContext_Create__ui_b(mediapipe::PlatformGlContext share_context,
-                                                bool create_thread,
+MP_CAPI(MpReturnCode) mp_GlContext_Create__ui_b(mediapipe::PlatformGlContext share_context, bool create_thread,
                                                 StatusOrSharedGlContext** status_or_shared_gl_context_out);
 #if HAS_EAGL
-MP_CAPI(MpReturnCode) mp_GlContext_Create__Pes_b(EAGLSharegroup* sharegroup,
-                                                  bool create_thread,
-                                                  StatusOrSharedGlContext** status_or_shared_gl_context_out);
+MP_CAPI(MpReturnCode) mp_GlContext_Create__Pes_b(EAGLSharegroup* sharegroup, bool create_thread, StatusOrSharedGlContext** status_or_shared_gl_context_out);
 #endif  // HAS_EAGL
 
 #if HAS_EGL
@@ -60,4 +63,4 @@ MP_CAPI(MpReturnCode) mp_GlSyncPoint__GetContext(mediapipe::GlSyncPoint* gl_sync
 
 }  // extern "C"
 
-#endif  // C_MEDIAPIPE_API_GPU_GL_CONTEXT_H_
+#endif  // MEDIAPIPE_API_GPU_GL_CONTEXT_H_

@@ -1,0 +1,9 @@
+---
+Language: Cpp
+BasedOnStyle: Google
+ColumnLimit: 160
+IndentWidth: 2
+AllowShortLambdasOnASingleLine: Empty
+MacroBlockBegin: "^TRY$|^TRY_ALL$"
+MacroBlockEnd: "^CATCH_EXCEPTION$|^CATCH_ALL$"
+TypenameMacros: ['MP_CAPI']

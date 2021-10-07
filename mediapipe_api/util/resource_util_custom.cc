@@ -1,6 +1,13 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
+#include "mediapipe_api/util/resource_util_custom.h"
+
 #include "absl/strings/str_cat.h"
 #include "mediapipe/framework/port/ret_check.h"
-#include "mediapipe_api/util/resource_util_custom.h"
 
 void mp__SetCustomGlobalResourceProvider__P(ResourceProvider* resource_provider) {
   mediapipe::SetCustomGlobalResourceProvider([resource_provider](const std::string& path, std::string* output) -> ::absl::Status {
