@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 /// based on [OpenCvSharp](https://github.com/shimat/opencvsharp/blob/9a5f9828a74cfa3995562a06716e177705cde038/src/OpenCvSharp/Fundamentals/DisposableObject.cs)
 
 using System;
@@ -7,7 +13,7 @@ namespace Mediapipe
 {
   public abstract class DisposableObject : IDisposable
   {
-    private volatile int disposeSignaled = 0;
+    private volatile int _disposeSignaled = 0;
 
     public bool isDisposed { get; protected set; }
     protected bool isOwner { get; private set; }
@@ -28,7 +34,7 @@ namespace Mediapipe
 
     protected virtual void Dispose(bool disposing)
     {
-      if (Interlocked.Exchange(ref disposeSignaled, 1) != 0)
+      if (Interlocked.Exchange(ref _disposeSignaled, 1) != 0)
       {
         return;
       }
