@@ -1,3 +1,11 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
+using System;
+
 namespace Mediapipe
 {
   public static class Glog
@@ -10,10 +18,10 @@ namespace Mediapipe
       FATAL = 3,
     }
 
-    static bool _logtostderr = false;
+    private static bool _logtostderr = false;
     public static bool logtostderr
     {
-      get { return _logtostderr; }
+      get => _logtostderr;
       set
       {
         UnsafeNativeMethods.glog_FLAGS_logtostderr(value);
@@ -21,10 +29,10 @@ namespace Mediapipe
       }
     }
 
-    static int _stderrthreshold = 2;
+    private static int _stderrthreshold = 2;
     public static int stderrthreshold
     {
-      get { return _stderrthreshold; }
+      get => _stderrthreshold;
       set
       {
         UnsafeNativeMethods.glog_FLAGS_stderrthreshold(value);
@@ -32,10 +40,10 @@ namespace Mediapipe
       }
     }
 
-    static int _minloglevel = 0;
+    private static int _minloglevel = 0;
     public static int minloglevel
     {
-      get { return _minloglevel; }
+      get => _minloglevel;
       set
       {
         UnsafeNativeMethods.glog_FLAGS_minloglevel(value);
@@ -43,21 +51,21 @@ namespace Mediapipe
       }
     }
 
-    static string _logDir;
+    private static string _logDir;
     public static string logDir
     {
-      get { return _logDir; }
+      get => _logDir;
       set
       {
-        UnsafeNativeMethods.glog_FLAGS_log_dir(value == null ? "" : value);
+        UnsafeNativeMethods.glog_FLAGS_log_dir(value ?? "");
         _logDir = value;
       }
     }
 
-    static int _v = 0;
+    private static int _v = 0;
     public static int v
     {
-      get { return _v; }
+      get => _v;
       set
       {
         UnsafeNativeMethods.glog_FLAGS_v(value);
@@ -98,6 +106,10 @@ namespace Mediapipe
           {
             UnsafeNativeMethods.glog_LOG_FATAL__PKc(str);
             break;
+          }
+        default:
+          {
+            throw new ArgumentException($"Unknown Severity: {severity}");
           }
       }
     }

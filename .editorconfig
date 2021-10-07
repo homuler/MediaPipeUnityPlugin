@@ -156,7 +156,7 @@ dotnet_naming_rule.methods_must_be_pascal_case.severity = warning
 
 # Static Fields
 dotnet_naming_symbols.static_field_symbol.applicable_kinds = field
-dotnet_naming_symbols.static_field_symbol.applicable_accessibilities = *
+dotnet_naming_symbols.static_field_symbol.applicable_accessibilities = public, internal, protected, protected_internal, private_protected
 dotnet_naming_symbols.static_field_symbol.required_modifiers = static
 dotnet_naming_rule.static_fields_must_be_pascal_case.symbols = static_field_symbol
 dotnet_naming_rule.static_fields_must_be_pascal_case.style = pascal_case_style
