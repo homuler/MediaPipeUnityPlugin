@@ -73,7 +73,7 @@ dotnet_diagnostic.IDE0082.severity = suggestion
 
 # File header preferences
 ### Require file header (IDE0073)
-file_header_template = Copyright (c) 2021 homuler\n\nUse of this source code is governed by an MIT-style\nlicense that can be found in the LICENSE file or at\nhttps://opensource.org/licenses/MIT.\n
+file_header_template = Copyright (c) 2021 homuler\n\nUse of this source code is governed by an MIT-style\nlicense that can be found in the LICENSE file or at\nhttps://opensource.org/licenses/MIT.
 
 ### 'var' preferences (IDE0007 and IDE0008)
 csharp_style_var_for_built_in_types = true
