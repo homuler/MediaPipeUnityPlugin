@@ -83,6 +83,7 @@ csharp_style_var_elsewhere = true
 # Expression-bodied members
 
 # Pattern matching preferences
+csharp_style_prefer_pattern_matching = false
 
 # Code block preferences
 csharp_prefer_simple_using_statement = false
@@ -120,6 +121,10 @@ dotnet_naming_style.type_parameter_style.required_prefix = T
 dotnet_naming_style.private_camel_style.capitalization = camel_case
 dotnet_naming_style.private_camel_style.required_prefix = _
 
+### private pascal style
+dotnet_naming_style.private_pascal_style.capitalization = pascal_case
+dotnet_naming_style.private_pascal_style.required_prefix = _
+
 # Namespaces
 dotnet_naming_symbols.namespace_symbol.applicable_kinds = namespace
 dotnet_naming_rule.namespaces_must_be_pascal_case.symbols = namespace_symbol
@@ -153,6 +158,14 @@ dotnet_naming_symbols.method_symbol.applicable_accessibilities = *
 dotnet_naming_rule.methods_must_be_pascal_case.symbols = method_symbol
 dotnet_naming_rule.methods_must_be_pascal_case.style = pascal_case_style
 dotnet_naming_rule.methods_must_be_pascal_case.severity = warning
+
+# Private Static Fields
+dotnet_naming_symbols.private_static_field_symbol.applicable_kinds = field
+dotnet_naming_symbols.private_static_field_symbol.applicable_accessibilities = private
+dotnet_naming_symbols.private_static_field_symbol.required_modifiers = static
+dotnet_naming_rule.private_static_fields_must_be_pascal_case.symbols = private_static_field_symbol
+dotnet_naming_rule.private_static_fields_must_be_pascal_case.style = private_pascal_style
+dotnet_naming_rule.private_static_fields_must_be_pascal_case.severity = warning
 
 # Static Fields
 dotnet_naming_symbols.static_field_symbol.applicable_kinds = field

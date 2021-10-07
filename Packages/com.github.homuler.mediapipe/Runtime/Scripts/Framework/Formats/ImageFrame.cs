@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
@@ -7,8 +13,8 @@ namespace Mediapipe
 {
   public class ImageFrame : MpResourceHandle
   {
-    public static readonly uint kDefaultAlignmentBoundary = 16;
-    public static readonly uint kGlDefaultAlignmentBoundary = 4;
+    public static readonly uint DefaultAlignmentBoundary = 16;
+    public static readonly uint GlDefaultAlignmentBoundary = 4;
 
     public delegate void Deleter(IntPtr ptr);
 
@@ -20,7 +26,7 @@ namespace Mediapipe
 
     public ImageFrame(IntPtr imageFramePtr, bool isOwner = true) : base(imageFramePtr, isOwner) { }
 
-    public ImageFrame(ImageFormat.Format format, int width, int height) : this(format, width, height, kDefaultAlignmentBoundary) { }
+    public ImageFrame(ImageFormat.Format format, int width, int height) : this(format, width, height, DefaultAlignmentBoundary) { }
 
     public ImageFrame(ImageFormat.Format format, int width, int height, uint alignmentBoundary) : base()
     {
@@ -48,7 +54,7 @@ namespace Mediapipe
     }
 
     [AOT.MonoPInvokeCallback(typeof(Deleter))]
-    static void ReleasePixelData(IntPtr ptr)
+    private static void ReleasePixelData(IntPtr ptr)
     {
       // Do nothing (pixelData is moved)
     }
@@ -164,6 +170,7 @@ namespace Mediapipe
     {
       var format = Format();
 
+#pragma warning disable IDE0010
       switch (format)
       {
         case ImageFormat.Format.SRGB:
@@ -181,6 +188,7 @@ namespace Mediapipe
             throw new NotImplementedException($"Currently only SRGB and SRGBA format are supported: {format}");
           }
       }
+#pragma warning restore IDE0010
     }
 
     public Color32[] GetPixels32(bool flipVertically = false)
@@ -203,6 +211,7 @@ namespace Mediapipe
     {
       var format = Format();
 
+#pragma warning disable IDE0010
       switch (format)
       {
         case ImageFormat.Format.SRGB:
@@ -228,6 +237,7 @@ namespace Mediapipe
             throw new NotImplementedException($"Currently only SRGB and SRGBA format are supported: {format}");
           }
       }
+#pragma warning restore IDE0010
     }
 
     /// <summary>
@@ -278,31 +288,31 @@ namespace Mediapipe
     ///   In the source array, pixels are laid out left to right, top to bottom,
     ///   but in the returned array, left to right, top to bottom.
     /// </remarks>
-    static void ReadSRGBByteArray(IntPtr ptr, int width, int height, int widthStep, bool flipVertically, ref Color32[] colors)
+    private static void ReadSRGBByteArray(IntPtr ptr, int width, int height, int widthStep, bool flipVertically, ref Color32[] colors)
     {
       if (colors.Length != width * height)
       {
         throw new ArgumentException("colors length is invalid");
       }
-      var padding = widthStep - 3 * width;
+      var padding = widthStep - (3 * width);
 
       unsafe
       {
         fixed (Color32* dest = colors)
         {
-          byte* pSrc = (byte*)ptr.ToPointer();
+          var pSrc = (byte*)ptr.ToPointer();
 
           if (flipVertically)
           {
-            Color32* pDest = dest + colors.Length - 1;
+            var pDest = dest + colors.Length - 1;
 
             for (var i = 0; i < height; i++)
             {
               for (var j = 0; j < width; j++)
               {
-                byte r = *pSrc++;
-                byte g = *pSrc++;
-                byte b = *pSrc++;
+                var r = *pSrc++;
+                var g = *pSrc++;
+                var b = *pSrc++;
                 *pDest-- = new Color32(r, g, b, 255);
               }
               pSrc += padding;
@@ -310,15 +320,15 @@ namespace Mediapipe
           }
           else
           {
-            Color32* pDest = dest + width * (height - 1);
+            var pDest = dest + (width * (height - 1));
 
             for (var i = 0; i < height; i++)
             {
               for (var j = 0; j < width; j++)
               {
-                byte r = *pSrc++;
-                byte g = *pSrc++;
-                byte b = *pSrc++;
+                var r = *pSrc++;
+                var g = *pSrc++;
+                var b = *pSrc++;
                 *pDest++ = new Color32(r, g, b, 255);
               }
               pSrc += padding;
@@ -333,32 +343,32 @@ namespace Mediapipe
     ///   In the source array, pixels are laid out left to right, top to bottom,
     ///   but in the returned array, left to right, top to bottom.
     /// </remarks>
-    static void ReadSRGBAByteArray(IntPtr ptr, int width, int height, int widthStep, bool flipVertically, ref Color32[] colors)
+    private static void ReadSRGBAByteArray(IntPtr ptr, int width, int height, int widthStep, bool flipVertically, ref Color32[] colors)
     {
       if (colors.Length != width * height)
       {
         throw new ArgumentException("colors length is invalid");
       }
-      var padding = widthStep - 4 * width;
+      var padding = widthStep - (4 * width);
 
       unsafe
       {
         fixed (Color32* dest = colors)
         {
-          byte* pSrc = (byte*)ptr.ToPointer();
+          var pSrc = (byte*)ptr.ToPointer();
 
           if (flipVertically)
           {
-            Color32* pDest = dest + colors.Length - 1;
+            var pDest = dest + colors.Length - 1;
 
             for (var i = 0; i < height; i++)
             {
               for (var j = 0; j < width; j++)
               {
-                byte r = *pSrc++;
-                byte g = *pSrc++;
-                byte b = *pSrc++;
-                byte a = *pSrc++;
+                var r = *pSrc++;
+                var g = *pSrc++;
+                var b = *pSrc++;
+                var a = *pSrc++;
                 *pDest-- = new Color32(r, g, b, a);
               }
               pSrc += padding;
@@ -366,16 +376,16 @@ namespace Mediapipe
           }
           else
           {
-            Color32* pDest = dest + width * (height - 1);
+            var pDest = dest + (width * (height - 1));
 
             for (var i = 0; i < height; i++)
             {
               for (var j = 0; j < width; j++)
               {
-                byte r = *pSrc++;
-                byte g = *pSrc++;
-                byte b = *pSrc++;
-                byte a = *pSrc++;
+                var r = *pSrc++;
+                var g = *pSrc++;
+                var b = *pSrc++;
+                var a = *pSrc++;
                 *pDest++ = new Color32(r, g, b, a);
               }
               pSrc += padding;
@@ -390,24 +400,24 @@ namespace Mediapipe
     ///   In the source array, pixels are laid out left to right, top to bottom,
     ///   but in the returned array, left to right, top to bottom.
     /// </remarks>
-    static void ReadChannel(IntPtr ptr, int channelNumber, int channelCount, int width, int height, int widthStep, bool flipVertically, byte[] colors)
+    private static void ReadChannel(IntPtr ptr, int channelNumber, int channelCount, int width, int height, int widthStep, bool flipVertically, byte[] colors)
     {
       if (colors.Length != width * height)
       {
         throw new ArgumentException("colors length is invalid");
       }
-      var padding = widthStep - channelCount * width;
+      var padding = widthStep - (channelCount * width);
 
       unsafe
       {
         fixed (byte* dest = colors)
         {
-          byte* pSrc = (byte*)ptr.ToPointer();
+          var pSrc = (byte*)ptr.ToPointer();
           pSrc += channelNumber;
 
           if (flipVertically)
           {
-            byte* pDest = dest + colors.Length - 1;
+            var pDest = dest + colors.Length - 1;
 
             for (var i = 0; i < height; i++)
             {
@@ -421,7 +431,7 @@ namespace Mediapipe
           }
           else
           {
-            byte* pDest = dest + width * (height - 1);
+            var pDest = dest + (width * (height - 1));
 
             for (var i = 0; i < height; i++)
             {

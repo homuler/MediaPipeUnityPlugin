@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using UnityEngine;
 
 namespace Mediapipe
@@ -26,6 +32,7 @@ namespace Mediapipe
   {
     public static ImageFormat.Format ToImageFormat(this TextureFormat textureFormat)
     {
+#pragma warning disable IDE0010
       switch (textureFormat)
       {
         case TextureFormat.RGB24:
@@ -66,5 +73,6 @@ namespace Mediapipe
           }
       }
     }
+#pragma warning restore IDE0010
   }
 }

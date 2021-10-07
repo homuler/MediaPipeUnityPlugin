@@ -1,3 +1,4 @@
+#pragma warning disable IDE0073
 // Copyright 2019 The MediaPipe Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,8 +27,8 @@ namespace Mediapipe
     {
       var nodeNames = new HashSet<string>(config.Node.Select(node => node.Name).Where(name => name.Length > 0));
 
-      string candidate = nodeNameBase;
-      int iter = 1;
+      var candidate = nodeNameBase;
+      var iter = 1;
 
       while (nodeNames.Contains(candidate))
       {
@@ -47,8 +48,8 @@ namespace Mediapipe
             return name;
           }));
 
-      string candidate = inputSidePacketNameBase;
-      int iter = 1;
+      var candidate = inputSidePacketNameBase;
+      var iter = 1;
 
       while (inputSidePackets.Contains(candidate))
       {
@@ -75,7 +76,7 @@ namespace Mediapipe
         return nodeName;
       }
 
-      var seq = nodesWithSameName.Where(pair => pair.i <= nodeId).Count();
+      var seq = nodesWithSameName.Count(pair => pair.i <= nodeId);
       return $"{nodeName}_{seq}";
     }
 
@@ -84,7 +85,7 @@ namespace Mediapipe
     /// </exception>
     public static string ParseNameFromStream(string stream)
     {
-      ParseTagIndexName(stream, out var tag, out var index, out var name);
+      ParseTagIndexName(stream, out var _, out var _, out var name);
       return name;
     }
 
@@ -102,7 +103,7 @@ namespace Mediapipe
     /// </exception>
     public static (string, int) ParseTagIndexFromStream(string stream)
     {
-      ParseTagIndexName(stream, out var tag, out var index, out var name);
+      ParseTagIndexName(stream, out var tag, out var index, out var _);
       return (tag, index);
     }
 
@@ -120,3 +121,4 @@ namespace Mediapipe
     }
   }
 }
+#pragma warning restore IDE0073
