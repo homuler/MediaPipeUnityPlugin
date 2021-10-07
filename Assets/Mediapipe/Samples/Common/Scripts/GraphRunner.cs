@@ -120,7 +120,7 @@ namespace Mediapipe.Unity
       // TODO: not to call CloseAllPacketSources if calculatorGraph has not started.
       using (var status = calculatorGraph.CloseAllPacketSources())
       {
-        if (!status.ok)
+        if (!status.Ok())
         {
           Logger.LogError(TAG, status.ToString());
         }
@@ -128,7 +128,7 @@ namespace Mediapipe.Unity
 
       using (var status = calculatorGraph.WaitUntilDone())
       {
-        if (!status.ok)
+        if (!status.Ok())
         {
           Logger.LogError(TAG, status.ToString());
         }
@@ -278,7 +278,7 @@ namespace Mediapipe.Unity
         var calculatorGraphConfig = GetCalculatorGraphConfig();
         var status = calculatorGraph.Initialize(calculatorGraphConfig);
 
-        if (!status.ok || inferenceMode == InferenceMode.CPU)
+        if (!status.Ok() || inferenceMode == InferenceMode.CPU)
         {
           return status;
         }
@@ -388,7 +388,7 @@ namespace Mediapipe.Unity
 
         var statusOrPoller = calculatorGraph.AddOutputStreamPoller<TValue>(streamName, observeTimestampBounds);
         var status = statusOrPoller.status;
-        if (status.ok)
+        if (status.Ok())
         {
           this.poller = statusOrPoller.Value();
         }
@@ -400,13 +400,13 @@ namespace Mediapipe.Unity
         this.presenceStreamName = presenceStreamName;
         var status = this.StartPolling(false);
 
-        if (status.ok)
+        if (status.Ok())
         {
           this.presencePacket = new BoolPacket();
 
           var statusOrPresencePoller = calculatorGraph.AddOutputStreamPoller<bool>(presenceStreamName);
           status = statusOrPresencePoller.status;
-          if (status.ok)
+          if (status.Ok())
           {
             this.presencePoller = statusOrPresencePoller.Value();
           }

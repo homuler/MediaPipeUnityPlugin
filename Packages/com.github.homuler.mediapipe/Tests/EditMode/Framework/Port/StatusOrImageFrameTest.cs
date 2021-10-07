@@ -11,8 +11,8 @@ namespace Tests
     {
       var statusOrImageFrame = InitializeSubject();
 
-      Assert.True(statusOrImageFrame.ok);
-      Assert.AreEqual(statusOrImageFrame.status.code, Status.StatusCode.Ok);
+      Assert.True(statusOrImageFrame.Ok());
+      Assert.AreEqual(statusOrImageFrame.status.Code(), Status.StatusCode.Ok);
     }
     #endregion
 
@@ -40,7 +40,7 @@ namespace Tests
     public void Value_ShouldReturnImageFrame_When_StatusIsOk()
     {
       var statusOrImageFrame = InitializeSubject();
-      Assert.True(statusOrImageFrame.ok);
+      Assert.True(statusOrImageFrame.Ok());
 
       var imageFrame = statusOrImageFrame.Value();
       Assert.AreEqual(imageFrame.Width(), 10);

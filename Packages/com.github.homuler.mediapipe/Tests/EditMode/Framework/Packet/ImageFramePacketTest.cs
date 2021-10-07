@@ -12,8 +12,8 @@ namespace Tests
       var packet = new ImageFramePacket();
       var statusOrImageFrame = packet.Consume();
 
-      Assert.AreEqual(packet.ValidateAsType().code, Status.StatusCode.Internal);
-      Assert.AreEqual(statusOrImageFrame.status.code, Status.StatusCode.Internal);
+      Assert.AreEqual(packet.ValidateAsType().Code(), Status.StatusCode.Internal);
+      Assert.AreEqual(statusOrImageFrame.status.Code(), Status.StatusCode.Internal);
       Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
     }
 
@@ -24,11 +24,11 @@ namespace Tests
       var packet = new ImageFramePacket(srcImageFrame);
 
       Assert.True(srcImageFrame.isDisposed);
-      Assert.True(packet.ValidateAsType().ok);
+      Assert.True(packet.ValidateAsType().Ok());
       Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
 
       var statusOrImageFrame = packet.Consume();
-      Assert.True(statusOrImageFrame.ok);
+      Assert.True(statusOrImageFrame.Ok());
 
       var imageFrame = statusOrImageFrame.Value();
       Assert.AreEqual(imageFrame.Format(), ImageFormat.Format.UNKNOWN);
@@ -42,10 +42,10 @@ namespace Tests
       var packet = new ImageFramePacket(srcImageFrame, timestamp);
 
       Assert.True(srcImageFrame.isDisposed);
-      Assert.True(packet.ValidateAsType().ok);
+      Assert.True(packet.ValidateAsType().Ok());
 
       var statusOrImageFrame = packet.Consume();
-      Assert.True(statusOrImageFrame.ok);
+      Assert.True(statusOrImageFrame.Ok());
 
       var imageFrame = statusOrImageFrame.Value();
       Assert.AreEqual(imageFrame.Format(), ImageFormat.Format.UNKNOWN);
@@ -98,7 +98,7 @@ namespace Tests
     {
       var packet = new ImageFramePacket(new ImageFrame(ImageFormat.Format.SBGRA, 10, 10));
       var statusOrImageFrame = packet.Consume();
-      Assert.True(statusOrImageFrame.ok);
+      Assert.True(statusOrImageFrame.Ok());
 
       var imageFrame = statusOrImageFrame.Value();
       Assert.AreEqual(imageFrame.Format(), ImageFormat.Format.SBGRA);

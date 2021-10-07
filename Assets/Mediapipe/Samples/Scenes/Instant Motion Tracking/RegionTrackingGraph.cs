@@ -43,7 +43,7 @@ namespace Mediapipe.Unity.InstantMotionTracking
     public Status AddTextureFrameToInputStream(TextureFrame textureFrame)
     {
       var status = AddTextureFrameToInputStream(inputStreamName, textureFrame);
-      if (!status.ok)
+      if (!status.Ok())
       {
         return status;
       }
@@ -51,7 +51,7 @@ namespace Mediapipe.Unity.InstantMotionTracking
       var stickerSentinelId = isTracking ? -1 : currentStickerSentinelId;
       status = AddPacketToInputStream(stickerSentinelStreamName, new IntPacket(stickerSentinelId, currentTimestamp));
 
-      if (!status.ok)
+      if (!status.Ok())
       {
         return status;
       }

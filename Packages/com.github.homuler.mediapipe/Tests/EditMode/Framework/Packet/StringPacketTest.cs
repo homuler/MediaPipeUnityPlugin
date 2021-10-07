@@ -13,7 +13,7 @@ namespace Tests
     {
       var packet = new StringPacket();
 
-      Assert.AreEqual(packet.ValidateAsType().code, Status.StatusCode.Internal);
+      Assert.AreEqual(packet.ValidateAsType().Code(), Status.StatusCode.Internal);
       Assert.Throws<MediaPipeException>(() => { packet.Get(); });
       Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
     }
@@ -23,7 +23,7 @@ namespace Tests
     {
       var packet = new StringPacket("test");
 
-      Assert.True(packet.ValidateAsType().ok);
+      Assert.True(packet.ValidateAsType().Ok());
       Assert.AreEqual(packet.Get(), "test");
       Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
     }
@@ -34,7 +34,7 @@ namespace Tests
       byte[] bytes = new byte[] { (byte)'t', (byte)'e', (byte)'s', (byte)'t' };
       var packet = new StringPacket(bytes);
 
-      Assert.True(packet.ValidateAsType().ok);
+      Assert.True(packet.ValidateAsType().Ok());
       Assert.AreEqual(packet.Get(), "test");
       Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
     }
@@ -45,7 +45,7 @@ namespace Tests
       var timestamp = new Timestamp(1);
       var packet = new StringPacket("test", timestamp);
 
-      Assert.True(packet.ValidateAsType().ok);
+      Assert.True(packet.ValidateAsType().Ok());
       Assert.AreEqual(packet.Get(), "test");
       Assert.AreEqual(packet.Timestamp(), timestamp);
     }
@@ -57,7 +57,7 @@ namespace Tests
       byte[] bytes = new byte[] { (byte)'t', (byte)'e', (byte)'s', (byte)'t' };
       var packet = new StringPacket(bytes, timestamp);
 
-      Assert.True(packet.ValidateAsType().ok);
+      Assert.True(packet.ValidateAsType().Ok());
       Assert.AreEqual(packet.Get(), "test");
       Assert.AreEqual(packet.Timestamp(), timestamp);
     }

@@ -12,7 +12,7 @@ namespace Tests
     {
       var packet = new BoolPacket();
 
-      Assert.AreEqual(packet.ValidateAsType().code, Status.StatusCode.Internal);
+      Assert.AreEqual(packet.ValidateAsType().Code(), Status.StatusCode.Internal);
       Assert.Throws<MediaPipeException>(() => { packet.Get(); });
       Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
     }
@@ -22,7 +22,7 @@ namespace Tests
     {
       var packet = new BoolPacket(true);
 
-      Assert.True(packet.ValidateAsType().ok);
+      Assert.True(packet.ValidateAsType().Ok());
       Assert.True(packet.Get());
       Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
     }
@@ -32,7 +32,7 @@ namespace Tests
     {
       var packet = new BoolPacket(false);
 
-      Assert.True(packet.ValidateAsType().ok);
+      Assert.True(packet.ValidateAsType().Ok());
       Assert.False(packet.Get());
       Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
     }
@@ -43,7 +43,7 @@ namespace Tests
       var timestamp = new Timestamp(1);
       var packet = new BoolPacket(true, timestamp);
 
-      Assert.True(packet.ValidateAsType().ok);
+      Assert.True(packet.ValidateAsType().Ok());
       Assert.True(packet.Get());
       Assert.AreEqual(packet.Timestamp(), timestamp);
     }

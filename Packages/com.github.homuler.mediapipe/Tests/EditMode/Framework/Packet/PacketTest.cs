@@ -63,7 +63,7 @@ namespace Tests
     {
       var packet = new BoolPacket(true);
 
-      Assert.AreEqual(packet.ValidateAsProtoMessageLite().code, Status.StatusCode.InvalidArgument);
+      Assert.AreEqual(packet.ValidateAsProtoMessageLite().Code(), Status.StatusCode.InvalidArgument);
     }
     #endregion
   }

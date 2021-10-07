@@ -13,7 +13,7 @@ namespace Tests
       var packet = new FloatArrayPacket();
       packet.Length = 0;
 
-      Assert.AreEqual(packet.ValidateAsType().code, Status.StatusCode.Internal);
+      Assert.AreEqual(packet.ValidateAsType().Code(), Status.StatusCode.Internal);
       Assert.Throws<MediaPipeException>(() => { packet.Get(); });
       Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
     }
@@ -24,7 +24,7 @@ namespace Tests
       float[] array = { };
       var packet = new FloatArrayPacket(array);
 
-      Assert.True(packet.ValidateAsType().ok);
+      Assert.True(packet.ValidateAsType().Ok());
       Assert.AreEqual(packet.Get(), array);
       Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
     }
@@ -35,7 +35,7 @@ namespace Tests
       float[] array = { 0.01f };
       var packet = new FloatArrayPacket(array);
 
-      Assert.True(packet.ValidateAsType().ok);
+      Assert.True(packet.ValidateAsType().Ok());
       Assert.AreEqual(packet.Get(), array);
       Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
     }
@@ -47,7 +47,7 @@ namespace Tests
       float[] array = { 0.01f, 0.02f };
       var packet = new FloatArrayPacket(array, timestamp);
 
-      Assert.True(packet.ValidateAsType().ok);
+      Assert.True(packet.ValidateAsType().Ok());
       Assert.AreEqual(packet.Get(), array);
       Assert.AreEqual(packet.Timestamp(), timestamp);
     }

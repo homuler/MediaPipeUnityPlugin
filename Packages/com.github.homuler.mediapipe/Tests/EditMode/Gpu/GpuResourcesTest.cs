@@ -11,7 +11,7 @@ namespace Tests
     {
       using (var statusOrGpuResources = GpuResources.Create())
       {
-        Assert.True(statusOrGpuResources.ok);
+        Assert.True(statusOrGpuResources.Ok());
       }
     }
     #endregion

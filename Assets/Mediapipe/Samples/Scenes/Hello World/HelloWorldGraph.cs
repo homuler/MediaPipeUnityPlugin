@@ -93,7 +93,7 @@ node {
       // TODO: not to call CloseAllPacketSources if calculatorGraph has not started.
       using (var status = calculatorGraph.CloseAllPacketSources())
       {
-        if (!status.ok)
+        if (!status.Ok())
         {
           Logger.LogError(TAG, status.ToString());
         }
@@ -101,7 +101,7 @@ node {
 
       using (var status = calculatorGraph.WaitUntilDone())
       {
-        if (!status.ok)
+        if (!status.Ok())
         {
           Logger.LogError(TAG, status.ToString());
         }

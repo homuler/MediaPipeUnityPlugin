@@ -11,7 +11,7 @@ namespace Tests
     {
       var statusOrGpuResources = GpuResources.Create();
 
-      Assert.AreEqual(statusOrGpuResources.status.code, Status.StatusCode.Ok);
+      Assert.AreEqual(statusOrGpuResources.status.Code(), Status.StatusCode.Ok);
     }
     #endregion
 
@@ -39,7 +39,7 @@ namespace Tests
     public void Value_ShouldReturnGpuResources_When_StatusIsOk()
     {
       var statusOrGpuResources = GpuResources.Create();
-      Assert.True(statusOrGpuResources.ok);
+      Assert.True(statusOrGpuResources.Ok());
 
       var gpuResources = statusOrGpuResources.Value();
       Assert.IsInstanceOf<GpuResources>(gpuResources);

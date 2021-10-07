@@ -59,7 +59,7 @@ namespace Tests
         glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
 
         var status = glCalculatorHelper.RunInGlContext(() => { return Status.Ok(); });
-        Assert.True(status.ok);
+        Assert.True(status.Ok());
       }
     }
 
@@ -71,7 +71,7 @@ namespace Tests
         glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
 
         var status = glCalculatorHelper.RunInGlContext(() => { return Status.Build(Status.StatusCode.Internal, "error"); });
-        Assert.AreEqual(status.code, Status.StatusCode.Internal);
+        Assert.AreEqual(status.Code(), Status.StatusCode.Internal);
       }
     }
 
@@ -84,7 +84,7 @@ namespace Tests
 
         GlCalculatorHelper.GlStatusFunction glStatusFunction = () => { throw new InvalidProgramException(); };
         var status = glCalculatorHelper.RunInGlContext(glStatusFunction);
-        Assert.AreEqual(status.code, Status.StatusCode.FailedPrecondition);
+        Assert.AreEqual(status.Code(), Status.StatusCode.FailedPrecondition);
       }
     }
     #endregion
@@ -109,7 +109,7 @@ namespace Tests
           return Status.Ok();
         });
 
-        Assert.True(status.ok);
+        Assert.True(status.Ok());
       }
     }
 
@@ -131,7 +131,7 @@ namespace Tests
           return Status.Ok();
         });
 
-        Assert.AreEqual(status.code, Status.StatusCode.FailedPrecondition);
+        Assert.AreEqual(status.Code(), Status.StatusCode.FailedPrecondition);
       }
     }
     #endregion
@@ -153,7 +153,7 @@ namespace Tests
           return Status.Ok();
         });
 
-        Assert.True(status.ok);
+        Assert.True(status.Ok());
       }
     }
     #endregion

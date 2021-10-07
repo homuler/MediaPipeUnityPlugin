@@ -11,7 +11,7 @@ namespace Tests
     {
       var status = Status.Ok();
 
-      Assert.AreEqual(status.code, Status.StatusCode.Ok);
+      Assert.AreEqual(status.Code(), Status.StatusCode.Ok);
     }
 
     [Test]
@@ -19,7 +19,7 @@ namespace Tests
     {
       var status = Status.FailedPrecondition();
 
-      Assert.AreEqual(status.code, Status.StatusCode.FailedPrecondition);
+      Assert.AreEqual(status.Code(), Status.StatusCode.FailedPrecondition);
     }
     #endregion
 
@@ -48,7 +48,7 @@ namespace Tests
     {
       var status = Status.Ok();
 
-      Assert.AreEqual(status.rawCode, 0);
+      Assert.AreEqual(status.RawCode(), 0);
     }
 
     [Test]
@@ -56,7 +56,7 @@ namespace Tests
     {
       var status = Status.FailedPrecondition();
 
-      Assert.AreEqual(status.rawCode, 9);
+      Assert.AreEqual(status.RawCode(), 9);
     }
     #endregion
 
@@ -66,7 +66,7 @@ namespace Tests
     {
       var status = Status.Ok();
 
-      Assert.True(status.ok);
+      Assert.True(status.Ok());
     }
 
     [Test]
@@ -74,7 +74,7 @@ namespace Tests
     {
       var status = Status.FailedPrecondition();
 
-      Assert.False(status.ok);
+      Assert.False(status.Ok());
     }
     #endregion
 

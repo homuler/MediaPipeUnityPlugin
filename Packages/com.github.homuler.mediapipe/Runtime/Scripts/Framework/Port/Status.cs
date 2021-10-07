@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 
 namespace Mediapipe
@@ -32,36 +38,40 @@ namespace Mediapipe
       UnsafeNativeMethods.absl_Status__delete(ptr);
     }
 
-    bool? _ok;
-    public bool ok
-    {
-      get
-      {
-        if (_ok is bool valueOfOk)
-        {
-          return valueOfOk;
-        }
-        _ok = SafeNativeMethods.absl_Status__ok(mpPtr);
-        return (bool)_ok;
-      }
-    }
+    private bool? _ok;
+    private int? _rawCode;
 
     public void AssertOk()
     {
-      if (!ok)
+      if (!Ok())
       {
         throw new MediaPipeException(ToString());
       }
     }
 
-    public StatusCode code
+    public bool Ok()
     {
-      get { return (StatusCode)rawCode; }
+      if (_ok is bool valueOfOk)
+      {
+        return valueOfOk;
+      }
+      _ok = SafeNativeMethods.absl_Status__ok(mpPtr);
+      return (bool)_ok;
     }
 
-    public int rawCode
+    public StatusCode Code()
     {
-      get { return SafeNativeMethods.absl_Status__raw_code(mpPtr); }
+      return (StatusCode)RawCode();
+    }
+
+    public int RawCode()
+    {
+      if (_rawCode is int valueOfRawCode)
+      {
+        return valueOfRawCode;
+      }
+      _rawCode = SafeNativeMethods.absl_Status__raw_code(mpPtr);
+      return (int)_rawCode;
     }
 
     public override string ToString()
@@ -78,18 +88,12 @@ namespace Mediapipe
 
     public static Status Ok(bool isOwner = true)
     {
-      return Status.Build(StatusCode.Ok, "", isOwner);
+      return Build(StatusCode.Ok, "", isOwner);
     }
 
     public static Status FailedPrecondition(string message = "", bool isOwner = true)
     {
-      return Status.Build(StatusCode.FailedPrecondition, message, isOwner);
-    }
-
-    [Obsolete("GetPtr is deprecated, use mpPtr")]
-    public IntPtr GetPtr()
-    {
-      return mpPtr;
+      return Build(StatusCode.FailedPrecondition, message, isOwner);
     }
   }
 }
