@@ -4,19 +4,6 @@ package(
 
 # requires EGL
 cc_library(
-    name = "egl_surface_holder",
-    srcs = ["egl_surface_holder.cc"],
-    hdrs = ["egl_surface_holder.h"],
-    deps = [
-        "//mediapipe_api:common",
-        "//mediapipe_api/framework:packet",
-        "@com_google_mediapipe//mediapipe/gpu:gl_calculator_helper",
-        "@com_google_mediapipe//mediapipe/gpu:gl_context",
-    ],
-    alwayslink = True,
-)
-
-cc_library(
     name = "gl_base",
     hdrs = ["gl_base.h"],
     deps = [
@@ -78,9 +65,9 @@ cc_library(
     deps = [
         ":gl_texture_buffer",
         "//mediapipe_api:common",
-        "//mediapipe_api/framework:packet",
         "//mediapipe_api/external/absl:status",
         "//mediapipe_api/external/absl:statusor",
+        "//mediapipe_api/framework:packet",
         "@com_google_mediapipe//mediapipe/gpu:gpu_buffer",
     ],
     alwayslink = True,
