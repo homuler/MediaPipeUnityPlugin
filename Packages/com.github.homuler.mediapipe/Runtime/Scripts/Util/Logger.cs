@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using UnityEngine;
 
@@ -25,31 +31,31 @@ namespace Mediapipe
       Debug,
     }
 
-    public static LogLevel minLogLevel = LogLevel.Info;
-    static IExtendedLogger _logger;
+    public static LogLevel minLogLevel { get; set; } = LogLevel.Info;
+    private static IExtendedLogger _Logger;
     public static IExtendedLogger logger
     {
       get
       {
-        if (_logger == null)
+        if (_Logger == null)
         {
-          _logger = new LoggerWrapper(Debug.unityLogger);
+          _Logger = new LoggerWrapper(Debug.unityLogger);
         }
-        return _logger;
+        return _Logger;
       }
     }
 
     public static void SetLogger(IExtendedLogger newLogger)
     {
-      _logger = newLogger;
+      _Logger = newLogger;
     }
 
     public static void SetLogger(ILogger newLogger)
     {
-      _logger = new LoggerWrapper(newLogger);
+      _Logger = new LoggerWrapper(newLogger);
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void LogException(Exception exception, UnityEngine.Object context)
     {
       if (minLogLevel >= LogLevel.Error)
@@ -58,7 +64,7 @@ namespace Mediapipe
       }
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void LogException(Exception exception)
     {
       if (minLogLevel >= LogLevel.Error)
@@ -67,7 +73,7 @@ namespace Mediapipe
       }
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void LogError(string tag, object message, UnityEngine.Object context)
     {
       if (minLogLevel >= LogLevel.Error)
@@ -76,7 +82,7 @@ namespace Mediapipe
       }
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void LogError(string tag, object message)
     {
       if (minLogLevel >= LogLevel.Error)
@@ -85,13 +91,13 @@ namespace Mediapipe
       }
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void LogError(object message)
     {
       LogError(null, message);
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void LogWarning(string tag, object message, UnityEngine.Object context)
     {
       if (minLogLevel >= LogLevel.Info)
@@ -100,7 +106,7 @@ namespace Mediapipe
       }
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void LogWarning(string tag, object message)
     {
       if (minLogLevel >= LogLevel.Info)
@@ -109,13 +115,13 @@ namespace Mediapipe
       }
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void LogWarning(object message)
     {
       LogWarning(null, message);
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void Log(LogLevel logLevel, string tag, object message, UnityEngine.Object context)
     {
       if (minLogLevel >= logLevel)
@@ -124,7 +130,7 @@ namespace Mediapipe
       }
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void Log(LogLevel logLevel, string tag, object message)
     {
       if (minLogLevel >= logLevel)
@@ -133,7 +139,7 @@ namespace Mediapipe
       }
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void Log(LogLevel logLevel, object message, UnityEngine.Object context)
     {
       if (minLogLevel >= logLevel)
@@ -142,7 +148,7 @@ namespace Mediapipe
       }
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void Log(LogLevel logLevel, object message)
     {
       if (minLogLevel >= logLevel)
@@ -151,67 +157,67 @@ namespace Mediapipe
       }
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void Log(string tag, object message)
     {
       Log(LogLevel.Info, tag, message);
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void Log(object message)
     {
       Log(LogLevel.Info, message);
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void LogInfo(string tag, object message, UnityEngine.Object context)
     {
       Log(LogLevel.Info, tag, message, context);
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void LogInfo(string tag, object message)
     {
       Log(LogLevel.Info, tag, message);
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void LogInfo(object message)
     {
       Log(LogLevel.Info, message);
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void LogVerbose(string tag, object message, UnityEngine.Object context)
     {
       Log(LogLevel.Verbose, tag, message, context);
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void LogVerbose(string tag, object message)
     {
       Log(LogLevel.Verbose, tag, message);
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void LogVerbose(object message)
     {
       Log(LogLevel.Verbose, message);
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void LogDebug(string tag, object message, UnityEngine.Object context)
     {
       Log(LogLevel.Debug, tag, message, context);
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void LogDebug(string tag, object message)
     {
       Log(LogLevel.Debug, tag, message);
     }
 
-    [Conditional("DEBUG"), ConditionalAttribute("DEVELOPMENT_BUILD")]
+    [Conditional("DEBUG"), Conditional("DEVELOPMENT_BUILD")]
     public static void LogDebug(object message)
     {
       Log(LogLevel.Debug, message);
@@ -219,51 +225,51 @@ namespace Mediapipe
 
     private class LoggerWrapper : IExtendedLogger
     {
-      readonly ILogger logger;
+      private readonly ILogger _logger;
 
       public LoggerWrapper(ILogger logger)
       {
-        this.logger = logger;
+        _logger = logger;
       }
 
       public LogType filterLogType
       {
-        get { return logger.filterLogType; }
-        set { logger.filterLogType = value; }
+        get => _logger.filterLogType;
+        set => _logger.filterLogType = value;
       }
 
       public bool logEnabled
       {
-        get { return logger.logEnabled; }
-        set { logger.logEnabled = value; }
+        get => _logger.logEnabled;
+        set => logger.logEnabled = value;
       }
 
       public ILogHandler logHandler
       {
-        get { return logger.logHandler; }
-        set { logger.logHandler = value; }
+        get => _logger.logHandler;
+        set => logger.logHandler = value;
       }
 
-      public bool IsLogTypeAllowed(LogType logType) => logger.IsLogTypeAllowed(logType);
-      public void Log(LogType logType, object message) => logger.Log(logType, message);
-      public void Log(LogType logType, object message, UnityEngine.Object context) => logger.Log(logType, message, context);
-      public void Log(LogType logType, string tag, object message) => logger.Log(logType, tag, message);
-      public void Log(LogType logType, string tag, object message, UnityEngine.Object context) => logger.Log(logType, tag, message, context);
-      public void Log(object message) => logger.Log(message);
-      public void Log(string tag, object message) => logger.Log(tag, message);
-      public void Log(string tag, object message, UnityEngine.Object context) => logger.Log(tag, message, context);
-      public void Log(LogLevel logLevel, string tag, object message, UnityEngine.Object context) => logger.Log(logLevel.GetLogType(), tag, message, context);
-      public void Log(LogLevel logLevel, string tag, object message) => logger.Log(logLevel.GetLogType(), tag, message);
-      public void Log(LogLevel logLevel, object message, UnityEngine.Object context) => logger.Log(logLevel.GetLogType(), message, context);
-      public void Log(LogLevel logLevel, object message) => logger.Log(logLevel.GetLogType(), message);
-      public void LogWarning(string tag, object message) => logger.LogWarning(tag, message);
-      public void LogWarning(string tag, object message, UnityEngine.Object context) => logger.LogWarning(tag, message, context);
-      public void LogError(string tag, object message) => logger.LogError(tag, message);
-      public void LogError(string tag, object message, UnityEngine.Object context) => logger.LogError(tag, message, context);
-      public void LogException(Exception exception) => logger.LogException(exception);
-      public void LogException(Exception exception, UnityEngine.Object context) => logger.LogException(exception, context);
-      public void LogFormat(LogType logType, string format, params object[] args) => logger.LogFormat(logType, format, args);
-      public void LogFormat(LogType logType, UnityEngine.Object context, string format, params object[] args) => logger.LogFormat(logType, context, format, args);
+      public bool IsLogTypeAllowed(LogType logType) { return _logger.IsLogTypeAllowed(logType); }
+      public void Log(LogType logType, object message) { _logger.Log(logType, message); }
+      public void Log(LogType logType, object message, UnityEngine.Object context) { _logger.Log(logType, message, context); }
+      public void Log(LogType logType, string tag, object message) { _logger.Log(logType, tag, message); }
+      public void Log(LogType logType, string tag, object message, UnityEngine.Object context) { _logger.Log(logType, tag, message, context); }
+      public void Log(object message) { _logger.Log(message); }
+      public void Log(string tag, object message) { _logger.Log(tag, message); }
+      public void Log(string tag, object message, UnityEngine.Object context) { _logger.Log(tag, message, context); }
+      public void Log(LogLevel logLevel, string tag, object message, UnityEngine.Object context) { _logger.Log(logLevel.GetLogType(), tag, message, context); }
+      public void Log(LogLevel logLevel, string tag, object message) { _logger.Log(logLevel.GetLogType(), tag, message); }
+      public void Log(LogLevel logLevel, object message, UnityEngine.Object context) { _logger.Log(logLevel.GetLogType(), message, context); }
+      public void Log(LogLevel logLevel, object message) { _logger.Log(logLevel.GetLogType(), message); }
+      public void LogWarning(string tag, object message) { _logger.LogWarning(tag, message); }
+      public void LogWarning(string tag, object message, UnityEngine.Object context) { _logger.LogWarning(tag, message, context); }
+      public void LogError(string tag, object message) { _logger.LogError(tag, message); }
+      public void LogError(string tag, object message, UnityEngine.Object context) { _logger.LogError(tag, message, context); }
+      public void LogException(Exception exception) { _logger.LogException(exception); }
+      public void LogException(Exception exception, UnityEngine.Object context) { _logger.LogException(exception, context); }
+      public void LogFormat(LogType logType, string format, params object[] args) { _logger.LogFormat(logType, format, args); }
+      public void LogFormat(LogType logType, UnityEngine.Object context, string format, params object[] args) { _logger.LogFormat(logType, context, format, args); }
     }
   }
 
@@ -276,6 +282,9 @@ namespace Mediapipe
         case Logger.LogLevel.Fatal:
         case Logger.LogLevel.Error: return LogType.Error;
         case Logger.LogLevel.Warn: return LogType.Warning;
+        case Logger.LogLevel.Info:
+        case Logger.LogLevel.Verbose:
+        case Logger.LogLevel.Debug:
         default: return LogType.Log;
       }
     }

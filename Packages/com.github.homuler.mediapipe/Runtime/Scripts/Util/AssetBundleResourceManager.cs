@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections;
 using System.IO;
@@ -7,26 +13,20 @@ namespace Mediapipe.Unity
 {
   public class AssetBundleResourceManager : ResourceManager
   {
-    static readonly string TAG = typeof(AssetBundleResourceManager).Name;
+    private static readonly string _TAG = nameof(AssetBundleResourceManager);
 
-    static string assetBundlePath;
-    static string cachePathRoot;
+    private static string _AssetBundlePath;
+    private static string _CachePathRoot;
 
-    public override PathResolver pathResolver
-    {
-      get { return PathToResourceAsFile; }
-    }
+    public override PathResolver pathResolver => PathToResourceAsFile;
 
-    public override ResourceProvider resourceProvider
-    {
-      get { return GetResourceContents; }
-    }
+    public override ResourceProvider resourceProvider => GetResourceContents;
 
     public AssetBundleResourceManager(string assetBundleName, string cachePath = "Cache") : base()
     {
       // It's safe to update static members because at most one RsourceManager can be initialized.
-      assetBundlePath = Path.Combine(Application.streamingAssetsPath, assetBundleName);
-      cachePathRoot = Path.Combine(Application.persistentDataPath, cachePath);
+      _AssetBundlePath = Path.Combine(Application.streamingAssetsPath, assetBundleName);
+      _CachePathRoot = Path.Combine(Application.persistentDataPath, cachePath);
     }
 
     public override bool IsPrepared(string name)
@@ -36,10 +36,10 @@ namespace Mediapipe.Unity
       return File.Exists(path);
     }
 
-    AssetBundle _assetBundle;
-    AssetBundle assetBundle
+    private AssetBundle _assetBundle;
+    private AssetBundle assetBundle
     {
-      get { return _assetBundle; }
+      get => _assetBundle;
       set
       {
         if (_assetBundle != null)
@@ -52,9 +52,9 @@ namespace Mediapipe.Unity
 
     public void ClearAllCacheFiles()
     {
-      if (Directory.Exists(cachePathRoot))
+      if (Directory.Exists(_CachePathRoot))
       {
-        Directory.Delete(cachePathRoot, true);
+        Directory.Delete(_CachePathRoot, true);
       }
     }
 
@@ -62,16 +62,16 @@ namespace Mediapipe.Unity
     {
       if (assetBundle != null)
       {
-        Logger.LogWarning(TAG, "AssetBundle is already loaded");
+        Logger.LogWarning(_TAG, "AssetBundle is already loaded");
         yield break;
       }
 
-      var bundleLoadReq = AssetBundle.LoadFromFileAsync(assetBundlePath);
+      var bundleLoadReq = AssetBundle.LoadFromFileAsync(_AssetBundlePath);
       yield return bundleLoadReq;
 
       if (bundleLoadReq.assetBundle == null)
       {
-        throw new IOException($"Failed to load {assetBundlePath}");
+        throw new IOException($"Failed to load {_AssetBundlePath}");
       }
 
       assetBundle = bundleLoadReq.assetBundle;
@@ -83,7 +83,7 @@ namespace Mediapipe.Unity
 
       if (File.Exists(destFilePath) && !overwrite)
       {
-        Logger.LogInfo(TAG, $"{name} will not be copied to {destFilePath} because it already exists");
+        Logger.LogInfo(_TAG, $"{name} will not be copied to {destFilePath} because it already exists");
         yield break;
       }
 
@@ -100,18 +100,18 @@ namespace Mediapipe.Unity
         throw new IOException($"Failed to load {name} from {assetBundle.name}");
       }
 
-      Logger.LogVerbose(TAG, $"Writing {name} data to {destFilePath}...");
-      if (!Directory.Exists(cachePathRoot))
+      Logger.LogVerbose(_TAG, $"Writing {name} data to {destFilePath}...");
+      if (!Directory.Exists(_CachePathRoot))
       {
-        Directory.CreateDirectory(cachePathRoot);
+        var _ = Directory.CreateDirectory(_CachePathRoot);
       }
       var bytes = (assetLoadReq.asset as TextAsset).bytes;
       File.WriteAllBytes(destFilePath, bytes);
-      Logger.LogVerbose(TAG, $"{name} is saved to {destFilePath} (length={bytes.Length})");
+      Logger.LogVerbose(_TAG, $"{name} is saved to {destFilePath} (length={bytes.Length})");
     }
 
     [AOT.MonoPInvokeCallback(typeof(PathResolver))]
-    static string PathToResourceAsFile(string assetPath)
+    protected static string PathToResourceAsFile(string assetPath)
     {
       var assetName = GetAssetNameFromPath(assetPath);
       return GetCachePathFor(assetName);
@@ -127,7 +127,7 @@ namespace Mediapipe.Unity
         var cachePath = PathToResourceAsFile(path);
         if (!File.Exists(cachePath))
         {
-          Logger.LogError(TAG, $"{cachePath} is not found");
+          Logger.LogError(_TAG, $"{cachePath} is not found");
           return false;
         }
 
@@ -146,9 +146,9 @@ namespace Mediapipe.Unity
       }
     }
 
-    static string GetCachePathFor(string assetName)
+    private static string GetCachePathFor(string assetName)
     {
-      return Path.Combine(cachePathRoot, assetName);
+      return Path.Combine(_CachePathRoot, assetName);
     }
   }
 }

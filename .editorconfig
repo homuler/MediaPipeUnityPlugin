@@ -86,6 +86,10 @@ csharp_style_var_elsewhere = true
 # Expression-bodied members
 
 # Pattern matching preferences
+### Use switch expression (IDE0066)
+csharp_style_prefer_switch_expression = false
+
+### Use pattern matching (IDE0078)
 csharp_style_prefer_pattern_matching = false
 
 # Code block preferences

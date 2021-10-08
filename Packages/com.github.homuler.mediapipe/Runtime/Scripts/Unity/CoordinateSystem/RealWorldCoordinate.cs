@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using UnityEngine;
 
 namespace Mediapipe.Unity.CoordinateSystem
@@ -21,7 +27,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="scale">Ratio of real world coordinate values to local coordinate values</param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3 GetLocalPosition(RectTransform rectTransform, float x, float y, float z, Vector3 scale, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    public static Vector3 GetLocalPosition(float x, float y, float z, Vector3 scale, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
     {
       var (rx, ry) = IsInverted(imageRotation) ? (y, x) : (x, y);
       var realX = IsXReversed(imageRotation, isMirrored) ? -rx : rx;
@@ -38,27 +44,23 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="scale">Ratio of real world coordinate values to local coordinate values</param>
     /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3 GetLocalPosition(this RectTransform rectTransform, Landmark landmark, Vector3 scale, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    public static Vector3 GetLocalPosition(this RectTransform _, Landmark landmark, Vector3 scale, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
     {
-      return GetLocalPosition(rectTransform, landmark.X, landmark.Y, landmark.Z, scale, imageRotation, isMirrored);
+      return GetLocalPosition(landmark.X, landmark.Y, landmark.Z, scale, imageRotation, isMirrored);
     }
 
     public static bool IsXReversed(RotationAngle rotationAngle, bool isMirrored = false)
     {
-      if (isMirrored)
-      {
-        return rotationAngle == RotationAngle.Rotation0 || rotationAngle == RotationAngle.Rotation90;
-      }
-      return rotationAngle == RotationAngle.Rotation90 || rotationAngle == RotationAngle.Rotation180;
+      return isMirrored ?
+        rotationAngle == RotationAngle.Rotation0 || rotationAngle == RotationAngle.Rotation90 :
+        rotationAngle == RotationAngle.Rotation90 || rotationAngle == RotationAngle.Rotation180;
     }
 
     public static bool IsYReversed(RotationAngle rotationAngle, bool isMirrored = false)
     {
-      if (isMirrored)
-      {
-        return rotationAngle == RotationAngle.Rotation0 || rotationAngle == RotationAngle.Rotation270;
-      }
-      return rotationAngle == RotationAngle.Rotation0 || rotationAngle == RotationAngle.Rotation90;
+      return isMirrored ?
+        rotationAngle == RotationAngle.Rotation0 || rotationAngle == RotationAngle.Rotation270 :
+        rotationAngle == RotationAngle.Rotation0 || rotationAngle == RotationAngle.Rotation90;
     }
 
     public static bool IsInverted(RotationAngle rotationAngle)

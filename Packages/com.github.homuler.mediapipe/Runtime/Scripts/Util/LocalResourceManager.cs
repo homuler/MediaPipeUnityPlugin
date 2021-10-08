@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 #if UNITY_EDITOR
 using System;
 using System.Collections;
@@ -9,27 +15,21 @@ namespace Mediapipe.Unity
 {
   public class LocalResourceManager : ResourceManager
   {
-    static readonly string TAG = typeof(LocalResourceManager).Name;
+    private static readonly string _TAG = nameof(LocalResourceManager);
 
-    static string relativePath;
-    static readonly string assetPathRoot = "Packages/com.github.homuler.mediapipe/Runtime/Resources";
-    static string cachePathRoot;
+    private static string _RelativePath;
+    private static readonly string _AssetPathRoot = "Packages/com.github.homuler.mediapipe/Runtime/Resources";
+    private static string _CachePathRoot;
 
-    public override PathResolver pathResolver
-    {
-      get { return PathToResourceAsFile; }
-    }
+    public override PathResolver pathResolver => PathToResourceAsFile;
 
-    public override ResourceProvider resourceProvider
-    {
-      get { return GetResourceContents; }
-    }
+    public override ResourceProvider resourceProvider => GetResourceContents;
 
     public LocalResourceManager(string path) : base()
     {
       // It's safe to update static members because at most one RsourceManager can be initialized.
-      relativePath = path;
-      cachePathRoot = Path.Combine(Application.persistentDataPath, relativePath);
+      _RelativePath = path;
+      _CachePathRoot = Path.Combine(Application.persistentDataPath, _RelativePath);
     }
 
     public LocalResourceManager() : this("") { }
@@ -45,20 +45,20 @@ namespace Mediapipe.Unity
 
       if (File.Exists(destFilePath) && !overwrite)
       {
-        Logger.LogInfo(TAG, $"{name} will not be copied to {destFilePath} because it already exists");
+        Logger.LogInfo(_TAG, $"{name} will not be copied to {destFilePath} because it already exists");
         yield break;
       }
 
       var assetPath = GetAssetPathFor(name);
       var asset = AssetDatabase.LoadAssetAtPath<TextAsset>(assetPath);
 
-      Logger.LogVerbose(TAG, $"Writing {name} data to {destFilePath}...");
-      if (!Directory.Exists(cachePathRoot))
+      Logger.LogVerbose(_TAG, $"Writing {name} data to {destFilePath}...");
+      if (!Directory.Exists(_CachePathRoot))
       {
-        Directory.CreateDirectory(cachePathRoot);
+        var _ = Directory.CreateDirectory(_CachePathRoot);
       }
       File.WriteAllBytes(destFilePath, asset.bytes);
-      Logger.LogVerbose(TAG, $"{name} is saved to {destFilePath} (length={asset.bytes.Length})");
+      Logger.LogVerbose(_TAG, $"{name} is saved to {destFilePath} (length={asset.bytes.Length})");
     }
 
     [AOT.MonoPInvokeCallback(typeof(PathResolver))]
@@ -79,7 +79,7 @@ namespace Mediapipe.Unity
         var cachePath = PathToResourceAsFile(path);
         if (!File.Exists(cachePath))
         {
-          Logger.LogError(TAG, $"{cachePath} is not found");
+          Logger.LogError(_TAG, $"{cachePath} is not found");
           return false;
         }
 
@@ -98,14 +98,14 @@ namespace Mediapipe.Unity
       }
     }
 
-    static string GetAssetPathFor(string assetName)
+    private static string GetAssetPathFor(string assetName)
     {
-      return Path.Combine(assetPathRoot, assetName);
+      return Path.Combine(_AssetPathRoot, assetName);
     }
 
-    static string GetCachePathFor(string assetName)
+    private static string GetCachePathFor(string assetName)
     {
-      return Path.Combine(cachePathRoot, assetName);
+      return Path.Combine(_CachePathRoot, assetName);
     }
   }
 }

@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections;
 using System.IO;
@@ -8,28 +14,22 @@ namespace Mediapipe.Unity
 {
   public class StreamingAssetsResourceManager : ResourceManager
   {
-    static readonly string TAG = typeof(StreamingAssetsResourceManager).Name;
+    private static readonly string _TAG = nameof(StreamingAssetsResourceManager);
 
-    static string relativePath;
-    static string assetPathRoot;
-    static string cachePathRoot;
+    private static string _RelativePath;
+    private static string _AssetPathRoot;
+    private static string _CachePathRoot;
 
-    public override PathResolver pathResolver
-    {
-      get { return PathToResourceAsFile; }
-    }
+    public override PathResolver pathResolver => PathToResourceAsFile;
 
-    public override ResourceProvider resourceProvider
-    {
-      get { return GetResourceContents; }
-    }
+    public override ResourceProvider resourceProvider => GetResourceContents;
 
     public StreamingAssetsResourceManager(string path) : base()
     {
       // It's safe to update static members because at most one RsourceManager can be initialized.
-      relativePath = path;
-      assetPathRoot = Path.Combine(Application.streamingAssetsPath, relativePath);
-      cachePathRoot = Path.Combine(Application.persistentDataPath, relativePath);
+      _RelativePath = path;
+      _AssetPathRoot = Path.Combine(Application.streamingAssetsPath, _RelativePath);
+      _CachePathRoot = Path.Combine(Application.persistentDataPath, _RelativePath);
     }
 
     public StreamingAssetsResourceManager() : this("") { }
@@ -47,7 +47,7 @@ namespace Mediapipe.Unity
 
       if (File.Exists(destFilePath) && !overwrite)
       {
-        Logger.LogInfo(TAG, $"{name} will not be copied to {destFilePath} because it already exists");
+        Logger.LogInfo(_TAG, $"{name} will not be copied to {destFilePath} because it already exists");
         yield break;
       }
 
@@ -62,9 +62,9 @@ namespace Mediapipe.Unity
         yield break;
       }
 
-      Logger.LogVerbose(TAG, $"Copying {sourceFilePath} to {destFilePath}...");
+      Logger.LogVerbose(_TAG, $"Copying {sourceFilePath} to {destFilePath}...");
       File.Copy(sourceFilePath, destFilePath, overwrite);
-      Logger.LogVerbose(TAG, $"{sourceFilePath} is copied to {destFilePath}");
+      Logger.LogVerbose(_TAG, $"{sourceFilePath} is copied to {destFilePath}");
     }
 
     [AOT.MonoPInvokeCallback(typeof(PathResolver))]
@@ -85,7 +85,7 @@ namespace Mediapipe.Unity
         var cachePath = PathToResourceAsFile(path);
         if (!File.Exists(cachePath))
         {
-          Logger.LogError(TAG, $"{cachePath} is not found");
+          Logger.LogError(_TAG, $"{cachePath} is not found");
           return false;
         }
 
@@ -104,7 +104,7 @@ namespace Mediapipe.Unity
       }
     }
 
-    IEnumerator CreateCacheFile(string assetName)
+    private IEnumerator CreateCacheFile(string assetName)
     {
       var cacheFilePath = GetCachePathFor(assetName);
 
@@ -123,14 +123,14 @@ namespace Mediapipe.Unity
 
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
-          if (!Directory.Exists(cachePathRoot))
+          if (!Directory.Exists(_CachePathRoot))
           {
-            Directory.CreateDirectory(cachePathRoot);
+            Directory.CreateDirectory(_CachePathRoot);
           }
-          Logger.LogVerbose(TAG, $"Writing {assetName} data to {cacheFilePath}...");
+          Logger.LogVerbose(_TAG, $"Writing {assetName} data to {cacheFilePath}...");
           var bytes = webRequest.downloadHandler.data;
           File.WriteAllBytes(cacheFilePath, bytes);
-          Logger.LogVerbose(TAG, $"{assetName} is saved to {cacheFilePath} (length={bytes.Length})");
+          Logger.LogVerbose(_TAG, $"{assetName} is saved to {cacheFilePath} (length={bytes.Length})");
         }
         else
         {
@@ -140,19 +140,15 @@ namespace Mediapipe.Unity
 #endif
     }
 
-    static string GetAssetPathFor(string assetName)
+    private static string GetAssetPathFor(string assetName)
     {
-      return Path.Combine(assetPathRoot, assetName);
+      return Path.Combine(_AssetPathRoot, assetName);
     }
 
-    static string GetCachePathFor(string assetName)
+    private static string GetCachePathFor(string assetName)
     {
       var assetPath = GetAssetPathFor(assetName);
-      if (File.Exists(assetPath))
-      {
-        return assetPath;
-      }
-      return Path.Combine(cachePathRoot, assetName);
+      return File.Exists(assetPath) ? assetPath : Path.Combine(_CachePathRoot, assetName);
     }
   }
 }

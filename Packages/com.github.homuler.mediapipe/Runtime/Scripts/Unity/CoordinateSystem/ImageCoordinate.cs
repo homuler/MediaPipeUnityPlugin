@@ -1,6 +1,12 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using UnityEngine;
 
-using mplt = global::Mediapipe.LocationData.Types;
+using mplt = Mediapipe.LocationData.Types;
 
 namespace Mediapipe.Unity.CoordinateSystem
 {
@@ -26,8 +32,8 @@ namespace Mediapipe.Unity.CoordinateSystem
       var rect = rectTransform.rect;
       var isInverted = IsInverted(imageRotation);
       var (rectX, rectY) = isInverted ? (y, x) : (x, y);
-      var localX = (IsXReversed(imageRotation, isMirrored) ? imageSize.x - rectX : rectX) * rect.width / imageSize.x - rect.width / 2;
-      var localY = (IsYReversed(imageRotation, isMirrored) ? imageSize.y - rectY : rectY) * rect.height / imageSize.y - rect.height / 2;
+      var localX = ((IsXReversed(imageRotation, isMirrored) ? imageSize.x - rectX : rectX) * rect.width / imageSize.x) - (rect.width / 2);
+      var localY = ((IsYReversed(imageRotation, isMirrored) ? imageSize.y - rectY : rectY) * rect.height / imageSize.y) - (rect.height / 2);
       return new Vector3(localX, localY, z);
     }
 
@@ -234,7 +240,7 @@ namespace Mediapipe.Unity.CoordinateSystem
       };
     }
 
-    static Vector3[] GetRectVertices(Vector2 p, Vector2 q)
+    private static Vector3[] GetRectVertices(Vector2 p, Vector2 q)
     {
       var leftX = Mathf.Min(p.x, q.x);
       var rightX = Mathf.Max(p.x, q.x);
@@ -330,8 +336,8 @@ namespace Mediapipe.Unity.CoordinateSystem
       var anchorDepth = anchor3d.Z * defaultDepth;
 
       // Maybe it should be defined as a CameraCoordinate method
-      var x = (anchorPoint2d.x - cameraPosition.x) * anchorDepth / cameraDepth + cameraPosition.x;
-      var y = (anchorPoint2d.y - cameraPosition.y) * anchorDepth / cameraDepth + cameraPosition.y;
+      var x = ((anchorPoint2d.x - cameraPosition.x) * anchorDepth / cameraDepth) + cameraPosition.x;
+      var y = ((anchorPoint2d.y - cameraPosition.y) * anchorDepth / cameraDepth) + cameraPosition.y;
       var z = cameraPosition.z > 0 ? cameraPosition.z - anchorDepth : cameraPosition.z + anchorDepth;
       return new Vector3(x, y, z);
     }
@@ -409,11 +415,9 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// </summary>
     public static bool IsXReversed(RotationAngle rotationAngle, bool isMirrored = false)
     {
-      if (isMirrored)
-      {
-        return rotationAngle == RotationAngle.Rotation0 || rotationAngle == RotationAngle.Rotation90;
-      }
-      return rotationAngle == RotationAngle.Rotation90 || rotationAngle == RotationAngle.Rotation180;
+      return isMirrored ?
+        rotationAngle == RotationAngle.Rotation0 || rotationAngle == RotationAngle.Rotation90 :
+        rotationAngle == RotationAngle.Rotation90 || rotationAngle == RotationAngle.Rotation180;
     }
 
     /// <summary>
@@ -423,11 +427,9 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// </summary>
     public static bool IsYReversed(RotationAngle rotationAngle, bool isMirrored = false)
     {
-      if (isMirrored)
-      {
-        return rotationAngle == RotationAngle.Rotation0 || rotationAngle == RotationAngle.Rotation270;
-      }
-      return rotationAngle == RotationAngle.Rotation0 || rotationAngle == RotationAngle.Rotation90;
+      return isMirrored ?
+        rotationAngle == RotationAngle.Rotation0 || rotationAngle == RotationAngle.Rotation270 :
+        rotationAngle == RotationAngle.Rotation0 || rotationAngle == RotationAngle.Rotation90;
     }
 
     public static bool IsInverted(RotationAngle rotationAngle)

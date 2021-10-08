@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using UnityEngine;
 
 namespace Mediapipe.Unity.CoordinateSystem
@@ -27,11 +33,11 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
     public static Vector3 GetLocalPosition(RectTransform rectTransform, float x, float y, float z, Vector2 focalLength, Vector2 principalPoint, float zScale, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
     {
-      var pixelX = (-focalLength.x * x / z + principalPoint.x) / 2;
-      var pixelY = (focalLength.y * y / z + principalPoint.y) / 2;
+      var pixelX = ((-focalLength.x * x / z) + principalPoint.x) / 2;
+      var pixelY = ((focalLength.y * y / z) + principalPoint.y) / 2;
       // Reverse the sign of Z because camera coordinate system is right-handed
       var rect = rectTransform.rect;
-      return RealWorldCoordinate.GetLocalPosition(rectTransform, pixelX, pixelY, -z, new Vector3(rect.width, rect.height, zScale), imageRotation, isMirrored);
+      return RealWorldCoordinate.GetLocalPosition(pixelX, pixelY, -z, new Vector3(rect.width, rect.height, zScale), imageRotation, isMirrored);
     }
 
     /// <summary>
@@ -52,20 +58,16 @@ namespace Mediapipe.Unity.CoordinateSystem
 
     public static bool IsXReversed(RotationAngle rotationAngle, bool isMirrored = false)
     {
-      if (isMirrored)
-      {
-        return rotationAngle == RotationAngle.Rotation0 || rotationAngle == RotationAngle.Rotation270;
-      }
-      return rotationAngle == RotationAngle.Rotation180 || rotationAngle == RotationAngle.Rotation270;
+      return isMirrored ?
+        rotationAngle == RotationAngle.Rotation0 || rotationAngle == RotationAngle.Rotation270 :
+        rotationAngle == RotationAngle.Rotation180 || rotationAngle == RotationAngle.Rotation270;
     }
 
     public static bool IsYReversed(RotationAngle rotationAngle, bool isMirrored = false)
     {
-      if (isMirrored)
-      {
-        return rotationAngle == RotationAngle.Rotation180 || rotationAngle == RotationAngle.Rotation270;
-      }
-      return rotationAngle == RotationAngle.Rotation90 || rotationAngle == RotationAngle.Rotation180;
+      return isMirrored ?
+        rotationAngle == RotationAngle.Rotation180 || rotationAngle == RotationAngle.Rotation270 :
+        rotationAngle == RotationAngle.Rotation90 || rotationAngle == RotationAngle.Rotation180;
     }
 
     public static bool IsInverted(RotationAngle rotationAngle)
