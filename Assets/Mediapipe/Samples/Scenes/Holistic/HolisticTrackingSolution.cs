@@ -55,27 +55,27 @@ namespace Mediapipe.Unity.Holistic
     public override void Pause()
     {
       base.Pause();
-      ImageSourceProvider.imageSource.Pause();
+      ImageSourceProvider.ImageSource.Pause();
     }
 
     public override void Resume()
     {
       base.Resume();
-      StartCoroutine(ImageSourceProvider.imageSource.Resume());
+      StartCoroutine(ImageSourceProvider.ImageSource.Resume());
     }
 
     public override void Stop()
     {
       base.Stop();
       StopCoroutine(coroutine);
-      ImageSourceProvider.imageSource.Stop();
+      ImageSourceProvider.ImageSource.Stop();
       graphRunner.Stop();
     }
 
     IEnumerator Run()
     {
       var graphInitRequest = graphRunner.WaitForInit();
-      var imageSource = ImageSourceProvider.imageSource;
+      var imageSource = ImageSourceProvider.ImageSource;
 
       yield return imageSource.Play();
 
@@ -138,7 +138,7 @@ namespace Mediapipe.Unity.Holistic
         var textureFrame = textureFrameRequest.result;
 
         // Copy current image to TextureFrame
-        ReadFromImageSource(textureFrame, runningMode, graphRunner.configType);
+        ReadFromImageSource(imageSource, textureFrame);
 
         graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 

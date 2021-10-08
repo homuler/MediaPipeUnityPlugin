@@ -152,13 +152,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4d846393f8d9f20fa64b924b0d95e68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screen: {fileID: 941420919}
-  consolePrefab: {fileID: 3481718972971892304, guid: 3bd1ffa1267fbef6fbdd99b4a8e699ff,
+  _screen: {fileID: 941420919}
+  _consolePrefab: {fileID: 3481718972971892304, guid: 3bd1ffa1267fbef6fbdd99b4a8e699ff,
     type: 3}
-  defaultImageSource: 0
-  preferableInferenceMode: 0
-  assetLoaderType: 0
-  enableGlog: 1
+  _defaultImageSource: 0
+  _preferableInferenceMode: 0
+  _assetLoaderType: 0
+  _enableGlog: 1
 --- !u!4 &542027324
 Transform:
   m_ObjectHideFlags: 0

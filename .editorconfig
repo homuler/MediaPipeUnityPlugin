@@ -63,6 +63,9 @@ dotnet_diagnostic.IDE0064.severity = warning
 # Parentheses preferences
 
 # Expression-level preferences
+### Use range operator (IDE0057)
+csharp_style_prefer_range_operator = false
+
 ### Convert anonymous type to tuple (IDE0050)
 dotnet_diagnostic.IDE0050.severity = suggestion
 
@@ -195,6 +198,14 @@ dotnet_naming_symbols.field_symbol.applicable_accessibilities = *
 dotnet_naming_rule.fields_must_be_camel_case.symbols = field_symbol
 dotnet_naming_rule.fields_must_be_camel_case.style = camel_case_style
 dotnet_naming_rule.fields_must_be_camel_case.severity = warning
+
+# Static Properties
+dotnet_naming_symbols.static_property_symbol.applicable_kinds = property
+dotnet_naming_symbols.static_property_symbol.applicable_accessibilities = *
+dotnet_naming_symbols.static_property_symbol.required_modifiers = static
+dotnet_naming_rule.static_properties_must_be_pascal_case.symbols = static_property_symbol
+dotnet_naming_rule.static_properties_must_be_pascal_case.style = pascal_case_style
+dotnet_naming_rule.static_properties_must_be_pascal_case.severity = warning
 
 # Properties
 dotnet_naming_symbols.property_symbol.applicable_kinds = property

@@ -529,9 +529,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16c2b29e89bd42ff3a18f0dcb2443a00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cpuConfig: {fileID: 4900000, guid: 8f3388933fd0d988bada4485c36473b1, type: 3}
-  gpuConfig: {fileID: 4900000, guid: b879658ff2b804213844d38d49d1d85a, type: 3}
-  openGlEsConfig: {fileID: 4900000, guid: 8d3e2ce0c5dd4ac1fbd438fc86427ec4, type: 3}
+  _cpuConfig: {fileID: 4900000, guid: 8f3388933fd0d988bada4485c36473b1, type: 3}
+  _gpuConfig: {fileID: 4900000, guid: b879658ff2b804213844d38d49d1d85a, type: 3}
+  _openGlEsConfig: {fileID: 4900000, guid: 8d3e2ce0c5dd4ac1fbd438fc86427ec4, type: 3}
   _timeoutMicrosec: 50000
   category: 3
   maxNumObjects: 5
@@ -589,7 +589,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5da564da19cb6b7d8e4f97f269edc5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poolSize: 10
+  _poolSize: 10
 --- !u!1001 &1383564303
 PrefabInstance:
   m_ObjectHideFlags: 0

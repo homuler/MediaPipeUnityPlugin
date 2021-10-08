@@ -19,7 +19,7 @@ namespace Mediapipe
     }
 
     private static bool _Logtostderr = false;
-    public static bool logtostderr
+    public static bool Logtostderr
     {
       get => _Logtostderr;
       set
@@ -30,7 +30,7 @@ namespace Mediapipe
     }
 
     private static int _Stderrthreshold = 2;
-    public static int stderrthreshold
+    public static int Stderrthreshold
     {
       get => _Stderrthreshold;
       set
@@ -41,7 +41,7 @@ namespace Mediapipe
     }
 
     private static int _Minloglevel = 0;
-    public static int minloglevel
+    public static int Minloglevel
     {
       get => _Minloglevel;
       set
@@ -52,7 +52,7 @@ namespace Mediapipe
     }
 
     private static string _LogDir;
-    public static string logDir
+    public static string LogDir
     {
       get => _LogDir;
       set
@@ -63,7 +63,7 @@ namespace Mediapipe
     }
 
     private static int _V = 0;
-    public static int v
+    public static int V
     {
       get => _V;
       set

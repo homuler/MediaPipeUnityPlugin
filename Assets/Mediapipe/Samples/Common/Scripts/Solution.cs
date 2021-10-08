@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,7 +12,10 @@ namespace Mediapipe.Unity
 {
   public abstract class Solution : MonoBehaviour
   {
-    protected virtual string TAG { get { return this.GetType().Name; } }
+#pragma warning disable IDE1006
+    // TODO: make it static
+    protected virtual string TAG => GetType().Name;
+#pragma warning restore IDE1006
 
     protected Bootstrap bootstrap;
     protected bool isPaused;
@@ -76,9 +85,9 @@ namespace Mediapipe.Unity
       annotationController.rotationAngle = imageSource.rotation.Reverse();
     }
 
-    protected static void ReadFromImageSource(TextureFrame textureFrame, RunningMode runningMode, GraphRunner.ConfigType configType)
+    protected static void ReadFromImageSource(ImageSource imageSource, TextureFrame textureFrame)
     {
-      var sourceTexture = ImageSourceProvider.imageSource.GetCurrentTexture();
+      var sourceTexture = imageSource.GetCurrentTexture();
 
       // For some reason, when the image is coiped on GPU, latency tends to be high.
       // So even when OpenGL ES is available, use CPU to copy images.

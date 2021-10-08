@@ -36,20 +36,20 @@ namespace Mediapipe.Unity.InstantMotionTracking
     public override void Pause()
     {
       base.Pause();
-      ImageSourceProvider.imageSource.Pause();
+      ImageSourceProvider.ImageSource.Pause();
     }
 
     public override void Resume()
     {
       base.Resume();
-      StartCoroutine(ImageSourceProvider.imageSource.Resume());
+      StartCoroutine(ImageSourceProvider.ImageSource.Resume());
     }
 
     public override void Stop()
     {
       base.Stop();
       StopCoroutine(coroutine);
-      ImageSourceProvider.imageSource.Stop();
+      ImageSourceProvider.ImageSource.Stop();
       graphRunner.Stop();
     }
 
@@ -63,7 +63,7 @@ namespace Mediapipe.Unity.InstantMotionTracking
         {
           if (RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, Camera.main, out var localPoint))
           {
-            var normalizedPoint = rectTransform.GetNormalizedPosition(localPoint, graphRunner.rotation, ImageSourceProvider.imageSource.isHorizontallyFlipped);
+            var normalizedPoint = rectTransform.GetNormalizedPosition(localPoint, graphRunner.rotation, ImageSourceProvider.ImageSource.isHorizontallyFlipped);
             graphRunner.ResetAnchor(normalizedPoint.x, normalizedPoint.y);
             trackedAnchorDataAnnotationController.ResetAnchor();
           }
@@ -74,7 +74,7 @@ namespace Mediapipe.Unity.InstantMotionTracking
     IEnumerator Run()
     {
       var graphInitRequest = graphRunner.WaitForInit();
-      var imageSource = ImageSourceProvider.imageSource;
+      var imageSource = ImageSourceProvider.ImageSource;
 
       yield return imageSource.Play();
 
@@ -124,7 +124,7 @@ namespace Mediapipe.Unity.InstantMotionTracking
         var textureFrame = textureFrameRequest.result;
 
         // Copy current image to TextureFrame
-        ReadFromImageSource(textureFrame, runningMode, graphRunner.configType);
+        ReadFromImageSource(imageSource, textureFrame);
 
         graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 

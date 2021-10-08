@@ -1,29 +1,34 @@
-using System;
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections;
 
 namespace Mediapipe.Unity
 {
   public static class AssetLoader
   {
-    static ResourceManager resourceManager;
+    private static ResourceManager _ResourceManager;
 
     public static void Provide(ResourceManager manager)
     {
-      resourceManager = manager;
+      _ResourceManager = manager;
     }
 
     public static IEnumerator PrepareAssetAsync(string name, string uniqueKey, bool overwrite = false)
     {
-      if (resourceManager == null)
+      if (_ResourceManager == null)
       {
 #if UNITY_EDITOR
         Logger.LogWarning("ResourceManager is not provided, so default LocalResourceManager will be used");
-        resourceManager = new LocalResourceManager();
+        _ResourceManager = new LocalResourceManager();
 #else
         throw new InvalidOperationException("ResourceManager is not provided");
 #endif
       }
-      return resourceManager.PrepareAssetAsync(name, uniqueKey, overwrite);
+      return _ResourceManager.PrepareAssetAsync(name, uniqueKey, overwrite);
     }
 
     public static IEnumerator PrepareAssetAsync(string name, bool overwrite = false)

@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,20 +25,20 @@ namespace Mediapipe.Unity
       OpenGLES,
     }
 
-    protected string TAG { get { return this.GetType().Name; } }
+#pragma warning disable IDE1006
+    // TODO: make it static
+    protected string TAG => GetType().Name;
+#pragma warning restore IDE1006
 
-    [SerializeField] TextAsset cpuConfig = null;
-    [SerializeField] TextAsset gpuConfig = null;
-    [SerializeField] TextAsset openGlEsConfig = null;
-    [SerializeField] long _timeoutMicrosec = 0;
+    [SerializeField] private TextAsset _cpuConfig = null;
+    [SerializeField] private TextAsset _gpuConfig = null;
+    [SerializeField] private TextAsset _openGlEsConfig = null;
+    [SerializeField] private long _timeoutMicrosec = 0;
 
-    static readonly GlobalInstanceTable<int, GraphRunner> instanceTable = new GlobalInstanceTable<int, GraphRunner>(5);
-    static readonly Dictionary<IntPtr, int> nameTable = new Dictionary<IntPtr, int>();
+    private static readonly GlobalInstanceTable<int, GraphRunner> _InstanceTable = new GlobalInstanceTable<int, GraphRunner>(5);
+    private static readonly Dictionary<IntPtr, int> _NameTable = new Dictionary<IntPtr, int>();
 
-    public InferenceMode inferenceMode
-    {
-      get { return configType == ConfigType.CPU ? InferenceMode.CPU : InferenceMode.GPU; }
-    }
+    public InferenceMode inferenceMode => configType == ConfigType.CPU ? InferenceMode.CPU : InferenceMode.GPU;
     public ConfigType configType { get; private set; }
     public TextAsset config
     {
@@ -40,9 +46,10 @@ namespace Mediapipe.Unity
       {
         switch (configType)
         {
-          case ConfigType.CPU: return cpuConfig;
-          case ConfigType.GPU: return gpuConfig;
-          case ConfigType.OpenGLES: return openGlEsConfig;
+          case ConfigType.CPU: return _cpuConfig;
+          case ConfigType.GPU: return _gpuConfig;
+          case ConfigType.OpenGLES: return _openGlEsConfig;
+          case ConfigType.None:
           default: return null;
         }
       }
@@ -50,26 +57,20 @@ namespace Mediapipe.Unity
 
     public long timeoutMicrosec
     {
-      get { return _timeoutMicrosec; }
-      private set { _timeoutMicrosec = value; }
+      get => _timeoutMicrosec;
+      private set => _timeoutMicrosec = value;
     }
-    public long timeoutMillisec { get { return timeoutMicrosec / 1000; } }
+    public long timeoutMillisec => timeoutMicrosec / 1000;
 
     public RotationAngle rotation { get; private set; } = 0;
 
-    Stopwatch stopwatch;
+    private Stopwatch _stopwatch;
     protected CalculatorGraph calculatorGraph { get; private set; }
     protected Timestamp currentTimestamp;
 
-#if UNITY_ANDROID
-    // For OpenGL ES
-    readonly object frameLock = new object();
-    protected TextureFrame currentTextureFrame;
-#endif
-
     protected virtual void Start()
     {
-      instanceTable.Add(GetInstanceID(), this);
+      _InstanceTable.Add(GetInstanceID(), this);
     }
 
     protected virtual void OnDestroy()
@@ -93,8 +94,8 @@ namespace Mediapipe.Unity
       }
 
       InitializeCalculatorGraph().AssertOk();
-      stopwatch = new Stopwatch();
-      stopwatch.Start();
+      _stopwatch = new Stopwatch();
+      _stopwatch.Start();
 
       Logger.LogInfo(TAG, "Loading dependent assets...");
       var assetRequests = RequestDependentAssets();
@@ -134,13 +135,13 @@ namespace Mediapipe.Unity
         }
       }
 
-      nameTable.Remove(calculatorGraph.mpPtr);
+      var _ = _NameTable.Remove(calculatorGraph.mpPtr);
       calculatorGraph.Dispose();
       calculatorGraph = null;
 
-      if (stopwatch != null && stopwatch.IsRunning)
+      if (_stopwatch != null && _stopwatch.IsRunning)
       {
-        stopwatch.Stop();
+        _stopwatch.Stop();
       }
     }
 
@@ -155,7 +156,7 @@ namespace Mediapipe.Unity
 
       if (configType == ConfigType.OpenGLES)
       {
-        var gpuBuffer = textureFrame.BuildGpuBuffer(GpuManager.glCalculatorHelper.GetGlContext());
+        var gpuBuffer = textureFrame.BuildGpuBuffer(GpuManager.GlCalculatorHelper.GetGlContext());
         return calculatorGraph.AddPacketToInputStream(streamName, new GpuBufferPacket(gpuBuffer, currentTimestamp));
       }
 
@@ -177,11 +178,11 @@ namespace Mediapipe.Unity
 
     protected static bool TryGetGraphRunner(IntPtr graphPtr, out GraphRunner graphRunner)
     {
-      var isInstanceIdFound = nameTable.TryGetValue(graphPtr, out var instanceId);
+      var isInstanceIdFound = _NameTable.TryGetValue(graphPtr, out var instanceId);
 
       if (isInstanceIdFound)
       {
-        return instanceTable.TryGetValue(instanceId, out graphRunner);
+        return _InstanceTable.TryGetValue(instanceId, out graphRunner);
       }
       graphRunner = null;
       return false;
@@ -253,18 +254,18 @@ namespace Mediapipe.Unity
 
     protected Timestamp GetCurrentTimestamp()
     {
-      if (stopwatch == null || !stopwatch.IsRunning)
+      if (_stopwatch == null || !_stopwatch.IsRunning)
       {
         return Timestamp.Unset();
       }
-      var microseconds = (stopwatch.ElapsedTicks) / (TimeSpan.TicksPerMillisecond / 1000);
+      var microseconds = _stopwatch.ElapsedTicks / (TimeSpan.TicksPerMillisecond / 1000);
       return new Timestamp(microseconds);
     }
 
     protected Status InitializeCalculatorGraph()
     {
       calculatorGraph = new CalculatorGraph();
-      nameTable.Add(calculatorGraph.mpPtr, GetInstanceID());
+      _NameTable.Add(calculatorGraph.mpPtr, GetInstanceID());
 
       // NOTE: There's a simpler way to initialize CalculatorGraph.
       //
@@ -278,12 +279,7 @@ namespace Mediapipe.Unity
         var calculatorGraphConfig = GetCalculatorGraphConfig();
         var status = calculatorGraph.Initialize(calculatorGraphConfig);
 
-        if (!status.Ok() || inferenceMode == InferenceMode.CPU)
-        {
-          return status;
-        }
-
-        return calculatorGraph.SetGpuResources(GpuManager.gpuResources);
+        return !status.Ok() || inferenceMode == InferenceMode.CPU ? status : calculatorGraph.SetGpuResources(GpuManager.GpuResources);
       }
       catch (Exception e)
       {
@@ -322,22 +318,18 @@ namespace Mediapipe.Unity
 
     protected virtual ConfigType DetectConfigType()
     {
-      if (GpuManager.isInitialized)
+      if (GpuManager.IsInitialized)
       {
-        if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES3 && openGlEsConfig != null)
+        if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES3 && _openGlEsConfig != null)
         {
           return ConfigType.OpenGLES;
         }
-        if (gpuConfig != null)
+        if (_gpuConfig != null)
         {
           return ConfigType.GPU;
         }
       }
-      if (cpuConfig != null)
-      {
-        return ConfigType.CPU;
-      }
-      return ConfigType.None;
+      return _cpuConfig != null ? ConfigType.CPU : ConfigType.None;
     }
 
     protected WaitForResult WaitForAsset(string assetName, string uniqueKey, long timeoutMillisec, bool overwrite = false)
@@ -364,51 +356,51 @@ namespace Mediapipe.Unity
 
     protected class OutputStream<TPacket, TValue> where TPacket : Packet<TValue>, new()
     {
-      readonly CalculatorGraph calculatorGraph;
+      private readonly CalculatorGraph _calculatorGraph;
 
-      readonly string streamName;
-      OutputStreamPoller<TValue> poller;
-      TPacket outputPacket;
+      private readonly string _streamName;
+      private OutputStreamPoller<TValue> _poller;
+      private TPacket _outputPacket;
 
-      string presenceStreamName;
-      OutputStreamPoller<bool> presencePoller;
-      BoolPacket presencePacket;
+      private string _presenceStreamName;
+      private OutputStreamPoller<bool> _presencePoller;
+      private BoolPacket _presencePacket;
 
-      bool canFreeze { get { return presenceStreamName != null; } }
+      private bool canFreeze => _presenceStreamName != null;
 
       public OutputStream(CalculatorGraph calculatorGraph, string streamName)
       {
-        this.calculatorGraph = calculatorGraph;
-        this.streamName = streamName;
+        _calculatorGraph = calculatorGraph;
+        _streamName = streamName;
       }
 
       public Status StartPolling(bool observeTimestampBounds = false)
       {
-        this.outputPacket = new TPacket();
+        _outputPacket = new TPacket();
 
-        var statusOrPoller = calculatorGraph.AddOutputStreamPoller<TValue>(streamName, observeTimestampBounds);
+        var statusOrPoller = _calculatorGraph.AddOutputStreamPoller<TValue>(_streamName, observeTimestampBounds);
         var status = statusOrPoller.status;
         if (status.Ok())
         {
-          this.poller = statusOrPoller.Value();
+          _poller = statusOrPoller.Value();
         }
         return status;
       }
 
       public Status StartPolling(string presenceStreamName)
       {
-        this.presenceStreamName = presenceStreamName;
-        var status = this.StartPolling(false);
+        _presenceStreamName = presenceStreamName;
+        var status = StartPolling(false);
 
         if (status.Ok())
         {
-          this.presencePacket = new BoolPacket();
+          _presencePacket = new BoolPacket();
 
-          var statusOrPresencePoller = calculatorGraph.AddOutputStreamPoller<bool>(presenceStreamName);
+          var statusOrPresencePoller = _calculatorGraph.AddOutputStreamPoller<bool>(presenceStreamName);
           status = statusOrPresencePoller.status;
           if (status.Ok())
           {
-            this.presencePoller = statusOrPresencePoller.Value();
+            _presencePoller = statusOrPresencePoller.Value();
           }
         }
         return status;
@@ -416,17 +408,17 @@ namespace Mediapipe.Unity
 
       public Status AddListener(CalculatorGraph.NativePacketCallback callback, bool observeTimestampBounds = false)
       {
-        return calculatorGraph.ObserveOutputStream(streamName, callback, observeTimestampBounds);
+        return _calculatorGraph.ObserveOutputStream(_streamName, callback, observeTimestampBounds);
       }
 
       public bool TryGetNext(out TValue value)
       {
         if (HasNextValue())
         {
-          value = outputPacket.Get();
+          value = _outputPacket.Get();
           return true;
         }
-        value = default(TValue);
+        value = default;
         return false;
       }
 
@@ -434,48 +426,48 @@ namespace Mediapipe.Unity
       {
         if (HasNextValue())
         {
-          var queueSize = poller.QueueSize();
+          var queueSize = _poller.QueueSize();
 
           // Assume that queue size will not be reduced from another thread.
           while (queueSize-- > 0)
           {
             if (!Next())
             {
-              value = default(TValue);
+              value = default;
               return false;
             }
           }
-          value = outputPacket.Get();
+          value = _outputPacket.Get();
           return true;
         }
-        value = default(TValue);
+        value = default;
         return false;
       }
 
-      bool HasNextValue()
+      private bool HasNextValue()
       {
         if (canFreeze)
         {
-          if (!NextPresence() || presencePacket.IsEmpty() || !presencePacket.Get())
+          if (!NextPresence() || _presencePacket.IsEmpty() || !_presencePacket.Get())
           {
             // NOTE: IsEmpty() should always return false
             return false;
           }
         }
-        return Next() && !outputPacket.IsEmpty();
+        return Next() && !_outputPacket.IsEmpty();
       }
 
-      bool NextPresence()
+      private bool NextPresence()
       {
-        return Next(presencePoller, presencePacket, presenceStreamName);
+        return Next(_presencePoller, _presencePacket, _presenceStreamName);
       }
 
-      bool Next()
+      private bool Next()
       {
-        return Next(poller, outputPacket, streamName);
+        return Next(_poller, _outputPacket, _streamName);
       }
 
-      static bool Next<T>(OutputStreamPoller<T> poller, Packet<T> packet, string streamName)
+      private static bool Next<T>(OutputStreamPoller<T> poller, Packet<T> packet, string streamName)
       {
         if (!poller.Next(packet))
         {

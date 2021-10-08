@@ -125,7 +125,7 @@ namespace Mediapipe.Unity
         {
           if (!Directory.Exists(_CachePathRoot))
           {
-            Directory.CreateDirectory(_CachePathRoot);
+            var _ = Directory.CreateDirectory(_CachePathRoot);
           }
           Logger.LogVerbose(_TAG, $"Writing {assetName} data to {cacheFilePath}...");
           var bytes = webRequest.downloadHandler.data;

@@ -46,7 +46,7 @@ namespace Mediapipe.Unity.UI
       var options = new List<string>(Enum.GetNames(typeof(ImageSource.SourceType)));
       SourceTypeInput.AddOptions(options);
 
-      var currentSourceType = ImageSourceProvider.imageSource.type;
+      var currentSourceType = ImageSourceProvider.ImageSource.type;
       var defaultValue = options.FindIndex(option => option == currentSourceType.ToString());
 
       if (defaultValue >= 0)
@@ -68,7 +68,7 @@ namespace Mediapipe.Unity.UI
       SourceInput.ClearOptions();
       SourceInput.onValueChanged.RemoveAllListeners();
 
-      var imageSource = ImageSourceProvider.imageSource;
+      var imageSource = ImageSourceProvider.ImageSource;
       var sourceNames = imageSource.sourceCandidateNames;
 
       if (sourceNames == null)
@@ -102,7 +102,7 @@ namespace Mediapipe.Unity.UI
       ResolutionInput.ClearOptions();
       ResolutionInput.onValueChanged.RemoveAllListeners();
 
-      var imageSource = ImageSourceProvider.imageSource;
+      var imageSource = ImageSourceProvider.ImageSource;
       var resolutions = imageSource.availableResolutions;
 
       if (resolutions == null)
@@ -133,7 +133,7 @@ namespace Mediapipe.Unity.UI
     {
       IsHorizontallyFlippedInput = gameObject.transform.Find(_IsHorizontallyFlippedPath).gameObject.GetComponent<Toggle>();
 
-      var imageSource = ImageSourceProvider.imageSource;
+      var imageSource = ImageSourceProvider.ImageSource;
       IsHorizontallyFlippedInput.isOn = imageSource.isHorizontallyFlipped;
       IsHorizontallyFlippedInput.onValueChanged.AddListener(delegate
       {

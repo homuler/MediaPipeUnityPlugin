@@ -54,7 +54,7 @@ namespace Mediapipe.Unity.MediaPipeVideo
         throw new InvalidOperationException("This method is only supported for OpenGL ES");
       }
       destinationTexture = textureFrame;
-      outputGpuBufferPacket = new GpuBufferPacket(destinationTexture.BuildGpuBuffer(GpuManager.glCalculatorHelper.GetGlContext()));
+      outputGpuBufferPacket = new GpuBufferPacket(destinationTexture.BuildGpuBuffer(GpuManager.GlCalculatorHelper.GetGlContext()));
     }
 
     public Status AddTextureFrameToInputStream(TextureFrame textureFrame)

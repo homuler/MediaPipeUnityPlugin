@@ -386,9 +386,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cace60af8c92bc9c5a807c9ceb8d8dba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cpuConfig: {fileID: 4900000, guid: 4892e45df3f04dbff88dba3aac65aebe, type: 3}
-  gpuConfig: {fileID: 4900000, guid: e6797b0a13853e9bc932f11e7fcc9036, type: 3}
-  openGlEsConfig: {fileID: 4900000, guid: f1b291f7d16d89cd19d0384c2cf00c9e, type: 3}
+  _cpuConfig: {fileID: 4900000, guid: 4892e45df3f04dbff88dba3aac65aebe, type: 3}
+  _gpuConfig: {fileID: 4900000, guid: e6797b0a13853e9bc932f11e7fcc9036, type: 3}
+  _openGlEsConfig: {fileID: 4900000, guid: f1b291f7d16d89cd19d0384c2cf00c9e, type: 3}
   _timeoutMicrosec: 50000
   OnHairMaskOutput:
     m_PersistentCalls:
@@ -436,7 +436,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5da564da19cb6b7d8e4f97f269edc5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poolSize: 10
+  _poolSize: 10
 --- !u!1001 &1452360048
 PrefabInstance:
   m_ObjectHideFlags: 0

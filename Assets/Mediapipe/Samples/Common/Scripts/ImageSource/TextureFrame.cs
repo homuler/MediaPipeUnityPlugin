@@ -334,7 +334,7 @@ namespace Mediapipe.Unity
           Logger.LogVerbose($"{id} is using {name} now");
           return false;
         }
-        _NameTable.Remove(name);
+        var _ = _NameTable.Remove(name);
       }
       return true;
     }
@@ -353,7 +353,7 @@ namespace Mediapipe.Unity
         {
           throw new ArgumentException("Another instance is using the specified name now");
         }
-        _NameTable.Remove(oldName);
+        var _ = _NameTable.Remove(oldName);
         _NameTable.Add(newName, _instanceId);
       }
     }

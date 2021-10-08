@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections;
 using UnityEngine;
@@ -13,27 +19,24 @@ namespace Mediapipe.Unity
     protected object tmpResult;
     protected bool isDone = false;
 
-    readonly MonoBehaviour runner;
-    readonly IEnumerator inner;
-    readonly Coroutine coroutine;
+    private readonly MonoBehaviour _runner;
+    private readonly IEnumerator _inner;
+    private readonly Coroutine _coroutine;
 
     public bool isError { get; private set; } = false;
     public Exception error { get; private set; }
-    public override bool keepWaiting
+    public override bool keepWaiting => !isDone && !isError;
+
+    public WaitForResult(MonoBehaviour runner, IEnumerator inner, long timeoutMillisec = long.MaxValue)
     {
-      get { return !isDone && !isError; }
+      _runner = runner;
+      _inner = inner;
+      _coroutine = runner.StartCoroutine(Run(timeoutMillisec));
     }
 
-    public WaitForResult(MonoBehaviour runner, IEnumerator inner, long timeoutMillisec = Int64.MaxValue)
+    private IEnumerator Run(long timeoutMillisec)
     {
-      this.runner = runner;
-      this.inner = inner;
-      coroutine = runner.StartCoroutine(Run(timeoutMillisec));
-    }
-
-    IEnumerator Run(long timeoutMillisec)
-    {
-      Stopwatch stopwatch = new Stopwatch();
+      var stopwatch = new Stopwatch();
       stopwatch.Start();
 
       while (true)
@@ -42,14 +45,14 @@ namespace Mediapipe.Unity
         {
           if (stopwatch.ElapsedMilliseconds > timeoutMillisec)
           {
-            runner.StopCoroutine(coroutine);
+            _runner.StopCoroutine(_coroutine);
             throw new TimeoutException($"{stopwatch.ElapsedMilliseconds}ms has passed");
           }
-          if (!inner.MoveNext())
+          if (!_inner.MoveNext())
           {
             break;
           }
-          tmpResult = inner.Current;
+          tmpResult = _inner.Current;
         }
         catch (Exception e)
         {
@@ -73,7 +76,7 @@ namespace Mediapipe.Unity
   {
     public new T result { get; private set; }
 
-    public WaitForResult(MonoBehaviour runner, IEnumerator inner, long timeoutMillisec = Int64.MaxValue) : base(runner, inner, timeoutMillisec) { }
+    public WaitForResult(MonoBehaviour runner, IEnumerator inner, long timeoutMillisec = long.MaxValue) : base(runner, inner, timeoutMillisec) { }
 
     protected override void Done(object result)
     {

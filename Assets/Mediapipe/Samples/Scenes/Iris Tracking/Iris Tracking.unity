@@ -168,9 +168,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35855da6e15069305aef28799186edb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cpuConfig: {fileID: 4900000, guid: 8d76e6d62da5980ed918a8f6a4a15e94, type: 3}
-  gpuConfig: {fileID: 4900000, guid: 904eba754eb7e5dfbbb83e6c76ee5b7a, type: 3}
-  openGlEsConfig: {fileID: 4900000, guid: 43dd63fad6219b1a2bbeddb7874f3137, type: 3}
+  _cpuConfig: {fileID: 4900000, guid: 8d76e6d62da5980ed918a8f6a4a15e94, type: 3}
+  _gpuConfig: {fileID: 4900000, guid: 904eba754eb7e5dfbbb83e6c76ee5b7a, type: 3}
+  _openGlEsConfig: {fileID: 4900000, guid: 43dd63fad6219b1a2bbeddb7874f3137, type: 3}
   _timeoutMicrosec: 50000
   OnFaceDetectionsOutput:
     m_PersistentCalls:
@@ -212,7 +212,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5da564da19cb6b7d8e4f97f269edc5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poolSize: 10
+  _poolSize: 10
 --- !u!1 &638479256
 GameObject:
   m_ObjectHideFlags: 0

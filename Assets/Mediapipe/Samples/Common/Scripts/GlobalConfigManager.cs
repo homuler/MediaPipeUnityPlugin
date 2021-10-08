@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -7,65 +13,56 @@ namespace Mediapipe.Unity
 {
   public static class GlobalConfigManager
   {
-    static readonly string TAG = typeof(GlobalConfigManager).Name;
+    private const string _TAG = nameof(GlobalConfigManager);
 
-    static string cacheDirPath
-    {
-      get { return Path.Combine(Application.persistentDataPath, "Cache"); }
-    }
+    private static string CacheDirPath => Path.Combine(Application.persistentDataPath, "Cache");
 
-    static string configFilePath
-    {
-      get { return Path.Combine(cacheDirPath, "globalConfig.env"); }
-    }
+    private static string ConfigFilePath => Path.Combine(CacheDirPath, "globalConfig.env");
 
-    static string _GlogLogtostderrKey = "GLOG_logtostderr";
-    static string _GlogStderrthresholdKey = "GLOG_stderrthreshold";
-    static string _GlogMinloglevelKey = "GLOG_minloglevel";
-    static string _GlogVKey = "GLOG_v";
-    static string _GlogLogDirKey = "GLOG_log_dir";
+    private const string _GlogLogtostderrKey = "GLOG_logtostderr";
+    private const string _GlogStderrthresholdKey = "GLOG_stderrthreshold";
+    private const string _GlogMinloglevelKey = "GLOG_minloglevel";
+    private const string _GlogVKey = "GLOG_v";
+    private const string _GlogLogDirKey = "GLOG_log_dir";
 
     public static bool GlogLogtostderr
     {
-      get { return config[_GlogLogtostderrKey] == "1"; }
-      set { config[_GlogLogtostderrKey] = value ? "1" : "0"; }
+      get => Config[_GlogLogtostderrKey] == "1";
+      set => Config[_GlogLogtostderrKey] = value ? "1" : "0";
     }
 
     public static int GlogStderrthreshold
     {
-      get { return int.Parse(config[_GlogStderrthresholdKey]); }
-      set { config[_GlogStderrthresholdKey] = value.ToString(); }
+      get => int.Parse(Config[_GlogStderrthresholdKey]);
+      set => Config[_GlogStderrthresholdKey] = value.ToString();
     }
 
     public static int GlogMinloglevel
     {
-      get { return int.Parse(config[_GlogMinloglevelKey]); }
-      set { config[_GlogMinloglevelKey] = value.ToString(); }
+      get => int.Parse(Config[_GlogMinloglevelKey]);
+      set => Config[_GlogMinloglevelKey] = value.ToString();
     }
 
     public static int GlogV
     {
-      get { return int.Parse(config[_GlogVKey]); }
-      set { config[_GlogVKey] = value.ToString(); }
+      get => int.Parse(Config[_GlogVKey]);
+      set => Config[_GlogVKey] = value.ToString();
     }
 
     public static string GlogLogDir
     {
-      get { return config[_GlogLogDirKey]; }
-      set { config[_GlogLogDirKey] = value; }
+      get => Config[_GlogLogDirKey];
+      set => Config[_GlogLogDirKey] = value;
     }
 
-    static readonly object setupLock = new object();
-    public static bool isSetUp { get; private set; }
-
-    static Dictionary<string, string> _config;
-    static Dictionary<string, string> config
+    private static Dictionary<string, string> _Config;
+    private static Dictionary<string, string> Config
     {
       get
       {
-        if (_config == null)
+        if (_Config == null)
         {
-          _config = new Dictionary<string, string>() {
+          _Config = new Dictionary<string, string>() {
             { _GlogLogtostderrKey, "1" },
             { _GlogStderrthresholdKey, "2" },
             { _GlogMinloglevelKey, "0" },
@@ -73,19 +70,19 @@ namespace Mediapipe.Unity
             { _GlogVKey, "0" },
           };
 
-          if (!File.Exists(configFilePath))
+          if (!File.Exists(ConfigFilePath))
           {
-            Logger.LogDebug(TAG, $"Global config file does not exist: {configFilePath}");
+            Logger.LogDebug(_TAG, $"Global config file does not exist: {ConfigFilePath}");
           }
           else
           {
-            Logger.LogDebug(TAG, $"Reading the config file ({configFilePath})...");
-            foreach (var line in File.ReadLines(configFilePath))
+            Logger.LogDebug(_TAG, $"Reading the config file ({ConfigFilePath})...");
+            foreach (var line in File.ReadLines(ConfigFilePath))
             {
               try
               {
-                (string, string) pair = ParseLine(line);
-                _config[pair.Item1] = pair.Item2;
+                var pair = ParseLine(line);
+                _Config[pair.Item1] = pair.Item2;
               }
               catch (System.Exception e)
               {
@@ -95,7 +92,7 @@ namespace Mediapipe.Unity
           }
         }
 
-        return _config;
+        return _Config;
       }
     }
 
@@ -108,24 +105,24 @@ namespace Mediapipe.Unity
         $"{_GlogLogDirKey}={GlogLogDir}",
         $"{_GlogVKey}={GlogV}",
       };
-      if (!Directory.Exists(cacheDirPath))
+      if (!Directory.Exists(CacheDirPath))
       {
-        Directory.CreateDirectory(cacheDirPath);
+        var _ = Directory.CreateDirectory(CacheDirPath);
       }
-      File.WriteAllLines(configFilePath, lines, Encoding.UTF8);
-      Logger.LogInfo(TAG, "Global config file has been updated");
+      File.WriteAllLines(ConfigFilePath, lines, Encoding.UTF8);
+      Logger.LogInfo(_TAG, "Global config file has been updated");
     }
 
     public static void SetFlags()
     {
-      Glog.logtostderr = GlogLogtostderr;
-      Glog.stderrthreshold = GlogStderrthreshold;
-      Glog.minloglevel = GlogMinloglevel;
-      Glog.v = GlogV;
-      Glog.logDir = GlogLogDir == "" ? null : Path.Combine(Application.persistentDataPath, GlogLogDir);
+      Glog.Logtostderr = GlogLogtostderr;
+      Glog.Stderrthreshold = GlogStderrthreshold;
+      Glog.Minloglevel = GlogMinloglevel;
+      Glog.V = GlogV;
+      Glog.LogDir = GlogLogDir == "" ? null : Path.Combine(Application.persistentDataPath, GlogLogDir);
     }
 
-    static (string, string) ParseLine(string line)
+    private static (string, string) ParseLine(string line)
     {
       var i = line.IndexOf('=');
 
