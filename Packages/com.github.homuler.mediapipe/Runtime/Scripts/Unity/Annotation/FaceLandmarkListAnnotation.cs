@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,11 +11,11 @@ namespace Mediapipe.Unity
 {
   public sealed class FaceLandmarkListAnnotation : HierarchicalAnnotation
   {
-    [SerializeField] PointListAnnotation landmarkList;
-    [SerializeField] ConnectionListAnnotation connectionList;
+    [SerializeField] private PointListAnnotation _landmarkListAnnotation;
+    [SerializeField] private ConnectionListAnnotation _connectionListAnnotation;
 
-    const int landmarkCount = 468;
-    readonly List<(int, int)> connections = new List<(int, int)> {
+    private const int _LandmarkCount = 468;
+    private readonly List<(int, int)> _connections = new List<(int, int)> {
       // Face Oval
       (10, 338),
       (338, 297),
@@ -147,8 +153,8 @@ namespace Mediapipe.Unity
     {
       set
       {
-        landmarkList.isMirrored = value;
-        connectionList.isMirrored = value;
+        _landmarkListAnnotation.isMirrored = value;
+        _connectionListAnnotation.isMirrored = value;
         base.isMirrored = value;
       }
     }
@@ -157,45 +163,45 @@ namespace Mediapipe.Unity
     {
       set
       {
-        landmarkList.rotationAngle = value;
-        connectionList.rotationAngle = value;
+        _landmarkListAnnotation.rotationAngle = value;
+        _connectionListAnnotation.rotationAngle = value;
         base.rotationAngle = value;
       }
     }
 
-    void Start()
+    private void Start()
     {
-      landmarkList.Fill(landmarkCount);
-      connectionList.Fill(connections, landmarkList);
+      _landmarkListAnnotation.Fill(_LandmarkCount);
+      _connectionListAnnotation.Fill(_connections, _landmarkListAnnotation);
     }
 
     public void SetLandmarkColor(Color landmarkColor)
     {
-      landmarkList.SetColor(landmarkColor);
+      _landmarkListAnnotation.SetColor(landmarkColor);
     }
 
     public void SetLandmarkRadius(float landmarkRadius)
     {
-      landmarkList.SetRadius(landmarkRadius);
+      _landmarkListAnnotation.SetRadius(landmarkRadius);
     }
 
     public void SetConnectionColor(Color connectionColor)
     {
-      connectionList.SetColor(connectionColor);
+      _connectionListAnnotation.SetColor(connectionColor);
     }
 
     public void SetConnectionWidth(float connectionWidth)
     {
-      connectionList.SetLineWidth(connectionWidth);
+      _connectionListAnnotation.SetLineWidth(connectionWidth);
     }
 
     public void Draw(IList<NormalizedLandmark> target, bool visualizeZ = false)
     {
       if (ActivateFor(target))
       {
-        landmarkList.Draw(target, visualizeZ);
+        _landmarkListAnnotation.Draw(target, visualizeZ);
         // Draw explicitly because connection annotation's targets remain the same.
-        connectionList.Redraw();
+        _connectionListAnnotation.Redraw();
       }
     }
 

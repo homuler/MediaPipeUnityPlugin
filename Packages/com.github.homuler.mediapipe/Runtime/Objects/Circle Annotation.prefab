@@ -149,6 +149,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98e622123dd1b9ac1a87d8609ce21d37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lineRenderer: {fileID: 1814674383914226116}
-  color: {r: 0, g: 1, b: 0, a: 1}
-  lineWidth: 1
+  _lineRenderer: {fileID: 1814674383914226116}
+  _color: {r: 0, g: 1, b: 0, a: 1}
+  _lineWidth: 1

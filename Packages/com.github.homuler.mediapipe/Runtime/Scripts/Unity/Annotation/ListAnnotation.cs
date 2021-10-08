@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,9 +12,9 @@ namespace Mediapipe.Unity
 {
   public abstract class ListAnnotation<T> : HierarchicalAnnotation where T : HierarchicalAnnotation
   {
-    [SerializeField] GameObject annotationPrefab;
+    [SerializeField] private GameObject _annotationPrefab;
 
-    List<T> _children;
+    private List<T> _children;
     protected List<T> children
     {
       get
@@ -21,15 +27,9 @@ namespace Mediapipe.Unity
       }
     }
 
-    public T this[int index]
-    {
-      get { return children[index]; }
-    }
+    public T this[int index] => children[index];
 
-    public int count
-    {
-      get { return children.Count; }
-    }
+    public int count => children.Count;
 
     public void Fill(int count)
     {
@@ -79,7 +79,7 @@ namespace Mediapipe.Unity
 
     protected virtual T InstantiateChild(bool isActive = true)
     {
-      var annotation = base.InstantiateChild<T>(annotationPrefab);
+      var annotation = InstantiateChild<T>(_annotationPrefab);
       annotation.SetActive(isActive);
       return annotation;
     }
@@ -91,16 +91,16 @@ namespace Mediapipe.Unity
     /// <param name="action">
     ///   This will receive 2 arguments and return void.
     ///   The 1st argument is <typeparamref name="T" />, that is an ith element in <see cref="children" />.
-    ///   The 2nd argument is <typeparamref name="S" />, that is also an ith element in <paramref name="argumentList" />.
+    ///   The 2nd argument is <typeparamref name="TArg" />, that is also an ith element in <paramref name="argumentList" />.
     /// </param>
-    protected void CallActionForAll<S>(IList<S> argumentList, Action<T, S> action)
+    protected void CallActionForAll<TArg>(IList<TArg> argumentList, Action<T, TArg> action)
     {
       for (var i = 0; i < Mathf.Max(children.Count, argumentList.Count); i++)
       {
         if (i >= argumentList.Count)
         {
           // children.Count > argumentList.Count
-          action(children[i], default(S));
+          action(children[i], default);
           continue;
         }
 

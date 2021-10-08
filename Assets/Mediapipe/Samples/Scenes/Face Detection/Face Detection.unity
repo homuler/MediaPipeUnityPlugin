@@ -194,7 +194,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: 26114bc9cccb92454a468ea4d41f400a, type: 3}
 --- !u!114 &338992142 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6320745076577806714, guid: 26114bc9cccb92454a468ea4d41f400a,
+  m_CorrespondingSourceObject: {fileID: -6338546567352850726, guid: 26114bc9cccb92454a468ea4d41f400a,
     type: 3}
   m_PrefabInstance: {fileID: 338992141}
   m_PrefabAsset: {fileID: 0}
@@ -426,7 +426,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 338992142}
-  threshold: 0
+  _threshold: 0
 --- !u!1 &1064799459
 GameObject:
   m_ObjectHideFlags: 0
@@ -492,8 +492,9 @@ MonoBehaviour:
   cpuConfig: {fileID: 4900000, guid: d0012308a4a6db23394e3599fc15e82c, type: 3}
   gpuConfig: {fileID: 4900000, guid: be38c22dedc4a1b02964b6d091e6bddb, type: 3}
   openGlEsConfig: {fileID: 4900000, guid: 6070cea8cbd80191199591327316f26c, type: 3}
+  _timeoutMicrosec: 0
   modelType: 0
-  OnFacesDetected:
+  OnFaceDetectionsOutput:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &1064799463

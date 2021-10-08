@@ -223,6 +223,7 @@ MonoBehaviour:
   cpuConfig: {fileID: 4900000, guid: 329516a42f75f2d8580eb1e0d0bd3591, type: 3}
   gpuConfig: {fileID: 4900000, guid: 5413bb9574d6cdea19fa21f7d889e18f, type: 3}
   openGlEsConfig: {fileID: 4900000, guid: 2dfafa875d34455398e02dfde0f3403d, type: 3}
+  _timeoutMicrosec: 0
   OnTrackedDetectionsOutput:
     m_PersistentCalls:
       m_Calls: []
@@ -426,7 +427,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 1148751076}
-  threshold: 0
+  _threshold: 0
 --- !u!1001 &1148751075
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -498,7 +499,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: 26114bc9cccb92454a468ea4d41f400a, type: 3}
 --- !u!114 &1148751076 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6320745076577806714, guid: 26114bc9cccb92454a468ea4d41f400a,
+  m_CorrespondingSourceObject: {fileID: -6338546567352850726, guid: 26114bc9cccb92454a468ea4d41f400a,
     type: 3}
   m_PrefabInstance: {fileID: 1148751075}
   m_PrefabAsset: {fileID: 0}

@@ -4,10 +4,9 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - lineRenderer: {instanceID: 0}
-  - textMesh: {instanceID: 0}
-  - relativeKeypointAnnotationPrefab: {fileID: 3326991124658421618, guid: 06fba6583bda007cfb4c19f108dff7c5,
-      type: 3}
+  - _locationDataAnnotation: {instanceID: 0}
+  - _relativeKeypointsAnnotation: {instanceID: 0}
+  - _labelAnnotation: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

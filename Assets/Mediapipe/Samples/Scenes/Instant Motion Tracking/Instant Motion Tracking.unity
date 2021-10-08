@@ -505,6 +505,16 @@ PrefabInstance:
       propertyPath: color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5105739270100195704, guid: cd50999c161e69345953a2cb517dd339,
+        type: 3}
+      propertyPath: _color.g
+      value: 0.5411765
+      objectReference: {fileID: 0}
+    - target: {fileID: 5105739270100195704, guid: cd50999c161e69345953a2cb517dd339,
+        type: 3}
+      propertyPath: _color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5105739270100195971, guid: cd50999c161e69345953a2cb517dd339,
         type: 3}
       propertyPath: m_Name
@@ -689,7 +699,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4070943725190493615, guid: 6f13a2b002175f9a0865766faacfed08,
         type: 3}
+      propertyPath: _capScale
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4070943725190493615, guid: 6f13a2b002175f9a0865766faacfed08,
+        type: 3}
       propertyPath: lineWidth
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4070943725190493615, guid: 6f13a2b002175f9a0865766faacfed08,
+        type: 3}
+      propertyPath: _lineWidth
       value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 4070943725190493615, guid: 6f13a2b002175f9a0865766faacfed08,
@@ -719,7 +739,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4070943725249276835, guid: 6f13a2b002175f9a0865766faacfed08,
         type: 3}
+      propertyPath: _capScale
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4070943725249276835, guid: 6f13a2b002175f9a0865766faacfed08,
+        type: 3}
       propertyPath: lineWidth
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4070943725249276835, guid: 6f13a2b002175f9a0865766faacfed08,
+        type: 3}
+      propertyPath: _lineWidth
       value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 4070943725249276835, guid: 6f13a2b002175f9a0865766faacfed08,
@@ -794,7 +824,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4070943725931072864, guid: 6f13a2b002175f9a0865766faacfed08,
         type: 3}
+      propertyPath: _capScale
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4070943725931072864, guid: 6f13a2b002175f9a0865766faacfed08,
+        type: 3}
       propertyPath: lineWidth
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4070943725931072864, guid: 6f13a2b002175f9a0865766faacfed08,
+        type: 3}
+      propertyPath: _lineWidth
       value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 4070943725931072864, guid: 6f13a2b002175f9a0865766faacfed08,

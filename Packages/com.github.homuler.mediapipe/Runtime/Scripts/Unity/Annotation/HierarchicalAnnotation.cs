@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using UnityEngine;
 
 namespace Mediapipe.Unity
@@ -11,26 +17,19 @@ namespace Mediapipe.Unity
 
   public abstract class HierarchicalAnnotation : MonoBehaviour, IHierachicalAnnotation
   {
-    IHierachicalAnnotation _root;
+    private IHierachicalAnnotation _root;
     public IHierachicalAnnotation root
     {
       get
       {
         if (_root == null)
         {
-          var parentObj = transform.parent?.gameObject;
-          if (parentObj != null && parentObj.TryGetComponent<IHierachicalAnnotation>(out var parent))
-          {
-            _root = parent.root;
-          }
-          else
-          {
-            _root = this;
-          }
+          var parentObj = transform.parent == null ? null : transform.parent.gameObject;
+          _root = (parentObj != null && parentObj.TryGetComponent<IHierachicalAnnotation>(out var parent)) ? parent.root : this;
         }
         return _root;
       }
-      protected set { _root = value; }
+      protected set => _root = value;
     }
 
     public RectTransform GetAnnotationLayer()
@@ -38,8 +37,8 @@ namespace Mediapipe.Unity
       return root.transform.parent.gameObject.GetComponent<RectTransform>();
     }
 
-    public bool isActive { get { return gameObject.activeSelf; } }
-    public bool isActiveInHierarchy { get { return gameObject.activeInHierarchy; } }
+    public bool isActive => gameObject.activeSelf;
+    public bool isActiveInHierarchy => gameObject.activeInHierarchy;
 
     public void SetActive(bool isActive)
     {
@@ -72,20 +71,20 @@ namespace Mediapipe.Unity
     public virtual bool isMirrored { get; set; }
     public virtual RotationAngle rotationAngle { get; set; } = RotationAngle.Rotation0;
 
-    protected S InstantiateChild<S>(GameObject prefab) where S : HierarchicalAnnotation
+    protected TAnnotation InstantiateChild<TAnnotation>(GameObject prefab) where TAnnotation : HierarchicalAnnotation
     {
-      var annotation = Instantiate(prefab, transform).GetComponent<S>();
+      var annotation = Instantiate(prefab, transform).GetComponent<TAnnotation>();
       annotation.isMirrored = isMirrored;
       annotation.rotationAngle = rotationAngle;
       return annotation;
     }
 
-    protected S InstantiateChild<S>(string name = "Game Object") where S : HierarchicalAnnotation
+    protected TAnnotation InstantiateChild<TAnnotation>(string name = "Game Object") where TAnnotation : HierarchicalAnnotation
     {
       var gameObject = new GameObject(name);
       gameObject.transform.SetParent(transform);
 
-      return gameObject.AddComponent<S>();
+      return gameObject.AddComponent<TAnnotation>();
     }
   }
 }

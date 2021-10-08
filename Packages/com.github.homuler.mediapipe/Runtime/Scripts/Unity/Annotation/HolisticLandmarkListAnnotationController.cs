@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,26 +11,26 @@ namespace Mediapipe.Unity
 {
   public class HolisticLandmarkListAnnotationController : AnnotationController<HolisticLandmarkListAnnotation>
   {
-    [SerializeField] bool visualizeZ = false;
-    [SerializeField] int circleVertices = 128;
+    [SerializeField] private bool _visualizeZ = false;
+    [SerializeField] private int _circleVertices = 128;
 
-    IList<NormalizedLandmark> currentFaceLandmarkList;
-    IList<NormalizedLandmark> currentPoseLandmarkList;
-    IList<NormalizedLandmark> currentLeftHandLandmarkList;
-    IList<NormalizedLandmark> currentRightHandLandmarkList;
-    IList<NormalizedLandmark> currentLeftIrisLandmarkList;
-    IList<NormalizedLandmark> currentRightIrisLandmarkList;
+    private IList<NormalizedLandmark> _currentFaceLandmarkList;
+    private IList<NormalizedLandmark> _currentPoseLandmarkList;
+    private IList<NormalizedLandmark> _currentLeftHandLandmarkList;
+    private IList<NormalizedLandmark> _currentRightHandLandmarkList;
+    private IList<NormalizedLandmark> _currentLeftIrisLandmarkList;
+    private IList<NormalizedLandmark> _currentRightIrisLandmarkList;
 
     public void DrawNow(IList<NormalizedLandmark> faceLandmarkList, IList<NormalizedLandmark> poseLandmarkList,
                         IList<NormalizedLandmark> leftHandLandmarkList, IList<NormalizedLandmark> rightHandLandmarkList,
                         IList<NormalizedLandmark> leftIrisLandmarkList, IList<NormalizedLandmark> rightIrisLandmarkList)
     {
-      currentFaceLandmarkList = faceLandmarkList;
-      currentPoseLandmarkList = poseLandmarkList;
-      currentLeftHandLandmarkList = leftHandLandmarkList;
-      currentRightHandLandmarkList = rightHandLandmarkList;
-      currentLeftIrisLandmarkList = leftIrisLandmarkList;
-      currentRightIrisLandmarkList = rightIrisLandmarkList;
+      _currentFaceLandmarkList = faceLandmarkList;
+      _currentPoseLandmarkList = poseLandmarkList;
+      _currentLeftHandLandmarkList = leftHandLandmarkList;
+      _currentRightHandLandmarkList = rightHandLandmarkList;
+      _currentLeftIrisLandmarkList = leftIrisLandmarkList;
+      _currentRightIrisLandmarkList = rightIrisLandmarkList;
       SyncNow();
     }
 
@@ -45,7 +51,7 @@ namespace Mediapipe.Unity
 
     public void DrawFaceLandmarkListLater(IList<NormalizedLandmark> faceLandmarkList)
     {
-      UpdateCurrentTarget(faceLandmarkList, ref currentFaceLandmarkList);
+      UpdateCurrentTarget(faceLandmarkList, ref _currentFaceLandmarkList);
     }
 
     public void DrawFaceLandmarkListLater(NormalizedLandmarkList faceLandmarkList)
@@ -55,7 +61,7 @@ namespace Mediapipe.Unity
 
     public void DrawPoseLandmarkListLater(IList<NormalizedLandmark> poseLandmarkList)
     {
-      UpdateCurrentTarget(poseLandmarkList, ref currentPoseLandmarkList);
+      UpdateCurrentTarget(poseLandmarkList, ref _currentPoseLandmarkList);
     }
 
     public void DrawPoseLandmarkListLater(NormalizedLandmarkList poseLandmarkList)
@@ -65,7 +71,7 @@ namespace Mediapipe.Unity
 
     public void DrawLeftHandLandmarkListLater(IList<NormalizedLandmark> leftHandLandmarkList)
     {
-      UpdateCurrentTarget(leftHandLandmarkList, ref currentLeftHandLandmarkList);
+      UpdateCurrentTarget(leftHandLandmarkList, ref _currentLeftHandLandmarkList);
     }
 
     public void DrawLeftHandLandmarkListLater(NormalizedLandmarkList leftHandLandmarkList)
@@ -75,7 +81,7 @@ namespace Mediapipe.Unity
 
     public void DrawRightHandLandmarkListLater(IList<NormalizedLandmark> rightHandLandmarkList)
     {
-      UpdateCurrentTarget(rightHandLandmarkList, ref currentRightHandLandmarkList);
+      UpdateCurrentTarget(rightHandLandmarkList, ref _currentRightHandLandmarkList);
     }
 
     public void DrawRightHandLandmarkListLater(NormalizedLandmarkList rightHandLandmarkList)
@@ -85,7 +91,7 @@ namespace Mediapipe.Unity
 
     public void DrawLeftIrisLandmarkListLater(IList<NormalizedLandmark> leftIrisLandmarkList)
     {
-      UpdateCurrentTarget(leftIrisLandmarkList, ref currentLeftIrisLandmarkList);
+      UpdateCurrentTarget(leftIrisLandmarkList, ref _currentLeftIrisLandmarkList);
     }
 
     public void DrawLeftIrisLandmarkListLater(NormalizedLandmarkList leftIrisLandmarkList)
@@ -95,7 +101,7 @@ namespace Mediapipe.Unity
 
     public void DrawRightIrisLandmarkListLater(IList<NormalizedLandmark> rightIrisLandmarkList)
     {
-      UpdateCurrentTarget(rightIrisLandmarkList, ref currentRightIrisLandmarkList);
+      UpdateCurrentTarget(rightIrisLandmarkList, ref _currentRightIrisLandmarkList);
     }
 
     public void DrawRightIrisLandmarkListLater(NormalizedLandmarkList rightIrisLandmarkList)
@@ -107,14 +113,14 @@ namespace Mediapipe.Unity
     {
       isStale = false;
       annotation.Draw(
-        currentFaceLandmarkList,
-        currentPoseLandmarkList,
-        currentLeftHandLandmarkList,
-        currentRightHandLandmarkList,
-        currentLeftIrisLandmarkList,
-        currentRightIrisLandmarkList,
-        visualizeZ,
-        circleVertices
+        _currentFaceLandmarkList,
+        _currentPoseLandmarkList,
+        _currentLeftHandLandmarkList,
+        _currentRightHandLandmarkList,
+        _currentLeftIrisLandmarkList,
+        _currentRightIrisLandmarkList,
+        _visualizeZ,
+        _circleVertices
       );
     }
   }

@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,21 +11,21 @@ namespace Mediapipe.Unity
 {
   public class PoseWorldLandmarkListAnnotationController : AnnotationController<PoseLandmarkListAnnotation>
   {
-    [SerializeField] float hipHeightMeter = 0.9f;
-    [SerializeField] Vector3 scale = new Vector3(100, 100, 100);
-    [SerializeField] bool visualizeZ = true;
+    [SerializeField] private float _hipHeightMeter = 0.9f;
+    [SerializeField] private Vector3 _scale = new Vector3(100, 100, 100);
+    [SerializeField] private bool _visualizeZ = true;
 
-    IList<Landmark> currentTarget;
+    private IList<Landmark> _currentTarget;
 
     protected override void Start()
     {
       base.Start();
-      transform.localPosition = new Vector3(0, hipHeightMeter * scale.y, 0);
+      transform.localPosition = new Vector3(0, _hipHeightMeter * _scale.y, 0);
     }
 
     public void DrawNow(IList<Landmark> target)
     {
-      currentTarget = target;
+      _currentTarget = target;
       SyncNow();
     }
 
@@ -30,7 +36,7 @@ namespace Mediapipe.Unity
 
     public void DrawLater(IList<Landmark> target)
     {
-      UpdateCurrentTarget(target, ref currentTarget);
+      UpdateCurrentTarget(target, ref _currentTarget);
     }
 
     public void DrawLater(LandmarkList target)
@@ -41,7 +47,7 @@ namespace Mediapipe.Unity
     protected override void SyncNow()
     {
       isStale = false;
-      annotation.Draw(currentTarget, scale, visualizeZ);
+      annotation.Draw(_currentTarget, _scale, _visualizeZ);
     }
   }
 }

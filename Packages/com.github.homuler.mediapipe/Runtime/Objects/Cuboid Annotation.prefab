@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2519151911608524795}
-  - component: {fileID: 2225510743336212071}
+  - component: {fileID: 5770944814818036318}
   m_Layer: 0
   m_Name: Cuboid Annotation
   m_TagString: Untagged
@@ -34,7 +34,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2225510743336212071
+--- !u!114 &5770944814818036318
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -46,10 +46,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e88663936c139fb4971d8ab54a85a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointListAnnotation: {fileID: 6140629650347037948}
-  lineListAnnotation: {fileID: 2711096740066365766}
-  transformAnnotation: {fileID: 508183085484426995}
-  arrowLengthScale: 1
+  _pointListAnnotation: {fileID: 6140629650347037948}
+  _lineListAnnotation: {fileID: 6544068307370925621}
+  _transformAnnotation: {fileID: 508183085484426995}
+  _arrowLengthScale: 1
 --- !u!1001 &3085711672548358667
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -314,9 +314,9 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3442630378391270381}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2711096740066365766 stripped
+--- !u!114 &6544068307370925621 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 745748194542674603, guid: c97d04632e9be1a7cb05f6ab855b365b,
+  m_CorrespondingSourceObject: {fileID: 8437385474393681368, guid: c97d04632e9be1a7cb05f6ab855b365b,
     type: 3}
   m_PrefabInstance: {fileID: 3442630378391270381}
   m_PrefabAsset: {fileID: 0}

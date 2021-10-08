@@ -1,19 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &820821711857174678
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5233454660539552818}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96652e94527a9f3e1b4079bc3d139d06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  labelText: {fileID: 615235980274847209}
-  background: {fileID: 6388507230735456264}
 --- !u!1 &5404176935574894484
 GameObject:
   m_ObjectHideFlags: 0
@@ -60,9 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a82b9904ff34cc4fb66157217fe48a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  locationData: {fileID: 8241125562864823516}
-  relativeKeypoints: {fileID: 6447834089412636778}
-  label: {fileID: 820821711857174678}
+  _locationDataAnnotation: {fileID: 8241125562864823516}
+  _relativeKeypointsAnnotation: {fileID: 6447834089412636778}
+  _labelAnnotation: {fileID: 7310817467319291998}
 --- !u!1001 &2782677811817078429
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -249,6 +235,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Label Annotation
       objectReference: {fileID: 0}
+    - target: {fileID: 2413779005072330058, guid: a705e6d9fdc0e9f8192e094fae8b0026,
+        type: 3}
+      propertyPath: _labelText
+      value: 
+      objectReference: {fileID: 615235980274847209}
+    - target: {fileID: 2413779005072330058, guid: a705e6d9fdc0e9f8192e094fae8b0026,
+        type: 3}
+      propertyPath: _backgroundTransform
+      value: 
+      objectReference: {fileID: 6388507230735456264}
     - target: {fileID: 4648294227339798679, guid: a705e6d9fdc0e9f8192e094fae8b0026,
         type: 3}
       propertyPath: m_Pivot.x
@@ -359,14 +355,13 @@ PrefabInstance:
       propertyPath: m_Text
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7330468373985811433, guid: a705e6d9fdc0e9f8192e094fae8b0026,
+        type: 3}
+      propertyPath: m_Name
+      value: Background
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a705e6d9fdc0e9f8192e094fae8b0026, type: 3}
---- !u!1 &5233454660539552818 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 912750501651204390, guid: a705e6d9fdc0e9f8192e094fae8b0026,
-    type: 3}
-  m_PrefabInstance: {fileID: 4902813573071789332}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &326585805122188675 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4648294227339798679, guid: a705e6d9fdc0e9f8192e094fae8b0026,
@@ -379,10 +374,22 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 4902813573071789332}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5233454660539552818}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7310817467319291998 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2413779005072330058, guid: a705e6d9fdc0e9f8192e094fae8b0026,
+    type: 3}
+  m_PrefabInstance: {fileID: 4902813573071789332}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96652e94527a9f3e1b4079bc3d139d06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!224 &6388507230735456264 stripped

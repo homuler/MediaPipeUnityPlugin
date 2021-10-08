@@ -251,5 +251,5 @@ MonoBehaviour:
   _color: {r: 1, g: 1, b: 1, a: 1}
   _direction: {x: 1, y: 0, z: 0}
   _magnitude: 10
-  capScale: 1
-  lineWidth: 1
+  _capScale: 1
+  _lineWidth: 1

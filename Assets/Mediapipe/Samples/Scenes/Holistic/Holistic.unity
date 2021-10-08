@@ -1983,8 +1983,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 629162780}
-  visualizeZ: 0
-  circleVertices: 128
+  _visualizeZ: 0
+  _circleVertices: 128
 --- !u!114 &1375628863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1998,7 +1998,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 1334974597}
-  threshold: 0
+  _threshold: 0
 --- !u!1 &1625996802
 GameObject:
   m_ObjectHideFlags: 0
@@ -2106,6 +2106,11 @@ PrefabInstance:
     - target: {fileID: 5913343085919651616, guid: 4418f6a92856c5b51b58a36e3be7ed5c,
         type: 3}
       propertyPath: radius
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5913343085919651616, guid: 4418f6a92856c5b51b58a36e3be7ed5c,
+        type: 3}
+      propertyPath: _radius
       value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -2368,9 +2373,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 1737185255}
-  hipHeightMeter: 0.9
-  scale: {x: 50, y: 50, z: 50}
-  visualizeZ: 1
+  _hipHeightMeter: 0.9
+  _scale: {x: 50, y: 50, z: 50}
+  _visualizeZ: 1
 --- !u!1 &1960727773
 GameObject:
   m_ObjectHideFlags: 0

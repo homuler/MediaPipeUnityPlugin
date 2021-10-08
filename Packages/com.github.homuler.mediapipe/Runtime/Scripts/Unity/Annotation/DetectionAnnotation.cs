@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using Mediapipe.Unity.CoordinateSystem;
 using UnityEngine;
 
@@ -5,17 +11,17 @@ namespace Mediapipe.Unity
 {
   public sealed class DetectionAnnotation : HierarchicalAnnotation
   {
-    [SerializeField] RectangleAnnotation locationData;
-    [SerializeField] PointListAnnotation relativeKeypoints;
-    [SerializeField] LabelAnnotation label;
+    [SerializeField] private RectangleAnnotation _locationDataAnnotation;
+    [SerializeField] private PointListAnnotation _relativeKeypointsAnnotation;
+    [SerializeField] private LabelAnnotation _labelAnnotation;
 
     public override bool isMirrored
     {
       set
       {
-        locationData.isMirrored = value;
-        relativeKeypoints.isMirrored = value;
-        label.isMirrored = value;
+        _locationDataAnnotation.isMirrored = value;
+        _relativeKeypointsAnnotation.isMirrored = value;
+        _labelAnnotation.isMirrored = value;
         base.isMirrored = value;
       }
     }
@@ -24,21 +30,21 @@ namespace Mediapipe.Unity
     {
       set
       {
-        locationData.rotationAngle = value;
-        relativeKeypoints.rotationAngle = value;
-        label.rotationAngle = value;
+        _locationDataAnnotation.rotationAngle = value;
+        _relativeKeypointsAnnotation.rotationAngle = value;
+        _labelAnnotation.rotationAngle = value;
         base.rotationAngle = value;
       }
     }
 
     public void SetLineWidth(float lineWidth)
     {
-      locationData.SetLineWidth(lineWidth);
+      _locationDataAnnotation.SetLineWidth(lineWidth);
     }
 
     public void SetKeypointRadius(float radius)
     {
-      relativeKeypoints.SetRadius(radius);
+      _relativeKeypointsAnnotation.SetRadius(radius);
     }
 
     /// <param name="threshold">
@@ -56,22 +62,22 @@ namespace Mediapipe.Unity
         // Assume that location data's format is always RelativeBoundingBox
         // TODO: fix if there are cases where this assumption is not correct.
         var rectVertices = GetAnnotationLayer().GetRectVertices(target.LocationData.RelativeBoundingBox, rotationAngle, isMirrored);
-        locationData.SetColor(GetColor(score, Mathf.Clamp(threshold, 0.0f, 1.0f)));
-        locationData.Draw(rectVertices);
+        _locationDataAnnotation.SetColor(GetColor(score, Mathf.Clamp(threshold, 0.0f, 1.0f)));
+        _locationDataAnnotation.Draw(rectVertices);
 
         var width = rectVertices[2].x - rectVertices[0].x;
         var height = rectVertices[2].y - rectVertices[0].y;
         var labelText = target.Label.Count > 0 ? target.Label[0] : null;
-        var vertexId = ((int)rotationAngle / 90 + 1) % 4;
+        var vertexId = (((int)rotationAngle / 90) + 1) % 4;
         var isInverted = ImageCoordinate.IsInverted(rotationAngle);
         var (maxWidth, maxHeight) = isInverted ? (height, width) : (width, height);
-        label.Draw(labelText, rectVertices[vertexId], color, maxWidth, maxHeight);
+        _labelAnnotation.Draw(labelText, rectVertices[vertexId], color, maxWidth, maxHeight);
 
-        relativeKeypoints.Draw(target.LocationData.RelativeKeypoints);
+        _relativeKeypointsAnnotation.Draw(target.LocationData.RelativeKeypoints);
       }
     }
 
-    Color GetColor(float score, float threshold)
+    private Color GetColor(float score, float threshold)
     {
       var t = (score - threshold) / (1 - threshold);
       var h = Mathf.Lerp(90, 0, t) / 360; // from yellow-green to red

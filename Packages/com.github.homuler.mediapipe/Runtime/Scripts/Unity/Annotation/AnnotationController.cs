@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using UnityEngine;
 
 namespace Mediapipe.Unity
@@ -22,7 +28,7 @@ namespace Mediapipe.Unity
 
     public bool isMirrored
     {
-      get { return annotation.isMirrored; }
+      get => annotation.isMirrored;
       set
       {
         if (annotation.isMirrored != value)
@@ -34,7 +40,7 @@ namespace Mediapipe.Unity
 
     public RotationAngle rotationAngle
     {
-      get { return annotation.rotationAngle; }
+      get => annotation.rotationAngle;
       set
       {
         if (annotation.rotationAngle != value)
@@ -48,7 +54,7 @@ namespace Mediapipe.Unity
     {
       if (!TryGetComponent<RectTransform>(out var _))
       {
-        Logger.LogVerbose(this.GetType().Name, $"Adding RectTransform to {gameObject.name}");
+        Logger.LogVerbose(GetType().Name, $"Adding RectTransform to {gameObject.name}");
         var rectTransform = gameObject.AddComponent<RectTransform>();
         // stretch width and height by default
         rectTransform.pivot = new Vector2(0.5f, 0.5f);
@@ -86,7 +92,7 @@ namespace Mediapipe.Unity
     /// </remarks>
     protected abstract void SyncNow();
 
-    protected void UpdateCurrentTarget<S>(S newTarget, ref S currentTarget)
+    protected void UpdateCurrentTarget<TValue>(TValue newTarget, ref TValue currentTarget)
     {
       if (IsTargetChanged(newTarget, currentTarget))
       {
@@ -95,7 +101,7 @@ namespace Mediapipe.Unity
       }
     }
 
-    protected bool IsTargetChanged<S>(S newTarget, S currentTarget)
+    protected bool IsTargetChanged<TValue>(TValue newTarget, TValue currentTarget)
     {
       // It's assumed that target has not changed iff previous target and new target are both null.
       return currentTarget != null || newTarget != null;

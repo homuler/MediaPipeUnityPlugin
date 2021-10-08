@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,32 +11,35 @@ namespace Mediapipe.Unity
 {
   public class RectangleListAnnotation : ListAnnotation<RectangleAnnotation>
   {
-    [SerializeField] Color color = Color.red;
-    [SerializeField, Range(0, 1)] float lineWidth = 1.0f;
+    [SerializeField] private Color _color = Color.red;
+    [SerializeField, Range(0, 1)] private float _lineWidth = 1.0f;
 
-    void OnValidate()
+    private void OnValidate()
     {
-      ApplyColor(color);
-      ApplyLineWidth(lineWidth);
+      ApplyColor(_color);
+      ApplyLineWidth(_lineWidth);
     }
 
     public void SetColor(Color color)
     {
-      this.color = color;
-      ApplyColor(color);
+      _color = color;
+      ApplyColor(_color);
     }
 
     public void SetLineWidth(float lineWidth)
     {
-      this.lineWidth = lineWidth;
-      ApplyLineWidth(lineWidth);
+      _lineWidth = lineWidth;
+      ApplyLineWidth(_lineWidth);
     }
 
     public void Draw(IList<Rect> targets, Vector2 imageSize)
     {
       if (ActivateFor(targets))
       {
-        CallActionForAll(targets, (annotation, target) => { annotation?.Draw(target, imageSize); });
+        CallActionForAll(targets, (annotation, target) =>
+        {
+          if (annotation != null) { annotation.Draw(target, imageSize); }
+        });
       }
     }
 
@@ -38,31 +47,34 @@ namespace Mediapipe.Unity
     {
       if (ActivateFor(targets))
       {
-        CallActionForAll(targets, (annotation, target) => { annotation?.Draw(target); });
+        CallActionForAll(targets, (annotation, target) =>
+        {
+          if (annotation != null) { annotation.Draw(target); }
+        });
       }
     }
 
     protected override RectangleAnnotation InstantiateChild(bool isActive = true)
     {
       var annotation = base.InstantiateChild(isActive);
-      annotation.SetLineWidth(lineWidth);
-      annotation.SetColor(color);
+      annotation.SetLineWidth(_lineWidth);
+      annotation.SetColor(_color);
       return annotation;
     }
 
-    void ApplyColor(Color color)
+    private void ApplyColor(Color color)
     {
       foreach (var rect in children)
       {
-        rect?.SetColor(color);
+        if (rect != null) { rect.SetColor(color); }
       }
     }
 
-    void ApplyLineWidth(float lineWidth)
+    private void ApplyLineWidth(float lineWidth)
     {
       foreach (var rect in children)
       {
-        rect?.SetLineWidth(lineWidth);
+        if (rect != null) { rect.SetLineWidth(lineWidth); }
       }
     }
   }

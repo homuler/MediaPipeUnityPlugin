@@ -1,4 +1,9 @@
-using Mediapipe.Unity.CoordinateSystem;
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,10 +11,10 @@ namespace Mediapipe.Unity
 {
   public sealed class CuboidAnnotation : HierarchicalAnnotation
   {
-    [SerializeField] PointListAnnotation pointListAnnotation;
-    [SerializeField] ConnectionListAnnotation lineListAnnotation;
-    [SerializeField] TransformAnnotation transformAnnotation;
-    [SerializeField] float arrowLengthScale = 1.0f;
+    [SerializeField] private PointListAnnotation _pointListAnnotation;
+    [SerializeField] private ConnectionListAnnotation _lineListAnnotation;
+    [SerializeField] private TransformAnnotation _transformAnnotation;
+    [SerializeField] private float _arrowLengthScale = 1.0f;
 
     ///     3 ----------- 7
     ///    /|            /|
@@ -19,7 +24,7 @@ namespace Mediapipe.Unity
     ///  | /           | /
     ///  |/            |/
     ///  2 ----------- 6
-    List<(int, int)> connections = new List<(int, int)> {
+    private readonly List<(int, int)> _connections = new List<(int, int)> {
       (1, 2),
       (3, 4),
       (5, 6),
@@ -38,9 +43,9 @@ namespace Mediapipe.Unity
     {
       set
       {
-        pointListAnnotation.isMirrored = value;
-        lineListAnnotation.isMirrored = value;
-        transformAnnotation.isMirrored = value;
+        _pointListAnnotation.isMirrored = value;
+        _lineListAnnotation.isMirrored = value;
+        _transformAnnotation.isMirrored = value;
         base.isMirrored = value;
       }
     }
@@ -49,56 +54,56 @@ namespace Mediapipe.Unity
     {
       set
       {
-        pointListAnnotation.rotationAngle = value;
-        lineListAnnotation.rotationAngle = value;
-        transformAnnotation.rotationAngle = value;
+        _pointListAnnotation.rotationAngle = value;
+        _lineListAnnotation.rotationAngle = value;
+        _transformAnnotation.rotationAngle = value;
         base.rotationAngle = value;
       }
     }
 
-    void Start()
+    private void Start()
     {
-      pointListAnnotation.Fill(9);
-      lineListAnnotation.Fill(connections, pointListAnnotation);
+      _pointListAnnotation.Fill(9);
+      _lineListAnnotation.Fill(_connections, _pointListAnnotation);
     }
 
     public void SetPointColor(Color color)
     {
-      pointListAnnotation.SetColor(color);
+      _pointListAnnotation.SetColor(color);
     }
 
     public void SetLineColor(Color color)
     {
-      lineListAnnotation.SetColor(color);
+      _lineListAnnotation.SetColor(color);
     }
 
     public void SetLineWidth(float lineWidth)
     {
-      lineListAnnotation.SetLineWidth(lineWidth);
+      _lineListAnnotation.SetLineWidth(lineWidth);
     }
 
     public void SetArrowCapScale(float arrowCapScale)
     {
-      transformAnnotation.SetArrowCapScale(arrowCapScale);
+      _transformAnnotation.SetArrowCapScale(arrowCapScale);
     }
 
     public void SetArrowLengthScale(float arrowLengthScale)
     {
-      this.arrowLengthScale = arrowLengthScale;
+      _arrowLengthScale = arrowLengthScale;
     }
 
     public void SetArrowWidth(float arrowWidth)
     {
-      transformAnnotation.SetArrowWidth(arrowWidth);
+      _transformAnnotation.SetArrowWidth(arrowWidth);
     }
 
     public void Draw(ObjectAnnotation target, Vector2 focalLength, Vector2 principalPoint, float zScale, bool visualizeZ = true)
     {
       if (ActivateFor(target))
       {
-        pointListAnnotation.Draw(target.Keypoints, focalLength, principalPoint, zScale, visualizeZ);
-        lineListAnnotation.Redraw();
-        transformAnnotation.Draw(target, pointListAnnotation[0].transform.localPosition, arrowLengthScale, visualizeZ);
+        _pointListAnnotation.Draw(target.Keypoints, focalLength, principalPoint, zScale, visualizeZ);
+        _lineListAnnotation.Redraw();
+        _transformAnnotation.Draw(target, _pointListAnnotation[0].transform.localPosition, _arrowLengthScale, visualizeZ);
       }
     }
   }

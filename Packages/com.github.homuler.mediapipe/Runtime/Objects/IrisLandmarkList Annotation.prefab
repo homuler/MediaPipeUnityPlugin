@@ -45,8 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1663d4d6a7ce17fdbad3dcb3e667ee85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  landmarkList: {fileID: 8525746990267350913}
-  circle: {fileID: 6589080662169022602}
+  _landmarkListAnnotation: {fileID: 8525746990267350913}
+  _circleAnnotation: {fileID: 6589080662169022602}
 --- !u!1001 &699405928064242038
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -114,6 +114,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9215842904284589815, guid: e260d2f5fb90a790385fcb2d815b23a6,
+        type: 3}
+      propertyPath: _color.r
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e260d2f5fb90a790385fcb2d815b23a6, type: 3}
 --- !u!4 &8525746990267350912 stripped
@@ -141,6 +146,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4920882846540405598}
     m_Modifications:
+    - target: {fileID: 1814674383914226116, guid: a30fb5c183ec11e59b1dbf1b3c8d2faa,
+        type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1814674383914226116, guid: a30fb5c183ec11e59b1dbf1b3c8d2faa,
+        type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1814674383914226116, guid: a30fb5c183ec11e59b1dbf1b3c8d2faa,
+        type: 3}
+      propertyPath: m_Parameters.colorGradient.key1.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1814674383914226116, guid: a30fb5c183ec11e59b1dbf1b3c8d2faa,
+        type: 3}
+      propertyPath: m_Parameters.colorGradient.key1.g
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6304225122415972218, guid: a30fb5c183ec11e59b1dbf1b3c8d2faa,
         type: 3}
       propertyPath: m_RootOrder
@@ -200,6 +225,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Circle Annotation
+      objectReference: {fileID: 0}
+    - target: {fileID: 9135269113604921858, guid: a30fb5c183ec11e59b1dbf1b3c8d2faa,
+        type: 3}
+      propertyPath: _color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9135269113604921858, guid: a30fb5c183ec11e59b1dbf1b3c8d2faa,
+        type: 3}
+      propertyPath: _color.g
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a30fb5c183ec11e59b1dbf1b3c8d2faa, type: 3}

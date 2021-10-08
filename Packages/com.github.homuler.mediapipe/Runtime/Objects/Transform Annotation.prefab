@@ -46,9 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 219b3f9aac8f8d18db8e85142b28db7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xArrow: {fileID: 4070943725249276835}
-  yArrow: {fileID: 4070943725190493615}
-  zArrow: {fileID: 4070943725931072864}
+  _xArrow: {fileID: 4070943725249276835}
+  _yArrow: {fileID: 4070943725190493615}
+  _zArrow: {fileID: 4070943725931072864}
 --- !u!1001 &1970024002895185507
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4724242833946851652}
-  - component: {fileID: -7002817189824008178}
+  - component: {fileID: 7426451068229116525}
   m_Layer: 0
   m_Name: HandLandmarkList Annotation
   m_TagString: Untagged
@@ -33,7 +33,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-7002817189824008178
+--- !u!114 &7426451068229116525
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -45,10 +45,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: febd88b13c7a8e91b855c9dd35dd65d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  landmarkList: {fileID: 17314624880992431}
-  connectionList: {fileID: 4340673029162133843}
-  leftLandmarkColor: {r: 1, g: 0.33333334, b: 0, a: 1}
-  rightLandmarkColor: {r: 0, g: 0.5833335, b: 1, a: 1}
+  _landmarkListAnnotation: {fileID: 17314624880992431}
+  _connectionListAnnotation: {fileID: 4860466422646548000}
+  _leftLandmarkColor: {r: 1, g: 0.5411765, b: 0, a: 1}
+  _rightLandmarkColor: {r: 0, g: 0.8509804, b: 0.90588236, a: 1}
 --- !u!1001 &3919333542530190328
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -131,6 +131,21 @@ PrefabInstance:
       propertyPath: color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8437385474393681368, guid: c97d04632e9be1a7cb05f6ab855b365b,
+        type: 3}
+      propertyPath: _color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8437385474393681368, guid: c97d04632e9be1a7cb05f6ab855b365b,
+        type: 3}
+      propertyPath: _color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8437385474393681368, guid: c97d04632e9be1a7cb05f6ab855b365b,
+        type: 3}
+      propertyPath: _color.r
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c97d04632e9be1a7cb05f6ab855b365b, type: 3}
 --- !u!4 &4340673029162133842 stripped
@@ -139,9 +154,9 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3919333542530190328}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4340673029162133843 stripped
+--- !u!114 &4860466422646548000 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 745748194542674603, guid: c97d04632e9be1a7cb05f6ab855b365b,
+  m_CorrespondingSourceObject: {fileID: 8437385474393681368, guid: c97d04632e9be1a7cb05f6ab855b365b,
     type: 3}
   m_PrefabInstance: {fileID: 3919333542530190328}
   m_PrefabAsset: {fileID: 0}

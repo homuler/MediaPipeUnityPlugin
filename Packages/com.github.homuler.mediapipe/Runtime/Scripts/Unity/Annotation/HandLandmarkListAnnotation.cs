@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,10 +11,10 @@ namespace Mediapipe.Unity
 {
   public sealed class HandLandmarkListAnnotation : HierarchicalAnnotation
   {
-    [SerializeField] PointListAnnotation landmarkList;
-    [SerializeField] ConnectionListAnnotation connectionList;
-    [SerializeField] Color leftLandmarkColor = Color.green;
-    [SerializeField] Color rightLandmarkColor = Color.green;
+    [SerializeField] private PointListAnnotation _landmarkListAnnotation;
+    [SerializeField] private ConnectionListAnnotation _connectionListAnnotation;
+    [SerializeField] private Color _leftLandmarkColor = Color.green;
+    [SerializeField] private Color _rightLandmarkColor = Color.green;
 
     public enum Hand
     {
@@ -16,8 +22,8 @@ namespace Mediapipe.Unity
       Right,
     }
 
-    const int landmarkCount = 21;
-    readonly List<(int, int)> connections = new List<(int, int)> {
+    private const int _LandmarkCount = 21;
+    private readonly List<(int, int)> _connections = new List<(int, int)> {
       (0, 1),
       (1, 2),
       (2, 3),
@@ -45,8 +51,8 @@ namespace Mediapipe.Unity
     {
       set
       {
-        landmarkList.isMirrored = value;
-        connectionList.isMirrored = value;
+        _landmarkListAnnotation.isMirrored = value;
+        _connectionListAnnotation.isMirrored = value;
         base.isMirrored = value;
       }
     }
@@ -55,59 +61,56 @@ namespace Mediapipe.Unity
     {
       set
       {
-        landmarkList.rotationAngle = value;
-        connectionList.rotationAngle = value;
+        _landmarkListAnnotation.rotationAngle = value;
+        _connectionListAnnotation.rotationAngle = value;
         base.rotationAngle = value;
       }
     }
 
-    public PointAnnotation this[int index]
-    {
-      get { return landmarkList[index]; }
-    }
+    public PointAnnotation this[int index] => _landmarkListAnnotation[index];
 
-    void Start()
+    private void Start()
     {
-      landmarkList.SetColor(leftLandmarkColor); // assume it's left hand by default
-      landmarkList.Fill(landmarkCount);
+      _landmarkListAnnotation.SetColor(_leftLandmarkColor); // assume it's left hand by default
+      _landmarkListAnnotation.Fill(_LandmarkCount);
 
-      connectionList.Fill(connections, landmarkList);
+      _connectionListAnnotation.Fill(_connections, _landmarkListAnnotation);
     }
 
     public void SetLeftLandmarkColor(Color leftLandmarkColor)
     {
-      this.leftLandmarkColor = leftLandmarkColor;
+      _leftLandmarkColor = leftLandmarkColor;
     }
 
     public void SetRightLandmarkColor(Color rightLandmarkColor)
     {
-      this.rightLandmarkColor = rightLandmarkColor;
+      _rightLandmarkColor = rightLandmarkColor;
     }
 
     public void SetLandmarkRadius(float landmarkRadius)
     {
-      landmarkList.SetRadius(landmarkRadius);
+      _landmarkListAnnotation.SetRadius(landmarkRadius);
     }
 
     public void SetConnectionColor(Color connectionColor)
     {
-      connectionList.SetColor(connectionColor);
+      _connectionListAnnotation.SetColor(connectionColor);
     }
 
     public void SetConnectionWidth(float connectionWidth)
     {
-      connectionList.SetLineWidth(connectionWidth);
+      _connectionListAnnotation.SetLineWidth(connectionWidth);
     }
 
     public void SetHandedness(Hand handedness)
     {
       if (handedness == Hand.Left)
       {
-        landmarkList.SetColor(leftLandmarkColor);
+        _landmarkListAnnotation.SetColor(_leftLandmarkColor);
       }
       else if (handedness == Hand.Right)
       {
-        landmarkList.SetColor(rightLandmarkColor);
+        _landmarkListAnnotation.SetColor(_rightLandmarkColor);
       }
     }
 
@@ -133,9 +136,9 @@ namespace Mediapipe.Unity
     {
       if (ActivateFor(target))
       {
-        landmarkList.Draw(target, visualizeZ);
+        _landmarkListAnnotation.Draw(target, visualizeZ);
         // Draw explicitly because connection annotation's targets remain the same.
-        connectionList.Redraw();
+        _connectionListAnnotation.Redraw();
       }
     }
 

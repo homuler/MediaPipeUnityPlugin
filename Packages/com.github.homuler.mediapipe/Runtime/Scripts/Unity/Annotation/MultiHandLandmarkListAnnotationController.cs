@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,38 +11,38 @@ namespace Mediapipe.Unity
 {
   public class MultiHandLandmarkListAnnotationController : AnnotationController<MultiHandLandmarkListAnnotation>
   {
-    [SerializeField] bool visualizeZ = false;
+    [SerializeField] private bool _visualizeZ = false;
 
-    IList<NormalizedLandmarkList> currentHandLandmarkLists;
-    IList<ClassificationList> currentHandedness;
+    private IList<NormalizedLandmarkList> _currentHandLandmarkLists;
+    private IList<ClassificationList> _currentHandedness;
 
     public void DrawNow(IList<NormalizedLandmarkList> handLandmarkLists, IList<ClassificationList> handedness = null)
     {
-      currentHandLandmarkLists = handLandmarkLists;
-      currentHandedness = handedness;
+      _currentHandLandmarkLists = handLandmarkLists;
+      _currentHandedness = handedness;
       SyncNow();
     }
 
     public void DrawLater(IList<NormalizedLandmarkList> handLandmarkLists)
     {
-      UpdateCurrentTarget(handLandmarkLists, ref currentHandLandmarkLists);
+      UpdateCurrentTarget(handLandmarkLists, ref _currentHandLandmarkLists);
     }
 
     public void DrawLater(IList<ClassificationList> handedness)
     {
-      UpdateCurrentTarget(handedness, ref currentHandedness);
+      UpdateCurrentTarget(handedness, ref _currentHandedness);
     }
 
     protected override void SyncNow()
     {
       isStale = false;
-      annotation.Draw(currentHandLandmarkLists, visualizeZ);
+      annotation.Draw(_currentHandLandmarkLists, _visualizeZ);
 
-      if (currentHandedness != null)
+      if (_currentHandedness != null)
       {
-        annotation.SetHandedness(currentHandedness);
+        annotation.SetHandedness(_currentHandedness);
       }
-      currentHandedness = null;
+      _currentHandedness = null;
     }
   }
 }

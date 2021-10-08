@@ -4,10 +4,9 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - faceLandmarkListAnnotationPrefab: {fileID: 7273100862690186831, guid: 16074ce928b0558829296ab0d9ccadf3,
-      type: 3}
-  - irisLandmarkListAnnotationPrefab: {fileID: 4920882846540405593, guid: f0ce15b9d7f5f910fa2e3ddc2ea6d890,
-      type: 3}
+  - _faceLandmarkListAnnotation: {instanceID: 0}
+  - _leftIrisLandmarkListAnnotation: {instanceID: 0}
+  - _rightIrisLandmarkListAnnotation: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

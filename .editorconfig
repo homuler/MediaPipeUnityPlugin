@@ -69,6 +69,9 @@ dotnet_diagnostic.IDE0050.severity = suggestion
 ### Convert typeof to nameof (IDE0082)
 dotnet_diagnostic.IDE0082.severity = suggestion
 
+### Simplify new expression (IDE0090)
+csharp_style_implicit_object_creation_when_type_is_apparent = false
+
 # Null-checking preferences
 
 # File header preferences

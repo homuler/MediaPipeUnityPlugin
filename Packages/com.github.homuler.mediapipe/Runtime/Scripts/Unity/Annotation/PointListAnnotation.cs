@@ -1,38 +1,47 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections.Generic;
 using UnityEngine;
 
-using mplt = global::Mediapipe.LocationData.Types;
+using mplt = Mediapipe.LocationData.Types;
 
 namespace Mediapipe.Unity
 {
   public class PointListAnnotation : ListAnnotation<PointAnnotation>
   {
-    [SerializeField] Color color = Color.green;
-    [SerializeField] float radius = 15.0f;
+    [SerializeField] private Color _color = Color.green;
+    [SerializeField] private float _radius = 15.0f;
 
-    void OnValidate()
+    private void OnValidate()
     {
-      ApplyColor(color);
-      ApplyRadius(radius);
+      ApplyColor(_color);
+      ApplyRadius(_radius);
     }
 
     public void SetColor(Color color)
     {
-      this.color = color;
-      ApplyColor(color);
+      _color = color;
+      ApplyColor(_color);
     }
 
     public void SetRadius(float radius)
     {
-      this.radius = radius;
-      ApplyRadius(radius);
+      _radius = radius;
+      ApplyRadius(_radius);
     }
 
     public void Draw(IList<Vector3> targets)
     {
       if (ActivateFor(targets))
       {
-        CallActionForAll(targets, (annotation, target) => { annotation?.Draw(target); });
+        CallActionForAll(targets, (annotation, target) =>
+        {
+          if (annotation != null) { annotation.Draw(target); }
+        });
       }
     }
 
@@ -40,7 +49,10 @@ namespace Mediapipe.Unity
     {
       if (ActivateFor(targets))
       {
-        CallActionForAll(targets, (annotation, target) => { annotation?.Draw(target, scale, visualizeZ); });
+        CallActionForAll(targets, (annotation, target) =>
+        {
+          if (annotation != null) { annotation.Draw(target, scale, visualizeZ); }
+        });
       }
     }
 
@@ -53,7 +65,10 @@ namespace Mediapipe.Unity
     {
       if (ActivateFor(targets))
       {
-        CallActionForAll(targets, (annotation, target) => { annotation?.Draw(target, visualizeZ); });
+        CallActionForAll(targets, (annotation, target) =>
+        {
+          if (annotation != null) { annotation.Draw(target, visualizeZ); }
+        });
       }
     }
 
@@ -66,7 +81,10 @@ namespace Mediapipe.Unity
     {
       if (ActivateFor(targets))
       {
-        CallActionForAll(targets, (annotation, target) => { annotation?.Draw(target, focalLength, principalPoint, zScale, visualizeZ); });
+        CallActionForAll(targets, (annotation, target) =>
+        {
+          if (annotation != null) { annotation.Draw(target, focalLength, principalPoint, zScale, visualizeZ); }
+        });
       }
     }
 
@@ -74,31 +92,34 @@ namespace Mediapipe.Unity
     {
       if (ActivateFor(targets))
       {
-        CallActionForAll(targets, (annotation, target) => { annotation?.Draw(target, threshold); });
+        CallActionForAll(targets, (annotation, target) =>
+        {
+          if (annotation != null) { annotation.Draw(target, threshold); }
+        });
       }
     }
 
     protected override PointAnnotation InstantiateChild(bool isActive = true)
     {
       var annotation = base.InstantiateChild(isActive);
-      annotation.SetColor(color);
-      annotation.SetRadius(radius);
+      annotation.SetColor(_color);
+      annotation.SetRadius(_radius);
       return annotation;
     }
 
-    void ApplyColor(Color color)
+    private void ApplyColor(Color color)
     {
       foreach (var point in children)
       {
-        point?.SetColor(color);
+        if (point != null) { point.SetColor(color); }
       }
     }
 
-    void ApplyRadius(float radius)
+    private void ApplyRadius(float radius)
     {
       foreach (var point in children)
       {
-        point?.SetRadius(radius);
+        if (point != null) { point.SetRadius(radius); }
       }
     }
   }

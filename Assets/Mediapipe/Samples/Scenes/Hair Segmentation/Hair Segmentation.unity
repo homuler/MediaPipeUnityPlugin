@@ -273,10 +273,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 1452360049}
-  maskWidth: 512
-  maskHeight: 512
-  minAlpha: 0.9
-  maxAlpha: 0.8
+  _maskWidth: 512
+  _maskHeight: 512
+  _minAlpha: 0.9
+  _maxAlpha: 1
 --- !u!114 &107400413 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3259285889726014649, guid: 5713b959e3c77a58fb258133fc8e4aef,
@@ -507,6 +507,11 @@ PrefabInstance:
     - target: {fileID: 5850198979010014858, guid: 24d349d9c78db0f3d94d4657029f4c5e,
         type: 3}
       propertyPath: screen
+      value: 
+      objectReference: {fileID: 1625703806}
+    - target: {fileID: 5850198979010014858, guid: 24d349d9c78db0f3d94d4657029f4c5e,
+        type: 3}
+      propertyPath: _screen
       value: 
       objectReference: {fileID: 1625703806}
     m_RemovedComponents: []

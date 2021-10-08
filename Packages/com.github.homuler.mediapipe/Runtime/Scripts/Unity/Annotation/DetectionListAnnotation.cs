@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,24 +11,24 @@ namespace Mediapipe.Unity
 {
   public sealed class DetectionListAnnotation : ListAnnotation<DetectionAnnotation>
   {
-    [SerializeField, Range(0, 1)] float lineWidth = 1.0f;
-    [SerializeField] float keypointRadius = 15.0f;
+    [SerializeField, Range(0, 1)] private float _lineWidth = 1.0f;
+    [SerializeField] private float _keypointRadius = 15.0f;
 
-    void OnValidate()
+    private void OnValidate()
     {
-      ApplyLineWidth(lineWidth);
-      ApplyKeypointRadius(keypointRadius);
+      ApplyLineWidth(_lineWidth);
+      ApplyKeypointRadius(_keypointRadius);
     }
 
     public void SetLineWidth(float lineWidth)
     {
-      this.lineWidth = lineWidth;
+      _lineWidth = lineWidth;
       ApplyLineWidth(lineWidth);
     }
 
     public void SetKeypointRadius(float keypointRadius)
     {
-      this.keypointRadius = keypointRadius;
+      _keypointRadius = keypointRadius;
       ApplyKeypointRadius(keypointRadius);
     }
 
@@ -35,7 +41,10 @@ namespace Mediapipe.Unity
     {
       if (ActivateFor(targets))
       {
-        CallActionForAll(targets, (annotation, target) => { annotation?.Draw(target, threshold); });
+        CallActionForAll(targets, (annotation, target) =>
+        {
+          if (annotation != null) { annotation.Draw(target, threshold); }
+        });
       }
     }
 
@@ -52,24 +61,24 @@ namespace Mediapipe.Unity
     protected override DetectionAnnotation InstantiateChild(bool isActive = true)
     {
       var annotation = base.InstantiateChild(isActive);
-      annotation.SetLineWidth(lineWidth);
-      annotation.SetKeypointRadius(keypointRadius);
+      annotation.SetLineWidth(_lineWidth);
+      annotation.SetKeypointRadius(_keypointRadius);
       return annotation;
     }
 
-    void ApplyLineWidth(float lineWidth)
+    private void ApplyLineWidth(float lineWidth)
     {
       foreach (var detection in children)
       {
-        detection?.SetLineWidth(lineWidth);
+        if (detection != null) { detection.SetLineWidth(lineWidth); }
       }
     }
 
-    void ApplyKeypointRadius(float keypointRadius)
+    private void ApplyKeypointRadius(float keypointRadius)
     {
       foreach (var detection in children)
       {
-        detection?.SetKeypointRadius(keypointRadius);
+        if (detection != null) { detection.SetKeypointRadius(keypointRadius); }
       }
     }
   }

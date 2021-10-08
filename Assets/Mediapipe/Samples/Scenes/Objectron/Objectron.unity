@@ -333,9 +333,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 1569153749}
-  visualizeZ: 1
-  translateZ: -100
-  scaleZ: 10
+  _visualizeZ: 1
+  _translateZ: -100
+  _scaleZ: 1
   focalLength: {x: 0, y: 0}
   principalPoint: {x: 0, y: 0}
 --- !u!114 &544675422 stripped
@@ -376,7 +376,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 704632182}
-  visualizeZ: 0
+  _visualizeZ: 0
 --- !u!1 &544675425 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3259285889726014651, guid: 5713b959e3c77a58fb258133fc8e4aef,
@@ -472,6 +472,16 @@ PrefabInstance:
     - target: {fileID: 9215842904284589815, guid: e260d2f5fb90a790385fcb2d815b23a6,
         type: 3}
       propertyPath: color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9215842904284589815, guid: e260d2f5fb90a790385fcb2d815b23a6,
+        type: 3}
+      propertyPath: _color.g
+      value: 0.5411765
+      objectReference: {fileID: 0}
+    - target: {fileID: 9215842904284589815, guid: e260d2f5fb90a790385fcb2d815b23a6,
+        type: 3}
+      propertyPath: _color.r
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -607,6 +617,21 @@ PrefabInstance:
       propertyPath: color.r
       value: 0.16666651
       objectReference: {fileID: 0}
+    - target: {fileID: 1620015869145370098, guid: 8fcc7ea504479f06a9334ee2faa42b57,
+        type: 3}
+      propertyPath: _color.b
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1620015869145370098, guid: 8fcc7ea504479f06a9334ee2faa42b57,
+        type: 3}
+      propertyPath: _color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1620015869145370098, guid: 8fcc7ea504479f06a9334ee2faa42b57,
+        type: 3}
+      propertyPath: _color.r
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 1620015869145370099, guid: 8fcc7ea504479f06a9334ee2faa42b57,
         type: 3}
       propertyPath: m_RootOrder
@@ -690,7 +715,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6393730721216785986, guid: ad07199e23982e78c9dad255e1176177,
         type: 3}
+      propertyPath: _arrowCapScale
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6393730721216785986, guid: ad07199e23982e78c9dad255e1176177,
+        type: 3}
       propertyPath: arrowLengthScale
+      value: 400
+      objectReference: {fileID: 0}
+    - target: {fileID: 6393730721216785986, guid: ad07199e23982e78c9dad255e1176177,
+        type: 3}
+      propertyPath: _arrowLengthScale
       value: 400
       objectReference: {fileID: 0}
     - target: {fileID: 6458122111144983605, guid: ad07199e23982e78c9dad255e1176177,

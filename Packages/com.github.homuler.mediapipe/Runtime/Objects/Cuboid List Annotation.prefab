@@ -43,8 +43,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69c9a763206a6fa938324ba456924e67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  annotationPrefab: {fileID: 2519151911608524794, guid: 915f3c383a25ff9bd985b1394fc052de,
+  _annotationPrefab: {fileID: 2519151911608524794, guid: 915f3c383a25ff9bd985b1394fc052de,
     type: 3}
-  pointColor: {r: 0, g: 1, b: 0, a: 1}
-  lineColor: {r: 1, g: 0, b: 0, a: 1}
-  lineWidth: 1
+  _pointColor: {r: 0, g: 1, b: 0, a: 1}
+  _lineColor: {r: 1, g: 0, b: 0, a: 1}
+  _lineWidth: 1
+  _arrowCapScale: 2
+  _arrowLengthScale: 1
+  _arrowWidth: 1

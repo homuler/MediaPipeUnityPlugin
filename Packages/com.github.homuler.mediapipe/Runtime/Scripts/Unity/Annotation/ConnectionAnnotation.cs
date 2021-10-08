@@ -1,24 +1,30 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 namespace Mediapipe.Unity
 {
   public class ConnectionAnnotation : LineAnnotation
   {
-    Connection currentTarget;
+    private Connection _currentTarget;
 
-    public bool isEmpty { get { return currentTarget == null; } }
+    public bool isEmpty => _currentTarget == null;
 
     public void Draw(Connection target)
     {
-      currentTarget = target;
+      _currentTarget = target;
 
-      if (ActivateFor(currentTarget))
+      if (ActivateFor(_currentTarget))
       {
-        Draw(currentTarget.start.gameObject, currentTarget.end.gameObject);
+        Draw(_currentTarget.start.gameObject, _currentTarget.end.gameObject);
       }
     }
 
     public void Redraw()
     {
-      Draw(currentTarget);
+      Draw(_currentTarget);
     }
 
     protected bool ActivateFor(Connection target)
