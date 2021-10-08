@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using Mediapipe;
 using NUnit.Framework;
 using System;
@@ -24,11 +30,12 @@ namespace Tests
 
         glCalculatorHelper.RunInGlContext(() =>
         {
-          var glContext = GlContext.GetCurrent();
-
-          Assert.NotNull(glContext);
-          Assert.True(glContext.IsCurrent());
-          return Status.Ok();
+          using (var glContext = GlContext.GetCurrent())
+          {
+            Assert.NotNull(glContext);
+            Assert.True(glContext.IsCurrent());
+            return Status.Ok();
+          }
         }).AssertOk();
       }
     }
@@ -47,20 +54,21 @@ namespace Tests
     [Test, GpuOnly]
     public void ShouldReturnProperties()
     {
-      var glContext = GetGlContext();
-
+      using (var glContext = GetGlContext())
+      {
 #if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_ANDROID
-      Assert.AreNotEqual(glContext.eglDisplay, IntPtr.Zero);
-      Assert.AreNotEqual(glContext.eglConfig, IntPtr.Zero);
-      Assert.AreNotEqual(glContext.eglContext, IntPtr.Zero);
-      Assert.AreEqual(glContext.glMajorVersion, 3);
-      Assert.AreEqual(glContext.glMinorVersion, 2);
-      Assert.AreEqual(glContext.glFinishCount, 0);
+        Assert.AreNotEqual(glContext.eglDisplay, IntPtr.Zero);
+        Assert.AreNotEqual(glContext.eglConfig, IntPtr.Zero);
+        Assert.AreNotEqual(glContext.eglContext, IntPtr.Zero);
+        Assert.AreEqual(glContext.glMajorVersion, 3);
+        Assert.AreEqual(glContext.glMinorVersion, 2);
+        Assert.AreEqual(glContext.glFinishCount, 0);
 #elif UNITY_STANDALONE_OSX
-      Assert.AreNotEqual(glContext.nsglContext, IntPtr.Zero);
+        Assert.AreNotEqual(glContext.nsglContext, IntPtr.Zero);
 #elif UNITY_IOS
-      Assert.AreNotEqual(glContext.eaglContext, IntPtr.Zero);
+        Assert.AreNotEqual(glContext.eaglContext, IntPtr.Zero);
 #endif
+      }
     }
     #endregion
 

@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using Mediapipe;
 using NUnit.Framework;
 using System;
@@ -14,6 +20,7 @@ namespace Tests
     {
       using (var imageFrame = new ImageFrame())
       {
+#pragma warning disable IDE0058
         Assert.AreEqual(imageFrame.Format(), ImageFormat.Format.UNKNOWN);
         Assert.AreEqual(imageFrame.Width(), 0);
         Assert.AreEqual(imageFrame.Height(), 0);
@@ -27,6 +34,7 @@ namespace Tests
         Assert.False(imageFrame.IsContiguous());
         Assert.False(imageFrame.IsAligned(16));
         Assert.AreEqual(imageFrame.MutablePixelData(), IntPtr.Zero);
+#pragma warning restore IDE0058
       }
     }
 
@@ -86,13 +94,15 @@ namespace Tests
     [Test]
     public void Ctor_ShouldThrowMediaPipeException_When_CalledWithInvalidArgument()
     {
+#pragma warning disable IDE0058
       Assert.Throws<MediaPipeException>(() => { new ImageFrame(ImageFormat.Format.SBGRA, 640, 480, 0); });
+#pragma warning restore IDE0058
     }
     #endregion
 
     #region #isDisposed
     [Test]
-    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet()
+    public void IsDisposed_ShouldReturnFalse_When_NotDisposedYet()
     {
       using (var imageFrame = new ImageFrame())
       {
@@ -101,7 +111,7 @@ namespace Tests
     }
 
     [Test]
-    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed()
+    public void IsDisposed_ShouldReturnTrue_When_AlreadyDisposed()
     {
       var imageFrame = new ImageFrame();
       imageFrame.Dispose();
@@ -155,7 +165,9 @@ namespace Tests
     {
       using (var imageFrame = new ImageFrame(ImageFormat.Format.GRAY8, 10, 10))
       {
+#pragma warning disable IDE0058
         Assert.Throws<MediaPipeException>(() => { imageFrame.CopyToByteBuffer(99); });
+#pragma warning restore IDE0058
       }
     }
 
@@ -176,7 +188,9 @@ namespace Tests
     {
       using (var imageFrame = new ImageFrame(ImageFormat.Format.GRAY16, 10, 10))
       {
+#pragma warning disable IDE0058
         Assert.Throws<MediaPipeException>(() => { imageFrame.CopyToUshortBuffer(99); });
+#pragma warning restore IDE0058
       }
     }
 
@@ -197,7 +211,9 @@ namespace Tests
     {
       using (var imageFrame = new ImageFrame(ImageFormat.Format.VEC32F1, 10, 10))
       {
+#pragma warning disable IDE0058
         Assert.Throws<MediaPipeException>(() => { imageFrame.CopyToFloatBuffer(99); });
+#pragma warning restore IDE0058
       }
     }
     #endregion

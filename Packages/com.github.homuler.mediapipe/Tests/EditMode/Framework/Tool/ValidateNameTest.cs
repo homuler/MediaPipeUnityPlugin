@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using Mediapipe;
 using NUnit.Framework;
 using System;
@@ -38,7 +44,9 @@ namespace Tests
     [TestCase("\0contains_escapes\t")]
     public void ValidateName_ShouldThrow_WhenNameIsInvalid(string name)
     {
+#pragma warning disable IDE0058
       Assert.Throws<ArgumentException>(() => { Tool.ValidateName(name); });
+#pragma warning restore IDE0058
     }
     #endregion
 
@@ -55,7 +63,9 @@ namespace Tests
     [TestCase("1a")]
     public void ValidateNumber_ShouldThrow_WhenNumberIsInvalid(string number)
     {
+#pragma warning disable IDE0058
       Assert.Throws<ArgumentException>(() => { Tool.ValidateNumber(number); });
+#pragma warning restore IDE0058
     }
     #endregion
 
@@ -88,7 +98,9 @@ namespace Tests
     [TestCase("\0CONTAINS_ESCAPES\t")]
     public void ValidateTag_ShouldThrow_WhenTagIsInvalid(string tag)
     {
+#pragma warning disable IDE0058
       Assert.Throws<ArgumentException>(() => { Tool.ValidateTag(tag); });
+#pragma warning restore IDE0058
     }
     #endregion
 
@@ -113,12 +125,14 @@ namespace Tests
     [TestCase("ACTOR:HUMPHREY")]
     public void ParseTagAndName_ShouldThrow_When_InputIsInvalid(string input)
     {
-      string tag = "UNTOUCHED";
-      string name = "untouched";
+      var tag = "UNTOUCHED";
+      var name = "untouched";
 
+#pragma warning disable IDE0058
       Assert.Throws<ArgumentException>(() => { Tool.ParseTagAndName(input, out tag, out name); });
       Assert.AreEqual(tag, "UNTOUCHED");
       Assert.AreEqual(name, "untouched");
+#pragma warning restore IDE0058
     }
 
     [Test]
@@ -187,14 +201,16 @@ namespace Tests
     [TestCase("A:1:a:1")]
     public void ParseTagIndexName_ShouldThrow_When_InputIsInvalid(string input)
     {
-      string tag = "UNTOUCHED";
-      int index = -1;
-      string name = "untouched";
+      var tag = "UNTOUCHED";
+      var index = -1;
+      var name = "untouched";
 
+#pragma warning disable IDE0058
       Assert.Throws<ArgumentException>(() => { Tool.ParseTagIndexName(input, out tag, out index, out name); });
       Assert.AreEqual(tag, "UNTOUCHED");
       Assert.AreEqual(index, -1);
       Assert.AreEqual(name, "untouched");
+#pragma warning restore IDE0058
     }
 
     [Test]
@@ -251,12 +267,14 @@ namespace Tests
     [TestCase("A:A:1")]
     public void ParseTagIndex_ShouldThrow_When_InputIsInvalid(string input)
     {
-      string tag = "UNTOUCHED";
-      int index = -1;
+      var tag = "UNTOUCHED";
+      var index = -1;
 
+#pragma warning disable IDE0058
       Assert.Throws<ArgumentException>(() => { Tool.ParseTagIndex(input, out tag, out index); });
       Assert.AreEqual(tag, "UNTOUCHED");
       Assert.AreEqual(index, -1);
+#pragma warning restore IDE0058
     }
 
     [Test]

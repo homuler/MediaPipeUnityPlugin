@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using Mediapipe;
 using NUnit.Framework;
 using System;
@@ -45,21 +51,27 @@ namespace Tests
     public void CanonicalNodeName_ShouldThrow_When_NodeIdIsNegative()
     {
       var config = CalculatorGraphConfig.Parser.ParseJson(@"{""node"":[{""name"":""name""}]}");
+#pragma warning disable IDE0058
       Assert.Throws<ArgumentOutOfRangeException>(() => { Tool.CanonicalNodeName(config, -1); });
+#pragma warning restore IDE0058
     }
 
     [Test]
     public void CanonicalNodeName_ShouldThrow_When_NodeIdIsInvalid()
     {
       var config = CalculatorGraphConfig.Parser.ParseJson(@"{""node"":[{""name"":""name""}]}");
+#pragma warning disable IDE0058
       Assert.Throws<ArgumentOutOfRangeException>(() => { Tool.CanonicalNodeName(config, 1); });
+#pragma warning restore IDE0058
     }
 
     [Test]
     public void CanonicalNodeName_ShouldThrow_When_NodeIsEmpty()
     {
       var config = CalculatorGraphConfig.Parser.ParseJson("{}");
+#pragma warning disable IDE0058
       Assert.Throws<ArgumentOutOfRangeException>(() => { Tool.CanonicalNodeName(config, 0); });
+#pragma warning restore IDE0058
     }
 
     [TestCase("stream", "stream")]
@@ -75,7 +87,9 @@ namespace Tests
     [TestCase("TAG:1:")]
     public void ParseNameFromStream_ShouldThrow_When_InputIsInvalid(string stream)
     {
+#pragma warning disable IDE0058
       Assert.Throws<ArgumentException>(() => { Tool.ParseNameFromStream(stream); });
+#pragma warning restore IDE0058
     }
 
     [TestCase("", "", 0)]
@@ -96,7 +110,9 @@ namespace Tests
     [TestCase("1")]
     public void ParseTagIndex_ShouldThrow_When_InputIsInvalid(string tagIndex)
     {
+#pragma warning disable IDE0058
       Assert.Throws<ArgumentException>(() => { Tool.ParseTagIndex(tagIndex); });
+#pragma warning restore IDE0058
     }
 
     [TestCase("stream", "", -1)]
@@ -115,7 +131,9 @@ namespace Tests
     [TestCase("TAG:1:")]
     public void ParseTagIndexFromStream_ShouldThrow_When_InputIsInvalid(string stream)
     {
+#pragma warning disable IDE0058
       Assert.Throws<ArgumentException>(() => { Tool.ParseTagIndexFromStream(stream); });
+#pragma warning restore IDE0058
     }
 
     [TestCase("", -1, "")]

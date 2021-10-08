@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using Mediapipe;
 using NUnit.Framework;
 
@@ -9,21 +15,23 @@ namespace Tests
     [Test]
     public void At_ShouldReturnNewPacketWithTimestamp()
     {
-      var timestamp = new Timestamp(1);
-      var packet = new BoolPacket(true).At(timestamp);
+      using (var timestamp = new Timestamp(1))
+      {
+        var packet = new BoolPacket(true).At(timestamp);
+        Assert.True(packet.Get());
+        Assert.AreEqual(packet.Timestamp(), timestamp);
 
-      Assert.True(packet.Get());
-      Assert.AreEqual(packet.Timestamp(), timestamp);
+        using (var newTimestamp = new Timestamp(2))
+        {
+          var newPacket = packet.At(newTimestamp);
+          Assert.IsInstanceOf<BoolPacket>(newPacket);
+          Assert.True(newPacket.Get());
+          Assert.AreEqual(newPacket.Timestamp(), newTimestamp);
+        }
 
-      var newTimestamp = new Timestamp(2);
-      var newPacket = packet.At(newTimestamp);
-
-      Assert.IsInstanceOf<BoolPacket>(newPacket);
-      Assert.True(newPacket.Get());
-      Assert.AreEqual(newPacket.Timestamp(), newTimestamp);
-
-      Assert.True(packet.Get());
-      Assert.AreEqual(packet.Timestamp(), timestamp);
+        Assert.True(packet.Get());
+        Assert.AreEqual(packet.Timestamp(), timestamp);
+      }
     }
     #endregion
 
@@ -31,9 +39,10 @@ namespace Tests
     [Test]
     public void DebugString_ShouldReturnDebugString_When_InstantiatedWithDefaultConstructor()
     {
-      var packet = new BoolPacket();
-
-      Assert.AreEqual(packet.DebugString(), "mediapipe::Packet with timestamp: Timestamp::Unset() and no data");
+      using (var packet = new BoolPacket())
+      {
+        Assert.AreEqual(packet.DebugString(), "mediapipe::Packet with timestamp: Timestamp::Unset() and no data");
+      }
     }
     #endregion
 
@@ -41,9 +50,10 @@ namespace Tests
     [Test]
     public void DebugTypeName_ShouldReturnTypeName_When_ValueIsNotSet()
     {
-      var packet = new BoolPacket();
-
-      Assert.AreEqual(packet.DebugTypeName(), "{empty}");
+      using (var packet = new BoolPacket())
+      {
+        Assert.AreEqual(packet.DebugTypeName(), "{empty}");
+      }
     }
     #endregion
 
@@ -51,9 +61,10 @@ namespace Tests
     [Test]
     public void RegisteredTypeName_ShouldReturnEmptyString()
     {
-      var packet = new BoolPacket();
-
-      Assert.AreEqual(packet.RegisteredTypeName(), "");
+      using (var packet = new BoolPacket())
+      {
+        Assert.AreEqual(packet.RegisteredTypeName(), "");
+      }
     }
     #endregion
 
@@ -61,9 +72,10 @@ namespace Tests
     [Test]
     public void ValidateAsProtoMessageLite_ShouldReturnInvalidArgument_When_ValueIsBool()
     {
-      var packet = new BoolPacket(true);
-
-      Assert.AreEqual(packet.ValidateAsProtoMessageLite().Code(), Status.StatusCode.InvalidArgument);
+      using (var packet = new BoolPacket(true))
+      {
+        Assert.AreEqual(packet.ValidateAsProtoMessageLite().Code(), Status.StatusCode.InvalidArgument);
+      }
     }
     #endregion
   }

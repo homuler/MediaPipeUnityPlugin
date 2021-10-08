@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using Mediapipe.Unity;
 using Mediapipe.Unity.CoordinateSystem;
 using NUnit.Framework;
@@ -243,7 +249,7 @@ namespace Tests
     }
     #endregion
 
-    void WithRectTransform(System.Action<RectTransform> action)
+    private void WithRectTransform(System.Action<RectTransform> action)
     {
       var gameObject = new GameObject();
       var rectTransform = gameObject.AddComponent<RectTransform>();
@@ -252,7 +258,9 @@ namespace Tests
       rectTransform.anchorMax = 0.5f * Vector2.one;
 
       action(rectTransform);
+#pragma warning disable IDE0002
       GameObject.DestroyImmediate(gameObject);
+#pragma warning restore IDE0002
     }
   }
 }

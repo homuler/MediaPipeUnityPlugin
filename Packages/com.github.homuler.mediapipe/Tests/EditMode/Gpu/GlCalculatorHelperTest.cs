@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using Mediapipe;
 using NUnit.Framework;
 using System;
@@ -19,7 +25,7 @@ namespace Tests
 
     #region #isDisposed
     [Test, GpuOnly]
-    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet()
+    public void IsDisposed_ShouldReturnFalse_When_NotDisposedYet()
     {
       using (var glCalculatorHelper = new GlCalculatorHelper())
       {
@@ -28,7 +34,7 @@ namespace Tests
     }
 
     [Test, GpuOnly]
-    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed()
+    public void IsDisposed_ShouldReturnTrue_When_AlreadyDisposed()
     {
       var glCalculatorHelper = new GlCalculatorHelper();
       glCalculatorHelper.Dispose();
@@ -82,7 +88,9 @@ namespace Tests
       {
         glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
 
+#pragma warning disable IDE0039
         GlCalculatorHelper.GlStatusFunction glStatusFunction = () => { throw new InvalidProgramException(); };
+#pragma warning restore IDE0039
         var status = glCalculatorHelper.RunInGlContext(glStatusFunction);
         Assert.AreEqual(status.Code(), Status.StatusCode.FailedPrecondition);
       }
@@ -97,19 +105,22 @@ namespace Tests
       {
         glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
 
-        var imageFrame = new ImageFrame(ImageFormat.Format.SRGBA, 32, 24);
-        var status = glCalculatorHelper.RunInGlContext(() =>
+        using (var imageFrame = new ImageFrame(ImageFormat.Format.SRGBA, 32, 24))
         {
-          var texture = glCalculatorHelper.CreateSourceTexture(imageFrame);
+          var status = glCalculatorHelper.RunInGlContext(() =>
+          {
+            var texture = glCalculatorHelper.CreateSourceTexture(imageFrame);
 
-          Assert.AreEqual(texture.width, 32);
-          Assert.AreEqual(texture.height, 24);
+            Assert.AreEqual(texture.width, 32);
+            Assert.AreEqual(texture.height, 24);
 
-          texture.Dispose();
-          return Status.Ok();
-        });
+            texture.Dispose();
+            return Status.Ok();
+          });
+          Assert.True(status.Ok());
 
-        Assert.True(status.Ok());
+          status.Dispose();
+        }
       }
     }
 
@@ -121,17 +132,20 @@ namespace Tests
       {
         glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
 
-        var imageFrame = new ImageFrame(ImageFormat.Format.SBGRA, 32, 24);
-        var status = glCalculatorHelper.RunInGlContext(() =>
+        using (var imageFrame = new ImageFrame(ImageFormat.Format.SBGRA, 32, 24))
         {
-          using (var texture = glCalculatorHelper.CreateSourceTexture(imageFrame))
+          var status = glCalculatorHelper.RunInGlContext(() =>
           {
-            texture.Release();
-          }
-          return Status.Ok();
-        });
+            using (var texture = glCalculatorHelper.CreateSourceTexture(imageFrame))
+            {
+              texture.Release();
+            }
+            return Status.Ok();
+          });
+          Assert.AreEqual(status.Code(), Status.StatusCode.FailedPrecondition);
 
-        Assert.AreEqual(status.Code(), Status.StatusCode.FailedPrecondition);
+          status.Dispose();
+        }
       }
     }
     #endregion
@@ -160,7 +174,7 @@ namespace Tests
 
     #region #framebuffer
     [Test, GpuOnly]
-    public void framebuffer_ShouldReturnGLName()
+    public void Framebuffer_ShouldReturnGLName()
     {
       using (var glCalculatorHelper = new GlCalculatorHelper())
       {
@@ -180,14 +194,16 @@ namespace Tests
       {
         glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
 
-        var glContext = glCalculatorHelper.GetGlContext();
+        using (var glContext = glCalculatorHelper.GetGlContext())
+        {
 #if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_ANDROID
-        Assert.AreNotEqual(glContext.eglContext, IntPtr.Zero);
+          Assert.AreNotEqual(glContext.eglContext, IntPtr.Zero);
 #elif UNITY_STANDALONE_OSX
-        Assert.AreNotEqual(glContext.nsglContext, IntPtr.Zero);
+          Assert.AreNotEqual(glContext.nsglContext, IntPtr.Zero);
 #elif UNITY_IOS
-        Assert.AreNotEqual(glContext.eaglContext, IntPtr.Zero);
+          Assert.AreNotEqual(glContext.eaglContext, IntPtr.Zero);
 #endif
+        }
       }
     }
     #endregion

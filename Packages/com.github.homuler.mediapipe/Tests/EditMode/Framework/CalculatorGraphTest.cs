@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using Mediapipe;
 using NUnit.Framework;
 
@@ -5,7 +11,7 @@ namespace Tests
 {
   public class CalculatorGraphTest
   {
-    private static string validConfigText = @"node {
+    private const string _ValidConfigText = @"node {
   calculator: ""PassThroughCalculator""
   input_stream: ""in""
   output_stream: ""out1""
@@ -23,31 +29,37 @@ output_stream: ""out""
     [Test]
     public void Ctor_ShouldInstantiateCalculatorGraph_When_CalledWithNoArguments()
     {
-      Assert.DoesNotThrow(() => { new CalculatorGraph(); });
+      Assert.DoesNotThrow(() =>
+      {
+        var graph = new CalculatorGraph();
+        graph.Dispose();
+      });
     }
 
     [Test]
     public void Ctor_ShouldInstantiateCalculatorGraph_When_CalledWithConfigText()
     {
-      var graph = new CalculatorGraph(validConfigText);
-      var config = graph.Config();
-
-      Assert.AreEqual(config.InputStream[0], "in");
-      Assert.AreEqual(config.OutputStream[0], "out");
+      using (var graph = new CalculatorGraph(_ValidConfigText))
+      {
+        var config = graph.Config();
+        Assert.AreEqual(config.InputStream[0], "in");
+        Assert.AreEqual(config.OutputStream[0], "out");
+      }
     }
     #endregion
 
     #region #isDisposed
     [Test]
-    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet()
+    public void IsDisposed_ShouldReturnFalse_When_NotDisposedYet()
     {
-      var graph = new CalculatorGraph();
-
-      Assert.False(graph.isDisposed);
+      using (var graph = new CalculatorGraph())
+      {
+        Assert.False(graph.isDisposed);
+      }
     }
 
     [Test]
-    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed()
+    public void IsDisposed_ShouldReturnTrue_When_AlreadyDisposed()
     {
       var graph = new CalculatorGraph();
       graph.Dispose();
@@ -60,46 +72,67 @@ output_stream: ""out""
     [Test]
     public void Initialize_ShouldReturnOk_When_CalledWithConfig_And_ConfigIsNotSet()
     {
-      var graph = new CalculatorGraph();
-      var status = graph.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(validConfigText));
-      Assert.True(status.Ok());
+      using (var graph = new CalculatorGraph())
+      {
+        using (var status = graph.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ValidConfigText)))
+        {
+          Assert.True(status.Ok());
+        }
 
-      var config = graph.Config();
-      Assert.AreEqual(config.InputStream[0], "in");
-      Assert.AreEqual(config.OutputStream[0], "out");
+        var config = graph.Config();
+        Assert.AreEqual(config.InputStream[0], "in");
+        Assert.AreEqual(config.OutputStream[0], "out");
+      }
     }
 
     [Test]
     public void Initialize_ShouldReturnInternalError_When_CalledWithConfig_And_ConfigIsSet()
     {
-      var graph = new CalculatorGraph(validConfigText);
-      var status = graph.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(validConfigText));
-
-      Assert.AreEqual(status.Code(), Status.StatusCode.Internal);
+      using (var graph = new CalculatorGraph(_ValidConfigText))
+      {
+        using (var status = graph.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ValidConfigText)))
+        {
+          Assert.AreEqual(status.Code(), Status.StatusCode.Internal);
+        }
+      }
     }
 
     [Test]
     public void Initialize_ShouldReturnOk_When_CalledWithConfigAndSidePacket_And_ConfigIsNotSet()
     {
-      var graph = new CalculatorGraph();
-      var config = CalculatorGraphConfig.Parser.ParseFromTextFormat(validConfigText);
-      var sidePacket = new SidePacket();
-      sidePacket.Emplace("flag", new BoolPacket(true));
-      var status = graph.Initialize(config, sidePacket);
+      using (var sidePacket = new SidePacket())
+      {
+        sidePacket.Emplace("flag", new BoolPacket(true));
 
-      Assert.True(status.Ok());
+        using (var graph = new CalculatorGraph())
+        {
+          var config = CalculatorGraphConfig.Parser.ParseFromTextFormat(_ValidConfigText);
+
+          using (var status = graph.Initialize(config, sidePacket))
+          {
+            Assert.True(status.Ok());
+          }
+        }
+      }
     }
 
     [Test]
     public void Initialize_ShouldReturnInternalError_When_CalledWithConfigAndSidePacket_And_ConfigIsSet()
     {
-      var graph = new CalculatorGraph(validConfigText);
-      var config = CalculatorGraphConfig.Parser.ParseFromTextFormat(validConfigText);
-      var sidePacket = new SidePacket();
-      sidePacket.Emplace("flag", new BoolPacket(true));
-      var status = graph.Initialize(config, sidePacket);
+      using (var sidePacket = new SidePacket())
+      {
+        sidePacket.Emplace("flag", new BoolPacket(true));
 
-      Assert.AreEqual(status.Code(), Status.StatusCode.Internal);
+        using (var graph = new CalculatorGraph(_ValidConfigText))
+        {
+          var config = CalculatorGraphConfig.Parser.ParseFromTextFormat(_ValidConfigText);
+
+          using (var status = graph.Initialize(config, sidePacket))
+          {
+            Assert.AreEqual(status.Code(), Status.StatusCode.Internal);
+          }
+        }
+      }
     }
     #endregion
 
@@ -107,7 +140,7 @@ output_stream: ""out""
     [Test]
     public void LifecycleMethods_ShouldControlGraphLifeCycle()
     {
-      using (var graph = new CalculatorGraph(validConfigText))
+      using (var graph = new CalculatorGraph(_ValidConfigText))
       {
         Assert.True(graph.StartRun().Ok());
         Assert.False(graph.GraphInputStreamsClosed());
@@ -123,7 +156,7 @@ output_stream: ""out""
     [Test]
     public void Cancel_ShouldCancelGraph()
     {
-      using (var graph = new CalculatorGraph(validConfigText))
+      using (var graph = new CalculatorGraph(_ValidConfigText))
       {
         Assert.True(graph.StartRun().Ok());
         graph.Cancel();

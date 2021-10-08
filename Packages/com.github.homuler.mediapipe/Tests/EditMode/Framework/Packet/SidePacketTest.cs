@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using Mediapipe;
 using NUnit.Framework;
 
@@ -7,24 +13,28 @@ namespace Tests
   {
     #region #size
     [Test]
-    public void size_ShouldReturnZero_When_Initialized()
+    public void Size_ShouldReturnZero_When_Initialized()
     {
-      var sidePacket = new SidePacket();
-
-      Assert.AreEqual(sidePacket.size, 0);
+      using (var sidePacket = new SidePacket())
+      {
+        Assert.AreEqual(sidePacket.size, 0);
+      }
     }
 
     [Test]
-    public void size_ShouldReturnSize_When_AfterPacketsAreEmplaced()
+    public void Size_ShouldReturnSize_When_AfterPacketsAreEmplaced()
     {
-      var sidePacket = new SidePacket();
-      var flagPacket = new BoolPacket(true);
-      var valuePacket = new FloatPacket(1.0f);
+      using (var sidePacket = new SidePacket())
+      {
+        var flagPacket = new BoolPacket(true);
+        var valuePacket = new FloatPacket(1.0f);
+        sidePacket.Emplace("flag", flagPacket);
+        sidePacket.Emplace("value", valuePacket);
 
-      sidePacket.Emplace("flag", flagPacket);
-      sidePacket.Emplace("value", valuePacket);
-
-      Assert.AreEqual(sidePacket.size, 2);
+        Assert.AreEqual(sidePacket.size, 2);
+        Assert.True(flagPacket.isDisposed);
+        Assert.True(valuePacket.isDisposed);
+      }
     }
     #endregion
 
@@ -32,30 +42,33 @@ namespace Tests
     [Test]
     public void Emplace_ShouldInsertAndDisposePacket()
     {
-      var sidePacket = new SidePacket();
-      Assert.AreEqual(sidePacket.size, 0);
-      Assert.IsNull(sidePacket.At<FloatPacket>("value"));
+      using (var sidePacket = new SidePacket())
+      {
+        Assert.AreEqual(sidePacket.size, 0);
+        Assert.IsNull(sidePacket.At<FloatPacket>("value"));
 
-      var flagPacket = new FloatPacket(1.0f);
-      sidePacket.Emplace("value", flagPacket);
+        var flagPacket = new FloatPacket(1.0f);
+        sidePacket.Emplace("value", flagPacket);
 
-      Assert.AreEqual(sidePacket.size, 1);
-      Assert.AreEqual(sidePacket.At<FloatPacket>("value").Get(), 1.0f);
-      Assert.True(flagPacket.isDisposed);
+        Assert.AreEqual(sidePacket.size, 1);
+        Assert.AreEqual(sidePacket.At<FloatPacket>("value").Get(), 1.0f);
+        Assert.True(flagPacket.isDisposed);
+      }
     }
 
     [Test]
     public void Emplace_ShouldIgnoreValue_When_KeyExists()
     {
-      var sidePacket = new SidePacket();
+      using (var sidePacket = new SidePacket())
+      {
+        var oldValuePacket = new FloatPacket(1.0f);
+        sidePacket.Emplace("value", oldValuePacket);
+        Assert.AreEqual(sidePacket.At<FloatPacket>("value").Get(), 1.0f);
 
-      var oldValuePacket = new FloatPacket(1.0f);
-      sidePacket.Emplace("value", oldValuePacket);
-      Assert.AreEqual(sidePacket.At<FloatPacket>("value").Get(), 1.0f);
-
-      var newValuePacket = new FloatPacket(2.0f);
-      sidePacket.Emplace("value", newValuePacket);
-      Assert.AreEqual(sidePacket.At<FloatPacket>("value").Get(), 1.0f);
+        var newValuePacket = new FloatPacket(2.0f);
+        sidePacket.Emplace("value", newValuePacket);
+        Assert.AreEqual(sidePacket.At<FloatPacket>("value").Get(), 1.0f);
+      }
     }
     #endregion
 
@@ -63,21 +76,27 @@ namespace Tests
     [Test]
     public void Erase_ShouldDoNothing_When_KeyDoesNotExist()
     {
-      var sidePacket = new SidePacket();
-      sidePacket.Erase("value");
+      using (var sidePacket = new SidePacket())
+      {
+        var count = sidePacket.Erase("value");
 
-      Assert.AreEqual(sidePacket.size, 0);
+        Assert.AreEqual(sidePacket.size, 0);
+        Assert.AreEqual(count, 0);
+      }
     }
 
     [Test]
     public void Erase_ShouldEraseKey_When_KeyExists()
     {
-      var sidePacket = new SidePacket();
-      sidePacket.Emplace("value", new BoolPacket(true));
-      Assert.AreEqual(sidePacket.size, 1);
+      using (var sidePacket = new SidePacket())
+      {
+        sidePacket.Emplace("value", new BoolPacket(true));
+        Assert.AreEqual(sidePacket.size, 1);
 
-      sidePacket.Erase("value");
-      Assert.AreEqual(sidePacket.size, 0);
+        var count = sidePacket.Erase("value");
+        Assert.AreEqual(sidePacket.size, 0);
+        Assert.AreEqual(count, 1);
+      }
     }
     #endregion
 
@@ -85,22 +104,26 @@ namespace Tests
     [Test]
     public void Clear_ShouldDoNothing_When_SizeIsZero()
     {
-      var sidePacket = new SidePacket();
-      sidePacket.Clear();
+      using (var sidePacket = new SidePacket())
+      {
+        sidePacket.Clear();
 
-      Assert.AreEqual(sidePacket.size, 0);
+        Assert.AreEqual(sidePacket.size, 0);
+      }
     }
 
     [Test]
     public void Clear_ShouldClearAllKeys_When_SizeIsNotZero()
     {
-      var sidePacket = new SidePacket();
-      sidePacket.Emplace("flag", new BoolPacket(true));
-      sidePacket.Emplace("value", new FloatPacket(1.0f));
-      Assert.AreEqual(sidePacket.size, 2);
+      using (var sidePacket = new SidePacket())
+      {
+        sidePacket.Emplace("flag", new BoolPacket(true));
+        sidePacket.Emplace("value", new FloatPacket(1.0f));
+        Assert.AreEqual(sidePacket.size, 2);
 
-      sidePacket.Clear();
-      Assert.AreEqual(sidePacket.size, 0);
+        sidePacket.Clear();
+        Assert.AreEqual(sidePacket.size, 0);
+      }
     }
     #endregion
   }

@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using Mediapipe;
 using NUnit.Framework;
 
@@ -18,7 +24,7 @@ namespace Tests
 
     #region #isDisposed
     [Test, GpuOnly]
-    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet()
+    public void IsDisposed_ShouldReturnFalse_When_NotDisposedYet()
     {
       using (var gpuResources = GpuResources.Create().Value())
       {
@@ -27,7 +33,7 @@ namespace Tests
     }
 
     [Test, GpuOnly]
-    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed()
+    public void IsDisposed_ShouldReturnTrue_When_AlreadyDisposed()
     {
       var gpuResources = GpuResources.Create().Value();
       gpuResources.Dispose();
