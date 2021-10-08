@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,20 +14,20 @@ namespace Mediapipe.Unity
 
   public class TextureFramePool : MonoBehaviour
   {
-    static readonly string TAG = typeof(TextureFramePool).Name;
+    private const string _TAG = nameof(TextureFramePool);
 
-    [SerializeField] int poolSize = 10;
+    [SerializeField] private int _poolSize = 10;
 
-    readonly object formatLock = new object();
-    int textureWidth = 0;
-    int textureHeight = 0;
-    TextureFormat format = TextureFormat.RGBA32;
+    private readonly object _formatLock = new object();
+    private int _textureWidth = 0;
+    private int _textureHeight = 0;
+    private TextureFormat _format = TextureFormat.RGBA32;
 
-    Queue<TextureFrame> availableTextureFrames;
+    private Queue<TextureFrame> _availableTextureFrames;
     /// <remarks>
     ///   key: TextureFrame's instance ID
     /// </remarks>
-    Dictionary<Guid, TextureFrame> textureFramesInUse;
+    private Dictionary<Guid, TextureFrame> _textureFramesInUse;
 
     /// <returns>
     ///   The total number of texture frames in the pool.
@@ -30,51 +36,51 @@ namespace Mediapipe.Unity
     {
       get
       {
-        var availableTextureFramesCount = availableTextureFrames == null ? 0 : availableTextureFrames.Count;
-        var textureFramesInUseCount = textureFramesInUse == null ? 0 : textureFramesInUse.Count;
+        var availableTextureFramesCount = _availableTextureFrames == null ? 0 : _availableTextureFrames.Count;
+        var textureFramesInUseCount = _textureFramesInUse == null ? 0 : _textureFramesInUse.Count;
 
         return availableTextureFramesCount + textureFramesInUseCount;
       }
     }
 
-    void Start()
+    private void Start()
     {
-      availableTextureFrames = new Queue<TextureFrame>(poolSize);
-      textureFramesInUse = new Dictionary<Guid, TextureFrame>();
+      _availableTextureFrames = new Queue<TextureFrame>(_poolSize);
+      _textureFramesInUse = new Dictionary<Guid, TextureFrame>();
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
-      lock (((ICollection)availableTextureFrames).SyncRoot)
+      lock (((ICollection)_availableTextureFrames).SyncRoot)
       {
-        availableTextureFrames.Clear();
-        availableTextureFrames = null;
+        _availableTextureFrames.Clear();
+        _availableTextureFrames = null;
       }
 
-      lock (((ICollection)textureFramesInUse).SyncRoot)
+      lock (((ICollection)_textureFramesInUse).SyncRoot)
       {
-        foreach (var textureFrame in textureFramesInUse.Values)
+        foreach (var textureFrame in _textureFramesInUse.Values)
         {
           textureFrame.OnRelease.RemoveListener(OnTextureFrameRelease);
         }
-        textureFramesInUse.Clear();
-        textureFramesInUse = null;
+        _textureFramesInUse.Clear();
+        _textureFramesInUse = null;
       }
     }
 
     public void ResizeTexture(int textureWidth, int textureHeight, TextureFormat format)
     {
-      lock (formatLock)
+      lock (_formatLock)
       {
-        this.textureWidth = textureWidth;
-        this.textureHeight = textureHeight;
-        this.format = format;
+        _textureWidth = textureWidth;
+        _textureHeight = textureHeight;
+        _format = format;
       }
     }
 
     public void ResizeTexture(int textureWidth, int textureHeight)
     {
-      ResizeTexture(textureWidth, textureHeight, format);
+      ResizeTexture(textureWidth, textureHeight, _format);
     }
 
     public WaitForResult<TextureFrame> WaitForNextTextureFrame(Action<TextureFrame> callback)
@@ -87,57 +93,57 @@ namespace Mediapipe.Unity
       return new WaitForResult<TextureFrame>(this, YieldTextureFrame((TextureFrame textureFrame) => { /* do nothing */ }));
     }
 
-    void OnTextureFrameRelease(TextureFrame textureFrame)
+    private void OnTextureFrameRelease(TextureFrame textureFrame)
     {
-      lock (((ICollection)textureFramesInUse).SyncRoot)
+      lock (((ICollection)_textureFramesInUse).SyncRoot)
       {
-        if (!textureFramesInUse.Remove(textureFrame.GetInstanceID()))
+        if (!_textureFramesInUse.Remove(textureFrame.GetInstanceID()))
         {
           // won't be run
-          Logger.LogWarning(TAG, "The released texture does not belong to the pool");
+          Logger.LogWarning(_TAG, "The released texture does not belong to the pool");
           return;
         }
 
-        if (frameCount > poolSize || IsStale(textureFrame))
+        if (frameCount > _poolSize || IsStale(textureFrame))
         {
           return;
         }
-        availableTextureFrames.Enqueue(textureFrame);
+        _availableTextureFrames.Enqueue(textureFrame);
       }
     }
 
-    bool IsStale(TextureFrame textureFrame)
+    private bool IsStale(TextureFrame textureFrame)
     {
-      lock (formatLock)
+      lock (_formatLock)
       {
-        return textureFrame.width != textureWidth || textureFrame.height != textureHeight;
+        return textureFrame.width != _textureWidth || textureFrame.height != _textureHeight;
       }
     }
 
-    TextureFrame CreateNewTextureFrame()
+    private TextureFrame CreateNewTextureFrame()
     {
-      var textureFrame = new TextureFrame(textureWidth, textureHeight, format);
+      var textureFrame = new TextureFrame(_textureWidth, _textureHeight, _format);
       textureFrame.OnRelease.AddListener(OnTextureFrameRelease);
 
       return textureFrame;
     }
 
-    IEnumerator YieldTextureFrame(Action<TextureFrame> callback)
+    private IEnumerator YieldTextureFrame(Action<TextureFrame> callback)
     {
       TextureFrame nextFrame = null;
 
-      lock (((ICollection)availableTextureFrames).SyncRoot)
+      lock (((ICollection)_availableTextureFrames).SyncRoot)
       {
         yield return new WaitUntil(() =>
         {
-          return poolSize > frameCount || availableTextureFrames.Count > 0;
+          return _poolSize > frameCount || _availableTextureFrames.Count > 0;
         });
 
-        if (poolSize <= frameCount)
+        if (_poolSize <= frameCount)
         {
-          while (availableTextureFrames.Count > 0)
+          while (_availableTextureFrames.Count > 0)
           {
-            var textureFrame = availableTextureFrames.Dequeue();
+            var textureFrame = _availableTextureFrames.Dequeue();
 
             if (!IsStale(textureFrame))
             {
@@ -153,9 +159,9 @@ namespace Mediapipe.Unity
         }
       }
 
-      lock (((ICollection)textureFramesInUse).SyncRoot)
+      lock (((ICollection)_textureFramesInUse).SyncRoot)
       {
-        textureFramesInUse.Add(nextFrame.GetInstanceID(), nextFrame);
+        _textureFramesInUse.Add(nextFrame.GetInstanceID(), nextFrame);
       }
 
       nextFrame.WaitUntilReleased();

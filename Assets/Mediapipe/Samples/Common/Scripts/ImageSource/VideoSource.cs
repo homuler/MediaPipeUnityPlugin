@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections;
 using System.Linq;
@@ -8,12 +14,12 @@ namespace Mediapipe.Unity
 {
   public class VideoSource : ImageSource
   {
-    [SerializeField] VideoClip[] availableSources;
+    [SerializeField] private VideoClip[] _availableSources;
 
-    VideoClip _video;
-    VideoClip video
+    private VideoClip _video;
+    private VideoClip video
     {
-      get { return _video; }
+      get => _video;
       set
       {
         _video = value;
@@ -21,64 +27,38 @@ namespace Mediapipe.Unity
       }
     }
 
-    VideoPlayer videoPlayer;
+    private VideoPlayer _videoPlayer;
 
-    public override SourceType type
-    {
-      get { return SourceType.Video; }
-    }
+    public override SourceType type => SourceType.Video;
 
-    public override string sourceName
-    {
-      get { return video != null ? video.name : null; }
-    }
+    public override string sourceName => video != null ? video.name : null;
 
-    public override string[] sourceCandidateNames
+    public override string[] sourceCandidateNames => _availableSources?.Select(source => source.name).ToArray();
+
+    public override ResolutionStruct[] availableResolutions => video == null ? null : new ResolutionStruct[] { new ResolutionStruct((int)video.width, (int)video.height, video.frameRate) };
+
+    public override bool isPlaying => _videoPlayer != null && _videoPlayer.isPlaying;
+    public override bool isPrepared => _videoPlayer != null && _videoPlayer.isPrepared;
+
+    private void Start()
     {
-      get
+      if (_availableSources != null && _availableSources.Length > 0)
       {
-        if (availableSources == null)
-        {
-          return null;
-        }
-        return availableSources.Select(source => source.name).ToArray();
-      }
-    }
-
-    public override ResolutionStruct[] availableResolutions
-    {
-      get
-      {
-        if (video == null)
-        {
-          return null;
-        }
-        return new ResolutionStruct[] { new ResolutionStruct((int)video.width, (int)video.height, video.frameRate) };
-      }
-    }
-
-    public override bool isPlaying { get { return videoPlayer == null ? false : videoPlayer.isPlaying; } }
-    public override bool isPrepared { get { return videoPlayer == null ? false : videoPlayer.isPrepared; } }
-
-    void Start()
-    {
-      if (availableSources != null && availableSources.Length > 0)
-      {
-        video = availableSources[0];
+        video = _availableSources[0];
       }
     }
 
     public override void SelectSource(int sourceId)
     {
-      if (sourceId < 0 || sourceId >= availableSources.Length)
+      if (sourceId < 0 || sourceId >= _availableSources.Length)
       {
         throw new ArgumentException($"Invalid source ID: {sourceId}");
       }
 
-      video = availableSources[sourceId];
-      if (videoPlayer != null)
+      video = _availableSources[sourceId];
+      if (_videoPlayer != null)
       {
-        videoPlayer.clip = video;
+        _videoPlayer.clip = video;
       }
     }
 
@@ -88,14 +68,14 @@ namespace Mediapipe.Unity
       {
         throw new InvalidOperationException("Video is not selected");
       }
-      videoPlayer = gameObject.AddComponent<VideoPlayer>();
-      videoPlayer.renderMode = VideoRenderMode.APIOnly;
-      videoPlayer.isLooping = true;
-      videoPlayer.clip = video;
-      videoPlayer.Prepare();
+      _videoPlayer = gameObject.AddComponent<VideoPlayer>();
+      _videoPlayer.renderMode = VideoRenderMode.APIOnly;
+      _videoPlayer.isLooping = true;
+      _videoPlayer.clip = video;
+      _videoPlayer.Prepare();
 
-      yield return new WaitUntil(() => videoPlayer.isPrepared);
-      videoPlayer.Play();
+      yield return new WaitUntil(() => _videoPlayer.isPrepared);
+      _videoPlayer.Play();
     }
 
     public override IEnumerator Resume()
@@ -106,7 +86,7 @@ namespace Mediapipe.Unity
       }
       if (!isPlaying)
       {
-        videoPlayer.Play();
+        _videoPlayer.Play();
       }
       yield return null;
     }
@@ -117,23 +97,23 @@ namespace Mediapipe.Unity
       {
         return;
       }
-      videoPlayer.Pause();
+      _videoPlayer.Pause();
     }
 
     public override void Stop()
     {
-      if (videoPlayer == null)
+      if (_videoPlayer == null)
       {
         return;
       }
-      videoPlayer.Stop();
-      GameObject.Destroy(gameObject.GetComponent<VideoPlayer>());
-      videoPlayer = null;
+      _videoPlayer.Stop();
+      Destroy(gameObject.GetComponent<VideoPlayer>());
+      _videoPlayer = null;
     }
 
     public override Texture GetCurrentTexture()
     {
-      return videoPlayer != null ? videoPlayer.texture : null;
+      return _videoPlayer != null ? _videoPlayer.texture : null;
     }
   }
 }

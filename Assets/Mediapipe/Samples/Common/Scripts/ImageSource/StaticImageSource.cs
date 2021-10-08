@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections;
 using System.Linq;
@@ -7,14 +13,14 @@ namespace Mediapipe.Unity
 {
   public class StaticImageSource : ImageSource
   {
-    [SerializeField] Texture[] availableSources;
-    [SerializeField] ResolutionStruct[] defaultAvailableResolutions;
+    [SerializeField] private Texture[] _availableSources;
+    [SerializeField] private ResolutionStruct[] _defaultAvailableResolutions;
 
-    Texture2D outputTexture;
-    Texture _image;
-    Texture image
+    private Texture2D _outputTexture;
+    private Texture _image;
+    private Texture image
     {
-      get { return _image; }
+      get => _image;
       set
       {
         _image = value;
@@ -22,59 +28,37 @@ namespace Mediapipe.Unity
       }
     }
 
-    public override SourceType type
-    {
-      get { return SourceType.Image; }
-    }
+    public override SourceType type => SourceType.Image;
 
-    public override double frameRate { get { return 0; } }
+    public override double frameRate => 0;
 
-    public override string sourceName
-    {
-      get { return image != null ? image.name : null; }
-    }
+    public override string sourceName => image != null ? image.name : null;
 
-    public override string[] sourceCandidateNames
+    public override string[] sourceCandidateNames => _availableSources?.Select(source => source.name).ToArray();
+
+    public override ResolutionStruct[] availableResolutions => _defaultAvailableResolutions;
+
+    public override bool isPrepared => _outputTexture != null;
+
+    private bool _isPlaying = false;
+    public override bool isPlaying => _isPlaying;
+
+    private void Start()
     {
-      get
+      if (_availableSources != null && _availableSources.Length > 0)
       {
-        if (availableSources == null)
-        {
-          return null;
-        }
-        return availableSources.Select(source => source.name).ToArray();
-      }
-    }
-
-    public override ResolutionStruct[] availableResolutions
-    {
-      get { return defaultAvailableResolutions; }
-    }
-
-    public override bool isPrepared { get { return outputTexture != null; } }
-
-    bool _isPlaying = false;
-    public override bool isPlaying
-    {
-      get { return _isPlaying; }
-    }
-
-    void Start()
-    {
-      if (availableSources != null && availableSources.Length > 0)
-      {
-        image = availableSources[0];
+        image = _availableSources[0];
       }
     }
 
     public override void SelectSource(int sourceId)
     {
-      if (sourceId < 0 || sourceId >= availableSources.Length)
+      if (sourceId < 0 || sourceId >= _availableSources.Length)
       {
         throw new ArgumentException($"Invalid source ID: {sourceId}");
       }
 
-      image = availableSources[sourceId];
+      image = _availableSources[sourceId];
     }
 
     public override IEnumerator Play()
@@ -111,41 +95,37 @@ namespace Mediapipe.Unity
     public override void Stop()
     {
       _isPlaying = false;
-      outputTexture = null;
+      _outputTexture = null;
     }
 
     public override Texture GetCurrentTexture()
     {
-      return outputTexture;
+      return _outputTexture;
     }
 
-    ResolutionStruct GetDefaultResolution()
+    private ResolutionStruct GetDefaultResolution()
     {
       var resolutions = availableResolutions;
 
-      if (resolutions == null || resolutions.Length == 0)
-      {
-        return new ResolutionStruct();
-      }
-
-      return resolutions[0];
+      return (resolutions == null || resolutions.Length == 0) ? new ResolutionStruct() : resolutions[0];
     }
 
-    void InitializeOutputTexture(Texture src)
+    private void InitializeOutputTexture(Texture src)
     {
-      outputTexture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBA32, false);
+      _outputTexture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBA32, false);
 
       Texture resizedTexture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBA32, false);
-      Graphics.ConvertTexture(src, resizedTexture);
+      // TODO: assert ConvertTexture finishes successfully
+      var _ = Graphics.ConvertTexture(src, resizedTexture);
 
       var currentRenderTexture = RenderTexture.active;
       var tmpRenderTexture = new RenderTexture(resizedTexture.width, resizedTexture.height, 32);
       Graphics.Blit(resizedTexture, tmpRenderTexture);
       RenderTexture.active = tmpRenderTexture;
 
-      var rect = new UnityEngine.Rect(0, 0, outputTexture.width, outputTexture.height);
-      outputTexture.ReadPixels(rect, 0, 0);
-      outputTexture.Apply();
+      var rect = new UnityEngine.Rect(0, 0, _outputTexture.width, _outputTexture.height);
+      _outputTexture.ReadPixels(rect, 0, 0);
+      _outputTexture.Apply();
 
       RenderTexture.active = currentRenderTexture;
     }

@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections;
 using UnityEngine;
@@ -7,7 +13,7 @@ namespace Mediapipe.Unity
 {
   public abstract class ImageSource : MonoBehaviour
   {
-    [System.Serializable]
+    [Serializable]
     public struct ResolutionStruct
     {
       public int width;
@@ -23,26 +29,21 @@ namespace Mediapipe.Unity
 
       public ResolutionStruct(Resolution resolution)
       {
-        this.width = resolution.width;
-        this.height = resolution.height;
-        this.frameRate = resolution.refreshRate;
+        width = resolution.width;
+        height = resolution.height;
+        frameRate = resolution.refreshRate;
       }
 
       public Resolution ToResolution()
       {
-        var resolution = new Resolution();
-
-        resolution.width = width;
-        resolution.height = height;
-        resolution.refreshRate = (int)frameRate;
-
-        return resolution;
+        return new Resolution() { width = width, height = height, refreshRate = (int)frameRate };
       }
 
       public override string ToString()
       {
         var aspectRatio = $"{width}x{height}";
-        return frameRate > 0 ? $"{aspectRatio} ({frameRate.ToString("#.##")}Hz)" : aspectRatio;
+        var frameRateStr = frameRate.ToString("#.##");
+        return frameRate > 0 ? $"{aspectRatio} ({frameRateStr}Hz)" : aspectRatio;
       }
     }
 
@@ -61,23 +62,13 @@ namespace Mediapipe.Unity
     /// <returns>
     ///   <see cref="TextureFormat" /> that is compatible with the current texture.
     /// </returns>
-    public TextureFormat textureFormat
-    {
-      get
-      {
-        if (!isPrepared)
-        {
-          throw new InvalidOperationException("ImageSource is not prepared");
-        }
-        return TextureFormatFor(GetCurrentTexture());
-      }
-    }
-    public virtual int textureWidth { get { return resolution.width; } }
-    public virtual int textureHeight { get { return resolution.height; } }
+    public TextureFormat textureFormat => isPrepared ? TextureFormatFor(GetCurrentTexture()) : throw new InvalidOperationException("ImageSource is not prepared");
+    public virtual int textureWidth => resolution.width;
+    public virtual int textureHeight => resolution.height;
     /// <remarks>
     ///   If <see cref="type" /> does not support frame rate, it returns zero.
     /// </remarks>
-    public virtual double frameRate { get { return resolution.frameRate; } }
+    public virtual double frameRate => resolution.frameRate;
     public float focalLengthPx { get; } = 2.0f; // TODO: calculate at runtime
     public virtual bool isHorizontallyFlipped { get; set; } = false;
     public virtual bool isVerticallyFlipped { get; } = false;
