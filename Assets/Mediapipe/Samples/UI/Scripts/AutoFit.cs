@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using UnityEngine;
 
 namespace Mediapipe.Unity
@@ -13,9 +19,9 @@ namespace Mediapipe.Unity
       FitHeight,
     }
 
-    [SerializeField] FitMode fitMode;
+    [SerializeField] private FitMode _fitMode;
 
-    void LateUpdate()
+    private void LateUpdate()
     {
       var rectTransform = GetComponent<RectTransform>();
       if (rectTransform.rect.width == 0 || rectTransform.rect.height == 0)
@@ -27,10 +33,9 @@ namespace Mediapipe.Unity
       var (width, height) = GetBoundingBoxSize(rectTransform);
 
       var ratio = parentRect.width / width;
-      var w = parentRect.width;
       var h = height * ratio;
 
-      if (fitMode == FitMode.FitWidth || (fitMode == FitMode.Expand && h >= parentRect.height) || (fitMode == FitMode.Shrink && h <= parentRect.height))
+      if (_fitMode == FitMode.FitWidth || (_fitMode == FitMode.Expand && h >= parentRect.height) || (_fitMode == FitMode.Shrink && h <= parentRect.height))
       {
         rectTransform.offsetMin *= ratio;
         rectTransform.offsetMax *= ratio;
@@ -38,14 +43,12 @@ namespace Mediapipe.Unity
       }
 
       ratio = parentRect.height / height;
-      w = width * ratio;
-      h = parentRect.height;
 
       rectTransform.offsetMin *= ratio;
       rectTransform.offsetMax *= ratio;
     }
 
-    (float, float) GetBoundingBoxSize(RectTransform rectTransform)
+    private (float, float) GetBoundingBoxSize(RectTransform rectTransform)
     {
       var rect = rectTransform.rect;
       var center = rect.center;

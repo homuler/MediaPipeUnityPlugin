@@ -1,30 +1,33 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using UnityEngine;
 
 namespace Mediapipe.Unity.UI
 {
   public class ModalButton : MonoBehaviour
   {
-    [SerializeField] GameObject modalPanel;
-    [SerializeField] GameObject contents;
+    [SerializeField] private GameObject _modalPanel;
+    [SerializeField] private GameObject _contents;
 
-    Modal modal
-    {
-      get { return modalPanel.GetComponent<Modal>(); }
-    }
+    private Modal modal => _modalPanel.GetComponent<Modal>();
 
     public void Open()
     {
-      if (contents != null)
+      if (_contents != null)
       {
-        modal.Open(contents);
+        modal.Open(_contents);
       }
     }
 
     public void OpenAndPause()
     {
-      if (contents != null)
+      if (_contents != null)
       {
-        modal.OpenAndPause(contents);
+        modal.OpenAndPause(_contents);
       }
     }
   }

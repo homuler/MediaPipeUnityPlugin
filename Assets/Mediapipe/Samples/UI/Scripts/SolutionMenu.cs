@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections;
 using System.IO;
 using UnityEngine;
@@ -8,15 +14,15 @@ namespace Mediapipe.Unity.UI
 {
   public class SolutionMenu : ModalContents
   {
-    [SerializeField] GameObject solutionRowPrefab;
+    [SerializeField] private GameObject _solutionRowPrefab;
 
-    const string _GridPath = "Scroll View/Viewport/Contents/Solution Grid";
+    private const string _GridPath = "Scroll View/Viewport/Contents/Solution Grid";
 
-    Transform solutionGrid;
+    private Transform _solutionGrid;
 
-    void Start()
+    private void Start()
     {
-      solutionGrid = transform.Find(_GridPath);
+      _solutionGrid = transform.Find(_GridPath);
 
       var solutionCount = SceneManager.sceneCountInBuildSettings;
       Transform currentRow = null;
@@ -32,7 +38,7 @@ namespace Mediapipe.Unity.UI
 
         var buildIndex = i;
         button.transform.GetComponentInChildren<Text>().text = GetSceneNameByBuildIndex(buildIndex);
-        button.onClick.AddListener(() => { StartCoroutine(LoadSceneAsync(buildIndex)); });
+        button.onClick.AddListener(() => { var _ = StartCoroutine(LoadSceneAsync(buildIndex)); });
       }
 
       if (solutionCount % 2 == 0)
@@ -47,30 +53,31 @@ namespace Mediapipe.Unity.UI
       GetModal().CloseAndResume();
     }
 
-    Transform InitializeRow()
+    private Transform InitializeRow()
     {
-      return Instantiate(solutionRowPrefab, solutionGrid).transform;
+      return Instantiate(_solutionRowPrefab, _solutionGrid).transform;
     }
 
-    Button GetButtonInRow(Transform row, int index)
+    private Button GetButtonInRow(Transform row, int index)
     {
-      return row.GetChild(index)?.gameObject?.GetComponent<Button>();
+      var child = row.GetChild(index);
+      return (child == null || child.gameObject == null) ? null : child.gameObject.GetComponent<Button>();
     }
 
-    void HideButton(Button button)
+    private void HideButton(Button button)
     {
       var image = button.gameObject.GetComponent<Image>();
       image.color = new Color(0, 0, 0, 0);
       button.transform.GetComponentInChildren<Text>().text = null;
     }
 
-    string GetSceneNameByBuildIndex(int buildIndex)
+    private string GetSceneNameByBuildIndex(int buildIndex)
     {
       var path = SceneUtility.GetScenePathByBuildIndex(buildIndex);
       return Path.GetFileNameWithoutExtension(path);
     }
 
-    IEnumerator LoadSceneAsync(int buildIndex)
+    private IEnumerator LoadSceneAsync(int buildIndex)
     {
       var sceneLoadReq = SceneManager.LoadSceneAsync(buildIndex);
       yield return new WaitUntil(() => sceneLoadReq.isDone);

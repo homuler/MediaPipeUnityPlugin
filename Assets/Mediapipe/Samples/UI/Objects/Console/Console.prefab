@@ -359,9 +359,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 627c44f7498ce8ccfa83e353108ae40a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  logLinePrefab: {fileID: 2894631414300269451, guid: b3a48036f640af0a8b3f1705d5d7e461,
+  _logLinePrefab: {fileID: 2894631414300269451, guid: b3a48036f640af0a8b3f1705d5d7e461,
     type: 3}
-  maxLines: 200
+  _maxLines: 200
 --- !u!1 &3753487017719311786
 GameObject:
   m_ObjectHideFlags: 0

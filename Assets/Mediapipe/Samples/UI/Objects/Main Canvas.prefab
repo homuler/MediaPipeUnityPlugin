@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8fb55141659b9607bbd8859e1dbcf04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modalPanel: {fileID: 8571076843237194837}
-  contents: {fileID: 2286573430237446446, guid: 5920f5c607ecc6ea88b86fbecab72418,
+  _modalPanel: {fileID: 8571076843237194837}
+  _contents: {fileID: 2286573430237446446, guid: 5920f5c607ecc6ea88b86fbecab72418,
     type: 3}
 --- !u!114 &8571076843968688109
 MonoBehaviour:
@@ -27,8 +27,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8fb55141659b9607bbd8859e1dbcf04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modalPanel: {fileID: 8571076843237194837}
-  contents: {fileID: 6134773167894791910, guid: d00f9eb5648585662ba6825f8ab8400f,
+  _modalPanel: {fileID: 8571076843237194837}
+  _contents: {fileID: 6134773167894791910, guid: d00f9eb5648585662ba6825f8ab8400f,
     type: 3}
 --- !u!114 &8571076843139220523
 MonoBehaviour:
@@ -42,8 +42,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8fb55141659b9607bbd8859e1dbcf04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modalPanel: {fileID: 8571076843237194837}
-  contents: {fileID: 6938625115693525800, guid: 43e0b06a07be91d9ab8df9c5e822664a,
+  _modalPanel: {fileID: 8571076843237194837}
+  _contents: {fileID: 6938625115693525800, guid: 43e0b06a07be91d9ab8df9c5e822664a,
     type: 3}
 --- !u!114 &8571076843980202029
 MonoBehaviour:
@@ -57,8 +57,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8fb55141659b9607bbd8859e1dbcf04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modalPanel: {fileID: 8571076843237194837}
-  contents: {fileID: 0}
+  _modalPanel: {fileID: 8571076843237194837}
+  _contents: {fileID: 0}
 --- !u!1 &8571076842338426121
 GameObject:
   m_ObjectHideFlags: 0
@@ -469,7 +469,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ddeec99217ea692c920535a87583a51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  solution: {fileID: 0}
+  _solution: {fileID: 0}
 --- !u!1 &8571076843876106078
 GameObject:
   m_ObjectHideFlags: 0
@@ -663,8 +663,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8fb55141659b9607bbd8859e1dbcf04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modalPanel: {fileID: 8571076843237194837}
-  contents: {fileID: 6134773167894791910, guid: c11d1e65e08886c308c31ea8d84e4ee6,
+  _modalPanel: {fileID: 8571076843237194837}
+  _contents: {fileID: 6134773167894791910, guid: c11d1e65e08886c308c31ea8d84e4ee6,
     type: 3}
 --- !u!1001 &715268676278483529
 PrefabInstance:

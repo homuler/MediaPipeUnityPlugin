@@ -1,32 +1,41 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using UnityEngine;
 
 namespace Mediapipe.Unity.UI
 {
   public class Modal : MonoBehaviour
   {
-    [SerializeField] Solution solution;
-    GameObject contents;
+    [SerializeField] private Solution _solution;
+    private GameObject _contents;
 
     public void Open(GameObject contents)
     {
-      this.contents = Instantiate(contents, gameObject.transform);
-      this.contents.transform.localScale = new Vector3(0.8f, 0.8f, 1);
+      _contents = Instantiate(contents, gameObject.transform);
+      _contents.transform.localScale = new Vector3(0.8f, 0.8f, 1);
       gameObject.SetActive(true);
     }
 
     public void OpenAndPause(GameObject contents)
     {
       Open(contents);
-      solution?.Pause();
+      if (_solution != null)
+      {
+        _solution.Pause();
+      }
     }
 
     public void Close()
     {
       gameObject.SetActive(false);
 
-      if (contents != null)
+      if (_contents != null)
       {
-        Destroy(contents);
+        Destroy(_contents);
       }
     }
 
@@ -34,13 +43,18 @@ namespace Mediapipe.Unity.UI
     {
       Close();
 
+      if (_solution == null)
+      {
+        return;
+      }
+
       if (forceRestart)
       {
-        solution?.Play();
+        _solution.Play();
       }
       else
       {
-        solution?.Resume();
+        _solution.Resume();
       }
     }
   }

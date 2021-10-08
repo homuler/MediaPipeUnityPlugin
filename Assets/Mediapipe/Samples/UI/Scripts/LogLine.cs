@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,38 +12,34 @@ namespace Mediapipe.Unity
 {
   public class LogLine : MonoBehaviour
   {
-    [SerializeField] Text utcTimeArea;
-    [SerializeField] Text tagArea;
-    [SerializeField] Text messageArea;
+    [SerializeField] private Text _utcTimeArea;
+    [SerializeField] private Text _tagArea;
+    [SerializeField] private Text _messageArea;
 
     public void SetLog(MemoizedLogger.LogStruct logStruct)
     {
-      utcTimeArea.text = FormatUtcTime(logStruct.utcTime);
-      tagArea.text = FormatTag(logStruct.tag);
-      messageArea.text = FormatMessage(logStruct.message);
-      messageArea.color = GetMessageColor(logStruct.logLevel);
+      _utcTimeArea.text = FormatUtcTime(logStruct.utcTime);
+      _tagArea.text = FormatTag(logStruct.tag);
+      _messageArea.text = FormatMessage(logStruct.message);
+      _messageArea.color = GetMessageColor(logStruct.logLevel);
     }
 
-    string FormatUtcTime(DateTime utcTime)
+    private string FormatUtcTime(DateTime utcTime)
     {
       return utcTime.ToString("MMM dd hh:mm:ss.fff");
     }
 
-    string FormatTag(string tag)
+    private string FormatTag(string tag)
     {
-      if (tag == null || tag.Length == 0)
-      {
-        return null;
-      }
-      return $"{tag}:";
+      return (tag == null || tag.Length == 0) ? null : $"{tag}:";
     }
 
-    string FormatMessage(object message)
+    private string FormatMessage(object message)
     {
       return message == null ? "Null" : message.ToString();
     }
 
-    Color GetMessageColor(Logger.LogLevel logLevel)
+    private Color GetMessageColor(Logger.LogLevel logLevel)
     {
       switch (logLevel)
       {
@@ -58,6 +60,7 @@ namespace Mediapipe.Unity
           {
             return Color.gray;
           }
+        case Logger.LogLevel.Verbose:
         default:
           {
             return Color.white;

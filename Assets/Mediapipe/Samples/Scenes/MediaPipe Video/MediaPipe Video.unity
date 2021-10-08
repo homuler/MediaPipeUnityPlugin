@@ -321,7 +321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08567ddcd5175eeebafe07a630413ad2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fitMode: 1
+  _fitMode: 0
 --- !u!114 &1567625567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -740,9 +740,20 @@ PrefabInstance:
       propertyPath: solution
       value: 
       objectReference: {fileID: 1064799462}
+    - target: {fileID: 8571076843237194833, guid: 140d1d2c406167c50819d89f86d9092e,
+        type: 3}
+      propertyPath: _solution
+      value: 
+      objectReference: {fileID: 1064799462}
     - target: {fileID: 8571076843980202029, guid: 140d1d2c406167c50819d89f86d9092e,
         type: 3}
       propertyPath: contents
+      value: 
+      objectReference: {fileID: 827070858861903548, guid: 09e2e81854f3f746e816e1db55d28fa2,
+        type: 3}
+    - target: {fileID: 8571076843980202029, guid: 140d1d2c406167c50819d89f86d9092e,
+        type: 3}
+      propertyPath: _contents
       value: 
       objectReference: {fileID: 827070858861903548, guid: 09e2e81854f3f746e816e1db55d28fa2,
         type: 3}

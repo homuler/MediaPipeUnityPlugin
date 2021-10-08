@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,93 +13,93 @@ namespace Mediapipe.Unity.UI
 {
   public class GUIConsole : MonoBehaviour
   {
-    [SerializeField] GameObject logLinePrefab;
-    [SerializeField] int maxLines = 200;
+    [SerializeField] private GameObject _logLinePrefab;
+    [SerializeField] private int _maxLines = 200;
 
-    const string _ContentPath = "Viewport/Content";
+    private const string _ContentPath = "Viewport/Content";
 
-    Transform contentRoot;
-    MemoizedLogger logger;
-    Queue<MemoizedLogger.LogStruct> scheduledLogs;
-    int lines = 0;
+    private Transform _contentRoot;
+    private MemoizedLogger _logger;
+    private Queue<MemoizedLogger.LogStruct> _scheduledLogs;
+    private int _lines = 0;
 
-    ScrollRect scrollRect { get { return gameObject.GetComponent<ScrollRect>(); } }
+    private ScrollRect scrollRect => gameObject.GetComponent<ScrollRect>();
 
-    void Start()
+    private void Start()
     {
-      scheduledLogs = new Queue<MemoizedLogger.LogStruct>();
+      _scheduledLogs = new Queue<MemoizedLogger.LogStruct>();
       InitializeView();
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
       RenderScheduledLogs();
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
-      logger.OnLogOutput -= ScheduleLog;
+      _logger.OnLogOutput -= ScheduleLog;
     }
 
-    void InitializeView()
+    private void InitializeView()
     {
-      contentRoot = gameObject.transform.Find(_ContentPath).gameObject.transform;
+      _contentRoot = gameObject.transform.Find(_ContentPath).gameObject.transform;
 
       if (!(Logger.logger is MemoizedLogger))
       {
         return;
       }
 
-      logger = (MemoizedLogger)Logger.logger;
-      lock (((ICollection)logger.histories).SyncRoot)
+      _logger = (MemoizedLogger)Logger.logger;
+      lock (((ICollection)_logger.histories).SyncRoot)
       {
-        foreach (var log in logger.histories)
+        foreach (var log in _logger.histories)
         {
           AppendLog(log);
         }
-        logger.OnLogOutput += ScheduleLog;
+        _logger.OnLogOutput += ScheduleLog;
       }
 
-      StartCoroutine(ScrollToBottom());
+      var _ = StartCoroutine(ScrollToBottom());
     }
 
-    void ScheduleLog(MemoizedLogger.LogStruct logStruct)
+    private void ScheduleLog(MemoizedLogger.LogStruct logStruct)
     {
-      lock (((ICollection)scheduledLogs).SyncRoot)
+      lock (((ICollection)_scheduledLogs).SyncRoot)
       {
-        scheduledLogs.Enqueue(logStruct);
+        _scheduledLogs.Enqueue(logStruct);
       }
     }
 
-    void RenderScheduledLogs()
+    private void RenderScheduledLogs()
     {
-      lock (((ICollection)scheduledLogs).SyncRoot)
+      lock (((ICollection)_scheduledLogs).SyncRoot)
       {
-        while (scheduledLogs.Count > 0)
+        while (_scheduledLogs.Count > 0)
         {
-          AppendLog(scheduledLogs.Dequeue());
+          AppendLog(_scheduledLogs.Dequeue());
         }
       }
 
       if (scrollRect.verticalNormalizedPosition < 1e-6)
       {
-        StartCoroutine(ScrollToBottom());
+        var _ = StartCoroutine(ScrollToBottom());
       }
     }
 
-    void AppendLog(MemoizedLogger.LogStruct logStruct)
+    private void AppendLog(MemoizedLogger.LogStruct logStruct)
     {
-      var logLine = Instantiate(logLinePrefab, contentRoot).GetComponent<LogLine>();
+      var logLine = Instantiate(_logLinePrefab, _contentRoot).GetComponent<LogLine>();
       logLine.SetLog(logStruct);
 
-      if (++lines > maxLines)
+      if (++_lines > _maxLines)
       {
-        Destroy(contentRoot.GetChild(0).gameObject);
-        lines--;
+        Destroy(_contentRoot.GetChild(0).gameObject);
+        _lines--;
       }
     }
 
-    IEnumerator ScrollToBottom()
+    private IEnumerator ScrollToBottom()
     {
       yield return new WaitForEndOfFrame();
       Canvas.ForceUpdateCanvases();

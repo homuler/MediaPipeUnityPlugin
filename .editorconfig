@@ -95,6 +95,9 @@ csharp_style_prefer_switch_expression = false
 ### Use pattern matching (IDE0078)
 csharp_style_prefer_pattern_matching = false
 
+### Use pattern matching (not operator) (IDE0083)
+csharp_style_prefer_not_pattern = false
+
 # Code block preferences
 csharp_prefer_simple_using_statement = false
 
