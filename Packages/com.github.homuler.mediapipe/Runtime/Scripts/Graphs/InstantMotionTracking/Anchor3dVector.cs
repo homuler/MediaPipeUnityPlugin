@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -21,7 +27,7 @@ namespace Mediapipe
 
       unsafe
       {
-        Anchor3d* anchorPtr = (Anchor3d*)data;
+        var anchorPtr = (Anchor3d*)data;
 
         for (var i = 0; i < size; i++)
         {

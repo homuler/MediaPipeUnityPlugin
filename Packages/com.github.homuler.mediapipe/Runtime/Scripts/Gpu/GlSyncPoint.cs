@@ -1,23 +1,29 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 
 namespace Mediapipe
 {
   public class GlSyncPoint : MpResourceHandle
   {
-    private SharedPtrHandle sharedPtrHandle;
+    private SharedPtrHandle _sharedPtrHandle;
 
     public GlSyncPoint(IntPtr ptr) : base(ptr)
     {
-      sharedPtrHandle = new SharedPtr(ptr);
-      this.ptr = sharedPtrHandle.Get();
+      _sharedPtrHandle = new SharedPtr(ptr);
+      this.ptr = _sharedPtrHandle.Get();
     }
 
     protected override void DisposeManaged()
     {
-      if (sharedPtrHandle != null)
+      if (_sharedPtrHandle != null)
       {
-        sharedPtrHandle.Dispose();
-        sharedPtrHandle = null;
+        _sharedPtrHandle.Dispose();
+        _sharedPtrHandle = null;
       }
       base.DisposeManaged();
     }
@@ -27,10 +33,7 @@ namespace Mediapipe
       // Do nothing
     }
 
-    public IntPtr sharedPtr
-    {
-      get { return sharedPtrHandle == null ? IntPtr.Zero : sharedPtrHandle.mpPtr; }
-    }
+    public IntPtr sharedPtr => _sharedPtrHandle == null ? IntPtr.Zero : _sharedPtrHandle.mpPtr;
 
     public void Wait()
     {

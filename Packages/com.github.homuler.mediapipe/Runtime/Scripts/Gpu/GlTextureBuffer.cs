@@ -1,49 +1,55 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 
 namespace Mediapipe
 {
   public class GlTextureBuffer : MpResourceHandle
   {
-    private SharedPtrHandle sharedPtrHandle;
+    private SharedPtrHandle _sharedPtrHandle;
 
     /// <remarks>
     ///   In the original MediaPipe repo, DeletionCallback only receives GlSyncToken.
     ///   However, IL2CPP does not support marshaling delegates that point to instance methods to native code,
     ///   so it receives also the texture name to specify the target instance.
     /// </remarks>
-    public delegate void DeletionCallback(UInt32 name, IntPtr glSyncToken);
+    public delegate void DeletionCallback(uint name, IntPtr glSyncToken);
 
     public GlTextureBuffer(IntPtr ptr, bool isOwner = true) : base(isOwner)
     {
-      sharedPtrHandle = new SharedPtr(ptr, isOwner);
-      this.ptr = sharedPtrHandle.Get();
+      _sharedPtrHandle = new SharedPtr(ptr, isOwner);
+      this.ptr = _sharedPtrHandle.Get();
     }
 
     /// <param name="callback">
     ///   A function called when the texture buffer is deleted.
     ///   Make sure that this function doesn't throw exceptions and won't be GCed.
     /// </param>
-    public GlTextureBuffer(UInt32 target, UInt32 name, int width, int height,
+    public GlTextureBuffer(uint target, uint name, int width, int height,
         GpuBufferFormat format, DeletionCallback callback, GlContext glContext)
     {
       var sharedContextPtr = glContext == null ? IntPtr.Zero : glContext.sharedPtr;
       UnsafeNativeMethods.mp_SharedGlTextureBuffer__ui_ui_i_i_ui_PF_PSgc(
           target, name, width, height, format, callback, sharedContextPtr, out var ptr).Assert();
 
-      sharedPtrHandle = new SharedPtr(ptr);
-      this.ptr = sharedPtrHandle.Get();
+      _sharedPtrHandle = new SharedPtr(ptr);
+      this.ptr = _sharedPtrHandle.Get();
     }
 
-    public GlTextureBuffer(UInt32 name, int width, int height, GpuBufferFormat format, DeletionCallback callback, GlContext glContext = null) :
+    public GlTextureBuffer(uint name, int width, int height, GpuBufferFormat format, DeletionCallback callback, GlContext glContext = null) :
         this(Gl.GL_TEXTURE_2D, name, width, height, format, callback, glContext)
     { }
 
     protected override void DisposeManaged()
     {
-      if (sharedPtrHandle != null)
+      if (_sharedPtrHandle != null)
       {
-        sharedPtrHandle.Dispose();
-        sharedPtrHandle = null;
+        _sharedPtrHandle.Dispose();
+        _sharedPtrHandle = null;
       }
       base.DisposeManaged();
     }
@@ -53,10 +59,7 @@ namespace Mediapipe
       // Do nothing
     }
 
-    public IntPtr sharedPtr
-    {
-      get { return sharedPtrHandle == null ? IntPtr.Zero : sharedPtrHandle.mpPtr; }
-    }
+    public IntPtr sharedPtr => _sharedPtrHandle == null ? IntPtr.Zero : _sharedPtrHandle.mpPtr;
 
     public uint Name()
     {

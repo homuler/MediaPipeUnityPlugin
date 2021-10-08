@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 
 namespace Mediapipe
@@ -10,7 +16,7 @@ namespace Mediapipe
       this.ptr = ptr;
     }
 
-    public GlTexture(UInt32 name, int width, int height) : base()
+    public GlTexture(uint name, int width, int height) : base()
     {
       UnsafeNativeMethods.mp_GlTexture__ui_i_i(name, width, height, out var ptr).Assert();
       this.ptr = ptr;
@@ -23,25 +29,13 @@ namespace Mediapipe
       UnsafeNativeMethods.mp_GlTexture__delete(ptr);
     }
 
-    public int width
-    {
-      get { return SafeNativeMethods.mp_GlTexture__width(mpPtr); }
-    }
+    public int width => SafeNativeMethods.mp_GlTexture__width(mpPtr);
 
-    public int height
-    {
-      get { return SafeNativeMethods.mp_GlTexture__height(mpPtr); }
-    }
+    public int height => SafeNativeMethods.mp_GlTexture__height(mpPtr);
 
-    public uint target
-    {
-      get { return SafeNativeMethods.mp_GlTexture__target(mpPtr); }
-    }
+    public uint target => SafeNativeMethods.mp_GlTexture__target(mpPtr);
 
-    public uint name
-    {
-      get { return SafeNativeMethods.mp_GlTexture__name(mpPtr); }
-    }
+    public uint name => SafeNativeMethods.mp_GlTexture__name(mpPtr);
 
     public void Release()
     {

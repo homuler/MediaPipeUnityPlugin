@@ -69,10 +69,10 @@ namespace Mediapipe.Unity.InstantMotionTracking
 
     public void ResetAnchor(float normalizedX = 0.5f, float normalizedY = 0.5f)
     {
-      anchors[0].StickerId = ++currentStickerSentinelId;
+      anchors[0].stickerId = ++currentStickerSentinelId;
       isTracking = false;
-      anchors[0].X = normalizedX;
-      anchors[0].Y = normalizedY;
+      anchors[0].x = normalizedX;
+      anchors[0].y = normalizedY;
       Logger.LogInfo(TAG, $"New anchor = {anchors[0]}");
     }
 

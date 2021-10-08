@@ -49,7 +49,7 @@ namespace Mediapipe.Unity
         var rect = GetAnnotationLayer().rect;
         var anchor3d = (Anchor3d)target;
         var anchor2dPosition = GetAnnotationLayer().GetLocalPosition(anchor3d, rotationAngle, isMirrored);
-        var anchor3dPosition = GetAnchorPositionInRay(anchor2dPosition, anchor3d.Z * defaultDepth, cameraPosition);
+        var anchor3dPosition = GetAnchorPositionInRay(anchor2dPosition, anchor3d.z * defaultDepth, cameraPosition);
 
         pointAnnotation.Draw(anchor2dPosition);
         transformAnnotation.origin = anchor3dPosition;

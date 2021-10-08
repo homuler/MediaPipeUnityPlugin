@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Runtime.InteropServices;
 
@@ -57,7 +63,7 @@ namespace Mediapipe
         return tmpStatus.mpPtr;
       };
 
-      GCHandle nativeGlStatusFuncHandle = GCHandle.Alloc(nativeGlStatusFunc, GCHandleType.Pinned);
+      var nativeGlStatusFuncHandle = GCHandle.Alloc(nativeGlStatusFunc, GCHandleType.Pinned);
       var status = RunInGlContext(nativeGlStatusFunc);
       nativeGlStatusFuncHandle.Free();
 
@@ -111,10 +117,7 @@ namespace Mediapipe
       return new GlTexture(texturePtr);
     }
 
-    public uint framebuffer
-    {
-      get { return SafeNativeMethods.mp_GlCalculatorHelper__framebuffer(mpPtr); }
-    }
+    public uint framebuffer => SafeNativeMethods.mp_GlCalculatorHelper__framebuffer(mpPtr);
 
     public void BindFramebuffer(GlTexture glTexture)
     {

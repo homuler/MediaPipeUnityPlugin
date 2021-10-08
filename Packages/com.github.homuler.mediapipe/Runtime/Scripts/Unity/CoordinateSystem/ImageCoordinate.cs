@@ -304,7 +304,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
     public static Vector2 GetLocalPosition(this RectTransform rectTransform, Anchor3d anchor3d, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
     {
-      return GetLocalPositionNormalized(rectTransform, anchor3d.X, anchor3d.Y, imageRotation, isMirrored);
+      return GetLocalPositionNormalized(rectTransform, anchor3d.x, anchor3d.y, imageRotation, isMirrored);
     }
 
     /// <summary>
@@ -333,7 +333,7 @@ namespace Mediapipe.Unity.CoordinateSystem
 
       var cameraDepth = Mathf.Abs(cameraPosition.z);
       var anchorPoint2d = rectTransform.GetLocalPosition(anchor3d, imageRotation, isMirrored);
-      var anchorDepth = anchor3d.Z * defaultDepth;
+      var anchorDepth = anchor3d.z * defaultDepth;
 
       // Maybe it should be defined as a CameraCoordinate method
       var x = ((anchorPoint2d.x - cameraPosition.x) * anchorDepth / cameraDepth) + cameraPosition.x;
