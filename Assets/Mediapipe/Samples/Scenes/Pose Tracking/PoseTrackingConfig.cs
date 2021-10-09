@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,58 +14,58 @@ namespace Mediapipe.Unity.PoseTracking.UI
 {
   public class PoseTrackingConfig : ModalContents
   {
-    const string _ModelComplexityPath = "Scroll View/Viewport/Contents/Model Complexity/Dropdown";
-    const string _SmoothLandmarksPath = "Scroll View/Viewport/Contents/Smooth Landmarks/Toggle";
-    const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
-    const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
+    private const string _ModelComplexityPath = "Scroll View/Viewport/Contents/Model Complexity/Dropdown";
+    private const string _SmoothLandmarksPath = "Scroll View/Viewport/Contents/Smooth Landmarks/Toggle";
+    private const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
+    private const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
 
-    PoseTrackingSolution solution;
-    Dropdown ModelComplexityInput;
-    Toggle SmoothLandmarksInput;
-    Dropdown RunningModeInput;
-    InputField TimeoutMillisecInput;
+    private PoseTrackingSolution _solution;
+    private Dropdown _modelComplexityInput;
+    private Toggle _smoothLandmarksInput;
+    private Dropdown _runningModeInput;
+    private InputField _timeoutMillisecInput;
 
-    bool isChanged;
+    private bool _isChanged;
 
-    void Start()
+    private void Start()
     {
-      solution = GameObject.Find("Solution").GetComponent<PoseTrackingSolution>();
+      _solution = GameObject.Find("Solution").GetComponent<PoseTrackingSolution>();
       InitializeContents();
     }
 
     public override void Exit()
     {
-      GetModal().CloseAndResume(isChanged);
+      GetModal().CloseAndResume(_isChanged);
     }
 
     public void SwitchModelComplexity()
     {
-      solution.modelComplexity = (PoseTrackingGraph.ModelComplexity)ModelComplexityInput.value;
-      isChanged = true;
+      _solution.modelComplexity = (PoseTrackingGraph.ModelComplexity)_modelComplexityInput.value;
+      _isChanged = true;
     }
 
     public void ToggleSmoothLandmarks()
     {
-      solution.smoothLandmarks = SmoothLandmarksInput.isOn;
-      isChanged = true;
+      _solution.smoothLandmarks = _smoothLandmarksInput.isOn;
+      _isChanged = true;
     }
 
     public void SwitchRunningMode()
     {
-      solution.runningMode = (RunningMode)RunningModeInput.value;
-      isChanged = true;
+      _solution.runningMode = (RunningMode)_runningModeInput.value;
+      _isChanged = true;
     }
 
     public void SetTimeoutMillisec()
     {
-      if (int.TryParse(TimeoutMillisecInput.text, out var value))
+      if (int.TryParse(_timeoutMillisecInput.text, out var value))
       {
-        solution.timeoutMillisec = value;
-        isChanged = true;
+        _solution.timeoutMillisec = value;
+        _isChanged = true;
       }
     }
 
-    void InitializeContents()
+    private void InitializeContents()
     {
       InitializeModelComplexity();
       InitializeSmoothLandmarksInput();
@@ -67,56 +73,56 @@ namespace Mediapipe.Unity.PoseTracking.UI
       InitializeTimeoutMillisec();
     }
 
-    void InitializeModelComplexity()
+    private void InitializeModelComplexity()
     {
-      ModelComplexityInput = gameObject.transform.Find(_ModelComplexityPath).gameObject.GetComponent<Dropdown>();
-      ModelComplexityInput.ClearOptions();
+      _modelComplexityInput = gameObject.transform.Find(_ModelComplexityPath).gameObject.GetComponent<Dropdown>();
+      _modelComplexityInput.ClearOptions();
 
       var options = new List<string>(Enum.GetNames(typeof(PoseTrackingGraph.ModelComplexity)));
-      ModelComplexityInput.AddOptions(options);
+      _modelComplexityInput.AddOptions(options);
 
-      var currentModelComplexity = solution.modelComplexity;
+      var currentModelComplexity = _solution.modelComplexity;
       var defaultValue = options.FindIndex(option => option == currentModelComplexity.ToString());
 
       if (defaultValue >= 0)
       {
-        ModelComplexityInput.value = defaultValue;
+        _modelComplexityInput.value = defaultValue;
       }
 
-      ModelComplexityInput.onValueChanged.AddListener(delegate { SwitchModelComplexity(); });
+      _modelComplexityInput.onValueChanged.AddListener(delegate { SwitchModelComplexity(); });
     }
 
-    void InitializeSmoothLandmarksInput()
+    private void InitializeSmoothLandmarksInput()
     {
-      SmoothLandmarksInput = gameObject.transform.Find(_SmoothLandmarksPath).gameObject.GetComponent<Toggle>();
-      SmoothLandmarksInput.isOn = solution.smoothLandmarks;
-      SmoothLandmarksInput.onValueChanged.AddListener(delegate { ToggleSmoothLandmarks(); });
+      _smoothLandmarksInput = gameObject.transform.Find(_SmoothLandmarksPath).gameObject.GetComponent<Toggle>();
+      _smoothLandmarksInput.isOn = _solution.smoothLandmarks;
+      _smoothLandmarksInput.onValueChanged.AddListener(delegate { ToggleSmoothLandmarks(); });
     }
 
-    void InitializeRunningMode()
+    private void InitializeRunningMode()
     {
-      RunningModeInput = gameObject.transform.Find(_RunningModePath).gameObject.GetComponent<Dropdown>();
-      RunningModeInput.ClearOptions();
+      _runningModeInput = gameObject.transform.Find(_RunningModePath).gameObject.GetComponent<Dropdown>();
+      _runningModeInput.ClearOptions();
 
       var options = new List<string>(Enum.GetNames(typeof(RunningMode)));
-      RunningModeInput.AddOptions(options);
+      _runningModeInput.AddOptions(options);
 
-      var currentRunningMode = solution.runningMode;
+      var currentRunningMode = _solution.runningMode;
       var defaultValue = options.FindIndex(option => option == currentRunningMode.ToString());
 
       if (defaultValue >= 0)
       {
-        RunningModeInput.value = defaultValue;
+        _runningModeInput.value = defaultValue;
       }
 
-      RunningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
+      _runningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
     }
 
-    void InitializeTimeoutMillisec()
+    private void InitializeTimeoutMillisec()
     {
-      TimeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
-      TimeoutMillisecInput.text = solution.timeoutMillisec.ToString();
-      TimeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });
+      _timeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
+      _timeoutMillisecInput.text = _solution.timeoutMillisec.ToString();
+      _timeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });
     }
   }
 }

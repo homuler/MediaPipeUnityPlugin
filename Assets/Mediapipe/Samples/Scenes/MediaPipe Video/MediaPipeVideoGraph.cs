@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,17 +14,18 @@ namespace Mediapipe.Unity.MediaPipeVideo
   public class MediaPipeVideoGraph : GraphRunner
   {
     public int maxNumHands = 2;
-
+#pragma warning disable IDE1006
     public UnityEvent<ImageFrame> OnOutput = new UnityEvent<ImageFrame>();
+#pragma warning restore IDE1006
 
-    const string inputStreamName = "input_video";
+    private const string _InputStreamName = "input_video";
 
-    GpuBufferPacket outputGpuBufferPacket;
-    string destinationBufferName;
-    TextureFrame destinationTexture;
+    private GpuBufferPacket _outputGpuBufferPacket;
+    private string _destinationBufferName;
+    private TextureFrame _destinationTexture;
 
-    const string outputVideoStreamName = "output_video";
-    OutputStream<ImageFramePacket, ImageFrame> outputVideoStream;
+    private const string _OutputVideoStreamName = "output_video";
+    private OutputStream<ImageFramePacket, ImageFrame> _outputVideoStream;
     protected long prevOutputVideoMicrosec = 0;
 
     public override Status StartRun(ImageSource imageSource)
@@ -26,7 +33,7 @@ namespace Mediapipe.Unity.MediaPipeVideo
       if (configType != ConfigType.OpenGLES)
       {
         InitializeOutputStreams();
-        outputVideoStream.StartPolling(true).AssertOk();
+        _outputVideoStream.StartPolling(true).AssertOk();
       }
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
@@ -36,7 +43,7 @@ namespace Mediapipe.Unity.MediaPipeVideo
       if (configType != ConfigType.OpenGLES)
       {
         InitializeOutputStreams();
-        outputVideoStream.AddListener(OutputVideoCallback, true).AssertOk();
+        _outputVideoStream.AddListener(OutputVideoCallback, true).AssertOk();
       }
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
@@ -53,24 +60,24 @@ namespace Mediapipe.Unity.MediaPipeVideo
       {
         throw new InvalidOperationException("This method is only supported for OpenGL ES");
       }
-      destinationTexture = textureFrame;
-      outputGpuBufferPacket = new GpuBufferPacket(destinationTexture.BuildGpuBuffer(GpuManager.GlCalculatorHelper.GetGlContext()));
+      _destinationTexture = textureFrame;
+      _outputGpuBufferPacket = new GpuBufferPacket(_destinationTexture.BuildGpuBuffer(GpuManager.GlCalculatorHelper.GetGlContext()));
     }
 
     public Status AddTextureFrameToInputStream(TextureFrame textureFrame)
     {
-      return AddTextureFrameToInputStream(inputStreamName, textureFrame);
+      return AddTextureFrameToInputStream(_InputStreamName, textureFrame);
     }
 
     public ImageFrame FetchNextValue()
     {
-      outputVideoStream.TryGetNext(out var outputVideo);
+      var _ = _outputVideoStream.TryGetNext(out var outputVideo);
       OnOutput.Invoke(outputVideo);
       return outputVideo;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr OutputVideoCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr OutputVideoCallback(IntPtr graphPtr, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<MediaPipeVideoGraph>(graphPtr, packetPtr, (mediaPipeVideoGraph, ptr) =>
       {
@@ -91,9 +98,9 @@ namespace Mediapipe.Unity.MediaPipeVideo
       if (configType == ConfigType.OpenGLES)
       {
         var sinkNode = calculatorGraphConfig.Node.Last((node) => node.Calculator == "GlScalerCalculator");
-        destinationBufferName = Tool.GetUnusedSidePacketName(calculatorGraphConfig, "destination_buffer");
+        _destinationBufferName = Tool.GetUnusedSidePacketName(calculatorGraphConfig, "destination_buffer");
 
-        sinkNode.InputSidePacket.Add($"DESTINATION:{destinationBufferName}");
+        sinkNode.InputSidePacket.Add($"DESTINATION:{_destinationBufferName}");
       }
 
       return calculatorGraphConfig;
@@ -111,10 +118,10 @@ namespace Mediapipe.Unity.MediaPipeVideo
 
     protected void InitializeOutputStreams()
     {
-      outputVideoStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, outputVideoStreamName);
+      _outputVideoStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _OutputVideoStreamName);
     }
 
-    SidePacket BuildSidePacket(ImageSource imageSource)
+    private SidePacket BuildSidePacket(ImageSource imageSource)
     {
       var sidePacket = new SidePacket();
 
@@ -124,7 +131,7 @@ namespace Mediapipe.Unity.MediaPipeVideo
 
       if (configType == ConfigType.OpenGLES)
       {
-        sidePacket.Emplace(destinationBufferName, outputGpuBufferPacket);
+        sidePacket.Emplace(_destinationBufferName, _outputGpuBufferPacket);
       }
 
       return sidePacket;

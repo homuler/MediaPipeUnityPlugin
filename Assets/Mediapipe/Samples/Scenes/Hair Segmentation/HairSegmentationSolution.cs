@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,29 +12,29 @@ namespace Mediapipe.Unity.HairSegmentation
 {
   public class HairSegmentationSolution : Solution
   {
-    [SerializeField] RawImage screen;
-    [SerializeField] MaskAnnotationController hairMaskAnnotationController;
-    [SerializeField] HairSegmentationGraph graphRunner;
-    [SerializeField] TextureFramePool textureFramePool;
+    [SerializeField] private RawImage _screen;
+    [SerializeField] private MaskAnnotationController _hairMaskAnnotationController;
+    [SerializeField] private HairSegmentationGraph _graphRunner;
+    [SerializeField] private TextureFramePool _textureFramePool;
 
-    Coroutine coroutine;
+    private Coroutine _coroutine;
 
     public RunningMode runningMode;
 
     public long timeoutMillisec
     {
-      get { return graphRunner.timeoutMillisec; }
-      set { graphRunner.SetTimeoutMillisec(value); }
+      get => _graphRunner.timeoutMillisec;
+      set => _graphRunner.SetTimeoutMillisec(value);
     }
 
     public override void Play()
     {
-      if (coroutine != null)
+      if (_coroutine != null)
       {
         Stop();
       }
       base.Play();
-      coroutine = StartCoroutine(Run());
+      _coroutine = StartCoroutine(Run());
     }
 
     public override void Pause()
@@ -40,20 +46,20 @@ namespace Mediapipe.Unity.HairSegmentation
     public override void Resume()
     {
       base.Resume();
-      StartCoroutine(ImageSourceProvider.ImageSource.Resume());
+      var _ = StartCoroutine(ImageSourceProvider.ImageSource.Resume());
     }
 
     public override void Stop()
     {
       base.Stop();
-      StopCoroutine(coroutine);
+      StopCoroutine(_coroutine);
       ImageSourceProvider.ImageSource.Stop();
-      graphRunner.Stop();
+      _graphRunner.Stop();
     }
 
-    IEnumerator Run()
+    private IEnumerator Run()
     {
-      var graphInitRequest = graphRunner.WaitForInit();
+      var graphInitRequest = _graphRunner.WaitForInit();
       var imageSource = ImageSourceProvider.ImageSource;
 
       yield return imageSource.Play();
@@ -63,9 +69,9 @@ namespace Mediapipe.Unity.HairSegmentation
         Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
         yield break;
       }
-      // NOTE: The screen will be resized later, keeping the aspect ratio.
-      SetupScreen(screen, imageSource);
-      screen.texture = imageSource.GetCurrentTexture();
+      // NOTE: The _screen will be resized later, keeping the aspect ratio.
+      SetupScreen(_screen, imageSource);
+      _screen.texture = imageSource.GetCurrentTexture();
 
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
@@ -78,48 +84,48 @@ namespace Mediapipe.Unity.HairSegmentation
 
       if (runningMode == RunningMode.Async)
       {
-        graphRunner.OnHairMaskOutput.AddListener(OnHairMaskOutput);
-        graphRunner.StartRunAsync(imageSource).AssertOk();
+        _graphRunner.OnHairMaskOutput.AddListener(OnHairMaskOutput);
+        _graphRunner.StartRunAsync(imageSource).AssertOk();
       }
       else
       {
-        graphRunner.StartRun(imageSource).AssertOk();
+        _graphRunner.StartRun(imageSource).AssertOk();
       }
 
       // Use RGBA32 as the input format.
       // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
-      textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
+      _textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
 
-      SetupAnnotationController(hairMaskAnnotationController, imageSource);
-      hairMaskAnnotationController.InitScreen();
+      SetupAnnotationController(_hairMaskAnnotationController, imageSource);
+      _hairMaskAnnotationController.InitScreen();
 
       while (true)
       {
         yield return new WaitWhile(() => isPaused);
 
-        var textureFrameRequest = textureFramePool.WaitForNextTextureFrame();
+        var textureFrameRequest = _textureFramePool.WaitForNextTextureFrame();
         yield return textureFrameRequest;
         var textureFrame = textureFrameRequest.result;
 
         // Copy current image to TextureFrame
         ReadFromImageSource(imageSource, textureFrame);
 
-        graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
+        _graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 
         if (runningMode == RunningMode.Sync)
         {
           // When running synchronously, wait for the outputs here (blocks the main thread).
-          var hairMask = graphRunner.FetchNextValue();
-          hairMaskAnnotationController.DrawNow(hairMask);
+          var hairMask = _graphRunner.FetchNextValue();
+          _hairMaskAnnotationController.DrawNow(hairMask);
         }
 
         yield return new WaitForEndOfFrame();
       }
     }
 
-    void OnHairMaskOutput(ImageFrame hairMask)
+    private void OnHairMaskOutput(ImageFrame hairMask)
     {
-      hairMaskAnnotationController.DrawLater(hairMask);
+      _hairMaskAnnotationController.DrawLater(hairMask);
     }
   }
 }

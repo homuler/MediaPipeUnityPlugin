@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,71 +14,71 @@ namespace Mediapipe.Unity.BoxTracking.UI
 {
   public class BoxTrackingConfig : ModalContents
   {
-    const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
-    const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
+    private const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
+    private const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
 
-    BoxTrackingSolution solution;
-    Dropdown RunningModeInput;
-    InputField TimeoutMillisecInput;
+    private BoxTrackingSolution _solution;
+    private Dropdown _runningModeInput;
+    private InputField _timeoutMillisecInput;
 
-    bool isChanged;
+    private bool _isChanged;
 
-    void Start()
+    private void Start()
     {
-      solution = GameObject.Find("Solution").GetComponent<BoxTrackingSolution>();
+      _solution = GameObject.Find("Solution").GetComponent<BoxTrackingSolution>();
       InitializeContents();
     }
 
     public override void Exit()
     {
-      GetModal().CloseAndResume(isChanged);
+      GetModal().CloseAndResume(_isChanged);
     }
 
     public void SwitchRunningMode()
     {
-      solution.runningMode = (RunningMode)RunningModeInput.value;
-      isChanged = true;
+      _solution.runningMode = (RunningMode)_runningModeInput.value;
+      _isChanged = true;
     }
 
     public void SetTimeoutMillisec()
     {
-      if (int.TryParse(TimeoutMillisecInput.text, out var value))
+      if (int.TryParse(_timeoutMillisecInput.text, out var value))
       {
-        solution.timeoutMillisec = value;
-        isChanged = true;
+        _solution.timeoutMillisec = value;
+        _isChanged = true;
       }
     }
 
-    void InitializeContents()
+    private void InitializeContents()
     {
       InitializeRunningMode();
       InitializeTimeoutMillisec();
     }
 
-    void InitializeRunningMode()
+    private void InitializeRunningMode()
     {
-      RunningModeInput = gameObject.transform.Find(_RunningModePath).gameObject.GetComponent<Dropdown>();
-      RunningModeInput.ClearOptions();
+      _runningModeInput = gameObject.transform.Find(_RunningModePath).gameObject.GetComponent<Dropdown>();
+      _runningModeInput.ClearOptions();
 
       var options = new List<string>(Enum.GetNames(typeof(RunningMode)));
-      RunningModeInput.AddOptions(options);
+      _runningModeInput.AddOptions(options);
 
-      var currentRunningMode = solution.runningMode;
+      var currentRunningMode = _solution.runningMode;
       var defaultValue = options.FindIndex(option => option == currentRunningMode.ToString());
 
       if (defaultValue >= 0)
       {
-        RunningModeInput.value = defaultValue;
+        _runningModeInput.value = defaultValue;
       }
 
-      RunningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
+      _runningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
     }
 
-    void InitializeTimeoutMillisec()
+    private void InitializeTimeoutMillisec()
     {
-      TimeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
-      TimeoutMillisecInput.text = solution.timeoutMillisec.ToString();
-      TimeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });
+      _timeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
+      _timeoutMillisecInput.text = _solution.timeoutMillisec.ToString();
+      _timeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });
     }
   }
 }

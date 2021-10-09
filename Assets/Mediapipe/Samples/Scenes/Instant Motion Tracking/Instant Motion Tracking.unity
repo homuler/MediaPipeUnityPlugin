@@ -152,9 +152,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35c87d5c57e1edff19bd498d844d0724, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  transformAnnotation: {fileID: 1210595988}
-  pointAnnotation: {fileID: 1160883342}
-  arrowLengthScale: 30
+  _transformAnnotation: {fileID: 1210595988}
+  _pointAnnotation: {fileID: 1160883342}
+  _arrowLengthScale: 30
 --- !u!4 &210999511
 Transform:
   m_ObjectHideFlags: 0
@@ -381,9 +381,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 210999510}
-  mainCamera: {fileID: 1969388816}
-  defaultDepth: 300
-  visualizeZ: 1
+  _mainCamera: {fileID: 1969388816}
+  _defaultDepth: 300
+  _visualizeZ: 1
 --- !u!114 &544675422 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3259285889726014649, guid: 5713b959e3c77a58fb258133fc8e4aef,
@@ -460,10 +460,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca7e7aeec1769819a867aab938387fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screen: {fileID: 544675422}
-  trackedAnchorDataAnnotationController: {fileID: 544675421}
-  graphRunner: {fileID: 1064799460}
-  textureFramePool: {fileID: 1064799463}
+  _screen: {fileID: 544675422}
+  _trackedAnchorDataAnnotationController: {fileID: 544675421}
+  _graphRunner: {fileID: 1064799460}
+  _textureFramePool: {fileID: 1064799463}
   runningMode: 0
 --- !u!114 &1064799463
 MonoBehaviour:
@@ -519,6 +519,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Point Annotation
+      objectReference: {fileID: 0}
+    - target: {fileID: 5105739270100195971, guid: cd50999c161e69345953a2cb517dd339,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5105739270100195975, guid: cd50999c161e69345953a2cb517dd339,
         type: 3}

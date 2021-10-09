@@ -253,10 +253,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69be47d8b25f1c69e94b591ed8f487d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screen: {fileID: 1092859414}
-  trackedDetectionsAnnotationController: {fileID: 1092859415}
-  graphRunner: {fileID: 1064799460}
-  textureFramePool: {fileID: 1064799463}
+  _screen: {fileID: 1092859414}
+  _trackedDetectionsAnnotationController: {fileID: 1092859415}
+  _graphRunner: {fileID: 1064799460}
+  _textureFramePool: {fileID: 1064799463}
   runningMode: 0
 --- !u!114 &1064799463
 MonoBehaviour:

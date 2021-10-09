@@ -491,10 +491,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eac875cb755d0fc0d86718559f9674d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screen: {fileID: 544675422}
-  outputDetectionsAnnotationController: {fileID: 544675421}
-  graphRunner: {fileID: 1064799460}
-  textureFramePool: {fileID: 1064799463}
+  _screen: {fileID: 544675422}
+  _outputDetectionsAnnotationController: {fileID: 544675421}
+  _graphRunner: {fileID: 1064799460}
+  _textureFramePool: {fileID: 1064799463}
   runningMode: 0
 --- !u!114 &1064799463
 MonoBehaviour:

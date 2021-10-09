@@ -275,12 +275,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87e89e3d7ca41d8529430dbee11cd4bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screen: {fileID: 1324426578}
-  faceDetectionsAnnotationController: {fileID: 1324426577}
-  multiFaceLandmarksAnnotationController: {fileID: 1324426576}
-  faceRectsFromLandmarksAnnotationController: {fileID: 1324426575}
-  graphRunner: {fileID: 275874968}
-  textureFramePool: {fileID: 275874970}
+  _screen: {fileID: 1324426578}
+  _faceDetectionsAnnotationController: {fileID: 1324426577}
+  _multiFaceLandmarksAnnotationController: {fileID: 1324426576}
+  _faceRectsFromLandmarksAnnotationController: {fileID: 1324426575}
+  _graphRunner: {fileID: 275874968}
+  _textureFramePool: {fileID: 275874970}
   runningMode: 0
 --- !u!114 &275874970
 MonoBehaviour:

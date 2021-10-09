@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,43 +13,43 @@ namespace Mediapipe.Unity.Objectron
 {
   public class ObjectronSolution : Solution
   {
-    [SerializeField] RawImage screen;
-    [SerializeField] ObjectronGraph graphRunner;
-    [SerializeField] FrameAnnotationController liftedObjectsAnnotationController;
-    [SerializeField] NormalizedRectListAnnotationController multiBoxRectsAnnotationController;
-    [SerializeField] NormalizedLandmarkListAnnotationController multiBoxLandmarksAnnotationController;
-    [SerializeField] TextureFramePool textureFramePool;
+    [SerializeField] private RawImage _screen;
+    [SerializeField] private ObjectronGraph _graphRunner;
+    [SerializeField] private FrameAnnotationController _liftedObjectsAnnotationController;
+    [SerializeField] private NormalizedRectListAnnotationController _multiBoxRectsAnnotationController;
+    [SerializeField] private NormalizedLandmarkListAnnotationController _multiBoxLandmarksAnnotationController;
+    [SerializeField] private TextureFramePool _textureFramePool;
 
-    Coroutine coroutine;
+    private Coroutine _coroutine;
 
     public ObjectronGraph.Category category
     {
-      get { return graphRunner.category; }
-      set { graphRunner.category = value; }
+      get => _graphRunner.category;
+      set => _graphRunner.category = value;
     }
 
     public int maxNumObjects
     {
-      get { return graphRunner.maxNumObjects; }
-      set { graphRunner.maxNumObjects = value; }
+      get => _graphRunner.maxNumObjects;
+      set => _graphRunner.maxNumObjects = value;
     }
 
     public long timeoutMillisec
     {
-      get { return graphRunner.timeoutMillisec; }
-      set { graphRunner.SetTimeoutMillisec(value); }
+      get => _graphRunner.timeoutMillisec;
+      set => _graphRunner.SetTimeoutMillisec(value);
     }
 
     public RunningMode runningMode;
 
     public override void Play()
     {
-      if (coroutine != null)
+      if (_coroutine != null)
       {
         Stop();
       }
       base.Play();
-      coroutine = StartCoroutine(Run());
+      _coroutine = StartCoroutine(Run());
     }
 
     public override void Pause()
@@ -55,20 +61,20 @@ namespace Mediapipe.Unity.Objectron
     public override void Resume()
     {
       base.Resume();
-      StartCoroutine(ImageSourceProvider.ImageSource.Resume());
+      var _ = StartCoroutine(ImageSourceProvider.ImageSource.Resume());
     }
 
     public override void Stop()
     {
       base.Stop();
-      StopCoroutine(coroutine);
+      StopCoroutine(_coroutine);
       ImageSourceProvider.ImageSource.Stop();
-      graphRunner.Stop();
+      _graphRunner.Stop();
     }
 
-    IEnumerator Run()
+    private IEnumerator Run()
     {
-      var graphInitRequest = graphRunner.WaitForInit();
+      var graphInitRequest = _graphRunner.WaitForInit();
       var imageSource = ImageSourceProvider.ImageSource;
 
       yield return imageSource.Play();
@@ -78,9 +84,9 @@ namespace Mediapipe.Unity.Objectron
         Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
         yield break;
       }
-      // NOTE: The screen will be resized later, keeping the aspect ratio.
-      SetupScreen(screen, imageSource);
-      screen.texture = imageSource.GetCurrentTexture();
+      // NOTE: The _screen will be resized later, keeping the aspect ratio.
+      SetupScreen(_screen, imageSource);
+      _screen.texture = imageSource.GetCurrentTexture();
 
       Logger.LogInfo(TAG, $"Category = {category}");
       Logger.LogInfo(TAG, $"Max Num Objects = {maxNumObjects}");
@@ -95,66 +101,66 @@ namespace Mediapipe.Unity.Objectron
 
       if (runningMode == RunningMode.Async)
       {
-        graphRunner.OnLiftedObjectsOutput.AddListener(OnLiftedObjectsOutput);
-        graphRunner.OnMultiBoxRectsOutput.AddListener(OnMultiBoxRectsOutput);
-        graphRunner.OnMultiBoxLandmarksOutput.AddListener(OnMultiBoxLandmarksOutput);
-        graphRunner.StartRunAsync(imageSource).AssertOk();
+        _graphRunner.OnLiftedObjectsOutput.AddListener(OnLiftedObjectsOutput);
+        _graphRunner.OnMultiBoxRectsOutput.AddListener(OnMultiBoxRectsOutput);
+        _graphRunner.OnMultiBoxLandmarksOutput.AddListener(OnMultiBoxLandmarksOutput);
+        _graphRunner.StartRunAsync(imageSource).AssertOk();
       }
       else
       {
-        graphRunner.StartRun(imageSource).AssertOk();
+        _graphRunner.StartRun(imageSource).AssertOk();
       }
 
       // Use RGBA32 as the input format.
       // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
-      textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
+      _textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
 
-      SetupAnnotationController(liftedObjectsAnnotationController, imageSource);
-      liftedObjectsAnnotationController.focalLength = graphRunner.focalLength;
-      liftedObjectsAnnotationController.principalPoint = graphRunner.principalPoint;
+      SetupAnnotationController(_liftedObjectsAnnotationController, imageSource);
+      _liftedObjectsAnnotationController.focalLength = _graphRunner.focalLength;
+      _liftedObjectsAnnotationController.principalPoint = _graphRunner.principalPoint;
 
-      SetupAnnotationController(multiBoxRectsAnnotationController, imageSource);
-      SetupAnnotationController(multiBoxLandmarksAnnotationController, imageSource);
+      SetupAnnotationController(_multiBoxRectsAnnotationController, imageSource);
+      SetupAnnotationController(_multiBoxLandmarksAnnotationController, imageSource);
 
       while (true)
       {
         yield return new WaitWhile(() => isPaused);
 
-        var textureFrameRequest = textureFramePool.WaitForNextTextureFrame();
+        var textureFrameRequest = _textureFramePool.WaitForNextTextureFrame();
         yield return textureFrameRequest;
         var textureFrame = textureFrameRequest.result;
 
         // Copy current image to TextureFrame
         ReadFromImageSource(imageSource, textureFrame);
 
-        graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
+        _graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 
         if (runningMode == RunningMode.Sync)
         {
           // When running synchronously, wait for the outputs here (blocks the main thread).
-          var value = graphRunner.FetchNextValue();
-          liftedObjectsAnnotationController.DrawNow(value.liftedObjects);
-          multiBoxRectsAnnotationController.DrawNow(value.multiBoxRects);
-          multiBoxLandmarksAnnotationController.DrawNow(value.multiBoxLandmarks);
+          var value = _graphRunner.FetchNextValue();
+          _liftedObjectsAnnotationController.DrawNow(value.liftedObjects);
+          _multiBoxRectsAnnotationController.DrawNow(value.multiBoxRects);
+          _multiBoxLandmarksAnnotationController.DrawNow(value.multiBoxLandmarks);
         }
 
         yield return new WaitForEndOfFrame();
       }
     }
 
-    void OnLiftedObjectsOutput(FrameAnnotation liftedObjects)
+    private void OnLiftedObjectsOutput(FrameAnnotation liftedObjects)
     {
-      liftedObjectsAnnotationController.DrawLater(liftedObjects);
+      _liftedObjectsAnnotationController.DrawLater(liftedObjects);
     }
 
-    void OnMultiBoxRectsOutput(List<NormalizedRect> multiBoxRects)
+    private void OnMultiBoxRectsOutput(List<NormalizedRect> multiBoxRects)
     {
-      multiBoxRectsAnnotationController.DrawLater(multiBoxRects);
+      _multiBoxRectsAnnotationController.DrawLater(multiBoxRects);
     }
 
-    void OnMultiBoxLandmarksOutput(List<NormalizedLandmarkList> multiBoxLandmarks)
+    private void OnMultiBoxLandmarksOutput(List<NormalizedLandmarkList> multiBoxLandmarks)
     {
-      multiBoxLandmarksAnnotationController.DrawLater(multiBoxLandmarks);
+      _multiBoxLandmarksAnnotationController.DrawLater(multiBoxLandmarks);
     }
   }
 }

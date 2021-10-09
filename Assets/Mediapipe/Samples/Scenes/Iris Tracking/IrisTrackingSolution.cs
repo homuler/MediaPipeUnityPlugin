@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,31 +13,31 @@ namespace Mediapipe.Unity.IrisTracking
 {
   public class IrisTrackingSolution : Solution
   {
-    [SerializeField] RawImage screen;
-    [SerializeField] DetectionListAnnotationController faceDetectionsAnnotationController;
-    [SerializeField] NormalizedRectAnnotationController faceRectAnnotationController;
-    [SerializeField] FaceLandmarkListWithIrisAnnotationController faceLandmarksWithIrisAnnotationController;
-    [SerializeField] IrisTrackingGraph graphRunner;
-    [SerializeField] TextureFramePool textureFramePool;
+    [SerializeField] private RawImage _screen;
+    [SerializeField] private DetectionListAnnotationController _faceDetectionsAnnotationController;
+    [SerializeField] private NormalizedRectAnnotationController _faceRectAnnotationController;
+    [SerializeField] private FaceLandmarkListWithIrisAnnotationController _faceLandmarksWithIrisAnnotationController;
+    [SerializeField] private IrisTrackingGraph _graphRunner;
+    [SerializeField] private TextureFramePool _textureFramePool;
 
-    Coroutine coroutine;
+    private Coroutine _coroutine;
 
     public RunningMode runningMode;
 
     public long timeoutMillisec
     {
-      get { return graphRunner.timeoutMillisec; }
-      set { graphRunner.SetTimeoutMillisec(value); }
+      get => _graphRunner.timeoutMillisec;
+      set => _graphRunner.SetTimeoutMillisec(value);
     }
 
     public override void Play()
     {
-      if (coroutine != null)
+      if (_coroutine != null)
       {
         Stop();
       }
       base.Play();
-      coroutine = StartCoroutine(Run());
+      _coroutine = StartCoroutine(Run());
     }
 
     public override void Pause()
@@ -43,20 +49,20 @@ namespace Mediapipe.Unity.IrisTracking
     public override void Resume()
     {
       base.Resume();
-      StartCoroutine(ImageSourceProvider.ImageSource.Resume());
+      var _ = StartCoroutine(ImageSourceProvider.ImageSource.Resume());
     }
 
     public override void Stop()
     {
       base.Stop();
-      StopCoroutine(coroutine);
+      StopCoroutine(_coroutine);
       ImageSourceProvider.ImageSource.Stop();
-      graphRunner.Stop();
+      _graphRunner.Stop();
     }
 
-    IEnumerator Run()
+    private IEnumerator Run()
     {
-      var graphInitRequest = graphRunner.WaitForInit();
+      var graphInitRequest = _graphRunner.WaitForInit();
       var imageSource = ImageSourceProvider.ImageSource;
 
       yield return imageSource.Play();
@@ -66,9 +72,9 @@ namespace Mediapipe.Unity.IrisTracking
         Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
         yield break;
       }
-      // NOTE: The screen will be resized later, keeping the aspect ratio.
-      SetupScreen(screen, imageSource);
-      screen.texture = imageSource.GetCurrentTexture();
+      // NOTE: The _screen will be resized later, keeping the aspect ratio.
+      SetupScreen(_screen, imageSource);
+      _screen.texture = imageSource.GetCurrentTexture();
 
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
@@ -81,63 +87,63 @@ namespace Mediapipe.Unity.IrisTracking
 
       if (runningMode == RunningMode.Async)
       {
-        graphRunner.OnFaceDetectionsOutput.AddListener(OnFaceDetectionsOutput);
-        graphRunner.OnFaceRectOutput.AddListener(OnFaceRectOutput);
-        graphRunner.OnFaceLandmarksWithIrisOutput.AddListener(OnFaceLandmarksWithIrisOutput);
-        graphRunner.StartRunAsync(imageSource).AssertOk();
+        _graphRunner.OnFaceDetectionsOutput.AddListener(OnFaceDetectionsOutput);
+        _graphRunner.OnFaceRectOutput.AddListener(OnFaceRectOutput);
+        _graphRunner.OnFaceLandmarksWithIrisOutput.AddListener(OnFaceLandmarksWithIrisOutput);
+        _graphRunner.StartRunAsync(imageSource).AssertOk();
       }
       else
       {
-        graphRunner.StartRun(imageSource).AssertOk();
+        _graphRunner.StartRun(imageSource).AssertOk();
       }
 
       // Use RGBA32 as the input format.
       // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
-      textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
+      _textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
 
-      SetupAnnotationController(faceDetectionsAnnotationController, imageSource);
-      SetupAnnotationController(faceRectAnnotationController, imageSource);
-      SetupAnnotationController(faceLandmarksWithIrisAnnotationController, imageSource);
+      SetupAnnotationController(_faceDetectionsAnnotationController, imageSource);
+      SetupAnnotationController(_faceRectAnnotationController, imageSource);
+      SetupAnnotationController(_faceLandmarksWithIrisAnnotationController, imageSource);
 
       while (true)
       {
         yield return new WaitWhile(() => isPaused);
 
-        var textureFrameRequest = textureFramePool.WaitForNextTextureFrame();
+        var textureFrameRequest = _textureFramePool.WaitForNextTextureFrame();
         yield return textureFrameRequest;
         var textureFrame = textureFrameRequest.result;
 
         // Copy current image to TextureFrame
         ReadFromImageSource(imageSource, textureFrame);
 
-        graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
+        _graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 
         if (runningMode == RunningMode.Sync)
         {
           // When running synchronously, wait for the outputs here (blocks the main thread).
-          var value = graphRunner.FetchNextValue();
-          faceDetectionsAnnotationController.DrawNow(value.faceDetections);
-          faceRectAnnotationController.DrawNow(value.faceRect);
-          faceLandmarksWithIrisAnnotationController.DrawNow(value.faceLandmarksWithIris);
+          var value = _graphRunner.FetchNextValue();
+          _faceDetectionsAnnotationController.DrawNow(value.faceDetections);
+          _faceRectAnnotationController.DrawNow(value.faceRect);
+          _faceLandmarksWithIrisAnnotationController.DrawNow(value.faceLandmarksWithIris);
         }
 
         yield return new WaitForEndOfFrame();
       }
     }
 
-    void OnFaceDetectionsOutput(List<Detection> faceDetections)
+    private void OnFaceDetectionsOutput(List<Detection> faceDetections)
     {
-      faceDetectionsAnnotationController.DrawLater(faceDetections);
+      _faceDetectionsAnnotationController.DrawLater(faceDetections);
     }
 
-    void OnFaceRectOutput(NormalizedRect faceRect)
+    private void OnFaceRectOutput(NormalizedRect faceRect)
     {
-      faceRectAnnotationController.DrawLater(faceRect);
+      _faceRectAnnotationController.DrawLater(faceRect);
     }
 
-    void OnFaceLandmarksWithIrisOutput(NormalizedLandmarkList faceLandmarkListWithIris)
+    private void OnFaceLandmarksWithIrisOutput(NormalizedLandmarkList faceLandmarkListWithIris)
     {
-      faceLandmarksWithIrisAnnotationController.DrawLater(faceLandmarkListWithIris);
+      _faceLandmarksWithIrisAnnotationController.DrawLater(faceLandmarkListWithIris);
     }
   }
 }

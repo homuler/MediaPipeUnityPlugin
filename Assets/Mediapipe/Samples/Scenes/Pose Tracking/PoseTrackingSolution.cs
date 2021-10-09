@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,45 +12,45 @@ namespace Mediapipe.Unity.PoseTracking
 {
   public class PoseTrackingSolution : Solution
   {
-    [SerializeField] RawImage screen;
-    [SerializeField] RectTransform worldAnnotationArea;
-    [SerializeField] DetectionAnnotationController poseDetectionAnnotationController;
-    [SerializeField] PoseLandmarkListAnnotationController poseLandmarksAnnotationController;
-    [SerializeField] PoseWorldLandmarkListAnnotationController poseWorldLandmarksAnnotationController;
-    [SerializeField] NormalizedRectAnnotationController roiFromLandmarksAnnotationController;
-    [SerializeField] PoseTrackingGraph graphRunner;
-    [SerializeField] TextureFramePool textureFramePool;
+    [SerializeField] private RawImage _screen;
+    [SerializeField] private RectTransform _worldAnnotationArea;
+    [SerializeField] private DetectionAnnotationController _poseDetectionAnnotationController;
+    [SerializeField] private PoseLandmarkListAnnotationController _poseLandmarksAnnotationController;
+    [SerializeField] private PoseWorldLandmarkListAnnotationController _poseWorldLandmarksAnnotationController;
+    [SerializeField] private NormalizedRectAnnotationController _roiFromLandmarksAnnotationController;
+    [SerializeField] private PoseTrackingGraph _graphRunner;
+    [SerializeField] private TextureFramePool _textureFramePool;
 
-    Coroutine coroutine;
+    private Coroutine _coroutine;
 
     public RunningMode runningMode;
 
     public PoseTrackingGraph.ModelComplexity modelComplexity
     {
-      get { return graphRunner.modelComplexity; }
-      set { graphRunner.modelComplexity = value; }
+      get => _graphRunner.modelComplexity;
+      set => _graphRunner.modelComplexity = value;
     }
 
     public bool smoothLandmarks
     {
-      get { return graphRunner.smoothLandmarks; }
-      set { graphRunner.smoothLandmarks = value; }
+      get => _graphRunner.smoothLandmarks;
+      set => _graphRunner.smoothLandmarks = value;
     }
 
     public long timeoutMillisec
     {
-      get { return graphRunner.timeoutMillisec; }
-      set { graphRunner.SetTimeoutMillisec(value); }
+      get => _graphRunner.timeoutMillisec;
+      set => _graphRunner.SetTimeoutMillisec(value);
     }
 
     public override void Play()
     {
-      if (coroutine != null)
+      if (_coroutine != null)
       {
         Stop();
       }
       base.Play();
-      coroutine = StartCoroutine(Run());
+      _coroutine = StartCoroutine(Run());
     }
 
     public override void Pause()
@@ -56,20 +62,20 @@ namespace Mediapipe.Unity.PoseTracking
     public override void Resume()
     {
       base.Resume();
-      StartCoroutine(ImageSourceProvider.ImageSource.Resume());
+      var _ = StartCoroutine(ImageSourceProvider.ImageSource.Resume());
     }
 
     public override void Stop()
     {
       base.Stop();
-      StopCoroutine(coroutine);
+      StopCoroutine(_coroutine);
       ImageSourceProvider.ImageSource.Stop();
-      graphRunner.Stop();
+      _graphRunner.Stop();
     }
 
-    IEnumerator Run()
+    private IEnumerator Run()
     {
-      var graphInitRequest = graphRunner.WaitForInit();
+      var graphInitRequest = _graphRunner.WaitForInit();
       var imageSource = ImageSourceProvider.ImageSource;
 
       yield return imageSource.Play();
@@ -79,10 +85,10 @@ namespace Mediapipe.Unity.PoseTracking
         Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
         yield break;
       }
-      // NOTE: The screen will be resized later, keeping the aspect ratio.
-      SetupScreen(screen, imageSource);
-      screen.texture = imageSource.GetCurrentTexture();
-      worldAnnotationArea.localEulerAngles = imageSource.rotation.Reverse().GetEulerAngles();
+      // NOTE: The _screen will be resized later, keeping the aspect ratio.
+      SetupScreen(_screen, imageSource);
+      _screen.texture = imageSource.GetCurrentTexture();
+      _worldAnnotationArea.localEulerAngles = imageSource.rotation.Reverse().GetEulerAngles();
 
       Logger.LogInfo(TAG, $"Model Complexity = {modelComplexity}");
       Logger.LogInfo(TAG, $"Smooth Landmarks = {smoothLandmarks}");
@@ -97,71 +103,71 @@ namespace Mediapipe.Unity.PoseTracking
 
       if (runningMode == RunningMode.Async)
       {
-        graphRunner.OnPoseDetectionOutput.AddListener(OnPoseDetectionOutput);
-        graphRunner.OnPoseLandmarksOutput.AddListener(OnPoseLandmarksOutput);
-        graphRunner.OnPoseWorldLandmarksOutput.AddListener(OnPoseWorldLandmarksOutput);
-        graphRunner.OnRoiFromLandmarksOutput.AddListener(OnRoiFromLandmarksOutput);
-        graphRunner.StartRunAsync(imageSource).AssertOk();
+        _graphRunner.OnPoseDetectionOutput.AddListener(OnPoseDetectionOutput);
+        _graphRunner.OnPoseLandmarksOutput.AddListener(OnPoseLandmarksOutput);
+        _graphRunner.OnPoseWorldLandmarksOutput.AddListener(OnPoseWorldLandmarksOutput);
+        _graphRunner.OnRoiFromLandmarksOutput.AddListener(OnRoiFromLandmarksOutput);
+        _graphRunner.StartRunAsync(imageSource).AssertOk();
       }
       else
       {
-        graphRunner.StartRun(imageSource).AssertOk();
+        _graphRunner.StartRun(imageSource).AssertOk();
       }
 
       // Use RGBA32 as the input format.
       // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
-      textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
+      _textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
 
-      SetupAnnotationController(poseDetectionAnnotationController, imageSource);
-      SetupAnnotationController(poseLandmarksAnnotationController, imageSource);
-      SetupAnnotationController(poseWorldLandmarksAnnotationController, imageSource);
-      SetupAnnotationController(roiFromLandmarksAnnotationController, imageSource);
+      SetupAnnotationController(_poseDetectionAnnotationController, imageSource);
+      SetupAnnotationController(_poseLandmarksAnnotationController, imageSource);
+      SetupAnnotationController(_poseWorldLandmarksAnnotationController, imageSource);
+      SetupAnnotationController(_roiFromLandmarksAnnotationController, imageSource);
 
       while (true)
       {
         yield return new WaitWhile(() => isPaused);
 
-        var textureFrameRequest = textureFramePool.WaitForNextTextureFrame();
+        var textureFrameRequest = _textureFramePool.WaitForNextTextureFrame();
         yield return textureFrameRequest;
         var textureFrame = textureFrameRequest.result;
 
         // Copy current image to TextureFrame
         ReadFromImageSource(imageSource, textureFrame);
 
-        graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
+        _graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 
         if (runningMode == RunningMode.Sync)
         {
           // When running synchronously, wait for the outputs here (blocks the main thread).
-          var value = graphRunner.FetchNextValue();
-          poseDetectionAnnotationController.DrawNow(value.poseDetection);
-          poseLandmarksAnnotationController.DrawNow(value.poseLandmarks);
-          poseWorldLandmarksAnnotationController.DrawNow(value.poseWorldLandmarks);
-          roiFromLandmarksAnnotationController.DrawNow(value.roiFromLandmarks);
+          var value = _graphRunner.FetchNextValue();
+          _poseDetectionAnnotationController.DrawNow(value.poseDetection);
+          _poseLandmarksAnnotationController.DrawNow(value.poseLandmarks);
+          _poseWorldLandmarksAnnotationController.DrawNow(value.poseWorldLandmarks);
+          _roiFromLandmarksAnnotationController.DrawNow(value.roiFromLandmarks);
         }
 
         yield return new WaitForEndOfFrame();
       }
     }
 
-    void OnPoseDetectionOutput(Detection poseDetection)
+    private void OnPoseDetectionOutput(Detection poseDetection)
     {
-      poseDetectionAnnotationController.DrawLater(poseDetection);
+      _poseDetectionAnnotationController.DrawLater(poseDetection);
     }
 
-    void OnPoseLandmarksOutput(NormalizedLandmarkList poseLandmarks)
+    private void OnPoseLandmarksOutput(NormalizedLandmarkList poseLandmarks)
     {
-      poseLandmarksAnnotationController.DrawLater(poseLandmarks);
+      _poseLandmarksAnnotationController.DrawLater(poseLandmarks);
     }
 
-    void OnPoseWorldLandmarksOutput(LandmarkList poseWorldLandmarks)
+    private void OnPoseWorldLandmarksOutput(LandmarkList poseWorldLandmarks)
     {
-      poseWorldLandmarksAnnotationController.DrawLater(poseWorldLandmarks);
+      _poseWorldLandmarksAnnotationController.DrawLater(poseWorldLandmarks);
     }
 
-    void OnRoiFromLandmarksOutput(NormalizedRect roiFromLandmarks)
+    private void OnRoiFromLandmarksOutput(NormalizedRect roiFromLandmarks)
     {
-      roiFromLandmarksAnnotationController.DrawLater(roiFromLandmarks);
+      _roiFromLandmarksAnnotationController.DrawLater(roiFromLandmarks);
     }
   }
 }

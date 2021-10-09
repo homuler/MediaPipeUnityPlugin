@@ -200,13 +200,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a486eb3af7bca42f6bb2383c732639be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screen: {fileID: 841116734}
-  palmDetectionsAnnotationController: {fileID: 841116733}
-  handRectsFromPalmDetectionsAnnotationController: {fileID: 841116732}
-  handLandmarksAnnotationController: {fileID: 841116731}
-  handRectsFromLandmarksAnnotationController: {fileID: 841116730}
-  graphRunner: {fileID: 275874968}
-  textureFramePool: {fileID: 275874970}
+  _screen: {fileID: 841116734}
+  _palmDetectionsAnnotationController: {fileID: 841116733}
+  _handRectsFromPalmDetectionsAnnotationController: {fileID: 841116732}
+  _handLandmarksAnnotationController: {fileID: 841116731}
+  _handRectsFromLandmarksAnnotationController: {fileID: 841116730}
+  _graphRunner: {fileID: 275874968}
+  _textureFramePool: {fileID: 275874970}
   runningMode: 0
 --- !u!114 &275874970
 MonoBehaviour:

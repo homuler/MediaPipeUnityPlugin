@@ -458,10 +458,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90c6d9633837e7c06aeaebb5b7ba866a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screen: {fileID: 1006057043}
-  faceDetectionsAnnotationController: {fileID: 1006057044}
-  graphRunner: {fileID: 1064799462}
-  textureFramePool: {fileID: 1064799463}
+  _screen: {fileID: 1006057043}
+  _faceDetectionsAnnotationController: {fileID: 1006057044}
+  _graphRunner: {fileID: 1064799462}
+  _textureFramePool: {fileID: 1064799463}
   runningMode: 0
 --- !u!4 &1064799461
 Transform:

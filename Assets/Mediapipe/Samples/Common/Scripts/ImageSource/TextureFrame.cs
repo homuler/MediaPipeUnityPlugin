@@ -82,7 +82,7 @@ namespace Mediapipe.Unity
     /// <summary>
     ///   The event that will be invoked when the TextureFrame is released.
     /// </summary>
-#pragma warning disable IDE1006 // UnityEvent is PascalCase
+#pragma warning disable IDE1006  // UnityEvent is PascalCase
     public readonly ReleaseEvent OnRelease;
 #pragma warning restore IDE1006
 

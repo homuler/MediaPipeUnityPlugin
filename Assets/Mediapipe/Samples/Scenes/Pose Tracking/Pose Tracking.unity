@@ -439,14 +439,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b9be9c09f85432febf88b890fe3f194, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screen: {fileID: 1889892132}
-  worldAnnotationArea: {fileID: 1936307554}
-  poseDetectionAnnotationController: {fileID: 1889892130}
-  poseLandmarksAnnotationController: {fileID: 1889892131}
-  poseWorldLandmarksAnnotationController: {fileID: 1936307555}
-  roiFromLandmarksAnnotationController: {fileID: 1889892133}
-  graphRunner: {fileID: 275874968}
-  textureFramePool: {fileID: 275874970}
+  _screen: {fileID: 1889892132}
+  _worldAnnotationArea: {fileID: 1936307554}
+  _poseDetectionAnnotationController: {fileID: 1889892130}
+  _poseLandmarksAnnotationController: {fileID: 1889892131}
+  _poseWorldLandmarksAnnotationController: {fileID: 1936307555}
+  _roiFromLandmarksAnnotationController: {fileID: 1889892133}
+  _graphRunner: {fileID: 275874968}
+  _textureFramePool: {fileID: 275874970}
   runningMode: 0
 --- !u!114 &275874970
 MonoBehaviour:

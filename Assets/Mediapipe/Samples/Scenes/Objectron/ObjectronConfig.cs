@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,61 +14,61 @@ namespace Mediapipe.Unity.Objectron.UI
 {
   public class ObjectronConfig : ModalContents
   {
-    const string _CategoryPath = "Scroll View/Viewport/Contents/Category/Dropdown";
-    const string _MaxNumObjectsPath = "Scroll View/Viewport/Contents/Max Num Objects/InputField";
-    const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
-    const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
+    private const string _CategoryPath = "Scroll View/Viewport/Contents/Category/Dropdown";
+    private const string _MaxNumObjectsPath = "Scroll View/Viewport/Contents/Max Num Objects/InputField";
+    private const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
+    private const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
 
-    ObjectronSolution solution;
-    Dropdown CategoryInput;
-    InputField MaxNumObjectsInput;
-    Dropdown RunningModeInput;
-    InputField TimeoutMillisecInput;
+    private ObjectronSolution _solution;
+    private Dropdown _categoryInput;
+    private InputField _maxNumObjectsInput;
+    private Dropdown _runningModeInput;
+    private InputField _timeoutMillisecInput;
 
-    bool isChanged;
+    private bool _isChanged;
 
-    void Start()
+    private void Start()
     {
-      solution = GameObject.Find("Solution").GetComponent<ObjectronSolution>();
+      _solution = GameObject.Find("Solution").GetComponent<ObjectronSolution>();
       InitializeContents();
     }
 
     public override void Exit()
     {
-      GetModal().CloseAndResume(isChanged);
+      GetModal().CloseAndResume(_isChanged);
     }
 
     public void SwitchCategory()
     {
-      solution.category = (ObjectronGraph.Category)CategoryInput.value;
-      isChanged = true;
+      _solution.category = (ObjectronGraph.Category)_categoryInput.value;
+      _isChanged = true;
     }
 
     public void UpdateMaxNumObjects()
     {
-      if (int.TryParse(MaxNumObjectsInput.text, out var value))
+      if (int.TryParse(_maxNumObjectsInput.text, out var value))
       {
-        solution.maxNumObjects = Mathf.Max(0, value);
-        isChanged = true;
+        _solution.maxNumObjects = Mathf.Max(0, value);
+        _isChanged = true;
       }
     }
 
     public void SetTimeoutMillisec()
     {
-      if (int.TryParse(TimeoutMillisecInput.text, out var value))
+      if (int.TryParse(_timeoutMillisecInput.text, out var value))
       {
-        solution.timeoutMillisec = value;
-        isChanged = true;
+        _solution.timeoutMillisec = value;
+        _isChanged = true;
       }
     }
 
     public void SwitchRunningMode()
     {
-      solution.runningMode = (RunningMode)RunningModeInput.value;
-      isChanged = true;
+      _solution.runningMode = (RunningMode)_runningModeInput.value;
+      _isChanged = true;
     }
 
-    void InitializeContents()
+    private void InitializeContents()
     {
       InitializeCategory();
       InitializeRunningMode();
@@ -70,56 +76,56 @@ namespace Mediapipe.Unity.Objectron.UI
       InitializeTimeoutMillisec();
     }
 
-    void InitializeCategory()
+    private void InitializeCategory()
     {
-      CategoryInput = gameObject.transform.Find(_CategoryPath).gameObject.GetComponent<Dropdown>();
-      CategoryInput.ClearOptions();
+      _categoryInput = gameObject.transform.Find(_CategoryPath).gameObject.GetComponent<Dropdown>();
+      _categoryInput.ClearOptions();
 
       var options = new List<string>(Enum.GetNames(typeof(ObjectronGraph.Category)));
-      CategoryInput.AddOptions(options);
+      _categoryInput.AddOptions(options);
 
-      var currentCategory = solution.category;
+      var currentCategory = _solution.category;
       var defaultValue = options.FindIndex(option => option == currentCategory.ToString());
 
       if (defaultValue >= 0)
       {
-        CategoryInput.value = defaultValue;
+        _categoryInput.value = defaultValue;
       }
 
-      CategoryInput.onValueChanged.AddListener(delegate { SwitchCategory(); });
+      _categoryInput.onValueChanged.AddListener(delegate { SwitchCategory(); });
     }
 
-    void InitializeMaxNumObjects()
+    private void InitializeMaxNumObjects()
     {
-      MaxNumObjectsInput = gameObject.transform.Find(_MaxNumObjectsPath).gameObject.GetComponent<InputField>();
-      MaxNumObjectsInput.text = solution.maxNumObjects.ToString();
-      MaxNumObjectsInput.onEndEdit.AddListener(delegate { UpdateMaxNumObjects(); });
+      _maxNumObjectsInput = gameObject.transform.Find(_MaxNumObjectsPath).gameObject.GetComponent<InputField>();
+      _maxNumObjectsInput.text = _solution.maxNumObjects.ToString();
+      _maxNumObjectsInput.onEndEdit.AddListener(delegate { UpdateMaxNumObjects(); });
     }
 
-    void InitializeRunningMode()
+    private void InitializeRunningMode()
     {
-      RunningModeInput = gameObject.transform.Find(_RunningModePath).gameObject.GetComponent<Dropdown>();
-      RunningModeInput.ClearOptions();
+      _runningModeInput = gameObject.transform.Find(_RunningModePath).gameObject.GetComponent<Dropdown>();
+      _runningModeInput.ClearOptions();
 
       var options = new List<string>(Enum.GetNames(typeof(RunningMode)));
-      RunningModeInput.AddOptions(options);
+      _runningModeInput.AddOptions(options);
 
-      var currentRunningMode = solution.runningMode;
+      var currentRunningMode = _solution.runningMode;
       var defaultValue = options.FindIndex(option => option == currentRunningMode.ToString());
 
       if (defaultValue >= 0)
       {
-        RunningModeInput.value = defaultValue;
+        _runningModeInput.value = defaultValue;
       }
 
-      RunningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
+      _runningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
     }
 
-    void InitializeTimeoutMillisec()
+    private void InitializeTimeoutMillisec()
     {
-      TimeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
-      TimeoutMillisecInput.text = solution.timeoutMillisec.ToString();
-      TimeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });
+      _timeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
+      _timeoutMillisecInput.text = _solution.timeoutMillisec.ToString();
+      _timeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });
     }
   }
 }
