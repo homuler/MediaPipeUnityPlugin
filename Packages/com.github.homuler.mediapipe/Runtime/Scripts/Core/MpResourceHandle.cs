@@ -1,38 +1,53 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
 using System;
 using System.Runtime.InteropServices;
 
-namespace Mediapipe {
-  public abstract class MpResourceHandle : DisposableObject, IMpResourceHandle {
+namespace Mediapipe
+{
+  public abstract class MpResourceHandle : DisposableObject, IMpResourceHandle
+  {
     protected IntPtr ptr;
 
-    protected MpResourceHandle(bool isOwner = true) : this(IntPtr.Zero, isOwner) {}
+    protected MpResourceHandle(bool isOwner = true) : this(IntPtr.Zero, isOwner) { }
 
-    protected MpResourceHandle(IntPtr ptr, bool isOwner = true) : base(isOwner) {
+    protected MpResourceHandle(IntPtr ptr, bool isOwner = true) : base(isOwner)
+    {
       this.ptr = ptr;
     }
 
     #region IMpResourceHandle
-    public IntPtr mpPtr {
-      get {
+    public IntPtr mpPtr
+    {
+      get
+      {
         ThrowIfDisposed();
         return ptr;
       }
     }
 
-    public void ReleaseMpResource() {
-      if (OwnsResource()) {
+    public void ReleaseMpResource()
+    {
+      if (OwnsResource())
+      {
         DeleteMpPtr();
       }
       TransferOwnership();
     }
 
-    public bool OwnsResource() {
+    public bool OwnsResource()
+    {
       return isOwner && ptr != IntPtr.Zero;
     }
     #endregion
 
-    protected override void DisposeUnmanaged() {
-      if (OwnsResource()) {
+    protected override void DisposeUnmanaged()
+    {
+      if (OwnsResource())
+      {
         DeleteMpPtr();
       }
       ReleaseMpPtr();
@@ -43,7 +58,8 @@ namespace Mediapipe {
     ///   Forgets the pointer address.
     ///   After calling this method, <see ref="OwnsResource" /> will return false.
     /// </summary>
-    protected void ReleaseMpPtr() {
+    protected void ReleaseMpPtr()
+    {
       ptr = IntPtr.Zero;
     }
 
@@ -54,7 +70,8 @@ namespace Mediapipe {
     protected abstract void DeleteMpPtr();
 
     protected delegate MpReturnCode StringOutFunc(IntPtr ptr, out IntPtr strPtr);
-    protected string MarshalStringFromNative(StringOutFunc f) {
+    protected string MarshalStringFromNative(StringOutFunc f)
+    {
       f(mpPtr, out var strPtr).Assert();
       GC.KeepAlive(this);
 

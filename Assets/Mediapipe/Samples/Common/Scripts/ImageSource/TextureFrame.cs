@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,94 +12,112 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Experimental.Rendering;
 
-namespace Mediapipe.Unity {
-  public class TextureFrame {
-    public class ReleaseEvent : UnityEvent<TextureFrame> {}
+namespace Mediapipe.Unity
+{
+  public class TextureFrame
+  {
+    public class ReleaseEvent : UnityEvent<TextureFrame> { }
 
-    static readonly string TAG = typeof(TextureFrame).Name;
+    private const string _TAG = nameof(TextureFrame);
 
-    static readonly GlobalInstanceTable<Guid, TextureFrame> instanceTable = new GlobalInstanceTable<Guid, TextureFrame>(100);
-    static readonly Dictionary<UInt32, Guid> nameTable = new Dictionary<UInt32, Guid>();
+    private static readonly GlobalInstanceTable<Guid, TextureFrame> _InstanceTable = new GlobalInstanceTable<Guid, TextureFrame>(100);
+    private static readonly Dictionary<uint, Guid> _NameTable = new Dictionary<uint, Guid>();
 
-    readonly Texture2D texture;
-    IntPtr nativeTexturePtr = IntPtr.Zero;
-    GlSyncPoint glSyncToken;
+    private readonly Texture2D _texture;
+    private IntPtr _nativeTexturePtr = IntPtr.Zero;
+    private GlSyncPoint _glSyncToken;
 
     // Buffers that will be used to copy texture data on CPU.
     // They won't be initialized until it's necessary.
-    Texture2D _textureBuffer;
-    Texture2D textureBuffer {
-      get {
-        if (_textureBuffer == null) {
-          _textureBuffer = new Texture2D(texture.width, texture.height, texture.format, false);
+    private Texture2D _textureBuffer;
+    private Texture2D textureBuffer
+    {
+      get
+      {
+        if (_textureBuffer == null)
+        {
+          _textureBuffer = new Texture2D(_texture.width, _texture.height, _texture.format, false);
         }
         return _textureBuffer;
       }
     }
 
-    Color32[] _pixelsBuffer; // for WebCamTexture
-    Color32[] pixelsBuffer {
-      get {
-        if (_pixelsBuffer == null) {
+    private Color32[] _pixelsBuffer; // for WebCamTexture
+    private Color32[] pixelsBuffer
+    {
+      get
+      {
+        if (_pixelsBuffer == null)
+        {
           _pixelsBuffer = new Color32[width * height];
         }
         return _pixelsBuffer;
       }
     }
 
-    readonly Guid instanceId;
+    private readonly Guid _instanceId;
     // NOTE: width and height can be accessed from a thread other than Main Thread.
     public readonly int width;
     public readonly int height;
     public readonly TextureFormat format;
 
-    ImageFormat.Format _format = ImageFormat.Format.UNKNOWN;
-    public ImageFormat.Format imageFormat {
-      get {
-        if (_format == ImageFormat.Format.UNKNOWN) {
+    private ImageFormat.Format _format = ImageFormat.Format.UNKNOWN;
+    public ImageFormat.Format imageFormat
+    {
+      get
+      {
+        if (_format == ImageFormat.Format.UNKNOWN)
+        {
           _format = format.ToImageFormat();
         }
         return _format;
       }
     }
 
-    public bool isReadable { get { return texture.isReadable; } }
+    public bool isReadable => _texture.isReadable;
 
     // TODO: determine at runtime
-    public GpuBufferFormat gpuBufferformat { get { return GpuBufferFormat.kBGRA32; } }
+    public GpuBufferFormat gpuBufferformat => GpuBufferFormat.kBGRA32;
 
     /// <summary>
     ///   The event that will be invoked when the TextureFrame is released.
     /// </summary>
+#pragma warning disable IDE1006  // UnityEvent is PascalCase
     public readonly ReleaseEvent OnRelease;
+#pragma warning restore IDE1006
 
-    TextureFrame(Texture2D texture) {
-      this.texture = texture;
-      this.width = texture.width;
-      this.height = texture.height;
-      this.format = texture.format;
-      this.OnRelease = new ReleaseEvent();
-      instanceId = Guid.NewGuid();
+    private TextureFrame(Texture2D texture)
+    {
+      _texture = texture;
+      width = texture.width;
+      height = texture.height;
+      format = texture.format;
+      OnRelease = new ReleaseEvent();
+      _instanceId = Guid.NewGuid();
       RegisterInstance(this);
     }
 
-    public TextureFrame(int width, int height, TextureFormat format) : this(new Texture2D(width, height, format, false)) {}
-    public TextureFrame(int width, int height) : this(width, height, TextureFormat.RGBA32) {}
+    public TextureFrame(int width, int height, TextureFormat format) : this(new Texture2D(width, height, format, false)) { }
+    public TextureFrame(int width, int height) : this(width, height, TextureFormat.RGBA32) { }
 
-    public void CopyTexture(Texture dst) {
-      Graphics.CopyTexture(texture, dst);
+    public void CopyTexture(Texture dst)
+    {
+      Graphics.CopyTexture(_texture, dst);
     }
 
-    public void CopyTextureFrom(Texture src) {
-      Graphics.CopyTexture(src, texture);
+    public void CopyTextureFrom(Texture src)
+    {
+      Graphics.CopyTexture(src, _texture);
     }
 
-    public bool ConvertTexture(Texture dst) {
-      return Graphics.ConvertTexture(texture, dst);
+    public bool ConvertTexture(Texture dst)
+    {
+      return Graphics.ConvertTexture(_texture, dst);
     }
 
-    public bool ConvertTextureFrom(Texture src) {
-      return Graphics.ConvertTexture(src, texture);
+    public bool ConvertTextureFrom(Texture src)
+    {
+      return Graphics.ConvertTexture(src, _texture);
     }
 
     /// <summary>
@@ -103,11 +127,13 @@ namespace Mediapipe.Unity {
     /// <remarks>
     ///   After calling it, pixel data won't be read from CPU safely.
     /// </remarks>
-    public bool ReadTextureFromOnGPU(Texture src) {
-      if (GetTextureFormat(src) != format) {
-        return Graphics.ConvertTexture(src, texture);
+    public bool ReadTextureFromOnGPU(Texture src)
+    {
+      if (GetTextureFormat(src) != format)
+      {
+        return Graphics.ConvertTexture(src, _texture);
       }
-      Graphics.CopyTexture(src, texture);
+      Graphics.CopyTexture(src, _texture);
       return true;
     }
 
@@ -118,7 +144,8 @@ namespace Mediapipe.Unity {
     ///   This operation is slow.
     ///   If CPU won't access the pixel data, use <see cref="ReadTextureFromOnGPU" /> instead.
     /// </remarks>
-    public void ReadTextureFromOnCPU(Texture src) {
+    public void ReadTextureFromOnCPU(Texture src)
+    {
       var currentRenderTexture = RenderTexture.active;
       var tmpRenderTexture = new RenderTexture(src.width, src.height, 32);
       Graphics.Blit(src, tmpRenderTexture);
@@ -138,7 +165,8 @@ namespace Mediapipe.Unity {
     /// <remarks>
     ///   In most cases, it should be better to use <paramref name="src" /> directly.
     /// </remarks>
-    public void ReadTextureFromOnCPU(Texture2D src) {
+    public void ReadTextureFromOnCPU(Texture2D src)
+    {
       SetPixels32(src.GetPixels32());
     }
 
@@ -153,53 +181,63 @@ namespace Mediapipe.Unity {
     ///   This operation is slow.
     ///   If CPU won't access the pixel data, use <see cref="ReadTextureFromOnGPU" /> instead.
     /// </remarks>
-    public void ReadTextureFromOnCPU(WebCamTexture src) {
+    public void ReadTextureFromOnCPU(WebCamTexture src)
+    {
       SetPixels32(src.GetPixels32(pixelsBuffer));
     }
 
-    public Color GetPixel(int x, int y) {
-      return texture.GetPixel(x, y);
+    public Color GetPixel(int x, int y)
+    {
+      return _texture.GetPixel(x, y);
     }
 
-    public Color32[] GetPixels32() {
-      return texture.GetPixels32();
+    public Color32[] GetPixels32()
+    {
+      return _texture.GetPixels32();
     }
 
-    public void SetPixels32(Color32[] pixels) {
+    public void SetPixels32(Color32[] pixels)
+    {
       var oldName = GetTextureName();
 
-      texture.SetPixels32(pixels);
-      texture.Apply();
-      nativeTexturePtr = IntPtr.Zero;
+      _texture.SetPixels32(pixels);
+      _texture.Apply();
+      _nativeTexturePtr = IntPtr.Zero;
 
       ChangeNameFrom(oldName);
     }
 
-    public NativeArray<T> GetRawTextureData<T>() where T : struct {
-      return texture.GetRawTextureData<T>();
+    public NativeArray<T> GetRawTextureData<T>() where T : struct
+    {
+      return _texture.GetRawTextureData<T>();
     }
 
-    public IntPtr GetNativeTexturePtr() {
-      if (nativeTexturePtr == IntPtr.Zero) {
-        nativeTexturePtr = texture.GetNativeTexturePtr();
+    public IntPtr GetNativeTexturePtr()
+    {
+      if (_nativeTexturePtr == IntPtr.Zero)
+      {
+        _nativeTexturePtr = _texture.GetNativeTexturePtr();
       }
-      return nativeTexturePtr;
+      return _nativeTexturePtr;
     }
 
-    public UInt32 GetTextureName() {
-      return (UInt32)GetNativeTexturePtr();
+    public uint GetTextureName()
+    {
+      return (uint)GetNativeTexturePtr();
     }
 
-    public Guid GetInstanceID() {
-      return instanceId;
+    public Guid GetInstanceID()
+    {
+      return _instanceId;
     }
 
-    public ImageFrame BuildImageFrame() {
-      var bytes = GetRawTextureData<byte>();
+    public ImageFrame BuildImageFrame()
+    {
       return new ImageFrame(imageFormat, width, height, 4 * width, GetRawTextureData<byte>());
     }
 
-    public GpuBuffer BuildGpuBuffer(GlContext glContext) {
+    public GpuBuffer BuildGpuBuffer(GlContext glContext)
+    {
 #if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_ANDROID
       var glTextureBuffer = new GlTextureBuffer(GetTextureName(), width, height, gpuBufferformat, OnReleaseTextureFrame, glContext);
       return new GpuBuffer(glTextureBuffer);
@@ -208,16 +246,19 @@ namespace Mediapipe.Unity {
 #endif
     }
 
-    public void RemoveAllReleaseListeners() {
+    public void RemoveAllReleaseListeners()
+    {
       OnRelease.RemoveAllListeners();
     }
 
     // TODO: stop invoking OnRelease when it's already released
-    public void Release(GlSyncPoint token = null) {
-      if (glSyncToken != null) {
-        glSyncToken.Dispose();
+    public void Release(GlSyncPoint token = null)
+    {
+      if (_glSyncToken != null)
+      {
+        _glSyncToken.Dispose();
       }
-      glSyncToken = token;
+      _glSyncToken = token;
       OnRelease.Invoke(this);
     }
 
@@ -225,42 +266,50 @@ namespace Mediapipe.Unity {
     ///   Waits until the GPU has executed all commands up to the sync point.
     ///   This blocks the CPU, and ensures the commands are complete from the point of view of all threads and contexts.
     /// </summary>
-    public void WaitUntilReleased() {
-      if (glSyncToken == null) {
+    public void WaitUntilReleased()
+    {
+      if (_glSyncToken == null)
+      {
         return;
       }
-      glSyncToken.Wait();
-      glSyncToken.Dispose();
-      glSyncToken = null;
+      _glSyncToken.Wait();
+      _glSyncToken.Dispose();
+      _glSyncToken = null;
     }
 
     [AOT.MonoPInvokeCallback(typeof(GlTextureBuffer.DeletionCallback))]
-    public static void OnReleaseTextureFrame(UInt32 textureName, IntPtr syncTokenPtr) {
-      var isIdFound = nameTable.TryGetValue(textureName, out var instanceId);
+    public static void OnReleaseTextureFrame(uint textureName, IntPtr syncTokenPtr)
+    {
+      var isIdFound = _NameTable.TryGetValue(textureName, out var _instanceId);
 
-      if (!isIdFound) {
-        Logger.LogError(TAG, $"Texture (name={textureName}) is released, but the owner TextureFrame is not found");
+      if (!isIdFound)
+      {
+        Logger.LogError(_TAG, $"nameof (name={textureName}) is released, but the owner TextureFrame is not found");
         return;
       }
 
-      var isTextureFrameFound = instanceTable.TryGetValue(instanceId, out var textureFrame);
+      var isTextureFrameFound = _InstanceTable.TryGetValue(_instanceId, out var textureFrame);
 
-      if (!isTextureFrameFound) {
-        Logger.LogWarning(TAG, $"The owner TextureFrame of the released texture (name={textureName}) is already garbage collected");
+      if (!isTextureFrameFound)
+      {
+        Logger.LogWarning(_TAG, $"nameof owner TextureFrame of the released texture (name={textureName}) is already garbage collected");
         return;
       }
 
-      var glSyncToken = syncTokenPtr == IntPtr.Zero ? null : new GlSyncPoint(syncTokenPtr);
-      textureFrame.Release(glSyncToken);
+      var _glSyncToken = syncTokenPtr == IntPtr.Zero ? null : new GlSyncPoint(syncTokenPtr);
+      textureFrame.Release(_glSyncToken);
     }
 
-    static void RegisterInstance(TextureFrame textureFrame) {
+    private static void RegisterInstance(TextureFrame textureFrame)
+    {
       var name = textureFrame.GetTextureName();
-      var id = textureFrame.instanceId;
-      lock (((ICollection)nameTable).SyncRoot) {
-        if (AcquireName(name, id)) {
-          instanceTable.Add(id, textureFrame);
-          nameTable.Add(name, id);
+      var id = textureFrame._instanceId;
+      lock (((ICollection)_NameTable).SyncRoot)
+      {
+        if (AcquireName(name, id))
+        {
+          _InstanceTable.Add(id, textureFrame);
+          _NameTable.Add(name, id);
           return;
         }
       }
@@ -268,44 +317,53 @@ namespace Mediapipe.Unity {
     }
 
     /// <summary>
-    ///   Remove <paramref name="name" /> from <see cref="nameTable" /> if it's stale.
-    ///   If <paramref name="name" /> does not exist in <see cref="nameTable" />, do nothing.
+    ///   Remove <paramref name="name" /> from <see cref="_NameTable" /> if it's stale.
+    ///   If <paramref name="name" /> does not exist in <see cref="_NameTable" />, do nothing.
     /// </summary>
     /// <remarks>
     ///   If the instance whose id is <paramref name="ownerId" /> owns <paramref name="name" /> now, it still removes <paramref name="name" />.
     /// </remarks>
     /// <returns>Return if name is available</returns>
-    static bool AcquireName(UInt32 name, Guid ownerId) {
-      if (nameTable.TryGetValue(name, out var id)) {
-        if (ownerId != id && instanceTable.TryGetValue(id, out var instance)) {
+    private static bool AcquireName(uint name, Guid ownerId)
+    {
+      if (_NameTable.TryGetValue(name, out var id))
+      {
+        if (ownerId != id && _InstanceTable.TryGetValue(id, out var _))
+        {
           // if instance is found, the instance is using the name.
           Logger.LogVerbose($"{id} is using {name} now");
           return false;
         }
-        nameTable.Remove(name);
+        var _ = _NameTable.Remove(name);
       }
       return true;
     }
 
-    static TextureFormat GetTextureFormat(Texture texture) {
+    private static TextureFormat GetTextureFormat(Texture texture)
+    {
       return GraphicsFormatUtility.GetTextureFormat(texture.graphicsFormat);
     }
 
-    void ChangeNameFrom(UInt32 oldName) {
+    private void ChangeNameFrom(uint oldName)
+    {
       var newName = GetTextureName();
-      lock (((ICollection)nameTable).SyncRoot) {
-        if (!AcquireName(newName, instanceId)) {
+      lock (((ICollection)_NameTable).SyncRoot)
+      {
+        if (!AcquireName(newName, _instanceId))
+        {
           throw new ArgumentException("Another instance is using the specified name now");
         }
-        nameTable.Remove(oldName);
-        nameTable.Add(newName, instanceId);
+        var _ = _NameTable.Remove(oldName);
+        _NameTable.Add(newName, _instanceId);
       }
     }
 
-    Texture2D GetTextureBufferFor(Texture texture) {
+    private Texture2D GetTextureBufferFor(Texture texture)
+    {
       var textureFormat = GetTextureFormat(texture);
 
-      if (_textureBuffer == null || _textureBuffer.format != textureFormat) {
+      if (_textureBuffer == null || _textureBuffer.format != textureFormat)
+      {
         _textureBuffer = new Texture2D(texture.width, texture.height, textureFormat, false);
       }
 

@@ -249,17 +249,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c6464c8fa51e1b78878a87e35db72d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cpuConfig: {fileID: 4900000, guid: 0f81c4dbaca4c99cba499692e0f9f2f4, type: 3}
-  gpuConfig: {fileID: 4900000, guid: 38589729c174899b882533cdf6177dfe, type: 3}
-  openGlEsConfig: {fileID: 4900000, guid: b84acd1bb05b70ac19d12ec8ba95ae8d, type: 3}
+  _cpuConfig: {fileID: 4900000, guid: 0f81c4dbaca4c99cba499692e0f9f2f4, type: 3}
+  _gpuConfig: {fileID: 4900000, guid: 38589729c174899b882533cdf6177dfe, type: 3}
+  _openGlEsConfig: {fileID: 4900000, guid: b84acd1bb05b70ac19d12ec8ba95ae8d, type: 3}
+  _timeoutMicrosec: 0
   maxNumFaces: 1
-  OnFacesDetected:
+  OnFaceDetectionsOutput:
     m_PersistentCalls:
       m_Calls: []
-  OnFaceRectsDetected:
+  OnMultiFaceLandmarksOutput:
     m_PersistentCalls:
       m_Calls: []
-  OnFaceLandmarksDetected:
+  OnFaceRectsFromLandmarksOutput:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &275874969
@@ -274,12 +275,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87e89e3d7ca41d8529430dbee11cd4bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screen: {fileID: 1324426578}
-  faceDetectionsAnnotationController: {fileID: 1324426577}
-  multiFaceLandmarksAnnotationController: {fileID: 1324426576}
-  faceRectsFromLandmarksAnnotationController: {fileID: 1324426575}
-  graphRunner: {fileID: 275874968}
-  textureFramePool: {fileID: 275874970}
+  _screen: {fileID: 1324426578}
+  _faceDetectionsAnnotationController: {fileID: 1324426577}
+  _multiFaceLandmarksAnnotationController: {fileID: 1324426576}
+  _faceRectsFromLandmarksAnnotationController: {fileID: 1324426575}
+  _graphRunner: {fileID: 275874968}
+  _textureFramePool: {fileID: 275874970}
   runningMode: 0
 --- !u!114 &275874970
 MonoBehaviour:
@@ -293,7 +294,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5da564da19cb6b7d8e4f97f269edc5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poolSize: 10
+  _poolSize: 10
 --- !u!1 &638479256
 GameObject:
   m_ObjectHideFlags: 0
@@ -594,9 +595,20 @@ PrefabInstance:
       propertyPath: solution
       value: 
       objectReference: {fileID: 275874969}
+    - target: {fileID: 8571076843237194833, guid: 140d1d2c406167c50819d89f86d9092e,
+        type: 3}
+      propertyPath: _solution
+      value: 
+      objectReference: {fileID: 275874969}
     - target: {fileID: 8571076843980202029, guid: 140d1d2c406167c50819d89f86d9092e,
         type: 3}
       propertyPath: contents
+      value: 
+      objectReference: {fileID: 8388806499988947296, guid: ce79b1badb6b0bb449c63d4f81ea6717,
+        type: 3}
+    - target: {fileID: 8571076843980202029, guid: 140d1d2c406167c50819d89f86d9092e,
+        type: 3}
+      propertyPath: _contents
       value: 
       objectReference: {fileID: 8388806499988947296, guid: ce79b1badb6b0bb449c63d4f81ea6717,
         type: 3}
@@ -934,7 +946,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 64875045}
-  visualizeZ: 0
+  _visualizeZ: 0
 --- !u!114 &1324426577
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -948,7 +960,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 1329911428}
-  threshold: 0
+  _threshold: 0
 --- !u!114 &1324426578 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3259285889726014649, guid: 5713b959e3c77a58fb258133fc8e4aef,
@@ -1032,7 +1044,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: 26114bc9cccb92454a468ea4d41f400a, type: 3}
 --- !u!114 &1329911428 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6320745076577806714, guid: 26114bc9cccb92454a468ea4d41f400a,
+  m_CorrespondingSourceObject: {fileID: -6338546567352850726, guid: 26114bc9cccb92454a468ea4d41f400a,
     type: 3}
   m_PrefabInstance: {fileID: 1329911427}
   m_PrefabAsset: {fileID: 0}

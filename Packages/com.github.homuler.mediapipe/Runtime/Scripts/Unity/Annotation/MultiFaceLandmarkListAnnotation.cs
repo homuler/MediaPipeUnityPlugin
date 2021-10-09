@@ -1,76 +1,103 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Mediapipe.Unity {
-  public sealed class MultiFaceLandmarkListAnnotation : ListAnnotation<FaceLandmarkListAnnotation> {
-    [SerializeField] Color landmarkColor = Color.green;
-    [SerializeField] float landmarkRadius = 10.0f;
-    [SerializeField] Color connectionColor = Color.red;
-    [SerializeField, Range(0, 1)] float connectionWidth = 1.0f;
+namespace Mediapipe.Unity
+{
+  public sealed class MultiFaceLandmarkListAnnotation : ListAnnotation<FaceLandmarkListAnnotation>
+  {
+    [SerializeField] private Color _landmarkColor = Color.green;
+    [SerializeField] private float _landmarkRadius = 10.0f;
+    [SerializeField] private Color _connectionColor = Color.red;
+    [SerializeField, Range(0, 1)] private float _connectionWidth = 1.0f;
 
-    void OnValidate() {
-      ApplyLandmarkColor(landmarkColor);
-      ApplyLandmarkRadius(landmarkRadius);
-      ApplyConnectionColor(connectionColor);
-      ApplyConnectionWidth(connectionWidth);
+    private void OnValidate()
+    {
+      ApplyLandmarkColor(_landmarkColor);
+      ApplyLandmarkRadius(_landmarkRadius);
+      ApplyConnectionColor(_connectionColor);
+      ApplyConnectionWidth(_connectionWidth);
     }
 
-    public void SetLandmarkRadius(float landmarkRadius) {
-      this.landmarkRadius = landmarkRadius;
-      ApplyLandmarkRadius(landmarkRadius);
+    public void SetLandmarkRadius(float landmarkRadius)
+    {
+      _landmarkRadius = landmarkRadius;
+      ApplyLandmarkRadius(_landmarkRadius);
     }
 
-    public void SetLandmarkColor(Color landmarkColor) {
-      this.landmarkColor = landmarkColor;
-      ApplyLandmarkColor(landmarkColor);
+    public void SetLandmarkColor(Color landmarkColor)
+    {
+      _landmarkColor = landmarkColor;
+      ApplyLandmarkColor(_landmarkColor);
     }
 
-    public void SetConnectionWidth(float connectionWidth) {
-      this.connectionWidth = connectionWidth;
-      ApplyConnectionWidth(connectionWidth);
+    public void SetConnectionWidth(float connectionWidth)
+    {
+      _connectionWidth = connectionWidth;
+      ApplyConnectionWidth(_connectionWidth);
     }
 
-    public void SetConnectionColor(Color connectionColor) {
-      this.connectionColor = connectionColor;
-      ApplyConnectionColor(connectionColor);
+    public void SetConnectionColor(Color connectionColor)
+    {
+      _connectionColor = connectionColor;
+      ApplyConnectionColor(_connectionColor);
     }
 
-    public void Draw(IList<NormalizedLandmarkList> targets, bool visualizeZ = false) {
-      if (ActivateFor(targets)) {
-        CallActionForAll(targets, (annotation, target) => { annotation?.Draw(target, visualizeZ); });
+    public void Draw(IList<NormalizedLandmarkList> targets, bool visualizeZ = false)
+    {
+      if (ActivateFor(targets))
+      {
+        CallActionForAll(targets, (annotation, target) =>
+        {
+          if (annotation != null) { annotation.Draw(target, visualizeZ); }
+        });
       }
     }
 
-    protected override FaceLandmarkListAnnotation InstantiateChild(bool isActive = true) {
+    protected override FaceLandmarkListAnnotation InstantiateChild(bool isActive = true)
+    {
       var annotation = base.InstantiateChild(isActive);
-      annotation.SetLandmarkRadius(landmarkRadius);
-      annotation.SetLandmarkColor(landmarkColor);
-      annotation.SetConnectionWidth(connectionWidth);
-      annotation.SetConnectionColor(connectionColor);
+      annotation.SetLandmarkRadius(_landmarkRadius);
+      annotation.SetLandmarkColor(_landmarkColor);
+      annotation.SetConnectionWidth(_connectionWidth);
+      annotation.SetConnectionColor(_connectionColor);
       return annotation;
     }
 
-    void ApplyLandmarkRadius(float landmarkRadius) {
-      foreach (var faceLandmarkList in children) {
-        faceLandmarkList?.SetLandmarkRadius(landmarkRadius);
+    private void ApplyLandmarkRadius(float landmarkRadius)
+    {
+      foreach (var faceLandmarkList in children)
+      {
+        if (faceLandmarkList != null) { faceLandmarkList.SetLandmarkRadius(landmarkRadius); }
       }
     }
 
-    void ApplyLandmarkColor(Color landmarkColor) {
-      foreach (var faceLandmarkList in children) {
-        faceLandmarkList?.SetLandmarkColor(landmarkColor);
+    private void ApplyLandmarkColor(Color landmarkColor)
+    {
+      foreach (var faceLandmarkList in children)
+      {
+        if (faceLandmarkList != null) { faceLandmarkList.SetLandmarkColor(landmarkColor); }
       }
     }
 
-    void ApplyConnectionWidth(float connectionWidth) {
-      foreach (var faceLandmarkList in children) {
-        faceLandmarkList?.SetConnectionWidth(connectionWidth);
+    private void ApplyConnectionWidth(float connectionWidth)
+    {
+      foreach (var faceLandmarkList in children)
+      {
+        if (faceLandmarkList != null) { faceLandmarkList.SetConnectionWidth(connectionWidth); }
       }
     }
 
-    void ApplyConnectionColor(Color connectionColor) {
-      foreach (var faceLandmarkList in children) {
-        faceLandmarkList?.SetConnectionColor(connectionColor);
+    private void ApplyConnectionColor(Color connectionColor)
+    {
+      foreach (var faceLandmarkList in children)
+      {
+        if (faceLandmarkList != null) { faceLandmarkList.SetConnectionColor(connectionColor); }
       }
     }
   }

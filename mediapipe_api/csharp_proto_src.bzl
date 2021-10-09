@@ -1,9 +1,22 @@
+# Copyright (c) 2021 homuler
+#
+# Use of this source code is governed by an MIT-style
+# license that can be found in the LICENSE file or at
+# https://opensource.org/licenses/MIT.
+
+"""Proto compiler
+
+Macro for generating C# source files corresponding to .proto files
+"""
+
 def csharp_proto_src(name, proto_src, deps, import_prefix = ""):
     """Generate C# source code for *.proto
 
     Args:
-      import_prefix: Directory where the generated source code is placed.
-      proto_src: target .proto file path.
+      name: target name
+      deps: label list of dependent targets
+      import_prefix: Directory where the generated source code is placed
+      proto_src: target .proto file path
     """
 
     # e.g.
@@ -17,7 +30,7 @@ def csharp_proto_src(name, proto_src, deps, import_prefix = ""):
     native.genrule(
         name = name,
         srcs = deps + [
-          "@com_google_protobuf//:well_known_protos",
+            "@com_google_protobuf//:well_known_protos",
         ],
         outs = [csharp_out],
         cmd = """
@@ -29,7 +42,7 @@ $(location @com_google_protobuf//:protoc) \
     --proto_path=$$(pwd)/external/com_google_mediapipe \
     --csharp_out={outdir} {}
 mv {outdir}/{outfile} $$(dirname $(location {outfile}))
-""".format(proto_src, outdir=outdir, outfile=csharp_out),
+""".format(proto_src, outdir = outdir, outfile = csharp_out),
         tools = [
             "@com_google_protobuf//:protoc",
         ],

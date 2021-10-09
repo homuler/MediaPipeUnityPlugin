@@ -1,107 +1,133 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-namespace Mediapipe.Unity {
-  public class Bootstrap : MonoBehaviour {
+namespace Mediapipe.Unity
+{
+  public class Bootstrap : MonoBehaviour
+  {
     [System.Serializable]
-    public enum AssetLoaderType {
+    public enum AssetLoaderType
+    {
       StreamingAssets,
       AssetBundle,
       Local,
     }
 
-    static readonly string TAG = typeof(Bootstrap).Name;
+    private const string _TAG = nameof(Bootstrap);
 
-    [SerializeField] Image screen;
-    [SerializeField] GameObject consolePrefab;
-    [SerializeField] ImageSource.SourceType defaultImageSource;
-    [SerializeField] InferenceMode preferableInferenceMode;
-    [SerializeField] AssetLoaderType assetLoaderType;
-    [SerializeField] bool enableGlog = true;
+    [SerializeField] private Image _screen;
+    [SerializeField] private GameObject _consolePrefab;
+    [SerializeField] private ImageSource.SourceType _defaultImageSource;
+    [SerializeField] private InferenceMode _preferableInferenceMode;
+    [SerializeField] private AssetLoaderType _assetLoaderType;
+    [SerializeField] private bool _enableGlog = true;
 
     public InferenceMode inferenceMode { get; private set; }
     public bool isFinished { get; private set; }
-    bool isGlogInitialized;
+    private bool _isGlogInitialized;
 
-    IEnumerator Start() {
+    private IEnumerator Start()
+    {
       Logger.SetLogger(new MemoizedLogger(100));
       Logger.minLogLevel = Logger.LogLevel.Debug;
 
-      Logger.LogInfo(TAG, "Starting console window...");
-      Instantiate(consolePrefab, screen.transform);
+      Logger.LogInfo(_TAG, "Starting console window...");
+      Instantiate(_consolePrefab, _screen.transform);
       yield return new WaitForEndOfFrame();
 
-      Logger.LogInfo(TAG, "Setting global flags...");
+      Logger.LogInfo(_TAG, "Setting global flags...");
       GlobalConfigManager.SetFlags();
 
-      if (enableGlog) {
-        if (Glog.logDir != null) {
-          if (!Directory.Exists(Glog.logDir)) {
-            Directory.CreateDirectory(Glog.logDir);
+      if (_enableGlog)
+      {
+        if (Glog.LogDir != null)
+        {
+          if (!Directory.Exists(Glog.LogDir))
+          {
+            Directory.CreateDirectory(Glog.LogDir);
           }
-          Logger.LogVerbose(TAG, $"Glog will output files under {Glog.logDir}");
+          Logger.LogVerbose(_TAG, $"Glog will output files under {Glog.LogDir}");
         }
         Glog.Initialize("MediaPipeUnityPlugin");
-        isGlogInitialized = true;
+        _isGlogInitialized = true;
       }
 
-      Logger.LogInfo(TAG, "Initializing AssetLoader...");
-      switch (assetLoaderType) {
-        case AssetLoaderType.AssetBundle: {
-          AssetLoader.Provide(new AssetBundleResourceManager(Path.Combine(Application.streamingAssetsPath, "mediapipe")));
-          break;
-        }
-        case AssetLoaderType.StreamingAssets: {
-          AssetLoader.Provide(new StreamingAssetsResourceManager());
-          break;
-        }
-        default: {
+      Logger.LogInfo(_TAG, "Initializing AssetLoader...");
+      switch (_assetLoaderType)
+      {
+        case AssetLoaderType.AssetBundle:
+          {
+            AssetLoader.Provide(new AssetBundleResourceManager(Path.Combine(Application.streamingAssetsPath, "mediapipe")));
+            break;
+          }
+        case AssetLoaderType.StreamingAssets:
+          {
+            AssetLoader.Provide(new StreamingAssetsResourceManager());
+            break;
+          }
+        case AssetLoaderType.Local:
+          {
 #if UNITY_EDITOR
-          AssetLoader.Provide(new LocalResourceManager());
-          break;
+            AssetLoader.Provide(new LocalResourceManager());
+            break;
 #else
           Logger.LogError("LocalResourceManager is only supported on UnityEditor");
           yield break;
 #endif
-        }
+          }
+        default:
+          {
+            Logger.LogError($"AssetLoaderType is unknown: {_assetLoaderType}");
+            yield break;
+          }
       }
 
       DecideInferenceMode();
-      if (inferenceMode == InferenceMode.GPU) {
-        Logger.LogInfo(TAG, "Initializing GPU resources...");
+      if (inferenceMode == InferenceMode.GPU)
+      {
+        Logger.LogInfo(_TAG, "Initializing GPU resources...");
         yield return GpuManager.Initialize();
       }
 
-      Logger.LogInfo(TAG, "Preparing ImageSource...");
-      ImageSourceProvider.SwitchSource(defaultImageSource);
+      Logger.LogInfo(_TAG, "Preparing ImageSource...");
+      ImageSourceProvider.SwitchSource(_defaultImageSource);
       DontDestroyOnLoad(GameObject.Find("Image Source"));
 
-      DontDestroyOnLoad(this.gameObject);
+      DontDestroyOnLoad(gameObject);
       isFinished = true;
 
-      Logger.LogInfo(TAG, "Loading the first scene...");
+      Logger.LogInfo(_TAG, "Loading the first scene...");
       var sceneLoadReq = SceneManager.LoadSceneAsync(1);
       yield return new WaitUntil(() => sceneLoadReq.isDone);
     }
 
-    void DecideInferenceMode() {
+    private void DecideInferenceMode()
+    {
 #if UNITY_EDITOR_OSX || UNITY_EDITOR_WIN
-      if (preferableInferenceMode == InferenceMode.GPU) {
-        Logger.LogWarning(TAG, "Current platform does not support GPU inference mode, so falling back to CPU mode");
+      if (_preferableInferenceMode == InferenceMode.GPU) {
+        Logger.LogWarning(_TAG, "Current platform does not support GPU inference mode, so falling back to CPU mode");
       }
       inferenceMode = InferenceMode.CPU;
 #else
-      inferenceMode = preferableInferenceMode;
+      inferenceMode = _preferableInferenceMode;
 #endif
     }
 
-    void OnApplicationQuit() {
+    private void OnApplicationQuit()
+    {
       GpuManager.Shutdown();
 
-      if (isGlogInitialized) {
+      if (_isGlogInitialized)
+      {
         Glog.Shutdown();
       }
 

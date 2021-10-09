@@ -333,7 +333,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 741688518}
-  threshold: 0
+  _threshold: 0
 --- !u!114 &544675422 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3259285889726014649, guid: 5713b959e3c77a58fb258133fc8e4aef,
@@ -417,7 +417,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: 26114bc9cccb92454a468ea4d41f400a, type: 3}
 --- !u!114 &741688518 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6320745076577806714, guid: 26114bc9cccb92454a468ea4d41f400a,
+  m_CorrespondingSourceObject: {fileID: -6338546567352850726, guid: 26114bc9cccb92454a468ea4d41f400a,
     type: 3}
   m_PrefabInstance: {fileID: 741688517}
   m_PrefabAsset: {fileID: 0}
@@ -458,9 +458,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c93d1832daefe9f258e5b024075ebb3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cpuConfig: {fileID: 4900000, guid: 03929fe761ff53f61815c8aee8b1ba46, type: 3}
-  gpuConfig: {fileID: 4900000, guid: 28e0ca3dea691a3128fcb2b92c0c067a, type: 3}
-  openGlEsConfig: {fileID: 4900000, guid: 2b21b041b72e00b068d649ec642c35f6, type: 3}
+  _cpuConfig: {fileID: 4900000, guid: 03929fe761ff53f61815c8aee8b1ba46, type: 3}
+  _gpuConfig: {fileID: 4900000, guid: 28e0ca3dea691a3128fcb2b92c0c067a, type: 3}
+  _openGlEsConfig: {fileID: 4900000, guid: 2b21b041b72e00b068d649ec642c35f6, type: 3}
   _timeoutMicrosec: 50000
   OnOutputDetectionsOutput:
     m_PersistentCalls:
@@ -491,10 +491,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eac875cb755d0fc0d86718559f9674d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screen: {fileID: 544675422}
-  outputDetectionsAnnotationController: {fileID: 544675421}
-  graphRunner: {fileID: 1064799460}
-  textureFramePool: {fileID: 1064799463}
+  _screen: {fileID: 544675422}
+  _outputDetectionsAnnotationController: {fileID: 544675421}
+  _graphRunner: {fileID: 1064799460}
+  _textureFramePool: {fileID: 1064799463}
   runningMode: 0
 --- !u!114 &1064799463
 MonoBehaviour:
@@ -508,7 +508,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5da564da19cb6b7d8e4f97f269edc5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poolSize: 10
+  _poolSize: 10
 --- !u!1 &1806680259
 GameObject:
   m_ObjectHideFlags: 0
@@ -897,6 +897,11 @@ PrefabInstance:
       propertyPath: solution
       value: 
       objectReference: {fileID: 1064799462}
+    - target: {fileID: 8571076843237194833, guid: 140d1d2c406167c50819d89f86d9092e,
+        type: 3}
+      propertyPath: _solution
+      value: 
+      objectReference: {fileID: 1064799462}
     - target: {fileID: 8571076843237194836, guid: 140d1d2c406167c50819d89f86d9092e,
         type: 3}
       propertyPath: m_RootOrder
@@ -905,6 +910,12 @@ PrefabInstance:
     - target: {fileID: 8571076843980202029, guid: 140d1d2c406167c50819d89f86d9092e,
         type: 3}
       propertyPath: contents
+      value: 
+      objectReference: {fileID: 827070858861903548, guid: 7bc48f0474ab8f336b986f17d7ffd798,
+        type: 3}
+    - target: {fileID: 8571076843980202029, guid: 140d1d2c406167c50819d89f86d9092e,
+        type: 3}
+      propertyPath: _contents
       value: 
       objectReference: {fileID: 827070858861903548, guid: 7bc48f0474ab8f336b986f17d7ffd798,
         type: 3}

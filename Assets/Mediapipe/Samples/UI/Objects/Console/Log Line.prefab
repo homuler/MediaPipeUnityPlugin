@@ -236,9 +236,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 405a6db3b0cb700fbb3f15f3f11d3af5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  utcTimeArea: {fileID: 2894631413469463850}
-  tagArea: {fileID: 2894631414545771618}
-  messageArea: {fileID: 2894631413968208290}
+  _utcTimeArea: {fileID: 2894631413469463850}
+  _tagArea: {fileID: 2894631414545771618}
+  _messageArea: {fileID: 2894631413968208290}
 --- !u!1 &2894631414545771616
 GameObject:
   m_ObjectHideFlags: 0

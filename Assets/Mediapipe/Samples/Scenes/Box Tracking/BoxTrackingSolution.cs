@@ -1,108 +1,131 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mediapipe.Unity.BoxTracking {
-  public class BoxTrackingSolution : Solution {
-    [SerializeField] RawImage screen;
-    [SerializeField] DetectionListAnnotationController trackedDetectionsAnnotationController;
-    [SerializeField] BoxTrackingGraph graphRunner;
-    [SerializeField] TextureFramePool textureFramePool;
+namespace Mediapipe.Unity.BoxTracking
+{
+  public class BoxTrackingSolution : Solution
+  {
+    [SerializeField] private RawImage _screen;
+    [SerializeField] private DetectionListAnnotationController _trackedDetectionsAnnotationController;
+    [SerializeField] private BoxTrackingGraph _graphRunner;
+    [SerializeField] private TextureFramePool _textureFramePool;
 
-    Coroutine coroutine;
+    private Coroutine _coroutine;
 
     public RunningMode runningMode;
 
-    public long timeoutMillisec {
-      get { return graphRunner.timeoutMillisec; }
-      set { graphRunner.SetTimeoutMillisec(value); }
+    public long timeoutMillisec
+    {
+      get => _graphRunner.timeoutMillisec;
+      set => _graphRunner.SetTimeoutMillisec(value);
     }
 
-    public override void Play() {
-      if (coroutine != null) {
+    public override void Play()
+    {
+      if (_coroutine != null)
+      {
         Stop();
       }
       base.Play();
-      coroutine = StartCoroutine(Run());
+      _coroutine = StartCoroutine(Run());
     }
 
-    public override void Pause() {
+    public override void Pause()
+    {
       base.Pause();
-      ImageSourceProvider.imageSource.Pause();
+      ImageSourceProvider.ImageSource.Pause();
     }
 
-    public override void Resume() {
+    public override void Resume()
+    {
       base.Resume();
-      StartCoroutine(ImageSourceProvider.imageSource.Resume());
+      var _ = StartCoroutine(ImageSourceProvider.ImageSource.Resume());
     }
 
-    public override void Stop() {
+    public override void Stop()
+    {
       base.Stop();
-      StopCoroutine(coroutine);
-      ImageSourceProvider.imageSource.Stop();
-      graphRunner.Stop();
+      StopCoroutine(_coroutine);
+      ImageSourceProvider.ImageSource.Stop();
+      _graphRunner.Stop();
     }
 
-    IEnumerator Run() {
-      var graphInitRequest = graphRunner.WaitForInit();
-      var imageSource = ImageSourceProvider.imageSource;
+    private IEnumerator Run()
+    {
+      var graphInitRequest = _graphRunner.WaitForInit();
+      var imageSource = ImageSourceProvider.ImageSource;
 
       yield return imageSource.Play();
 
-      if (!imageSource.isPrepared) {
+      if (!imageSource.isPrepared)
+      {
         Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
         yield break;
       }
-      // NOTE: The screen will be resized later, keeping the aspect ratio.
-      SetupScreen(screen, imageSource);
-      screen.texture = imageSource.GetCurrentTexture();
+      // NOTE: The _screen will be resized later, keeping the aspect ratio.
+      SetupScreen(_screen, imageSource);
+      _screen.texture = imageSource.GetCurrentTexture();
 
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
       yield return graphInitRequest;
-      if (graphInitRequest.isError) {
+      if (graphInitRequest.isError)
+      {
         Logger.LogError(TAG, graphInitRequest.error);
         yield break;
       }
 
-      if (runningMode == RunningMode.Async) {
-        graphRunner.OnTrackedDetectionsOutput.AddListener(OnTrackedDetectionsOutput);
-        graphRunner.StartRunAsync(imageSource).AssertOk();
-      } else {
-        graphRunner.StartRun(imageSource).AssertOk();
+      if (runningMode == RunningMode.Async)
+      {
+        _graphRunner.OnTrackedDetectionsOutput.AddListener(OnTrackedDetectionsOutput);
+        _graphRunner.StartRunAsync(imageSource).AssertOk();
+      }
+      else
+      {
+        _graphRunner.StartRun(imageSource).AssertOk();
       }
 
       // Use RGBA32 as the input format.
       // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
-      textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
+      _textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
 
-      SetupAnnotationController(trackedDetectionsAnnotationController, imageSource);
+      SetupAnnotationController(_trackedDetectionsAnnotationController, imageSource);
 
-      while (true) {
+      while (true)
+      {
         yield return new WaitWhile(() => isPaused);
 
-        var textureFrameRequest = textureFramePool.WaitForNextTextureFrame();
+        var textureFrameRequest = _textureFramePool.WaitForNextTextureFrame();
         yield return textureFrameRequest;
         var textureFrame = textureFrameRequest.result;
 
         // Copy current image to TextureFrame
-        ReadFromImageSource(textureFrame, runningMode, graphRunner.configType);
+        ReadFromImageSource(imageSource, textureFrame);
 
-        graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
+        _graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 
-        if (runningMode == RunningMode.Sync) {
+        if (runningMode == RunningMode.Sync)
+        {
           // When running synchronously, wait for the outputs here (blocks the main thread).
-          var trackedDetections = graphRunner.FetchNextValue();
-          trackedDetectionsAnnotationController.DrawNow(trackedDetections);
+          var trackedDetections = _graphRunner.FetchNextValue();
+          _trackedDetectionsAnnotationController.DrawNow(trackedDetections);
         }
 
         yield return new WaitForEndOfFrame();
       }
     }
 
-    void OnTrackedDetectionsOutput(List<Detection> trackedDetections) {
-      trackedDetectionsAnnotationController.DrawLater(trackedDetections);
+    private void OnTrackedDetectionsOutput(List<Detection> trackedDetections)
+    {
+      _trackedDetectionsAnnotationController.DrawLater(trackedDetections);
     }
   }
 }

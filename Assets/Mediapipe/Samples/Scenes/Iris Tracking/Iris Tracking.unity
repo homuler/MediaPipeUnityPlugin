@@ -168,9 +168,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35855da6e15069305aef28799186edb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cpuConfig: {fileID: 4900000, guid: 8d76e6d62da5980ed918a8f6a4a15e94, type: 3}
-  gpuConfig: {fileID: 4900000, guid: 904eba754eb7e5dfbbb83e6c76ee5b7a, type: 3}
-  openGlEsConfig: {fileID: 4900000, guid: 43dd63fad6219b1a2bbeddb7874f3137, type: 3}
+  _cpuConfig: {fileID: 4900000, guid: 8d76e6d62da5980ed918a8f6a4a15e94, type: 3}
+  _gpuConfig: {fileID: 4900000, guid: 904eba754eb7e5dfbbb83e6c76ee5b7a, type: 3}
+  _openGlEsConfig: {fileID: 4900000, guid: 43dd63fad6219b1a2bbeddb7874f3137, type: 3}
   _timeoutMicrosec: 50000
   OnFaceDetectionsOutput:
     m_PersistentCalls:
@@ -193,12 +193,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f016b6b2a48c853e3aa5922f70b018e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screen: {fileID: 1228562680}
-  faceDetectionsAnnotationController: {fileID: 1228562677}
-  faceRectAnnotationController: {fileID: 1228562678}
-  faceLandmarksWithIrisAnnotationController: {fileID: 1228562679}
-  graphRunner: {fileID: 275874968}
-  textureFramePool: {fileID: 275874970}
+  _screen: {fileID: 1228562680}
+  _faceDetectionsAnnotationController: {fileID: 1228562677}
+  _faceRectAnnotationController: {fileID: 1228562678}
+  _faceLandmarksWithIrisAnnotationController: {fileID: 1228562679}
+  _graphRunner: {fileID: 275874968}
+  _textureFramePool: {fileID: 275874970}
   runningMode: 0
 --- !u!114 &275874970
 MonoBehaviour:
@@ -212,7 +212,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5da564da19cb6b7d8e4f97f269edc5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poolSize: 10
+  _poolSize: 10
 --- !u!1 &638479256
 GameObject:
   m_ObjectHideFlags: 0
@@ -513,9 +513,20 @@ PrefabInstance:
       propertyPath: solution
       value: 
       objectReference: {fileID: 275874969}
+    - target: {fileID: 8571076843237194833, guid: 140d1d2c406167c50819d89f86d9092e,
+        type: 3}
+      propertyPath: _solution
+      value: 
+      objectReference: {fileID: 275874969}
     - target: {fileID: 8571076843980202029, guid: 140d1d2c406167c50819d89f86d9092e,
         type: 3}
       propertyPath: contents
+      value: 
+      objectReference: {fileID: 827070858861903548, guid: 23074a0e7115e3d44b319d7a03650702,
+        type: 3}
+    - target: {fileID: 8571076843980202029, guid: 140d1d2c406167c50819d89f86d9092e,
+        type: 3}
+      propertyPath: _contents
       value: 
       objectReference: {fileID: 827070858861903548, guid: 23074a0e7115e3d44b319d7a03650702,
         type: 3}
@@ -618,7 +629,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: c0d008e23161282b39199515fa2c0da4, type: 3}
 --- !u!114 &985505889 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7477175687846711449, guid: c0d008e23161282b39199515fa2c0da4,
+  m_CorrespondingSourceObject: {fileID: 5817503713440874067, guid: c0d008e23161282b39199515fa2c0da4,
     type: 3}
   m_PrefabInstance: {fileID: 985505888}
   m_PrefabAsset: {fileID: 0}
@@ -699,7 +710,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: 26114bc9cccb92454a468ea4d41f400a, type: 3}
 --- !u!114 &1127017581 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6320745076577806714, guid: 26114bc9cccb92454a468ea4d41f400a,
+  m_CorrespondingSourceObject: {fileID: -6338546567352850726, guid: 26114bc9cccb92454a468ea4d41f400a,
     type: 3}
   m_PrefabInstance: {fileID: 1127017580}
   m_PrefabAsset: {fileID: 0}
@@ -919,7 +930,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 1127017581}
-  threshold: 0
+  _threshold: 0
 --- !u!114 &1228562678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -946,8 +957,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 985505889}
-  visualizeZ: 0
-  circleVertices: 128
+  _visualizeZ: 0
+  _circleVertices: 128
 --- !u!114 &1228562680 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3259285889726014649, guid: 5713b959e3c77a58fb258133fc8e4aef,

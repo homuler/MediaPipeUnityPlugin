@@ -1,6 +1,13 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using UnityEngine;
 
-namespace Mediapipe.Unity {
+namespace Mediapipe.Unity
+{
   /// <summary>
   ///   This class draws annotations on the screen which is the parent of the attached <see cref="GameObject" />.<br />
   ///   That is, it's used like this.<br />
@@ -14,31 +21,40 @@ namespace Mediapipe.Unity {
   ///   Note that this class can be accessed from a thread other than main thread.
   ///   Extended classes must be implemented to work in such a situation, since Unity APIs won't work in other threads.
   /// </remarks>
-  public abstract class AnnotationController<T> : MonoBehaviour where T : HierarchicalAnnotation {
+  public abstract class AnnotationController<T> : MonoBehaviour where T : HierarchicalAnnotation
+  {
     [SerializeField] protected T annotation;
     protected bool isStale = false;
 
-    public bool isMirrored {
-      get { return annotation.isMirrored; }
-      set {
-        if (annotation.isMirrored != value) {
+    public bool isMirrored
+    {
+      get => annotation.isMirrored;
+      set
+      {
+        if (annotation.isMirrored != value)
+        {
           annotation.isMirrored = value;
         }
       }
     }
 
-    public RotationAngle rotationAngle {
-      get { return annotation.rotationAngle; }
-      set {
-        if (annotation.rotationAngle != value) {
+    public RotationAngle rotationAngle
+    {
+      get => annotation.rotationAngle;
+      set
+      {
+        if (annotation.rotationAngle != value)
+        {
           annotation.rotationAngle = value;
         }
       }
     }
 
-    protected virtual void Start() {
-      if (!TryGetComponent<RectTransform>(out var _)) {
-        Logger.LogVerbose(this.GetType().Name, $"Adding RectTransform to {gameObject.name}");
+    protected virtual void Start()
+    {
+      if (!TryGetComponent<RectTransform>(out var _))
+      {
+        Logger.LogVerbose(GetType().Name, $"Adding RectTransform to {gameObject.name}");
         var rectTransform = gameObject.AddComponent<RectTransform>();
         // stretch width and height by default
         rectTransform.pivot = new Vector2(0.5f, 0.5f);
@@ -49,14 +65,18 @@ namespace Mediapipe.Unity {
       }
     }
 
-    protected virtual void LateUpdate() {
-      if (isStale) {
+    protected virtual void LateUpdate()
+    {
+      if (isStale)
+      {
         SyncNow();
       }
     }
 
-    protected virtual void OnDestroy() {
-      if (annotation != null) {
+    protected virtual void OnDestroy()
+    {
+      if (annotation != null)
+      {
         Destroy(annotation);
         annotation = null;
       }
@@ -72,14 +92,17 @@ namespace Mediapipe.Unity {
     /// </remarks>
     protected abstract void SyncNow();
 
-    protected void UpdateCurrentTarget<S>(S newTarget, ref S currentTarget) {
-      if (IsTargetChanged(newTarget, currentTarget)) {
+    protected void UpdateCurrentTarget<TValue>(TValue newTarget, ref TValue currentTarget)
+    {
+      if (IsTargetChanged(newTarget, currentTarget))
+      {
         currentTarget = newTarget;
         isStale = true;
       }
     }
 
-    protected bool IsTargetChanged<S>(S newTarget, S currentTarget) {
+    protected bool IsTargetChanged<TValue>(TValue newTarget, TValue currentTarget)
+    {
       // It's assumed that target has not changed iff previous target and new target are both null.
       return currentTarget != null || newTarget != null;
     }

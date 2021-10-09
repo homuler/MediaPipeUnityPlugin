@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4648294227339798679}
   - component: {fileID: 110471670344889224}
   - component: {fileID: 5513403384150495485}
+  - component: {fileID: 2413779005072330058}
   m_Layer: 5
   m_Name: Label Annotation
   m_TagString: Untagged
@@ -80,6 +81,20 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 
+--- !u!114 &2413779005072330058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 912750501651204390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96652e94527a9f3e1b4079bc3d139d06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  labelText: {fileID: 5513403384150495485}
+  background: {fileID: 0}
 --- !u!1 &7330468373985811433
 GameObject:
   m_ObjectHideFlags: 0

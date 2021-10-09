@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff689dc19c0db10608af875e2c24ade9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  annotationPrefab: {fileID: 4965192403804369243, guid: 3b696480602fe21de85315216956bd42,
+  _annotationPrefab: {fileID: 4965192403804369243, guid: 3b696480602fe21de85315216956bd42,
     type: 3}
   color: {r: 1, g: 0, b: 0, a: 1}
   lineWidth: 1

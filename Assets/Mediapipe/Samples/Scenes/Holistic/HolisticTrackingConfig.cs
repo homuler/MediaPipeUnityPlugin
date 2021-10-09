@@ -1,63 +1,80 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Mediapipe.Unity.UI;
 
-namespace Mediapipe.Unity.Holistic.UI {
-  public class HolisticTrackingConfig : ModalContents {
-    const string _ModelComplexityPath = "Scroll View/Viewport/Contents/Model Complexity/Dropdown";
-    const string _SmoothLandmarksPath = "Scroll View/Viewport/Contents/Smooth Landmarks/Toggle";
-    const string _DetectIrisPath = "Scroll View/Viewport/Contents/Detect Iris/Toggle";
-    const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
-    const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
+namespace Mediapipe.Unity.Holistic.UI
+{
+  public class HolisticTrackingConfig : ModalContents
+  {
+    private const string _ModelComplexityPath = "Scroll View/Viewport/Contents/Model Complexity/Dropdown";
+    private const string _SmoothLandmarksPath = "Scroll View/Viewport/Contents/Smooth Landmarks/Toggle";
+    private const string _DetectIrisPath = "Scroll View/Viewport/Contents/Detect Iris/Toggle";
+    private const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
+    private const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
 
-    HolisticTrackingSolution solution;
-    Dropdown ModelComplexityInput;
-    Toggle SmoothLandmarksInput;
-    Toggle DetectIrisInput;
-    Dropdown RunningModeInput;
-    InputField TimeoutMillisecInput;
+    private HolisticTrackingSolution _solution;
+    private Dropdown _modelComplexityInput;
+    private Toggle _smoothLandmarksInput;
+    private Toggle _detectIrisInput;
+    private Dropdown _runningModeInput;
+    private InputField _timeoutMillisecInput;
 
-    bool isChanged;
+    private bool _isChanged;
 
-    void Start() {
-      solution = GameObject.Find("Solution").GetComponent<HolisticTrackingSolution>();
+    private void Start()
+    {
+      _solution = GameObject.Find("Solution").GetComponent<HolisticTrackingSolution>();
       InitializeContents();
     }
 
-    public override void Exit() {
-      GetModal().CloseAndResume(isChanged);
+    public override void Exit()
+    {
+      GetModal().CloseAndResume(_isChanged);
     }
 
-    public void SwitchModelComplexity() {
-      solution.modelComplexity = (HolisticTrackingGraph.ModelComplexity)ModelComplexityInput.value;
-      isChanged = true;
+    public void SwitchModelComplexity()
+    {
+      _solution.modelComplexity = (HolisticTrackingGraph.ModelComplexity)_modelComplexityInput.value;
+      _isChanged = true;
     }
 
-    public void ToggleSmoothLandmarks() {
-      solution.smoothLandmarks = SmoothLandmarksInput.isOn;
-      isChanged = true;
+    public void ToggleSmoothLandmarks()
+    {
+      _solution.smoothLandmarks = _smoothLandmarksInput.isOn;
+      _isChanged = true;
     }
 
-    public void ToggleDetectIris() {
-      solution.detectIris = DetectIrisInput.isOn;
-      isChanged = true;
+    public void ToggleDetectIris()
+    {
+      _solution.detectIris = _detectIrisInput.isOn;
+      _isChanged = true;
     }
 
-    public void SetTimeoutMillisec() {
-      if (int.TryParse(TimeoutMillisecInput.text, out var value)) {
-        solution.timeoutMillisec = value;
-        isChanged = true;
+    public void SetTimeoutMillisec()
+    {
+      if (int.TryParse(_timeoutMillisecInput.text, out var value))
+      {
+        _solution.timeoutMillisec = value;
+        _isChanged = true;
       }
     }
 
-    public void SwitchRunningMode() {
-      solution.runningMode = (RunningMode)RunningModeInput.value;
-      isChanged = true;
+    public void SwitchRunningMode()
+    {
+      _solution.runningMode = (RunningMode)_runningModeInput.value;
+      _isChanged = true;
     }
 
-    void InitializeContents() {
+    private void InitializeContents()
+    {
       InitializeModelComplexity();
       InitializeSmoothLandmarks();
       InitializeDetectIris();
@@ -65,56 +82,63 @@ namespace Mediapipe.Unity.Holistic.UI {
       InitializeTimeoutMillisec();
     }
 
-    void InitializeModelComplexity() {
-      ModelComplexityInput = gameObject.transform.Find(_ModelComplexityPath).gameObject.GetComponent<Dropdown>();
-      ModelComplexityInput.ClearOptions();
+    private void InitializeModelComplexity()
+    {
+      _modelComplexityInput = gameObject.transform.Find(_ModelComplexityPath).gameObject.GetComponent<Dropdown>();
+      _modelComplexityInput.ClearOptions();
 
       var options = new List<string>(Enum.GetNames(typeof(HolisticTrackingGraph.ModelComplexity)));
-      ModelComplexityInput.AddOptions(options);
+      _modelComplexityInput.AddOptions(options);
 
-      var currentModelComplexity = solution.modelComplexity;
+      var currentModelComplexity = _solution.modelComplexity;
       var defaultValue = options.FindIndex(option => option == currentModelComplexity.ToString());
 
-      if (defaultValue >= 0) {
-        ModelComplexityInput.value = defaultValue;
+      if (defaultValue >= 0)
+      {
+        _modelComplexityInput.value = defaultValue;
       }
 
-      ModelComplexityInput.onValueChanged.AddListener(delegate { SwitchModelComplexity(); });
+      _modelComplexityInput.onValueChanged.AddListener(delegate { SwitchModelComplexity(); });
     }
 
-    void InitializeSmoothLandmarks() {
-      SmoothLandmarksInput = gameObject.transform.Find(_SmoothLandmarksPath).gameObject.GetComponent<Toggle>();
-      SmoothLandmarksInput.isOn = solution.smoothLandmarks;
-      SmoothLandmarksInput.onValueChanged.AddListener(delegate { ToggleSmoothLandmarks(); });
+    private void InitializeSmoothLandmarks()
+    {
+      _smoothLandmarksInput = gameObject.transform.Find(_SmoothLandmarksPath).gameObject.GetComponent<Toggle>();
+      _smoothLandmarksInput.isOn = _solution.smoothLandmarks;
+      _smoothLandmarksInput.onValueChanged.AddListener(delegate { ToggleSmoothLandmarks(); });
     }
 
-    void InitializeDetectIris() {
-      DetectIrisInput = gameObject.transform.Find(_DetectIrisPath).gameObject.GetComponent<Toggle>();
-      DetectIrisInput.isOn = solution.detectIris;
-      DetectIrisInput.onValueChanged.AddListener(delegate { ToggleDetectIris(); });
+    private void InitializeDetectIris()
+    {
+      _detectIrisInput = gameObject.transform.Find(_DetectIrisPath).gameObject.GetComponent<Toggle>();
+      _detectIrisInput.isOn = _solution.detectIris;
+      _detectIrisInput.onValueChanged.AddListener(delegate { ToggleDetectIris(); });
     }
 
-    void InitializeRunningMode() {
-      RunningModeInput = gameObject.transform.Find(_RunningModePath).gameObject.GetComponent<Dropdown>();
-      RunningModeInput.ClearOptions();
+    private void InitializeRunningMode()
+    {
+      _runningModeInput = gameObject.transform.Find(_RunningModePath).gameObject.GetComponent<Dropdown>();
+      _runningModeInput.ClearOptions();
 
       var options = new List<string>(Enum.GetNames(typeof(RunningMode)));
-      RunningModeInput.AddOptions(options);
+      _runningModeInput.AddOptions(options);
 
-      var currentRunningMode = solution.runningMode;
+      var currentRunningMode = _solution.runningMode;
       var defaultValue = options.FindIndex(option => option == currentRunningMode.ToString());
 
-      if (defaultValue >= 0) {
-        RunningModeInput.value = defaultValue;
+      if (defaultValue >= 0)
+      {
+        _runningModeInput.value = defaultValue;
       }
 
-      RunningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
+      _runningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
     }
 
-    void InitializeTimeoutMillisec() {
-      TimeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
-      TimeoutMillisecInput.text = solution.timeoutMillisec.ToString();
-      TimeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });
+    private void InitializeTimeoutMillisec()
+    {
+      _timeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
+      _timeoutMillisecInput.text = _solution.timeoutMillisec.ToString();
+      _timeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });
     }
   }
 }

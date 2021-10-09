@@ -409,9 +409,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 326e6292d21184e3384c9de6a8abe56a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cpuConfig: {fileID: 4900000, guid: a901443779a96c97890cab1b274b506f, type: 3}
-  gpuConfig: {fileID: 4900000, guid: 8eaa695afee89c8eea9241f8a5ab9645, type: 3}
-  openGlEsConfig: {fileID: 4900000, guid: 5db98b44b5bd2a0e8b5c7dec21d0577d, type: 3}
+  _cpuConfig: {fileID: 4900000, guid: a901443779a96c97890cab1b274b506f, type: 3}
+  _gpuConfig: {fileID: 4900000, guid: 8eaa695afee89c8eea9241f8a5ab9645, type: 3}
+  _openGlEsConfig: {fileID: 4900000, guid: 5db98b44b5bd2a0e8b5c7dec21d0577d, type: 3}
   _timeoutMicrosec: 50000
   detectIris: 0
   modelComplexity: 0
@@ -455,14 +455,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 074337820eff7f441910fadfc931aa08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screen: {fileID: 1375628860}
-  worldAnnotationArea: {fileID: 1936307554}
-  poseDetectionAnnotationController: {fileID: 1375628863}
-  holisticAnnotationController: {fileID: 1375628862}
-  poseWorldLandmarksAnnotationController: {fileID: 1936307555}
-  poseRoiAnnotationController: {fileID: 1375628861}
-  graphRunner: {fileID: 275874968}
-  textureFramePool: {fileID: 275874970}
+  _screen: {fileID: 1375628860}
+  _worldAnnotationArea: {fileID: 1936307554}
+  _poseDetectionAnnotationController: {fileID: 1375628863}
+  _holisticAnnotationController: {fileID: 1375628862}
+  _poseWorldLandmarksAnnotationController: {fileID: 1936307555}
+  _poseRoiAnnotationController: {fileID: 1375628861}
+  _graphRunner: {fileID: 275874968}
+  _textureFramePool: {fileID: 275874970}
   runningMode: 0
 --- !u!114 &275874970
 MonoBehaviour:
@@ -476,7 +476,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5da564da19cb6b7d8e4f97f269edc5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poolSize: 10
+  _poolSize: 10
 --- !u!1 &298505179
 GameObject:
   m_ObjectHideFlags: 0
@@ -1144,6 +1144,11 @@ PrefabInstance:
       propertyPath: solution
       value: 
       objectReference: {fileID: 275874969}
+    - target: {fileID: 8571076843237194833, guid: 140d1d2c406167c50819d89f86d9092e,
+        type: 3}
+      propertyPath: _solution
+      value: 
+      objectReference: {fileID: 275874969}
     - target: {fileID: 8571076843525237352, guid: 140d1d2c406167c50819d89f86d9092e,
         type: 3}
       propertyPath: m_Name
@@ -1152,6 +1157,12 @@ PrefabInstance:
     - target: {fileID: 8571076843980202029, guid: 140d1d2c406167c50819d89f86d9092e,
         type: 3}
       propertyPath: contents
+      value: 
+      objectReference: {fileID: 8388806499988947296, guid: 39283c598b419151e84e22759e3d01ed,
+        type: 3}
+    - target: {fileID: 8571076843980202029, guid: 140d1d2c406167c50819d89f86d9092e,
+        type: 3}
+      propertyPath: _contents
       value: 
       objectReference: {fileID: 8388806499988947296, guid: 39283c598b419151e84e22759e3d01ed,
         type: 3}
@@ -1983,8 +1994,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 629162780}
-  visualizeZ: 0
-  circleVertices: 128
+  _visualizeZ: 0
+  _circleVertices: 128
 --- !u!114 &1375628863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1998,7 +2009,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 1334974597}
-  threshold: 0
+  _threshold: 0
 --- !u!1 &1625996802
 GameObject:
   m_ObjectHideFlags: 0
@@ -2106,6 +2117,11 @@ PrefabInstance:
     - target: {fileID: 5913343085919651616, guid: 4418f6a92856c5b51b58a36e3be7ed5c,
         type: 3}
       propertyPath: radius
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5913343085919651616, guid: 4418f6a92856c5b51b58a36e3be7ed5c,
+        type: 3}
+      propertyPath: _radius
       value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -2368,9 +2384,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 1737185255}
-  hipHeightMeter: 0.9
-  scale: {x: 50, y: 50, z: 50}
-  visualizeZ: 1
+  _hipHeightMeter: 0.9
+  _scale: {x: 50, y: 50, z: 50}
+  _visualizeZ: 1
 --- !u!1 &1960727773
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,10 +1,19 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
-namespace Mediapipe.Unity.PoseTracking {
-  public class PoseTrackingGraph : GraphRunner {
-    public enum ModelComplexity {
+namespace Mediapipe.Unity.PoseTracking
+{
+  public class PoseTrackingGraph : GraphRunner
+  {
+    public enum ModelComplexity
+    {
       Lite = 0,
       Full = 1,
       Heavy = 2,
@@ -13,51 +22,56 @@ namespace Mediapipe.Unity.PoseTracking {
     public ModelComplexity modelComplexity = ModelComplexity.Full;
     public bool smoothLandmarks = true;
 
+#pragma warning disable IDE1006  // UnityEvent is PascalCase
     public UnityEvent<Detection> OnPoseDetectionOutput = new UnityEvent<Detection>();
     public UnityEvent<NormalizedLandmarkList> OnPoseLandmarksOutput = new UnityEvent<NormalizedLandmarkList>();
     public UnityEvent<LandmarkList> OnPoseWorldLandmarksOutput = new UnityEvent<LandmarkList>();
     public UnityEvent<NormalizedRect> OnRoiFromLandmarksOutput = new UnityEvent<NormalizedRect>();
+#pragma warning restore IDE1006
 
-    const string inputStreamName = "input_video";
+    private const string _InputStreamName = "input_video";
 
-    const string poseDetectionStreamName = "pose_detection";
-    const string poseLandmarksStreamName = "pose_landmarks";
-    const string poseWorldLandmarksStreamName = "pose_world_landmarks";
-    const string roiFromLandmarksStreamName = "roi_from_landmarks";
+    private const string _PoseDetectionStreamName = "pose_detection";
+    private const string _PoseLandmarksStreamName = "pose_landmarks";
+    private const string _PoseWorldLandmarksStreamName = "pose_world_landmarks";
+    private const string _RoiFromLandmarksStreamName = "roi_from_landmarks";
 
-    OutputStream<DetectionPacket, Detection> poseDetectionStream;
-    OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList> poseLandmarksStream;
-    OutputStream<LandmarkListPacket, LandmarkList> poseWorldLandmarksStream;
-    OutputStream<NormalizedRectPacket, NormalizedRect> roiFromLandmarksStream;
+    private OutputStream<DetectionPacket, Detection> _poseDetectionStream;
+    private OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList> _poseLandmarksStream;
+    private OutputStream<LandmarkListPacket, LandmarkList> _poseWorldLandmarksStream;
+    private OutputStream<NormalizedRectPacket, NormalizedRect> _roiFromLandmarksStream;
 
     protected long prevPoseDetectionMicrosec = 0;
     protected long prevPoseLandmarksMicrosec = 0;
     protected long prevPoseWorldLandmarksMicrosec = 0;
     protected long prevRoiFromLandmarksMicrosec = 0;
 
-    public override Status StartRun(ImageSource imageSource) {
+    public override Status StartRun(ImageSource imageSource)
+    {
       InitializeOutputStreams();
 
-      poseDetectionStream.StartPolling(true).AssertOk();
-      poseLandmarksStream.StartPolling(true).AssertOk();
-      poseWorldLandmarksStream.StartPolling(true).AssertOk();
-      roiFromLandmarksStream.StartPolling(true).AssertOk();
+      _poseDetectionStream.StartPolling(true).AssertOk();
+      _poseLandmarksStream.StartPolling(true).AssertOk();
+      _poseWorldLandmarksStream.StartPolling(true).AssertOk();
+      _roiFromLandmarksStream.StartPolling(true).AssertOk();
 
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
-    public Status StartRunAsync(ImageSource imageSource) {
+    public Status StartRunAsync(ImageSource imageSource)
+    {
       InitializeOutputStreams();
 
-      poseDetectionStream.AddListener(PoseDetectionCallback, true).AssertOk();
-      poseLandmarksStream.AddListener(PoseLandmarksCallback, true).AssertOk();
-      poseWorldLandmarksStream.AddListener(PoseWorldLandmarksCallback, true).AssertOk();
-      roiFromLandmarksStream.AddListener(RoiFromLandmarksCallback, true).AssertOk();
+      _poseDetectionStream.AddListener(PoseDetectionCallback, true).AssertOk();
+      _poseLandmarksStream.AddListener(PoseLandmarksCallback, true).AssertOk();
+      _poseWorldLandmarksStream.AddListener(PoseWorldLandmarksCallback, true).AssertOk();
+      _roiFromLandmarksStream.AddListener(RoiFromLandmarksCallback, true).AssertOk();
 
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
-    public override void Stop() {
+    public override void Stop()
+    {
       base.Stop();
       OnPoseDetectionOutput.RemoveAllListeners();
       OnPoseLandmarksOutput.RemoveAllListeners();
@@ -65,15 +79,17 @@ namespace Mediapipe.Unity.PoseTracking {
       OnRoiFromLandmarksOutput.RemoveAllListeners();
     }
 
-    public Status AddTextureFrameToInputStream(TextureFrame textureFrame) {
-      return AddTextureFrameToInputStream(inputStreamName, textureFrame);
+    public Status AddTextureFrameToInputStream(TextureFrame textureFrame)
+    {
+      return AddTextureFrameToInputStream(_InputStreamName, textureFrame);
     }
 
-    public PoseTrackingValue FetchNextValue() {
-      poseDetectionStream.TryGetNext(out var poseDetection);
-      poseLandmarksStream.TryGetNext(out var poseLandmarks);
-      poseWorldLandmarksStream.TryGetNext(out var poseWorldLandmarks);
-      roiFromLandmarksStream.TryGetNext(out var roiFromLandmarks);
+    public PoseTrackingValue FetchNextValue()
+    {
+      var _ = _poseDetectionStream.TryGetNext(out var poseDetection);
+      _ = _poseLandmarksStream.TryGetNext(out var poseLandmarks);
+      _ = _poseWorldLandmarksStream.TryGetNext(out var poseWorldLandmarks);
+      _ = _roiFromLandmarksStream.TryGetNext(out var roiFromLandmarks);
 
       OnPoseDetectionOutput.Invoke(poseDetection);
       OnPoseLandmarksOutput.Invoke(poseLandmarks);
@@ -84,10 +100,14 @@ namespace Mediapipe.Unity.PoseTracking {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr PoseDetectionCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) => {
-        using (var packet = new DetectionPacket(ptr, false)) {
-          if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevPoseDetectionMicrosec, out var value)) {
+    private static IntPtr PoseDetectionCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) =>
+      {
+        using (var packet = new DetectionPacket(ptr, false))
+        {
+          if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevPoseDetectionMicrosec, out var value))
+          {
             poseTrackingGraph.OnPoseDetectionOutput.Invoke(value);
           }
         }
@@ -95,10 +115,14 @@ namespace Mediapipe.Unity.PoseTracking {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr PoseLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) => {
-        using (var packet = new NormalizedLandmarkListPacket(ptr, false)) {
-          if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevPoseLandmarksMicrosec, out var value)) {
+    private static IntPtr PoseLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) =>
+      {
+        using (var packet = new NormalizedLandmarkListPacket(ptr, false))
+        {
+          if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevPoseLandmarksMicrosec, out var value))
+          {
             poseTrackingGraph.OnPoseLandmarksOutput.Invoke(value);
           }
         }
@@ -106,10 +130,14 @@ namespace Mediapipe.Unity.PoseTracking {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr PoseWorldLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) => {
-        using (var packet = new LandmarkListPacket(ptr, false)) {
-          if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevPoseWorldLandmarksMicrosec, out var value)) {
+    private static IntPtr PoseWorldLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) =>
+      {
+        using (var packet = new LandmarkListPacket(ptr, false))
+        {
+          if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevPoseWorldLandmarksMicrosec, out var value))
+          {
             poseTrackingGraph.OnPoseWorldLandmarksOutput.Invoke(value);
           }
         }
@@ -117,41 +145,49 @@ namespace Mediapipe.Unity.PoseTracking {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr RoiFromLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) => {
-        using (var packet = new NormalizedRectPacket(ptr, false)) {
-          if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevRoiFromLandmarksMicrosec, out var value)) {
+    private static IntPtr RoiFromLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) =>
+      {
+        using (var packet = new NormalizedRectPacket(ptr, false))
+        {
+          if (poseTrackingGraph.TryGetPacketValue(packet, ref poseTrackingGraph.prevRoiFromLandmarksMicrosec, out var value))
+          {
             poseTrackingGraph.OnRoiFromLandmarksOutput.Invoke(value);
           }
         }
       }).mpPtr;
     }
 
-    protected override IList<WaitForResult> RequestDependentAssets() {
+    protected override IList<WaitForResult> RequestDependentAssets()
+    {
       return new List<WaitForResult> {
         WaitForAsset("pose_detection.bytes"),
         WaitForPoseLandmarkModel(),
       };
     }
 
-    protected void InitializeOutputStreams() {
-      poseDetectionStream = new OutputStream<DetectionPacket, Detection>(calculatorGraph, poseDetectionStreamName);
-      poseLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, poseLandmarksStreamName);
-      poseWorldLandmarksStream = new OutputStream<LandmarkListPacket, LandmarkList>(calculatorGraph, poseWorldLandmarksStreamName);
-      roiFromLandmarksStream = new OutputStream<NormalizedRectPacket, NormalizedRect>(calculatorGraph, roiFromLandmarksStreamName);
+    protected void InitializeOutputStreams()
+    {
+      _poseDetectionStream = new OutputStream<DetectionPacket, Detection>(calculatorGraph, _PoseDetectionStreamName);
+      _poseLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _PoseLandmarksStreamName);
+      _poseWorldLandmarksStream = new OutputStream<LandmarkListPacket, LandmarkList>(calculatorGraph, _PoseWorldLandmarksStreamName);
+      _roiFromLandmarksStream = new OutputStream<NormalizedRectPacket, NormalizedRect>(calculatorGraph, _RoiFromLandmarksStreamName);
     }
 
-    WaitForResult WaitForPoseLandmarkModel() {
-      if (modelComplexity == ModelComplexity.Lite) {
-        return WaitForAsset("pose_landmark_lite.bytes");
-      } else if (modelComplexity == ModelComplexity.Full) {
-        return WaitForAsset("pose_landmark_full.bytes");
-      } else {
-        return WaitForAsset("pose_landmark_heavy.bytes");
+    private WaitForResult WaitForPoseLandmarkModel()
+    {
+      switch (modelComplexity)
+      {
+        case ModelComplexity.Lite: return WaitForAsset("pose_landmark_lite.bytes");
+        case ModelComplexity.Full: return WaitForAsset("pose_landmark_full.bytes");
+        case ModelComplexity.Heavy: return WaitForAsset("pose_landmark_heavy.bytes");
+        default: throw new InternalException($"Invalid model complexity: {modelComplexity}");
       }
     }
 
-    SidePacket BuildSidePacket(ImageSource imageSource) {
+    private SidePacket BuildSidePacket(ImageSource imageSource)
+    {
       var sidePacket = new SidePacket();
 
       SetImageTransformationOptions(sidePacket, imageSource);

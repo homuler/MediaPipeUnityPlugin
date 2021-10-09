@@ -273,10 +273,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 1452360049}
-  maskWidth: 512
-  maskHeight: 512
-  minAlpha: 0.9
-  maxAlpha: 0.8
+  _maskWidth: 512
+  _maskHeight: 512
+  _minAlpha: 0.9
+  _maxAlpha: 1
 --- !u!114 &107400413 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3259285889726014649, guid: 5713b959e3c77a58fb258133fc8e4aef,
@@ -386,9 +386,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cace60af8c92bc9c5a807c9ceb8d8dba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cpuConfig: {fileID: 4900000, guid: 4892e45df3f04dbff88dba3aac65aebe, type: 3}
-  gpuConfig: {fileID: 4900000, guid: e6797b0a13853e9bc932f11e7fcc9036, type: 3}
-  openGlEsConfig: {fileID: 4900000, guid: f1b291f7d16d89cd19d0384c2cf00c9e, type: 3}
+  _cpuConfig: {fileID: 4900000, guid: 4892e45df3f04dbff88dba3aac65aebe, type: 3}
+  _gpuConfig: {fileID: 4900000, guid: e6797b0a13853e9bc932f11e7fcc9036, type: 3}
+  _openGlEsConfig: {fileID: 4900000, guid: f1b291f7d16d89cd19d0384c2cf00c9e, type: 3}
   _timeoutMicrosec: 50000
   OnHairMaskOutput:
     m_PersistentCalls:
@@ -419,10 +419,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66bf0cd8d727b10e1a965a4c97487d05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screen: {fileID: 107400413}
-  hairMaskAnnotationController: {fileID: 107400412}
-  graphRunner: {fileID: 1064799460}
-  textureFramePool: {fileID: 1064799463}
+  _screen: {fileID: 107400413}
+  _hairMaskAnnotationController: {fileID: 107400412}
+  _graphRunner: {fileID: 1064799460}
+  _textureFramePool: {fileID: 1064799463}
   runningMode: 0
 --- !u!114 &1064799463
 MonoBehaviour:
@@ -436,7 +436,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5da564da19cb6b7d8e4f97f269edc5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poolSize: 10
+  _poolSize: 10
 --- !u!1001 &1452360048
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -507,6 +507,11 @@ PrefabInstance:
     - target: {fileID: 5850198979010014858, guid: 24d349d9c78db0f3d94d4657029f4c5e,
         type: 3}
       propertyPath: screen
+      value: 
+      objectReference: {fileID: 1625703806}
+    - target: {fileID: 5850198979010014858, guid: 24d349d9c78db0f3d94d4657029f4c5e,
+        type: 3}
+      propertyPath: _screen
       value: 
       objectReference: {fileID: 1625703806}
     m_RemovedComponents: []
@@ -983,6 +988,11 @@ PrefabInstance:
       propertyPath: solution
       value: 
       objectReference: {fileID: 1064799462}
+    - target: {fileID: 8571076843237194833, guid: 140d1d2c406167c50819d89f86d9092e,
+        type: 3}
+      propertyPath: _solution
+      value: 
+      objectReference: {fileID: 1064799462}
     - target: {fileID: 8571076843237194836, guid: 140d1d2c406167c50819d89f86d9092e,
         type: 3}
       propertyPath: m_RootOrder
@@ -1001,6 +1011,12 @@ PrefabInstance:
     - target: {fileID: 8571076843980202029, guid: 140d1d2c406167c50819d89f86d9092e,
         type: 3}
       propertyPath: contents
+      value: 
+      objectReference: {fileID: 827070858861903548, guid: 8dd74b081fc6f3f61a3fea1e2c672348,
+        type: 3}
+    - target: {fileID: 8571076843980202029, guid: 140d1d2c406167c50819d89f86d9092e,
+        type: 3}
+      propertyPath: _contents
       value: 
       objectReference: {fileID: 827070858861903548, guid: 8dd74b081fc6f3f61a3fea1e2c672348,
         type: 3}

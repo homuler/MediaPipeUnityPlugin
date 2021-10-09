@@ -1,126 +1,150 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
 
-namespace Mediapipe.Unity.UI {
-  public class ImageSourceConfig : ModalContents {
-    const string _SourceTypePath = "Scroll View/Viewport/Contents/SourceType/Dropdown";
-    const string _SourcePath = "Scroll View/Viewport/Contents/Source/Dropdown";
-    const string _ResolutionPath = "Scroll View/Viewport/Contents/Resolution/Dropdown";
-    const string _IsHorizontallyFlippedPath = "Scroll View/Viewport/Contents/IsHorizontallyFlipped/Toggle";
+namespace Mediapipe.Unity.UI
+{
+  public class ImageSourceConfig : ModalContents
+  {
+    private const string _SourceTypePath = "Scroll View/Viewport/Contents/SourceType/Dropdown";
+    private const string _SourcePath = "Scroll View/Viewport/Contents/Source/Dropdown";
+    private const string _ResolutionPath = "Scroll View/Viewport/Contents/Resolution/Dropdown";
+    private const string _IsHorizontallyFlippedPath = "Scroll View/Viewport/Contents/IsHorizontallyFlipped/Toggle";
 
-    Dropdown SourceTypeInput;
-    Dropdown SourceInput;
-    Dropdown ResolutionInput;
-    Toggle IsHorizontallyFlippedInput;
+    private Dropdown _sourceTypeInput;
+    private Dropdown _sourceInput;
+    private Dropdown _resolutionInput;
+    private Toggle _isHorizontallyFlippedInput;
 
-    bool isChanged;
+    private bool _isChanged;
 
-    void Start() {
+    private void Start()
+    {
       InitializeContents();
     }
 
-    public override void Exit() {
-      GetModal().CloseAndResume(isChanged);
+    public override void Exit()
+    {
+      GetModal().CloseAndResume(_isChanged);
     }
 
-    void InitializeContents() {
+    private void InitializeContents()
+    {
       InitializeSourceType();
       InitializeSource();
       InitializeResolution();
       InitializeIsHorizontallyFlipped();
     }
 
-    void InitializeSourceType() {
-      SourceTypeInput = gameObject.transform.Find(_SourceTypePath).gameObject.GetComponent<Dropdown>();
-      SourceTypeInput.ClearOptions();
-      SourceTypeInput.onValueChanged.RemoveAllListeners();
+    private void InitializeSourceType()
+    {
+      _sourceTypeInput = gameObject.transform.Find(_SourceTypePath).gameObject.GetComponent<Dropdown>();
+      _sourceTypeInput.ClearOptions();
+      _sourceTypeInput.onValueChanged.RemoveAllListeners();
 
       var options = new List<string>(Enum.GetNames(typeof(ImageSource.SourceType)));
-      SourceTypeInput.AddOptions(options);
+      _sourceTypeInput.AddOptions(options);
 
-      var currentSourceType = ImageSourceProvider.imageSource.type;
+      var currentSourceType = ImageSourceProvider.ImageSource.type;
       var defaultValue = options.FindIndex(option => option == currentSourceType.ToString());
 
-      if (defaultValue >= 0) {
-        SourceTypeInput.value = defaultValue;
+      if (defaultValue >= 0)
+      {
+        _sourceTypeInput.value = defaultValue;
       }
 
-      SourceTypeInput.onValueChanged.AddListener(delegate {
-        ImageSourceProvider.SwitchSource((ImageSource.SourceType)SourceTypeInput.value);
-        isChanged = true;
+      _sourceTypeInput.onValueChanged.AddListener(delegate
+      {
+        ImageSourceProvider.SwitchSource((ImageSource.SourceType)_sourceTypeInput.value);
+        _isChanged = true;
         InitializeContents();
       });
     }
 
-    void InitializeSource() {
-      SourceInput = gameObject.transform.Find(_SourcePath).gameObject.GetComponent<Dropdown>();
-      SourceInput.ClearOptions();
-      SourceInput.onValueChanged.RemoveAllListeners();
+    private void InitializeSource()
+    {
+      _sourceInput = gameObject.transform.Find(_SourcePath).gameObject.GetComponent<Dropdown>();
+      _sourceInput.ClearOptions();
+      _sourceInput.onValueChanged.RemoveAllListeners();
 
-      var imageSource = ImageSourceProvider.imageSource;
+      var imageSource = ImageSourceProvider.ImageSource;
       var sourceNames = imageSource.sourceCandidateNames;
 
-      if (sourceNames == null) {
-        SourceInput.enabled = false;
+      if (sourceNames == null)
+      {
+        _sourceInput.enabled = false;
         return;
       }
 
       var options = new List<string>(sourceNames);
-      SourceInput.AddOptions(options);
+      _sourceInput.AddOptions(options);
 
       var currentSourceName = imageSource.sourceName;
       var defaultValue = options.FindIndex(option => option == currentSourceName);
 
-      if (defaultValue >= 0) {
-        SourceInput.value = defaultValue;
+      if (defaultValue >= 0)
+      {
+        _sourceInput.value = defaultValue;
       }
 
-      SourceInput.onValueChanged.AddListener(delegate {
-        imageSource.SelectSource(SourceInput.value);
-        isChanged = true;
+      _sourceInput.onValueChanged.AddListener(delegate
+      {
+        imageSource.SelectSource(_sourceInput.value);
+        _isChanged = true;
         InitializeResolution();
       });
     }
 
-    void InitializeResolution() {
-      ResolutionInput = gameObject.transform.Find(_ResolutionPath).gameObject.GetComponent<Dropdown>();
-      ResolutionInput.ClearOptions();
-      ResolutionInput.onValueChanged.RemoveAllListeners();
+    private void InitializeResolution()
+    {
+      _resolutionInput = gameObject.transform.Find(_ResolutionPath).gameObject.GetComponent<Dropdown>();
+      _resolutionInput.ClearOptions();
+      _resolutionInput.onValueChanged.RemoveAllListeners();
 
-      var imageSource = ImageSourceProvider.imageSource;
+      var imageSource = ImageSourceProvider.ImageSource;
       var resolutions = imageSource.availableResolutions;
 
-      if (resolutions == null) {
-        ResolutionInput.enabled = false;
+      if (resolutions == null)
+      {
+        _resolutionInput.enabled = false;
         return;
       }
 
       var options = resolutions.Select(resolution => resolution.ToString()).ToList();
-      ResolutionInput.AddOptions(options);
+      _resolutionInput.AddOptions(options);
 
-      var currentResolutionStr = imageSource.resolution.ToString(); 
+      var currentResolutionStr = imageSource.resolution.ToString();
       var defaultValue = options.FindIndex(option => option == currentResolutionStr);
 
-      if (defaultValue >= 0) {
-        ResolutionInput.value = defaultValue;
+      if (defaultValue >= 0)
+      {
+        _resolutionInput.value = defaultValue;
       }
 
-      ResolutionInput.onValueChanged.AddListener(delegate {
-        imageSource.SelectResolution(ResolutionInput.value);
-        isChanged = true;
+      _resolutionInput.onValueChanged.AddListener(delegate
+      {
+        imageSource.SelectResolution(_resolutionInput.value);
+        _isChanged = true;
       });
     }
 
-    void InitializeIsHorizontallyFlipped() {
-      IsHorizontallyFlippedInput = gameObject.transform.Find(_IsHorizontallyFlippedPath).gameObject.GetComponent<Toggle>();
+    private void InitializeIsHorizontallyFlipped()
+    {
+      _isHorizontallyFlippedInput = gameObject.transform.Find(_IsHorizontallyFlippedPath).gameObject.GetComponent<Toggle>();
 
-      var imageSource = ImageSourceProvider.imageSource;
-      IsHorizontallyFlippedInput.isOn = imageSource.isHorizontallyFlipped;
-      IsHorizontallyFlippedInput.onValueChanged.AddListener(delegate {
-        imageSource.isHorizontallyFlipped = IsHorizontallyFlippedInput.isOn;
-        isChanged = true;
+      var imageSource = ImageSourceProvider.ImageSource;
+      _isHorizontallyFlippedInput.isOn = imageSource.isHorizontallyFlipped;
+      _isHorizontallyFlippedInput.onValueChanged.AddListener(delegate
+      {
+        imageSource.isHorizontallyFlipped = _isHorizontallyFlippedInput.isOn;
+        _isChanged = true;
       });
     }
   }

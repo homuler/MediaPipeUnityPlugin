@@ -1,11 +1,18 @@
-#ifndef C_MEDIAPIPE_API_EXTERNAL_PROTOBUF_H_
-#define C_MEDIAPIPE_API_EXTERNAL_PROTOBUF_H_
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
 
-#include <vector>
-#include <sstream>
+#ifndef MEDIAPIPE_API_EXTERNAL_PROTOBUF_H_
+#define MEDIAPIPE_API_EXTERNAL_PROTOBUF_H_
+
 #include <iomanip>
-#include "mediapipe_api/common.h"
+#include <sstream>
+#include <vector>
+
 #include "mediapipe/framework/port/parse_text_proto.h"
+#include "mediapipe_api/common.h"
 
 namespace mp_api {
 
@@ -16,7 +23,7 @@ typedef struct SerializedProto {
 
 }  // namespace mp_api
 
-template<class T>
+template <class T>
 inline void SerializeProto(const T& proto, mp_api::SerializedProto* serialized_proto) {
   auto str = proto.SerializeAsString();
   auto size = str.size();
@@ -27,7 +34,7 @@ inline void SerializeProto(const T& proto, mp_api::SerializedProto* serialized_p
   serialized_proto->length = static_cast<int>(size);
 }
 
-template<class T>
+template <class T>
 inline void SerializeProtoVector(const std::vector<T>& proto_vec, mp_api::StructArray<mp_api::SerializedProto>* serialized_proto_vector) {
   auto vec_size = proto_vec.size();
   auto data = new mp_api::SerializedProto[vec_size];
@@ -39,7 +46,7 @@ inline void SerializeProtoVector(const std::vector<T>& proto_vec, mp_api::Struct
   serialized_proto_vector->size = static_cast<int>(vec_size);
 }
 
-template<class T>
+template <class T>
 inline bool ConvertFromTextFormat(const char* str, mp_api::SerializedProto* output) {
   T proto;
   auto result = google::protobuf::TextFormat::ParseFromString(str, &proto);
@@ -60,4 +67,4 @@ MP_CAPI(void) mp_api_SerializedProtoArray__delete(mp_api::SerializedProto* seria
 
 }  // extern "C"
 
-#endif  // C_MEDIAPIPE_API_EXTERNAL_PROTOBUF_H_
+#endif  // MEDIAPIPE_API_EXTERNAL_PROTOBUF_H_

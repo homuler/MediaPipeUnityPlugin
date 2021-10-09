@@ -1,67 +1,84 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Mediapipe.Unity.UI;
 
-namespace Mediapipe.Unity.HelloWorld.UI {
-  public class HelloWorldConfig : ModalContents {
-    const string _LoopPath = "Scroll View/Viewport/Contents/Loop/InputField";
-    const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
+namespace Mediapipe.Unity.HelloWorld.UI
+{
+  public class HelloWorldConfig : ModalContents
+  {
+    private const string _LoopPath = "Scroll View/Viewport/Contents/Loop/InputField";
+    private const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
 
-    HelloWorldSolution solution;
-    InputField LoopInput;
-    Dropdown RunningModeInput;
+    private HelloWorldSolution _solution;
+    private InputField _loopInput;
+    private Dropdown _runningModeInput;
 
-    bool isChanged;
+    private bool _isChanged;
 
-    void Start() {
-      solution = GameObject.Find("Solution").GetComponent<HelloWorldSolution>();
+    private void Start()
+    {
+      _solution = GameObject.Find("Solution").GetComponent<HelloWorldSolution>();
       InitializeContents();
     }
 
-    public override void Exit() {
-      GetModal().CloseAndResume(isChanged);
+    public override void Exit()
+    {
+      GetModal().CloseAndResume(_isChanged);
     }
 
-    public void UpdateLoop() {
-      if (int.TryParse(LoopInput.text, out var value)) {
-        solution.loop = Mathf.Max(0, value);
-        isChanged = true;
+    public void UpdateLoop()
+    {
+      if (int.TryParse(_loopInput.text, out var value))
+      {
+        _solution.loop = Mathf.Max(0, value);
+        _isChanged = true;
       }
     }
 
-    public void SwitchRunningMode() {
-      solution.runningMode = (RunningMode)RunningModeInput.value;
-      isChanged = true;
+    public void SwitchRunningMode()
+    {
+      _solution.runningMode = (RunningMode)_runningModeInput.value;
+      _isChanged = true;
     }
 
-    void InitializeContents() {
+    private void InitializeContents()
+    {
       InitializeLoop();
       InitializeRunningMode();
     }
 
-    void InitializeLoop() {
-      LoopInput = gameObject.transform.Find(_LoopPath).gameObject.GetComponent<InputField>();
-      LoopInput.text = solution.loop.ToString();
-      LoopInput.onValueChanged.AddListener(delegate { UpdateLoop(); });
+    private void InitializeLoop()
+    {
+      _loopInput = gameObject.transform.Find(_LoopPath).gameObject.GetComponent<InputField>();
+      _loopInput.text = _solution.loop.ToString();
+      _loopInput.onValueChanged.AddListener(delegate { UpdateLoop(); });
     }
 
-    void InitializeRunningMode() {
-      RunningModeInput = gameObject.transform.Find(_RunningModePath).gameObject.GetComponent<Dropdown>();
-      RunningModeInput.ClearOptions();
+    private void InitializeRunningMode()
+    {
+      _runningModeInput = gameObject.transform.Find(_RunningModePath).gameObject.GetComponent<Dropdown>();
+      _runningModeInput.ClearOptions();
 
       var options = new List<string>(Enum.GetNames(typeof(RunningMode)));
-      RunningModeInput.AddOptions(options);
+      _runningModeInput.AddOptions(options);
 
-      var currentRunningMode = solution.runningMode;
+      var currentRunningMode = _solution.runningMode;
       var defaultValue = options.FindIndex(option => option == currentRunningMode.ToString());
 
-      if (defaultValue >= 0) {
-        RunningModeInput.value = defaultValue;
+      if (defaultValue >= 0)
+      {
+        _runningModeInput.value = defaultValue;
       }
 
-      RunningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
+      _runningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
     }
   }
 }

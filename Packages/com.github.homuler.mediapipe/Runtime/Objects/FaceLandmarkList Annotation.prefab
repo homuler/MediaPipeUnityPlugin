@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7273100862690186830}
-  - component: {fileID: 7273100862690186865}
+  - component: {fileID: 6062652630926106765}
   m_Layer: 0
   m_Name: FaceLandmarkList Annotation
   m_TagString: Untagged
@@ -33,7 +33,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7273100862690186865
+--- !u!114 &6062652630926106765
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -45,12 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1275dad009e98d9f490bd65e83f7eba5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  landmarkList: {fileID: 2452028741229710435}
-  connectionList: {fileID: 1007056309493662030}
-  landmarkColor: {r: 0, g: 1, b: 0, a: 1}
-  landmarkRadius: 10
-  connectionColor: {r: 1, g: 0, b: 0, a: 1}
-  connectionWidth: 1
+  _landmarkListAnnotation: {fileID: 2452028741229710435}
+  _connectionListAnnotation: {fileID: 8266140556773805629}
 --- !u!1001 &549622122825475045
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -126,9 +122,9 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 549622122825475045}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1007056309493662030 stripped
+--- !u!114 &8266140556773805629 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 745748194542674603, guid: c97d04632e9be1a7cb05f6ab855b365b,
+  m_CorrespondingSourceObject: {fileID: 8437385474393681368, guid: c97d04632e9be1a7cb05f6ab855b365b,
     type: 3}
   m_PrefabInstance: {fileID: 549622122825475045}
   m_PrefabAsset: {fileID: 0}
@@ -204,6 +200,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9215842904284589815, guid: e260d2f5fb90a790385fcb2d815b23a6,
+        type: 3}
+      propertyPath: _radius
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e260d2f5fb90a790385fcb2d815b23a6, type: 3}

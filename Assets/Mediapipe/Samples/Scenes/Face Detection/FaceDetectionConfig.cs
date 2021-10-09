@@ -1,92 +1,112 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Mediapipe.Unity.UI;
 
-namespace Mediapipe.Unity.FaceDetection.UI {
-  public class FaceDetectionConfig : ModalContents {
-    const string _ModelSelectionPath = "Scroll View/Viewport/Contents/Model Selection/Dropdown";
-    const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
-    const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
+namespace Mediapipe.Unity.FaceDetection.UI
+{
+  public class FaceDetectionConfig : ModalContents
+  {
+    private const string _ModelSelectionPath = "Scroll View/Viewport/Contents/Model Selection/Dropdown";
+    private const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
+    private const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
 
-    FaceDetectionSolution solution;
-    Dropdown ModelSelectionInput;
-    Dropdown RunningModeInput;
-    InputField TimeoutMillisecInput;
+    private FaceDetectionSolution _solution;
+    private Dropdown _modelSelectionInput;
+    private Dropdown _runningModeInput;
+    private InputField _timeoutMillisecInput;
 
-    bool isChanged;
+    private bool _isChanged;
 
-    void Start() {
-      solution = GameObject.Find("Solution").GetComponent<FaceDetectionSolution>();
+    private void Start()
+    {
+      _solution = GameObject.Find("Solution").GetComponent<FaceDetectionSolution>();
       InitializeContents();
     }
 
-    public override void Exit() {
-      GetModal().CloseAndResume(isChanged);
+    public override void Exit()
+    {
+      GetModal().CloseAndResume(_isChanged);
     }
 
-    public void SwitchModelType() {
-      solution.modelType = (FaceDetectionGraph.ModelType)ModelSelectionInput.value;
-      isChanged = true;
+    public void SwitchModelType()
+    {
+      _solution.modelType = (FaceDetectionGraph.ModelType)_modelSelectionInput.value;
+      _isChanged = true;
     }
 
-    public void SwitchRunningMode() {
-      solution.runningMode = (RunningMode)RunningModeInput.value;
-      isChanged = true;
+    public void SwitchRunningMode()
+    {
+      _solution.runningMode = (RunningMode)_runningModeInput.value;
+      _isChanged = true;
     }
 
-    public void SetTimeoutMillisec() {
-      if (int.TryParse(TimeoutMillisecInput.text, out var value)) {
-        solution.timeoutMillisec = value;
-        isChanged = true;
+    public void SetTimeoutMillisec()
+    {
+      if (int.TryParse(_timeoutMillisecInput.text, out var value))
+      {
+        _solution.timeoutMillisec = value;
+        _isChanged = true;
       }
     }
 
-    void InitializeContents() {
+    private void InitializeContents()
+    {
       InitializeModelSelection();
       InitializeRunningMode();
       InitializeTimeoutMillisec();
     }
 
-    void InitializeModelSelection() {
-      ModelSelectionInput = gameObject.transform.Find(_ModelSelectionPath).gameObject.GetComponent<Dropdown>();
-      ModelSelectionInput.ClearOptions();
+    private void InitializeModelSelection()
+    {
+      _modelSelectionInput = gameObject.transform.Find(_ModelSelectionPath).gameObject.GetComponent<Dropdown>();
+      _modelSelectionInput.ClearOptions();
 
       var options = new List<string>(Enum.GetNames(typeof(FaceDetectionGraph.ModelType)));
-      ModelSelectionInput.AddOptions(options);
+      _modelSelectionInput.AddOptions(options);
 
-      var currentModelType = solution.modelType;
+      var currentModelType = _solution.modelType;
       var defaultValue = options.FindIndex(option => option == currentModelType.ToString());
 
-      if (defaultValue >= 0) {
-        ModelSelectionInput.value = defaultValue;
+      if (defaultValue >= 0)
+      {
+        _modelSelectionInput.value = defaultValue;
       }
 
-      ModelSelectionInput.onValueChanged.AddListener(delegate { SwitchModelType(); });
+      _modelSelectionInput.onValueChanged.AddListener(delegate { SwitchModelType(); });
     }
 
-    void InitializeRunningMode() {
-      RunningModeInput = gameObject.transform.Find(_RunningModePath).gameObject.GetComponent<Dropdown>();
-      RunningModeInput.ClearOptions();
+    private void InitializeRunningMode()
+    {
+      _runningModeInput = gameObject.transform.Find(_RunningModePath).gameObject.GetComponent<Dropdown>();
+      _runningModeInput.ClearOptions();
 
       var options = new List<string>(Enum.GetNames(typeof(RunningMode)));
-      RunningModeInput.AddOptions(options);
+      _runningModeInput.AddOptions(options);
 
-      var currentRunningMode = solution.runningMode;
+      var currentRunningMode = _solution.runningMode;
       var defaultValue = options.FindIndex(option => option == currentRunningMode.ToString());
 
-      if (defaultValue >= 0) {
-        RunningModeInput.value = defaultValue;
+      if (defaultValue >= 0)
+      {
+        _runningModeInput.value = defaultValue;
       }
 
-      RunningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
+      _runningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
     }
 
-    void InitializeTimeoutMillisec() {
-      TimeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
-      TimeoutMillisecInput.text = solution.timeoutMillisec.ToString();
-      TimeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });
+    private void InitializeTimeoutMillisec()
+    {
+      _timeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
+      _timeoutMillisecInput.text = _solution.timeoutMillisec.ToString();
+      _timeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });
     }
   }
 }

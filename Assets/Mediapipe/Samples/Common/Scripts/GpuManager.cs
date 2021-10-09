@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections;
 using UnityEngine;
@@ -6,67 +12,82 @@ using UnityEngine;
 using System.Runtime.InteropServices;
 #endif
 
-namespace Mediapipe.Unity {
-  public static class GpuManager {
-    static readonly string TAG = typeof(GpuManager).Name;
+namespace Mediapipe.Unity
+{
+  public static class GpuManager
+  {
+    private const string _TAG = nameof(GpuManager);
 
-    delegate void PluginCallback(int eventId);
+    private delegate void PluginCallback(int eventId);
 
-    static readonly object setupLock = new object();
-    static IntPtr currentContext = IntPtr.Zero;
-    static bool isContextInitialized = false;
+    private static readonly object _SetupLock = new object();
+#pragma warning disable IDE0044
+    private static IntPtr _CurrentContext = IntPtr.Zero;
+#pragma warning restore IDE0044
+    private static bool _IsContextInitialized = false;
 
-    public static GpuResources gpuResources { get; private set; }
-    public static GlCalculatorHelper glCalculatorHelper { get; private set; }
+    public static GpuResources GpuResources { get; private set; }
+    public static GlCalculatorHelper GlCalculatorHelper { get; private set; }
 
-    public static bool isInitialized { get; private set; }
+    public static bool IsInitialized { get; private set; }
 
-    public static IEnumerator Initialize() {
-      lock(setupLock) {
-        if (isInitialized) {
-          Logger.LogWarning(TAG, "Already set up");
+    public static IEnumerator Initialize()
+    {
+      lock (_SetupLock)
+      {
+        if (IsInitialized)
+        {
+          Logger.LogWarning(_TAG, "Already set up");
           yield break;
         }
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-        isContextInitialized = false;
+        _IsContextInitialized = false;
         PluginCallback callback = GetCurrentContext;
 
         var fp = Marshal.GetFunctionPointerForDelegate(callback);
         GL.IssuePluginEvent(fp, 1);
 #else
-        isContextInitialized = true;
+        _IsContextInitialized = true;
 #endif
 
         var count = 1000;
-        yield return new WaitUntil(() => {
-          return --count < 0 || isContextInitialized;
+        yield return new WaitUntil(() =>
+        {
+          return --count < 0 || _IsContextInitialized;
         });
 
-        if (!isContextInitialized) {
+        if (!_IsContextInitialized)
+        {
           throw new TimeoutException("Failed to get GlContext");
         }
 
 #if UNITY_ANDROID
-        if (currentContext == IntPtr.Zero) {
-          Logger.LogWarning(TAG, "EGL context is not found, so MediaPipe won't share their EGL contexts with Unity");
-        } else {
-          Logger.LogVerbose(TAG, $"EGL context is found: {currentContext}");
+        if (_CurrentContext == IntPtr.Zero)
+        {
+          Logger.LogWarning(_TAG, "EGL context is not found, so MediaPipe won't share their EGL contexts with Unity");
+        }
+        else
+        {
+          Logger.LogVerbose(_TAG, $"EGL context is found: {_CurrentContext}");
         }
 #endif
 
-        try {
-          Logger.LogInfo(TAG, "Initializing GpuResources...");
-          gpuResources = GpuResources.Create(currentContext).Value();
+        try
+        {
+          Logger.LogInfo(_TAG, "Initializing GpuResources...");
+          GpuResources = GpuResources.Create(_CurrentContext).Value();
 
-          Logger.LogInfo(TAG, "Initializing GlCalculatorHelper...");
-          glCalculatorHelper = new GlCalculatorHelper();
-          glCalculatorHelper.InitializeForTest(gpuResources);
+          Logger.LogInfo(_TAG, "Initializing GlCalculatorHelper...");
+          GlCalculatorHelper = new GlCalculatorHelper();
+          GlCalculatorHelper.InitializeForTest(GpuResources);
 
-          isInitialized = true;
-        } catch (Exception e) {
+          IsInitialized = true;
+        }
+        catch (Exception e)
+        {
           Logger.LogException(e);
-          Logger.LogError(TAG, "Failed to create GpuResources. If your native library is built for CPU, change 'Preferable Inference Mode' to CPU from the Inspector Window for Bootstrap");
+          Logger.LogError(_TAG, "Failed to create GpuResources. If your native library is built for CPU, change 'Preferable Inference Mode' to CPU from the Inspector Window for Bootstrap");
         }
       }
     }
@@ -78,24 +99,27 @@ namespace Mediapipe.Unity {
     ///   This has to be called once GPU resources are used by CalculatorGraph.
     ///   Otherwise, UnityEditor will freeze.
     /// </remarks>
-    public static void Shutdown() {
-      if (gpuResources != null) {
-        gpuResources.Dispose();
-        gpuResources = null;
+    public static void Shutdown()
+    {
+      if (GpuResources != null)
+      {
+        GpuResources.Dispose();
+        GpuResources = null;
       }
 
-      if (glCalculatorHelper != null) {
-        glCalculatorHelper.Dispose();
-        glCalculatorHelper = null;
+      if (GlCalculatorHelper != null)
+      {
+        GlCalculatorHelper.Dispose();
+        GlCalculatorHelper = null;
       }
     }
 
-// Currently, it works only on Android
+    // Currently, it works only on Android
 #if UNITY_ANDROID && !UNITY_EDITOR
     [AOT.MonoPInvokeCallback(typeof(PluginCallback))]
     static void GetCurrentContext(int eventId) {
-      currentContext = Egl.getCurrentContext();
-      isContextInitialized = true;
+      _CurrentContext = Egl.GetCurrentContext();
+      _IsContextInitialized = true;
     }
 #endif
   }

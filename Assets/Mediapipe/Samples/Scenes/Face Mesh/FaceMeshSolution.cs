@@ -1,131 +1,157 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mediapipe.Unity.FaceMesh {
-  public class FaceMeshSolution : Solution {
-    [SerializeField] RawImage screen;
-    [SerializeField] DetectionListAnnotationController faceDetectionsAnnotationController;
-    [SerializeField] MultiFaceLandmarkListAnnotationController multiFaceLandmarksAnnotationController;
-    [SerializeField] NormalizedRectListAnnotationController faceRectsFromLandmarksAnnotationController;
-    [SerializeField] FaceMeshGraph graphRunner;
-    [SerializeField] TextureFramePool textureFramePool;
+namespace Mediapipe.Unity.FaceMesh
+{
+  public class FaceMeshSolution : Solution
+  {
+    [SerializeField] private RawImage _screen;
+    [SerializeField] private DetectionListAnnotationController _faceDetectionsAnnotationController;
+    [SerializeField] private MultiFaceLandmarkListAnnotationController _multiFaceLandmarksAnnotationController;
+    [SerializeField] private NormalizedRectListAnnotationController _faceRectsFromLandmarksAnnotationController;
+    [SerializeField] private FaceMeshGraph _graphRunner;
+    [SerializeField] private TextureFramePool _textureFramePool;
 
-    Coroutine coroutine;
+    private Coroutine _coroutine;
 
     public RunningMode runningMode;
 
-    public int maxNumFaces {
-      get { return graphRunner.maxNumFaces; }
-      set { graphRunner.maxNumFaces = value; }
+    public int maxNumFaces
+    {
+      get => _graphRunner.maxNumFaces;
+      set => _graphRunner.maxNumFaces = value;
     }
 
-    public long timeoutMillisec {
-      get { return graphRunner.timeoutMillisec; }
-      set { graphRunner.SetTimeoutMillisec(value); }
+    public long timeoutMillisec
+    {
+      get => _graphRunner.timeoutMillisec;
+      set => _graphRunner.SetTimeoutMillisec(value);
     }
 
-    public override void Play() {
-      if (coroutine != null) {
+    public override void Play()
+    {
+      if (_coroutine != null)
+      {
         Stop();
       }
       base.Play();
-      coroutine = StartCoroutine(Run());
+      _coroutine = StartCoroutine(Run());
     }
 
-    public override void Pause() {
+    public override void Pause()
+    {
       base.Pause();
-      ImageSourceProvider.imageSource.Pause();
+      ImageSourceProvider.ImageSource.Pause();
     }
 
-    public override void Resume() {
+    public override void Resume()
+    {
       base.Resume();
-      StartCoroutine(ImageSourceProvider.imageSource.Resume());
+      var _ = StartCoroutine(ImageSourceProvider.ImageSource.Resume());
     }
 
-    public override void Stop() {
+    public override void Stop()
+    {
       base.Stop();
-      StopCoroutine(coroutine);
-      ImageSourceProvider.imageSource.Stop();
-      graphRunner.Stop();
+      StopCoroutine(_coroutine);
+      ImageSourceProvider.ImageSource.Stop();
+      _graphRunner.Stop();
     }
 
-    IEnumerator Run() {
-      var graphInitRequest = graphRunner.WaitForInit();
-      var imageSource = ImageSourceProvider.imageSource;
+    private IEnumerator Run()
+    {
+      var graphInitRequest = _graphRunner.WaitForInit();
+      var imageSource = ImageSourceProvider.ImageSource;
 
       yield return imageSource.Play();
 
-      if (!imageSource.isPrepared) {
+      if (!imageSource.isPrepared)
+      {
         Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
         yield break;
       }
-      // NOTE: The screen will be resized later, keeping the aspect ratio.
-      SetupScreen(screen, imageSource);
-      screen.texture = imageSource.GetCurrentTexture();
+      // NOTE: The _screen will be resized later, keeping the aspect ratio.
+      SetupScreen(_screen, imageSource);
+      _screen.texture = imageSource.GetCurrentTexture();
 
       Logger.LogInfo(TAG, $"Max Num Faces = {maxNumFaces}");
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
       // Wait for completion of loading of dependent files, etc.
       yield return graphInitRequest;
-      if (graphInitRequest.isError) {
+      if (graphInitRequest.isError)
+      {
         Logger.LogError(TAG, graphInitRequest.error);
         yield break;
       }
 
-      if (runningMode == RunningMode.Async) {
-        graphRunner.OnFaceDetectionsOutput.AddListener(OnFaceDetectionsOutput);
-        graphRunner.OnMultiFaceLandmarksOutput.AddListener(OnMultiFaceLandmarksOutput);
-        graphRunner.OnFaceRectsFromLandmarksOutput.AddListener(OnFaceRectsFromLandmarksOutput);
-        graphRunner.StartRunAsync(imageSource).AssertOk();
-      } else {
-        graphRunner.StartRun(imageSource).AssertOk();
+      if (runningMode == RunningMode.Async)
+      {
+        _graphRunner.OnFaceDetectionsOutput.AddListener(OnFaceDetectionsOutput);
+        _graphRunner.OnMultiFaceLandmarksOutput.AddListener(OnMultiFaceLandmarksOutput);
+        _graphRunner.OnFaceRectsFromLandmarksOutput.AddListener(OnFaceRectsFromLandmarksOutput);
+        _graphRunner.StartRunAsync(imageSource).AssertOk();
+      }
+      else
+      {
+        _graphRunner.StartRun(imageSource).AssertOk();
       }
 
       // Use RGBA32 as the input format.
       // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
-      textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
+      _textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
 
-      SetupAnnotationController(faceDetectionsAnnotationController, imageSource);
-      SetupAnnotationController(faceRectsFromLandmarksAnnotationController, imageSource);
-      SetupAnnotationController(multiFaceLandmarksAnnotationController, imageSource);
+      SetupAnnotationController(_faceDetectionsAnnotationController, imageSource);
+      SetupAnnotationController(_faceRectsFromLandmarksAnnotationController, imageSource);
+      SetupAnnotationController(_multiFaceLandmarksAnnotationController, imageSource);
 
-      while (true) {
+      while (true)
+      {
         yield return new WaitWhile(() => isPaused);
 
-        var textureFrameRequest = textureFramePool.WaitForNextTextureFrame();
+        var textureFrameRequest = _textureFramePool.WaitForNextTextureFrame();
         yield return textureFrameRequest;
         var textureFrame = textureFrameRequest.result;
 
         // Copy current image to TextureFrame
-        ReadFromImageSource(textureFrame, runningMode, graphRunner.configType);
+        ReadFromImageSource(imageSource, textureFrame);
 
-        graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
+        _graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 
-        if (runningMode == RunningMode.Sync) {
+        if (runningMode == RunningMode.Sync)
+        {
           // When running synchronously, wait for the outputs here (blocks the main thread).
-          var value = graphRunner.FetchNextValue();
-          faceDetectionsAnnotationController.DrawNow(value.faceDetections);
-          faceRectsFromLandmarksAnnotationController.DrawNow(value.faceRectsFromLandmarks);
-          multiFaceLandmarksAnnotationController.DrawNow(value.multiFaceLandmarks);
+          var value = _graphRunner.FetchNextValue();
+          _faceDetectionsAnnotationController.DrawNow(value.faceDetections);
+          _faceRectsFromLandmarksAnnotationController.DrawNow(value.faceRectsFromLandmarks);
+          _multiFaceLandmarksAnnotationController.DrawNow(value.multiFaceLandmarks);
         }
 
         yield return new WaitForEndOfFrame();
       }
     }
 
-    void OnFaceDetectionsOutput(List<Detection> faceDetections) {
-      faceDetectionsAnnotationController.DrawLater(faceDetections);
+    private void OnFaceDetectionsOutput(List<Detection> faceDetections)
+    {
+      _faceDetectionsAnnotationController.DrawLater(faceDetections);
     }
 
-    void OnMultiFaceLandmarksOutput(List<NormalizedLandmarkList> multiFaceLandmarks) {
-      multiFaceLandmarksAnnotationController.DrawLater(multiFaceLandmarks);
+    private void OnMultiFaceLandmarksOutput(List<NormalizedLandmarkList> multiFaceLandmarks)
+    {
+      _multiFaceLandmarksAnnotationController.DrawLater(multiFaceLandmarks);
     }
 
-    void OnFaceRectsFromLandmarksOutput(List<NormalizedRect> faceRectsFromLandmarks) {
-      faceRectsFromLandmarksAnnotationController.DrawLater(faceRectsFromLandmarks);
+    private void OnFaceRectsFromLandmarksOutput(List<NormalizedRect> faceRectsFromLandmarks)
+    {
+      _faceRectsFromLandmarksAnnotationController.DrawLater(faceRectsFromLandmarks);
     }
   }
 }

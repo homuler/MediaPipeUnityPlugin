@@ -1,16 +1,25 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Mediapipe.Unity {
-  public sealed class PoseLandmarkListAnnotation : HierarchicalAnnotation {
-    [SerializeField] PointListAnnotation landmarkList;
-    [SerializeField] ConnectionListAnnotation connectionList;
-    [SerializeField] Color leftLandmarkColor = Color.green;
-    [SerializeField] Color rightLandmarkColor = Color.green;
+namespace Mediapipe.Unity
+{
+  public sealed class PoseLandmarkListAnnotation : HierarchicalAnnotation
+  {
+    [SerializeField] private PointListAnnotation _landmarkListAnnotation;
+    [SerializeField] private ConnectionListAnnotation _connectionListAnnotation;
+    [SerializeField] private Color _leftLandmarkColor = Color.green;
+    [SerializeField] private Color _rightLandmarkColor = Color.green;
 
     [Flags]
-    public enum BodyParts : short {
+    public enum BodyParts : short
+    {
       None = 0,
       Face = 1,
       // Torso = 2,
@@ -22,14 +31,14 @@ namespace Mediapipe.Unity {
       All = 127,
     }
 
-    const int landmarkCount = 33;
-    static readonly int[] leftLandmarks = new int[] {
+    private const int _LandmarkCount = 33;
+    private static readonly int[] _LeftLandmarks = new int[] {
       1, 2, 3, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31
     };
-    static readonly int[] rightLandmarks = new int[] {
+    private static readonly int[] _RightLandmarks = new int[] {
       4, 5, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32
     };
-    static readonly List<(int, int)> connections = new List<(int, int)> {
+    private static readonly List<(int, int)> _Connections = new List<(int, int)> {
       // Left Eye
       (0, 1),
       (1, 2),
@@ -77,147 +86,182 @@ namespace Mediapipe.Unity {
       (30, 32),
     };
 
-    public override bool isMirrored {
-      set {
-        landmarkList.isMirrored = value;
-        connectionList.isMirrored = value;
+    public override bool isMirrored
+    {
+      set
+      {
+        _landmarkListAnnotation.isMirrored = value;
+        _connectionListAnnotation.isMirrored = value;
         base.isMirrored = value;
       }
     }
 
-    public override RotationAngle rotationAngle {
-      set {
-        landmarkList.rotationAngle = value;
-        connectionList.rotationAngle = value;
+    public override RotationAngle rotationAngle
+    {
+      set
+      {
+        _landmarkListAnnotation.rotationAngle = value;
+        _connectionListAnnotation.rotationAngle = value;
         base.rotationAngle = value;
       }
     }
 
-    public PointAnnotation this[int index] {
-      get { return landmarkList[index]; }
+    public PointAnnotation this[int index] => _landmarkListAnnotation[index];
+
+    private void Start()
+    {
+      _landmarkListAnnotation.Fill(_LandmarkCount);
+      ApplyLeftLandmarkColor(_leftLandmarkColor);
+      ApplyRightLandmarkColor(_rightLandmarkColor);
+
+      _connectionListAnnotation.Fill(_Connections, _landmarkListAnnotation);
     }
 
-    void Start() {
-      landmarkList.Fill(landmarkCount);
-      ApplyLeftLandmarkColor(leftLandmarkColor);
-      ApplyRightLandmarkColor(rightLandmarkColor);
-
-      connectionList.Fill(connections, landmarkList);
+    private void OnValidate()
+    {
+      ApplyLeftLandmarkColor(_leftLandmarkColor);
+      ApplyRightLandmarkColor(_rightLandmarkColor);
     }
 
-    void OnValidate() {
-      ApplyLeftLandmarkColor(leftLandmarkColor);
-      ApplyRightLandmarkColor(rightLandmarkColor);
+    public void SetLeftLandmarkColor(Color leftLandmarkColor)
+    {
+      _leftLandmarkColor = leftLandmarkColor;
+      ApplyLeftLandmarkColor(_leftLandmarkColor);
     }
 
-    public void SetLeftLandmarkColor(Color leftLandmarkColor) {
-      this.leftLandmarkColor = leftLandmarkColor;
-      ApplyLeftLandmarkColor(leftLandmarkColor);
+    public void SetRightLandmarkColor(Color rightLandmarkColor)
+    {
+      _rightLandmarkColor = rightLandmarkColor;
+      ApplyRightLandmarkColor(_rightLandmarkColor);
     }
 
-    public void SetRightLandmarkColor(Color rightLandmarkColor) {
-      this.rightLandmarkColor = rightLandmarkColor;
-      ApplyRightLandmarkColor(rightLandmarkColor);
+    public void SetLandmarkRadius(float landmarkRadius)
+    {
+      _landmarkListAnnotation.SetRadius(landmarkRadius);
     }
 
-    public void SetLandmarkRadius(float landmarkRadius) {
-      landmarkList.SetRadius(landmarkRadius);
+    public void SetConnectionColor(Color connectionColor)
+    {
+      _connectionListAnnotation.SetColor(connectionColor);
     }
 
-    public void SetConnectionColor(Color connectionColor) {
-      connectionList.SetColor(connectionColor);
+    public void SetConnectionWidth(float connectionWidth)
+    {
+      _connectionListAnnotation.SetLineWidth(connectionWidth);
     }
 
-    public void SetConnectionWidth(float connectionWidth) {
-      connectionList.SetLineWidth(connectionWidth);
-    }
-
-    public void Draw(IList<Landmark> target, Vector3 scale, bool visualizeZ = false) {
-      if (ActivateFor(target)) {
-        landmarkList.Draw(target, scale, visualizeZ);
+    public void Draw(IList<Landmark> target, Vector3 scale, bool visualizeZ = false)
+    {
+      if (ActivateFor(target))
+      {
+        _landmarkListAnnotation.Draw(target, scale, visualizeZ);
         // Draw explicitly because connection annotation's targets remain the same.
-        connectionList.Redraw();
+        _connectionListAnnotation.Redraw();
       }
     }
 
-    public void Draw(LandmarkList target, Vector3 scale, bool visualizeZ = false) {
+    public void Draw(LandmarkList target, Vector3 scale, bool visualizeZ = false)
+    {
       Draw(target?.Landmark, scale, visualizeZ);
     }
 
-    public void Draw(IList<NormalizedLandmark> target, BodyParts mask, bool visualizeZ = false) {
-      if (ActivateFor(target)) {
-        landmarkList.Draw(target, visualizeZ);
+    public void Draw(IList<NormalizedLandmark> target, BodyParts mask, bool visualizeZ = false)
+    {
+      if (ActivateFor(target))
+      {
+        _landmarkListAnnotation.Draw(target, visualizeZ);
         ApplyMask(mask);
         // Draw explicitly because connection annotation's targets remain the same.
-        connectionList.Redraw();
+        _connectionListAnnotation.Redraw();
       }
     }
 
-    public void Draw(NormalizedLandmarkList target, BodyParts mask, bool visualizeZ = false) {
+    public void Draw(NormalizedLandmarkList target, BodyParts mask, bool visualizeZ = false)
+    {
       Draw(target?.Landmark, mask, visualizeZ);
     }
 
-    public void Draw(IList<NormalizedLandmark> target, bool visualizeZ = false) {
+    public void Draw(IList<NormalizedLandmark> target, bool visualizeZ = false)
+    {
       Draw(target, BodyParts.All, visualizeZ);
     }
 
-    public void Draw(NormalizedLandmarkList target, bool visualizeZ = false) {
+    public void Draw(NormalizedLandmarkList target, bool visualizeZ = false)
+    {
       Draw(target?.Landmark, BodyParts.All, visualizeZ);
     }
 
-    void ApplyLeftLandmarkColor(Color color) {
-      if (landmarkList.count >= landmarkCount) {
-        foreach (var index in leftLandmarks) {
-          landmarkList[index].SetColor(color);
+    private void ApplyLeftLandmarkColor(Color color)
+    {
+      var annotationCount = _landmarkListAnnotation == null ? 0 : _landmarkListAnnotation.count;
+      if (annotationCount >= _LandmarkCount)
+      {
+        foreach (var index in _LeftLandmarks)
+        {
+          _landmarkListAnnotation[index].SetColor(color);
         }
       }
     }
 
-    void ApplyRightLandmarkColor(Color color) {
-      if (landmarkList.count >= landmarkCount) {
-        foreach (var index in rightLandmarks) {
-          landmarkList[index].SetColor(color);
+    private void ApplyRightLandmarkColor(Color color)
+    {
+      var annotationCount = _landmarkListAnnotation == null ? 0 : _landmarkListAnnotation.count;
+      if (annotationCount >= _LandmarkCount)
+      {
+        foreach (var index in _RightLandmarks)
+        {
+          _landmarkListAnnotation[index].SetColor(color);
         }
       }
     }
 
-    void ApplyMask(BodyParts mask) {
-      if (mask == BodyParts.All) {
+    private void ApplyMask(BodyParts mask)
+    {
+      if (mask == BodyParts.All)
+      {
         return;
       }
 
-      if (!mask.HasFlag(BodyParts.Face)) {
+      if (!mask.HasFlag(BodyParts.Face))
+      {
         // deactivate face landmarks
-        for (var i = 0; i <= 10; i++) {
-          landmarkList[i].SetActive(false);
+        for (var i = 0; i <= 10; i++)
+        {
+          _landmarkListAnnotation[i].SetActive(false);
         }
       }
-      if (!mask.HasFlag(BodyParts.LeftArm)) {
+      if (!mask.HasFlag(BodyParts.LeftArm))
+      {
         // deactivate left elbow to hide left arm
-        landmarkList[13].SetActive(false);
+        _landmarkListAnnotation[13].SetActive(false);
       }
-      if (!mask.HasFlag(BodyParts.LeftHand)) {
+      if (!mask.HasFlag(BodyParts.LeftHand))
+      {
         // deactive left wrist, thumb, index and pinky to hide left hand
-        landmarkList[15].SetActive(false);
-        landmarkList[17].SetActive(false);
-        landmarkList[19].SetActive(false);
-        landmarkList[21].SetActive(false);
+        _landmarkListAnnotation[15].SetActive(false);
+        _landmarkListAnnotation[17].SetActive(false);
+        _landmarkListAnnotation[19].SetActive(false);
+        _landmarkListAnnotation[21].SetActive(false);
       }
-      if (!mask.HasFlag(BodyParts.RightArm)) {
+      if (!mask.HasFlag(BodyParts.RightArm))
+      {
         // deactivate right elbow to hide right arm
-        landmarkList[14].SetActive(false);
+        _landmarkListAnnotation[14].SetActive(false);
       }
-      if (!mask.HasFlag(BodyParts.RightHand)) {
+      if (!mask.HasFlag(BodyParts.RightHand))
+      {
         // deactivate right wrist, thumb, index and pinky to hide right hand
-        landmarkList[16].SetActive(false);
-        landmarkList[18].SetActive(false);
-        landmarkList[20].SetActive(false);
-        landmarkList[22].SetActive(false);
+        _landmarkListAnnotation[16].SetActive(false);
+        _landmarkListAnnotation[18].SetActive(false);
+        _landmarkListAnnotation[20].SetActive(false);
+        _landmarkListAnnotation[22].SetActive(false);
       }
-      if (!mask.HasFlag(BodyParts.LowerBody)) {
+      if (!mask.HasFlag(BodyParts.LowerBody))
+      {
         // deactivate lower body landmarks
-        for (var i = 25; i <= 32; i++) {
-          landmarkList[i].SetActive(false);
+        for (var i = 25; i <= 32; i++)
+        {
+          _landmarkListAnnotation[i].SetActive(false);
         }
       }
     }

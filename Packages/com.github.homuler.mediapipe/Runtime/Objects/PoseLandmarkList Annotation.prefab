@@ -45,10 +45,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39bac9dd52c31ae7aa01a7383bc44853, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  landmarkList: {fileID: 5913343085919651616}
-  connectionList: {fileID: 5166490095076042166}
-  leftLandmarkColor: {r: 1, g: 0.33333334, b: 0, a: 1}
-  rightLandmarkColor: {r: 0, g: 0.5833335, b: 1, a: 1}
+  _landmarkListAnnotation: {fileID: 5913343085919651616}
+  _connectionListAnnotation: {fileID: 4106715738273262277}
+  _leftLandmarkColor: {r: 1, g: 0.5411765, b: 0, a: 1}
+  _rightLandmarkColor: {r: 0, g: 0.8509804, b: 0.90588236, a: 1}
 --- !u!1001 &3311599829723851223
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -129,6 +129,21 @@ PrefabInstance:
     - target: {fileID: 9215842904284589815, guid: e260d2f5fb90a790385fcb2d815b23a6,
         type: 3}
       propertyPath: color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9215842904284589815, guid: e260d2f5fb90a790385fcb2d815b23a6,
+        type: 3}
+      propertyPath: _color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9215842904284589815, guid: e260d2f5fb90a790385fcb2d815b23a6,
+        type: 3}
+      propertyPath: _color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9215842904284589815, guid: e260d2f5fb90a790385fcb2d815b23a6,
+        type: 3}
+      propertyPath: _color.r
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -233,6 +248,21 @@ PrefabInstance:
       propertyPath: color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8437385474393681368, guid: c97d04632e9be1a7cb05f6ab855b365b,
+        type: 3}
+      propertyPath: _color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8437385474393681368, guid: c97d04632e9be1a7cb05f6ab855b365b,
+        type: 3}
+      propertyPath: _color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8437385474393681368, guid: c97d04632e9be1a7cb05f6ab855b365b,
+        type: 3}
+      propertyPath: _color.r
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c97d04632e9be1a7cb05f6ab855b365b, type: 3}
 --- !u!4 &5166490095076042167 stripped
@@ -241,9 +271,9 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 5614406909194798877}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &5166490095076042166 stripped
+--- !u!114 &4106715738273262277 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 745748194542674603, guid: c97d04632e9be1a7cb05f6ab855b365b,
+  m_CorrespondingSourceObject: {fileID: 8437385474393681368, guid: c97d04632e9be1a7cb05f6ab855b365b,
     type: 3}
   m_PrefabInstance: {fileID: 5614406909194798877}
   m_PrefabAsset: {fileID: 0}

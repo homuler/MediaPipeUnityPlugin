@@ -1,9 +1,19 @@
-using pb = global::Google.Protobuf;
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
 
-namespace Mediapipe {
-  public static class CalculatorGraphConfigExtension {
-    public static CalculatorGraphConfig ParseFromTextFormat(this pb::MessageParser<CalculatorGraphConfig> parser, string configText) {
-      if (UnsafeNativeMethods.mp_api__ConvertFromCalculatorGraphConfigTextFormat(configText, out var serializedProto)) {
+using pb = Google.Protobuf;
+
+namespace Mediapipe
+{
+  public static class CalculatorGraphConfigExtension
+  {
+    public static CalculatorGraphConfig ParseFromTextFormat(this pb::MessageParser<CalculatorGraphConfig> _, string configText)
+    {
+      if (UnsafeNativeMethods.mp_api__ConvertFromCalculatorGraphConfigTextFormat(configText, out var serializedProto))
+      {
         var config = serializedProto.Deserialize(CalculatorGraphConfig.Parser);
         serializedProto.Dispose();
         return config;

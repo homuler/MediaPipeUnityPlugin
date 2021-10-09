@@ -4,7 +4,7 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - annotationPrefab: {fileID: 1620015869145370096, guid: 8fcc7ea504479f06a9334ee2faa42b57,
+  - _annotationPrefab: {fileID: 4965192403804369243, guid: 3b696480602fe21de85315216956bd42,
       type: 3}
   executionOrder: 0
   icon: {instanceID: 0}

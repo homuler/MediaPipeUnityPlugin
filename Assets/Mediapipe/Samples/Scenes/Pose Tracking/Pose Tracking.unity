@@ -409,9 +409,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6495aaa3e64c7704eaf5b10bd0cb6946, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cpuConfig: {fileID: 4900000, guid: 5199c62ac0186dac28358b2ef639ef9b, type: 3}
-  gpuConfig: {fileID: 4900000, guid: 4711c9f7a612c310c844a312f6ec21c6, type: 3}
-  openGlEsConfig: {fileID: 4900000, guid: 8256a93f04d3d43118702a0ec0cc93a1, type: 3}
+  _cpuConfig: {fileID: 4900000, guid: 5199c62ac0186dac28358b2ef639ef9b, type: 3}
+  _gpuConfig: {fileID: 4900000, guid: 4711c9f7a612c310c844a312f6ec21c6, type: 3}
+  _openGlEsConfig: {fileID: 4900000, guid: 8256a93f04d3d43118702a0ec0cc93a1, type: 3}
   _timeoutMicrosec: 50000
   modelComplexity: 1
   smoothLandmarks: 1
@@ -439,14 +439,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b9be9c09f85432febf88b890fe3f194, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screen: {fileID: 1889892132}
-  worldAnnotationArea: {fileID: 1936307554}
-  poseDetectionAnnotationController: {fileID: 1889892130}
-  poseLandmarksAnnotationController: {fileID: 1889892131}
-  poseWorldLandmarksAnnotationController: {fileID: 1936307555}
-  roiFromLandmarksAnnotationController: {fileID: 1889892133}
-  graphRunner: {fileID: 275874968}
-  textureFramePool: {fileID: 275874970}
+  _screen: {fileID: 1889892132}
+  _worldAnnotationArea: {fileID: 1936307554}
+  _poseDetectionAnnotationController: {fileID: 1889892130}
+  _poseLandmarksAnnotationController: {fileID: 1889892131}
+  _poseWorldLandmarksAnnotationController: {fileID: 1936307555}
+  _roiFromLandmarksAnnotationController: {fileID: 1889892133}
+  _graphRunner: {fileID: 275874968}
+  _textureFramePool: {fileID: 275874970}
   runningMode: 0
 --- !u!114 &275874970
 MonoBehaviour:
@@ -460,7 +460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5da564da19cb6b7d8e4f97f269edc5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poolSize: 10
+  _poolSize: 10
 --- !u!1 &298505179
 GameObject:
   m_ObjectHideFlags: 0
@@ -1047,6 +1047,11 @@ PrefabInstance:
       propertyPath: solution
       value: 
       objectReference: {fileID: 275874969}
+    - target: {fileID: 8571076843237194833, guid: 140d1d2c406167c50819d89f86d9092e,
+        type: 3}
+      propertyPath: _solution
+      value: 
+      objectReference: {fileID: 275874969}
     - target: {fileID: 8571076843525237352, guid: 140d1d2c406167c50819d89f86d9092e,
         type: 3}
       propertyPath: m_Name
@@ -1055,6 +1060,12 @@ PrefabInstance:
     - target: {fileID: 8571076843980202029, guid: 140d1d2c406167c50819d89f86d9092e,
         type: 3}
       propertyPath: contents
+      value: 
+      objectReference: {fileID: 8388806499988947296, guid: 8d206c5fd71ab7f5ea41eafe4ce5f200,
+        type: 3}
+    - target: {fileID: 8571076843980202029, guid: 140d1d2c406167c50819d89f86d9092e,
+        type: 3}
+      propertyPath: _contents
       value: 
       objectReference: {fileID: 8388806499988947296, guid: 8d206c5fd71ab7f5ea41eafe4ce5f200,
         type: 3}
@@ -1907,6 +1918,17 @@ PrefabInstance:
       propertyPath: radius
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 5913343085919651616, guid: 4418f6a92856c5b51b58a36e3be7ed5c,
+        type: 3}
+      propertyPath: _radius
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5913343085919651616, guid: 4418f6a92856c5b51b58a36e3be7ed5c,
+        type: 3}
+      propertyPath: _annotationPrefab
+      value: 
+      objectReference: {fileID: 5105739270100195971, guid: cd50999c161e69345953a2cb517dd339,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4418f6a92856c5b51b58a36e3be7ed5c, type: 3}
 --- !u!4 &1737185254 stripped
@@ -2261,7 +2283,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 760147979}
-  threshold: 0
+  _threshold: 0
 --- !u!114 &1889892131
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2275,7 +2297,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 1514445399}
-  visualizeZ: 0
+  _visualizeZ: 0
 --- !u!114 &1889892132 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3259285889726014649, guid: 5713b959e3c77a58fb258133fc8e4aef,
@@ -2351,9 +2373,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 1737185255}
-  hipHeightMeter: 0.9
-  scale: {x: 50, y: 50, z: 50}
-  visualizeZ: 1
+  _hipHeightMeter: 0.9
+  _scale: {x: 50, y: 50, z: 50}
+  _visualizeZ: 1
 --- !u!1 &1960727773
 GameObject:
   m_ObjectHideFlags: 0

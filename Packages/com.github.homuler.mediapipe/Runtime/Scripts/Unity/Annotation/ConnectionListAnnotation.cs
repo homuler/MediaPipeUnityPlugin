@@ -1,59 +1,80 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Mediapipe.Unity {
-  public sealed class ConnectionListAnnotation : ListAnnotation<ConnectionAnnotation> {
-    [SerializeField] Color color = Color.red;
-    [SerializeField, Range(0, 1)] float lineWidth = 1.0f;
+namespace Mediapipe.Unity
+{
+  public sealed class ConnectionListAnnotation : ListAnnotation<ConnectionAnnotation>
+  {
+    [SerializeField] private Color _color = Color.red;
+    [SerializeField, Range(0, 1)] private float _lineWidth = 1.0f;
 
-    void OnValidate() {
-      ApplyColor(color);
-      ApplyLineWidth(lineWidth);
+    private void OnValidate()
+    {
+      ApplyColor(_color);
+      ApplyLineWidth(_lineWidth);
     }
 
-    public void Fill(IList<(int, int)> connections, PointListAnnotation points) {
+    public void Fill(IList<(int, int)> connections, PointListAnnotation points)
+    {
       Draw(connections.Select(pair => new Connection(points[pair.Item1], points[pair.Item2])).ToList());
     }
 
-    public void SetColor(Color color) {
-      this.color = color;
+    public void SetColor(Color color)
+    {
+      _color = color;
       ApplyColor(color);
     }
 
-    public void SetLineWidth(float lineWidth) {
-      this.lineWidth = lineWidth;
+    public void SetLineWidth(float lineWidth)
+    {
+      _lineWidth = lineWidth;
       ApplyLineWidth(lineWidth);
     }
 
-    public void Draw(IList<Connection> targets) {
-      if (ActivateFor(targets)) {
-        CallActionForAll(targets, (annotation, target) => { annotation?.Draw(target); });
+    public void Draw(IList<Connection> targets)
+    {
+      if (ActivateFor(targets))
+      {
+        CallActionForAll(targets, (annotation, target) => { if (annotation != null) { annotation.Draw(target); } });
       }
     }
 
-    public void Redraw() {
-      foreach (var connection in children) {
-        connection?.Redraw();
+    public void Redraw()
+    {
+      foreach (var connection in children)
+      {
+        if (connection != null) { connection.Redraw(); }
       }
     }
 
-    protected override ConnectionAnnotation InstantiateChild(bool isActive = true) {
+    protected override ConnectionAnnotation InstantiateChild(bool isActive = true)
+    {
       var annotation = base.InstantiateChild(isActive);
-      annotation.SetColor(color);
-      annotation.SetLineWidth(lineWidth);
+      annotation.SetColor(_color);
+      annotation.SetLineWidth(_lineWidth);
       return annotation;
     }
 
-    void ApplyColor(Color color) {
-      foreach (var line in children) {
-        line?.SetColor(color);
+    private void ApplyColor(Color color)
+    {
+      foreach (var line in children)
+      {
+        if (line != null) { line.SetColor(color); }
       }
     }
 
-    void ApplyLineWidth(float lineWidth) {
-      foreach (var line in children) {
-        line?.SetLineWidth(lineWidth);
+    private void ApplyLineWidth(float lineWidth)
+    {
+      foreach (var line in children)
+      {
+        if (line != null) { line.SetLineWidth(lineWidth); }
       }
     }
   }

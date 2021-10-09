@@ -1,8 +1,15 @@
+# Copyright (c) 2021 homuler
+#
+# Use of this source code is governed by an MIT-style
+# license that can be found in the LICENSE file or at
+# https://opensource.org/licenses/MIT.
+
 load("@rules_pkg//:pkg.bzl", "pkg_zip")
 load("//mediapipe_api:import_model.bzl", "pkg_asset")
 
 cc_library(
     name = "mediapipe_c",
+    visibility = ["//visibility:public"],
     deps = [
         ":calculators",
         "//mediapipe_api/external:glog",
@@ -34,39 +41,32 @@ cc_library(
             "//mediapipe_api/gpu:gpu_buffer_format",
             "//mediapipe_api/gpu:gpu_shared_data_internal",
         ],
-    }) + select({
-        "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [],
-        "@com_google_mediapipe//mediapipe:ios": [],
-        "//conditions:default": [
-            "//mediapipe_api/gpu:egl_surface_holder",
-        ],
     }),
-    visibility = ["//visibility:public"],
     alwayslink = True,
 )
 
 cc_binary(
     name = "libmediapipe_c.so",
-    deps = [":mediapipe_c"],
     linkshared = True,
     linkstatic = True,
     visibility = ["//visibility:public"],
+    deps = [":mediapipe_c"],
 )
 
 cc_binary(
     name = "libmediapipe_c.dylib",
-    deps = [":mediapipe_c"],
     linkshared = True,
     linkstatic = True,
     visibility = ["//visibility:public"],
+    deps = [":mediapipe_c"],
 )
 
 cc_binary(
     name = "libmediapipe_c.dll",
-    deps = [":mediapipe_c"],
     linkshared = True,
     linkstatic = True,
     visibility = ["//visibility:public"],
+    deps = [":mediapipe_c"],
 )
 
 alias(
@@ -103,7 +103,7 @@ cc_library(
             "@com_google_mediapipe//mediapipe/graphs/tracking:desktop_calculators",
         ],
         "//conditions:default": [
-           "//mediapipe_api/modules/iris_landmark:iris_landmarks_from_face_landmarks_gpu",
+            "//mediapipe_api/modules/iris_landmark:iris_landmarks_from_face_landmarks_gpu",
             # ATTENTION!
             #   If you're building for Android with debug symobls (--compilation_mode=dbg), exclude `instant_motion_tracking_deps`
             #   or exclude the other deps defined under `mediapipe/graphs`.
@@ -130,10 +130,10 @@ cc_library(
     name = "common",
     srcs = ["common.cc"],
     hdrs = ["common.h"],
+    visibility = ["//visibility:public"],
     deps = [
         "@com_google_mediapipe//mediapipe/framework/port:logging",
     ],
-    visibility = ["//visibility:public"],
     alwayslink = True,
 )
 
@@ -166,9 +166,9 @@ pkg_asset(
         "@com_google_mediapipe//mediapipe/modules/objectron:object_detection_ssd_mobilenetv2_oidv4_fp16.tflite",
         "@com_google_mediapipe//mediapipe/modules/palm_detection:palm_detection.tflite",
         "@com_google_mediapipe//mediapipe/modules/pose_detection:pose_detection.tflite",
-        "@com_google_mediapipe//mediapipe/modules/pose_landmark:pose_landmark_lite.tflite",
         "@com_google_mediapipe//mediapipe/modules/pose_landmark:pose_landmark_full.tflite",
         "@com_google_mediapipe//mediapipe/modules/pose_landmark:pose_landmark_heavy.tflite",
+        "@com_google_mediapipe//mediapipe/modules/pose_landmark:pose_landmark_lite.tflite",
     ],
 )
 

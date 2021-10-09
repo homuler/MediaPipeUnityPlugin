@@ -1,72 +1,95 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
-namespace Mediapipe.Unity.FaceDetection {
-  public class FaceDetectionGraph : GraphRunner {
-    public enum ModelType {
+namespace Mediapipe.Unity.FaceDetection
+{
+  public class FaceDetectionGraph : GraphRunner
+  {
+    public enum ModelType
+    {
       ShortRange = 0,
       FullRangeSparse = 1,
     }
     public ModelType modelType = ModelType.ShortRange;
+#pragma warning disable IDE1006
     public UnityEvent<List<Detection>> OnFaceDetectionsOutput = new UnityEvent<List<Detection>>();
+#pragma warning restore IDE1006
 
-    const string inputStreamName = "input_video";
+    private const string _InputStreamName = "input_video";
 
-    const string faceDetectionsStreamName = "face_detections";
-    OutputStream<DetectionVectorPacket, List<Detection>> faceDetectionsStream;
+    private const string _FaceDetectionsStreamName = "face_detections";
+    private OutputStream<DetectionVectorPacket, List<Detection>> _faceDetectionsStream;
     protected long prevFaceDetectionsMicrosec = 0;
 
-    public override Status StartRun(ImageSource imageSource) {
+    public override Status StartRun(ImageSource imageSource)
+    {
       InitializeOutputStreams();
-      faceDetectionsStream.StartPolling(true).AssertOk();
+      _faceDetectionsStream.StartPolling(true).AssertOk();
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
-    public Status StartRunAsync(ImageSource imageSource) {
+    public Status StartRunAsync(ImageSource imageSource)
+    {
       InitializeOutputStreams();
-      faceDetectionsStream.AddListener(FaceDetectionsCallback, true).AssertOk();
+      _faceDetectionsStream.AddListener(FaceDetectionsCallback, true).AssertOk();
       return calculatorGraph.StartRun(BuildSidePacket(imageSource));
     }
 
-    public override void Stop() {
+    public override void Stop()
+    {
       base.Stop();
       OnFaceDetectionsOutput.RemoveAllListeners();
     }
 
-    public Status AddTextureFrameToInputStream(TextureFrame textureFrame) {
-      return AddTextureFrameToInputStream(inputStreamName, textureFrame);
+    public Status AddTextureFrameToInputStream(TextureFrame textureFrame)
+    {
+      return AddTextureFrameToInputStream(_InputStreamName, textureFrame);
     }
 
-    public List<Detection> FetchNextValue() {
-      faceDetectionsStream.TryGetNext(out var faceDetections);
+    public List<Detection> FetchNextValue()
+    {
+      var _ = _faceDetectionsStream.TryGetNext(out var faceDetections);
       OnFaceDetectionsOutput.Invoke(faceDetections);
       return faceDetections;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    static IntPtr FaceDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr){
-      return InvokeIfGraphRunnerFound<FaceDetectionGraph>(graphPtr, packetPtr, (faceDetectionGraph, ptr) => {
-        using (var packet = new DetectionVectorPacket(ptr, false)) {
-          if (faceDetectionGraph.TryGetPacketValue(packet, ref faceDetectionGraph.prevFaceDetectionsMicrosec, out var value)) {
+    private static IntPtr FaceDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr)
+    {
+      return InvokeIfGraphRunnerFound<FaceDetectionGraph>(graphPtr, packetPtr, (faceDetectionGraph, ptr) =>
+      {
+        using (var packet = new DetectionVectorPacket(ptr, false))
+        {
+          if (faceDetectionGraph.TryGetPacketValue(packet, ref faceDetectionGraph.prevFaceDetectionsMicrosec, out var value))
+          {
             faceDetectionGraph.OnFaceDetectionsOutput.Invoke(value);
           }
         }
       }).mpPtr;
     }
 
-    protected override IList<WaitForResult> RequestDependentAssets() {
+    protected override IList<WaitForResult> RequestDependentAssets()
+    {
       return new List<WaitForResult> {
         WaitForAsset("face_detection_short_range.bytes"),
         WaitForAsset("face_detection_full_range_sparse.bytes"),
       };
     }
 
-    protected void InitializeOutputStreams() {
-      faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, faceDetectionsStreamName);
+    protected void InitializeOutputStreams()
+    {
+      _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _FaceDetectionsStreamName);
     }
 
-    SidePacket BuildSidePacket(ImageSource imageSource) {
+    private SidePacket BuildSidePacket(ImageSource imageSource)
+    {
       var sidePacket = new SidePacket();
 
       SetImageTransformationOptions(sidePacket, imageSource);

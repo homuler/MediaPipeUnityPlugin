@@ -248,7 +248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4da1de84e40bea7dcbeaa5bbe8119b1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  graphRunner: {fileID: 1064799460}
+  _graphRunner: {fileID: 1064799460}
   loop: 10
   runningMode: 0
 --- !u!1001 &1627856809
@@ -838,6 +838,11 @@ PrefabInstance:
       propertyPath: solution
       value: 
       objectReference: {fileID: 1064799462}
+    - target: {fileID: 8571076843237194833, guid: 140d1d2c406167c50819d89f86d9092e,
+        type: 3}
+      propertyPath: _solution
+      value: 
+      objectReference: {fileID: 1064799462}
     - target: {fileID: 8571076843237194836, guid: 140d1d2c406167c50819d89f86d9092e,
         type: 3}
       propertyPath: m_RootOrder
@@ -846,6 +851,12 @@ PrefabInstance:
     - target: {fileID: 8571076843980202029, guid: 140d1d2c406167c50819d89f86d9092e,
         type: 3}
       propertyPath: contents
+      value: 
+      objectReference: {fileID: 8388806499988947296, guid: 5b9265bc174bc614b9a37a876f3bd0b5,
+        type: 3}
+    - target: {fileID: 8571076843980202029, guid: 140d1d2c406167c50819d89f86d9092e,
+        type: 3}
+      propertyPath: _contents
       value: 
       objectReference: {fileID: 8388806499988947296, guid: 5b9265bc174bc614b9a37a876f3bd0b5,
         type: 3}

@@ -1,88 +1,116 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Mediapipe.Unity {
-  public sealed class HolisticLandmarkListAnnotation : HierarchicalAnnotation {
-    [SerializeField] FaceLandmarkListAnnotation faceLandmarkList;
-    [SerializeField] PoseLandmarkListAnnotation poseLandmarkList;
-    [SerializeField] HandLandmarkListAnnotation leftHandLandmarkList;
-    [SerializeField] HandLandmarkListAnnotation rightHandLandmarkList;
-    [SerializeField] IrisLandmarkListAnnotation leftIrisLandmarkList;
-    [SerializeField] IrisLandmarkListAnnotation rightIrisLandmarkList;
-    [SerializeField] ConnectionListAnnotation connectionList;
+namespace Mediapipe.Unity
+{
+  public sealed class HolisticLandmarkListAnnotation : HierarchicalAnnotation
+  {
+    [SerializeField] private FaceLandmarkListAnnotation _faceLandmarkListAnnotation;
+    [SerializeField] private PoseLandmarkListAnnotation _poseLandmarkListAnnotation;
+    [SerializeField] private HandLandmarkListAnnotation _leftHandLandmarkListAnnotation;
+    [SerializeField] private HandLandmarkListAnnotation _rightHandLandmarkListAnnotation;
+    [SerializeField] private IrisLandmarkListAnnotation _leftIrisLandmarkListAnnotation;
+    [SerializeField] private IrisLandmarkListAnnotation _rightIrisLandmarkListAnnotation;
+    [SerializeField] private ConnectionListAnnotation _connectionListAnnotation;
 
-    public override bool isMirrored {
-      set {
-        faceLandmarkList.isMirrored = value;
-        poseLandmarkList.isMirrored = value;
-        leftHandLandmarkList.isMirrored = value;
-        rightHandLandmarkList.isMirrored = value;
-        leftIrisLandmarkList.isMirrored = value;
-        rightIrisLandmarkList.isMirrored = value;
-        connectionList.isMirrored = value;
+    public override bool isMirrored
+    {
+      set
+      {
+        _faceLandmarkListAnnotation.isMirrored = value;
+        _poseLandmarkListAnnotation.isMirrored = value;
+        _leftHandLandmarkListAnnotation.isMirrored = value;
+        _rightHandLandmarkListAnnotation.isMirrored = value;
+        _leftIrisLandmarkListAnnotation.isMirrored = value;
+        _rightIrisLandmarkListAnnotation.isMirrored = value;
+        _connectionListAnnotation.isMirrored = value;
         base.isMirrored = value;
       }
     }
 
-    public override RotationAngle rotationAngle {
-      set {
-        faceLandmarkList.rotationAngle = value;
-        poseLandmarkList.rotationAngle = value;
-        leftHandLandmarkList.rotationAngle = value;
-        rightHandLandmarkList.rotationAngle = value;
-        leftIrisLandmarkList.rotationAngle = value;
-        rightIrisLandmarkList.rotationAngle = value;
-        connectionList.rotationAngle = value;
+    public override RotationAngle rotationAngle
+    {
+      set
+      {
+        _faceLandmarkListAnnotation.rotationAngle = value;
+        _poseLandmarkListAnnotation.rotationAngle = value;
+        _leftHandLandmarkListAnnotation.rotationAngle = value;
+        _rightHandLandmarkListAnnotation.rotationAngle = value;
+        _leftIrisLandmarkListAnnotation.rotationAngle = value;
+        _rightIrisLandmarkListAnnotation.rotationAngle = value;
+        _connectionListAnnotation.rotationAngle = value;
         base.rotationAngle = value;
       }
     }
 
-    void Start() {
-      leftHandLandmarkList.SetHandedness(HandLandmarkListAnnotation.Hand.Left);
-      rightHandLandmarkList.SetHandedness(HandLandmarkListAnnotation.Hand.Right);
-      connectionList.Fill(2); // left/right wrist joint
+    private void Start()
+    {
+      _leftHandLandmarkListAnnotation.SetHandedness(HandLandmarkListAnnotation.Hand.Left);
+      _rightHandLandmarkListAnnotation.SetHandedness(HandLandmarkListAnnotation.Hand.Right);
+      _connectionListAnnotation.Fill(2); // left/right wrist joint
     }
 
     public void Draw(IList<NormalizedLandmark> faceLandmarks, IList<NormalizedLandmark> poseLandmarks,
                      IList<NormalizedLandmark> leftHandLandmarks, IList<NormalizedLandmark> rightHandLandmarks,
-                     IList<NormalizedLandmark> leftIrisLandmarks, IList<NormalizedLandmark> rightIrisLandmarks, bool visualizeZ = false, int circleVertices = 128) {
+                     IList<NormalizedLandmark> leftIrisLandmarks, IList<NormalizedLandmark> rightIrisLandmarks, bool visualizeZ = false, int circleVertices = 128)
+    {
       var mask = PoseLandmarkListAnnotation.BodyParts.All;
-      if (faceLandmarks != null) {
+      if (faceLandmarks != null)
+      {
         mask ^= PoseLandmarkListAnnotation.BodyParts.Face;
       }
-      if (leftHandLandmarks != null) {
+      if (leftHandLandmarks != null)
+      {
         mask ^= PoseLandmarkListAnnotation.BodyParts.LeftHand;
       }
-      if (rightHandLandmarks != null) {
+      if (rightHandLandmarks != null)
+      {
         mask ^= PoseLandmarkListAnnotation.BodyParts.RightHand;
       }
-      faceLandmarkList.Draw(faceLandmarks, visualizeZ);
-      poseLandmarkList.Draw(poseLandmarks, mask, visualizeZ);
-      leftHandLandmarkList.Draw(leftHandLandmarks, visualizeZ);
-      rightHandLandmarkList.Draw(rightHandLandmarks, visualizeZ);
-      leftIrisLandmarkList.Draw(leftIrisLandmarks, visualizeZ);
-      rightIrisLandmarkList.Draw(rightIrisLandmarks, visualizeZ);
+      _faceLandmarkListAnnotation.Draw(faceLandmarks, visualizeZ);
+      _poseLandmarkListAnnotation.Draw(poseLandmarks, mask, visualizeZ);
+      _leftHandLandmarkListAnnotation.Draw(leftHandLandmarks, visualizeZ);
+      _rightHandLandmarkListAnnotation.Draw(rightHandLandmarks, visualizeZ);
+      _leftIrisLandmarkListAnnotation.Draw(leftIrisLandmarks, visualizeZ, circleVertices);
+      _rightIrisLandmarkListAnnotation.Draw(rightIrisLandmarks, visualizeZ, circleVertices);
       RedrawWristJoints();
     }
 
     public void Draw(NormalizedLandmarkList faceLandmarks, NormalizedLandmarkList poseLandmarks,
                      NormalizedLandmarkList leftHandLandmarks, NormalizedLandmarkList rightHandLandmarks,
-                     NormalizedLandmarkList leftIrisLandmarks, NormalizedLandmarkList rightIrisLandmarks, bool visualizeZ = false, int circleVertices = 128) {
+                     NormalizedLandmarkList leftIrisLandmarks, NormalizedLandmarkList rightIrisLandmarks, bool visualizeZ = false, int circleVertices = 128)
+    {
       Draw(
-        faceLandmarks?.Landmark, poseLandmarks?.Landmark, leftHandLandmarks?.Landmark, rightHandLandmarks?.Landmark, leftIrisLandmarks?.Landmark, rightIrisLandmarks?.Landmark, visualizeZ
+        faceLandmarks?.Landmark,
+        poseLandmarks?.Landmark,
+        leftHandLandmarks?.Landmark,
+        rightHandLandmarks?.Landmark,
+        leftIrisLandmarks?.Landmark,
+        rightIrisLandmarks?.Landmark,
+        visualizeZ,
+        circleVertices
       );
     }
 
-    void RedrawWristJoints() {
-      if (connectionList[0].isEmpty) {
+    private void RedrawWristJoints()
+    {
+      if (_connectionListAnnotation[0].isEmpty)
+      {
         // connect left elbow and wrist
-        connectionList[0].Draw(new Connection(poseLandmarkList[13], leftHandLandmarkList[0]));
+        _connectionListAnnotation[0].Draw(new Connection(_poseLandmarkListAnnotation[13], _leftHandLandmarkListAnnotation[0]));
       }
-      if (connectionList[1].isEmpty) {
+      if (_connectionListAnnotation[1].isEmpty)
+      {
         // connect right elbow and wrist
-        connectionList[1].Draw(new Connection(poseLandmarkList[14], rightHandLandmarkList[0]));
+        _connectionListAnnotation[1].Draw(new Connection(_poseLandmarkListAnnotation[14], _rightHandLandmarkListAnnotation[0]));
       }
-      connectionList.Redraw();
+      _connectionListAnnotation.Redraw();
     }
   }
 }

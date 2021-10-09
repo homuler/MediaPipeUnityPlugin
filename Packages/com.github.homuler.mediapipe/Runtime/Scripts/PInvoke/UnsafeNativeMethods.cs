@@ -1,9 +1,17 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Security;
 
-namespace Mediapipe {
-  [SuppressUnmanagedCodeSecurityAttribute]
-  internal static partial class UnsafeNativeMethods {
-    private const string MediaPipeLibrary =
+namespace Mediapipe
+{
+  [SuppressUnmanagedCodeSecurity]
+  internal static partial class UnsafeNativeMethods
+  {
+    internal const string MediaPipeLibrary =
 #if UNITY_EDITOR
       "mediapipe_c";
 #elif UNITY_IOS

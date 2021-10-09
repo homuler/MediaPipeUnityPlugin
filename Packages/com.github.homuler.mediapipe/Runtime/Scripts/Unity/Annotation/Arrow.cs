@@ -1,55 +1,71 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using UnityEngine;
 
-namespace Mediapipe.Unity {
-  public class Arrow : MonoBehaviour {
-    [SerializeField] Color _color = Color.white;
-    [SerializeField] Vector3 _direction = Vector3.right;
-    [SerializeField] float _magnitude = 0.0f;
-    [SerializeField] float capScale = 1.0f;
-    [SerializeField, Range(0, 1)] float lineWidth = 1.0f;
+namespace Mediapipe.Unity
+{
+  public class Arrow : MonoBehaviour
+  {
+    [SerializeField] private Color _color = Color.white;
+    [SerializeField] private Vector3 _direction = Vector3.right;
+    [SerializeField] private float _magnitude = 0.0f;
+    [SerializeField] private float _capScale = 1.0f;
+    [SerializeField, Range(0, 1)] private float _lineWidth = 1.0f;
 
-    void Start() {
+    private void Start()
+    {
       ApplyColor(color);
       ApplyDirection(_direction);
-      ApplyCapScale(capScale);
-      ApplyLineWidth(lineWidth);
-      ApplyMagnitude(_magnitude); // magnitude must be set after capScale
+      ApplyCapScale(_capScale);
+      ApplyLineWidth(_lineWidth);
+      ApplyMagnitude(_magnitude); // magnitude must be set after _capScale
     }
 
-    void OnValidate() {
+    private void OnValidate()
+    {
       ApplyDirection(_direction);
-      ApplyCapScale(capScale);
-      ApplyLineWidth(lineWidth);
-      ApplyMagnitude(_magnitude); // magnitude must be set after capScale
+      ApplyCapScale(_capScale);
+      ApplyLineWidth(_lineWidth);
+      ApplyMagnitude(_magnitude); // magnitude must be set after _capScale
     }
 
-    Transform _cone;
-    Transform cone {
-      get {
-        if (_cone == null) {
+    private Transform _cone;
+    private Transform cone
+    {
+      get
+      {
+        if (_cone == null)
+        {
           _cone = transform.Find("Cone");
         }
         return _cone;
       }
     }
 
-    LineRenderer lineRenderer {
-      get { return gameObject.GetComponent<LineRenderer>(); }
-    }
+    private LineRenderer lineRenderer => gameObject.GetComponent<LineRenderer>();
 
-    public Vector3 direction {
-      get { return _direction; }
-      set {
+    public Vector3 direction
+    {
+      get => _direction;
+      set
+      {
         _direction = value.normalized;
         ApplyDirection(_direction);
       }
     }
 
-    public float magnitude {
-      get { return _magnitude; }
-      set {
-        if (value < 0) {
+    public float magnitude
+    {
+      get => _magnitude;
+      set
+      {
+        if (value < 0)
+        {
           throw new ArgumentException("Magnitude must be positive");
         }
         _magnitude = value;
@@ -57,57 +73,70 @@ namespace Mediapipe.Unity {
       }
     }
 
-    public Color color {
-      get { return _color; }
-      set {
+    public Color color
+    {
+      get => _color;
+      set
+      {
         _color = value;
         ApplyColor(value);
       }
     }
 
-    public void SetVector(Vector3 v) {
+    public void SetVector(Vector3 v)
+    {
       direction = v;
       magnitude = v.magnitude;
     }
 
-    public void SetCapScale(float capScale) {
-      this.capScale = capScale;
-      ApplyCapScale(capScale);
+    public void SetCapScale(float capScale)
+    {
+      _capScale = capScale;
+      ApplyCapScale(_capScale);
     }
 
-    public void SetLineWidth(float lineWidth) {
-      this.lineWidth = lineWidth;
-      ApplyLineWidth(lineWidth);
+    public void SetLineWidth(float lineWidth)
+    {
+      _lineWidth = lineWidth;
+      ApplyLineWidth(_lineWidth);
     }
 
-    void ApplyColor(Color color) {
+    private void ApplyColor(Color color)
+    {
       lineRenderer.startColor = color;
       lineRenderer.endColor = color;
       cone.GetComponent<Renderer>().material.color = color;
     }
 
-    void ApplyDirection(Vector3 direction) {
+    private void ApplyDirection(Vector3 direction)
+    {
       lineRenderer.SetPosition(1, _magnitude * direction);
       cone.localRotation = Quaternion.FromToRotation(Vector3.up, direction);
     }
 
-    void ApplyMagnitude(float magnitude) {
+    private void ApplyMagnitude(float magnitude)
+    {
       lineRenderer.SetPosition(1, magnitude * direction);
 
-      if (magnitude == 0) {
+      if (magnitude == 0)
+      {
         cone.localScale = Vector3.zero;
         cone.localPosition = Vector3.zero;
-      } else {
-        ApplyCapScale(capScale);
+      }
+      else
+      {
+        ApplyCapScale(_capScale);
         cone.localPosition = (cone.localScale.y + magnitude) * direction; // pivot is at the center of cone
       }
     }
 
-    void ApplyCapScale(float capScale) {
+    private void ApplyCapScale(float capScale)
+    {
       cone.localScale = capScale * Vector3.one;
     }
 
-    void ApplyLineWidth(float lineWidth) {
+    private void ApplyLineWidth(float lineWidth)
+    {
       lineRenderer.startWidth = lineWidth;
       lineRenderer.endWidth = lineWidth;
     }

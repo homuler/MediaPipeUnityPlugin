@@ -1,82 +1,106 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mediapipe.Unity.UI {
-  public class GUIConsole : MonoBehaviour {
-    [SerializeField] GameObject logLinePrefab;
-    [SerializeField] int maxLines = 200;
+namespace Mediapipe.Unity.UI
+{
+  public class GUIConsole : MonoBehaviour
+  {
+    [SerializeField] private GameObject _logLinePrefab;
+    [SerializeField] private int _maxLines = 200;
 
-    const string _ContentPath = "Viewport/Content";
+    private const string _ContentPath = "Viewport/Content";
 
-    Transform contentRoot;
-    MemoizedLogger logger;
-    Queue<MemoizedLogger.LogStruct> scheduledLogs;
-    int lines = 0;
+    private Transform _contentRoot;
+    private MemoizedLogger _logger;
+    private Queue<MemoizedLogger.LogStruct> _scheduledLogs;
+    private int _lines = 0;
 
-    ScrollRect scrollRect { get { return gameObject.GetComponent<ScrollRect>(); } }
+    private ScrollRect scrollRect => gameObject.GetComponent<ScrollRect>();
 
-    void Start() {
-      scheduledLogs = new Queue<MemoizedLogger.LogStruct>();
+    private void Start()
+    {
+      _scheduledLogs = new Queue<MemoizedLogger.LogStruct>();
       InitializeView();
     }
 
-    void LateUpdate() {
+    private void LateUpdate()
+    {
       RenderScheduledLogs();
     }
 
-    void OnDestroy() {
-      logger.OnLogOutput -= ScheduleLog;
+    private void OnDestroy()
+    {
+      _logger.OnLogOutput -= ScheduleLog;
     }
 
-    void InitializeView() {
-      contentRoot = gameObject.transform.Find(_ContentPath).gameObject.transform;
+    private void InitializeView()
+    {
+      _contentRoot = gameObject.transform.Find(_ContentPath).gameObject.transform;
 
-      if (!(Logger.logger is MemoizedLogger)) {
+      if (!(Logger.logger is MemoizedLogger))
+      {
         return;
       }
 
-      logger = (MemoizedLogger)Logger.logger;
-      lock (((ICollection)logger.histories).SyncRoot) {
-        foreach (var log in logger.histories) {
+      _logger = (MemoizedLogger)Logger.logger;
+      lock (((ICollection)_logger.histories).SyncRoot)
+      {
+        foreach (var log in _logger.histories)
+        {
           AppendLog(log);
         }
-        logger.OnLogOutput += ScheduleLog;
+        _logger.OnLogOutput += ScheduleLog;
       }
 
-      StartCoroutine(ScrollToBottom());
+      var _ = StartCoroutine(ScrollToBottom());
     }
 
-    void ScheduleLog(MemoizedLogger.LogStruct logStruct) {
-      lock (((ICollection)scheduledLogs).SyncRoot) {
-        scheduledLogs.Enqueue(logStruct);
+    private void ScheduleLog(MemoizedLogger.LogStruct logStruct)
+    {
+      lock (((ICollection)_scheduledLogs).SyncRoot)
+      {
+        _scheduledLogs.Enqueue(logStruct);
       }
     }
 
-    void RenderScheduledLogs() {
-      lock (((ICollection)scheduledLogs).SyncRoot) {
-        while (scheduledLogs.Count > 0) {
-          AppendLog(scheduledLogs.Dequeue());
+    private void RenderScheduledLogs()
+    {
+      lock (((ICollection)_scheduledLogs).SyncRoot)
+      {
+        while (_scheduledLogs.Count > 0)
+        {
+          AppendLog(_scheduledLogs.Dequeue());
         }
       }
 
-      if (scrollRect.verticalNormalizedPosition < 1e-6) {
-        StartCoroutine(ScrollToBottom());
+      if (scrollRect.verticalNormalizedPosition < 1e-6)
+      {
+        var _ = StartCoroutine(ScrollToBottom());
       }
     }
 
-    void AppendLog(MemoizedLogger.LogStruct logStruct) {
-      var logLine = Instantiate(logLinePrefab, contentRoot).GetComponent<LogLine>();
+    private void AppendLog(MemoizedLogger.LogStruct logStruct)
+    {
+      var logLine = Instantiate(_logLinePrefab, _contentRoot).GetComponent<LogLine>();
       logLine.SetLog(logStruct);
 
-      if (++lines > maxLines) {
-        Destroy(contentRoot.GetChild(0).gameObject);
-        lines--;
+      if (++_lines > _maxLines)
+      {
+        Destroy(_contentRoot.GetChild(0).gameObject);
+        _lines--;
       }
     }
 
-    IEnumerator ScrollToBottom() {
+    private IEnumerator ScrollToBottom()
+    {
       yield return new WaitForEndOfFrame();
       Canvas.ForceUpdateCanvases();
       scrollRect.verticalNormalizedPosition = 0f;

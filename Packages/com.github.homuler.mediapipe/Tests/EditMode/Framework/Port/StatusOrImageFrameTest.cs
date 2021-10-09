@@ -1,28 +1,41 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using Mediapipe;
 using NUnit.Framework;
 
-namespace Tests {
-  public class StatusOrImageFrameTest {
+namespace Tests
+{
+  public class StatusOrImageFrameTest
+  {
     #region #status
     [Test]
-    public void status_ShouldReturnOk_When_StatusIsOk() {
-      var statusOrImageFrame = InitializeSubject();
-
-      Assert.True(statusOrImageFrame.ok);
-      Assert.AreEqual(statusOrImageFrame.status.code, Status.StatusCode.Ok);
+    public void Status_ShouldReturnOk_When_StatusIsOk()
+    {
+      using (var statusOrImageFrame = InitializeSubject())
+      {
+        Assert.True(statusOrImageFrame.Ok());
+        Assert.AreEqual(statusOrImageFrame.status.Code(), Status.StatusCode.Ok);
+      }
     }
     #endregion
 
     #region #isDisposed
     [Test]
-    public void isDisposed_ShouldReturnFalse_When_NotDisposedYet() {
-      var statusOrImageFrame = InitializeSubject();
-
-      Assert.False(statusOrImageFrame.isDisposed);
+    public void IsDisposed_ShouldReturnFalse_When_NotDisposedYet()
+    {
+      using (var statusOrImageFrame = InitializeSubject())
+      {
+        Assert.False(statusOrImageFrame.isDisposed);
+      }
     }
 
     [Test]
-    public void isDisposed_ShouldReturnTrue_When_AlreadyDisposed() {
+    public void IsDisposed_ShouldReturnTrue_When_AlreadyDisposed()
+    {
       var statusOrImageFrame = InitializeSubject();
       statusOrImageFrame.Dispose();
 
@@ -32,18 +45,24 @@ namespace Tests {
 
     #region #Value
     [Test]
-    public void Value_ShouldReturnImageFrame_When_StatusIsOk() {
-      var statusOrImageFrame = InitializeSubject();
-      Assert.True(statusOrImageFrame.ok);
+    public void Value_ShouldReturnImageFrame_When_StatusIsOk()
+    {
+      using (var statusOrImageFrame = InitializeSubject())
+      {
+        Assert.True(statusOrImageFrame.Ok());
 
-      var imageFrame = statusOrImageFrame.Value();
-      Assert.AreEqual(imageFrame.Width(), 10);
-      Assert.AreEqual(imageFrame.Height(), 10);
-      Assert.True(statusOrImageFrame.isDisposed);
+        using (var imageFrame = statusOrImageFrame.Value())
+        {
+          Assert.AreEqual(imageFrame.Width(), 10);
+          Assert.AreEqual(imageFrame.Height(), 10);
+          Assert.True(statusOrImageFrame.isDisposed);
+        }
+      }
     }
     #endregion
 
-    private StatusOrImageFrame InitializeSubject() {
+    private StatusOrImageFrame InitializeSubject()
+    {
       var imageFrame = new ImageFrame(ImageFormat.Format.SBGRA, 10, 10);
       var packet = new ImageFramePacket(imageFrame, new Timestamp(1));
 

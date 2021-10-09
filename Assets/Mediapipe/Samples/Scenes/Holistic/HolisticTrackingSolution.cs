@@ -1,80 +1,99 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mediapipe.Unity.Holistic {
-  public class HolisticTrackingSolution : Solution {
-    [SerializeField] RawImage screen;
-    [SerializeField] RectTransform worldAnnotationArea;
-    [SerializeField] DetectionAnnotationController poseDetectionAnnotationController;
-    [SerializeField] HolisticLandmarkListAnnotationController holisticAnnotationController;
-    [SerializeField] PoseWorldLandmarkListAnnotationController poseWorldLandmarksAnnotationController;
-    [SerializeField] NormalizedRectAnnotationController poseRoiAnnotationController;
-    [SerializeField] HolisticTrackingGraph graphRunner;
-    [SerializeField] TextureFramePool textureFramePool;
+namespace Mediapipe.Unity.Holistic
+{
+  public class HolisticTrackingSolution : Solution
+  {
+    [SerializeField] private RawImage _screen;
+    [SerializeField] private RectTransform _worldAnnotationArea;
+    [SerializeField] private DetectionAnnotationController _poseDetectionAnnotationController;
+    [SerializeField] private HolisticLandmarkListAnnotationController _holisticAnnotationController;
+    [SerializeField] private PoseWorldLandmarkListAnnotationController _poseWorldLandmarksAnnotationController;
+    [SerializeField] private NormalizedRectAnnotationController _poseRoiAnnotationController;
+    [SerializeField] private HolisticTrackingGraph _graphRunner;
+    [SerializeField] private TextureFramePool _textureFramePool;
 
-    Coroutine coroutine;
+    private Coroutine _coroutine;
 
     public RunningMode runningMode;
-    public HolisticTrackingGraph.ModelComplexity modelComplexity {
-      get { return graphRunner.modelComplexity; }
-      set { graphRunner.modelComplexity = value; }
+    public HolisticTrackingGraph.ModelComplexity modelComplexity
+    {
+      get => _graphRunner.modelComplexity;
+      set => _graphRunner.modelComplexity = value;
     }
 
-    public bool smoothLandmarks {
-      get { return graphRunner.smoothLandmarks; }
-      set { graphRunner.smoothLandmarks = value; }
+    public bool smoothLandmarks
+    {
+      get => _graphRunner.smoothLandmarks;
+      set => _graphRunner.smoothLandmarks = value;
     }
 
-    public bool detectIris {
-      get { return graphRunner.detectIris; }
-      set { graphRunner.detectIris = value; }
+    public bool detectIris
+    {
+      get => _graphRunner.detectIris;
+      set => _graphRunner.detectIris = value;
     }
 
-    public long timeoutMillisec {
-      get { return graphRunner.timeoutMillisec; }
-      set { graphRunner.SetTimeoutMillisec(value); }
+    public long timeoutMillisec
+    {
+      get => _graphRunner.timeoutMillisec;
+      set => _graphRunner.SetTimeoutMillisec(value);
     }
 
-    public override void Play() {
-      if (coroutine != null) {
+    public override void Play()
+    {
+      if (_coroutine != null)
+      {
         Stop();
       }
       base.Play();
-      coroutine = StartCoroutine(Run());
+      _coroutine = StartCoroutine(Run());
     }
 
-    public override void Pause() {
+    public override void Pause()
+    {
       base.Pause();
-      ImageSourceProvider.imageSource.Pause();
+      ImageSourceProvider.ImageSource.Pause();
     }
 
-    public override void Resume() {
+    public override void Resume()
+    {
       base.Resume();
-      StartCoroutine(ImageSourceProvider.imageSource.Resume());
+      var _ = StartCoroutine(ImageSourceProvider.ImageSource.Resume());
     }
 
-    public override void Stop() {
+    public override void Stop()
+    {
       base.Stop();
-      StopCoroutine(coroutine);
-      ImageSourceProvider.imageSource.Stop();
-      graphRunner.Stop();
+      StopCoroutine(_coroutine);
+      ImageSourceProvider.ImageSource.Stop();
+      _graphRunner.Stop();
     }
 
-    IEnumerator Run() {
-      var graphInitRequest = graphRunner.WaitForInit();
-      var imageSource = ImageSourceProvider.imageSource;
+    private IEnumerator Run()
+    {
+      var graphInitRequest = _graphRunner.WaitForInit();
+      var imageSource = ImageSourceProvider.ImageSource;
 
       yield return imageSource.Play();
 
-      if (!imageSource.isPrepared) {
+      if (!imageSource.isPrepared)
+      {
         Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
         yield break;
       }
-      // NOTE: The screen will be resized later, keeping the aspect ratio.
-      SetupScreen(screen, imageSource);
-      screen.texture = imageSource.GetCurrentTexture();
-      worldAnnotationArea.localEulerAngles = imageSource.rotation.Reverse().GetEulerAngles();
+      // NOTE: The _screen will be resized later, keeping the aspect ratio.
+      SetupScreen(_screen, imageSource);
+      _screen.texture = imageSource.GetCurrentTexture();
+      _worldAnnotationArea.localEulerAngles = imageSource.rotation.Reverse().GetEulerAngles();
 
       Logger.LogInfo(TAG, $"Model Complexity = {modelComplexity}");
       Logger.LogInfo(TAG, $"Smooth Landmarks = {smoothLandmarks}");
@@ -83,94 +102,109 @@ namespace Mediapipe.Unity.Holistic {
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
       yield return graphInitRequest;
-      if (graphInitRequest.isError) {
+      if (graphInitRequest.isError)
+      {
         Logger.LogError(TAG, graphInitRequest.error);
         yield break;
       }
 
-      if (runningMode == RunningMode.Async) {
-        graphRunner.OnPoseDetectionOutput.AddListener(OnPoseDetectionOutput);
-        graphRunner.OnFaceLandmarksOutput.AddListener(OnFaceLandmarksOutput);
-        graphRunner.OnPoseLandmarksOutput.AddListener(OnPoseLandmarksOutput);
-        graphRunner.OnLeftHandLandmarksOutput.AddListener(OnLeftHandLandmarksOutput);
-        graphRunner.OnRightHandLandmarksOutput.AddListener(OnRightHandLandmarksOutput);
-        graphRunner.OnLeftIrisLandmarksOutput.AddListener(OnLeftIrisLandmarksOutput);
-        graphRunner.OnRightIrisLandmarksOutput.AddListener(OnRightIrisLandmarksOutput);
-        graphRunner.OnPoseWorldLandmarksOutput.AddListener(OnPoseWorldLandmarksOutput);
-        graphRunner.OnPoseRoiOutput.AddListener(OnPoseRoiOutput);
-        graphRunner.StartRunAsync(imageSource).AssertOk();
-      } else {
-        graphRunner.StartRun(imageSource).AssertOk();
+      if (runningMode == RunningMode.Async)
+      {
+        _graphRunner.OnPoseDetectionOutput.AddListener(OnPoseDetectionOutput);
+        _graphRunner.OnFaceLandmarksOutput.AddListener(OnFaceLandmarksOutput);
+        _graphRunner.OnPoseLandmarksOutput.AddListener(OnPoseLandmarksOutput);
+        _graphRunner.OnLeftHandLandmarksOutput.AddListener(OnLeftHandLandmarksOutput);
+        _graphRunner.OnRightHandLandmarksOutput.AddListener(OnRightHandLandmarksOutput);
+        _graphRunner.OnLeftIrisLandmarksOutput.AddListener(OnLeftIrisLandmarksOutput);
+        _graphRunner.OnRightIrisLandmarksOutput.AddListener(OnRightIrisLandmarksOutput);
+        _graphRunner.OnPoseWorldLandmarksOutput.AddListener(OnPoseWorldLandmarksOutput);
+        _graphRunner.OnPoseRoiOutput.AddListener(OnPoseRoiOutput);
+        _graphRunner.StartRunAsync(imageSource).AssertOk();
+      }
+      else
+      {
+        _graphRunner.StartRun(imageSource).AssertOk();
       }
 
       // Use RGBA32 as the input format.
       // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
-      textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
+      _textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
 
-      SetupAnnotationController(poseDetectionAnnotationController, imageSource);
-      SetupAnnotationController(holisticAnnotationController, imageSource);
-      SetupAnnotationController(poseWorldLandmarksAnnotationController, imageSource);
-      SetupAnnotationController(poseRoiAnnotationController, imageSource);
+      SetupAnnotationController(_poseDetectionAnnotationController, imageSource);
+      SetupAnnotationController(_holisticAnnotationController, imageSource);
+      SetupAnnotationController(_poseWorldLandmarksAnnotationController, imageSource);
+      SetupAnnotationController(_poseRoiAnnotationController, imageSource);
 
-      while (true) {
+      while (true)
+      {
         yield return new WaitWhile(() => isPaused);
 
-        var textureFrameRequest = textureFramePool.WaitForNextTextureFrame();
+        var textureFrameRequest = _textureFramePool.WaitForNextTextureFrame();
         yield return textureFrameRequest;
         var textureFrame = textureFrameRequest.result;
 
         // Copy current image to TextureFrame
-        ReadFromImageSource(textureFrame, runningMode, graphRunner.configType);
+        ReadFromImageSource(imageSource, textureFrame);
 
-        graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
+        _graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
 
-        if (runningMode == RunningMode.Sync) {
+        if (runningMode == RunningMode.Sync)
+        {
           // When running synchronously, wait for the outputs here (blocks the main thread).
-          var value = graphRunner.FetchNextValue();
-          poseDetectionAnnotationController.DrawNow(value.poseDetection);
-          holisticAnnotationController.DrawNow(value.faceLandmarks, value.poseLandmarks, value.leftHandLandmarks, value.rightHandLandmarks, value.leftIrisLandmarks, value.rightIrisLandmarks);
-          poseWorldLandmarksAnnotationController.DrawNow(value.poseWorldLandmarks);
-          poseRoiAnnotationController.DrawNow(value.poseRoi);
+          var value = _graphRunner.FetchNextValue();
+          _poseDetectionAnnotationController.DrawNow(value.poseDetection);
+          _holisticAnnotationController.DrawNow(value.faceLandmarks, value.poseLandmarks, value.leftHandLandmarks, value.rightHandLandmarks, value.leftIrisLandmarks, value.rightIrisLandmarks);
+          _poseWorldLandmarksAnnotationController.DrawNow(value.poseWorldLandmarks);
+          _poseRoiAnnotationController.DrawNow(value.poseRoi);
         }
 
         yield return new WaitForEndOfFrame();
       }
     }
 
-    void OnPoseDetectionOutput(Detection poseDetection) {
-      poseDetectionAnnotationController.DrawLater(poseDetection);
+    private void OnPoseDetectionOutput(Detection poseDetection)
+    {
+      _poseDetectionAnnotationController.DrawLater(poseDetection);
     }
 
-    void OnFaceLandmarksOutput(NormalizedLandmarkList faceLandmarks) {
-      holisticAnnotationController.DrawFaceLandmarkListLater(faceLandmarks);
+    private void OnFaceLandmarksOutput(NormalizedLandmarkList faceLandmarks)
+    {
+      _holisticAnnotationController.DrawFaceLandmarkListLater(faceLandmarks);
     }
 
-    void OnPoseLandmarksOutput(NormalizedLandmarkList poseLandmarks) {
-      holisticAnnotationController.DrawPoseLandmarkListLater(poseLandmarks);
+    private void OnPoseLandmarksOutput(NormalizedLandmarkList poseLandmarks)
+    {
+      _holisticAnnotationController.DrawPoseLandmarkListLater(poseLandmarks);
     }
 
-    void OnLeftHandLandmarksOutput(NormalizedLandmarkList leftHandLandmarks) {
-      holisticAnnotationController.DrawLeftHandLandmarkListLater(leftHandLandmarks);
+    private void OnLeftHandLandmarksOutput(NormalizedLandmarkList leftHandLandmarks)
+    {
+      _holisticAnnotationController.DrawLeftHandLandmarkListLater(leftHandLandmarks);
     }
 
-    void OnRightHandLandmarksOutput(NormalizedLandmarkList rightHandLandmarks) {
-      holisticAnnotationController.DrawRightHandLandmarkListLater(rightHandLandmarks);
+    private void OnRightHandLandmarksOutput(NormalizedLandmarkList rightHandLandmarks)
+    {
+      _holisticAnnotationController.DrawRightHandLandmarkListLater(rightHandLandmarks);
     }
 
-    void OnLeftIrisLandmarksOutput(NormalizedLandmarkList leftIrisLandmarks) {
-      holisticAnnotationController.DrawLeftIrisLandmarkListLater(leftIrisLandmarks);
+    private void OnLeftIrisLandmarksOutput(NormalizedLandmarkList leftIrisLandmarks)
+    {
+      _holisticAnnotationController.DrawLeftIrisLandmarkListLater(leftIrisLandmarks);
     }
 
-    void OnRightIrisLandmarksOutput(NormalizedLandmarkList rightIrisLandmarks) {
-      holisticAnnotationController.DrawRightIrisLandmarkListLater(rightIrisLandmarks);
+    private void OnRightIrisLandmarksOutput(NormalizedLandmarkList rightIrisLandmarks)
+    {
+      _holisticAnnotationController.DrawRightIrisLandmarkListLater(rightIrisLandmarks);
     }
 
-    void OnPoseWorldLandmarksOutput(LandmarkList poseWorldLandmarks) {
-      poseWorldLandmarksAnnotationController.DrawLater(poseWorldLandmarks);
+    private void OnPoseWorldLandmarksOutput(LandmarkList poseWorldLandmarks)
+    {
+      _poseWorldLandmarksAnnotationController.DrawLater(poseWorldLandmarks);
     }
 
-    void OnPoseRoiOutput(NormalizedRect roiFromLandmarks) {
-      poseRoiAnnotationController.DrawLater(roiFromLandmarks);
+    private void OnPoseRoiOutput(NormalizedRect roiFromLandmarks)
+    {
+      _poseRoiAnnotationController.DrawLater(roiFromLandmarks);
     }
   }
 }

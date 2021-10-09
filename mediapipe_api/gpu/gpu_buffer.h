@@ -1,7 +1,14 @@
-#ifndef C_MEDIAPIPE_API_GPU_GPU_BUFFER_H_
-#define C_MEDIAPIPE_API_GPU_GPU_BUFFER_H_
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
+#ifndef MEDIAPIPE_API_GPU_GPU_BUFFER_H_
+#define MEDIAPIPE_API_GPU_GPU_BUFFER_H_
 
 #include <memory>
+
 #include "mediapipe/gpu/gpu_buffer.h"
 #include "mediapipe_api/common.h"
 #include "mediapipe_api/external/absl/status.h"
@@ -32,13 +39,11 @@ MP_CAPI(MpReturnCode) mp_StatusOrGpuBuffer__status(StatusOrGpuBuffer* status_or_
 MP_CAPI(MpReturnCode) mp_StatusOrGpuBuffer__value(StatusOrGpuBuffer* status_or_gpu_buffer, mediapipe::GpuBuffer** value_out);
 
 MP_CAPI(MpReturnCode) mp__MakeGpuBufferPacket__Rgb(mediapipe::GpuBuffer* gpu_buffer, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp__MakeGpuBufferPacket_At__Rgb_Rts(mediapipe::GpuBuffer* gpu_buffer,
-                                                          mediapipe::Timestamp* timestamp,
-                                                          mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeGpuBufferPacket_At__Rgb_Rts(mediapipe::GpuBuffer* gpu_buffer, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__ConsumeGpuBuffer(mediapipe::Packet* packet, StatusOrGpuBuffer** status_or_value_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetGpuBuffer(mediapipe::Packet* packet, const mediapipe::GpuBuffer** value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsGpuBuffer(mediapipe::Packet* packet, absl::Status** status_out);
 
 }  // extern "C"
 
-#endif  // C_MEDIAPIPE_API_GPU_GPU_BUFFER_H_
+#endif  // MEDIAPIPE_API_GPU_GPU_BUFFER_H_

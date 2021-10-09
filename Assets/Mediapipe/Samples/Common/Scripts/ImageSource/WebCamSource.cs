@@ -1,3 +1,9 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections;
 using System.Linq;
@@ -7,46 +13,55 @@ using UnityEngine;
 using UnityEngine.Android;
 #endif
 
-namespace Mediapipe.Unity {
-  public class WebCamSource : ImageSource {
-    static readonly string TAG = typeof(WebCamSource).Name;
+namespace Mediapipe.Unity
+{
+  public class WebCamSource : ImageSource
+  {
+    private const string _TAG = nameof(WebCamSource);
 
-    [SerializeField] ResolutionStruct[] defaultAvailableResolutions;
+    [SerializeField] private ResolutionStruct[] _defaultAvailableResolutions;
 
-    static readonly object permissionLock = new object();
-    static bool isPermitted = false;
+    private static readonly object _PermissionLock = new object();
+    private static bool _IsPermitted = false;
 
-    public override SourceType type {
-      get { return SourceType.Camera; }
-    }
+    public override SourceType type => SourceType.Camera;
 
-    WebCamTexture _webCamTexture;
-    WebCamTexture webCamTexture {
-      get { return _webCamTexture; }
-      set {
-        if (_webCamTexture != null) {
+    private WebCamTexture _webCamTexture;
+    private WebCamTexture webCamTexture
+    {
+      get => _webCamTexture;
+      set
+      {
+        if (_webCamTexture != null)
+        {
           _webCamTexture.Stop();
         }
         _webCamTexture = value;
       }
     }
 
-    public override int textureWidth { get { return !isPrepared ? 0 : webCamTexture.width; } }
-    public override int textureHeight { get { return !isPrepared ? 0 : webCamTexture.height; } }
+    public override int textureWidth => !isPrepared ? 0 : webCamTexture.width;
+    public override int textureHeight => !isPrepared ? 0 : webCamTexture.height;
 
-    public override bool isVerticallyFlipped { get { return !isPrepared ? false : webCamTexture.videoVerticallyMirrored; } }
-    public override RotationAngle rotation { get { return !isPrepared ? RotationAngle.Rotation0 : (RotationAngle)webCamTexture.videoRotationAngle; } }
+    public override bool isVerticallyFlipped => isPrepared && webCamTexture.videoVerticallyMirrored;
+    public override RotationAngle rotation => !isPrepared ? RotationAngle.Rotation0 : (RotationAngle)webCamTexture.videoRotationAngle;
 
-    WebCamDevice? _webCamDevice;
-    WebCamDevice? webCamDevice {
-      get { return _webCamDevice; }
-      set {
-        if (_webCamDevice is WebCamDevice valueOfWebCamDevice) {
-          if (value is WebCamDevice valueOfValue && valueOfValue.name == valueOfWebCamDevice.name) {
+    private WebCamDevice? _webCamDevice;
+    private WebCamDevice? webCamDevice
+    {
+      get => _webCamDevice;
+      set
+      {
+        if (_webCamDevice is WebCamDevice valueOfWebCamDevice)
+        {
+          if (value is WebCamDevice valueOfValue && valueOfValue.name == valueOfWebCamDevice.name)
+          {
             // not changed
             return;
           }
-        } else if (value == null) {
+        }
+        else if (value == null)
+        {
           // not changed
           return;
         }
@@ -54,80 +69,76 @@ namespace Mediapipe.Unity {
         resolution = GetDefaultResolution();
       }
     }
-    public override string sourceName {
-      get {
-        if (webCamDevice is WebCamDevice valueOfWebCamDevice) {
-          return valueOfWebCamDevice.name;
-        }
-        return null;
-      }
-    }
+    public override string sourceName => (webCamDevice is WebCamDevice valueOfWebCamDevice) ? valueOfWebCamDevice.name : null;
 
-    WebCamDevice[] _availableSources;
-    WebCamDevice[] availableSources {
-      get {
-        if (_availableSources == null) {
+    private WebCamDevice[] _availableSources;
+    private WebCamDevice[] availableSources
+    {
+      get
+      {
+        if (_availableSources == null)
+        {
           _availableSources = WebCamTexture.devices;
         }
 
         return _availableSources;
       }
-      set { _availableSources = value; }
+      set => _availableSources = value;
     }
 
-    public override string[] sourceCandidateNames {
-      get {
-        if (availableSources == null) {
-          return null;
-        }
-        return availableSources.Select(device => device.name).ToArray();
-      }
-    }
+    public override string[] sourceCandidateNames => availableSources?.Select(device => device.name).ToArray();
 
-    public override ResolutionStruct[] availableResolutions {
-      get {
+#pragma warning disable IDE0025
+    public override ResolutionStruct[] availableResolutions
+    {
+      get
+      {
 #if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
         if (webCamDevice is WebCamDevice valueOfWebCamDevice) {
           return valueOfWebCamDevice.availableResolutions.Select(resolution => new ResolutionStruct(resolution)).ToArray();
         }
 #endif
-        if (webCamDevice == null) {
-          return null;
-        }
-
-        return defaultAvailableResolutions;
+        return webCamDevice == null ? null : _defaultAvailableResolutions;
       }
     }
+#pragma warning restore IDE0025
 
-    public override bool isPrepared { get { return webCamTexture != null; } }
-    public override bool isPlaying { get { return webCamTexture == null ? false : webCamTexture.isPlaying; } }
-    bool isInitialized;
+    public override bool isPrepared => webCamTexture != null;
+    public override bool isPlaying => webCamTexture != null && webCamTexture.isPlaying;
+    private bool _isInitialized;
 
-    IEnumerator Start() {
+    private IEnumerator Start()
+    {
       yield return GetPermission();
 
-      if (!isPermitted) {
-        isInitialized = true;
+      if (!_IsPermitted)
+      {
+        _isInitialized = true;
         yield break;
       }
-      
+
       availableSources = WebCamTexture.devices;
 
-      if (availableSources != null && availableSources.Length > 0) {
+      if (availableSources != null && availableSources.Length > 0)
+      {
         webCamDevice = availableSources[0];
       }
 
-      isInitialized = true;
+      _isInitialized = true;
     }
 
-    IEnumerator GetPermission() {
-      lock(permissionLock) {
-        if (isPermitted) {
+    private IEnumerator GetPermission()
+    {
+      lock (_PermissionLock)
+      {
+        if (_IsPermitted)
+        {
           yield break;
         }
 
 #if UNITY_ANDROID
-        if (!Permission.HasUserAuthorizedPermission(Permission.Camera)) {
+        if (!Permission.HasUserAuthorizedPermission(Permission.Camera))
+        {
           Permission.RequestUserPermission(Permission.Camera);
           yield return new WaitForSeconds(0.1f);
         }
@@ -138,33 +149,38 @@ namespace Mediapipe.Unity {
 #endif
 
 #if UNITY_ANDROID
-        if (!Permission.HasUserAuthorizedPermission(Permission.Camera)) {
-          Logger.LogWarning(TAG, "Not permitted to use Camera");
+        if (!Permission.HasUserAuthorizedPermission(Permission.Camera))
+        {
+          Logger.LogWarning(_TAG, "Not permitted to use Camera");
           yield break;
         }
 #elif UNITY_IOS
         if (!Application.HasUserAuthorization(UserAuthorization.WebCam)) {
-          Logger.LogWarning(TAG, "Not permitted to use WebCam");
+          Logger.LogWarning(_TAG, "Not permitted to use WebCam");
           yield break;
         }
 #endif
-        isPermitted = true;
+        _IsPermitted = true;
 
         yield return new WaitForEndOfFrame();
       }
     }
 
-    public override void SelectSource(int sourceId) {
-      if (sourceId < 0 || sourceId >= availableSources.Length) {
+    public override void SelectSource(int sourceId)
+    {
+      if (sourceId < 0 || sourceId >= availableSources.Length)
+      {
         throw new ArgumentException($"Invalid source ID: {sourceId}");
       }
 
       webCamDevice = availableSources[sourceId];
     }
 
-    public override IEnumerator Play() {
-      yield return new WaitUntil(() => isInitialized);
-      if (!isPermitted) {
+    public override IEnumerator Play()
+    {
+      yield return new WaitUntil(() => _isInitialized);
+      if (!_IsPermitted)
+      {
         throw new InvalidOperationException("Not permitted to access cameras");
       }
 
@@ -173,59 +189,68 @@ namespace Mediapipe.Unity {
       yield return WaitForWebCamTexture();
     }
 
-    public override IEnumerator Resume() {
-      if (!isPrepared) {
+    public override IEnumerator Resume()
+    {
+      if (!isPrepared)
+      {
         throw new InvalidOperationException("WebCamTexture is not prepared yet");
       }
-      if (!webCamTexture.isPlaying) {
+      if (!webCamTexture.isPlaying)
+      {
         webCamTexture.Play();
       }
       yield return WaitForWebCamTexture();
     }
 
-    public override void Pause() {
-      if (isPlaying) {
+    public override void Pause()
+    {
+      if (isPlaying)
+      {
         webCamTexture.Pause();
       }
     }
 
-    public override void Stop() {
-      if (webCamTexture != null) {
+    public override void Stop()
+    {
+      if (webCamTexture != null)
+      {
         webCamTexture.Stop();
       }
       webCamTexture = null;
     }
 
-    public override Texture GetCurrentTexture() {
+    public override Texture GetCurrentTexture()
+    {
       return webCamTexture;
     }
 
-    ResolutionStruct GetDefaultResolution() {
+    private ResolutionStruct GetDefaultResolution()
+    {
       var resolutions = availableResolutions;
 
-      if (resolutions == null || resolutions.Length == 0) {
-        return new ResolutionStruct();
-      }
-
-      return resolutions[0];
+      return (resolutions == null || resolutions.Length == 0) ? new ResolutionStruct() : resolutions[0];
     }
 
-    void InitializeWebCamTexture() {
+    private void InitializeWebCamTexture()
+    {
       Stop();
-      if (webCamDevice is WebCamDevice valueOfWebCamDevice) {
-        webCamTexture = new WebCamTexture(valueOfWebCamDevice.name, (int)resolution.width, (int)resolution.height, (int)resolution.frameRate);
+      if (webCamDevice is WebCamDevice valueOfWebCamDevice)
+      {
+        webCamTexture = new WebCamTexture(valueOfWebCamDevice.name, resolution.width, resolution.height, (int)resolution.frameRate);
         return;
       }
       throw new InvalidOperationException("Cannot initialize WebCamTexture because WebCamDevice is not selected");
     }
 
-    IEnumerator WaitForWebCamTexture() {
+    private IEnumerator WaitForWebCamTexture()
+    {
       const int timeoutFrame = 500;
       var count = 0;
       Logger.LogVerbose("Waiting for WebCamTexture to start");
       yield return new WaitUntil(() => count++ > timeoutFrame || webCamTexture.width > 16);
 
-      if (webCamTexture.width <= 16) {
+      if (webCamTexture.width <= 16)
+      {
         throw new TimeoutException("Failed to start WebCam");
       }
     }

@@ -2,6 +2,7 @@
 .vscode/
 .vs/
 .DS_Store
+.python-version
 
 /[Ll]ibrary/
 /[Tt]emp/
@@ -11,6 +12,7 @@
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
 /[Cc]ode[Cc]overage/
+/packages/
 *.csproj
 *.sln
 
