@@ -2,9 +2,7 @@
   "RoslynExtensionsOptions": {
     "enableAnalyzersSupport": true,
     "LocationPaths": [
-      "./.nuget/Microsoft.Unity.Analyzers.1.11.1/analyzers/dotnet/cs",
-      "./.nuget/ErrorProne.NET.CoreAnalyzers.0.4.0-beta.1/analyzers/dotnet/cs",
-      "./.nuget/ErrorProne.NET.Structs.0.4.0-beta.1/analyzers/dotnet/cs"
+      "./Assets/Analyzers"
     ]
   },
   "FormattingOptions": {
