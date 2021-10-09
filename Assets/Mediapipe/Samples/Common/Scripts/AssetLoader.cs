@@ -25,7 +25,7 @@ namespace Mediapipe.Unity
         Logger.LogWarning("ResourceManager is not provided, so default LocalResourceManager will be used");
         _ResourceManager = new LocalResourceManager();
 #else
-        throw new InvalidOperationException("ResourceManager is not provided");
+        throw new System.InvalidOperationException("ResourceManager is not provided");
 #endif
       }
       return _ResourceManager.PrepareAssetAsync(name, uniqueKey, overwrite);

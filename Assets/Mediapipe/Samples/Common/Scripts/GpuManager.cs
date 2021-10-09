@@ -118,7 +118,7 @@ namespace Mediapipe.Unity
 #if UNITY_ANDROID && !UNITY_EDITOR
     [AOT.MonoPInvokeCallback(typeof(PluginCallback))]
     static void GetCurrentContext(int eventId) {
-      _CurrentContext = Egl.getCurrentContext();
+      _CurrentContext = Egl.GetCurrentContext();
       _IsContextInitialized = true;
     }
 #endif
