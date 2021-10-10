@@ -66,7 +66,7 @@ namespace Mediapipe.Unity
       {
         case AssetLoaderType.AssetBundle:
           {
-            AssetLoader.Provide(new AssetBundleResourceManager(Path.Combine(Application.streamingAssetsPath, "mediapipe")));
+            AssetLoader.Provide(new AssetBundleResourceManager("mediapipe"));
             break;
           }
         case AssetLoaderType.StreamingAssets:
