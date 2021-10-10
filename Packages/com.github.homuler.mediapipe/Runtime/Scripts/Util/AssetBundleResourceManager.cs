@@ -36,19 +36,9 @@ namespace Mediapipe.Unity
       return File.Exists(path);
     }
 
-    private AssetBundle _assetBundle;
-    private AssetBundle assetBundle
-    {
-      get => _assetBundle;
-      set
-      {
-        if (_assetBundle != null)
-        {
-          _assetBundle.Unload(false);
-        }
-        _assetBundle = value;
-      }
-    }
+
+    private AssetBundleCreateRequest _assetBundleReq;
+    private AssetBundle assetBundle => _assetBundleReq?.assetBundle;
 
     public void ClearAllCacheFiles()
     {
@@ -66,15 +56,14 @@ namespace Mediapipe.Unity
         yield break;
       }
 
-      var bundleLoadReq = AssetBundle.LoadFromFileAsync(_AssetBundlePath);
-      yield return bundleLoadReq;
+      // No need to lock because this code can be run in main thread only.
+      _assetBundleReq = AssetBundle.LoadFromFileAsync(_AssetBundlePath);
+      yield return _assetBundleReq;
 
-      if (bundleLoadReq.assetBundle == null)
+      if (_assetBundleReq.assetBundle == null)
       {
         throw new IOException($"Failed to load {_AssetBundlePath}");
       }
-
-      assetBundle = bundleLoadReq.assetBundle;
     }
 
     public override IEnumerator PrepareAssetAsync(string name, string uniqueKey, bool overwrite = true)
