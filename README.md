@@ -53,6 +53,8 @@ Docker is only used to build native libraries, not at runtime, so there is no im
 
 ### Docker for Linux
 
+**ATTENTION!**: If your GNU libc version does not match the version of it in the container, built libraries don't work on your machine probably.
+
 1. Build a Docker image
 
    ```sh
