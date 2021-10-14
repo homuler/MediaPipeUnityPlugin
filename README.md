@@ -94,7 +94,7 @@ If the command finishes successfully, required files will be installed to your h
 
 ### Linux
 
-1. (Optional, Deprecated) Install OpenCV and FFmpeg
+1. (Optional) Install OpenCV and FFmpeg\
    You can skip this if you plan to build OpenCV with MediaPipe (see [Build Command](https://github.com/homuler/MediaPipeUnityPlugin#build-command) for more details).
 
    By default, it is assumed that OpenCV 3 is installed under `/usr` (e.g. `/usr/lib/libopencv_core.so`).\
