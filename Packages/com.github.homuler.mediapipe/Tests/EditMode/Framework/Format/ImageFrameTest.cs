@@ -127,7 +127,6 @@ namespace Tests
       using (var imageFrame = new ImageFrame(ImageFormat.Format.GRAY8, 10, 10))
       {
         var origBytes = imageFrame.CopyToByteBuffer(100);
-        Assert.False(origBytes.All((x) => x == 0));
 
         imageFrame.SetToZero();
         var bytes = imageFrame.CopyToByteBuffer(100);
