@@ -270,15 +270,18 @@ index 66150c5..b3a14a9 100644
          ":annotation_cc_proto",
          ":belief_decoder_config_cc_proto",
 diff --git a/mediapipe/util/tflite/tflite_gpu_runner.cc b/mediapipe/util/tflite/tflite_gpu_runner.cc
-index 5445f02..78af4f6 100644
+index 5445f02..0758efe 100644
 --- a/mediapipe/util/tflite/tflite_gpu_runner.cc
 +++ b/mediapipe/util/tflite/tflite_gpu_runner.cc
-@@ -214,7 +214,7 @@ absl::Status TFLiteGPURunner::InitializeOpenCL(
+@@ -213,8 +213,10 @@ absl::Status TFLiteGPURunner::InitializeOpenCL(
+       cl::NewInferenceEnvironment(env_options, &cl_environment_, &properties));
    MP_RETURN_IF_ERROR(cl_environment_->NewInferenceBuilder(
        cl_options, std::move(*graph_cl_), builder));
- #endif
--  return absl::OkStatus();
+-#endif
+   return absl::OkStatus();
++#else
 +  return mediapipe::UnimplementedError("Currently only Android is supported");
++#endif
  }
  
  }  // namespace gpu
