@@ -1,8 +1,8 @@
 diff --git a/mediapipe/calculators/tensor/BUILD b/mediapipe/calculators/tensor/BUILD
-index 71be05f..5dffa2f 100644
+index 72c2f51..79929e0 100644
 --- a/mediapipe/calculators/tensor/BUILD
 +++ b/mediapipe/calculators/tensor/BUILD
-@@ -87,7 +87,12 @@ cc_library(
+@@ -92,7 +92,12 @@ cc_library(
          "@org_tensorflow//tensorflow/lite/delegates/gpu/gl:gl_buffer",
          "@org_tensorflow//tensorflow/lite/delegates/gpu/gl:gl_program",
          "@org_tensorflow//tensorflow/lite/delegates/gpu/gl:gl_shader",
@@ -16,19 +16,6 @@ index 71be05f..5dffa2f 100644
      alwayslink = 1,
  )
  
-diff --git a/mediapipe/calculators/tensor/tensors_to_detections_calculator.cc b/mediapipe/calculators/tensor/tensors_to_detections_calculator.cc
-index f161127..a44deb8 100644
---- a/mediapipe/calculators/tensor/tensors_to_detections_calculator.cc
-+++ b/mediapipe/calculators/tensor/tensors_to_detections_calculator.cc
-@@ -670,7 +670,7 @@ absl::Status TensorsToDetectionsCalculator::ConvertToDetections(
-         detection_boxes[box_offset + 2], detection_boxes[box_offset + 3],
-         detection_scores[i], detection_classes[i], options_.flip_vertically());
-     const auto& bbox = detection.location_data().relative_bounding_box();
--    if (bbox.width() < 0 || bbox.height() < 0) {
-+    if (bbox.width() < 0 || bbox.height() < 0 || std::isnan(bbox.width()) || std::isnan(bbox.height())) {
-       // Decoded detection boxes could have negative values for width/height due
-       // to model prediction. Filter out those boxes since some downstream
-       // calculators may assume non-negative values. (b/171391719)
 diff --git a/mediapipe/graphs/instant_motion_tracking/calculators/matrices_manager_calculator.cc b/mediapipe/graphs/instant_motion_tracking/calculators/matrices_manager_calculator.cc
 index c003135..edcd239 100644
 --- a/mediapipe/graphs/instant_motion_tracking/calculators/matrices_manager_calculator.cc
@@ -234,10 +221,10 @@ index cbacdb7..f40cf91 100644
    float y;  // [0.0-1.0]
    float z;  // Centered around 1.0 [current_scale = z * initial_scale]
 diff --git a/mediapipe/modules/objectron/calculators/BUILD b/mediapipe/modules/objectron/calculators/BUILD
-index 66150c5..b3a14a9 100644
+index fb75eb3..0eee4ff 100644
 --- a/mediapipe/modules/objectron/calculators/BUILD
 +++ b/mediapipe/modules/objectron/calculators/BUILD
-@@ -181,6 +181,15 @@ cc_library(
+@@ -199,6 +199,15 @@ cc_library(
      hdrs = [
          "tensor_util.h",
      ],
@@ -253,7 +240,7 @@ index 66150c5..b3a14a9 100644
      deps = [
          "//mediapipe/framework/formats:tensor",
          "//mediapipe/framework/port:logging",
-@@ -296,6 +305,15 @@ cc_library(
+@@ -314,6 +323,15 @@ cc_library(
      name = "lift_2d_frame_annotation_to_3d_calculator",
      srcs = ["lift_2d_frame_annotation_to_3d_calculator.cc"],
      visibility = ["//visibility:public"],
@@ -270,7 +257,7 @@ index 66150c5..b3a14a9 100644
          ":annotation_cc_proto",
          ":belief_decoder_config_cc_proto",
 diff --git a/mediapipe/util/tflite/tflite_gpu_runner.cc b/mediapipe/util/tflite/tflite_gpu_runner.cc
-index 5445f02..0758efe 100644
+index 5445f02..3f0eed7 100644
 --- a/mediapipe/util/tflite/tflite_gpu_runner.cc
 +++ b/mediapipe/util/tflite/tflite_gpu_runner.cc
 @@ -213,8 +213,10 @@ absl::Status TFLiteGPURunner::InitializeOpenCL(
@@ -280,7 +267,7 @@ index 5445f02..0758efe 100644
 -#endif
    return absl::OkStatus();
 +#else
-+  return mediapipe::UnimplementedError("Currently only Android is supported");
++  return mediapipe::UnimplementedError("OpenCL is currently only supported on Android");
 +#endif
  }
  
