@@ -16,12 +16,6 @@ namespace Mediapipe
       this.ptr = ptr;
     }
 
-    public GlTexture(uint name, int width, int height) : base()
-    {
-      UnsafeNativeMethods.mp_GlTexture__ui_i_i(name, width, height, out var ptr).Assert();
-      this.ptr = ptr;
-    }
-
     public GlTexture(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
     protected override void DeleteMpPtr()
