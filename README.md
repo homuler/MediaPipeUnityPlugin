@@ -221,7 +221,7 @@ If the command finishes successfully, required files will be installed to your h
    Rem Specify `--cpus` and `--memory` options according to your machine.
    docker run --cpus=16 --memory=8192m ^
        --mount type=bind,src=%CD%\Packages,dst=/home/mediapipe/Packages ^
-       --mount type=bind,src=%CD%\Assets,dst=C:\mediapipe\Assets ^
+       --mount type=bind,src=%CD%\Assets,dst=/home/mediapipe/Assets ^
        -it mediapipe_unity:linux
    ```
 
