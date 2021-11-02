@@ -45,9 +45,9 @@ Also note that you need to build native libraries for Desktop CPU or GPU to run 
 As long as Docker is available on your environment, Docker is always preferable.\
 Docker is only used to build native libraries, not at runtime, so there is no impact on performance.
 
-- [Docker for Linux](#docker-for-linux-experimental)
+- [Docker for Linux](#docker-for-linux)
 - [Linux](#linux)
-- [Docker for Windows](#docker-for-windows-experimental)
+- [Docker for Windows](#docker-for-windows)
 - [Windows](#windows)
 - [macOS](#macOS)
 
