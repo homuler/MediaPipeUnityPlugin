@@ -17,7 +17,14 @@ namespace Mediapipe.Unity
 {
   public class WebCamSource : ImageSource
   {
+    public bool overrideDefaultResolution = true;
+    [Header("This resolution is used if overrideDefaultResolution is true")]
+    public int defaultWidth = 1280;
+    public int defaultHeight = 720;
+    public int defaultFrameRate = 30;
+
     private const string _TAG = nameof(WebCamSource);
+    private ImageSource.ResolutionStruct defaultRes;
 
     [SerializeField] private ResolutionStruct[] _defaultAvailableResolutions;
 
@@ -106,6 +113,22 @@ namespace Mediapipe.Unity
     public override bool isPrepared => webCamTexture != null;
     public override bool isPlaying => webCamTexture != null && webCamTexture.isPlaying;
     private bool _isInitialized;
+
+    private void Awake()
+    {
+      if (overrideDefaultResolution == true)
+      {
+        //Flipped around if on mobile
+#if !UNITY_EDITOR && UNITY_IOS || !UNITY_EDITOR && UNITY_ANDROID
+      defaultRes.width = defaultHeight;
+      defaultRes.height = defaultWidth;
+#else
+        defaultRes.width = defaultWidth;
+        defaultRes.height = defaultHeight;
+#endif
+        defaultRes.frameRate = defaultFrameRate;
+      }
+    }
 
     private IEnumerator Start()
     {
@@ -226,9 +249,22 @@ namespace Mediapipe.Unity
 
     private ResolutionStruct GetDefaultResolution()
     {
-      var resolutions = availableResolutions;
+      if (overrideDefaultResolution == true)
+      {
 
-      return (resolutions == null || resolutions.Length == 0) ? new ResolutionStruct() : resolutions[0];
+        /*
+        var resolutions = availableResolutions;
+        return (resolutions == null || resolutions.Length == 0) ? new ResolutionStruct() : resolutions[0];
+        */
+        return defaultRes; //set defaultRes for now
+
+      }
+      else
+      {
+        var resolutions = availableResolutions;
+
+        return (resolutions == null || resolutions.Length == 0) ? new ResolutionStruct() : resolutions[0];
+      }
     }
 
     private void InitializeWebCamTexture()

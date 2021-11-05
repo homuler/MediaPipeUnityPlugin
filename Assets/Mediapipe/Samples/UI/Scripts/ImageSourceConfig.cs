@@ -120,19 +120,25 @@ namespace Mediapipe.Unity.UI
       var options = resolutions.Select(resolution => resolution.ToString()).ToList();
       _resolutionInput.AddOptions(options);
 
-      var currentResolutionStr = imageSource.resolution.ToString();
-      var defaultValue = options.FindIndex(option => option == currentResolutionStr);
-
-      if (defaultValue >= 0)
+      //set to 720p HD by default, if this doesn't work, the default resolution will be the first in the list which is not ideal
+      for (int i = 0; i < resolutions.Length; i++)
       {
-        _resolutionInput.value = defaultValue;
+#if UNITY_EDITOR
+        if (resolutions[i].width == 1280)
+#else
+if (resolutions[i].width == 1280)
+#endif
+        {
+          _resolutionInput.value = i;
+          break;
+        }
       }
 
       _resolutionInput.onValueChanged.AddListener(delegate
-      {
-        imageSource.SelectResolution(_resolutionInput.value);
-        _isChanged = true;
-      });
+    {
+      imageSource.SelectResolution(_resolutionInput.value);
+      _isChanged = true;
+    });
     }
 
     private void InitializeIsHorizontallyFlipped()
