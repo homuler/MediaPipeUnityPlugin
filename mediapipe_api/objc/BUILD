@@ -26,7 +26,7 @@ objc_library(
 
 ios_framework(
     name = "MediaPipeUnity",
-    bundle_id = "YOUR_BUNDLE_ID_HERE.MediaPipeUnity",
+    bundle_id = "YOURBUNDLEIDHERE.MediaPipeUnity",
     families = [
         "iphone",
         "ipad",
