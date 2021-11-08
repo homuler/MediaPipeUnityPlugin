@@ -73,25 +73,6 @@ namespace Mediapipe.Unity
     {
       screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
       screen.rectTransform.localEulerAngles = imageSource.rotation.Reverse().GetEulerAngles();
-
-      //Check if the screen is flipped on mobile and flip it if it is the front camera
-      if (imageSource.isHorizontallyFlipped == true)
-      {
-        //Check if the screen is rotated first
-        if (screen.gameObject.transform.rotation.z == 0)
-        {
-          screen.gameObject.transform.localScale = new Vector3(-1, 1, 1);
-        }
-        else
-        {
-          screen.gameObject.transform.localScale = new Vector3(1, -1, 1);
-        }
-      }
-      else
-      {
-        screen.gameObject.transform.localScale = new Vector3(1, 1, 1);
-      }
-
       if (imageSource.isVerticallyFlipped)
       {
         screen.uvRect = new UnityEngine.Rect(0, 1, 1, -1);
