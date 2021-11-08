@@ -13,9 +13,9 @@ namespace Mediapipe.Unity
 {
   public abstract class ImageSource : MonoBehaviour
   {
-    [Header("This resolution will be matched within 300px if override is true")]
+    [Header("This resolution will be matched within 300px")]
     // For the default resolution, the one whose width is closest to this value will be chosen.
-    [SerializeField] private int preferableDefaultWidth = 1280;
+    [SerializeField] public int preferableDefaultWidth = 1280;
 
     [Serializable]
     public struct ResolutionStruct

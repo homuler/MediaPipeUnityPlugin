@@ -107,22 +107,6 @@ namespace Mediapipe.Unity
     public override bool isPlaying => webCamTexture != null && webCamTexture.isPlaying;
     private bool _isInitialized;
 
-    private void Awake()
-    {
-      if (overrideDefaultResolution == true)
-      {
-        // Flipped around if on mobile
-#if !UNITY_EDITOR && UNITY_IOS || !UNITY_EDITOR && UNITY_ANDROID
-      defaultRes.width = defaultHeight;
-      defaultRes.height = defaultWidth;
-#else
-        defaultRes.width = defaultWidth;
-        defaultRes.height = defaultHeight;
-#endif
-        defaultRes.frameRate = defaultFrameRate;
-      }
-    }
-
     private IEnumerator Start()
     {
       yield return GetPermission();
@@ -243,30 +227,23 @@ namespace Mediapipe.Unity
     private ResolutionStruct GetDefaultResolution()
     {
       var resolutions = availableResolutions;
-      //Check if the default resolution is supported
-      if (overrideDefaultResolution == true)
+      // Check if the default resolution is supported
+      for (int i = 0; i < resolutions.Length; i++)
       {
-        for (int i = 0; i < resolutions.Length; i++)
+        if (resolutions[i].width == preferableDefaultWidth)
         {
-          if (resolutions[i].width == defaultWidth && resolutions[i].height == defaultWidth)
-          {
-            return resolutions[i];
-            break;
-          }
-          //Otherwise check if it is within a range
-          else if (resolutions[i].width < (defaultWidth + 300) && resolutions[i].width > (defaultWidth - 300))
-          {
-            return resolutions[i];
-            break;
-          }
+          return resolutions[i];
+          break;
         }
-        //If no condition if reached before now for default resolution is reached, return the first resolution instead
-        return (resolutions == null || resolutions.Length == 0) ? new ResolutionStruct() : resolutions[0];
+        // Otherwise check if it is within a range
+        else if (resolutions[i].width < (preferableDefaultWidth + 300) && resolutions[i].width > (preferableDefaultWidth - 300))
+        {
+          return resolutions[i];
+          break;
+        }
       }
-      else
-      {
-        return (resolutions == null || resolutions.Length == 0) ? new ResolutionStruct() : resolutions[0];
-      }
+      // If no condition if reached before now for default resolution is reached, return the first resolution instead
+      return (resolutions == null || resolutions.Length == 0) ? new ResolutionStruct() : resolutions[0];
     }
 
     private void InitializeWebCamTexture()
