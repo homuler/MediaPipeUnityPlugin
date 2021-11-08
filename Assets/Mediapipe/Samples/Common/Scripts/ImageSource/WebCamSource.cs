@@ -111,7 +111,7 @@ namespace Mediapipe.Unity
     {
       if (overrideDefaultResolution == true)
       {
-        //Flipped around if on mobile
+        // Flipped around if on mobile
 #if !UNITY_EDITOR && UNITY_IOS || !UNITY_EDITOR && UNITY_ANDROID
       defaultRes.width = defaultHeight;
       defaultRes.height = defaultWidth;
