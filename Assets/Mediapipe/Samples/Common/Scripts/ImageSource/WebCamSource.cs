@@ -226,6 +226,7 @@ namespace Mediapipe.Unity
 
     private ResolutionStruct GetDefaultResolution()
     {
+      bool resolutionFound = false;
       var resolutions = availableResolutions;
       // Check if the default resolution is supported
       for (int i = 0; i < resolutions.Length; i++)
@@ -233,13 +234,20 @@ namespace Mediapipe.Unity
         if (resolutions[i].width == preferableDefaultWidth)
         {
           return resolutions[i];
+          resolutionFound = true;
           break;
         }
-        // Otherwise check if it is within a range
-        else if (resolutions[i].width < (preferableDefaultWidth + 300) && resolutions[i].width > (preferableDefaultWidth - 300))
+      }
+      if (resolutionFound == false)
+      {
+        for (int i = 0; i < resolutions.Length; i++)
         {
-          return resolutions[i];
-          break;
+          // Otherwise check if it is within a range
+          if (resolutions[i].width < (preferableDefaultWidth + 300) && resolutions[i].width > (preferableDefaultWidth - 300))
+          {
+            return resolutions[i];
+            break;
+          }
         }
       }
       // If no condition if reached before now for default resolution is reached, return the first resolution instead
