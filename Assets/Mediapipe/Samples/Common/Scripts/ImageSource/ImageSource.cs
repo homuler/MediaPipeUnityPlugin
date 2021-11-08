@@ -13,6 +13,13 @@ namespace Mediapipe.Unity
 {
   public abstract class ImageSource : MonoBehaviour
   {
+    [Header("This resolution will be matched within 300px if override is true")]
+    public bool overrideDefaultResolution = true;
+    public int defaultWidth = 1280;
+    public int defaultHeight = 720;
+    public int defaultFrameRate = 30;
+    public ImageSource.ResolutionStruct defaultRes;
+
     [Serializable]
     public struct ResolutionStruct
     {

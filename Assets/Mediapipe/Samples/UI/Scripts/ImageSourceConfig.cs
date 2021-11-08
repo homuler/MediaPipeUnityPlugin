@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Mediapipe.Unity.UI
@@ -120,12 +121,22 @@ namespace Mediapipe.Unity.UI
       var options = resolutions.Select(resolution => resolution.ToString()).ToList();
       _resolutionInput.AddOptions(options);
 
-      var currentResolutionStr = imageSource.resolution.ToString();
-      var defaultValue = options.FindIndex(option => option == currentResolutionStr);
-
-      if (defaultValue >= 0)
+      if (imageSource.overrideDefaultResolution == true)
       {
-        _resolutionInput.value = defaultValue;
+        //set to default resolution if within 300px, if this doesn't work, the default resolution will be the first in the list as before which is not ideal
+        for (int i = 0; i < resolutions.Length; i++)
+        {
+          if (resolutions[i].width == imageSource.defaultWidth && resolutions[i].height == imageSource.defaultWidth)
+          {
+            _resolutionInput.value = i;
+            break;
+          }
+          else if (resolutions[i].width < (imageSource.defaultWidth + 300) && resolutions[i].width > (imageSource.defaultWidth - 300))
+          {
+            _resolutionInput.value = i;
+            break;
+          }
+        }
       }
 
       _resolutionInput.onValueChanged.AddListener(delegate
