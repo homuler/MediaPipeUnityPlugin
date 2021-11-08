@@ -172,8 +172,11 @@ namespace Mediapipe.Unity
       {
         throw new ArgumentException($"Invalid source ID: {sourceId}");
       }
-
       webCamDevice = availableSources[sourceId];
+      if (webCamDevice is WebCamDevice valueOfWebCamDevice)
+      {
+        isFrontCamera = valueOfWebCamDevice.isFrontFacing;
+      }
     }
 
     public override IEnumerator Play()
