@@ -75,7 +75,7 @@ namespace Mediapipe.Unity
       screen.rectTransform.localEulerAngles = imageSource.rotation.Reverse().GetEulerAngles();
 
       // Check if the screen is flipped on mobile and flip it if it is the front camera
-      if (imageSource.isFrontCamera == true)
+      if (imageSource.isFrontFacing == true)
       {
         if (imageSource.isHorizontallyFlipped == false)
         {

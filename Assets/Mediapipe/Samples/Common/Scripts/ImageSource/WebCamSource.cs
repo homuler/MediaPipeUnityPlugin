@@ -174,7 +174,7 @@ namespace Mediapipe.Unity
       }
       webCamDevice = availableSources[sourceId];
     }
-    
+
     public override bool isFrontFacing => isPrepared && (webCamDevice is WebCamDevice valueOfWebCamDevice) && valueOfWebCamDevice.isFrontFacing;
 
     public override IEnumerator Play()
