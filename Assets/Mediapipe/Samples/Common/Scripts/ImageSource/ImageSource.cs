@@ -71,7 +71,7 @@ namespace Mediapipe.Unity
     public virtual double frameRate => resolution.frameRate;
     public float focalLengthPx { get; } = 2.0f; // TODO: calculate at runtime
 
-    public bool isFrontCamera = false;
+    public virtual bool isFrontFacing { get; } = false;
     public virtual bool isHorizontallyFlipped { get; set; } = false;
     public virtual bool isVerticallyFlipped { get; } = false;
     public virtual RotationAngle rotation { get; } = RotationAngle.Rotation0;
