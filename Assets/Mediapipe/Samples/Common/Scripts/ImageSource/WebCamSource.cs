@@ -226,32 +226,7 @@ namespace Mediapipe.Unity
 
     private ResolutionStruct GetDefaultResolution()
     {
-      bool resolutionFound = false;
-      var resolutions = availableResolutions;
-      // Check if the default resolution is supported
-      for (int i = 0; i < resolutions.Length; i++)
-      {
-        if (resolutions[i].width == preferableDefaultWidth)
-        {
-          return resolutions[i];
-          resolutionFound = true;
-          break;
-        }
-      }
-      if (resolutionFound == false)
-      {
-        for (int i = 0; i < resolutions.Length; i++)
-        {
-          // Otherwise check if it is within a range
-          if (resolutions[i].width < (preferableDefaultWidth + 300) && resolutions[i].width > (preferableDefaultWidth - 300))
-          {
-            return resolutions[i];
-            break;
-          }
-        }
-      }
-      // If no condition if reached before now for default resolution is reached, return the first resolution instead
-      return (resolutions == null || resolutions.Length == 0) ? new ResolutionStruct() : resolutions[0];
+      return resolutions == null || resolutions.Length == 0 ? new ResolutionStruct() : resolutions.OrderBy(resolution => resolution, new ResolutionStructComparer(_preferableDefaultWidth)).First();
     }
 
     private void InitializeWebCamTexture()
