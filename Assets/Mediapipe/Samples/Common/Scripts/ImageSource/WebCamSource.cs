@@ -172,6 +172,7 @@ namespace Mediapipe.Unity
       {
         throw new ArgumentException($"Invalid source ID: {sourceId}");
       }
+
       webCamDevice = availableSources[sourceId];
     }
 
