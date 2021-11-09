@@ -105,7 +105,6 @@ namespace Mediapipe.Unity.UI
 
     private void InitializeResolution()
     {
-      bool resolutionFound = false;
       _resolutionInput = gameObject.transform.Find(_ResolutionPath).gameObject.GetComponent<Dropdown>();
       _resolutionInput.ClearOptions();
       _resolutionInput.onValueChanged.RemoveAllListeners();
@@ -121,29 +120,6 @@ namespace Mediapipe.Unity.UI
 
       var options = resolutions.Select(resolution => resolution.ToString()).ToList();
       _resolutionInput.AddOptions(options);
-
-      // Set to default resolution if within 300px, if this doesn't work, the default resolution will be the first in the list as before which is not ideal
-      for (int i = 0; i < resolutions.Length; i++)
-      {
-        if (resolutions[i].width == imageSource.preferableDefaultWidth)
-        {
-          _resolutionInput.value = i;
-          resolutionFound = true;
-          break;
-        }
-      }
-
-      if (resolutionFound == false)
-      {
-        for (int i = 0; i < resolutions.Length; i++)
-        {
-          if (resolutions[i].width < (imageSource.preferableDefaultWidth + 300) && resolutions[i].width > (imageSource.preferableDefaultWidth - 300))
-          {
-            _resolutionInput.value = i;
-            break;
-          }
-        }
-      }
 
       _resolutionInput.onValueChanged.AddListener(delegate
         {

@@ -17,6 +17,10 @@ namespace Mediapipe.Unity
 {
   public class WebCamSource : ImageSource
   {
+    [Header("This resolution will be matched within 300px")]
+    // For the default resolution, the one whose width is closest to this value will be chosen.
+    [SerializeField] public int preferableDefaultWidth = 1280;
+
     private const string _TAG = nameof(WebCamSource);
 
     [SerializeField] private ResolutionStruct[] _defaultAvailableResolutions;
@@ -226,7 +230,32 @@ namespace Mediapipe.Unity
 
     private ResolutionStruct GetDefaultResolution()
     {
-      return resolutions == null || resolutions.Length == 0 ? new ResolutionStruct() : resolutions.OrderBy(resolution => resolution, new ResolutionStructComparer(_preferableDefaultWidth)).First();
+      bool resolutionFound = false;
+      var resolutions = availableResolutions;
+      // Check if the default resolution is supported
+      for (int i = 0; i < resolutions.Length; i++)
+      {
+        if (resolutions[i].width == preferableDefaultWidth)
+        {
+          return resolutions[i];
+          resolutionFound = true;
+          break;
+        }
+      }
+      if (resolutionFound == false)
+      {
+        for (int i = 0; i < resolutions.Length; i++)
+        {
+          // Otherwise check if it is within a range
+          if (resolutions[i].width < (preferableDefaultWidth + 300) && resolutions[i].width > (preferableDefaultWidth - 300))
+          {
+            return resolutions[i];
+            break;
+          }
+        }
+      }
+      // If no condition if reached before now for default resolution is reached, return the first resolution instead
+      return (resolutions == null || resolutions.Length == 0) ? new ResolutionStruct() : resolutions[0];
     }
 
     private void InitializeWebCamTexture()
