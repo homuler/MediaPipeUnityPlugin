@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -17,9 +18,9 @@ namespace Mediapipe.Unity
 {
   public class WebCamSource : ImageSource
   {
-    [Header("This resolution will be matched within 300px")]
+    [Header("This resolution will be matched to the nearest available")]
     // For the default resolution, the one whose width is closest to this value will be chosen.
-    [SerializeField] public int preferableDefaultWidth = 1280;
+    [SerializeField] public int _preferableDefaultWidth = 1280;
 
     private const string _TAG = nameof(WebCamSource);
 
@@ -106,6 +107,32 @@ namespace Mediapipe.Unity
       }
     }
 #pragma warning restore IDE0025
+    private class ResolutionStructComparer : IComparer<ResolutionStruct>
+    {
+      private readonly int _preferableDefaultWidth;
+
+      public ResolutionStructComparer(int preferableDefaultWidth)
+      {
+        _preferableDefaultWidth = preferableDefaultWidth;
+      }
+
+      public int Compare(ResolutionStruct a, ResolutionStruct b)
+      {
+        var aDiff = Mathf.Abs(a.width - _preferableDefaultWidth);
+        var bDiff = Mathf.Abs(b.width - _preferableDefaultWidth);
+        if (aDiff != bDiff)
+        {
+          return aDiff - bDiff;
+        }
+        if (a.height != b.height)
+        {
+          // prefer smaller height
+          return a.height - b.height;
+        }
+        // prefer smaller frame rate
+        return (int)(a.frameRate - b.frameRate);
+      }
+    }
 
     public override bool isPrepared => webCamTexture != null;
     public override bool isPlaying => webCamTexture != null && webCamTexture.isPlaying;
@@ -232,30 +259,7 @@ namespace Mediapipe.Unity
     {
       bool resolutionFound = false;
       var resolutions = availableResolutions;
-      // Check if the default resolution is supported
-      for (int i = 0; i < resolutions.Length; i++)
-      {
-        if (resolutions[i].width == preferableDefaultWidth)
-        {
-          return resolutions[i];
-          resolutionFound = true;
-          break;
-        }
-      }
-      if (resolutionFound == false)
-      {
-        for (int i = 0; i < resolutions.Length; i++)
-        {
-          // Otherwise check if it is within a range
-          if (resolutions[i].width < (preferableDefaultWidth + 300) && resolutions[i].width > (preferableDefaultWidth - 300))
-          {
-            return resolutions[i];
-            break;
-          }
-        }
-      }
-      // If no condition if reached before now for default resolution is reached, return the first resolution instead
-      return (resolutions == null || resolutions.Length == 0) ? new ResolutionStruct() : resolutions[0];
+      return resolutions == null || resolutions.Length == 0 ? new ResolutionStruct() : resolutions.OrderBy(resolution => resolution, new ResolutionStructComparer(_preferableDefaultWidth)).First();
     }
 
     private void InitializeWebCamTexture()
