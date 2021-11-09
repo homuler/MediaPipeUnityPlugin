@@ -18,8 +18,7 @@ namespace Mediapipe.Unity
 {
   public class WebCamSource : ImageSource
   {
-    [Header("This resolution will be matched to the nearest available")]
-    // For the default resolution, the one whose width is closest to this value will be chosen.
+    [Tooltip("For the default resolution, the one whose width is closest to this value will be chosen")]
     [SerializeField] public int _preferableDefaultWidth = 1280;
 
     private const string _TAG = nameof(WebCamSource);
