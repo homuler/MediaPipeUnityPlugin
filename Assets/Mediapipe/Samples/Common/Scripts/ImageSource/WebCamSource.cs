@@ -106,32 +106,6 @@ namespace Mediapipe.Unity
       }
     }
 #pragma warning restore IDE0025
-    private class ResolutionStructComparer : IComparer<ResolutionStruct>
-    {
-      private readonly int _preferableDefaultWidth;
-
-      public ResolutionStructComparer(int preferableDefaultWidth)
-      {
-        _preferableDefaultWidth = preferableDefaultWidth;
-      }
-
-      public int Compare(ResolutionStruct a, ResolutionStruct b)
-      {
-        var aDiff = Mathf.Abs(a.width - _preferableDefaultWidth);
-        var bDiff = Mathf.Abs(b.width - _preferableDefaultWidth);
-        if (aDiff != bDiff)
-        {
-          return aDiff - bDiff;
-        }
-        if (a.height != b.height)
-        {
-          // prefer smaller height
-          return a.height - b.height;
-        }
-        // prefer smaller frame rate
-        return (int)(a.frameRate - b.frameRate);
-      }
-    }
 
     public override bool isPrepared => webCamTexture != null;
     public override bool isPlaying => webCamTexture != null && webCamTexture.isPlaying;
@@ -281,6 +255,33 @@ namespace Mediapipe.Unity
       if (webCamTexture.width <= 16)
       {
         throw new TimeoutException("Failed to start WebCam");
+      }
+    }
+
+    private class ResolutionStructComparer : IComparer<ResolutionStruct>
+    {
+      private readonly int _preferableDefaultWidth;
+
+      public ResolutionStructComparer(int preferableDefaultWidth)
+      {
+        _preferableDefaultWidth = preferableDefaultWidth;
+      }
+
+      public int Compare(ResolutionStruct a, ResolutionStruct b)
+      {
+        var aDiff = Mathf.Abs(a.width - _preferableDefaultWidth);
+        var bDiff = Mathf.Abs(b.width - _preferableDefaultWidth);
+        if (aDiff != bDiff)
+        {
+          return aDiff - bDiff;
+        }
+        if (a.height != b.height)
+        {
+          // prefer smaller height
+          return a.height - b.height;
+        }
+        // prefer smaller frame rate
+        return (int)(a.frameRate - b.frameRate);
       }
     }
   }
