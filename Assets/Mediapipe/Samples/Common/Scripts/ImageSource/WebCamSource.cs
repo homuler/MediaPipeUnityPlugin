@@ -257,7 +257,6 @@ namespace Mediapipe.Unity
 
     private ResolutionStruct GetDefaultResolution()
     {
-      bool resolutionFound = false;
       var resolutions = availableResolutions;
       return resolutions == null || resolutions.Length == 0 ? new ResolutionStruct() : resolutions.OrderBy(resolution => resolution, new ResolutionStructComparer(_preferableDefaultWidth)).First();
     }
