@@ -121,11 +121,19 @@ namespace Mediapipe.Unity.UI
       var options = resolutions.Select(resolution => resolution.ToString()).ToList();
       _resolutionInput.AddOptions(options);
 
+      var currentResolutionStr = imageSource.resolution.ToString();
+      var defaultValue = options.FindIndex(option => option == currentResolutionStr);
+
+      if (defaultValue >= 0)
+      {
+        _resolutionInput.value = defaultValue;
+      }
+
       _resolutionInput.onValueChanged.AddListener(delegate
-        {
-          imageSource.SelectResolution(_resolutionInput.value);
-          _isChanged = true;
-        });
+      {
+        imageSource.SelectResolution(_resolutionInput.value);
+        _isChanged = true;
+      });
     }
 
     private void InitializeIsHorizontallyFlipped()
