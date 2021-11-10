@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -17,6 +18,9 @@ namespace Mediapipe.Unity
 {
   public class WebCamSource : ImageSource
   {
+    [Tooltip("For the default resolution, the one whose width is closest to this value will be chosen")]
+    [SerializeField] private int _preferableDefaultWidth = 1280;
+
     private const string _TAG = nameof(WebCamSource);
 
     [SerializeField] private ResolutionStruct[] _defaultAvailableResolutions;
@@ -227,8 +231,7 @@ namespace Mediapipe.Unity
     private ResolutionStruct GetDefaultResolution()
     {
       var resolutions = availableResolutions;
-
-      return (resolutions == null || resolutions.Length == 0) ? new ResolutionStruct() : resolutions[0];
+      return resolutions == null || resolutions.Length == 0 ? new ResolutionStruct() : resolutions.OrderBy(resolution => resolution, new ResolutionStructComparer(_preferableDefaultWidth)).First();
     }
 
     private void InitializeWebCamTexture()
@@ -252,6 +255,33 @@ namespace Mediapipe.Unity
       if (webCamTexture.width <= 16)
       {
         throw new TimeoutException("Failed to start WebCam");
+      }
+    }
+
+    private class ResolutionStructComparer : IComparer<ResolutionStruct>
+    {
+      private readonly int _preferableDefaultWidth;
+
+      public ResolutionStructComparer(int preferableDefaultWidth)
+      {
+        _preferableDefaultWidth = preferableDefaultWidth;
+      }
+
+      public int Compare(ResolutionStruct a, ResolutionStruct b)
+      {
+        var aDiff = Mathf.Abs(a.width - _preferableDefaultWidth);
+        var bDiff = Mathf.Abs(b.width - _preferableDefaultWidth);
+        if (aDiff != bDiff)
+        {
+          return aDiff - bDiff;
+        }
+        if (a.height != b.height)
+        {
+          // prefer smaller height
+          return a.height - b.height;
+        }
+        // prefer smaller frame rate
+        return (int)(a.frameRate - b.frameRate);
       }
     }
   }
