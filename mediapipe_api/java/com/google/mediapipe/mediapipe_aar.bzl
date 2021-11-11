@@ -143,7 +143,7 @@ cp $(location {}.aar) $(location :{}.aar)
 chmod +w $(location :{}.aar)
 origdir=$$PWD
 cd $$(mktemp -d)
-unzip $$origdir/$(location :{}_dummy_app_unsigned.apk) "lib/*"
+unzip $$origdir/$(location :{}_dummy_app_unsigned.apk) "lib/**"
 cp -r lib jni
 zip -r $$origdir/$(location :{}.aar) jni/*/*.so
 """.format(android_library, name, name, name, name),
