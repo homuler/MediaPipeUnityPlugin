@@ -47,7 +47,6 @@ MP_CAPI(bool) mp_GlCalculatorHelper__Initialized(mediapipe::GlCalculatorHelper* 
 
 /** GlTexture API */
 MP_CAPI(MpReturnCode) mp_GlTexture__(mediapipe::GlTexture** gl_texture_out);
-MP_CAPI(MpReturnCode) mp_GlTexture__ui_i_i(GLuint name, int width, int height, mediapipe::GlTexture** gl_texture_out);
 MP_CAPI(void) mp_GlTexture__delete(mediapipe::GlTexture* gl_texture);
 MP_CAPI(int) mp_GlTexture__width(mediapipe::GlTexture* gl_texture);
 MP_CAPI(int) mp_GlTexture__height(mediapipe::GlTexture* gl_texture);

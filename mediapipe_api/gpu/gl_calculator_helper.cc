@@ -97,13 +97,6 @@ MpReturnCode mp_GlTexture__(mediapipe::GlTexture** gl_texture_out) {
   CATCH_EXCEPTION
 }
 
-MpReturnCode mp_GlTexture__ui_i_i(GLuint name, int width, int height, mediapipe::GlTexture** gl_texture_out) {
-  TRY
-    *gl_texture_out = new mediapipe::GlTexture{name, width, height};
-    RETURN_CODE(MpReturnCode::Success);
-  CATCH_EXCEPTION
-}
-
 void mp_GlTexture__delete(mediapipe::GlTexture* gl_texture) { delete gl_texture; }
 
 int mp_GlTexture__width(mediapipe::GlTexture* gl_texture) { return gl_texture->width(); }

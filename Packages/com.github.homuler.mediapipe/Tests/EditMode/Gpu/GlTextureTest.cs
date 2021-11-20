@@ -21,17 +21,6 @@ namespace Tests
         Assert.AreEqual(glTexture.height, 0);
       }
     }
-
-    [Test, GpuOnly]
-    public void Ctor_ShouldInstantiateGlTexture_When_CalledWithNameAndSize()
-    {
-      using (var glTexture = new GlTexture(1, 100, 100))
-      {
-        Assert.AreEqual(glTexture.name, 1);
-        Assert.AreEqual(glTexture.width, 100);
-        Assert.AreEqual(glTexture.height, 100);
-      }
-    }
     #endregion
 
     #region #isDisposed

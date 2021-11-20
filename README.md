@@ -1,6 +1,6 @@
 # MediaPipe Unity Plugin
 
-This is a Unity (2020.3.8f1) Plugin to use MediaPipe (0.8.6).
+This is a Unity (2020.3.23f1) Plugin to use MediaPipe (0.8.8).
 
 ## Prerequisites
 
