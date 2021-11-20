@@ -43,7 +43,7 @@ rules_pkg_dependencies()
 new_local_repository(
     name = "unity",
     build_file = "@//third_party:unity.BUILD",
-    path = "/path/to/unity/2020.3.8f1",
+    path = "/path/to/unity/2020.3.23f1",
 )
 
 # mediapipe
