@@ -15,11 +15,13 @@ namespace Mediapipe.Unity.FaceMesh.UI
   public class FaceMeshConfig : ModalContents
   {
     private const string _MaxNumFacesPath = "Scroll View/Viewport/Contents/Max Num Faces/InputField";
+    private const string _RefineLandmarksPath = "Scroll View/Viewport/Contents/Refine Landmarks/Toggle";
     private const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
     private const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
 
     private FaceMeshSolution _solution;
     private InputField _maxNumFacesInput;
+    private Toggle _refineLandmarksInput;
     private Dropdown _runningModeInput;
     private InputField _timeoutMillisecInput;
 
@@ -45,6 +47,12 @@ namespace Mediapipe.Unity.FaceMesh.UI
       }
     }
 
+    public void ToggleRefineLandmarks()
+    {
+      _solution.refineLandmarks = _refineLandmarksInput.isOn;
+      _isChanged = true;
+    }
+
     public void SwitchRunningMode()
     {
       _solution.runningMode = (RunningMode)_runningModeInput.value;
@@ -63,6 +71,7 @@ namespace Mediapipe.Unity.FaceMesh.UI
     private void InitializeContents()
     {
       InitializeMaxNumFaces();
+      InitializeRefineLandmarks();
       InitializeRunningMode();
       InitializeTimeoutMillisec();
     }
@@ -72,6 +81,13 @@ namespace Mediapipe.Unity.FaceMesh.UI
       _maxNumFacesInput = gameObject.transform.Find(_MaxNumFacesPath).gameObject.GetComponent<InputField>();
       _maxNumFacesInput.text = _solution.maxNumFaces.ToString();
       _maxNumFacesInput.onEndEdit.AddListener(delegate { UpdateMaxNumFaces(); });
+    }
+
+    private void InitializeRefineLandmarks()
+    {
+      _refineLandmarksInput = gameObject.transform.Find(_RefineLandmarksPath).gameObject.GetComponent<Toggle>();
+      _refineLandmarksInput.isOn = _solution.refineLandmarks;
+      _refineLandmarksInput.onValueChanged.AddListener(delegate { ToggleRefineLandmarks(); });
     }
 
     private void InitializeRunningMode()

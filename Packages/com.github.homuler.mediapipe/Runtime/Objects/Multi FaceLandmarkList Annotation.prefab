@@ -43,9 +43,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1ec0e202f29d7ee28cccba68415d95b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _annotationPrefab: {fileID: 7273100862690186831, guid: 16074ce928b0558829296ab0d9ccadf3,
+  _annotationPrefab: {fileID: 7477175687846711451, guid: c0d008e23161282b39199515fa2c0da4,
     type: 3}
-  landmarkColor: {r: 0, g: 1, b: 0, a: 1}
-  landmarkRadius: 10
-  connectionColor: {r: 1, g: 0, b: 0, a: 1}
-  connectionWidth: 1
+  _faceLandmarkColor: {r: 0, g: 1, b: 0, a: 1}
+  _irisLandmarkColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _faceLandmarkRadius: 10
+  _irisLandmarkRadius: 10
+  _faceConnectionColor: {r: 1, g: 0, b: 0, a: 1}
+  _irisCircleColor: {r: 0, g: 0, b: 1, a: 1}
+  _faceConnectionWidth: 1
+  _irisCircleWidth: 1

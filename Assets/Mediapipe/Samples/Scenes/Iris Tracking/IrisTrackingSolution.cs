@@ -16,7 +16,7 @@ namespace Mediapipe.Unity.IrisTracking
     [SerializeField] private RawImage _screen;
     [SerializeField] private DetectionListAnnotationController _faceDetectionsAnnotationController;
     [SerializeField] private NormalizedRectAnnotationController _faceRectAnnotationController;
-    [SerializeField] private FaceLandmarkListWithIrisAnnotationController _faceLandmarksWithIrisAnnotationController;
+    [SerializeField] private FaceLandmarkListAnnotationController _faceLandmarksWithIrisAnnotationController;
     [SerializeField] private IrisTrackingGraph _graphRunner;
     [SerializeField] private TextureFramePool _textureFramePool;
 

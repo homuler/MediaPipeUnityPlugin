@@ -152,6 +152,7 @@ pkg_asset(
         "@com_google_mediapipe//mediapipe/modules/face_detection:face_detection_full_range_sparse.tflite",
         "@com_google_mediapipe//mediapipe/modules/face_detection:face_detection_short_range.tflite",
         "@com_google_mediapipe//mediapipe/modules/face_landmark:face_landmark.tflite",
+        "@com_google_mediapipe//mediapipe/modules/face_landmark:face_landmark_with_attention.tflite",
         "@com_google_mediapipe//mediapipe/modules/hand_landmark:hand_landmark.tflite",
         "@com_google_mediapipe//mediapipe/modules/hand_landmark:handedness.txt",
         "@com_google_mediapipe//mediapipe/modules/holistic_landmark:hand_recrop.tflite",

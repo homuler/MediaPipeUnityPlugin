@@ -13,12 +13,14 @@ namespace Mediapipe.Unity.FaceMesh
     public readonly List<Detection> faceDetections;
     public readonly List<NormalizedLandmarkList> multiFaceLandmarks;
     public readonly List<NormalizedRect> faceRectsFromLandmarks;
+    public readonly List<NormalizedRect> faceRectsFromDetections;
 
-    public FaceMeshValue(List<Detection> faceDetections, List<NormalizedLandmarkList> multiFaceLandmarks, List<NormalizedRect> faceRectsFromLandmarks)
+    public FaceMeshValue(List<Detection> faceDetections, List<NormalizedLandmarkList> multiFaceLandmarks, List<NormalizedRect> faceRectsFromLandmarks, List<NormalizedRect> faceRectsFromDetections)
     {
       this.faceDetections = faceDetections;
       this.multiFaceLandmarks = multiFaceLandmarks;
       this.faceRectsFromLandmarks = faceRectsFromLandmarks;
+      this.faceRectsFromDetections = faceRectsFromDetections;
     }
   }
 }

@@ -9,43 +9,75 @@ using UnityEngine;
 
 namespace Mediapipe.Unity
 {
-  public sealed class MultiFaceLandmarkListAnnotation : ListAnnotation<FaceLandmarkListAnnotation>
+  public sealed class MultiFaceLandmarkListAnnotation : ListAnnotation<FaceLandmarkListWithIrisAnnotation>
   {
-    [SerializeField] private Color _landmarkColor = Color.green;
-    [SerializeField] private float _landmarkRadius = 10.0f;
-    [SerializeField] private Color _connectionColor = Color.red;
-    [SerializeField, Range(0, 1)] private float _connectionWidth = 1.0f;
+    [SerializeField] private Color _faceLandmarkColor = Color.green;
+    [SerializeField] private Color _irisLandmarkColor = Color.yellow;
+    [SerializeField] private float _faceLandmarkRadius = 10.0f;
+    [SerializeField] private float _irisLandmarkRadius = 10.0f;
+    [SerializeField] private Color _faceConnectionColor = Color.red;
+    [SerializeField] private Color _irisCircleColor = Color.blue;
+    [SerializeField, Range(0, 1)] private float _faceConnectionWidth = 1.0f;
+    [SerializeField, Range(0, 1)] private float _irisCircleWidth = 1.0f;
 
     private void OnValidate()
     {
-      ApplyLandmarkColor(_landmarkColor);
-      ApplyLandmarkRadius(_landmarkRadius);
-      ApplyConnectionColor(_connectionColor);
-      ApplyConnectionWidth(_connectionWidth);
+      ApplyFaceLandmarkColor(_faceLandmarkColor);
+      ApplyIrisLandmarkColor(_irisLandmarkColor);
+      ApplyFaceLandmarkRadius(_faceLandmarkRadius);
+      ApplyIrisLandmarkRadius(_irisLandmarkRadius);
+      ApplyFaceConnectionColor(_faceConnectionColor);
+      ApplyIrisCircleColor(_irisCircleColor);
+      ApplyFaceConnectionWidth(_faceConnectionWidth);
+      ApplyIrisCircleWidth(_irisCircleWidth);
     }
 
-    public void SetLandmarkRadius(float landmarkRadius)
+    public void SetFaceLandmarkRadius(float radius)
     {
-      _landmarkRadius = landmarkRadius;
-      ApplyLandmarkRadius(_landmarkRadius);
+      _faceLandmarkRadius = radius;
+      ApplyFaceLandmarkRadius(_faceLandmarkRadius);
     }
 
-    public void SetLandmarkColor(Color landmarkColor)
+    public void SetIrisLandmarkRadius(float radius)
     {
-      _landmarkColor = landmarkColor;
-      ApplyLandmarkColor(_landmarkColor);
+      _irisLandmarkRadius = radius;
+      ApplyIrisLandmarkRadius(_irisLandmarkRadius);
     }
 
-    public void SetConnectionWidth(float connectionWidth)
+    public void SetFaceLandmarkColor(Color color)
     {
-      _connectionWidth = connectionWidth;
-      ApplyConnectionWidth(_connectionWidth);
+      _faceLandmarkColor = color;
+      ApplyFaceLandmarkColor(_faceLandmarkColor);
     }
 
-    public void SetConnectionColor(Color connectionColor)
+    public void SetIrisLandmarkColor(Color color)
     {
-      _connectionColor = connectionColor;
-      ApplyConnectionColor(_connectionColor);
+      _irisLandmarkColor = color;
+      ApplyIrisLandmarkColor(_irisLandmarkColor);
+    }
+
+    public void SetFaceConnectionWidth(float width)
+    {
+      _faceConnectionWidth = width;
+      ApplyFaceConnectionWidth(_faceConnectionWidth);
+    }
+
+    public void SetFaceConnectionColor(Color color)
+    {
+      _faceConnectionColor = color;
+      ApplyFaceConnectionColor(_faceConnectionColor);
+    }
+
+    public void SetIrisCircleWidth(float width)
+    {
+      _irisCircleWidth = width;
+      ApplyIrisCircleWidth(_irisCircleWidth);
+    }
+
+    public void SetIrisCircleColor(Color color)
+    {
+      _irisCircleColor = color;
+      ApplyIrisCircleColor(_irisCircleColor);
     }
 
     public void Draw(IList<NormalizedLandmarkList> targets, bool visualizeZ = false)
@@ -59,45 +91,81 @@ namespace Mediapipe.Unity
       }
     }
 
-    protected override FaceLandmarkListAnnotation InstantiateChild(bool isActive = true)
+    protected override FaceLandmarkListWithIrisAnnotation InstantiateChild(bool isActive = true)
     {
       var annotation = base.InstantiateChild(isActive);
-      annotation.SetLandmarkRadius(_landmarkRadius);
-      annotation.SetLandmarkColor(_landmarkColor);
-      annotation.SetConnectionWidth(_connectionWidth);
-      annotation.SetConnectionColor(_connectionColor);
+      annotation.SetFaceLandmarkRadius(_faceLandmarkRadius);
+      annotation.SetIrisLandmarkRadius(_irisLandmarkRadius);
+      annotation.SetFaceLandmarkColor(_faceLandmarkColor);
+      annotation.SetIrisLandmarkColor(_irisLandmarkColor);
+      annotation.SetFaceConnectionWidth(_faceConnectionWidth);
+      annotation.SetFaceConnectionColor(_faceConnectionColor);
+      annotation.SetIrisCircleWidth(_irisCircleWidth);
+      annotation.SetIrisCircleColor(_irisCircleColor);
       return annotation;
     }
 
-    private void ApplyLandmarkRadius(float landmarkRadius)
+    private void ApplyFaceLandmarkRadius(float radius)
     {
       foreach (var faceLandmarkList in children)
       {
-        if (faceLandmarkList != null) { faceLandmarkList.SetLandmarkRadius(landmarkRadius); }
+        if (faceLandmarkList != null) { faceLandmarkList.SetFaceLandmarkRadius(radius); }
       }
     }
 
-    private void ApplyLandmarkColor(Color landmarkColor)
+    private void ApplyIrisLandmarkRadius(float radius)
     {
       foreach (var faceLandmarkList in children)
       {
-        if (faceLandmarkList != null) { faceLandmarkList.SetLandmarkColor(landmarkColor); }
+        if (faceLandmarkList != null) { faceLandmarkList.SetIrisLandmarkRadius(radius); }
       }
     }
 
-    private void ApplyConnectionWidth(float connectionWidth)
+    private void ApplyFaceLandmarkColor(Color color)
     {
       foreach (var faceLandmarkList in children)
       {
-        if (faceLandmarkList != null) { faceLandmarkList.SetConnectionWidth(connectionWidth); }
+        if (faceLandmarkList != null) { faceLandmarkList.SetFaceLandmarkColor(color); }
       }
     }
 
-    private void ApplyConnectionColor(Color connectionColor)
+    private void ApplyIrisLandmarkColor(Color color)
     {
       foreach (var faceLandmarkList in children)
       {
-        if (faceLandmarkList != null) { faceLandmarkList.SetConnectionColor(connectionColor); }
+        if (faceLandmarkList != null) { faceLandmarkList.SetIrisLandmarkColor(color); }
+      }
+    }
+
+    private void ApplyFaceConnectionWidth(float width)
+    {
+      foreach (var faceLandmarkList in children)
+      {
+        if (faceLandmarkList != null) { faceLandmarkList.SetFaceConnectionWidth(width); }
+      }
+    }
+
+    private void ApplyFaceConnectionColor(Color color)
+    {
+      foreach (var faceLandmarkList in children)
+      {
+        if (faceLandmarkList != null) { faceLandmarkList.SetFaceConnectionColor(color); }
+      }
+    }
+
+    private void ApplyIrisCircleWidth(float width)
+    {
+      foreach (var faceLandmarkList in children)
+      {
+        if (faceLandmarkList != null) { faceLandmarkList.SetIrisCircleWidth(width); }
+      }
+    }
+
+    private void ApplyIrisCircleColor(Color color)
+    {
+      foreach (var faceLandmarkList in children)
+      {
+        if (faceLandmarkList != null) { faceLandmarkList.SetIrisCircleColor(color); }
       }
     }
   }

@@ -40,12 +40,66 @@ namespace Mediapipe.Unity
       }
     }
 
+    public void SetFaceLandmarkColor(Color color)
+    {
+      _faceLandmarkListAnnotation.SetLandmarkColor(color);
+    }
+
+    public void SetIrisLandmarkColor(Color color)
+    {
+      _leftIrisLandmarkListAnnotation.SetLandmarkColor(color);
+      _rightIrisLandmarkListAnnotation.SetLandmarkColor(color);
+    }
+
+    public void SetFaceLandmarkRadius(float radius)
+    {
+      _faceLandmarkListAnnotation.SetLandmarkRadius(radius);
+    }
+
+    public void SetIrisLandmarkRadius(float radius)
+    {
+      _leftIrisLandmarkListAnnotation.SetLandmarkRadius(radius);
+      _rightIrisLandmarkListAnnotation.SetLandmarkRadius(radius);
+    }
+
+    public void SetFaceConnectionColor(Color color)
+    {
+      _faceLandmarkListAnnotation.SetConnectionColor(color);
+    }
+
+    public void SetFaceConnectionWidth(float width)
+    {
+      _faceLandmarkListAnnotation.SetConnectionWidth(width);
+    }
+
+    public void SetIrisCircleColor(Color color)
+    {
+      _leftIrisLandmarkListAnnotation.SetCircleColor(color);
+      _rightIrisLandmarkListAnnotation.SetCircleColor(color);
+    }
+
+    public void SetIrisCircleWidth(float width)
+    {
+      _leftIrisLandmarkListAnnotation.SetCircleWidth(width);
+      _rightIrisLandmarkListAnnotation.SetCircleWidth(width);
+    }
+
+    public void Draw(IList<NormalizedLandmark> target, bool visualizeZ = false, int circleVertices = 128)
+    {
+      var (faceLandmarks, leftLandmarks, rightLandmarks) = PartitionLandmarkList(target);
+      DrawFaceLandmarkList(faceLandmarks, visualizeZ);
+      DrawLeftIrisLandmarkList(leftLandmarks, visualizeZ, circleVertices);
+      DrawRightIrisLandmarkList(rightLandmarks, visualizeZ, circleVertices);
+    }
+
+    public void Draw(NormalizedLandmarkList target, bool visualizeZ = false, int circleVertices = 128)
+    {
+      Draw(target.Landmark, visualizeZ, circleVertices);
+    }
+
     public void DrawFaceLandmarkList(IList<NormalizedLandmark> target, bool visualizeZ = false)
     {
-      if (ActivateFor(target))
-      {
-        _faceLandmarkListAnnotation.Draw(target, visualizeZ);
-      }
+      _faceLandmarkListAnnotation.Draw(target, visualizeZ);
     }
 
     public void DrawLeftIrisLandmarkList(IList<NormalizedLandmark> target, bool visualizeZ = false, int circleVertices = 128)
@@ -60,7 +114,7 @@ namespace Mediapipe.Unity
       _rightIrisLandmarkListAnnotation.Draw(target, visualizeZ, circleVertices);
     }
 
-    public static (IList<NormalizedLandmark>, IList<NormalizedLandmark>, IList<NormalizedLandmark>) PartitionLandmarkList(IList<NormalizedLandmark> landmarks)
+    private static (IList<NormalizedLandmark>, IList<NormalizedLandmark>, IList<NormalizedLandmark>) PartitionLandmarkList(IList<NormalizedLandmark> landmarks)
     {
       if (landmarks == null)
       {

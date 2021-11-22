@@ -9,9 +9,10 @@ using UnityEngine;
 
 namespace Mediapipe.Unity
 {
-  public class FaceLandmarkListAnnotationController : AnnotationController<FaceLandmarkListAnnotation>
+  public class FaceLandmarkListAnnotationController : AnnotationController<FaceLandmarkListWithIrisAnnotation>
   {
     [SerializeField] private bool _visualizeZ = false;
+    [SerializeField] private int _circleVertices = 128;
 
     private IList<NormalizedLandmark> _currentTarget;
 
@@ -39,7 +40,7 @@ namespace Mediapipe.Unity
     protected override void SyncNow()
     {
       isStale = false;
-      annotation.Draw(_currentTarget, _visualizeZ);
+      annotation.Draw(_currentTarget, _visualizeZ, _circleVertices);
     }
   }
 }

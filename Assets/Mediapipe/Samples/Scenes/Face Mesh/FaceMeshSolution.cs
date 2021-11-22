@@ -17,6 +17,7 @@ namespace Mediapipe.Unity.FaceMesh
     [SerializeField] private DetectionListAnnotationController _faceDetectionsAnnotationController;
     [SerializeField] private MultiFaceLandmarkListAnnotationController _multiFaceLandmarksAnnotationController;
     [SerializeField] private NormalizedRectListAnnotationController _faceRectsFromLandmarksAnnotationController;
+    [SerializeField] private NormalizedRectListAnnotationController _faceRectsFromDetectionsAnnotationController;
     [SerializeField] private FaceMeshGraph _graphRunner;
     [SerializeField] private TextureFramePool _textureFramePool;
 
@@ -28,6 +29,12 @@ namespace Mediapipe.Unity.FaceMesh
     {
       get => _graphRunner.maxNumFaces;
       set => _graphRunner.maxNumFaces = value;
+    }
+
+    public bool refineLandmarks
+    {
+      get => _graphRunner.refineLandmarks;
+      set => _graphRunner.refineLandmarks = value;
     }
 
     public long timeoutMillisec
@@ -83,6 +90,7 @@ namespace Mediapipe.Unity.FaceMesh
       _screen.texture = imageSource.GetCurrentTexture();
 
       Logger.LogInfo(TAG, $"Max Num Faces = {maxNumFaces}");
+      Logger.LogInfo(TAG, $"Refine Landmarks = {refineLandmarks}");
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
       // Wait for completion of loading of dependent files, etc.
@@ -98,6 +106,7 @@ namespace Mediapipe.Unity.FaceMesh
         _graphRunner.OnFaceDetectionsOutput.AddListener(OnFaceDetectionsOutput);
         _graphRunner.OnMultiFaceLandmarksOutput.AddListener(OnMultiFaceLandmarksOutput);
         _graphRunner.OnFaceRectsFromLandmarksOutput.AddListener(OnFaceRectsFromLandmarksOutput);
+        _graphRunner.OnFaceRectsFromDetectionsOutput.AddListener(OnFaceRectsFromDetectionsOutput);
         _graphRunner.StartRunAsync(imageSource).AssertOk();
       }
       else
@@ -112,6 +121,7 @@ namespace Mediapipe.Unity.FaceMesh
       SetupAnnotationController(_faceDetectionsAnnotationController, imageSource);
       SetupAnnotationController(_faceRectsFromLandmarksAnnotationController, imageSource);
       SetupAnnotationController(_multiFaceLandmarksAnnotationController, imageSource);
+      SetupAnnotationController(_faceRectsFromDetectionsAnnotationController, imageSource);
 
       while (true)
       {
@@ -152,6 +162,11 @@ namespace Mediapipe.Unity.FaceMesh
     private void OnFaceRectsFromLandmarksOutput(List<NormalizedRect> faceRectsFromLandmarks)
     {
       _faceRectsFromLandmarksAnnotationController.DrawLater(faceRectsFromLandmarks);
+    }
+
+    private void OnFaceRectsFromDetectionsOutput(List<NormalizedRect> faceRectsFromDetections)
+    {
+      _faceRectsFromDetectionsAnnotationController.DrawLater(faceRectsFromDetections);
     }
   }
 }
