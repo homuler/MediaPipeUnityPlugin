@@ -19,7 +19,7 @@ namespace Mediapipe.Unity.Holistic
       Heavy = 2,
     }
 
-    public bool detectIris = false;
+    public bool refineFaceLandmarks = false;
     public ModelComplexity modelComplexity = ModelComplexity.Lite;
     public bool smoothLandmarks = true;
 
@@ -29,8 +29,6 @@ namespace Mediapipe.Unity.Holistic
     public UnityEvent<NormalizedLandmarkList> OnFaceLandmarksOutput = new UnityEvent<NormalizedLandmarkList>();
     public UnityEvent<NormalizedLandmarkList> OnLeftHandLandmarksOutput = new UnityEvent<NormalizedLandmarkList>();
     public UnityEvent<NormalizedLandmarkList> OnRightHandLandmarksOutput = new UnityEvent<NormalizedLandmarkList>();
-    public UnityEvent<NormalizedLandmarkList> OnLeftIrisLandmarksOutput = new UnityEvent<NormalizedLandmarkList>();
-    public UnityEvent<NormalizedLandmarkList> OnRightIrisLandmarksOutput = new UnityEvent<NormalizedLandmarkList>();
     public UnityEvent<LandmarkList> OnPoseWorldLandmarksOutput = new UnityEvent<LandmarkList>();
     public UnityEvent<NormalizedRect> OnPoseRoiOutput = new UnityEvent<NormalizedRect>();
 #pragma warning restore IDE1006
@@ -42,8 +40,6 @@ namespace Mediapipe.Unity.Holistic
     private const string _FaceLandmarksStreamName = "face_landmarks";
     private const string _LeftHandLandmarksStreamName = "left_hand_landmarks";
     private const string _RightHandLandmarksStreamName = "right_hand_landmarks";
-    private const string _LeftIrisLandmarksStreamName = "left_iris_landmarks";
-    private const string _RightIrisLandmarksStreamName = "right_iris_landmarks";
     private const string _PoseWorldLandmarksStreamName = "pose_world_landmarks";
     private const string _PoseRoiStreamName = "pose_roi";
 
@@ -52,8 +48,6 @@ namespace Mediapipe.Unity.Holistic
     private OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList> _faceLandmarksStream;
     private OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList> _leftHandLandmarksStream;
     private OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList> _rightHandLandmarksStream;
-    private OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList> _leftIrisLandmarksStream;
-    private OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList> _rightIrisLandmarksStream;
     private OutputStream<LandmarkListPacket, LandmarkList> _poseWorldLandmarksStream;
     private OutputStream<NormalizedRectPacket, NormalizedRect> _poseRoiStream;
 
@@ -62,8 +56,6 @@ namespace Mediapipe.Unity.Holistic
     protected long prevFaceLandmarksMicrosec = 0;
     protected long prevLeftHandLandmarksMicrosec = 0;
     protected long prevRightHandLandmarksMicrosec = 0;
-    protected long prevLeftIrisLandmarksMicrosec = 0;
-    protected long prevRightIrisLandmarksMicrosec = 0;
     protected long prevPoseWorldLandmarksMicrosec = 0;
     protected long prevPoseRoiMicrosec = 0;
 
@@ -76,8 +68,6 @@ namespace Mediapipe.Unity.Holistic
       _faceLandmarksStream.StartPolling(true).AssertOk();
       _leftHandLandmarksStream.StartPolling(true).AssertOk();
       _rightHandLandmarksStream.StartPolling(true).AssertOk();
-      _leftIrisLandmarksStream.StartPolling(true).AssertOk();
-      _rightIrisLandmarksStream.StartPolling(true).AssertOk();
       _poseWorldLandmarksStream.StartPolling(true).AssertOk();
       _poseRoiStream.StartPolling(true).AssertOk();
 
@@ -93,8 +83,6 @@ namespace Mediapipe.Unity.Holistic
       _faceLandmarksStream.AddListener(FaceLandmarksCallback, true).AssertOk();
       _leftHandLandmarksStream.AddListener(LeftHandLandmarksCallback, true).AssertOk();
       _rightHandLandmarksStream.AddListener(RightHandLandmarksCallback, true).AssertOk();
-      _leftIrisLandmarksStream.AddListener(LeftIrisLandmarksCallback, true).AssertOk();
-      _rightIrisLandmarksStream.AddListener(RightIrisLandmarksCallback, true).AssertOk();
       _poseWorldLandmarksStream.AddListener(PoseWorldLandmarksCallback, true).AssertOk();
       _poseRoiStream.AddListener(PoseRoiCallback, true).AssertOk();
 
@@ -109,8 +97,6 @@ namespace Mediapipe.Unity.Holistic
       OnFaceLandmarksOutput.RemoveAllListeners();
       OnLeftHandLandmarksOutput.RemoveAllListeners();
       OnRightHandLandmarksOutput.RemoveAllListeners();
-      OnLeftIrisLandmarksOutput.RemoveAllListeners();
-      OnRightIrisLandmarksOutput.RemoveAllListeners();
       OnPoseWorldLandmarksOutput.RemoveAllListeners();
       OnPoseRoiOutput.RemoveAllListeners();
     }
@@ -127,8 +113,6 @@ namespace Mediapipe.Unity.Holistic
       _ = _faceLandmarksStream.TryGetNext(out var faceLandmarks);
       _ = _leftHandLandmarksStream.TryGetNext(out var leftHandLandmarks);
       _ = _rightHandLandmarksStream.TryGetNext(out var rightHandLandmarks);
-      _ = _leftIrisLandmarksStream.TryGetNext(out var leftIrisLandmarks);
-      _ = _rightIrisLandmarksStream.TryGetNext(out var rightIrisLandmarks);
       _ = _poseWorldLandmarksStream.TryGetNext(out var poseWorldLandmarks);
       _ = _poseRoiStream.TryGetNext(out var poseRoi);
 
@@ -137,13 +121,11 @@ namespace Mediapipe.Unity.Holistic
       OnFaceLandmarksOutput.Invoke(faceLandmarks);
       OnLeftHandLandmarksOutput.Invoke(leftHandLandmarks);
       OnRightHandLandmarksOutput.Invoke(rightHandLandmarks);
-      OnLeftIrisLandmarksOutput.Invoke(leftIrisLandmarks);
-      OnRightIrisLandmarksOutput.Invoke(rightIrisLandmarks);
       OnPoseWorldLandmarksOutput.Invoke(poseWorldLandmarks);
       OnPoseRoiOutput.Invoke(poseRoi);
 
       return new HolisticTrackingValue(
-        poseDetection, poseLandmarks, faceLandmarks, leftHandLandmarks, rightHandLandmarks, leftIrisLandmarks, rightIrisLandmarks, poseWorldLandmarks, poseRoi
+        poseDetection, poseLandmarks, faceLandmarks, leftHandLandmarks, rightHandLandmarks, poseWorldLandmarks, poseRoi
       );
     }
 
@@ -223,36 +205,6 @@ namespace Mediapipe.Unity.Holistic
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr LeftIrisLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
-    {
-      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
-      {
-        using (var packet = new NormalizedLandmarkListPacket(ptr, false))
-        {
-          if (holisticTrackingGraph.TryGetPacketValue(packet, ref holisticTrackingGraph.prevLeftIrisLandmarksMicrosec, out var value))
-          {
-            holisticTrackingGraph.OnLeftIrisLandmarksOutput.Invoke(value);
-          }
-        }
-      }).mpPtr;
-    }
-
-    [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr RightIrisLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
-    {
-      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
-      {
-        using (var packet = new NormalizedLandmarkListPacket(ptr, false))
-        {
-          if (holisticTrackingGraph.TryGetPacketValue(packet, ref holisticTrackingGraph.prevRightIrisLandmarksMicrosec, out var value))
-          {
-            holisticTrackingGraph.OnRightIrisLandmarksOutput.Invoke(value);
-          }
-        }
-      }).mpPtr;
-    }
-
-    [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
     private static IntPtr PoseWorldLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
@@ -286,7 +238,7 @@ namespace Mediapipe.Unity.Holistic
     {
       return new List<WaitForResult> {
         WaitForAsset("face_detection_short_range.bytes"),
-        WaitForAsset("face_landmark.bytes"),
+        WaitForAsset(refineFaceLandmarks ? "face_landmark_with_attention.bytes" : "face_landmark.bytes"),
         WaitForAsset("iris_landmark.bytes"),
         WaitForAsset("hand_landmark.bytes"),
         WaitForAsset("hand_recrop.bytes"),
@@ -315,8 +267,6 @@ namespace Mediapipe.Unity.Holistic
       _faceLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _FaceLandmarksStreamName);
       _leftHandLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _LeftHandLandmarksStreamName);
       _rightHandLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _RightHandLandmarksStreamName);
-      _leftIrisLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _LeftIrisLandmarksStreamName);
-      _rightIrisLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _RightIrisLandmarksStreamName);
       _poseWorldLandmarksStream = new OutputStream<LandmarkListPacket, LandmarkList>(calculatorGraph, _PoseWorldLandmarksStreamName);
       _poseRoiStream = new OutputStream<NormalizedRectPacket, NormalizedRect>(calculatorGraph, _PoseRoiStreamName);
     }
@@ -326,7 +276,7 @@ namespace Mediapipe.Unity.Holistic
       var sidePacket = new SidePacket();
 
       SetImageTransformationOptions(sidePacket, imageSource);
-      sidePacket.Emplace("enable_iris_detection", new BoolPacket(detectIris));
+      sidePacket.Emplace("refine_face_landmarks", new BoolPacket(refineFaceLandmarks));
       sidePacket.Emplace("model_complexity", new IntPacket((int)modelComplexity));
       sidePacket.Emplace("smooth_landmarks", new BoolPacket(smoothLandmarks));
 

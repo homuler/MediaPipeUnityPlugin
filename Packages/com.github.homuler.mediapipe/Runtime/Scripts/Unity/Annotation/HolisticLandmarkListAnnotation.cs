@@ -11,12 +11,10 @@ namespace Mediapipe.Unity
 {
   public sealed class HolisticLandmarkListAnnotation : HierarchicalAnnotation
   {
-    [SerializeField] private FaceLandmarkListAnnotation _faceLandmarkListAnnotation;
+    [SerializeField] private FaceLandmarkListWithIrisAnnotation _faceLandmarkListAnnotation;
     [SerializeField] private PoseLandmarkListAnnotation _poseLandmarkListAnnotation;
     [SerializeField] private HandLandmarkListAnnotation _leftHandLandmarkListAnnotation;
     [SerializeField] private HandLandmarkListAnnotation _rightHandLandmarkListAnnotation;
-    [SerializeField] private IrisLandmarkListAnnotation _leftIrisLandmarkListAnnotation;
-    [SerializeField] private IrisLandmarkListAnnotation _rightIrisLandmarkListAnnotation;
     [SerializeField] private ConnectionListAnnotation _connectionListAnnotation;
 
     public override bool isMirrored
@@ -27,8 +25,6 @@ namespace Mediapipe.Unity
         _poseLandmarkListAnnotation.isMirrored = value;
         _leftHandLandmarkListAnnotation.isMirrored = value;
         _rightHandLandmarkListAnnotation.isMirrored = value;
-        _leftIrisLandmarkListAnnotation.isMirrored = value;
-        _rightIrisLandmarkListAnnotation.isMirrored = value;
         _connectionListAnnotation.isMirrored = value;
         base.isMirrored = value;
       }
@@ -42,8 +38,6 @@ namespace Mediapipe.Unity
         _poseLandmarkListAnnotation.rotationAngle = value;
         _leftHandLandmarkListAnnotation.rotationAngle = value;
         _rightHandLandmarkListAnnotation.rotationAngle = value;
-        _leftIrisLandmarkListAnnotation.rotationAngle = value;
-        _rightIrisLandmarkListAnnotation.rotationAngle = value;
         _connectionListAnnotation.rotationAngle = value;
         base.rotationAngle = value;
       }
@@ -57,8 +51,7 @@ namespace Mediapipe.Unity
     }
 
     public void Draw(IList<NormalizedLandmark> faceLandmarks, IList<NormalizedLandmark> poseLandmarks,
-                     IList<NormalizedLandmark> leftHandLandmarks, IList<NormalizedLandmark> rightHandLandmarks,
-                     IList<NormalizedLandmark> leftIrisLandmarks, IList<NormalizedLandmark> rightIrisLandmarks, bool visualizeZ = false, int circleVertices = 128)
+                     IList<NormalizedLandmark> leftHandLandmarks, IList<NormalizedLandmark> rightHandLandmarks, bool visualizeZ = false, int circleVertices = 128)
     {
       var mask = PoseLandmarkListAnnotation.BodyParts.All;
       if (faceLandmarks != null)
@@ -73,26 +66,21 @@ namespace Mediapipe.Unity
       {
         mask ^= PoseLandmarkListAnnotation.BodyParts.RightHand;
       }
-      _faceLandmarkListAnnotation.Draw(faceLandmarks, visualizeZ);
+      _faceLandmarkListAnnotation.Draw(faceLandmarks, visualizeZ, circleVertices);
       _poseLandmarkListAnnotation.Draw(poseLandmarks, mask, visualizeZ);
       _leftHandLandmarkListAnnotation.Draw(leftHandLandmarks, visualizeZ);
       _rightHandLandmarkListAnnotation.Draw(rightHandLandmarks, visualizeZ);
-      _leftIrisLandmarkListAnnotation.Draw(leftIrisLandmarks, visualizeZ, circleVertices);
-      _rightIrisLandmarkListAnnotation.Draw(rightIrisLandmarks, visualizeZ, circleVertices);
       RedrawWristJoints();
     }
 
     public void Draw(NormalizedLandmarkList faceLandmarks, NormalizedLandmarkList poseLandmarks,
-                     NormalizedLandmarkList leftHandLandmarks, NormalizedLandmarkList rightHandLandmarks,
-                     NormalizedLandmarkList leftIrisLandmarks, NormalizedLandmarkList rightIrisLandmarks, bool visualizeZ = false, int circleVertices = 128)
+                     NormalizedLandmarkList leftHandLandmarks, NormalizedLandmarkList rightHandLandmarks, bool visualizeZ = false, int circleVertices = 128)
     {
       Draw(
         faceLandmarks?.Landmark,
         poseLandmarks?.Landmark,
         leftHandLandmarks?.Landmark,
         rightHandLandmarks?.Landmark,
-        leftIrisLandmarks?.Landmark,
-        rightIrisLandmarks?.Landmark,
         visualizeZ,
         circleVertices
       );

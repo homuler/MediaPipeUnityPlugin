@@ -16,14 +16,14 @@ namespace Mediapipe.Unity.Holistic.UI
   {
     private const string _ModelComplexityPath = "Scroll View/Viewport/Contents/Model Complexity/Dropdown";
     private const string _SmoothLandmarksPath = "Scroll View/Viewport/Contents/Smooth Landmarks/Toggle";
-    private const string _DetectIrisPath = "Scroll View/Viewport/Contents/Detect Iris/Toggle";
+    private const string _RefineFaceLandmarksPath = "Scroll View/Viewport/Contents/Refine Face Landmarks/Toggle";
     private const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
     private const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
 
     private HolisticTrackingSolution _solution;
     private Dropdown _modelComplexityInput;
     private Toggle _smoothLandmarksInput;
-    private Toggle _detectIrisInput;
+    private Toggle _refineFaceLandmarksInput;
     private Dropdown _runningModeInput;
     private InputField _timeoutMillisecInput;
 
@@ -52,9 +52,9 @@ namespace Mediapipe.Unity.Holistic.UI
       _isChanged = true;
     }
 
-    public void ToggleDetectIris()
+    public void ToggleRefineFaceLandmarks()
     {
-      _solution.detectIris = _detectIrisInput.isOn;
+      _solution.refineFaceLandmarks = _refineFaceLandmarksInput.isOn;
       _isChanged = true;
     }
 
@@ -77,7 +77,7 @@ namespace Mediapipe.Unity.Holistic.UI
     {
       InitializeModelComplexity();
       InitializeSmoothLandmarks();
-      InitializeDetectIris();
+      InitializeRefineFaceLandmarks();
       InitializeRunningMode();
       InitializeTimeoutMillisec();
     }
@@ -108,11 +108,11 @@ namespace Mediapipe.Unity.Holistic.UI
       _smoothLandmarksInput.onValueChanged.AddListener(delegate { ToggleSmoothLandmarks(); });
     }
 
-    private void InitializeDetectIris()
+    private void InitializeRefineFaceLandmarks()
     {
-      _detectIrisInput = gameObject.transform.Find(_DetectIrisPath).gameObject.GetComponent<Toggle>();
-      _detectIrisInput.isOn = _solution.detectIris;
-      _detectIrisInput.onValueChanged.AddListener(delegate { ToggleDetectIris(); });
+      _refineFaceLandmarksInput = gameObject.transform.Find(_RefineFaceLandmarksPath).gameObject.GetComponent<Toggle>();
+      _refineFaceLandmarksInput.isOn = _solution.refineFaceLandmarks;
+      _refineFaceLandmarksInput.onValueChanged.AddListener(delegate { ToggleRefineFaceLandmarks(); });
     }
 
     private void InitializeRunningMode()

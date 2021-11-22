@@ -36,10 +36,10 @@ namespace Mediapipe.Unity.Holistic
       set => _graphRunner.smoothLandmarks = value;
     }
 
-    public bool detectIris
+    public bool refineFaceLandmarks
     {
-      get => _graphRunner.detectIris;
-      set => _graphRunner.detectIris = value;
+      get => _graphRunner.refineFaceLandmarks;
+      set => _graphRunner.refineFaceLandmarks = value;
     }
 
     public long timeoutMillisec
@@ -97,7 +97,7 @@ namespace Mediapipe.Unity.Holistic
 
       Logger.LogInfo(TAG, $"Model Complexity = {modelComplexity}");
       Logger.LogInfo(TAG, $"Smooth Landmarks = {smoothLandmarks}");
-      Logger.LogInfo(TAG, $"Detect Iris = {detectIris}");
+      Logger.LogInfo(TAG, $"Refine Face Landmarks = {refineFaceLandmarks}");
       Logger.LogInfo(TAG, $"Timeout Millisec = {timeoutMillisec}");
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
@@ -115,8 +115,6 @@ namespace Mediapipe.Unity.Holistic
         _graphRunner.OnPoseLandmarksOutput.AddListener(OnPoseLandmarksOutput);
         _graphRunner.OnLeftHandLandmarksOutput.AddListener(OnLeftHandLandmarksOutput);
         _graphRunner.OnRightHandLandmarksOutput.AddListener(OnRightHandLandmarksOutput);
-        _graphRunner.OnLeftIrisLandmarksOutput.AddListener(OnLeftIrisLandmarksOutput);
-        _graphRunner.OnRightIrisLandmarksOutput.AddListener(OnRightIrisLandmarksOutput);
         _graphRunner.OnPoseWorldLandmarksOutput.AddListener(OnPoseWorldLandmarksOutput);
         _graphRunner.OnPoseRoiOutput.AddListener(OnPoseRoiOutput);
         _graphRunner.StartRunAsync(imageSource).AssertOk();
@@ -153,7 +151,7 @@ namespace Mediapipe.Unity.Holistic
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = _graphRunner.FetchNextValue();
           _poseDetectionAnnotationController.DrawNow(value.poseDetection);
-          _holisticAnnotationController.DrawNow(value.faceLandmarks, value.poseLandmarks, value.leftHandLandmarks, value.rightHandLandmarks, value.leftIrisLandmarks, value.rightIrisLandmarks);
+          _holisticAnnotationController.DrawNow(value.faceLandmarks, value.poseLandmarks, value.leftHandLandmarks, value.rightHandLandmarks);
           _poseWorldLandmarksAnnotationController.DrawNow(value.poseWorldLandmarks);
           _poseRoiAnnotationController.DrawNow(value.poseRoi);
         }
@@ -185,16 +183,6 @@ namespace Mediapipe.Unity.Holistic
     private void OnRightHandLandmarksOutput(NormalizedLandmarkList rightHandLandmarks)
     {
       _holisticAnnotationController.DrawRightHandLandmarkListLater(rightHandLandmarks);
-    }
-
-    private void OnLeftIrisLandmarksOutput(NormalizedLandmarkList leftIrisLandmarks)
-    {
-      _holisticAnnotationController.DrawLeftIrisLandmarkListLater(leftIrisLandmarks);
-    }
-
-    private void OnRightIrisLandmarksOutput(NormalizedLandmarkList rightIrisLandmarks)
-    {
-      _holisticAnnotationController.DrawRightIrisLandmarkListLater(rightIrisLandmarks);
     }
 
     private void OnPoseWorldLandmarksOutput(LandmarkList poseWorldLandmarks)

@@ -147,6 +147,114 @@ index fa06c88..0d0bd0c 100644
      helper_.BindFramebuffer(dst);
      glActiveTexture(GL_TEXTURE1);
      glBindTexture(src1.target(), src1.name());
+diff --git a/mediapipe/modules/holistic_landmark/face_landmarks_from_pose_cpu.pbtxt b/mediapipe/modules/holistic_landmark/face_landmarks_from_pose_cpu.pbtxt
+index e1a25e9..1d99672 100644
+--- a/mediapipe/modules/holistic_landmark/face_landmarks_from_pose_cpu.pbtxt
++++ b/mediapipe/modules/holistic_landmark/face_landmarks_from_pose_cpu.pbtxt
+@@ -8,6 +8,11 @@ input_stream: "IMAGE:input_video"
+ # Face-related pose landmarks. (NormalizedLandmarkList)
+ input_stream: "FACE_LANDMARKS_FROM_POSE:face_landmarks_from_pose"
+ 
++# Whether to run the face landmark model with attention on lips and eyes to
++# provide more accuracy, and additionally output iris landmarks. If unspecified,
++# functions as set to false. (bool)
++input_side_packet: "REFINE_LANDMARKS:refine_landmarks"
++
+ # Face landmarks. (NormalizedLandmarkList)
+ output_stream: "FACE_LANDMARKS:face_landmarks"
+ 
+@@ -72,5 +77,6 @@ node {
+   calculator: "FaceLandmarkCpu"
+   input_stream: "IMAGE:input_video"
+   input_stream: "ROI:face_tracking_roi"
++  input_side_packet: "WITH_ATTENTION:refine_landmarks"
+   output_stream: "LANDMARKS:face_landmarks"
+ }
+diff --git a/mediapipe/modules/holistic_landmark/face_landmarks_from_pose_gpu.pbtxt b/mediapipe/modules/holistic_landmark/face_landmarks_from_pose_gpu.pbtxt
+index 872526b..24a9854 100644
+--- a/mediapipe/modules/holistic_landmark/face_landmarks_from_pose_gpu.pbtxt
++++ b/mediapipe/modules/holistic_landmark/face_landmarks_from_pose_gpu.pbtxt
+@@ -8,6 +8,11 @@ input_stream: "IMAGE:input_video"
+ # Face-related pose landmarks. (NormalizedLandmarkList)
+ input_stream: "FACE_LANDMARKS_FROM_POSE:face_landmarks_from_pose"
+ 
++# Whether to run the face landmark model with attention on lips and eyes to
++# provide more accuracy, and additionally output iris landmarks. If unspecified,
++# functions as set to false. (bool)
++input_side_packet: "REFINE_LANDMARKS:refine_landmarks"
++
+ # Face landmarks. (NormalizedLandmarkList)
+ output_stream: "FACE_LANDMARKS:face_landmarks"
+ 
+@@ -72,5 +77,6 @@ node {
+   calculator: "FaceLandmarkGpu"
+   input_stream: "IMAGE:input_video"
+   input_stream: "ROI:face_tracking_roi"
++  input_side_packet: "WITH_ATTENTION:refine_landmarks"
+   output_stream: "LANDMARKS:face_landmarks"
+ }
+diff --git a/mediapipe/modules/holistic_landmark/holistic_landmark_cpu.pbtxt b/mediapipe/modules/holistic_landmark/holistic_landmark_cpu.pbtxt
+index 878e230..4490895 100644
+--- a/mediapipe/modules/holistic_landmark/holistic_landmark_cpu.pbtxt
++++ b/mediapipe/modules/holistic_landmark/holistic_landmark_cpu.pbtxt
+@@ -35,6 +35,7 @@
+ #     input_side_packet: "SMOOTH_LANDMARKS:smooth_landmarks"
+ #     input_side_packet: "ENABLE_SEGMENTATION:enable_segmentation"
+ #     input_side_packet: "SMOOTH_SEGMENTATION:smooth_segmentation"
++#     input_side_packet: "REFINE_FACE_LANDMARKS:refine_face_landmarks"
+ #     input_side_packet: "USE_PREV_LANDMARKS:use_prev_landmarks"
+ #     output_stream: "POSE_LANDMARKS:pose_landmarks"
+ #     output_stream: "FACE_LANDMARKS:face_landmarks"
+@@ -70,6 +71,11 @@ input_side_packet: "ENABLE_SEGMENTATION:enable_segmentation"
+ # jitter. If unspecified, functions as set to true. (bool)
+ input_side_packet: "SMOOTH_SEGMENTATION:smooth_segmentation"
+ 
++# Whether to run the face landmark model with attention on lips and eyes to
++# provide more accuracy, and additionally output iris landmarks. If unspecified,
++# functions as set to false. (bool)
++input_side_packet: "REFINE_FACE_LANDMARKS:refine_face_landmarks"
++
+ # Whether landmarks on the previous image should be used to help localize
+ # landmarks on the current image. (bool)
+ input_side_packet: "USE_PREV_LANDMARKS:use_prev_landmarks"
+@@ -135,5 +141,6 @@ node {
+   calculator: "FaceLandmarksFromPoseCpu"
+   input_stream: "IMAGE:image"
+   input_stream: "FACE_LANDMARKS_FROM_POSE:face_landmarks_from_pose"
++  input_side_packet: "REFINE_LANDMARKS:refine_face_landmarks"
+   output_stream: "FACE_LANDMARKS:face_landmarks"
+ }
+diff --git a/mediapipe/modules/holistic_landmark/holistic_landmark_gpu.pbtxt b/mediapipe/modules/holistic_landmark/holistic_landmark_gpu.pbtxt
+index dc2a7b9..2ae20fe 100644
+--- a/mediapipe/modules/holistic_landmark/holistic_landmark_gpu.pbtxt
++++ b/mediapipe/modules/holistic_landmark/holistic_landmark_gpu.pbtxt
+@@ -35,6 +35,7 @@
+ #     input_side_packet: "SMOOTH_LANDMARKS:smooth_landmarks"
+ #     input_side_packet: "ENABLE_SEGMENTATION:enable_segmentation"
+ #     input_side_packet: "SMOOTH_SEGMENTATION:smooth_segmentation"
++#     input_side_packet: "REFINE_FACE_LANDMARKS:refine_face_landmarks"
+ #     input_side_packet: "USE_PREV_LANDMARKS:use_prev_landmarks"
+ #     output_stream: "POSE_LANDMARKS:pose_landmarks"
+ #     output_stream: "FACE_LANDMARKS:face_landmarks"
+@@ -70,6 +71,11 @@ input_side_packet: "ENABLE_SEGMENTATION:enable_segmentation"
+ # jitter. If unspecified, functions as set to true. (bool)
+ input_side_packet: "SMOOTH_SEGMENTATION:smooth_segmentation"
+ 
++# Whether to run the face landmark model with attention on lips and eyes to
++# provide more accuracy, and additionally output iris landmarks. If unspecified,
++# functions as set to false. (bool)
++input_side_packet: "REFINE_FACE_LANDMARKS:refine_face_landmarks"
++
+ # Whether landmarks on the previous image should be used to help localize
+ # landmarks on the current image. (bool)
+ input_side_packet: "USE_PREV_LANDMARKS:use_prev_landmarks"
+@@ -135,5 +141,6 @@ node {
+   calculator: "FaceLandmarksFromPoseGpu"
+   input_stream: "IMAGE:image"
+   input_stream: "FACE_LANDMARKS_FROM_POSE:face_landmarks_from_pose"
++  input_side_packet: "REFINE_LANDMARKS:refine_face_landmarks"
+   output_stream: "FACE_LANDMARKS:face_landmarks"
+ }
 diff --git a/mediapipe/modules/objectron/objectron_gpu.pbtxt b/mediapipe/modules/objectron/objectron_gpu.pbtxt
 index 7ef2b67..83856d5 100644
 --- a/mediapipe/modules/objectron/objectron_gpu.pbtxt

@@ -3405,7 +3405,7 @@ GameObject:
   - component: {fileID: 3101618510674091820}
   - component: {fileID: 699259311701444684}
   m_Layer: 5
-  m_Name: Detect Iris
+  m_Name: Refine Face Landmarks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4547,7 +4547,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Detect Iris
+  m_Text: Refine Face Landmarks
 --- !u!114 &1548068219639775894
 MonoBehaviour:
   m_ObjectHideFlags: 0
