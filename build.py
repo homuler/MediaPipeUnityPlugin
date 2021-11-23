@@ -294,7 +294,7 @@ class BuildCommand(Command):
       return []
 
     commands = self._build_common_commands()
-    commands += [f'--config=ios_{self.ios}', '--copt=-fembed-bitcode', '--apple_bitcode=embedded']
+    commands += [f'--config=ios_{self.ios}', '--copt=-fembed-bitcode', '--apple_bitcode=embedded', '--incompatible_run_shell_command_string=false']
     commands.append('//mediapipe_api/objc:MediaPipeUnity')
     return commands
 
@@ -313,7 +313,6 @@ class BuildCommand(Command):
 
   def _build_proto_dlls_commands(self):
     return ['nuget', 'install', '-o', _NUGET_PATH, '-Source', 'https://api.nuget.org/v3/index.json']
-
 
 class CleanCommand(Command):
   def __init__(self, command_args):

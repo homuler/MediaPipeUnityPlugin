@@ -165,26 +165,17 @@ http_archive(
     urls = ["https://chromium.googlesource.com/libyuv/libyuv/+archive/2525698acba9bf9b701ba6b4d9584291a1f62257.tar.gz"],
 )
 
-# Note: protobuf-javalite is no longer released as a separate download, it's included in the main Java download.
-# ...but the Java download is currently broken, so we use the "source" download.
-http_archive(
-    name = "com_google_protobuf_javalite",
-    sha256 = "a79d19dcdf9139fa4b81206e318e33d245c4c9da1ffed21c87288ed4380426f9",
-    strip_prefix = "protobuf-3.11.4",
-    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.11.4.tar.gz"],
-)
-
 http_archive(
     name = "com_google_protobuf",
     patch_args = [
         "-p1",
     ],
     patches = [
-        "@com_google_mediapipe//third_party:com_google_protobuf_fixes.diff",
+        "@//third_party:com_google_protobuf_fixes.diff",
     ],
-    sha256 = "a79d19dcdf9139fa4b81206e318e33d245c4c9da1ffed21c87288ed4380426f9",
-    strip_prefix = "protobuf-3.11.4",
-    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.11.4.tar.gz"],
+    sha256 = "65e020a42bdab44a66664d34421995829e9e79c60e5adaa08282fd14ca552f57",
+    strip_prefix = "protobuf-3.15.6",
+    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.15.6.tar.gz"],
 )
 
 http_archive(
@@ -319,8 +310,8 @@ http_archive(
         # Bypass checking ios unit test runner when building MP ios applications.
         "@com_google_mediapipe//third_party:build_bazel_rules_apple_bypass_test_runner_check.diff",
     ],
-    sha256 = "7a7afdd4869bb201c9352eed2daf37294d42b093579b70423490c1b4d4f6ce42",
-    url = "https://github.com/bazelbuild/rules_apple/releases/download/0.19.0/rules_apple.0.19.0.tar.gz",
+    sha256 = "55f4dc1c9bf21bb87442665f4618cff1f1343537a2bd89252078b987dcd9c382",
+    url = "https://github.com/bazelbuild/rules_apple/releases/download/0.20.0/rules_apple.0.20.0.tar.gz",
 )
 
 load(
