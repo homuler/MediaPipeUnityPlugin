@@ -314,10 +314,11 @@ You cannot build native libraries for Android on Windows 10, so use [Docker for 
 
 1. (Optional) Install Xcode
 
+1. (Optional) If you'd like to build for iOS, open [`mediapipe_api/objc/BUILD`](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/mediapipe_api/objc/BUILD#L29) and modify `bundle_id`.
+
 1. (Optional) Install Android SDK and Android NDK, and set environment variables
 
    ```sh
-   # bash
    export ANDROID_HOME=/path/to/SDK
    # ATTENTION!: Currently Bazel does not support NDK r22, so use NDK r21 instead.
    export ANDROID_NDK_HOME=/path/to/ndk/21.4.7075529

@@ -1,0 +1,20 @@
+diff --git a/apple/internal/ios_rules.bzl b/apple/internal/ios_rules.bzl
+index ce76a4a..1f11b84 100644
+--- a/apple/internal/ios_rules.bzl
++++ b/apple/internal/ios_rules.bzl
+@@ -91,6 +91,7 @@ def _ios_application_impl(ctx):
+     binary_artifact = binary_target[apple_common.AppleExecutableBinary].binary
+ 
+     bundle_id = ctx.attr.bundle_id
++
+     bundle_verification_targets = [struct(target = ext) for ext in ctx.attr.extensions]
+     embeddable_targets = ctx.attr.frameworks + ctx.attr.extensions
+     if ctx.attr.watch_application:
+@@ -198,6 +199,7 @@ def _ios_framework_impl(ctx):
+     binary_artifact = binary_target[apple_common.AppleDylibBinary].binary
+ 
+     bundle_id = ctx.attr.bundle_id
++    bundling_support.validate_bundle_id(bundle_id)
+ 
+     signed_frameworks = []
+     if getattr(ctx.file, "provisioning_profile", None):
