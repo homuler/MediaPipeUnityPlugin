@@ -114,6 +114,7 @@ namespace Mediapipe.Unity
       if (!(screen.texture is Texture2D))
       {
         screen.texture = new Texture2D(textureFrame.width, textureFrame.height, TextureFormat.RGBA32, false);
+        screen.uvRect = new UnityEngine.Rect(0, 0, 1, 1);
       }
       textureFrame.CopyTexture(screen.texture);
     }
