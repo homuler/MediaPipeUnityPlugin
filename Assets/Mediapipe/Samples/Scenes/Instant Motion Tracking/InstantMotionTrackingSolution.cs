@@ -91,7 +91,6 @@ namespace Mediapipe.Unity.InstantMotionTracking
       }
       // NOTE: The _screen will be resized later, keeping the aspect ratio.
       SetupScreen(_screen, imageSource);
-      _screen.texture = imageSource.GetCurrentTexture();
 
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
@@ -136,6 +135,9 @@ namespace Mediapipe.Unity.InstantMotionTracking
 
         if (runningMode == RunningMode.Sync)
         {
+          // TODO: copy texture before `textureFrame` is released
+          UpdateScreenSync(_screen, textureFrame);
+
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = _graphRunner.FetchNextValue();
           _trackedAnchorDataAnnotationController.DrawNow(value);

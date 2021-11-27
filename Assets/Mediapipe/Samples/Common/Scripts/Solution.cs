@@ -77,6 +77,8 @@ namespace Mediapipe.Unity
       {
         screen.uvRect = new UnityEngine.Rect(0, 1, 1, -1);
       }
+
+      screen.texture = imageSource.GetCurrentTexture();
     }
 
     protected static void SetupAnnotationController<T>(AnnotationController<T> annotationController, ImageSource imageSource, bool expectedToBeMirrored = false) where T : HierarchicalAnnotation
@@ -105,6 +107,16 @@ namespace Mediapipe.Unity
       {
         textureFrame.ReadTextureFromOnCPU(sourceTexture);
       }
+    }
+
+    protected static void UpdateScreenSync(RawImage screen, TextureFrame textureFrame)
+    {
+      if (!(screen.texture is Texture2D))
+      {
+        screen.texture = new Texture2D(textureFrame.width, textureFrame.height, TextureFormat.RGBA32, false);
+        screen.uvRect = new UnityEngine.Rect(0, 0, 1, 1);
+      }
+      textureFrame.CopyTexture(screen.texture);
     }
   }
 }
