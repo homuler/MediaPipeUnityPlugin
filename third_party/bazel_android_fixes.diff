@@ -1,0 +1,13 @@
+diff --git a/src/main/java/com/google/devtools/build/lib/bazel/rules/android/android_ndk_cc_toolchain_template.txt b/src/main/java/com/google/devtools/build/lib/bazel/rules/android/android_ndk_cc_toolchain_template.txt
+index d622f0c962..4ffc0134b7 100644
+--- a/src/main/java/com/google/devtools/build/lib/bazel/rules/android/android_ndk_cc_toolchain_template.txt
++++ b/src/main/java/com/google/devtools/build/lib/bazel/rules/android/android_ndk_cc_toolchain_template.txt
+@@ -14,7 +14,7 @@ cc_toolchain(
+     objcopy_files = ":%toolchainName%-all_files",
+     static_runtime_lib = ":%staticRuntimeLibs%",
+     strip_files = ":%toolchainName%-all_files",
+-    supports_param_files = 0,
++    supports_param_files = 1,
+     toolchain_identifier = "%toolchainName%",
+     toolchain_config = ":%toolchainName%-config",
+ )

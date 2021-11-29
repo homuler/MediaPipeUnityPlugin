@@ -185,10 +185,24 @@ If the command finishes successfully, required files will be installed to your h
    ```bat
    Rem Run with `Packages` directory mounted to the container
    Rem Specify `--cpus` and `--memory` options according to your machine.
-   docker run --cpus=16 --memory=12288m ^
+   docker run --cpus=8 --memory=12g ^
        --mount type=bind,src=%CD%\Packages,dst=C:\mediapipe\Packages ^
        --mount type=bind,src=%CD%\Assets,dst=C:\mediapipe\Assets ^
        -it mediapipe_unity:windows
+   ```
+
+1. (Experimental) If you'd like to build native libraries for Android, apply a patch to bazel.
+
+   ```bat
+   Rem Run inside the container
+
+   git clone https://github.com/bazelbuild/bazel.git C:\bazel
+   cd C:\bazel
+   git checkout 4.2.1
+   git apply ..\mediapipe\third_party\bazel_android_fixes.diff
+   bazel --output_user_root=C:\_bzl build //src:bazel.exe
+   cp bazel-bin\src\bazel.exe C:\bin
+   cd C:\mediapipe
    ```
 
 1. Run [build command](#build-command) inside the container
@@ -219,7 +233,7 @@ If the command finishes successfully, required files will be installed to your h
    ```bat
    Rem Run with `Packages` directory mounted to the container
    Rem Specify `--cpus` and `--memory` options according to your machine.
-   docker run --cpus=16 --memory=8192m ^
+   docker run --cpus=16 --memory=8g ^
        --mount type=bind,src=%CD%\Packages,dst=/home/mediapipe/Packages ^
        --mount type=bind,src=%CD%\Assets,dst=/home/mediapipe/Assets ^
        -it mediapipe_unity:linux

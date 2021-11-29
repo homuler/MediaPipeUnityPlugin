@@ -4,6 +4,7 @@ common --experimental_repo_remote_exec
 # Basic build settings
 build --jobs 128
 build --define='absl=1'
+build --features=compiler_param_file
 build --enable_platform_specific_config
 
 # Linux
@@ -32,8 +33,11 @@ build --apple_platform_type=macos
 # the automatic configuration transition uses //external:android/crosstool.
 # Using it here works and spares us from having two different config_settings
 # for Android.
+build:android --noenable_platform_specific_config
 build:android --crosstool_top=//external:android/crosstool
 build:android --host_crosstool_top=@bazel_tools//tools/cpp:toolchain
+build:android --cxxopt=-std=c++17
+build:android --copt=-w
 build:android --linkopt=-landroid
 build:android --linkopt=-ldl
 build:android --linkopt=-llog
