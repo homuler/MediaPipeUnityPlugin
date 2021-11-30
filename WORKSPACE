@@ -140,7 +140,7 @@ http_archive(
         "-p1",
     ],
     patches = [
-        "@com_google_mediapipe//third_party:com_github_glog_glog_9779e5ea6ef59562b030248947f787d1256132ae.diff",
+        "@//third_party:com_github_glog_glog_no_gflags_fixes.diff",
     ],
     sha256 = "58c9b3b6aaa4dd8b836c0fd8f65d0f941441fb95e27212c5eeb9979cfd3592ab",
     strip_prefix = "glog-0a2e5931bd5ff22fd3bf8999eb8ce776f159cda6",
@@ -309,7 +309,7 @@ http_archive(
     patches = [
         # Bypass checking ios unit test runner when building MP ios applications.
         "@com_google_mediapipe//third_party:build_bazel_rules_apple_bypass_test_runner_check.diff",
-        "@//third_party:rules_apple_fix.diff",
+        "@//third_party:build_bazel_rules_apple_validation.diff",
     ],
     sha256 = "55f4dc1c9bf21bb87442665f4618cff1f1343537a2bd89252078b987dcd9c382",
     url = "https://github.com/bazelbuild/rules_apple/releases/download/0.20.0/rules_apple.0.20.0.tar.gz",
