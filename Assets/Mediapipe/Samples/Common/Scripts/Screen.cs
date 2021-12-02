@@ -30,7 +30,7 @@ namespace Mediapipe.Unity
       if (!(_screen.texture is Texture2D))
       {
         _screen.texture = new Texture2D(_imageSource.textureWidth, _imageSource.textureHeight, TextureFormat.RGBA32, false);
-        _screen.uvRect = new UnityEngine.Rect(0, 0, 1, 1);
+        _screen.uvRect = GetUvRect(RunningMode.Sync);
       }
       textureFrame.CopyTexture(_screen.texture);
     }
