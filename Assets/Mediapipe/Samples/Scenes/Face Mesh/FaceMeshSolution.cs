@@ -7,13 +7,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Mediapipe.Unity.FaceMesh
 {
   public class FaceMeshSolution : Solution
   {
-    [SerializeField] private RawImage _screen;
+    [SerializeField] private Screen _screen;
     [SerializeField] private DetectionListAnnotationController _faceDetectionsAnnotationController;
     [SerializeField] private MultiFaceLandmarkListAnnotationController _multiFaceLandmarksAnnotationController;
     [SerializeField] private NormalizedRectListAnnotationController _faceRectsFromLandmarksAnnotationController;
@@ -86,7 +85,7 @@ namespace Mediapipe.Unity.FaceMesh
         yield break;
       }
       // NOTE: The _screen will be resized later, keeping the aspect ratio.
-      SetupScreen(_screen, imageSource);
+      _screen.Initialize(imageSource);
 
       Logger.LogInfo(TAG, $"Max Num Faces = {maxNumFaces}");
       Logger.LogInfo(TAG, $"Refine Landmarks = {refineLandmarks}");
@@ -138,7 +137,7 @@ namespace Mediapipe.Unity.FaceMesh
         if (runningMode == RunningMode.Sync)
         {
           // TODO: copy texture before `textureFrame` is released
-          UpdateScreenSync(_screen, textureFrame);
+          _screen.ReadSync(textureFrame);
 
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = _graphRunner.FetchNextValue();

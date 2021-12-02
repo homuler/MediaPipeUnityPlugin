@@ -7,13 +7,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Mediapipe.Unity.BoxTracking
 {
   public class BoxTrackingSolution : Solution
   {
-    [SerializeField] private RawImage _screen;
+    [SerializeField] private Screen _screen;
     [SerializeField] private DetectionListAnnotationController _trackedDetectionsAnnotationController;
     [SerializeField] private BoxTrackingGraph _graphRunner;
     [SerializeField] private TextureFramePool _textureFramePool;
@@ -71,7 +70,7 @@ namespace Mediapipe.Unity.BoxTracking
         yield break;
       }
       // NOTE: The _screen will be resized later, keeping the aspect ratio.
-      SetupScreen(_screen, imageSource);
+      _screen.Initialize(imageSource);
 
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
@@ -114,7 +113,7 @@ namespace Mediapipe.Unity.BoxTracking
         if (runningMode == RunningMode.Sync)
         {
           // TODO: copy texture before `textureFrame` is released
-          UpdateScreenSync(_screen, textureFrame);
+          _screen.ReadSync(textureFrame);
 
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var trackedDetections = _graphRunner.FetchNextValue();

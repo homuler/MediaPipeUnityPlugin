@@ -48,6 +48,7 @@ namespace Mediapipe.Unity
     public override int textureHeight => !isPrepared ? 0 : webCamTexture.height;
 
     public override bool isVerticallyFlipped => isPrepared && webCamTexture.videoVerticallyMirrored;
+    public override bool isFrontFacing => isPrepared && (webCamDevice is WebCamDevice valueOfWebCamDevice) && valueOfWebCamDevice.isFrontFacing;
     public override RotationAngle rotation => !isPrepared ? RotationAngle.Rotation0 : (RotationAngle)webCamTexture.videoRotationAngle;
 
     private WebCamDevice? _webCamDevice;

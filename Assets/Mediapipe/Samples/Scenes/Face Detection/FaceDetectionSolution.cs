@@ -7,13 +7,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Mediapipe.Unity.FaceDetection
 {
   public class FaceDetectionSolution : Solution
   {
-    [SerializeField] private RawImage _screen;
+    [SerializeField] private Screen _screen;
     [SerializeField] private DetectionListAnnotationController _faceDetectionsAnnotationController;
     [SerializeField] private FaceDetectionGraph _graphRunner;
     [SerializeField] private TextureFramePool _textureFramePool;
@@ -77,7 +76,7 @@ namespace Mediapipe.Unity.FaceDetection
         yield break;
       }
       // NOTE: The _screen will be resized later, keeping the aspect ratio.
-      SetupScreen(_screen, imageSource);
+      _screen.Initialize(imageSource);
 
       Logger.LogInfo(TAG, $"Model Selection = {modelType}");
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
@@ -121,7 +120,7 @@ namespace Mediapipe.Unity.FaceDetection
         if (runningMode == RunningMode.Sync)
         {
           // TODO: copy texture before `textureFrame` is released
-          UpdateScreenSync(_screen, textureFrame);
+          _screen.ReadSync(textureFrame);
 
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var detections = _graphRunner.FetchNextValue();

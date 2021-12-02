@@ -7,13 +7,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Mediapipe.Unity.ObjectDetection
 {
   public class ObjectDetectionSolution : Solution
   {
-    [SerializeField] private RawImage _screen;
+    [SerializeField] private Screen _screen;
     [SerializeField] private DetectionListAnnotationController _outputDetectionsAnnotationController;
     [SerializeField] private ObjectDetectionGraph _graphRunner;
     [SerializeField] private TextureFramePool _textureFramePool;
@@ -71,7 +70,7 @@ namespace Mediapipe.Unity.ObjectDetection
         yield break;
       }
       // NOTE: The _screen will be resized later, keeping the aspect ratio.
-      SetupScreen(_screen, imageSource);
+      _screen.Initialize(imageSource);
 
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
@@ -114,7 +113,7 @@ namespace Mediapipe.Unity.ObjectDetection
         if (runningMode == RunningMode.Sync)
         {
           // TODO: copy texture before `textureFrame` is released
-          UpdateScreenSync(_screen, textureFrame);
+          _screen.ReadSync(textureFrame);
 
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var detections = _graphRunner.FetchNextDetections();

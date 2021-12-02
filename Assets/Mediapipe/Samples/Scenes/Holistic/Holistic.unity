@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4465791, g: 0.4964133, b: 0.57481784, a: 1}
+  m_IndirectSpecularColor: {r: 0.44402248, g: 0.49316555, b: 0.5722324, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -413,7 +413,7 @@ MonoBehaviour:
   _gpuConfig: {fileID: 4900000, guid: 8eaa695afee89c8eea9241f8a5ab9645, type: 3}
   _openGlEsConfig: {fileID: 4900000, guid: 5db98b44b5bd2a0e8b5c7dec21d0577d, type: 3}
   _timeoutMicrosec: 50000
-  detectIris: 0
+  refineFaceLandmarks: 0
   modelComplexity: 0
   smoothLandmarks: 1
   OnPoseDetectionOutput:
@@ -429,12 +429,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnRightHandLandmarksOutput:
-    m_PersistentCalls:
-      m_Calls: []
-  OnLeftIrisLandmarksOutput:
-    m_PersistentCalls:
-      m_Calls: []
-  OnRightIrisLandmarksOutput:
     m_PersistentCalls:
       m_Calls: []
   OnPoseWorldLandmarksOutput:
@@ -1958,14 +1952,14 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &1375628860 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3259285889726014649, guid: 5713b959e3c77a58fb258133fc8e4aef,
+  m_CorrespondingSourceObject: {fileID: 2020366215714292840, guid: 5713b959e3c77a58fb258133fc8e4aef,
     type: 3}
   m_PrefabInstance: {fileID: 1375628857}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
+  m_Script: {fileID: 11500000, guid: 827c4431af677e057aa6f14170d0785c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1375628861

@@ -6,7 +6,6 @@
 
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Mediapipe.Unity
 {
@@ -69,21 +68,9 @@ namespace Mediapipe.Unity
       isPaused = true;
     }
 
-    protected static void SetupScreen(RawImage screen, ImageSource imageSource)
-    {
-      screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
-      screen.rectTransform.localEulerAngles = imageSource.rotation.Reverse().GetEulerAngles();
-      if (imageSource.isVerticallyFlipped)
-      {
-        screen.uvRect = new UnityEngine.Rect(0, 1, 1, -1);
-      }
-
-      screen.texture = imageSource.GetCurrentTexture();
-    }
-
     protected static void SetupAnnotationController<T>(AnnotationController<T> annotationController, ImageSource imageSource, bool expectedToBeMirrored = false) where T : HierarchicalAnnotation
     {
-      annotationController.isMirrored = expectedToBeMirrored ^ imageSource.isHorizontallyFlipped;
+      annotationController.isMirrored = expectedToBeMirrored ^ imageSource.isHorizontallyFlipped ^ imageSource.isFrontFacing;
       annotationController.rotationAngle = imageSource.rotation.Reverse();
     }
 
@@ -107,16 +94,6 @@ namespace Mediapipe.Unity
       {
         textureFrame.ReadTextureFromOnCPU(sourceTexture);
       }
-    }
-
-    protected static void UpdateScreenSync(RawImage screen, TextureFrame textureFrame)
-    {
-      if (!(screen.texture is Texture2D))
-      {
-        screen.texture = new Texture2D(textureFrame.width, textureFrame.height, TextureFormat.RGBA32, false);
-        screen.uvRect = new UnityEngine.Rect(0, 0, 1, 1);
-      }
-      textureFrame.CopyTexture(screen.texture);
     }
   }
 }

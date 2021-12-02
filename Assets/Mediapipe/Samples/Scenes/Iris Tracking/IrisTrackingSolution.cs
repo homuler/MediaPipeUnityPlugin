@@ -7,13 +7,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Mediapipe.Unity.IrisTracking
 {
   public class IrisTrackingSolution : Solution
   {
-    [SerializeField] private RawImage _screen;
+    [SerializeField] private Screen _screen;
     [SerializeField] private DetectionListAnnotationController _faceDetectionsAnnotationController;
     [SerializeField] private NormalizedRectAnnotationController _faceRectAnnotationController;
     [SerializeField] private FaceLandmarkListAnnotationController _faceLandmarksWithIrisAnnotationController;
@@ -73,7 +72,7 @@ namespace Mediapipe.Unity.IrisTracking
         yield break;
       }
       // NOTE: The _screen will be resized later, keeping the aspect ratio.
-      SetupScreen(_screen, imageSource);
+      _screen.Initialize(imageSource);
 
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
@@ -120,7 +119,7 @@ namespace Mediapipe.Unity.IrisTracking
         if (runningMode == RunningMode.Sync)
         {
           // TODO: copy texture before `textureFrame` is released
-          UpdateScreenSync(_screen, textureFrame);
+          _screen.ReadSync(textureFrame);
 
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = _graphRunner.FetchNextValue();

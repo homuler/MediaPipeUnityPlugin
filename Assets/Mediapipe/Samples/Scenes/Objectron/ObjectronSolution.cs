@@ -7,13 +7,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Mediapipe.Unity.Objectron
 {
   public class ObjectronSolution : Solution
   {
-    [SerializeField] private RawImage _screen;
+    [SerializeField] private Screen _screen;
     [SerializeField] private ObjectronGraph _graphRunner;
     [SerializeField] private FrameAnnotationController _liftedObjectsAnnotationController;
     [SerializeField] private NormalizedRectListAnnotationController _multiBoxRectsAnnotationController;
@@ -85,7 +84,7 @@ namespace Mediapipe.Unity.Objectron
         yield break;
       }
       // NOTE: The _screen will be resized later, keeping the aspect ratio.
-      SetupScreen(_screen, imageSource);
+      _screen.Initialize(imageSource);
 
       Logger.LogInfo(TAG, $"Category = {category}");
       Logger.LogInfo(TAG, $"Max Num Objects = {maxNumObjects}");
@@ -137,7 +136,7 @@ namespace Mediapipe.Unity.Objectron
         if (runningMode == RunningMode.Sync)
         {
           // TODO: copy texture before `textureFrame` is released
-          UpdateScreenSync(_screen, textureFrame);
+          _screen.ReadSync(textureFrame);
 
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = _graphRunner.FetchNextValue();

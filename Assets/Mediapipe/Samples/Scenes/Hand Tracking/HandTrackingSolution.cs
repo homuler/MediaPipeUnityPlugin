@@ -7,13 +7,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Mediapipe.Unity.HandTracking
 {
   public class HandTrackingSolution : Solution
   {
-    [SerializeField] private RawImage _screen;
+    [SerializeField] private Screen _screen;
     [SerializeField] private DetectionListAnnotationController _palmDetectionsAnnotationController;
     [SerializeField] private NormalizedRectListAnnotationController _handRectsFromPalmDetectionsAnnotationController;
     [SerializeField] private MultiHandLandmarkListAnnotationController _handLandmarksAnnotationController;
@@ -80,7 +79,7 @@ namespace Mediapipe.Unity.HandTracking
         yield break;
       }
       // NOTE: The _screen will be resized later, keeping the aspect ratio.
-      SetupScreen(_screen, imageSource);
+      _screen.Initialize(imageSource);
 
       Logger.LogInfo(TAG, $"Max Num Hands = {maxNumHands}");
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
@@ -132,7 +131,7 @@ namespace Mediapipe.Unity.HandTracking
         if (runningMode == RunningMode.Sync)
         {
           // TODO: copy texture before `textureFrame` is released
-          UpdateScreenSync(_screen, textureFrame);
+          _screen.ReadSync(textureFrame);
 
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = _graphRunner.FetchNextValue();

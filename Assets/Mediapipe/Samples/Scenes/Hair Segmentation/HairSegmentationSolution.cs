@@ -6,13 +6,12 @@
 
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Mediapipe.Unity.HairSegmentation
 {
   public class HairSegmentationSolution : Solution
   {
-    [SerializeField] private RawImage _screen;
+    [SerializeField] private Screen _screen;
     [SerializeField] private MaskAnnotationController _hairMaskAnnotationController;
     [SerializeField] private HairSegmentationGraph _graphRunner;
     [SerializeField] private TextureFramePool _textureFramePool;
@@ -70,7 +69,7 @@ namespace Mediapipe.Unity.HairSegmentation
         yield break;
       }
       // NOTE: The _screen will be resized later, keeping the aspect ratio.
-      SetupScreen(_screen, imageSource);
+      _screen.Initialize(imageSource);
 
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
@@ -114,7 +113,7 @@ namespace Mediapipe.Unity.HairSegmentation
         if (runningMode == RunningMode.Sync)
         {
           // TODO: copy texture before `textureFrame` is released
-          UpdateScreenSync(_screen, textureFrame);
+          _screen.ReadSync(textureFrame);
 
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var hairMask = _graphRunner.FetchNextValue();

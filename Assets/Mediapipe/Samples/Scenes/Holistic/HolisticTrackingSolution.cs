@@ -6,13 +6,12 @@
 
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Mediapipe.Unity.Holistic
 {
   public class HolisticTrackingSolution : Solution
   {
-    [SerializeField] private RawImage _screen;
+    [SerializeField] private Screen _screen;
     [SerializeField] private RectTransform _worldAnnotationArea;
     [SerializeField] private DetectionAnnotationController _poseDetectionAnnotationController;
     [SerializeField] private HolisticLandmarkListAnnotationController _holisticAnnotationController;
@@ -91,7 +90,7 @@ namespace Mediapipe.Unity.Holistic
         yield break;
       }
       // NOTE: The _screen will be resized later, keeping the aspect ratio.
-      SetupScreen(_screen, imageSource);
+      _screen.Initialize(imageSource);
 
       _worldAnnotationArea.localEulerAngles = imageSource.rotation.Reverse().GetEulerAngles();
 
@@ -149,7 +148,7 @@ namespace Mediapipe.Unity.Holistic
         if (runningMode == RunningMode.Sync)
         {
           // TODO: copy texture before `textureFrame` is released
-          UpdateScreenSync(_screen, textureFrame);
+          _screen.ReadSync(textureFrame);
 
           // When running synchronously, wait for the outputs here (blocks the main thread).
           var value = _graphRunner.FetchNextValue();
