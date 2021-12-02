@@ -243,6 +243,12 @@ new_local_repository(
 )
 
 new_local_repository(
+    name = "macos_arm64_opencv",
+    build_file = "@com_google_mediapipe//third_party:opencv_macos.BUILD",
+    path = "/opt/homebrew/opt/opencv@3",
+)
+
+new_local_repository(
     name = "macos_ffmpeg",
     build_file = "@//third_party:ffmpeg_macos.BUILD",
     path = "/usr/local/opt/ffmpeg",
