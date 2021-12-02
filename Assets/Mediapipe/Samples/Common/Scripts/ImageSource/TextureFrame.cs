@@ -346,12 +346,12 @@ namespace Mediapipe.Unity
       {
         _textureBuffer = new Texture2D(width, height, textureFormat, false);
       }
+
       var tmpRenderTexture = new RenderTexture(texture.width, texture.height, 32);
-
-      Graphics.Blit(texture, tmpRenderTexture);
-
       var currentRenderTexture = RenderTexture.active;
       RenderTexture.active = tmpRenderTexture;
+
+      Graphics.Blit(texture, tmpRenderTexture);
 
       var rect = new UnityEngine.Rect(0, 0, Mathf.Min(tmpRenderTexture.width, _textureBuffer.width), Mathf.Min(tmpRenderTexture.height, _textureBuffer.height));
       _textureBuffer.ReadPixels(rect, 0, 0);
