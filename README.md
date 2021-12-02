@@ -419,9 +419,9 @@ If you are unsure of the cause, try checking the dependent libraries using `ldd`
 
 #### 5. Dependent libraries are not loaded
 
-On Windows, when you're using local OpenCV (i.e. `--opencv=local`), `opencv_3410world.dll` must be loaded **before** `libmediapipe_c.so`.\
+On Windows, when you're using local OpenCV (i.e. `--opencv=local`), `opencv_3416world.dll` must be loaded **before** `libmediapipe_c.so`.\
 Unfortunately, currently no easy way to do this is known.\
-As a workaround, try loading both `opencv_3410world.dll` and `libmediapipe_c.dll` on startup.
+As a workaround, try loading both `opencv_3416world.dll` and `libmediapipe_c.dll` on startup.
 
 ![load-on-startup](https://user-images.githubusercontent.com/4690128/135591282-8a2011b1-9ae8-4a6a-a5fb-cc3a21f1125f.png)
 
