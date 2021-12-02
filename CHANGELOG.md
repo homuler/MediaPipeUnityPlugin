@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.8.1](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.8.0...v0.8.1) (2021-12-02)
+
+
+### Bug Fixes
+
+* **sample:** Hand Landmarks color is wrong in Holistic scene ([b1a2720](https://github.com/homuler/MediaPipeUnityPlugin/commit/b1a2720f36ca3b44d124d8b7234ce5b0c4e33ebe))
+* **sample:** image is flipped in sync mode ([a3668be](https://github.com/homuler/MediaPipeUnityPlugin/commit/a3668befb8731a22a81a6e2e2cf489b9c951f5a7))
+* flip screen image when using front facing camera ([f04ba48](https://github.com/homuler/MediaPipeUnityPlugin/commit/f04ba48645c6668ff3ffa6d7cd51125b5add44e1))
+* releasing active render texture ([9537ec7](https://github.com/homuler/MediaPipeUnityPlugin/commit/9537ec76b8547d0e68a41232a6a1f62c486268b4))
+* **example:** model_complexity is ignored ([0d9db0b](https://github.com/homuler/MediaPipeUnityPlugin/commit/0d9db0b8f47aff82ccd4352322a8d2b5abfe509a))
+* **sample:** memory leaks when using VideoSource ([cab8e26](https://github.com/homuler/MediaPipeUnityPlugin/commit/cab8e26cb627f393f6dcbc3849b1675f39f56427))
+* build with bazel 4.2.1 on macOS ([4921db1](https://github.com/homuler/MediaPipeUnityPlugin/commit/4921db1d41e829a6503a22f91f88c40aa39555a2))
+* synchronize the input image and the output annotation ([#359](https://github.com/homuler/MediaPipeUnityPlugin/issues/359)) ([47598ce](https://github.com/homuler/MediaPipeUnityPlugin/commit/47598ce915863ab6218d88e1ef3ce93436b8e835))
+* validate bundle_id ([06423ca](https://github.com/homuler/MediaPipeUnityPlugin/commit/06423ca40c0a6d3daf8519505f62e8a7cd592719))
+
 ## [0.8.0](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.7.0...v0.8.0) (2021-11-22)
 
 
