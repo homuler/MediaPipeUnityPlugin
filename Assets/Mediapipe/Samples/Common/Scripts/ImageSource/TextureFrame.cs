@@ -30,17 +30,6 @@ namespace Mediapipe.Unity
     // Buffers that will be used to copy texture data on CPU.
     // They won't be initialized until it's necessary.
     private Texture2D _textureBuffer;
-    private Texture2D textureBuffer
-    {
-      get
-      {
-        if (_textureBuffer == null)
-        {
-          _textureBuffer = new Texture2D(_texture.width, _texture.height, _texture.format, false);
-        }
-        return _textureBuffer;
-      }
-    }
 
     private Color32[] _pixelsBuffer; // for WebCamTexture
     private Color32[] pixelsBuffer
@@ -146,16 +135,7 @@ namespace Mediapipe.Unity
     /// </remarks>
     public void ReadTextureFromOnCPU(Texture src)
     {
-      var currentRenderTexture = RenderTexture.active;
-      var tmpRenderTexture = new RenderTexture(src.width, src.height, 32);
-      Graphics.Blit(src, tmpRenderTexture);
-      RenderTexture.active = tmpRenderTexture;
-
-      var rect = new UnityEngine.Rect(0, 0, Mathf.Min(tmpRenderTexture.width, textureBuffer.width), Mathf.Min(tmpRenderTexture.height, textureBuffer.height));
-      textureBuffer.ReadPixels(rect, 0, 0);
-      textureBuffer.Apply();
-      RenderTexture.active = currentRenderTexture;
-
+      var textureBuffer = LoadToTextureBuffer(src);
       SetPixels32(textureBuffer.GetPixels32());
     }
 
@@ -358,23 +338,27 @@ namespace Mediapipe.Unity
       }
     }
 
-    private Texture2D GetTextureBufferFor(Texture texture)
+    private Texture2D LoadToTextureBuffer(Texture texture)
     {
       var textureFormat = GetTextureFormat(texture);
 
       if (_textureBuffer == null || _textureBuffer.format != textureFormat)
       {
-        _textureBuffer = new Texture2D(texture.width, texture.height, textureFormat, false);
+        _textureBuffer = new Texture2D(width, height, textureFormat, false);
       }
+      var tmpRenderTexture = new RenderTexture(texture.width, texture.height, 32);
+
+      Graphics.Blit(texture, tmpRenderTexture);
 
       var currentRenderTexture = RenderTexture.active;
-      var tmpRenderTexture = new RenderTexture(texture.width, texture.height, 32);
-      Graphics.Blit(texture, tmpRenderTexture);
       RenderTexture.active = tmpRenderTexture;
 
-      _textureBuffer.ReadPixels(new UnityEngine.Rect(0, 0, tmpRenderTexture.width, tmpRenderTexture.height), 0, 0);
+      var rect = new UnityEngine.Rect(0, 0, Mathf.Min(tmpRenderTexture.width, _textureBuffer.width), Mathf.Min(tmpRenderTexture.height, _textureBuffer.height));
+      _textureBuffer.ReadPixels(rect, 0, 0);
       _textureBuffer.Apply();
       RenderTexture.active = currentRenderTexture;
+
+      tmpRenderTexture.Release();
 
       return _textureBuffer;
     }
