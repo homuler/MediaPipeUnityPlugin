@@ -71,9 +71,7 @@ namespace Mediapipe.Unity
 
     private void Start()
     {
-      _landmarkListAnnotation.SetColor(_leftLandmarkColor); // assume it's left hand by default
       _landmarkListAnnotation.Fill(_LandmarkCount);
-
       _connectionListAnnotation.Fill(_connections, _landmarkListAnnotation);
     }
 
