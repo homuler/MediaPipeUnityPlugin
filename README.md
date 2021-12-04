@@ -255,7 +255,7 @@ If the command finishes successfully, required files will be installed to your h
 
 1. (Optional) Install Opencv
 
-   By default, it is assumed that OpenCV 3.4.10 is installed under `C:\opencv`.\
+   By default, it is assumed that OpenCV 3.4.16 is installed under `C:\opencv`.\
    If your version or path is different, please edit [third_party/opencv_windows.BUILD](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/third_party/opencv_windows.BUILD) and [WORKSPACE](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/WORKSPACE).
 
 1. Install NuGet, and ensure you can run them
