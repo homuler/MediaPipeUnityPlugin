@@ -1,75 +1,112 @@
 # MediaPipe Unity Plugin
 
-This is a Unity (2020.3.23f1) Plugin to use MediaPipe (0.8.8).
+This is a Unity (2020.3.23f1) [Native Plugin](https://docs.unity3d.com/Manual/NativePlugins.html) to use [MediaPipe](https://github.com/google/mediapipe) (0.8.8).
 
-## Prerequisites
+The goal of this project is to port the MediaPipe API (C++) _one by one_ to C# so that it can be called from Unity.\
+This approach may sacrifice performance when you need to call multiple APIs in a loop, but it gives you the flexibility to use MediaPipe instead.
 
-To use this plugin, you need to build native libraries for the target platforms (Desktop/UnityEditor, Android, iOS).
-If you'd like to build them on your machine, below commands/tools/libraries are required (not required if you use Docker).
+With this plugin, you can
 
-- Python >= 3.9.0
-- Bazel >= 3.7.2, (< 4.0.0 for iOS)
-- GCC/G++ >= 8.0.0 (Linux, macOS), < 11.0
-- [NuGet](https://docs.microsoft.com/en-us/nuget/reference/nuget-exe-cli-reference)
+- Write MediaPipe code in C#.
+- Run MediaPipe's official solution on Unity.
+- Run your custom `Calculator` and `CalculatorGraph` on Unity.
+  - :warning: Depending on the type of input/output, you may need to write C++ code.
 
-## Platforms
+## :art: Example Solutions
 
-- [x] Linux Desktop (tested on ArchLinux)
-- [x] Android
-- [x] iOS
-- [x] macOS (CPU only)
-- [x] Windows 10 (CPU only, experimental)
+Here is a list of [solutions](https://google.github.io/mediapipe/solutions/solutions.html) that you can try in the sample app.
 
-## Example Graphs
+> :bell: The graphs you can run are not limited to the ones in this list.
 
-|                         | Android | iOS | Linux (GPU) | Linux (CPU) | macOS | Windows |
-| :---------------------: | :-----: | :-: | :---------: | :---------: | :---: | :-----: |
-|     Face Detection      |   ✅    | ✅  |     ✅      |     ✅      |  ✅   |   ✅    |
-|        Face Mesh        |   ✅    | ✅  |     ✅      |     ✅      |  ✅   |   ✅    |
-|          Iris           |   ✅    | ✅  |     ✅      |     ✅      |  ✅   |   ✅    |
-|          Hands          |   ✅    | ✅  |     ✅      |     ✅      |  ✅   |   ✅    |
-|          Pose           |   ✅    | ✅  |     ✅      |     ✅      |  ✅   |   ✅    |
-|  Holistic (with iris)   |   ✅    | ✅  |     ✅      |     ✅      |  ✅   |   ✅    |
-|    Hair Segmentation    |   ✅    | ✅  |     ✅      |     ✅      |  ✅   |   ✅    |
-|    Object Detection     |   ✅    | ✅  |     ✅      |     ✅      |  ✅   |   ✅    |
-|      Box Tracking       |   ✅    | ✅  |     ✅      |     ✅      |  ✅   |   ✅    |
-| Instant Motion Tracking |   ✅    | ✅  |     ✅      |     ✅      |  ✅   |   ✅    |
-|        Objectron        |   ✅    | ✅  |     ✅      |     ✅      |  ✅   |   ✅    |
-|          KNIFT          |         |     |             |             |       |
+|                         |      Android       |        iOS         |    Linux (GPU)     |    Linux (CPU)     |    macOS (CPU)     |   Windows (CPU)    | WebGL |
+| :---------------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | ----- |
+|     Face Detection      | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
+|        Face Mesh        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
+|          Iris           | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
+|          Hands          | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
+|          Pose           | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
+|        Holistic         | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
+|   Selfie Segmentation   |                    |                    |                    |                    |                    |                    |       |
+|    Hair Segmentation    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
+|    Object Detection     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
+|      Box Tracking       | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
+| Instant Motion Tracking | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
+|        Objectron        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
+|          KNIFT          |                    |                    |                    |                    |                    |                    |       |
 
-## Installation Guide
+## :compass: Installation
 
-Run commands at the project root if not specified otherwise.\
-Also note that you need to build native libraries for Desktop CPU or GPU to run this plugin on UnityEditor.
+This repository does not contain required libraries (e.g. `libmediapipe_c.so`, `Google.Protobuf.dll`, etc), so you need to build them first.
 
-As long as Docker is available on your environment, Docker is always preferable.\
-Docker is only used to build native libraries, not at runtime, so there is no impact on performance.
+> :warning: libraries that can be built differ depending on your environment.
 
-- [Docker for Linux](#docker-for-linux)
-- [Linux](#linux)
-- [Docker for Windows](#docker-for-windows)
-- [Windows](#windows)
-- [macOS](#macOS)
+### Supported Platforms
 
-### Docker for Linux
+> :warning: GPU mode is not supported on macOS and Windows.
 
-**ATTENTION!**: If your GNU libc version does not match the version of it in the container, built libraries don't work on your machine probably.
+|                             |       Editor       |   Linux (x86_64)   |   macOS (x86_64)   |   macOS (ARM64)    |  Windows (x86_64)  |      Android       |        iOS         | WebGL |
+| :-------------------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :---: |
+|     Linux (AMD64) [^1]      | :heavy_check_mark: | :heavy_check_mark: |                    |                    |                    | :heavy_check_mark: |                    |       |
+|          Intel Mac          | :heavy_check_mark: |                    | :heavy_check_mark: |                    |                    | :heavy_check_mark: | :heavy_check_mark: |       |
+|         M1 Mac [^2]         | :heavy_check_mark: |                    |                    | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |       |
+| Windows 10 (AMD64) [^3][^4] | :heavy_check_mark: | :heavy_check_mark: |                    |                    | :heavy_check_mark: | :heavy_check_mark: |                    |       |
+
+[^1]: Tested on Arch Linux.
+[^2]: Experimental, because MediaPipe does not support M1 Mac.
+[^3]: Windows 11 will be also OK.
+[^4]: Running MediaPipe on Windows is [experimental](https://google.github.io/mediapipe/getting_started/install.html#installing-on-windows).
+
+### Prerequisites
+
+If Docker is not available, below commands/tools/libraries are required.
+
+- Python >= 3.9.0, < 3.10.0
+- Bazel >= 3.7.2 (tested against 4.2.1)
+- GCC/G++ >= 8.0.0 (Linux, macOS)
+- NuGet (tested against 5.10.0.7240)
+
+Please go to the article for each OS for more details.
+
+> :bell: Run commands at the project root if not specified otherwise.
+
+<details>
+<summary>Linux</summary>
+
+### Linux
+
+> :warning: If GNU libc version in the target machine is less than the version of it in the machine where `libmediapipe_c.so` (a native library for Linux) is built, `libmediapipe_c.so` won't work.\
+> For the same reason, if your target machine's GNU libc version is less than 2.27, you cannot use Docker[^5].
+
+[^5]: You can still use Docker, but you need to write `Dockerfile` by yourself.
+
+- [Docker](#docker)
+- [Arch Linux](#arch-linux)
+
+#### Docker
+
+1. Install Docker
+
+   Make sure you can run `docker` command without using `sudo`.
 
 1. Build a Docker image
 
-   ```sh
-   docker build -t mediapipe_unity:latest . -f docker/linux/x86_64/Dockerfile
+   There are two `Dockerfile`s, based on Arch Linux and Ubuntu 18.04 images respectively, so use whichever you prefer.\
+   Each of them uses a different version of GLIBC.
 
-   # Above command may fail depending on glibc version installed to your host machine.
-   # cf. https://serverfault.com/questions/1052963/pacman-doesnt-work-in-docker-image
-   #
-   # In that case, apply a patch.
-   #
-   #   git apply docker/linux/x86_64/glibc.patch
+   - Arch Linux image
 
-   # You can specify MIRROR_COUNTRY to increase download speed
-   docker build --build-arg RANKMIRROS=true --build-arg MIRROR_COUNTRY=FR,GB -t mediapipe_unity:latest . -f docker/linux/x86_64/Dockerfile
-   ```
+     ```sh
+     docker build -t mediapipe_unity:latest . -f docker/linux/x86_64/Dockerfile
+
+     # You can specify MIRROR_COUNTRY to increase download speed
+     docker build --build-arg RANKMIRROS=true --build-arg MIRROR_COUNTRY=FR,GB -t mediapipe_unity:latest . -f docker/linux/x86_64/Dockerfile
+     ```
+
+   - Ubuntu 18.04 image
+
+     ```
+     docker build -t mediapipe_unity:latest . -f docker/linux/x86_64/Dockerfile.ubuntu
+     ```
 
 1. Run a Docker container
 
@@ -85,27 +122,63 @@ Docker is only used to build native libraries, not at runtime, so there is no im
 
    ```sh
    # Build native libraries for Desktop CPU.
-   # Note that you need to specify `--opencv=cmake`, because OpenCV is not installed to the container.
-   python build.py build --desktop cpu --opencv=cmake -v
+   # Note that you need to specify `--opencv cmake`, because OpenCV is not installed to the container.
+   python build.py build --desktop cpu --opencv cmake -v
 
    # Build native libraries for Desktop GPU and Android
-   python build.py build --desktop gpu --android arm64 --opencv=cmake -v
+   python build.py build --desktop gpu --android arm64 --opencv cmake -v
    ```
 
 If the command finishes successfully, required files will be installed to your host machine.
 
-### Linux
+#### Arch Linux
 
-1. (Optional) Install OpenCV and FFmpeg\
-   You can skip this if you plan to build OpenCV with MediaPipe (see [Build Command](https://github.com/homuler/MediaPipeUnityPlugin#build-command) for more details).
+If you are using another disribution, please replace some of the commands.
+
+> :waning: If your GNU libc version in the target machine is compatible with it in the container, always prefer [Docker](#docker).
+
+1. Install [yay](https://github.com/Jguer/yay)
+
+   ```sh
+   # Run under your favorite directory
+
+   pacman -S --needed git base-devel
+   git clone https://aur.archlinux.org/yay.git
+   cd yay
+   makepkg -si
+   ```
+
+1. Install required packages
+
+   ```sh
+   yay -Sy unzip mesa npm
+   ```
+
+   It is recommended to configure `npm` here (cf. https://docs.npmjs.com/cli/v8/configuring-npm/npmrc#files).
+
+   ```txt
+   # ~/.npmrc
+   prefix = ${HOME}/.npm-packages
+   ```
+
+   ```txt
+   # ~/.bash_profile
+   export PATH=${HOME}/.npm-packages/bin:${PATH}
+   ```
+
+1. (Optional) If you'd like to link OpenCV dynamically, install OpenCV.
+
+   Skip this step if you want to link OpenCV statically.
+
+   ```sh
+   yay -S opencv3-opt
+   ```
 
    By default, it is assumed that OpenCV 3 is installed under `/usr` (e.g. `/usr/lib/libopencv_core.so`).\
-   If your version or path is different, please edit [third_party/opencv_linux.BUILD](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/third_party/opencv_linux.BUILD) and [WORKSPACE](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/WORKSPACE).
-
-   For example, if you use ArchLinux and [opencv3-opt](https://aur.archlinux.org/packages/opencv3-opt/), OpenCV 3 is installed under `/opt/opencv3`.\
-   In this case, your `WORKSPACE` will look like this.
+   `opencv3-opt` will install OpenCV 3 to `/opt/opencv3`, so you need to edit [WORKSPACE](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/WORKSPACE).
 
    ```starlark
+   # WORKSPACE
    new_local_repository(
        name = "linux_opencv",
        build_file = "@//third_party:opencv_linux.BUILD",
@@ -113,62 +186,159 @@ If the command finishes successfully, required files will be installed to your h
    )
    ```
 
-   On the other hand, if you use Ubuntu, probably OpenCV's shared libraries is installed under `/usr/lib/x86_64-linux-gnu/`.\
-   In that case, your `opencv_linux.BUILD` would be like this.
+   :bell: If you'd like to use OpenCV 4, you need to edit [third_party/opencv_linux.BUILD](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/third_party/opencv_linux.BUILD), too.
 
-   ```starlark
-   cc_library(
-       name = "opencv",
-       srcs = glob(
-           [
-               "lib/x86_64-linux-gnu/libopencv_core.so",
-               "lib/x86_64-linux-gnu/libopencv_calib3d.so",
-               "lib/x86_64-linux-gnu/libopencv_features2d.so",
-               "lib/x86_64-linux-gnu/libopencv_highgui.so",
-               "lib/x86_64-linux-gnu/libopencv_imgcodecs.so",
-               "lib/x86_64-linux-gnu/libopencv_imgproc.so",
-               "lib/x86_64-linux-gnu/libopencv_video.so",
-               "lib/x86_64-linux-gnu/libopencv_videoio.so",
-           ],
-       ),
-       ...
-   )
-   ```
-
-1. Install Bazelisk and NuGet, and ensure you can run them
+1. Install [Bazelisk](https://github.com/bazelbuild/bazelisk#installation) and [NuGet](https://docs.microsoft.com/en-us/nuget/install-nuget-client-tools#nugetexe-cli)
 
    ```sh
-   bazel --version
-   nuget
+   npm install -g bazelisk
+   yay -S nuget
    ```
 
 1. Install numpy
 
    ```sh
    pip install numpy --user
-
-   # or
-   # pip3 install numpy --user
    ```
 
-1. (Optional) Install Android SDK and Android NDK, and set environment variables
-
-   ```sh
-   # bash
-   export ANDROID_HOME=/path/to/SDK
-   # ATTENTION!: Currently Bazel does not support NDK r22, so use NDK r21 instead.
-   export ANDROID_NDK_HOME=/path/to/ndk/21.4.7075529
-   ```
+1. (For Android) [Install Android SDK and Android NDK](#android-configuration)
 
 1. Run [build command](#build-command)
 
-### Docker for Windows
+</details>
 
-#### Desktop/UnityEditor
+<details>
+<summary>macOS</summary>
 
-1. Switch to windows containers
+### macOS
 
-   Note that Hyper-V backend is required (that is, Windows 10 Home is not supported).
+- [Intel Mac](#intel-mac)
+- [M1 Mac (Experimental)](#m1-mac)
+
+#### Intel Mac
+
+1. Install [Homebrew](https://brew.sh)
+
+1. Install OpenCV 3.
+
+   > :bell: It's essentially an optional step, but if you'd like to build libraries for iOS, it's necessary because of a bug.
+
+   ```sh
+   brew install opencv@3
+   brew uninstall --ignore-dependencies glog
+   ```
+
+1. Install Python and numpy
+
+   If your Python version is **not 3.9.x**, install it here in your favorite way.
+
+   ```sh
+   brew install python
+
+   # Python version must be >= 3.9.0 and < 3.10.0
+   sudo ln -s -f /usr/local/bin/python3.9 /usr/local/bin/python
+   pip3 install --user six numpy
+   ```
+
+1. Install [Bazelisk](https://github.com/bazelbuild/bazelisk#installation) and [NuGet](https://docs.microsoft.com/en-us/nuget/install-nuget-client-tools#nugetexe-cli)
+
+   ```sh
+   brew install bazelisk
+   brew install nuget
+   ```
+
+1. (For iOS) Install Xcode using App Store
+
+   After that, install the Command Line Tools, too.
+
+   ```sh
+   xcode-select --install
+   ```
+
+1. (For iOS) Open [`mediapipe_api/objc/BUILD`](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/mediapipe_api/objc/BUILD#L29) and modify `bundle_id`.
+
+1. (For Android) [Install Android SDK and Android NDK](#android-configuration)
+
+1. Run [build command](#build-command)
+
+#### M1 Mac
+
+> :warning: use UnityEditor (Apple silicon) (>= 2021.2.2f1) to open the project.
+
+1. Install [Homebrew](https://brew.sh)
+
+1. Install OpenCV 3.
+
+   > :bell: It's essentially an optional step, but if you'd like to build libraries for iOS, it's necessary because of a bug.
+
+   ```sh
+   brew install opencv@3
+   brew uninstall --ignore-dependencies glog
+   ```
+
+1. Install Python and numpy
+
+   If your Python version is **not 3.9.x**, install it here in your favorite way.
+
+   ```sh
+   brew install python
+
+   python3.9 --version
+   # Python 3.9.x
+   pip3 install --user six numpy
+   ```
+
+1. Install [Bazelisk](https://github.com/bazelbuild/bazelisk#installation)
+
+   ```sh
+   brew install bazelisk
+   ```
+
+1. Install [NuGet](https://docs.microsoft.com/en-us/nuget/install-nuget-client-tools#nugetexe-cli)
+
+   ```sh
+   /usr/sbin/softwareupdate --install-rosetta
+
+   # Install Homebrew using Rosetta 2
+   # Before running the command, please check https://brew.sh/ for the correct URL
+   arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+   # Install NuGet using Rosetta 2
+   arch -x86_64 /usr/local/homebrew/bin/brew install nuget
+   ```
+
+1. (For iOS) Install Xcode using App Store
+
+   After that, install the Command Line Tools, too.
+
+   ```sh
+   xcode-select --install
+   ```
+
+1. (For iOS) Open [`mediapipe_api/objc/BUILD`](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/mediapipe_api/objc/BUILD#L29) and modify `bundle_id`.
+
+1. (For Android) [Install Android SDK and Android NDK](#android-configuration)
+
+1. Run [build command](#build-command)
+
+</details>
+
+<details>
+<summary>Windows</summary>
+
+### Windows
+
+- [Docker Windows Container](#docker-windows-container)
+- [Docker Linux Container](#docker-linux-container)
+- [Windows 10](#windows-10)
+
+#### Docker Windows Container
+
+> :warning: Hyper-V backend is required (that is, Windows 10 Home is not supported).
+
+1. Install [Docker Desktop](https://docs.docker.com/desktop/windows/install/)
+
+1. Switch to Windows Containers
 
 1. Build a Docker image
 
@@ -191,7 +361,9 @@ If the command finishes successfully, required files will be installed to your h
        -it mediapipe_unity:windows
    ```
 
-1. (Experimental) If you'd like to build native libraries for Android, apply a patch to bazel.
+1. (For Android, Experimental) Apply a patch to bazel.
+
+   > :bell: You can also make use of [Linux containers](#docker-linux-container) to build libraries for Android.
 
    ```bat
    Rem Run inside the container
@@ -206,17 +378,22 @@ If the command finishes successfully, required files will be installed to your h
    ```
 
 1. Run [build command](#build-command) inside the container
+
    ```bat
-   python build.py build --desktop cpu --opencv=cmake -v
+   python build.py build --desktop cpu --opencv cmake -vv
+   Rem or if you'd like to link OpenCV dynamically
+   python build.py build --desktop cpu --include_opencv_libs -vv
    ```
 
 If the command finishes successfully, required files will be installed to your host machine.
 
-#### Android
+#### Docker Linux Container
+
+> :warning: This can be used only to build libraries for _Android_ and you cannot build libraries for _Windows_.
+
+1. Install [Docker Desktop](https://docs.docker.com/desktop/windows/install/)
 
 1. Switch to Linux containers
-
-   Note that you cannot build native libraries for Desktop with Linux containers.
 
 1. Build a Docker image
 
@@ -240,28 +417,70 @@ If the command finishes successfully, required files will be installed to your h
    ```
 
 1. Run [build command](#build-command) inside the container
+
    ```sh
-   python build.py build --android arm64 -v
+   python build.py build --android arm64 -vv
    ```
 
 If the command finishes successfully, required files will be installed to your host machine.
 
-### Windows
+#### Windows 10
 
-#### Desktop/UnityEditor
+> :warning: You cannot build libraries for _Android_ with the following steps.
+> If you use Window 10 Pro, go to [Docker Windows Container](#docker-windows-container).
 
-1. Follow [mediapipe's installation guide](https://google.github.io/mediapipe/getting_started/install.html#installing-on-windows) and
-   install MSYS2, Python, Visual C++ Build Tools 2019, WinSDK and Bazel (step1 ~ step6).
+> :warning: Run commands using 'cmd.exe'. It's known that some commands does not work properly with MSYS2.
 
-1. (Optional) Install Opencv
+1. Install [MSYS2](https://www.msys2.org/) and edit the `%PATH%` environment variable.
+
+   If MSYS2 is installed to `C:\msys64`, add `C:\msys64\usr\bin` to your `%PATH%` environment variable.
+
+1. Install necessary packages
+
+   ```sh
+   pacman -S git patch unzip
+   ```
+
+1. Install Python 3.9.x and allow the executable to edit the `%PATH%` environment variable.
+
+   Download Python Windows executable from https://www.python.org/downloads/windows/ and install.
+
+1. Install Visual C++ Build Tools 2019 and WinSDK
+
+   1. Download Build Tools from https://visualstudio.microsoft.com/visual-cpp-build-tools/ and run Visual Studio Installer.
+
+   1. Select `Desktop development with C++` and install it.
+
+   ![Visual Studio Installer](https://user-images.githubusercontent.com/4690128/144782083-7320741b-3ca4-4442-95ae-40421c7725ae.png)
+
+1. Install [Bazel](https://docs.bazel.build/versions/main/install-windows.html) or [Bazelisk](https://docs.bazel.build/versions/main/install-bazelisk.html) and add the location of the Bazel executable to the `%PATH%` environment variable.
+
+   If you use Bazelisk, save the binary as `bazel.exe`.
+
+1. (Optional) Set Bazel variables.
+
+   If you have installed multiple Visual Studios or Win SDKs, set environment variables here.\
+   Learn more details about [“Build on Windows”](https://docs.bazel.build/versions/main/windows.html#build-on-windows) in the Bazel official documentation.
+
+   ```bat
+   Rem Please find the exact paths and version numbers from your local version.
+
+   set BAZEL_VS=C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools
+   set BAZEL_VC=C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC
+   set BAZEL_VC_FULL_VERSION=<Your local VC version>
+   set BAZEL_WINSDK_FULL_VERSION=<Your local WinSDK version>
+   ```
+
+1. (Optional) If you'd like to link OpenCV dynamically, install OpenCV.
+
+   You can skip this step if you want to link OpenCV statically.
 
    By default, it is assumed that OpenCV 3.4.16 is installed under `C:\opencv`.\
    If your version or path is different, please edit [third_party/opencv_windows.BUILD](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/third_party/opencv_windows.BUILD) and [WORKSPACE](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/WORKSPACE).
 
-1. Install NuGet, and ensure you can run them
+1. Install [NuGet](https://docs.microsoft.com/en-us/nuget/install-nuget-client-tools#nugetexe-cli), and add the location of the NuGet executable to the `%PATH%` environment variable.
 
-   ```sh
-   bazel --version
+   ```bat
    nuget
    ```
 
@@ -277,90 +496,111 @@ If the command finishes successfully, required files will be installed to your h
    set PYTHON_BIN_PATH=C:\path\to\python.exe
    ```
 
-   When the path includes space characters (e.g. `C:\Program Files\Python39\python.exe`), it's reported that build command will fail.\
-   In that case, install python to another directory as a workaround (it's unnecessary to set the path to `%PATH%`, but don't forget to install numpy for the new Python).
-
 1. Run [build command](#build-command)
+
    ```bat
    python build.py build --desktop cpu --opencv=cmake -v
    Rem or if you'd like to use local OpenCV
    python build.py build --desktop cpu --include_opencv_libs -v
    ```
 
-#### Android
+</details>
 
-You cannot build native libraries for Android on Windows 10, so use [Docker for Windows](https://github.com/homuler/MediaPipeUnityPlugin#android) instead.
+### Android Configuration
 
-### macOS
+1. Install [Android Studio](https://developer.android.com/studio/install)
 
-1. Install [Homebrew](https://brew.sh)
+1. Install Android SDK and NDK
 
-1. (Optional) Install OpenCV 3 and FFmpeg
-   You can skip this if you plan to build OpenCV with MediaPipe (see [Build Command](https://github.com/homuler/MediaPipeUnityPlugin#build-command) for more details).
-   Note that you need to install Xcode in this case.
+   Open **SDK Manager > SDK Tools** and install Android SDK Build Tools and NDK.
 
-   ```sh
-   brew install opencv@3
-   brew uninstall --ignore-dependencies glog
+   :bell: Note the following 2 points:
+
+   - Bazel will use the newest version of Build Tools found automatically, but the latest Bazel (4.2.1) does not support Build Tools >= 31.0.0, so you need to uncheck these versions.
+   - Bazel does not support NDK >= r22 yet
+
+   ![Android Studio (SDK Tools)](https://user-images.githubusercontent.com/4690128/144735652-21339ab0-5a45-4277-b7ee-39d106b5e1e6.png)
+
+1. Install JDK (>= 8)
+
+   You can [install OpenJDK](https://developer.android.com/studio/intro/studio-config#jdk) with Android Studio.
+
+1. Set environment variables
+
+   - Linux/macOS
+
+     ```sh
+     # Set JAVA_HOME. Don't include extra directories
+     #   GOOD: $HOME/.jdks/openjdk-17.0.1/
+     #   BAD:  $HOME/.jdks/openjdk-17.0.1/bin
+     export JAVA_HOME=/path/to/JDK
+
+     # Set ANDROID_HOME
+     # This directory should contain directories such as `platforms` and `platform-tools`.
+     export ANDROID_HOME=/path/to/SDK
+
+     # Set ANDROID_NDK_HOME
+     # This is usually like `$ANDROID_HOME/ndk/21.4.7075529
+     export ANDROID_NDK_HOME=/path/to/NDK
+     ```
+
+   - Windows
+
+     Set them using GUI
+
+1. Set API Level
+
+   To support older Android, you need to specify API level for NDK in `WORKSPACE` file.\
+   Otherwise, some symbols in `libmediapipe_jni.so` cannot be resolved and `DllNotFoundException` will be thrown at runtime.
+
+   ```bzl
+   android_ndk_repository(
+     name = "androidndk",
+     api_level = 21, # add this line
+   )
    ```
 
-1. Install Python
+## :hammer_and_wrench: Build
 
-   ```sh
-   brew install python
+`build.py` supports the following commands.
 
-   # Python version must be >= 3.9.0
-   sudo ln -s -f /usr/local/bin/python3.9 /usr/local/bin/python
-   pip3 install --user six numpy
-   ```
+|   Command   |                              Description                              |
+| :---------: | :-------------------------------------------------------------------: |
+|   `build`   | Build and install required files (libraries, model files, C# scripts) |
+|   `clean`   |             Clean cache directories (`build`, `bazel-*`)              |
+| `uninstall` |                         Remove install files                          |
 
-1. Install Bazelisk and NuGet
+### Build Command
 
-   ```sh
-   brew install bazelisk
-   # Note that you need to specify bazel version if you'd like to build for iOS
-   # See https://github.com/bazelbuild/bazelisk for more details.
-   #
-   #  e.g. export USE_BAZEL_VERSION=3.7.2
-
-   brew install nuget
-   ```
-
-1. (Optional) Install Xcode
-
-1. (Optional) If you'd like to build for iOS, open [`mediapipe_api/objc/BUILD`](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/mediapipe_api/objc/BUILD#L29) and modify `bundle_id`.
-
-1. (Optional) Install Android SDK and Android NDK, and set environment variables
-
-   ```sh
-   export ANDROID_HOME=/path/to/SDK
-   # ATTENTION!: Currently Bazel does not support NDK r22, so use NDK r21 instead.
-   export ANDROID_NDK_HOME=/path/to/ndk/21.4.7075529
-   ```
-
-1. Run [build command](#build-command)
-
-### Build command
+Run `python build.py build --help` for more details.
 
 ```sh
-# Required files (native libraries, model files, C# scripts) will be built and installed.
-
-# Build for Desktop with GPU enabled.
-python build.py build --desktop gpu -v
+# Build for Desktop with GPU enabled (Linux only).
+python build.py build --desktop gpu -vv
 
 # If you've not installed OpenCV locally, you need to build OpenCV from sources for Desktop.
-python build.py build --desktop gpu --opencv=cmake -v
+python build.py build --desktop gpu --opencv cmake -vv
 
-# Build for Desktop with GPU disabled, and copy OpenCV shared libraries to `Packages`.
-python build.py build --desktop cpu --include_opencv_libs -v
+# Build for Desktop with GPU disabled.
+# On Windows, you need to copy OpenCV shared libraries (i.e. `opencv_world3416.dll`) to `Packages` as follows.
+python build.py build --desktop cpu --include_opencv_libs -vv
 
 # Build for Desktop, Android, and iOS
-python build.py build --desktop cpu --android arm64 --ios arm64 -v
+python build.py build --desktop cpu --android arm64 --ios arm64 -vv
 ```
 
-Run `python build.py --help` and `python build.py build --help` for more details.
+You can also specify compilation mode and linker options.
 
-## Run example scenes
+```sh
+# Build with debug symbols.
+python build.py build -c dbg --android arm64 -vv
+
+# Omit all symbol information.
+# This can significantly reduce the library size.
+python build.py build --android --linkopt=-s -vv
+```
+
+## :plate_with_cutlery: Try sample app
 
 ### UnityEditor
 
@@ -375,58 +615,7 @@ If you've built native libraries for CPU (i.e. `--desktop cpu`), select `CPU` fo
 
 Make sure that you select `GPU` for inference mode before building the app, because `CPU` inference mode is not supported currently.
 
-## FAQ
-
-### DllNotFoundException: mediapipe_c
-
-This error can occur for a variety of reasons, so it is necessary to isolate the cause.
-
-#### 1. Native libraries are not built yet
-
-If native libraries (`libmediapipe_c.{so,dylib,dll}` / `mediapipe_android.aar` / `MediaPipeUnity.Framework`) are not built yet,
-this error can occur because Unity cannot load them.
-
-If they don't exist under `Packages/com.github.homuler.mediapipe/Runtime/Plugins`, run [build command](#build-command) first, and make sure that this command finishes successfully.
-
-#### 2. Native libraries are incompatible with your machine
-
-Libraries built on Linux machines won't work on your Windows machine.
-If you'd like to run the plugin on Windows, you need to build `libmediapipe_c.dll` on Windows.
-
-#### 3. Dependent libraries are not linked
-
-This error typically also occurs when OpenCV is incorrectly configured.
-See `opencv_linux.BUILD` / `opencv_windows.BUILD` and check if the path is correct (if not, edit the BUILD file).\
-You can also build and link OpenCV statically with `--opencv=cmake` option instead.
-
-Tips:\
-In this case, when you check on [Load on startup](https://docs.unity3d.com/Manual/PluginInspector.html) and click `Apply` button,
-error logs like the following will be output.
-
-```txt
-Plugins: Couldn't open Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.so, error:  Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.so: undefined symbol: _ZN2cv8fastFreeEPv
-```
-
-#### 4. Dependent libraries do not exist
-
-When you build an app and copy to another machine, you need to bundle dependent libraries with it.
-
-For example, when you build `libmediapipe_c.so` with `--opencv=local`, OpenCV is dynamically linked to `libmediapipe_c.so`.\
-To use this on another machine, OpenCV must be installed to the machine too.\
-In this case, the recommended way is to build `libmediapipe_c.so` with `--opencv=cmake`.
-
-If you are unsure of the cause, try checking the dependent libraries using `ldd` command, etc.
-
-#### 5. Dependent libraries are not loaded
-
-On Windows, when you're using local OpenCV (i.e. `--opencv=local`), `opencv_3416world.dll` must be loaded **before** `libmediapipe_c.so`.\
-Unfortunately, currently no easy way to do this is known.\
-As a workaround, try loading both `opencv_3416world.dll` and `libmediapipe_c.dll` on startup.
-
-![load-on-startup](https://user-images.githubusercontent.com/4690128/135591282-8a2011b1-9ae8-4a6a-a5fb-cc3a21f1125f.png)
-
-`DllNotFoundException` will be thrown even after restarting UnityEditor, but you can ignore it safely if everything else is going well.\
-If you still cannot run sample scenes, the cause is probably something else.
+## :question: FAQ
 
 ### InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000
 
@@ -454,14 +643,7 @@ void OnDisable() {
 }
 ```
 
-## TODO
-
-- [ ] Prepare API Documents
-- [ ] Implement cross-platform APIs to send images to MediaPipe
-- [ ] use CVPixelBuffer on iOS
-- [ ] KNIFT
-
-## LICENSE
+## :scroll: LICENSE
 
 MIT
 
