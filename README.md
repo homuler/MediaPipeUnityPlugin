@@ -63,7 +63,7 @@ node {
 
 ## :hammer_and_wrench: Installation
 
-This repository does not contain required libraries (e.g. `libmediapipe_c.so`, `Google.Protobuf.dll`, etc), so you need to build them first.\
+This repository does not contain required libraries (e.g. `libmediapipe_c.so`, `Google.Protobuf.dll`, etc), so you **need to build them** first.\
 For step-by-step guide, please refer to the [Installation Guide](https://github.com/homuler/MediaPipeUnityPlugin/wiki/Installation-Guide) in Wiki.
 
 > :warning: libraries that can be built differ depending on your environment.
