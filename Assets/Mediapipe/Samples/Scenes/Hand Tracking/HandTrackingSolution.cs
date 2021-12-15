@@ -24,6 +24,12 @@ namespace Mediapipe.Unity.HandTracking
 
     public RunningMode runningMode;
 
+    public HandTrackingGraph.ModelComplexity modelComplexity
+    {
+      get => _graphRunner.modelComplexity;
+      set => _graphRunner.modelComplexity = value;
+    }
+
     public int maxNumHands
     {
       get => _graphRunner.maxNumHands;
@@ -81,6 +87,7 @@ namespace Mediapipe.Unity.HandTracking
       // NOTE: The _screen will be resized later, keeping the aspect ratio.
       _screen.Initialize(imageSource);
 
+      Logger.LogInfo(TAG, $"Model Complexity = {modelComplexity}");
       Logger.LogInfo(TAG, $"Max Num Hands = {maxNumHands}");
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
