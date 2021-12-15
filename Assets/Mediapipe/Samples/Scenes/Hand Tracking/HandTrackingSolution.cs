@@ -103,6 +103,7 @@ namespace Mediapipe.Unity.HandTracking
         _graphRunner.OnPalmDetectectionsOutput.AddListener(OnPalmDetectectionsOutput);
         _graphRunner.OnHandRectsFromPalmDetectionsOutput.AddListener(OnHandRectsFromPalmDetectionsOutput);
         _graphRunner.OnHandLandmarksOutput.AddListener(OnHandLandmarksOutput);
+        _graphRunner.OnHandWorldLandmarksOutput.AddListener(OnHandWorldLandmarksOutput);
         _graphRunner.OnHandRectsFromLandmarksOutput.AddListener(OnHandRectsFromLandmarksOutput);
         _graphRunner.OnHandednessOutput.AddListener(OnHandednessOutput);
         _graphRunner.StartRunAsync(imageSource).AssertOk();
@@ -165,6 +166,11 @@ namespace Mediapipe.Unity.HandTracking
     private void OnHandLandmarksOutput(List<NormalizedLandmarkList> handLandmarks)
     {
       _handLandmarksAnnotationController.DrawLater(handLandmarks);
+    }
+
+    private void OnHandWorldLandmarksOutput(List<LandmarkList> handWorldLandmarks)
+    {
+      // TODO: render annotations
     }
 
     private void OnHandRectsFromLandmarksOutput(List<NormalizedRect> handRectsFromLandmarks)

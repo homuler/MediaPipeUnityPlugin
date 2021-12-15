@@ -33,6 +33,10 @@ input_side_packet: "num_hands"
 # landmarks. (std::vector<NormalizedLandmarkList>)
 output_stream: "hand_landmarks"
 
+# Collection of detected/predicted hand world landmarks.
+# (std::vector<LandmarkList>)
+output_stream: "hand_world_landmarks"
+
 output_stream: "handedness"
 output_stream: "palm_detections"
 output_stream: "hand_rects_from_landmarks"
@@ -75,6 +79,7 @@ node {
   input_side_packet: "MODEL_COMPLEXITY:model_complexity"
   input_side_packet: "NUM_HANDS:num_hands"
   output_stream: "LANDMARKS:hand_landmarks"
+  output_stream: "WORLD_LANDMARKS:hand_world_landmarks"
   output_stream: "HANDEDNESS:handedness"
   output_stream: "PALM_DETECTIONS:palm_detections"
   output_stream: "HAND_ROIS_FROM_LANDMARKS:hand_rects_from_landmarks"
