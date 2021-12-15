@@ -240,10 +240,10 @@ namespace Mediapipe.Unity.Holistic
         WaitForAsset("face_detection_short_range.bytes"),
         WaitForAsset(refineFaceLandmarks ? "face_landmark_with_attention.bytes" : "face_landmark.bytes"),
         WaitForAsset("iris_landmark.bytes"),
-        WaitForAsset("hand_landmark.bytes"),
+        WaitForAsset("hand_landmark_full.bytes"),
         WaitForAsset("hand_recrop.bytes"),
         WaitForAsset("handedness.txt"),
-        WaitForAsset("palm_detection.bytes"),
+        WaitForAsset("palm_detection_full.bytes"),
         WaitForAsset("pose_detection.bytes"),
         WaitForPoseLandmarkModel(),
       };

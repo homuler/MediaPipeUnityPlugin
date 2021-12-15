@@ -12,6 +12,13 @@ namespace Mediapipe.Unity.HandTracking
 {
   public class HandTrackingGraph : GraphRunner
   {
+    public enum ModelComplexity
+    {
+      Lite = 0,
+      Full = 1,
+    }
+
+    public ModelComplexity modelComplexity = ModelComplexity.Full;
     public int maxNumHands = 2;
 
 #pragma warning disable IDE1006  // UnityEvent is PascalCase
@@ -178,10 +185,10 @@ namespace Mediapipe.Unity.HandTracking
     protected override IList<WaitForResult> RequestDependentAssets()
     {
       return new List<WaitForResult> {
-        WaitForAsset("hand_landmark.bytes"),
+        WaitForHandLandmarkModel(),
         WaitForAsset("hand_recrop.bytes"),
         WaitForAsset("handedness.txt"),
-        WaitForAsset("palm_detection.bytes"),
+        WaitForPalmDetectionModel(),
       };
     }
 
@@ -192,6 +199,26 @@ namespace Mediapipe.Unity.HandTracking
       _handLandmarksStream = new OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(calculatorGraph, _HandLandmarksStreamName);
       _handRectsFromLandmarksStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _HandRectsFromLandmarksStreamName);
       _handednessStream = new OutputStream<ClassificationListVectorPacket, List<ClassificationList>>(calculatorGraph, _HandednessStreamName);
+    }
+
+    private WaitForResult WaitForHandLandmarkModel()
+    {
+      switch (modelComplexity)
+      {
+        case ModelComplexity.Lite: return WaitForAsset("hand_landmark_lite.bytes");
+        case ModelComplexity.Full: return WaitForAsset("hand_landmark_full.bytes");
+        default: throw new InternalException($"Invalid model complexity: {modelComplexity}");
+      }
+    }
+
+    private WaitForResult WaitForPalmDetectionModel()
+    {
+      switch (modelComplexity)
+      {
+        case ModelComplexity.Lite: return WaitForAsset("palm_detection_lite.bytes");
+        case ModelComplexity.Full: return WaitForAsset("palm_detection_full.bytes");
+        default: throw new InternalException($"Invalid model complexity: {modelComplexity}");
+      }
     }
 
     private SidePacket BuildSidePacket(ImageSource imageSource)

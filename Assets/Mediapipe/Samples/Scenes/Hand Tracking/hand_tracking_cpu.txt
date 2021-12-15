@@ -62,6 +62,7 @@ node: {
 node {
   calculator: "HandLandmarkTrackingCpu"
   input_stream: "IMAGE:transformed_input_video"
+  input_side_packet: "MODEL_COMPLEXITY:model_complexity"
   input_side_packet: "NUM_HANDS:num_hands"
   output_stream: "LANDMARKS:hand_landmarks"
   output_stream: "HANDEDNESS:handedness"

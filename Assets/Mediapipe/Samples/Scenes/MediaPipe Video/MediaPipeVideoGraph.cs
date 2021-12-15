@@ -109,10 +109,10 @@ namespace Mediapipe.Unity.MediaPipeVideo
     protected override IList<WaitForResult> RequestDependentAssets()
     {
       return new List<WaitForResult> {
-        WaitForAsset("hand_landmark.bytes"),
+        WaitForAsset("hand_landmark_full.bytes"),
         WaitForAsset("hand_recrop.bytes"),
         WaitForAsset("handedness.txt"),
-        WaitForAsset("palm_detection.bytes"),
+        WaitForAsset("palm_detection_full.bytes"),
       };
     }
 
