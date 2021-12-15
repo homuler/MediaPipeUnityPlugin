@@ -14,11 +14,13 @@ namespace Mediapipe.Unity.HandTracking.UI
 {
   public class HandTrackingConfig : ModalContents
   {
+    private const string _ModelComplexityPath = "Scroll View/Viewport/Contents/Model Complexity/Dropdown";
     private const string _MaxNumHandsPath = "Scroll View/Viewport/Contents/Max Num Hands/InputField";
     private const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
     private const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
 
     private HandTrackingSolution _solution;
+    private Dropdown _modelComplexityInput;
     private InputField _maxNumHandsInput;
     private Dropdown _runningModeInput;
     private InputField _timeoutMillisecInput;
@@ -34,6 +36,12 @@ namespace Mediapipe.Unity.HandTracking.UI
     public override void Exit()
     {
       GetModal().CloseAndResume(_isChanged);
+    }
+
+    public void SwitchModelComplexity()
+    {
+      _solution.modelComplexity = (HandTrackingGraph.ModelComplexity)_modelComplexityInput.value;
+      _isChanged = true;
     }
 
     public void UpdateMaxNumHands()
@@ -62,9 +70,29 @@ namespace Mediapipe.Unity.HandTracking.UI
 
     private void InitializeContents()
     {
+      InitializeModelComplexity();
       InitializeMaxNumHands();
       InitializeRunningMode();
       InitializeTimeoutMillisec();
+    }
+
+    private void InitializeModelComplexity()
+    {
+      _modelComplexityInput = gameObject.transform.Find(_ModelComplexityPath).gameObject.GetComponent<Dropdown>();
+      _modelComplexityInput.ClearOptions();
+
+      var options = new List<string>(Enum.GetNames(typeof(HandTrackingGraph.ModelComplexity)));
+      _modelComplexityInput.AddOptions(options);
+
+      var currentModelComplexity = _solution.modelComplexity;
+      var defaultValue = options.FindIndex(option => option == currentModelComplexity.ToString());
+
+      if (defaultValue >= 0)
+      {
+        _modelComplexityInput.value = defaultValue;
+      }
+
+      _modelComplexityInput.onValueChanged.AddListener(delegate { SwitchModelComplexity(); });
     }
 
     private void InitializeMaxNumHands()

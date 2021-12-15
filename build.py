@@ -13,6 +13,7 @@ except ImportError:
   pass
 
 _BAZEL_BIN_PATH = 'bazel-bin'
+_BAZEL_OUT_PATH = 'bazel-out'
 _BUILD_PATH = 'build'
 _NUGET_PATH = '.nuget'
 _ANALYZER_PATH = os.path.join('Assets', 'Analyzers')
@@ -166,9 +167,7 @@ class BuildCommand(Command):
     if self.ios:
       self.console.info('Building native libaries for iOS...')
       self._run_command(self._build_ios_commands())
-      self._unzip(
-        os.path.join(_BAZEL_BIN_PATH, 'mediapipe_api', 'objc', 'MediaPipeUnity.zip'),
-        os.path.join(_BUILD_PATH, 'Plugins', 'iOS'))
+      self._unzip(self._find_latest_built_framework(), os.path.join(_BUILD_PATH, 'Plugins', 'iOS'))
 
       self.console.info('Built native libraries for iOS')
 
@@ -313,6 +312,15 @@ class BuildCommand(Command):
 
   def _build_proto_dlls_commands(self):
     return ['nuget', 'install', '-o', _NUGET_PATH, '-Source', 'https://api.nuget.org/v3/index.json']
+
+  def _find_latest_built_framework(self):
+    zip_files = glob.glob(os.path.join(_BAZEL_OUT_PATH, '*', 'bin', 'mediapipe_api', 'objc', 'MediaPipeUnity.zip'))
+
+    if not zip_files:
+      raise RuntimeError('MediaPipeUnity.zip has not been built yet')
+
+    zip_files.sort(key=lambda x: os.path.getatime(x), reverse=True)
+    return zip_files[0]
 
 class CleanCommand(Command):
   def __init__(self, command_args):
