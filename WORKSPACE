@@ -59,9 +59,9 @@ http_archive(
         "@//third_party:mediapipe_model_path.diff",
         "@//third_party:mediapipe_extension.diff",
     ],
-    sha256 = "d20c4c7a957c70be6018c704a5cea3c61314df22e4f88b452c19472f0227a48f",
-    strip_prefix = "mediapipe-0.8.8",
-    urls = ["https://github.com/google/mediapipe/archive/v0.8.8.tar.gz"],
+    sha256 = "54ce6da9f167d34fe53f928c804b3bc1fd1dd8fe2b32ca4bf0b63325d34680ac",
+    strip_prefix = "mediapipe-0.8.9",
+    urls = ["https://github.com/google/mediapipe/archive/v0.8.9.tar.gz"],
 )
 
 # ABSL cpp library lts_2021_03_24, patch 2.
@@ -165,17 +165,26 @@ http_archive(
     urls = ["https://chromium.googlesource.com/libyuv/libyuv/+archive/2525698acba9bf9b701ba6b4d9584291a1f62257.tar.gz"],
 )
 
+# Note: protobuf-javalite is no longer released as a separate download, it's included in the main Java download.
+# ...but the Java download is currently broken, so we use the "source" download.
+http_archive(
+    name = "com_google_protobuf_javalite",
+    sha256 = "87407cd28e7a9c95d9f61a098a53cf031109d451a7763e7dd1253abf8b4df422",
+    strip_prefix = "protobuf-3.19.1",
+    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.19.1.tar.gz"],
+)
+
 http_archive(
     name = "com_google_protobuf",
     patch_args = [
         "-p1",
     ],
     patches = [
-        "@//third_party:com_google_protobuf_fixes.diff",
+        "@com_google_mediapipe//third_party:com_google_protobuf_fixes.diff",
     ],
-    sha256 = "65e020a42bdab44a66664d34421995829e9e79c60e5adaa08282fd14ca552f57",
-    strip_prefix = "protobuf-3.15.6",
-    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.15.6.tar.gz"],
+    sha256 = "87407cd28e7a9c95d9f61a098a53cf031109d451a7763e7dd1253abf8b4df422",
+    strip_prefix = "protobuf-3.19.1",
+    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.19.1.tar.gz"],
 )
 
 http_archive(
@@ -192,17 +201,18 @@ http_archive(
     urls = ["https://github.com/pybind/pybind11_bazel/archive/203508e14aab7309892a1c5f7dd05debda22d9a5.zip"],
 )
 
+# Point to the commit that deprecates the usage of Eigen::MappedSparseMatrix.
 http_archive(
     name = "pybind11",
     build_file = "@pybind11_bazel//:pybind11.BUILD",
-    sha256 = "616d1c42e4cf14fa27b2a4ff759d7d7b33006fdc5ad8fd603bb2c22622f27020",
-    strip_prefix = "pybind11-2.7.1",
+    sha256 = "b971842fab1b5b8f3815a2302331782b7d137fef0e06502422bc4bc360f4956c",
+    strip_prefix = "pybind11-70a58c577eaf067748c2ec31bfd0b0a614cffba6",
     urls = [
-        "https://storage.googleapis.com/mirror.tensorflow.org/github.com/pybind/pybind11/archive/v2.7.1.tar.gz",
-        "https://github.com/pybind/pybind11/archive/v2.7.1.tar.gz",
+        "https://github.com/pybind/pybind11/archive/70a58c577eaf067748c2ec31bfd0b0a614cffba6.zip",
     ],
 )
 
+# Point to the commit that deprecates the usage of Eigen::MappedSparseMatrix.
 http_archive(
     name = "ceres_solver",
     patch_args = [
@@ -211,9 +221,9 @@ http_archive(
     patches = [
         "@com_google_mediapipe//third_party:ceres_solver_compatibility_fixes.diff",
     ],
-    sha256 = "db12d37b4cebb26353ae5b7746c7985e00877baa8e7b12dc4d3a1512252fff3b",
-    strip_prefix = "ceres-solver-2.0.0",
-    url = "https://github.com/ceres-solver/ceres-solver/archive/2.0.0.zip",
+    sha256 = "8b7b16ceb363420e0fd499576daf73fa338adb0b1449f58bea7862766baa1ac7",
+    strip_prefix = "ceres-solver-123fba61cf2611a3c8bddc9d91416db26b10b558",
+    url = "https://github.com/ceres-solver/ceres-solver/archive/123fba61cf2611a3c8bddc9d91416db26b10b558.zip",
 )
 
 http_archive(
@@ -320,8 +330,8 @@ http_archive(
         "@com_google_mediapipe//third_party:build_bazel_rules_apple_bypass_test_runner_check.diff",
         "@//third_party:build_bazel_rules_apple_validation.diff",
     ],
-    sha256 = "55f4dc1c9bf21bb87442665f4618cff1f1343537a2bd89252078b987dcd9c382",
-    url = "https://github.com/bazelbuild/rules_apple/releases/download/0.20.0/rules_apple.0.20.0.tar.gz",
+    sha256 = "77e8bf6fda706f420a55874ae6ee4df0c9d95da6c7838228b26910fc82eea5a2",
+    url = "https://github.com/bazelbuild/rules_apple/releases/download/0.32.0/rules_apple.0.32.0.tar.gz",
 )
 
 load(
@@ -340,10 +350,9 @@ swift_rules_dependencies()
 
 http_archive(
     name = "build_bazel_apple_support",
-    sha256 = "122ebf7fe7d1c8e938af6aeaee0efe788a3a2449ece5a8d6a428cb18d6f88033",
+    sha256 = "741366f79d900c11e11d8efd6cc6c66a31bfb2451178b58e0b5edc6f1db17b35",
     urls = [
-        "https://storage.googleapis.com/mirror.tensorflow.org/github.com/bazelbuild/apple_support/releases/download/0.7.1/apple_support.0.7.1.tar.gz",
-        "https://github.com/bazelbuild/apple_support/releases/download/0.7.1/apple_support.0.7.1.tar.gz",
+        "https://github.com/bazelbuild/apple_support/releases/download/0.10.0/apple_support.0.10.0.tar.gz",
     ],
 )
 
@@ -402,6 +411,9 @@ maven_install(
         "com.google.auto.value:auto-value:1.8.1",
         "com.google.auto.value:auto-value-annotations:1.8.1",
         "com.google.code.findbugs:jsr305:latest.release",
+        "com.google.android.datatransport:transport-api:3.0.0",
+        "com.google.android.datatransport:transport-backend-cct:3.1.0",
+        "com.google.android.datatransport:transport-runtime:3.1.0",
         "com.google.flogger:flogger-system-backend:0.6",
         "com.google.flogger:flogger:0.6",
         "com.google.guava:guava:27.0.1-android",
@@ -431,10 +443,10 @@ http_archive(
 )
 
 # Tensorflow repo should always go after the other external dependencies.
-# 2021-07-29
-_TENSORFLOW_GIT_COMMIT = "52a2905cbc21034766c08041933053178c5d10e3"
+# 2021-12-02
+_TENSORFLOW_GIT_COMMIT = "18a1dc0ba806dc023808531f0373d9ec068e64bf"
 
-_TENSORFLOW_SHA256 = "06d4691bcdb700f3275fa0971a1585221c2b9f3dffe867963be565a6643d7f56"
+_TENSORFLOW_SHA256 = "85b90416f7a11339327777bccd634de00ca0de2cf334f5f0727edcb11ff9289a"
 
 http_archive(
     name = "org_tensorflow",
@@ -446,7 +458,6 @@ http_archive(
         "@com_google_mediapipe//third_party:org_tensorflow_objc_cxx17.diff",
         # Diff is generated with a script, don't update it manually.
         "@com_google_mediapipe//third_party:org_tensorflow_custom_ops.diff",
-        "@//third_party:tensorflow_python_path.diff",
     ],
     sha256 = _TENSORFLOW_SHA256,
     strip_prefix = "tensorflow-%s" % _TENSORFLOW_GIT_COMMIT,
