@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.8.2](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.8.1...v0.8.2) (2021-12-15)
+
+
+### Features
+
+* **deps:** MediaPipe v0.8.9 ([#376](https://github.com/homuler/MediaPipeUnityPlugin/issues/376)) ([a16d74c](https://github.com/homuler/MediaPipeUnityPlugin/commit/a16d74c0a170f3bf271df7a09a7b63f46a55a5f1))
+
 ### [0.8.1](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.8.0...v0.8.1) (2021-12-02)
 
 
