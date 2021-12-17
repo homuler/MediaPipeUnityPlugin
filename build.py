@@ -293,7 +293,7 @@ class BuildCommand(Command):
       return []
 
     commands = self._build_common_commands()
-    commands += [f'--config=ios_{self.ios}', '--copt=-fembed-bitcode', '--apple_bitcode=embedded', '--incompatible_run_shell_command_string=false']
+    commands += [f'--config=ios_{self.ios}', '--copt=-fembed-bitcode', '--apple_bitcode=embedded']
     commands.append('//mediapipe_api/objc:MediaPipeUnity')
     return commands
 
