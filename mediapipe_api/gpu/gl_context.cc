@@ -56,7 +56,8 @@ MpReturnCode mp_GlContext_Create__Pes_b(EAGLSharegroup* sharegroup, bool create_
 }
 #endif  // HAS_EAGL
 
-#if HAS_EGL
+#if defined(__EMSCRIPTEN__)
+#elif HAS_EGL
 EGLDisplay mp_GlContext__egl_display(mediapipe::GlContext* gl_context) { return gl_context->egl_display(); }
 
 EGLConfig mp_GlContext__egl_config(mediapipe::GlContext* gl_context) { return gl_context->egl_config(); }
@@ -68,7 +69,7 @@ EAGLContext* mp_GlContext__eagl_context(mediapipe::GlContext* gl_context) { retu
 NSOpenGLContext* mp_GlContext__nsgl_context(mediapipe::GlContext* gl_context) { return gl_context->nsgl_context(); }
 
 NSOpenGLPixelFormat* mp_GlContext__nsgl_pixel_format(mediapipe::GlContext* gl_context) { return gl_context->nsgl_pixel_format(); }
-#endif  // HAS_EGL
+#endif  // defined(__EMSCRIPTEN__)
 
 bool mp_GlContext__IsCurrent(mediapipe::GlContext* gl_context) { return gl_context->IsCurrent(); }
 

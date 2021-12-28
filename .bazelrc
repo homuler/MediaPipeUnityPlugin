@@ -82,3 +82,9 @@ build:ios_arm64e --watchos_cpus=armv7k
 build:ios_fat --config=ios
 build:ios_fat --ios_multi_cpus=armv7,arm64
 build:ios_fat --watchos_cpus=armv7k
+
+build:wasm --crosstool_top=@emsdk//emscripten_toolchain:everything
+build:wasm --cpu=wasm
+build:wasm --host_crosstool_top=@bazel_tools//tools/cpp:toolchain
+build:wasm --copt=-emit-llvm
+build:wasm --cxxopt=-emit-llvm

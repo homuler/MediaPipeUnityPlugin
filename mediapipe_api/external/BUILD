@@ -38,3 +38,14 @@ cc_library(
     ],
     alwayslink = True,
 )
+
+cc_library(
+    name = "wasm_patch",
+    srcs = ["wasm_patch.cc"],
+    hdrs = ["wasm_patch.h"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//mediapipe_api:common",
+    ],
+    alwayslink = True,
+)

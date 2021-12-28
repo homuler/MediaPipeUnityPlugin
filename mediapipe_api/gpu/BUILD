@@ -8,10 +8,20 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-# requires EGL
 cc_library(
     name = "gl_base",
     hdrs = ["gl_base.h"],
+    deps = [
+        "//mediapipe_api:common",
+        "@com_google_mediapipe//mediapipe/gpu:gl_base",
+    ],
+    alwayslink = True,
+)
+
+cc_library(
+    name = "gl_wrapper",
+    srcs = ["gl_wrapper.cc"],
+    hdrs = ["gl_wrapper.h"],
     deps = [
         "//mediapipe_api:common",
         "@com_google_mediapipe//mediapipe/gpu:gl_base",

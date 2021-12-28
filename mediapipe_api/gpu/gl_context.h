@@ -33,7 +33,8 @@ MP_CAPI(MpReturnCode) mp_GlContext_Create__ui_b(mediapipe::PlatformGlContext sha
 MP_CAPI(MpReturnCode) mp_GlContext_Create__Pes_b(EAGLSharegroup* sharegroup, bool create_thread, StatusOrSharedGlContext** status_or_shared_gl_context_out);
 #endif  // HAS_EAGL
 
-#if HAS_EGL
+#if defined(__EMSCRIPTEN__)
+#elif HAS_EGL
 MP_CAPI(EGLDisplay) mp_GlContext__egl_display(mediapipe::GlContext* gl_context);
 MP_CAPI(EGLConfig) mp_GlContext__egl_config(mediapipe::GlContext* gl_context);
 MP_CAPI(EGLContext) mp_GlContext__egl_context(mediapipe::GlContext* gl_context);
@@ -44,7 +45,7 @@ MP_CAPI(EAGLContext*) mp_GlContext__eagl_context(mediapipe::GlContext* gl_contex
 MP_CAPI(NSOpenGLContext*) mp_GlContext__nsgl_context(mediapipe::GlContext* gl_context);
 MP_CAPI(NSOpenGLPixelFormat*) mp_GlContext__nsgl_pixel_format(mediapipe::GlContext* gl_context);
 // TODO: cv_texture_cache
-#endif  // HAS_EGL
+#endif  // defined(__EMSCRIPTEN__)
 
 MP_CAPI(bool) mp_GlContext__IsCurrent(mediapipe::GlContext* gl_context);
 MP_CAPI(GLint) mp_GlContext__gl_major_version(mediapipe::GlContext* gl_context);

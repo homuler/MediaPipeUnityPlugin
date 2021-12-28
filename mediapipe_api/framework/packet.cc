@@ -258,15 +258,10 @@ MpReturnCode mp_SidePacket__emplace__PKc_Rp(SidePacket* side_packet, const char*
 
 MpReturnCode mp_SidePacket__at__PKc(SidePacket* side_packet, const char* key, mediapipe::Packet** packet_out) {
   TRY
-    try {
-      auto packet = side_packet->at(std::string(key));
-      // copy
-      *packet_out = new mediapipe::Packet{packet};
-      RETURN_CODE(MpReturnCode::Success);
-    } catch (std::out_of_range&) {
-      *packet_out = nullptr;
-      RETURN_CODE(MpReturnCode::Success);
-    }
+    auto packet = side_packet->at(std::string(key));
+    // copy
+    *packet_out = new mediapipe::Packet{packet};
+    RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }
 
