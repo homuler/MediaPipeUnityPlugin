@@ -1,15 +1,5 @@
 workspace(name = "mediapipe_api")
 
-# This file is almost the same as mediapipe's WORKSPACE file, but there exist some differences between the two.
-#
-# - com_google_mediapipe dependency
-# - @//third_party -> @com_google_mediapipe//third_party
-#    - exception: opencv_linux, opencv_windows, ffmpeg_linux, ffmpeg_macos
-# - android_opencv sha256 is added
-# - unity dependency
-# - rules_foreign_cc's version
-# - rules_pkg
-
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
@@ -72,6 +62,7 @@ http_archive(
         "@//third_party:mediapipe_visibility.diff",
         "@//third_party:mediapipe_model_path.diff",
         "@//third_party:mediapipe_extension.diff",
+        "@//third_party:mediapipe_emscripten_patch.diff",
     ],
     sha256 = "54ce6da9f167d34fe53f928c804b3bc1fd1dd8fe2b32ca4bf0b63325d34680ac",
     strip_prefix = "mediapipe-0.8.9",
