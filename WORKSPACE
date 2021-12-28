@@ -275,6 +275,12 @@ new_local_repository(
     path = "C:\\opencv\\build",
 )
 
+new_local_repository(
+    name = "wasm_opencv",
+    build_file = "@//third_party:opencv_wasm.BUILD",
+    path = "/usr",
+)
+
 http_archive(
     name = "android_opencv",
     build_file = "@com_google_mediapipe//third_party:opencv_android.BUILD",
