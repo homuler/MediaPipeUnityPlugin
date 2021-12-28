@@ -19,17 +19,6 @@ cc_library(
 )
 
 cc_library(
-    name = "gl_wrapper",
-    srcs = ["gl_wrapper.cc"],
-    hdrs = ["gl_wrapper.h"],
-    deps = [
-        "//mediapipe_api:common",
-        "@com_google_mediapipe//mediapipe/gpu:gl_base",
-    ],
-    alwayslink = True,
-)
-
-cc_library(
     name = "gl_calculator_helper",
     srcs = ["gl_calculator_helper.cc"],
     hdrs = ["gl_calculator_helper.h"],
