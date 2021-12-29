@@ -1,0 +1,116 @@
+diff --git a/emscripten_deps.bzl b/emscripten_deps.bzl
+index 2189360..3eb6d55 100644
+--- a/emscripten_deps.bzl
++++ b/emscripten_deps.bzl
+@@ -31,6 +31,8 @@ def emscripten_deps(emscripten_version = "latest"):
+             url = emscripten_url.format("linux", revision.hash, "tbz2"),
+             sha256 = revision.sha_linux,
+             build_file = "@emsdk//emscripten_toolchain:emscripten.BUILD",
++            patch_args = ["-p1"],
++            patches = revision.patches,
+             type = "tar.bz2",
+         )
+ 
+@@ -41,6 +43,8 @@ def emscripten_deps(emscripten_version = "latest"):
+             url = emscripten_url.format("mac", revision.hash, "tbz2"),
+             sha256 = revision.sha_mac,
+             build_file = "@emsdk//emscripten_toolchain:emscripten.BUILD",
++            patch_args = ["-p1"],
++            patches = revision.patches,
+             type = "tar.bz2",
+         )
+ 
+@@ -51,6 +55,8 @@ def emscripten_deps(emscripten_version = "latest"):
+             url = emscripten_url.format("win", revision.hash, "zip"),
+             sha256 = revision.sha_win,
+             build_file = "@emsdk//emscripten_toolchain:emscripten.BUILD",
++            patch_args = ["-p1"],
++            patches = revision.patches,
+             type = "zip",
+         )
+ 
+diff --git a/emscripten_toolchain/emar.sh b/emscripten_toolchain/emar.sh
+index e4279f1..d626f7e 100755
+--- a/emscripten_toolchain/emar.sh
++++ b/emscripten_toolchain/emar.sh
+@@ -2,4 +2,29 @@
+ 
+ source external/emsdk/emscripten_toolchain/env.sh
+ 
+-exec python3 $EMSCRIPTEN/emar.py "$@"
++# Dirty hack to avoid warnings:
++#   archive file contains duplicate entries. This is not supported by emscripten.
++#   Only the last member with a given name will be linked in which can result in undefined symbols.
++#
++# If you get this warning, some symbols will actually not be resolved.
++
++param_file_path=${1:1} # remove @
++emar_opts=`head -1 "${param_file_path}"`
++
++tmp_param_file_path=${param_file_path}.tmp
++cp "${param_file_path}" "${tmp_param_file_path}"
++
++sed -i '1d' "${tmp_param_file_path}" # remove emar_opts
++output_path=`head -1 "${tmp_param_file_path}"`
++sed -i -e 1's/.*/-o &.bc/' "${tmp_param_file_path}"
++
++bc_param_file_path="${output_path}.bc-2.params"
++mv "${tmp_param_file_path}" "${bc_param_file_path}"
++
++$EMSCRIPTEN/../bin/llvm-link "@${bc_param_file_path}"
++
++# Output the expected file with the expected format
++python3 $EMSCRIPTEN/emar.py "${emar_opts}" "${output_path}" "${output_path}.bc"
++
++rm ${output_path}.bc
++rm ${bc_param_file_path}
+diff --git a/emscripten_toolchain/link_wrapper.py b/emscripten_toolchain/link_wrapper.py
+index d6b715d..b68e638 100644
+--- a/emscripten_toolchain/link_wrapper.py
++++ b/emscripten_toolchain/link_wrapper.py
+@@ -68,6 +68,9 @@ if oformat is not None:
+   elif base_name_split[1] == '.' + oformat:
+     base_name = base_name_split[0]
+ 
++  elif oformat == 'object' and (base_name_split[1] == '.bc' or base_name_split[1] == '.o'):
++    base_name = base_name_split[0]
++
+   # If the output name does have an extension and it does not match the output
+   # format, change the base_name so it doesn't have an extension and rename
+   # the output_file so it has the proper extension.
+@@ -81,6 +84,8 @@ if oformat is not None:
+ 
+ files = []
+ extensions = [
++    '.bc',
++    '.o',
+     '.js',
+     '.wasm',
+     '.wasm.map',
+@@ -159,8 +164,9 @@ if not len(files):
+   sys.exit(1)
+ 
+ # cc_binary must output exactly one file; put all the output files in a tarball.
+-cmd = ['tar', 'cf', 'tmp.tar'] + files
+-subprocess.check_call(cmd, cwd=outdir)
+-os.rename(os.path.join(outdir, 'tmp.tar'), output_file)
++if oformat != 'object':
++  cmd = ['tar', 'cf', 'tmp.tar'] + files
++  subprocess.check_call(cmd, cwd=outdir)
++  os.rename(os.path.join(outdir, 'tmp.tar'), output_file)
+ 
+ sys.exit(0)
+diff --git a/revisions.bzl b/revisions.bzl
+index 468ffb7..dcc3fe2 100644
+--- a/revisions.bzl
++++ b/revisions.bzl
+@@ -97,6 +97,9 @@ EMSCRIPTEN_TAGS = {
+         sha_linux = "c079781124e763c53c9fc73781fcee40296ce3314276836bc694f07bd331a859",
+         sha_mac = "ab95574dfc685b0300e37bea36aba413045bbfa2ab06b93eceb881670489eec1",
+         sha_win = "ba142e7e380596cba763e3a414de6511bcb86de48e4b48cf393b1ea449a24aaa",
++        patches = [
++            "@//third_party:emscripten_extract_archive_fixes.diff",
++        ],
+     ),
+     "2.0.21": struct(
+         hash = "72f4ec97fbc7ec16c15ae68a75b0a257b2835160",

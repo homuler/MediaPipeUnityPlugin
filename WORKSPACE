@@ -30,10 +30,17 @@ load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
 
 rules_pkg_dependencies()
 
-new_local_repository(
+http_archive(
     name = "emsdk",
-    build_file = "/home/homuler/lib/emsdk/bazel/BUILD",
-    path = "/home/homuler/lib/emsdk/bazel",
+    sha256 = "8978a12172028542c1c4007745e5421cb018842ebf77dfc0f8555d1ae9b09234",
+    strip_prefix = "emsdk-8e7b714a0b2137caca4a212c003f4eb9b9ba9667/bazel",
+    url = "https://github.com/emscripten-core/emsdk/archive/8e7b714a0b2137caca4a212c003f4eb9b9ba9667.tar.gz",
+    patch_args = [
+        "-p1",
+    ],
+    patches = [
+        "@//third_party:emsdk_bitcode_support.diff",
+    ],
 )
 
 load("@emsdk//:deps.bzl", emsdk_deps = "deps")
@@ -469,6 +476,7 @@ http_archive(
         "@com_google_mediapipe//third_party:org_tensorflow_objc_cxx17.diff",
         # Diff is generated with a script, don't update it manually.
         "@com_google_mediapipe//third_party:org_tensorflow_custom_ops.diff",
+        "@//third_party:tensorflow_xnnpack_emscripten_fixes.diff",
     ],
     sha256 = _TENSORFLOW_SHA256,
     strip_prefix = "tensorflow-%s" % _TENSORFLOW_GIT_COMMIT,
