@@ -579,7 +579,7 @@ index 8af4a5d..ed6ec5c 100644
                kAnnotationBackgroundColor / 255.0,
                kAnnotationBackgroundColor / 255.0);
 diff --git a/mediapipe/gpu/BUILD b/mediapipe/gpu/BUILD
-index 2d163b4..73436d4 100644
+index 2d163b4..edea795 100644
 --- a/mediapipe/gpu/BUILD
 +++ b/mediapipe/gpu/BUILD
 @@ -97,7 +97,7 @@ cc_library(
@@ -602,7 +602,7 @@ index 2d163b4..73436d4 100644
      features = ["-layering_check"],
      # Note: need the frameworks on Apple platforms to get the headers.
      linkopts = select({
-@@ -130,6 +132,20 @@ cc_library(
+@@ -130,6 +132,21 @@ cc_library(
      }),
  )
  
@@ -618,12 +618,13 @@ index 2d163b4..73436d4 100644
 +        ":gl_base_hdr",
 +    ],
 +    visibility = ["//visibility:public"],
++    alwayslink = True,
 +)
 +
  cc_library(
      name = "gl_thread_collector",
      hdrs = ["gl_thread_collector.h"],
-@@ -166,6 +182,7 @@ cc_library(
+@@ -166,6 +183,7 @@ cc_library(
      visibility = ["//visibility:public"],
      deps = [
          ":gl_base",
@@ -697,7 +698,7 @@ index c25a37e..e9fe4c2 100644
    }
 diff --git a/mediapipe/gpu/gl_wrapper.cc b/mediapipe/gpu/gl_wrapper.cc
 new file mode 100644
-index 0000000..f53e335
+index 0000000..c9c866c
 --- /dev/null
 +++ b/mediapipe/gpu/gl_wrapper.cc
 @@ -0,0 +1,162 @@
@@ -709,7 +710,7 @@ index 0000000..f53e335
 +
 +#include "mediapipe/gpu/gl_wrapper.h"
 +
-+#if defined(__EMSCRIPTEN__)
++#ifdef __EMSCRIPTEN__
 +
 +EM_JS(GLint, __wrap_glGetUniformLocation, (GLuint program, const GLchar *name), {
 +  // Returns the index of '[' character in an uniform that represents an array of uniforms (e.g. colors[10])
@@ -862,10 +863,10 @@ index 0000000..f53e335
 +  GLctx.currentProgram = program;
 +});
 +
-+#endif  // defined(__EMSCRIPTEN__)
++#endif  // __EMSCRIPTEN__
 diff --git a/mediapipe/gpu/gl_wrapper.h b/mediapipe/gpu/gl_wrapper.h
 new file mode 100644
-index 0000000..ec03789
+index 0000000..035d288
 --- /dev/null
 +++ b/mediapipe/gpu/gl_wrapper.h
 @@ -0,0 +1,65 @@
@@ -880,7 +881,7 @@ index 0000000..ec03789
 +
 +#include "mediapipe/gpu/gl_base.h"
 +
-+#if defined(__EMSCRIPTEN__)
++#ifdef __EMSCRIPTEN__
 +#include <emscripten.h>
 +
 +// Wrap functions which are affected by `GL_EXPLICIT_UNIFORM_LOCATION` and `GL_EXPLICIT_UNIFORM_BINDING`,
@@ -904,8 +905,6 @@ index 0000000..ec03789
 +#endif  // __cplusplus
 +
 +#else
-+
-+#endif  // defined(__EMSCRIPTEN__)
 +
 +inline GLint __wrap_glGetUniformLocation(GLuint program, const GLchar *name) {
 +  return glGetUniformLocation(program, name);
@@ -932,6 +931,8 @@ index 0000000..ec03789
 +inline void __wrap_glUseProgram(GLuint program) {
 +  return glUseProgram(program);
 +}
++
++#endif  // __EMSCRIPTEN__
 +
 +#endif  // MEDIAPIPE_GPU_GL_WRAPPER_H_
 diff --git a/mediapipe/gpu/shader_util.cc b/mediapipe/gpu/shader_util.cc
