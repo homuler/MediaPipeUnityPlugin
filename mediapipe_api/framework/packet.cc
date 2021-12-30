@@ -262,6 +262,11 @@ MpReturnCode mp_SidePacket__at__PKc(SidePacket* side_packet, const char* key, me
     // copy
     *packet_out = new mediapipe::Packet{packet};
     RETURN_CODE(MpReturnCode::Success);
+#ifndef MEDIAPIPE_IGNORE_EXCEPTION
+  } catch (std::out_of_range&) {
+    *packet_out = nullptr;
+    RETURN_CODE(MpReturnCode::Success);
+#endif
   CATCH_EXCEPTION
 }
 
