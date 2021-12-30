@@ -30,7 +30,7 @@ index 2189360..3eb6d55 100644
          )
  
 diff --git a/emscripten_toolchain/emar.sh b/emscripten_toolchain/emar.sh
-index e4279f1..d626f7e 100755
+index e4279f1..10858fd 100755
 --- a/emscripten_toolchain/emar.sh
 +++ b/emscripten_toolchain/emar.sh
 @@ -2,4 +2,29 @@
@@ -50,7 +50,7 @@ index e4279f1..d626f7e 100755
 +tmp_param_file_path=${param_file_path}.tmp
 +cp "${param_file_path}" "${tmp_param_file_path}"
 +
-+sed -i '1d' "${tmp_param_file_path}" # remove emar_opts
++sed -i -e '1d' "${tmp_param_file_path}" # remove emar_opts
 +output_path=`head -1 "${tmp_param_file_path}"`
 +sed -i -e 1's/.*/-o &.bc/' "${tmp_param_file_path}"
 +
