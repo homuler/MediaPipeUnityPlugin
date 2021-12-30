@@ -8,7 +8,6 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-# requires EGL
 cc_library(
     name = "gl_base",
     hdrs = ["gl_base.h"],

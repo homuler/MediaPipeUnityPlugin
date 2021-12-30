@@ -1,0 +1,1082 @@
+diff --git a/mediapipe/calculators/image/affine_transformation_runner_gl.cc b/mediapipe/calculators/image/affine_transformation_runner_gl.cc
+index c38fc8e..380befd 100644
+--- a/mediapipe/calculators/image/affine_transformation_runner_gl.cc
++++ b/mediapipe/calculators/image/affine_transformation_runner_gl.cc
+@@ -134,9 +134,9 @@ class GlTextureWarpAffineRunner
+                          attr_location, &program);
+ 
+         RET_CHECK(program) << "Problem initializing warp affine program.";
+-        glUseProgram(program);
+-        glUniform1i(glGetUniformLocation(program, "input_texture"), 1);
+-        GLint matrix_id = glGetUniformLocation(program, "transform_matrix");
++        __wrap_glUseProgram(program);
++        glUniform1i(__wrap_glGetUniformLocation(program, "input_texture"), 1);
++        GLint matrix_id = __wrap_glGetUniformLocation(program, "transform_matrix");
+         return Program{.id = program, .matrix_id = matrix_id};
+       };
+ 
+@@ -254,7 +254,7 @@ class GlTextureWarpAffineRunner
+         break;
+       }
+     }
+-    glUseProgram(program->id);
++    __wrap_glUseProgram(program->id);
+ 
+     Eigen::Matrix<float, 4, 4, Eigen::RowMajor> eigen_mat(matrix.data());
+     if (IsMatrixVerticalFlipNeeded(gpu_origin_)) {
+diff --git a/mediapipe/calculators/image/bilateral_filter_calculator.cc b/mediapipe/calculators/image/bilateral_filter_calculator.cc
+index 6bb43dc..1701a22 100644
+--- a/mediapipe/calculators/image/bilateral_filter_calculator.cc
++++ b/mediapipe/calculators/image/bilateral_filter_calculator.cc
+@@ -283,11 +283,11 @@ absl::Status BilateralFilterCalculator::RenderGpu(CalculatorContext* cc) {
+   if (has_guide_image) {
+     if (cc->Inputs().Tag(kInputGuideTagGpu).IsEmpty()) return absl::OkStatus();
+     // joint bilateral filter
+-    glUseProgram(program_);
++    __wrap_glUseProgram(program_);
+     const auto& guide_image =
+         cc->Inputs().Tag(kInputGuideTagGpu).Get<mediapipe::GpuBuffer>();
+     auto guide_texture = gpu_helper_.CreateSourceTexture(guide_image);
+-    glUniform2f(glGetUniformLocation(program_, "texel_size_guide"),
++    glUniform2f(__wrap_glGetUniformLocation(program_, "texel_size_guide"),
+                 1.0 / guide_image.width(), 1.0 / guide_image.height());
+     output_texture = gpu_helper_.CreateDestinationTexture(
+         guide_image.width(), guide_image.height(),
+@@ -304,8 +304,8 @@ absl::Status BilateralFilterCalculator::RenderGpu(CalculatorContext* cc) {
+     guide_texture.Release();
+   } else {
+     // regular bilateral filter
+-    glUseProgram(program_);
+-    glUniform2f(glGetUniformLocation(program_, "texel_size"),
++    __wrap_glUseProgram(program_);
++    glUniform2f(__wrap_glGetUniformLocation(program_, "texel_size"),
+                 1.0 / input_frame.width(), 1.0 / input_frame.height());
+     output_texture = gpu_helper_.CreateDestinationTexture(
+         input_frame.width(), input_frame.height(),
+@@ -476,17 +476,17 @@ absl::Status BilateralFilterCalculator::GlSetup(CalculatorContext* cc) {
+         mediapipe::kBasicVertexShader, joint_frag_src.c_str(), NUM_ATTRIBUTES,
+         (const GLchar**)&attr_name[0], attr_location, &program_);
+     RET_CHECK(program_) << "Problem initializing the program.";
+-    glUseProgram(program_);
+-    glUniform1i(glGetUniformLocation(program_, "input_frame"), 1);
+-    glUniform1i(glGetUniformLocation(program_, "guide_frame"), 2);
++    __wrap_glUseProgram(program_);
++    glUniform1i(__wrap_glGetUniformLocation(program_, "input_frame"), 1);
++    glUniform1i(__wrap_glGetUniformLocation(program_, "guide_frame"), 2);
+   } else {
+     // Create default shader program and set parameters.
+     mediapipe::GlhCreateProgram(mediapipe::kBasicVertexShader, frag_src.c_str(),
+                                 NUM_ATTRIBUTES, (const GLchar**)&attr_name[0],
+                                 attr_location, &program_);
+     RET_CHECK(program_) << "Problem initializing the program.";
+-    glUseProgram(program_);
+-    glUniform1i(glGetUniformLocation(program_, "input_frame"), 1);
++    __wrap_glUseProgram(program_);
++    glUniform1i(__wrap_glGetUniformLocation(program_, "input_frame"), 1);
+   }
+ 
+   // Generate vbos and vao.
+diff --git a/mediapipe/calculators/image/image_cropping_calculator.cc b/mediapipe/calculators/image/image_cropping_calculator.cc
+index 8c9305f..eecadb9 100644
+--- a/mediapipe/calculators/image/image_cropping_calculator.cc
++++ b/mediapipe/calculators/image/image_cropping_calculator.cc
+@@ -320,7 +320,7 @@ void ImageCroppingCalculator::GlRender() {
+   const GLfloat* texture_vertices = &transformed_points_[0];
+ 
+   // program
+-  glUseProgram(program_);
++  __wrap_glUseProgram(program_);
+ 
+   // vertex storage
+   GLuint vbo[2];
+@@ -402,8 +402,8 @@ absl::Status ImageCroppingCalculator::InitGpu(CalculatorContext* cc) {
+   RET_CHECK(program_) << "Problem initializing the program.";
+ 
+   // Parameters
+-  glUseProgram(program_);
+-  glUniform1i(glGetUniformLocation(program_, "input_frame"), 1);
++  __wrap_glUseProgram(program_);
++  glUniform1i(__wrap_glGetUniformLocation(program_, "input_frame"), 1);
+ #endif  // !MEDIAPIPE_DISABLE_GPU
+ 
+   return absl::OkStatus();
+diff --git a/mediapipe/calculators/image/luminance_calculator.cc b/mediapipe/calculators/image/luminance_calculator.cc
+index d5122c7..ac0f97d 100644
+--- a/mediapipe/calculators/image/luminance_calculator.cc
++++ b/mediapipe/calculators/image/luminance_calculator.cc
+@@ -81,7 +81,7 @@ absl::Status LuminanceCalculator::GlSetup() {
+   GlhCreateProgram(kBasicVertexShader, frag_src, NUM_ATTRIBUTES,
+                    (const GLchar**)&attr_name[0], attr_location, &program_);
+   RET_CHECK(program_) << "Problem initializing the program.";
+-  frame_ = glGetUniformLocation(program_, "video_frame");
++  frame_ = __wrap_glGetUniformLocation(program_, "video_frame");
+   return absl::OkStatus();
+ }
+ 
+@@ -101,7 +101,7 @@ absl::Status LuminanceCalculator::GlRender(const GlTexture& src,
+   };
+ 
+   // program
+-  glUseProgram(program_);
++  __wrap_glUseProgram(program_);
+   glUniform1i(frame_, 1);
+ 
+   // vertex storage
+diff --git a/mediapipe/calculators/image/mask_overlay_calculator.cc b/mediapipe/calculators/image/mask_overlay_calculator.cc
+index 5fbf9e4..2e38f6e 100644
+--- a/mediapipe/calculators/image/mask_overlay_calculator.cc
++++ b/mediapipe/calculators/image/mask_overlay_calculator.cc
+@@ -244,14 +244,14 @@ absl::Status MaskOverlayCalculator::GlSetup(
+                    use_mask_tex_ ? frag_src_tex.c_str() : frag_src_const,
+                    NUM_ATTRIBUTES, &attr_name[0], attr_location, &program_);
+   RET_CHECK(program_) << "Problem initializing the program.";
+-  unif_frame1_ = glGetUniformLocation(program_, "frame1");
+-  unif_frame2_ = glGetUniformLocation(program_, "frame2");
+-  unif_mask_ = glGetUniformLocation(program_, "mask");
++  unif_frame1_ = __wrap_glGetUniformLocation(program_, "frame1");
++  unif_frame2_ = __wrap_glGetUniformLocation(program_, "frame2");
++  unif_mask_ = __wrap_glGetUniformLocation(program_, "mask");
+   return absl::OkStatus();
+ }
+ 
+ absl::Status MaskOverlayCalculator::GlRender(const float mask_const) {
+-  glUseProgram(program_);
++  __wrap_glUseProgram(program_);
+   glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, 0, 0, kBasicSquareVertices);
+   glEnableVertexAttribArray(ATTRIB_VERTEX);
+   glVertexAttribPointer(ATTRIB_TEXTURE_POSITION, 2, GL_FLOAT, 0, 0,
+diff --git a/mediapipe/calculators/image/recolor_calculator.cc b/mediapipe/calculators/image/recolor_calculator.cc
+index 062fb2c..2d9d5ee 100644
+--- a/mediapipe/calculators/image/recolor_calculator.cc
++++ b/mediapipe/calculators/image/recolor_calculator.cc
+@@ -364,7 +364,7 @@ void RecolorCalculator::GlRender() {
+   };
+ 
+   // program
+-  glUseProgram(program_);
++  __wrap_glUseProgram(program_);
+ 
+   // vertex storage
+   GLuint vbo[2];
+@@ -489,14 +489,14 @@ absl::Status RecolorCalculator::InitGpu(CalculatorContext* cc) {
+                               NUM_ATTRIBUTES, &attr_name[0], attr_location,
+                               &program_);
+   RET_CHECK(program_) << "Problem initializing the program.";
+-  glUseProgram(program_);
+-  glUniform1i(glGetUniformLocation(program_, "frame"), 1);
+-  glUniform1i(glGetUniformLocation(program_, "mask"), 2);
+-  glUniform3f(glGetUniformLocation(program_, "recolor"), color_[0] / 255.0,
++  __wrap_glUseProgram(program_);
++  glUniform1i(__wrap_glGetUniformLocation(program_, "frame"), 1);
++  glUniform1i(__wrap_glGetUniformLocation(program_, "mask"), 2);
++  glUniform3f(__wrap_glGetUniformLocation(program_, "recolor"), color_[0] / 255.0,
+               color_[1] / 255.0, color_[2] / 255.0);
+-  glUniform1f(glGetUniformLocation(program_, "invert_mask"),
++  glUniform1f(__wrap_glGetUniformLocation(program_, "invert_mask"),
+               invert_mask_ ? 1.0f : 0.0f);
+-  glUniform1f(glGetUniformLocation(program_, "adjust_with_luminance"),
++  glUniform1f(__wrap_glGetUniformLocation(program_, "adjust_with_luminance"),
+               adjust_with_luminance_ ? 1.0f : 0.0f);
+ #endif  // !MEDIAPIPE_DISABLE_GPU
+ 
+diff --git a/mediapipe/calculators/image/segmentation_smoothing_calculator.cc b/mediapipe/calculators/image/segmentation_smoothing_calculator.cc
+index db339b7..817b894 100644
+--- a/mediapipe/calculators/image/segmentation_smoothing_calculator.cc
++++ b/mediapipe/calculators/image/segmentation_smoothing_calculator.cc
+@@ -314,7 +314,7 @@ void SegmentationSmoothingCalculator::GlRender(CalculatorContext* cc) {
+   };
+ 
+   // program
+-  glUseProgram(program_);
++  __wrap_glUseProgram(program_);
+ 
+   // vertex storage
+   GLuint vbo[2];
+@@ -415,10 +415,10 @@ absl::Status SegmentationSmoothingCalculator::GlSetup(CalculatorContext* cc) {
+                               NUM_ATTRIBUTES, (const GLchar**)&attr_name[0],
+                               attr_location, &program_);
+   RET_CHECK(program_) << "Problem initializing the program.";
+-  glUseProgram(program_);
+-  glUniform1i(glGetUniformLocation(program_, "current_mask"), 1);
+-  glUniform1i(glGetUniformLocation(program_, "previous_mask"), 2);
+-  glUniform1f(glGetUniformLocation(program_, "combine_with_previous_ratio"),
++  __wrap_glUseProgram(program_);
++  glUniform1i(__wrap_glGetUniformLocation(program_, "current_mask"), 1);
++  glUniform1i(__wrap_glGetUniformLocation(program_, "previous_mask"), 2);
++  glUniform1f(__wrap_glGetUniformLocation(program_, "combine_with_previous_ratio"),
+               combine_with_previous_ratio_);
+ 
+ #endif  // !MEDIAPIPE_DISABLE_GPU
+diff --git a/mediapipe/calculators/image/set_alpha_calculator.cc b/mediapipe/calculators/image/set_alpha_calculator.cc
+index 04c3b2c..f47da6d 100644
+--- a/mediapipe/calculators/image/set_alpha_calculator.cc
++++ b/mediapipe/calculators/image/set_alpha_calculator.cc
+@@ -374,7 +374,7 @@ void SetAlphaCalculator::GlRender(CalculatorContext* cc) {
+   };
+ 
+   // program
+-  glUseProgram(program_);
++  __wrap_glUseProgram(program_);
+ 
+   // vertex storage
+   GLuint vbo[2];
+@@ -460,10 +460,10 @@ absl::Status SetAlphaCalculator::GlSetup(CalculatorContext* cc) {
+                               NUM_ATTRIBUTES, (const GLchar**)&attr_name[0],
+                               attr_location, &program_);
+   RET_CHECK(program_) << "Problem initializing the program.";
+-  glUseProgram(program_);
+-  glUniform1i(glGetUniformLocation(program_, "input_frame"), 1);
+-  glUniform1i(glGetUniformLocation(program_, "alpha_mask"), 2);
+-  glUniform1f(glGetUniformLocation(program_, "alpha_value"), alpha_value_);
++  __wrap_glUseProgram(program_);
++  glUniform1i(__wrap_glGetUniformLocation(program_, "input_frame"), 1);
++  glUniform1i(__wrap_glGetUniformLocation(program_, "alpha_mask"), 2);
++  glUniform1f(__wrap_glGetUniformLocation(program_, "alpha_value"), alpha_value_);
+ 
+ #endif  // !MEDIAPIPE_DISABLE_GPU
+ 
+diff --git a/mediapipe/calculators/image/sobel_edges_calculator.cc b/mediapipe/calculators/image/sobel_edges_calculator.cc
+index 6154a24..da4f55e 100644
+--- a/mediapipe/calculators/image/sobel_edges_calculator.cc
++++ b/mediapipe/calculators/image/sobel_edges_calculator.cc
+@@ -162,9 +162,9 @@ absl::Status SobelEdgesCalculator::GlSetup() {
+   GlhCreateProgram(vert_src, frag_src, NUM_ATTRIBUTES,
+                    (const GLchar**)&attr_name[0], attr_location, &program_);
+   RET_CHECK(program_) << "Problem initializing the program.";
+-  frame_ = glGetUniformLocation(program_, "inputImage");
+-  pixel_w_ = glGetUniformLocation(program_, "pixelW");
+-  pixel_h_ = glGetUniformLocation(program_, "pixelH");
++  frame_ = __wrap_glGetUniformLocation(program_, "inputImage");
++  pixel_w_ = __wrap_glGetUniformLocation(program_, "pixelW");
++  pixel_h_ = __wrap_glGetUniformLocation(program_, "pixelH");
+   return absl::OkStatus();
+ }
+ 
+@@ -184,7 +184,7 @@ absl::Status SobelEdgesCalculator::GlRender(const GlTexture& src,
+   };
+ 
+   // program
+-  glUseProgram(program_);
++  __wrap_glUseProgram(program_);
+   glUniform1i(frame_, 1);
+ 
+   // parameters
+diff --git a/mediapipe/calculators/tensor/image_to_tensor_converter_gl_buffer.cc b/mediapipe/calculators/tensor/image_to_tensor_converter_gl_buffer.cc
+index d01916f..dbccfd5 100644
+--- a/mediapipe/calculators/tensor/image_to_tensor_converter_gl_buffer.cc
++++ b/mediapipe/calculators/tensor/image_to_tensor_converter_gl_buffer.cc
+@@ -85,7 +85,7 @@ class SubRectExtractorGl {
+ absl::Status SetMat4x4(const tflite::gpu::gl::GlProgram& program,
+                        const std::string& name, float* data) {
+   GLint uniform_id;
+-  MP_RETURN_IF_ERROR(TFLITE_GPU_CALL_GL(glGetUniformLocation, &uniform_id,
++  MP_RETURN_IF_ERROR(TFLITE_GPU_CALL_GL(__wrap_glGetUniformLocation, &uniform_id,
+                                         program.id(), name.c_str()));
+   return TFLITE_GPU_CALL_GL(glProgramUniformMatrix4fv, program.id(), uniform_id,
+                             1, GL_TRUE, data);
+diff --git a/mediapipe/calculators/tensor/image_to_tensor_converter_gl_texture.cc b/mediapipe/calculators/tensor/image_to_tensor_converter_gl_texture.cc
+index eb96815..6e07c85 100644
+--- a/mediapipe/calculators/tensor/image_to_tensor_converter_gl_texture.cc
++++ b/mediapipe/calculators/tensor/image_to_tensor_converter_gl_texture.cc
+@@ -140,11 +140,11 @@ class GlProcessor : public ImageToTensorConverter {
+                                   &program_);
+ 
+       RET_CHECK(program_) << "Problem initializing image to tensor program.";
+-      glUseProgram(program_);
+-      glUniform1i(glGetUniformLocation(program_, "input_texture"), 1);
+-      alpha_id_ = glGetUniformLocation(program_, "alpha");
+-      beta_id_ = glGetUniformLocation(program_, "beta");
+-      matrix_id_ = glGetUniformLocation(program_, "transform_matrix");
++      __wrap_glUseProgram(program_);
++      glUniform1i(__wrap_glGetUniformLocation(program_, "input_texture"), 1);
++      alpha_id_ = __wrap_glGetUniformLocation(program_, "alpha");
++      beta_id_ = __wrap_glGetUniformLocation(program_, "beta");
++      matrix_id_ = __wrap_glGetUniformLocation(program_, "transform_matrix");
+ 
+       glGenFramebuffers(1, &framebuffer_);
+ 
+@@ -246,7 +246,7 @@ class GlProcessor : public ImageToTensorConverter {
+       }
+     }
+ 
+-    glUseProgram(program_);
++    __wrap_glUseProgram(program_);
+     glUniform1f(alpha_id_, alpha);
+     glUniform1f(beta_id_, beta);
+ 
+diff --git a/mediapipe/calculators/tensor/tensor_converter_calculator.cc b/mediapipe/calculators/tensor/tensor_converter_calculator.cc
+index f3c7c7b..fc157c8 100644
+--- a/mediapipe/calculators/tensor/tensor_converter_calculator.cc
++++ b/mediapipe/calculators/tensor/tensor_converter_calculator.cc
+@@ -325,14 +325,14 @@ absl::Status TensorConverterCalculator::ProcessGPU(CalculatorContext* cc) {
+         glBindTexture(GL_TEXTURE_2D, src.name());
+         auto output_view = output_tensors->back().GetOpenGlBufferWriteView();
+         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, output_view.name());
+-        glUseProgram(to_buffer_program_);
++        __wrap_glUseProgram(to_buffer_program_);
+         glDispatchCompute(NumGroups(input.width(), kWorkgroupSize),
+                           NumGroups(input.height(), kWorkgroupSize), 1);
+         glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+         glBindTexture(GL_TEXTURE_2D, 0);
+ #else
+         // Texture2D -> Texture2D with OpenGL ES 3.0.
+-        glUseProgram(to_tex2d_program_);
++        __wrap_glUseProgram(to_tex2d_program_);
+         glDisable(GL_DEPTH_TEST);
+         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
+         glViewport(0, 0, src.width(), src.height());
+@@ -483,17 +483,17 @@ absl::Status TensorConverterCalculator::InitGpu(CalculatorContext* cc) {
+         include_alpha ? "output_data.elements[linear_index + 3] = pixel.w;"
+                       : "",
+         /*$7=*/max_num_channels_);
+-    GLuint shader = glCreateShader(GL_COMPUTE_SHADER);
++    GLuint shader = __wrap_glCreateShader(GL_COMPUTE_SHADER);
+     const GLchar* sources[] = {shader_source.c_str()};
+-    glShaderSource(shader, 1, sources, NULL);
++    __wrap_glShaderSource(shader, 1, sources, NULL);
+     glCompileShader(shader);
+     GLint compiled = GL_FALSE;
+     glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
+     RET_CHECK(compiled == GL_TRUE);
+     to_buffer_program_ = glCreateProgram();
+-    glAttachShader(to_buffer_program_, shader);
++    __wrap_glAttachShader(to_buffer_program_, shader);
+     glDeleteShader(shader);
+-    glLinkProgram(to_buffer_program_);
++    __wrap_glLinkProgram(to_buffer_program_);
+ #else
+     // OpenGL ES 3.0 fragment shader Texture2d -> Texture2d conversion.
+     const std::string shader_source = absl::Substitute(
+@@ -553,8 +553,8 @@ absl::Status TensorConverterCalculator::InitGpu(CalculatorContext* cc) {
+         mediapipe::kBasicVertexShader, shader_source.c_str(), NUM_ATTRIBUTES,
+         &attr_name[0], attr_location, &to_tex2d_program_);
+     RET_CHECK(to_tex2d_program_) << "Problem initializing the program.";
+-    glUseProgram(to_tex2d_program_);
+-    glUniform1i(glGetUniformLocation(to_tex2d_program_, "frame"), 1);
++    __wrap_glUseProgram(to_tex2d_program_);
++    glUniform1i(__wrap_glGetUniformLocation(to_tex2d_program_, "frame"), 1);
+     glGenFramebuffers(1, &framebuffer_);
+ 
+ #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_31
+diff --git a/mediapipe/calculators/tensor/tensors_to_detections_calculator.cc b/mediapipe/calculators/tensor/tensors_to_detections_calculator.cc
+index 498036c..bb12587 100644
+--- a/mediapipe/calculators/tensor/tensors_to_detections_calculator.cc
++++ b/mediapipe/calculators/tensor/tensors_to_detections_calculator.cc
+@@ -420,14 +420,14 @@ absl::Status TensorsToDetectionsCalculator::ProcessGPU(
+       glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, input0_view.name());
+       auto raw_anchors_view = raw_anchors_buffer_->GetOpenGlBufferReadView();
+       glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, raw_anchors_view.name());
+-      glUseProgram(decode_program_);
++      __wrap_glUseProgram(decode_program_);
+       glDispatchCompute(num_boxes_, 1, 1);
+ 
+       // Score boxes.
+       glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, scored_boxes_view.name());
+       auto input1_view = input_tensors[1].GetOpenGlBufferReadView();
+       glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, input1_view.name());
+-      glUseProgram(score_program_);
++      __wrap_glUseProgram(score_program_);
+       glDispatchCompute(num_boxes_, 1, 1);
+     }
+     return absl::OkStatus();
+@@ -817,9 +817,9 @@ void main() {
+         options_.keypoint_coord_offset(), options_.num_values_per_keypoint());
+ 
+     // Shader program
+-    GLuint shader = glCreateShader(GL_COMPUTE_SHADER);
++    GLuint shader = __wrap_glCreateShader(GL_COMPUTE_SHADER);
+     const GLchar* sources[] = {decode_src.c_str()};
+-    glShaderSource(shader, 1, sources, NULL);
++    __wrap_glShaderSource(shader, 1, sources, NULL);
+     glCompileShader(shader);
+     GLint compiled = GL_FALSE;
+     glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
+@@ -832,9 +832,9 @@ void main() {
+       return str;
+     }();
+     decode_program_ = glCreateProgram();
+-    glAttachShader(decode_program_, shader);
++    __wrap_glAttachShader(decode_program_, shader);
+     glDeleteShader(shader);
+-    glLinkProgram(decode_program_);
++    __wrap_glLinkProgram(decode_program_);
+ 
+     // Outputs
+     decoded_boxes_buffer_ =
+@@ -844,7 +844,7 @@ void main() {
+         Tensor::ElementType::kFloat32,
+         Tensor::Shape{1, num_boxes_ * kNumCoordsPerBox});
+     // Parameters
+-    glUseProgram(decode_program_);
++    __wrap_glUseProgram(decode_program_);
+     glUniform4f(0, options_.x_scale(), options_.y_scale(), options_.w_scale(),
+                 options_.h_scale());
+ 
+@@ -922,17 +922,17 @@ void main() {
+ 
+     // Shader program
+     {
+-      GLuint shader = glCreateShader(GL_COMPUTE_SHADER);
++      GLuint shader = __wrap_glCreateShader(GL_COMPUTE_SHADER);
+       const GLchar* sources[] = {score_src.c_str()};
+-      glShaderSource(shader, 1, sources, NULL);
++      __wrap_glShaderSource(shader, 1, sources, NULL);
+       glCompileShader(shader);
+       GLint compiled = GL_FALSE;
+       glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
+       RET_CHECK(compiled == GL_TRUE);
+       score_program_ = glCreateProgram();
+-      glAttachShader(score_program_, shader);
++      __wrap_glAttachShader(score_program_, shader);
+       glDeleteShader(shader);
+-      glLinkProgram(score_program_);
++      __wrap_glLinkProgram(score_program_);
+     }
+ 
+     // Outputs
+diff --git a/mediapipe/calculators/tensor/tensors_to_segmentation_calculator.cc b/mediapipe/calculators/tensor/tensors_to_segmentation_calculator.cc
+index ffc96b2..821d38a 100644
+--- a/mediapipe/calculators/tensor/tensors_to_segmentation_calculator.cc
++++ b/mediapipe/calculators/tensor/tensors_to_segmentation_calculator.cc
+@@ -456,8 +456,8 @@ absl::Status TensorsToSegmentationCalculator::ProcessGpu(
+         NumGroups(tensor_width, kWorkgroupSize),
+         NumGroups(tensor_height, kWorkgroupSize), 1};
+ 
+-    glUseProgram(mask_program_31_->id());
+-    glUniform2i(glGetUniformLocation(mask_program_31_->id(), "out_size"),
++    __wrap_glUseProgram(mask_program_31_->id());
++    glUniform2i(__wrap_glGetUniformLocation(mask_program_31_->id(), "out_size"),
+                 tensor_width, tensor_height);
+ 
+     MP_RETURN_IF_ERROR(mask_program_31_->Dispatch(workgroups));
+@@ -513,7 +513,7 @@ absl::Status TensorsToSegmentationCalculator::ProcessGpu(
+     gpu_helper_.BindFramebuffer(small_mask_texture);
+     glActiveTexture(GL_TEXTURE1);
+     glBindTexture(GL_TEXTURE_2D, read_view.name());
+-    glUseProgram(mask_program_20_);
++    __wrap_glUseProgram(mask_program_20_);
+     GlRender();
+     glBindTexture(GL_TEXTURE_2D, 0);
+     glFlush();
+@@ -534,7 +534,7 @@ absl::Status TensorsToSegmentationCalculator::ProcessGpu(
+ #else
+     glBindTexture(GL_TEXTURE_2D, small_mask_texture.name());
+ #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_31
+-    glUseProgram(upsample_program_);
++    __wrap_glUseProgram(upsample_program_);
+     GlRender();
+     glBindTexture(GL_TEXTURE_2D, 0);
+     glFlush();
+@@ -859,8 +859,8 @@ void main() {
+         mediapipe::kBasicVertexShader, shader_src_no_previous.c_str(),
+         NUM_ATTRIBUTES, &attr_name[0], attr_location, &mask_program_20_);
+     RET_CHECK(mask_program_20_) << "Problem initializing the program.";
+-    glUseProgram(mask_program_20_);
+-    glUniform1i(glGetUniformLocation(mask_program_20_, "input_texture"), 1);
++    __wrap_glUseProgram(mask_program_20_);
++    glUniform1i(__wrap_glGetUniformLocation(mask_program_20_, "input_texture"), 1);
+ #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_31
+ 
+     // Simple pass-through program, used for hardware upsampling.
+@@ -868,8 +868,8 @@ void main() {
+         mediapipe::kBasicVertexShader, mediapipe::kBasicTexturedFragmentShader,
+         NUM_ATTRIBUTES, &attr_name[0], attr_location, &upsample_program_);
+     RET_CHECK(upsample_program_) << "Problem initializing the program.";
+-    glUseProgram(upsample_program_);
+-    glUniform1i(glGetUniformLocation(upsample_program_, "video_frame"), 1);
++    __wrap_glUseProgram(upsample_program_);
++    glUniform1i(__wrap_glGetUniformLocation(upsample_program_, "video_frame"), 1);
+ 
+     return absl::OkStatus();
+   }));
+diff --git a/mediapipe/calculators/tflite/tflite_tensors_to_detections_calculator.cc b/mediapipe/calculators/tflite/tflite_tensors_to_detections_calculator.cc
+index 2ed62c4..0342586 100644
+--- a/mediapipe/calculators/tflite/tflite_tensors_to_detections_calculator.cc
++++ b/mediapipe/calculators/tflite/tflite_tensors_to_detections_calculator.cc
+@@ -826,7 +826,7 @@ void main() {
+     MP_RETURN_IF_ERROR(CreateReadWriteShaderStorageBuffer<float>(
+         raw_anchors_length, &gpu_data_->raw_anchors_buffer));
+     // Parameters
+-    glUseProgram(gpu_data_->decode_program.id());
++    __wrap_glUseProgram(gpu_data_->decode_program.id());
+     glUniform4f(0, options_.x_scale(), options_.y_scale(), options_.w_scale(),
+                 options_.h_scale());
+ 
+diff --git a/mediapipe/calculators/tflite/tflite_tensors_to_segmentation_calculator.cc b/mediapipe/calculators/tflite/tflite_tensors_to_segmentation_calculator.cc
+index 22a9a8d..2372976 100644
+--- a/mediapipe/calculators/tflite/tflite_tensors_to_segmentation_calculator.cc
++++ b/mediapipe/calculators/tflite/tflite_tensors_to_segmentation_calculator.cc
+@@ -477,7 +477,7 @@ void TfLiteTensorsToSegmentationCalculator::GlRender() {
+   };
+ 
+   // program
+-  glUseProgram(upsample_program_);
++  __wrap_glUseProgram(upsample_program_);
+ 
+   // vertex storage
+   GLuint vbo[2];
+@@ -637,17 +637,17 @@ void main() {
+         tensor_length, tensor_buffer_.get()));
+ 
+     // Parameters.
+-    glUseProgram(mask_program_with_prev_->id());
+-    glUniform2i(glGetUniformLocation(mask_program_with_prev_->id(), "out_size"),
++    __wrap_glUseProgram(mask_program_with_prev_->id());
++    glUniform2i(__wrap_glGetUniformLocation(mask_program_with_prev_->id(), "out_size"),
+                 tensor_width_, tensor_height_);
+     glUniform1i(
+-        glGetUniformLocation(mask_program_with_prev_->id(), "input_texture"),
++        __wrap_glGetUniformLocation(mask_program_with_prev_->id(), "input_texture"),
+         1);
+-    glUseProgram(mask_program_no_prev_->id());
+-    glUniform2i(glGetUniformLocation(mask_program_no_prev_->id(), "out_size"),
++    __wrap_glUseProgram(mask_program_no_prev_->id());
++    glUniform2i(__wrap_glGetUniformLocation(mask_program_no_prev_->id(), "out_size"),
+                 tensor_width_, tensor_height_);
+     glUniform1i(
+-        glGetUniformLocation(mask_program_no_prev_->id(), "input_texture"), 1);
++        __wrap_glGetUniformLocation(mask_program_no_prev_->id(), "input_texture"), 1);
+ 
+     // Vertex shader attributes.
+     const GLint attr_location[NUM_ATTRIBUTES] = {
+@@ -692,8 +692,8 @@ void main() {
+     RET_CHECK(upsample_program_) << "Problem initializing the program.";
+ 
+     // Parameters
+-    glUseProgram(upsample_program_);
+-    glUniform1i(glGetUniformLocation(upsample_program_, "input_data"), 1);
++    __wrap_glUseProgram(upsample_program_);
++    glUniform1i(__wrap_glGetUniformLocation(upsample_program_, "input_data"), 1);
+ 
+     return absl::OkStatus();
+   }));
+diff --git a/mediapipe/calculators/util/annotation_overlay_calculator.cc b/mediapipe/calculators/util/annotation_overlay_calculator.cc
+index 8af4a5d..ed6ec5c 100644
+--- a/mediapipe/calculators/util/annotation_overlay_calculator.cc
++++ b/mediapipe/calculators/util/annotation_overlay_calculator.cc
+@@ -529,7 +529,7 @@ absl::Status AnnotationOverlayCalculator::GlRender(CalculatorContext* cc) {
+   };
+ 
+   // program
+-  glUseProgram(program_);
++  __wrap_glUseProgram(program_);
+ 
+   // vertex storage
+   GLuint vbo[2];
+@@ -630,10 +630,10 @@ absl::Status AnnotationOverlayCalculator::GlSetup(CalculatorContext* cc) {
+                               NUM_ATTRIBUTES, (const GLchar**)&attr_name[0],
+                               attr_location, &program_);
+   RET_CHECK(program_) << "Problem initializing the program.";
+-  glUseProgram(program_);
+-  glUniform1i(glGetUniformLocation(program_, "input_frame"), 1);
+-  glUniform1i(glGetUniformLocation(program_, "overlay"), 2);
+-  glUniform3f(glGetUniformLocation(program_, "transparent_color"),
++  __wrap_glUseProgram(program_);
++  glUniform1i(__wrap_glGetUniformLocation(program_, "input_frame"), 1);
++  glUniform1i(__wrap_glGetUniformLocation(program_, "overlay"), 2);
++  glUniform3f(__wrap_glGetUniformLocation(program_, "transparent_color"),
+               kAnnotationBackgroundColor / 255.0,
+               kAnnotationBackgroundColor / 255.0,
+               kAnnotationBackgroundColor / 255.0);
+diff --git a/mediapipe/gpu/BUILD b/mediapipe/gpu/BUILD
+index 2d163b4..edea795 100644
+--- a/mediapipe/gpu/BUILD
++++ b/mediapipe/gpu/BUILD
+@@ -97,7 +97,7 @@ cc_library(
+     linkopts = GL_BASE_LINK_OPTS_OSS,
+     textual_hdrs = ["gl_base.h"],
+     visibility = ["//visibility:public"],
+-    deps = [":gl_base_hdr"] + select({
++    deps = [":gl_wrapper"] + select({
+         "//mediapipe:android": [],
+         "//mediapipe:apple": [],
+         "//conditions:default": [
+@@ -107,7 +107,9 @@ cc_library(
+ 
+ cc_library(
+     name = "gl_base_hdr",
+-    hdrs = ["gl_base.h"],
++    hdrs = [
++        "gl_base.h",
++    ],
+     features = ["-layering_check"],
+     # Note: need the frameworks on Apple platforms to get the headers.
+     linkopts = select({
+@@ -130,6 +132,21 @@ cc_library(
+     }),
+ )
+ 
++cc_library(
++    name = "gl_wrapper",
++    srcs = [
++        "gl_wrapper.cc",
++    ],
++    hdrs = [
++        "gl_wrapper.h",
++    ],
++    deps = [
++        ":gl_base_hdr",
++    ],
++    visibility = ["//visibility:public"],
++    alwayslink = True,
++)
++
+ cc_library(
+     name = "gl_thread_collector",
+     hdrs = ["gl_thread_collector.h"],
+@@ -166,6 +183,7 @@ cc_library(
+     visibility = ["//visibility:public"],
+     deps = [
+         ":gl_base",
++        ":gl_wrapper",
+         ":gl_thread_collector",
+         ":gpu_buffer_format",
+         "//mediapipe/framework:executor",
+diff --git a/mediapipe/gpu/gl_calculator_helper.h b/mediapipe/gpu/gl_calculator_helper.h
+index 5ac0ab1..dddc3ba 100644
+--- a/mediapipe/gpu/gl_calculator_helper.h
++++ b/mediapipe/gpu/gl_calculator_helper.h
+@@ -25,6 +25,7 @@
+ #include "mediapipe/framework/packet_type.h"
+ #include "mediapipe/framework/port/status.h"
+ #include "mediapipe/gpu/gl_base.h"
++#include "mediapipe/gpu/gl_wrapper.h"
+ #include "mediapipe/gpu/gl_context.h"
+ #include "mediapipe/gpu/gpu_buffer.h"
+ #include "mediapipe/gpu/graph_support.h"
+diff --git a/mediapipe/gpu/gl_context.h b/mediapipe/gpu/gl_context.h
+index 6cab706..2138e0f 100644
+--- a/mediapipe/gpu/gl_context.h
++++ b/mediapipe/gpu/gl_context.h
+@@ -29,6 +29,7 @@
+ #include "mediapipe/framework/port/threadpool.h"
+ #include "mediapipe/framework/timestamp.h"
+ #include "mediapipe/gpu/gl_base.h"
++#include "mediapipe/gpu/gl_wrapper.h"
+ #include "mediapipe/gpu/gpu_buffer_format.h"
+ 
+ #ifdef __APPLE__
+diff --git a/mediapipe/gpu/gl_context_egl.cc b/mediapipe/gpu/gl_context_egl.cc
+index 9386f2c..972dbae 100644
+--- a/mediapipe/gpu/gl_context_egl.cc
++++ b/mediapipe/gpu/gl_context_egl.cc
+@@ -190,7 +190,7 @@ void GlContext::DestroyContext() {
+       // Note: cannot use ThisContextBinding because it calls shared_from_this,
+       // which is not available during destruction.
+       if (eglMakeCurrent(display_, surface_, surface_, context_)) {
+-        glUseProgram(0);
++        __wrap_glUseProgram(0);
+       } else {
+         LOG(ERROR) << "eglMakeCurrent() returned error " << std::showbase
+                    << std::hex << eglGetError();
+diff --git a/mediapipe/gpu/gl_quad_renderer.cc b/mediapipe/gpu/gl_quad_renderer.cc
+index c25a37e..e9fe4c2 100644
+--- a/mediapipe/gpu/gl_quad_renderer.cc
++++ b/mediapipe/gpu/gl_quad_renderer.cc
+@@ -77,11 +77,11 @@ absl::Status QuadRenderer::GlSetup(
+ 
+   frame_unifs_.resize(custom_frame_uniforms.size());
+   for (int i = 0; i < custom_frame_uniforms.size(); ++i) {
+-    frame_unifs_[i] = glGetUniformLocation(program_, custom_frame_uniforms[i]);
++    frame_unifs_[i] = __wrap_glGetUniformLocation(program_, custom_frame_uniforms[i]);
+     RET_CHECK(frame_unifs_[i] != -1)
+         << "could not find uniform '" << custom_frame_uniforms[i] << "'";
+   }
+-  scale_unif_ = glGetUniformLocation(program_, "scale");
++  scale_unif_ = __wrap_glGetUniformLocation(program_, "scale");
+   RET_CHECK(scale_unif_ != -1) << "could not find uniform 'scale'";
+ 
+   glGenVertexArrays(1, &vao_);
+@@ -114,7 +114,7 @@ absl::Status QuadRenderer::GlRender(float frame_width, float frame_height,
+                                     bool flip_texture) {
+   RET_CHECK(program_) << "Must setup the program before rendering.";
+ 
+-  glUseProgram(program_);
++  __wrap_glUseProgram(program_);
+   for (int i = 0; i < frame_unifs_.size(); ++i) {
+     glUniform1i(frame_unifs_[i], i + 1);
+   }
+diff --git a/mediapipe/gpu/gl_wrapper.cc b/mediapipe/gpu/gl_wrapper.cc
+new file mode 100644
+index 0000000..c9c866c
+--- /dev/null
++++ b/mediapipe/gpu/gl_wrapper.cc
+@@ -0,0 +1,162 @@
++/**
++ * @license
++ * Copyright 2011 The Emscripten Authors
++ * SPDX-License-Identifier: MIT
++ */
++
++#include "mediapipe/gpu/gl_wrapper.h"
++
++#ifdef __EMSCRIPTEN__
++
++EM_JS(GLint, __wrap_glGetUniformLocation, (GLuint program, const GLchar *name), {
++  // Returns the index of '[' character in an uniform that represents an array of uniforms (e.g. colors[10])
++  // Closure does counterproductive inlining: https://github.com/google/closure-compiler/issues/3203, so prevent
++  // inlining manually.
++  /** @noinline */
++  function getLeftBracePos(name) { return name.slice(-1) == ']' && name.lastIndexOf('['); }
++
++#if GL_ASSERTIONS
++  GL.validateGLObjectID(GL.programs, program, 'glGetUniformLocation', 'program');
++#endif
++  name = UTF8ToString(name);
++
++#if GL_ASSERTIONS
++  assert(!name.includes(' '), 'Uniform names passed to glGetUniformLocation() should not contain spaces! (received "' + name + '")');
++#endif
++
++  if (program = GL.programs[program]) {
++    var uniformLocsById = program.uniformLocsById;                  // Maps GLuint -> WebGLUniformLocation
++    var uniformSizeAndIdsByName = program.uniformSizeAndIdsByName;  // Maps name -> [uniform array length, GLuint]
++    var i, j;
++    var arrayIndex = 0;
++    var uniformBaseName = name;
++
++    // Invariant: when populating integer IDs for uniform locations, we must maintain the precondition that
++    // arrays reside in contiguous addresses, i.e. for a 'vec4 colors[10];', colors[4] must be at location colors[0]+4.
++    // However, user might call glGetUniformLocation(program, "colors") for an array, so we cannot discover based on the user
++    // input arguments whether the uniform we are dealing with is an array. The only way to discover which uniforms are arrays
++    // is to enumerate over all the active uniforms in the program.
++    var leftBrace = getLeftBracePos(name);
++
++    // On the first time invocation of glGetUniformLocation on this shader program:
++    // initialize cache data structures and discover which uniforms are arrays.
++    if (!uniformLocsById) {
++      // maps GLint integer locations to WebGLUniformLocations
++      program.uniformLocsById = uniformLocsById = {};
++      // maps integer locations back to uniform name strings, so that we can lazily fetch uniform array locations
++      program.uniformArrayNamesById = {};
++
++      for (i = 0; i < GLctx.getProgramParameter(program, 0x8B86 /*GL_ACTIVE_UNIFORMS*/); ++i) {
++        var u = GLctx.getActiveUniform(program, i);
++        var nm = u.name;
++        var sz = u.size;
++        var lb = getLeftBracePos(nm);
++        var arrayName = lb > 0 ? nm.slice(0, lb) : nm;
++
++        // Assign a new location.
++        var id = program.uniformIdCounter;
++        program.uniformIdCounter += sz;
++
++        // Eagerly get the location of the uniformArray[0] base element.
++        // The remaining indices >0 will be left for lazy evaluation to
++        // improve performance. Those may never be needed to fetch, if the
++        // application fills arrays always in full starting from the first
++        // element of the array.
++        uniformSizeAndIdsByName[arrayName] = [ sz, id ];
++
++        // Store placeholder integers in place that highlight that these
++        // >0 index locations are array indices pending population.
++        for (j = 0; j < sz; ++j) {
++          uniformLocsById[id] = j;
++          program.uniformArrayNamesById[id++] = arrayName;
++        }
++      }
++    }
++
++    // If user passed an array accessor "[index]", parse the array index off the accessor.
++    if (leftBrace > 0) {
++#if GL_ASSERTIONS
++      assert(name.slice(leftBrace + 1).length == 1 || !isNaN(jstoi_q(name.slice(leftBrace + 1))),
++             'Malformed input parameter name "' + name + '" passed to glGetUniformLocation!');
++#endif
++      arrayIndex = jstoi_q(name.slice(leftBrace + 1)) >>>
++                   0;  // "index]", coerce parseInt(']') with >>>0 to treat "foo[]" as "foo[0]" and foo[-1] as unsigned out-of-bounds.
++      uniformBaseName = name.slice(0, leftBrace);
++    }
++
++    // Have we cached the location of this uniform before?
++    var sizeAndId = uniformSizeAndIdsByName[uniformBaseName];  // A pair [array length, GLint of the uniform location]
++
++    // If an uniform with this name exists, and if its index is within the array limits (if it's even an array),
++    // query the WebGLlocation, or return an existing cached location.
++    if (sizeAndId && arrayIndex < sizeAndId[0]) {
++      arrayIndex += sizeAndId[1];  // Add the base location of the uniform to the array index offset.
++      if ((uniformLocsById[arrayIndex] = uniformLocsById[arrayIndex] || GLctx.getUniformLocation(program, name))) {
++        return arrayIndex;
++      }
++    }
++  }
++#if GL_TRACK_ERRORS
++  else {
++    // N.b. we are currently unable to distinguish between GL program IDs that never existed vs GL program IDs that have been deleted,
++    // so report GL_INVALID_VALUE in both cases.
++    GL.recordError(0x501 /* GL_INVALID_VALUE */);
++  }
++#endif
++  return -1;
++});
++
++EM_JS(GLuint, __wrap_glCreateShader, (GLenum type), {
++  var id = GL.getNewId(GL.shaders);
++  var shader = GLctx.createShader(type);
++  GL.shaders[id] = shader;
++
++  return id;
++});
++
++EM_JS(void, __wrap_glShaderSource, (GLuint shader, GLsizei count, const GLchar *const *str, const GLint *length), {
++#if GL_ASSERTIONS
++  GL.validateGLObjectID(GL.shaders, shader, 'glShaderSource', 'shader');
++#endif
++
++  console.log("wrapped glShaderSource");
++  var source = GL.getSource(shader, count, str, length);
++  GLctx.shaderSource(GL.shaders[shader], source);
++});
++
++EM_JS(void, __wrap_glAttachShader, (GLuint program, GLuint shader), {
++#if GL_ASSERTIONS
++  GL.validateGLObjectID(GL.programs, program, 'glAttachShader', 'program');
++  GL.validateGLObjectID(GL.shaders, shader, 'glAttachShader', 'shader');
++#endif
++  GLctx.attachShader(GL.programs[program], GL.shaders[shader]);
++});
++
++EM_JS(void, __wrap_glLinkProgram, (GLuint program), {
++#if GL_ASSERTIONS
++  GL.validateGLObjectID(GL.programs, program, 'glLinkProgram', 'program');
++#endif
++  program = GL.programs[program];
++  GLctx.linkProgram(program);
++#if GL_DEBUG
++  var log = (GLctx.getProgramInfoLog(program) || '').trim();
++  if (log) console.error('glLinkProgram: ' + log);
++  if (program.uniformLocsById) console.log('glLinkProgram invalidated ' + Object.keys(program.uniformLocsById).length + ' uniform location mappings');
++#endif
++  // Invalidate earlier computed uniform->ID mappings, those have now become stale
++  program.uniformLocsById = 0;  // Mark as null-like so that glGetUniformLocation() knows to populate this again.
++  program.uniformSizeAndIdsByName = {};
++});
++
++EM_JS(void, __wrap_glUseProgram, (GLuint program), {
++#if GL_ASSERTIONS
++  GL.validateGLObjectID(GL.programs, program, 'glUseProgram', 'program');
++#endif
++  program = GL.programs[program];
++  GLctx.useProgram(program);
++  // Record the currently active program so that we can access the uniform
++  // mapping table of that program.
++  GLctx.currentProgram = program;
++});
++
++#endif  // __EMSCRIPTEN__
+diff --git a/mediapipe/gpu/gl_wrapper.h b/mediapipe/gpu/gl_wrapper.h
+new file mode 100644
+index 0000000..035d288
+--- /dev/null
++++ b/mediapipe/gpu/gl_wrapper.h
+@@ -0,0 +1,65 @@
++// Copyright (c) 2021 homuler
++//
++// Use of this source code is governed by an MIT-style
++// license that can be found in the LICENSE file or at
++// https://opensource.org/licenses/MIT.
++
++#ifndef MEDIAPIPE_GPU_GL_WRAPPER_H_
++#define MEDIAPIPE_GPU_GL_WRAPPER_H_
++
++#include "mediapipe/gpu/gl_base.h"
++
++#ifdef __EMSCRIPTEN__
++#include <emscripten.h>
++
++// Wrap functions which are affected by `GL_EXPLICIT_UNIFORM_LOCATION` and `GL_EXPLICIT_UNIFORM_BINDING`,
++// that Unity sets to 1 at compile time.
++
++#ifdef __cplusplus
++extern "C" {
++#endif  // __cplusplus
++
++GLint __wrap_glGetUniformLocation(GLuint program, const GLchar *name);
++GLuint __wrap_glCreateShader(GLenum type);
++void __wrap_glShaderSource(GLuint shader, GLsizei count,
++                                  const GLchar *const *str,
++                                  const GLint *length);
++void __wrap_glAttachShader(GLuint program, GLuint shader);
++void __wrap_glLinkProgram(GLuint program);
++void __wrap_glUseProgram(GLuint program);
++
++#ifdef __cplusplus
++}
++#endif  // __cplusplus
++
++#else
++
++inline GLint __wrap_glGetUniformLocation(GLuint program, const GLchar *name) {
++  return glGetUniformLocation(program, name);
++}
++
++inline GLuint __wrap_glCreateShader(GLenum type) {
++  return glCreateShader(type);
++}
++
++inline void __wrap_glShaderSource(GLuint shader, GLsizei count,
++                                  const GLchar *const *str,
++                                  const GLint *length) {
++  return glShaderSource(shader, count, str, length);
++}
++
++inline void __wrap_glAttachShader(GLuint program, GLuint shader) {
++  return glAttachShader(program, shader);
++}
++
++inline void __wrap_glLinkProgram(GLuint program) {
++  return glLinkProgram(program);
++}
++
++inline void __wrap_glUseProgram(GLuint program) {
++  return glUseProgram(program);
++}
++
++#endif  // __EMSCRIPTEN__
++
++#endif  // MEDIAPIPE_GPU_GL_WRAPPER_H_
+diff --git a/mediapipe/gpu/shader_util.cc b/mediapipe/gpu/shader_util.cc
+index dab781f..95f9247 100644
+--- a/mediapipe/gpu/shader_util.cc
++++ b/mediapipe/gpu/shader_util.cc
+@@ -51,11 +51,11 @@ namespace mediapipe {
+ constexpr int kMaxShaderInfoLength = 1024;
+ 
+ GLint GlhCompileShader(GLenum target, const GLchar* source, GLuint* shader) {
+-  *shader = glCreateShader(target);
++  *shader = __wrap_glCreateShader(target);
+   if (*shader == 0) {
+     return GL_FALSE;
+   }
+-  glShaderSource(*shader, 1, &source, NULL);
++  __wrap_glShaderSource(*shader, 1, &source, NULL);
+   glCompileShader(*shader);
+ 
+   GL_DEBUG_LOG(Shader, *shader, "compile");
+@@ -79,7 +79,7 @@ GLint GlhCompileShader(GLenum target, const GLchar* source, GLuint* shader) {
+ }
+ 
+ GLint GlhLinkProgram(GLuint program) {
+-  glLinkProgram(program);
++  __wrap_glLinkProgram(program);
+ 
+ #if UNSAFE_EMSCRIPTEN_SKIP_GL_ERROR_HANDLING
+   return GL_TRUE;
+@@ -124,8 +124,8 @@ GLint GlhCreateProgram(const GLchar* vert_src, const GLchar* frag_src,
+   ok = ok && GlhCompileShader(GL_FRAGMENT_SHADER, frag_src, &frag_shader);
+ 
+   if (ok) {
+-    glAttachShader(*program, vert_shader);
+-    glAttachShader(*program, frag_shader);
++    __wrap_glAttachShader(*program, vert_shader);
++    __wrap_glAttachShader(*program, frag_shader);
+ 
+     // Attribute location binding must be set before linking.
+     for (int i = 0; i < attr_count; i++) {
+@@ -148,13 +148,14 @@ GLint GlhCreateProgram(const GLchar* vert_src, const GLchar* frag_src,
+ 
+ bool CompileShader(GLenum shader_type, const std::string& shader_source,
+                    GLuint* shader) {
+-  *shader = glCreateShader(shader_type);
++  *shader = __wrap_glCreateShader(shader_type);
+   if (*shader == 0) {
+     VLOG(2) << "Unable to create shader of type: " << shader_type;
+     return false;
+   }
+   const char* shader_source_cstr = shader_source.c_str();
+-  glShaderSource(*shader, 1, &shader_source_cstr, NULL);
++
++  __wrap_glShaderSource(*shader, 1, &shader_source_cstr, NULL);
+   glCompileShader(*shader);
+ 
+   GLint compiled;
+@@ -178,13 +179,13 @@ bool CreateShaderProgram(
+     VLOG(2) << "Unable to create shader program";
+     return false;
+   }
+-  glAttachShader(*shader_program, vertex_shader);
+-  glAttachShader(*shader_program, fragment_shader);
++  __wrap_glAttachShader(*shader_program, vertex_shader);
++  __wrap_glAttachShader(*shader_program, fragment_shader);
+ 
+   for (const auto& it : attributes) {
+     glBindAttribLocation(*shader_program, it.first, it.second.c_str());
+   }
+-  glLinkProgram(*shader_program);
++  __wrap_glLinkProgram(*shader_program);
+ 
+   GLint is_linked = 0;
+   glGetProgramiv(*shader_program, GL_LINK_STATUS, &is_linked);
+diff --git a/mediapipe/gpu/shader_util.h b/mediapipe/gpu/shader_util.h
+index 804e543..839b12b 100644
+--- a/mediapipe/gpu/shader_util.h
++++ b/mediapipe/gpu/shader_util.h
+@@ -19,6 +19,7 @@
+ #include <unordered_map>
+ 
+ #include "mediapipe/gpu/gl_base.h"
++#include "mediapipe/gpu/gl_wrapper.h"
+ 
+ namespace mediapipe {
+ 
+diff --git a/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc b/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
+index 9bc43ba..4630fc6 100644
+--- a/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
++++ b/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
+@@ -874,17 +874,17 @@ absl::Status GlAnimationOverlayCalculator::GlSetup() {
+                            (const GLchar **)&attr_name[0], attr_location,
+                            &program_));
+   RET_CHECK(program_) << "Problem initializing the program.";
+-  texture_uniform_ = GLCHECK(glGetUniformLocation(program_, "texture"));
++  texture_uniform_ = GLCHECK(__wrap_glGetUniformLocation(program_, "texture"));
+   perspective_matrix_uniform_ =
+-      GLCHECK(glGetUniformLocation(program_, "perspectiveMatrix"));
++      GLCHECK(__wrap_glGetUniformLocation(program_, "perspectiveMatrix"));
+   model_matrix_uniform_ =
+-      GLCHECK(glGetUniformLocation(program_, "modelMatrix"));
++      GLCHECK(__wrap_glGetUniformLocation(program_, "modelMatrix"));
+   return absl::OkStatus();
+ }
+ 
+ absl::Status GlAnimationOverlayCalculator::GlBind(
+     const TriangleMesh &triangle_mesh, const GlTexture &texture) {
+-  GLCHECK(glUseProgram(program_));
++  GLCHECK(__wrap_glUseProgram(program_));
+ 
+   // Disable backface culling to allow occlusion effects.
+   // Some options for solid arbitrary 3D geometry rendering
+diff --git a/mediapipe/modules/face_geometry/libs/effect_renderer.cc b/mediapipe/modules/face_geometry/libs/effect_renderer.cc
+index 27a54e0..1ae0c7b 100644
+--- a/mediapipe/modules/face_geometry/libs/effect_renderer.cc
++++ b/mediapipe/modules/face_geometry/libs/effect_renderer.cc
+@@ -330,9 +330,9 @@ class Renderer {
+                      &program_handle);
+     RET_CHECK(program_handle) << "Problem initializing the texture program!";
+     GLint projection_mat_uniform =
+-        glGetUniformLocation(program_handle, "projection_mat");
+-    GLint model_mat_uniform = glGetUniformLocation(program_handle, "model_mat");
+-    GLint texture_uniform = glGetUniformLocation(program_handle, "texture");
++        __wrap_glGetUniformLocation(program_handle, "projection_mat");
++    GLint model_mat_uniform = __wrap_glGetUniformLocation(program_handle, "model_mat");
++    GLint texture_uniform = __wrap_glGetUniformLocation(program_handle, "texture");
+ 
+     RET_CHECK_NE(projection_mat_uniform, -1)
+         << "Failed to find `projection_mat` uniform!";
+@@ -351,7 +351,7 @@ class Renderer {
+                       const std::array<float, 16>& projection_mat,
+                       const std::array<float, 16>& model_mat,
+                       RenderMode render_mode) const {
+-    glUseProgram(program_handle_);
++    __wrap_glUseProgram(program_handle_);
+     // Set up the GL state.
+     glEnable(GL_BLEND);
+     glFrontFace(GL_CCW);
+@@ -409,7 +409,7 @@ class Renderer {
+     glDisable(GL_DEPTH_TEST);
+     glDisable(GL_BLEND);
+ 
+-    glUseProgram(0);
++    __wrap_glUseProgram(0);
+     glFlush();
+ 
+     return absl::OkStatus();

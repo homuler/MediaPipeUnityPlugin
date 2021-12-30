@@ -17,4 +17,4 @@ MpReturnCode std_string__PKc_i(const char* src, int size, std::string** str_out)
   CATCH_EXCEPTION
 }
 
-MP_CAPI(void) std_string__swap__Rstr(std::string* src, std::string* dst) { src->swap(*dst); }
+void std_string__swap__Rstr(std::string* src, std::string* dst) { src->swap(*dst); }

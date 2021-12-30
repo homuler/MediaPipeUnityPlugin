@@ -1,0 +1,33 @@
+diff --git a/emscripten/tools/building.py b/emscripten/tools/building.py
+index 2720abdb1..56b8e2a9a 100644
+--- a/emscripten/tools/building.py
++++ b/emscripten/tools/building.py
+@@ -80,10 +80,10 @@ def warn_if_duplicate_entries(archive_contents, archive_filename):
+ def extract_archive_contents(archive_files):
+   archive_results = shared.run_multiple_processes([[LLVM_AR, 't', a] for a in archive_files], pipe_stdout=True)
+ 
+-  unpack_temp_dir = tempfile.mkdtemp('_archive_contents', 'emscripten_temp_')
++  unpack_temp_dir_root = tempfile.mkdtemp('_archive_contents', 'emscripten_temp_')
+ 
+   def clean_at_exit():
+-    try_delete(unpack_temp_dir)
++    try_delete(unpack_temp_dir_root)
+   shared.atexit.register(clean_at_exit)
+ 
+   archive_contents = []
+@@ -102,12 +102,14 @@ def extract_archive_contents(archive_files):
+ 
+     warn_if_duplicate_entries(contents, a)
+ 
++    unpack_temp_dir = os.path.join(unpack_temp_dir_root, str(i))
++    os.mkdir(unpack_temp_dir)
+     archive_contents += [{
+       'archive_name': archive_files[i],
+       'o_files': [os.path.join(unpack_temp_dir, c) for c in contents]
+     }]
+ 
+-  shared.run_multiple_processes([[LLVM_AR, 'xo', a] for a in archive_files], cwd=unpack_temp_dir)
++    shared.run_process([LLVM_AR, 'xo', archive_files[i]], cwd=unpack_temp_dir)
+ 
+   # check that all files were created
+   for a in archive_contents:

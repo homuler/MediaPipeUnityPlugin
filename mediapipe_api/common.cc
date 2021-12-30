@@ -6,7 +6,7 @@
 
 #include "mediapipe_api/common.h"
 
-#ifndef _WIN32
+#ifndef MEDIAPIPE_DISABLE_SIGABRT_HANDLER
 thread_local struct sigaction mp_api::orig_act;
 thread_local sigjmp_buf mp_api::abrt_jbuf;
 

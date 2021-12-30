@@ -1,0 +1,36 @@
+diff --git a/tensorflow/workspace2.bzl b/tensorflow/workspace2.bzl
+index f7cd51cad30..00822c5cdde 100644
+--- a/tensorflow/workspace2.bzl
++++ b/tensorflow/workspace2.bzl
+@@ -133,6 +133,7 @@ def _tf_repositories():
+     # LINT.IfChange
+     tf_http_archive(
+         name = "XNNPACK",
++        patch_file = "//third_party:xnnpack_emscripten_fix.patch",
+         sha256 = "e3dcbb9278a44532ada93dad3b5fcd90d74bf18353d04dfa8868df8029bff693",
+         strip_prefix = "XNNPACK-0d6a1194ff36f59c79089336d7a3b446c3c6a39d",
+         urls = tf_mirror_urls("https://github.com/google/XNNPACK/archive/0d6a1194ff36f59c79089336d7a3b446c3c6a39d.zip"),
+diff --git a/third_party/xnnpack_emscripten_fix.patch b/third_party/xnnpack_emscripten_fix.patch
+new file mode 100644
+index 00000000000..76cb98ff201
+--- /dev/null
++++ b/third_party/xnnpack_emscripten_fix.patch
+@@ -0,0 +1,18 @@
++diff --git a/BUILD.bazel b/BUILD.bazel
++index 969ea354..4b297b59 100644
++--- a/BUILD.bazel
+++++ b/BUILD.bazel
++@@ -7772,11 +7772,11 @@ xnnpack_aggregate_library(
++     ],
++     wasm_deps = [
++         ":wasm_prod_microkernels",
++-        ":asm_microkernels",
+++        # ":asm_microkernels",
++     ],
++     wasmsimd_deps = [
++         ":wasm_prod_microkernels",
++-        ":asm_microkernels",
+++        # ":asm_microkernels",
++     ],
++     x86_deps = [
++         ":sse2_prod_microkernels",

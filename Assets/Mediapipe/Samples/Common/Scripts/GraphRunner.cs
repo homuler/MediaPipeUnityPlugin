@@ -320,10 +320,12 @@ namespace Mediapipe.Unity
     {
       if (GpuManager.IsInitialized)
       {
+#if UNITY_ANDROID
         if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES3 && _openGlEsConfig != null)
         {
           return ConfigType.OpenGLES;
         }
+#endif
         if (_gpuConfig != null)
         {
           return ConfigType.GPU;

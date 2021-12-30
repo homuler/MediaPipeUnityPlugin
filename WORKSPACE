@@ -1,15 +1,5 @@
 workspace(name = "mediapipe_api")
 
-# This file is almost the same as mediapipe's WORKSPACE file, but there exist some differences between the two.
-#
-# - com_google_mediapipe dependency
-# - @//third_party -> @com_google_mediapipe//third_party
-#    - exception: opencv_linux, opencv_windows, ffmpeg_linux, ffmpeg_macos
-# - android_opencv sha256 is added
-# - unity dependency
-# - rules_foreign_cc's version
-# - rules_pkg
-
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
@@ -40,6 +30,27 @@ load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
 
 rules_pkg_dependencies()
 
+http_archive(
+    name = "emsdk",
+    sha256 = "8978a12172028542c1c4007745e5421cb018842ebf77dfc0f8555d1ae9b09234",
+    strip_prefix = "emsdk-8e7b714a0b2137caca4a212c003f4eb9b9ba9667/bazel",
+    url = "https://github.com/emscripten-core/emsdk/archive/8e7b714a0b2137caca4a212c003f4eb9b9ba9667.tar.gz",
+    patch_args = [
+        "-p1",
+    ],
+    patches = [
+        "@//third_party:emsdk_bitcode_support.diff",
+    ],
+)
+
+load("@emsdk//:deps.bzl", emsdk_deps = "deps")
+
+emsdk_deps()
+
+load("@emsdk//:emscripten_deps.bzl", emsdk_emscripten_deps = "emscripten_deps")
+
+emsdk_emscripten_deps(emscripten_version = "2.0.22")
+
 new_local_repository(
     name = "unity",
     build_file = "@//third_party:unity.BUILD",
@@ -58,6 +69,7 @@ http_archive(
         "@//third_party:mediapipe_visibility.diff",
         "@//third_party:mediapipe_model_path.diff",
         "@//third_party:mediapipe_extension.diff",
+        "@//third_party:mediapipe_emscripten_patch.diff",
     ],
     sha256 = "54ce6da9f167d34fe53f928c804b3bc1fd1dd8fe2b32ca4bf0b63325d34680ac",
     strip_prefix = "mediapipe-0.8.9",
@@ -270,6 +282,12 @@ new_local_repository(
     path = "C:\\opencv\\build",
 )
 
+new_local_repository(
+    name = "wasm_opencv",
+    build_file = "@//third_party:opencv_wasm.BUILD",
+    path = "/usr",
+)
+
 http_archive(
     name = "android_opencv",
     build_file = "@com_google_mediapipe//third_party:opencv_android.BUILD",
@@ -458,6 +476,7 @@ http_archive(
         "@com_google_mediapipe//third_party:org_tensorflow_objc_cxx17.diff",
         # Diff is generated with a script, don't update it manually.
         "@com_google_mediapipe//third_party:org_tensorflow_custom_ops.diff",
+        "@//third_party:tensorflow_xnnpack_emscripten_fixes.diff",
     ],
     sha256 = _TENSORFLOW_SHA256,
     strip_prefix = "tensorflow-%s" % _TENSORFLOW_GIT_COMMIT,

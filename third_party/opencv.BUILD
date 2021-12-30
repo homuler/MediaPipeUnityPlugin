@@ -58,6 +58,7 @@ alias(
         "@com_google_mediapipe//mediapipe:macos_i386": "@macos_opencv//:opencv",
         "@com_google_mediapipe//mediapipe:macos_x86_64": "@macos_opencv//:opencv",
         "@com_google_mediapipe//mediapipe:windows": "@windows_opencv//:opencv",
+        "@com_google_mediapipe//mediapipe:emscripten": "@wasm_opencv//:opencv",
         "//conditions:default": "@linux_opencv//:opencv",
     }),
 )

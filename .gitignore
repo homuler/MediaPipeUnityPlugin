@@ -16,6 +16,7 @@
 *.sln
 
 *.aar
+*.bc
 *.dll
 *.dylib
 *.so

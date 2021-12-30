@@ -69,11 +69,26 @@ cc_binary(
     deps = [":mediapipe_c"],
 )
 
+cc_binary(
+    name = "libmediapipe_c.bc",
+    linkopts = [
+        "-flto",
+        "--oformat=object",
+        "-s SIDE_MODULE=1",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":mediapipe_c",
+        "//mediapipe_api/external:wasm_patch",
+    ],
+)
+
 alias(
     name = "libmediapipe_c",
     actual = select({
         "@com_google_mediapipe//mediapipe:macos": ":libmediapipe_c.dylib",
         "@com_google_mediapipe//mediapipe:windows": ":libmediapipe_c.dll",
+        "@com_google_mediapipe//mediapipe:emscripten": ":libmediapipe_c.bc",
         "//conditions:default": ":libmediapipe_c.so",
     }),
 )
