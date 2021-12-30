@@ -9,10 +9,18 @@
 
 #include "mediapipe_api/common.h"
 
+#ifdef __EMSCRIPTEN__
+
+#ifdef __cplusplus
 extern "C" {
+#endif  // __cplusplus
 
 MP_CAPI(FILE*) popen(const char* command, const char* type);
 
+#ifdef __cplusplus
 }  // extern "C"
+#endif  // __cplusplus
+
+#endif  // __EMSCRIPTEN__
 
 #endif  // MEDIAPIPE_API_EXTERNAL_WASM_PATCH_H_
