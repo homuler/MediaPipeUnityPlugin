@@ -1,11 +1,11 @@
-name: Bug Report Form
-description: Report a bug/issue that you found.
-title: '[BUG] bug name here'
+name: Build Installation Issue Form
+description: Report issues that you found while building/installing the project.
+title: '[BUILD ISSUE] issue name here'
 body:
   - type: input
     attributes:
       label: OS Platform and Distribution
-      description: List your OS and distribution here (e.g., Linux Ubuntu 20.04, Windows 10 etc.)
+      description: List your OS and distribution here (e.g., Linux Ubuntu 20.04, Windows 10, etc.)
     validations:
       required: true
 
@@ -49,8 +49,8 @@ body:
 
   - type: textarea
     attributes:
-      label: Bug description
-      description: Short description of the bug that you found. 
+      label: Problem description
+      description: Short description of the problem that you found. 
     validations:
       required: true
 
@@ -82,7 +82,7 @@ body:
         <details><summary>Error Log</summary><p>
 
         ```
-          // put code here in between the backticks or attach log file 
+          // put code here in between the backticks or attach a log file
         ```
         </p></details>
 
@@ -92,12 +92,7 @@ body:
 
   - type: textarea
     attributes:
-      label: Possible fixes or solutions
-      description: List any possible fixes/suggestions that you have in mind that could solve this issue.
-
-  - type: textarea
-    attributes:
       label: Additional information
-      description: Is there anything else we should know about this bug?
+      description: Is there anything else we should know about this problem?
     validations:
       required: false
