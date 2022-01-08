@@ -1,0 +1,103 @@
+name: Bug Report
+description: Report a bug/issue that you found.
+title: '[BUG] <bug name>'
+body:
+  - type: input
+    attributes:
+      label: OS Platform and Distribution
+      description: List your OS and distribution here (e.g., Linux Ubuntu 20.04)
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Target Platform and Distribution
+      description: List your target OS and distribution here. This is where your code will run in production. (e.g., Linux Ubuntu 20.04)
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Mobile Device (if target is Android/iOS/other mobile OS)
+      description: List your mobile device make and model (Samsung, Apple etc);
+
+  - type: input
+    attributes:
+      label: Android NDK version (if target is Android)
+
+  - type: input
+    attributes:
+      label: XCode version (if target is iOS)
+
+  - type: input
+    attributes:
+      label: MediaPipeUnityPlugin version or commit id
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Bazel version or commit id
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: GCC/G++ version or commit id
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Bug description
+      description: Short description of the bug that you found. 
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: What is your expected behaviour?
+      description: Describe what you expected to happen and list out what you were doing.
+      value: |
+        **Expectation**: ....
+
+        **Steps**:
+
+        1. 
+        2. 
+        3. 
+
+        Add more as needed
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Full Error Log
+      description: |
+        If you have a command line error, copy and paste it here.
+        If you have a log file, please attach Editor.log (if it occurs on Unity Editor) or Player.log (if it occurs at runtime).
+        See https://docs.unity3d.com/Manual/LogFiles.html
+      value: |
+        <details><summary>Error Log</summary><p>
+
+        ```
+          // put code here in between the backticks or attach log file below
+        ```
+        </p></details>
+
+        **Put images here if applicable**
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Possible fixes or solutions
+      description: List any possible fixes/suggestions that you have in mind that could solve this issue.
+
+  - type: textarea
+    attributes:
+      label: Additional information
+      description: Is there anything else we should know about this bug?
+    validations:
+      required: false
