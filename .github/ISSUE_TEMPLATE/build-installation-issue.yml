@@ -2,6 +2,16 @@ name: Build Installation Issue Form
 description: Report issues that you found while building/installing the project.
 title: '[BUILD ISSUE] issue name here'
 body:
+  - type: markdown
+    attributes:
+      value: "## Before you continue, please search our open/closed issues to see if a similar issue has been addressed."
+
+  - type: checkboxes
+    attributes:
+      label: I have searched through the issues and didn't find my problem.
+      options:
+        - label: Confirm
+
   - type: input
     attributes:
       label: OS Platform and Distribution
