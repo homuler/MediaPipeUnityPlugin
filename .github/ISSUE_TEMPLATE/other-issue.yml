@@ -2,10 +2,6 @@ name: Other Issue Form
 description: Use this for any other issues. Do not create blank issues
 title: "[OTHER] description"
 body:
-  - type: markdown
-    attributes:
-      value: "# Other issue"
-
   - type: textarea
     attributes:
       label: What would you like to share?
@@ -14,9 +10,6 @@ body:
       required: true
 
   - type: textarea
-    id: extrainfo
     attributes:
       label: Additional information
       description: Is there anything else we should know about this issue?
-    validations:
-      required: false

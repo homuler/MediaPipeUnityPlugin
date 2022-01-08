@@ -1,4 +1,4 @@
-name: Feature Request
+name: Feature Request Form
 description: Requesting a new feature or changes to an existing feature
 title: '[FEATURE REQUEST] feature name'
 body:
@@ -8,13 +8,11 @@ body:
       description: Tell us about the problem and its negative impacts.
     validations:
       required: true
-      
+
   - type: textarea
     attributes:
       label: Possible Solution
       description: If you have an idea, please tell us what might solve the above problem.
-    validations:
-      required: true
 
   - type: textarea
     attributes:

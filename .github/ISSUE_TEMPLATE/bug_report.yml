@@ -99,5 +99,3 @@ body:
     attributes:
       label: Additional information
       description: Is there anything else we should know about this bug?
-    validations:
-      required: false
