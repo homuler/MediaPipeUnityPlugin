@@ -11,6 +11,7 @@ body:
       label: I have searched through the issues and didn't find my problem.
       options:
         - label: Confirm
+          required: true
 
   - type: textarea
     attributes:
