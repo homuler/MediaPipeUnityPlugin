@@ -101,6 +101,7 @@ namespace Tests
       }
     }
 
+    [Test]
     public void AssertOk_ShouldThrow_When_StatusIsNotOk()
     {
       using (var status = Status.FailedPrecondition())
