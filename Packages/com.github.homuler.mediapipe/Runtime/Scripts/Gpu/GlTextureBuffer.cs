@@ -73,7 +73,7 @@ namespace Mediapipe
 
     public int Width()
     {
-      return SafeNativeMethods.mp_GlTexture__width(mpPtr);
+      return SafeNativeMethods.mp_GlTextureBuffer__width(mpPtr);
     }
 
     public int Height()
