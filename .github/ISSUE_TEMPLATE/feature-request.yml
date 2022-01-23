@@ -1,31 +1,32 @@
-name: Feature Request Form
+name: Feature Request
 description: Requesting a new feature or changes to an existing feature
-title: '[FEATURE REQUEST] feature name'
+labels: ["type:feature"]
 body:
   - type: markdown
     attributes:
-      value: "## Before you continue, please search our open/closed issues to see if a similar issue has been addressed."
+      value: |
+        This is a bug report form.\
+        If you are having trouble building libraries or apps, please [choose build/install form](https://github.com/homuler/MediaPipeUnityPlugin/issues/new/choose) instead.
 
-  - type: checkboxes
-    attributes:
-      label: I have searched through the issues and didn't find my problem.
-      options:
-        - label: Confirm
-          required: true
+        * Be sure to check that the feature is not implemented in the latest commit.
+        * Check to make sure someone hasn't already opened a similar [issue](https://github.com/homuler/MediaPipeUnityPlugin/issues).
 
   - type: textarea
     attributes:
-      label: Problem
-      description: Tell us about the problem and its negative impacts.
+      label: Feature description
+      description: |
+        Describe the feature you want.
     validations:
       required: true
 
   - type: textarea
     attributes:
-      label: Possible Solution
-      description: If you have an idea, please tell us what might solve the above problem.
+      label: Current behaviour/state
+      description: |
+        Tell us what you find insufficient or difficult in the current plugin for this feature.
 
   - type: textarea
     attributes:
-      label: Additional information
-      description: Is there anything else we should know about this feature request?
+      label: Additional context
+      description: |
+        If there is something that does not fit in the above form, describe it here.
