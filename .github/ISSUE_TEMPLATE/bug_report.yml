@@ -1,0 +1,157 @@
+name: Bug Report
+description: File a bug report.
+labels: ["type:bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is a bug report form.\
+        If you are having trouble building libraries or apps, please [choose build/install form](https://github.com/homuler/MediaPipeUnityPlugin/issues/new/choose) instead.
+
+        * Be sure to check that the bug is still present in the latest commit.
+        * Check to make sure someone hasn't already opened a similar [issue](https://github.com/homuler/MediaPipeUnityPlugin/issues).
+        * If the issue is caused by MediaPipe, you may want to open an issue in google/mediapipe repo instead.
+
+  - type: input
+    id: plugin_version
+    attributes:
+      label: Plugin Version or Commit ID
+      placeholder: v0.8.2
+    validations:
+      required: true
+
+  - type: input
+    id: unity_version
+    attributes:
+      label: Unity Version
+      placeholder: 2020.3.23f1
+    validations:
+      required: true
+
+  - type: input
+    id: host_os
+    attributes:
+      label: Your Host OS
+      description: OS where UnityEditor runs
+      placeholder: Ubuntu 20.04, Windows 10 Home, macOS Monterey 12.2
+    validations:
+      required: true
+
+  - type: dropdown
+    id: target_platform
+    attributes:
+      label: Target Platform
+      multiple: true
+      options:
+        - UnityEditor
+        - Windows Standalone
+        - Mac Standalone
+        - Linux Standalone
+        - Android
+        - iOS
+        - WebGL
+    validations:
+      required: true
+
+  - type: input
+    id: target_device
+    attributes:
+      label: Target Device
+      description: Device name where the bug occurs
+      placeholder: MacBook Pro 14-inch (2021), iPhone 13, Google Pixel 6 Pro
+
+  - type: textarea
+    id: windows_build_env
+    attributes:
+      label: "[Windows Only] Visual Studio C++ and Windows SDK Version"
+      description: |
+        Required if your host OS is Windows and the Target Platform is UnityEditor or PC Standalone.
+      placeholder: |
+        Visual Studio C++: 14.16.27023
+        Windows SDK: 10.0.10240.0
+
+  - type: textarea
+    id: linux_build_env
+    attributes:
+      label: "[Linux Only] GCC/G++ and GLIBC Version"
+      description: |
+        Required if your host OS is Linux and the Target Platform is UnityEditor or Linux Standalone.\
+        You can get GLIBC version by running `ldd --version`.
+      placeholder: |
+        GCC: 11.1.0
+        G++: 11.1.0
+        GLIBC: GNU libc 2.33
+
+  - type: textarea
+    id: android_build_env
+    attributes:
+      label: "[Android Only] Android Build Tools and NDK Version"
+      description: Required if the Target Platform is Android
+      placeholder: |
+        Build Tools: 30.0.2
+        NDK: 21.4.7075529
+
+  - type: input
+    id: ios_build_env
+    attributes:
+      label: "[iOS Only] XCode Version"
+      description: Required if the Target Platform is iOS
+
+  - type: textarea
+    id: build_command
+    attributes:
+      label: Build Command
+      description: The exact command you executed to build native libraries.
+      placeholder: python build.py build --desktop cpu -vv
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: Describe the bug so that we can understand the current behavior and the expected behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce the Bug
+      description: |
+        Describe the steps to reproduce the bug.\
+        If the bug is not reproducible in the sample app, provide minimum code to reproduce it.
+
+        In particular, try to write in such a way that anyone reading this will be able to reproduce exactly the steps you have taken.
+
+        Bad: I copied built libraries to my project directory but it doesn't work!
+        Good:
+          1. Run `python build.py build --desktop cpu -vv`
+          2. Run `cp xxx yyy`
+          3. Start Play Mode and the below error occurs.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Log
+      description: |
+        Attach Editor.log (if it occurs on Unity Editor) or Player.log (if it occurs at runtime).\
+        For Android, filter the log like this: `adb -s [device_id] logcat Unity:V native:V tflite:V CRASH:E AndroidRuntime:E "*:S"`
+
+        See https://docs.unity3d.com/Manual/LogFiles.html for more details.  
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Screenshot/Video
+      description: |
+        Visual problems are difficult to convey in words, so attach/embed images or videos if possible.
+
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: |
+        Something that does not fit in the above form.\
+        For example, if you have done your own research on this bug, describe it here.

@@ -1,0 +1,31 @@
+name: Feature Request
+description: Requesting a new feature or changes to an existing feature
+labels: ["type:feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is a feature request form.
+
+        * Be sure to check that the feature is not implemented in the latest commit.
+        * Check to make sure someone hasn't already opened a similar [issue](https://github.com/homuler/MediaPipeUnityPlugin/issues).
+
+  - type: textarea
+    attributes:
+      label: Feature Description
+      description: |
+        Describe the feature you want.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Current Behaviour/State
+      description: |
+        Tell us what you find insufficient or difficult in the current plugin for this feature.
+
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: |
+        If there is something that does not fit in the above form, describe it here.
