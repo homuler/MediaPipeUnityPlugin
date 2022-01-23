@@ -1,4 +1,4 @@
-name: Build/Install Issue Form
+name: Build/Install Issue
 description: Report issues that you found while building/installing the plugin.
 labels: ["type:build/install"]
 body:
@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         This is a build/install form.\
-        If you are having trouble running apps (includeing the sample app), please use bug form instead.
+        If you are having trouble running apps (includeing the sample app), please [choose bug report form](https://github.com/homuler/MediaPipeUnityPlugin/issues/new/choose) instead.
 
         * Make sure you're using the latest version.
         * Check [the troubleshooting page](https://github.com/homuler/MediaPipeUnityPlugin/wiki/Installation-Guide#troubleshooting) to see if the solution is listed there.
