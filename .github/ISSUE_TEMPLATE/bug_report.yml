@@ -17,7 +17,7 @@ body:
     id: version
     attributes:
       label: Plugin version or commit id
-      placeholder: v0.8.2
+      placeholder: v0.8.2, 47ee481b38af8be602b3e4103f08257bd16ba947
     validations:
       required: true
 
@@ -26,7 +26,7 @@ body:
     attributes:
       label: Your Host OS
       description: OS where UnityEditor runs
-      placeholder: e.g. Ubuntu 20.04, Windows 10 Home, macOS Monterey 12.2
+      placeholder: Ubuntu 20.04, Windows 10 Home, macOS Monterey 12.2
     validations:
       required: true
 
@@ -51,7 +51,7 @@ body:
     attributes:
       label: Target Device
       description: Device name where the bug occurs
-      placeholder: e.g. MacBook Pro 14-inch (2021), iPhone 13, Google Pixel 6 Pro
+      placeholder: MacBook Pro 14-inch (2021), iPhone 13, Google Pixel 6 Pro
 
   - type: textarea
     id: windows_build_env
@@ -113,9 +113,9 @@ body:
       label: Steps to reproduce the bug
       description: |
         Describe the steps to reproduce the bug.\
-        In particular, try to write in such a way that anyone reading this will be able to reproduce exactly the steps you have taken.
-
         If the bug is not reproducible in the sample app, provide minimum code to reproduce it.
+
+        In particular, try to write in such a way that anyone reading this will be able to reproduce exactly the steps you have taken.
 
         Bad: I copied built libraries to my project directory but it doesn't work!
         Good:
@@ -130,8 +130,7 @@ body:
       label: Log
       description: |
         Attach Editor.log (if it occurs on Unity Editor) or Player.log (if it occurs at runtime).\
-        For Android, filter the log like this:
-          `adb -s [device_id] logcat Unity:V native:V tflite:V CRASH:E AndroidRuntime:E "*:S"`
+        For Android, filter the log like this: `adb -s [device_id] logcat Unity:V native:V tflite:V CRASH:E AndroidRuntime:E "*:S"`
 
         See https://docs.unity3d.com/Manual/LogFiles.html for more details.  
     validations:
@@ -141,7 +140,7 @@ body:
     attributes:
       label: Screenshot/Video
       description: |
-        Visual problems are difficult to convey in words, so please attach/embed images or videos if possible.
+        Visual problems are difficult to convey in words, so attach/embed images or videos if possible.
 
   - type: textarea
     attributes:
