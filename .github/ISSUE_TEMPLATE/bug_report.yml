@@ -1,29 +1,33 @@
 name: Bug Report Form
-description: Report a bug/issue that you found.
-title: '[BUG] bug name here'
+description: File a bug report.
+title: '[BUG]: '
+labels: ["type/bug"]
 body:
   - type: markdown
     attributes:
-      value: "## Before you continue, please search our open/closed issues to see if a similar issue has been addressed."
-
-  - type: checkboxes
-    attributes:
-      label: I have searched through the issues and didn't find my problem.
-      options:
-        - label: Confirm
-          required: true
+      value: |
+        * Check to make sure someone hasn't already opened a similar [issue](https://github.com/homuler/MediaPipeUnityPlugin/issues).
+        * If the issue is caused by MediaPipe, you may want to open an issue in google/mediapipe repo instead.
 
   - type: input
+    id: host_os
     attributes:
-      label: OS Platform and Distribution
-      description: List your OS and distribution here (e.g., Linux Ubuntu 20.04, Windows 10 etc.)
-    validations:
+      label: Your Host OS
+      description: OS where UnityEditor runs
+      placeholder: Ubuntu 20.04, Windows 10 Home, macOS Monterey 12.2
+     validations:
       required: true
 
-  - type: input
+  - type: dropdown
     attributes:
-      label: Target Platform and Distribution
-      description: List your target OS and distribution here. This is where your code will run in production. (e.g., Linux Ubuntu 20.04)
+      label: Target Platform
+      options:
+        - Windows Standalone
+        - Mac Standalone
+        - Linux Standalone
+        - Android
+        - iOS
+        - WebGL
     validations:
       required: true
 
