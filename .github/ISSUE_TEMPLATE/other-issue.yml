@@ -1,26 +1,22 @@
-name: Other Issue Form
-description: Use this for any other issues. Do not create blank issues
-title: "[OTHER] description"
+name: Other Issue
+description: Use this for any other issues. Do not create a blank issue.
 body:
   - type: markdown
     attributes:
-      value: "## Before you continue, please search our open/closed issues to see if a similar issue has been addressed."
+      value: |
+        This is another issue form.
 
-  - type: checkboxes
-    attributes:
-      label: I have searched through the issues and didn't find my problem.
-      options:
-        - label: Confirm
-          required: true
+        Do not use this form if you are creating an issue about a bug or build.\
+        If you create an issue using this form even though there is more appropriate one, we may silently close it.
+
+        * If you don't know how to use MediaPipe itself, please ask it in the official community.
+        * Check to make sure someone hasn't already opened a similar [issue](https://github.com/homuler/MediaPipeUnityPlugin/issues).
 
   - type: textarea
     attributes:
-      label: What would you like to share?
-      description: Provide a clear and concise explanation of your issue.
+      label: Description
+      description: |
+        Describe your issue.\
+        Be careful to include all the context needed to understand it.
     validations:
       required: true
-
-  - type: textarea
-    attributes:
-      label: Additional information
-      description: Is there anything else we should know about this issue?
