@@ -15,7 +15,7 @@ body:
   - type: input
     id: plugin_version
     attributes:
-      label: Plugin version or commit id
+      label: Plugin Version or Commit ID
       placeholder: v0.8.2
     validations:
       required: true
@@ -23,7 +23,7 @@ body:
   - type: input
     id: unity_version
     attributes:
-      label: Unity version
+      label: Unity Version
       placeholder: 2020.3.23f1
     validations:
       required: true
@@ -31,7 +31,7 @@ body:
   - type: input
     id: host_os
     attributes:
-      label: Your host OS
+      label: Your Host OS
       description: OS where you're building/installing the plugin
       placeholder: Ubuntu 20.04, Windows 10 Home, macOS Monterey 12.2
     validations:
@@ -56,7 +56,7 @@ body:
   - type: textarea
     id: windows_build_env
     attributes:
-      label: "[Windows Only] Visual Studio C++ and Windows SDK version"
+      label: "[Windows Only] Visual Studio C++ and Windows SDK Version"
       description: |
         Required if your host OS is Windows and the Target Platform is UnityEditor or PC Standalone.
       placeholder: |
@@ -66,7 +66,7 @@ body:
   - type: textarea
     id: linux_build_env
     attributes:
-      label: "[Linux Only] GCC/G++ and GLIBC version"
+      label: "[Linux Only] GCC/G++ and GLIBC Version"
       description: |
         Required if your host OS is Linux and the Target Platform is UnityEditor or Linux Standalone.\
         You can get GLIBC version by running `ldd --version`.
@@ -78,7 +78,7 @@ body:
   - type: textarea
     id: android_build_env
     attributes:
-      label: "[Android Only] Android Build Tools and NDK version"
+      label: "[Android Only] Android Build Tools and NDK Version"
       description: Required if the Target Platform is Android
       placeholder: |
         Build Tools: 30.0.2
@@ -87,13 +87,13 @@ body:
   - type: input
     id: ios_build_env
     attributes:
-      label: "[iOS Only] XCode version"
+      label: "[iOS Only] XCode Version"
       description: Required if the Target Platform is iOS
 
   - type: textarea
     id: steps
     attributes:
-      label: Command sequences
+      label: Command Sequences
       description: |
         List the commands and operations you performed, in order and as best you can.
     validations:
