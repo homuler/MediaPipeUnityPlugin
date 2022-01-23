@@ -10,8 +10,8 @@ body:
         * If the issue is caused by MediaPipe, you may want to open an issue in google/mediapipe repo instead.
 
   - type: input
+    id: host_os
     attributes:
-      id: host_os
       label: Your Host OS
       description: OS where UnityEditor runs
       placeholder: Ubuntu 20.04, Windows 10 Home, macOS Monterey 12.2
@@ -19,8 +19,8 @@ body:
       required: true
 
   - type: dropdown
+    id: target_platform
     attributes:
-      id: target_platform
       label: Target Platform
       options:
         - Windows Standalone
