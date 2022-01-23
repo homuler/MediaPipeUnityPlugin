@@ -15,7 +15,7 @@ body:
       label: Your Host OS
       description: OS where UnityEditor runs
       placeholder: Ubuntu 20.04, Windows 10 Home, macOS Monterey 12.2
-     validations:
+    validations:
       required: true
 
   - type: dropdown
