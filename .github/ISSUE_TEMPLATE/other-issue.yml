@@ -1,10 +1,10 @@
 name: Other Issue
-description: Use this for any other issues. Do not create a blank issue.
+description: Fallback form. Use this for any other issues.
 body:
   - type: markdown
     attributes:
       value: |
-        This is another issue form.
+        This is a fallback form.
 
         Do not use this form if you are creating an issue about a bug or build.\
         If you create an issue using this form even though there is more appropriate one, we may silently close it.
