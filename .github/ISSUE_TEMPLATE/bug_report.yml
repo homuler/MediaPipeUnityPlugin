@@ -79,7 +79,7 @@ body:
     attributes:
       label: Android Build Tools and NDK version
       description: Required if the Target Platform is Android
-      placeholder:
+      placeholder: |
         Build Tools: 30.0.2
         NDK: 21.4.7075529
 
