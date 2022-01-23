@@ -17,6 +17,7 @@ body:
     id: version
     attributes:
       label: Plugin version or commit id
+      placeholder: v0.8.2
     validations:
       required: true
 
@@ -90,55 +91,61 @@ body:
       description: Required if the Target Platform is iOS
 
   - type: textarea
+    id: build_command
+    attributes:
+      label: Build Command
+      description: The exact command you executed to build native libraries.
+      placeholder: python build.py build --desktop cpu -vv
+    validations:
+      required: true
+
+  - type: textarea
     id: description
     attributes:
       label: Bug description
-      description: Describe the bug. 
+      description: Describe the bug so that we can understand the current behavior and the expected behavior.
     validations:
       required: true
 
   - type: textarea
+    id: steps
     attributes:
-      label: What is your expected behaviour?
-      description: Describe what you expected to happen and list out what you were doing.
-      value: |
-        **Expectation**: ....
-
-        **Steps**:
-
-        1. 
-        2. 
-        3. 
-
-        Add more steps as needed
-    validations:
-      required: true
-
-  - type: textarea
-    attributes:
-      label: Full Error Log
+      label: Steps to reproduce the bug
       description: |
-        If you have a command line error, copy and paste it here.
-        If you have a log file, please attach Editor.log (if it occurs on Unity Editor) or Player.log (if it occurs at runtime).
-        See https://docs.unity3d.com/Manual/LogFiles.html
-      value: |
-        <details><summary>Error Log</summary><p>
+        Describe the steps to reproduce the bug.\
+        In particular, try to write in such a way that anyone reading this will be able to reproduce exactly the steps you have taken.
 
-        ```
-          // put code here in between the backticks or attach log file 
-        ```
-        </p></details>
+        If the bug is not reproducible in the sample app, provide minimum code to reproduce it.
 
-        **Put images here if applicable**
+        Bad: I copied built libraries to my project directory but it doesn't work!
+        Good:
+          1. Run `python build.py build --desktop cpu -vv`
+          2. Run `cp xxx yyy`
+          3. Start Play Mode and the below error occurs.
     validations:
       required: true
 
   - type: textarea
     attributes:
-      label: Possible fixes or solutions
-      description: List any possible fixes/suggestions that you have in mind that could solve this issue.
+      label: Log
+      description: |
+        Attach Editor.log (if it occurs on Unity Editor) or Player.log (if it occurs at runtime).\
+        For Android, filter the log like this:
+          `adb -s [device_id] logcat Unity:V native:V tflite:V CRASH:E AndroidRuntime:E "*:S"`
+
+        See https://docs.unity3d.com/Manual/LogFiles.html for more details.  
+    validations:
+      required: true
 
   - type: textarea
     attributes:
-      label: Additional information
-      description: Is there anything else we should know about this bug?
+      label: Screenshot/Video
+      description: |
+        Visual problems are difficult to convey in words, so please attach/embed images or videos if possible.
+
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: |
+        Something that does not fit in the above form.\
+        For example, if you have done your own research on this bug, describe it here.
