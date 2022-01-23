@@ -95,7 +95,6 @@ body:
     attributes:
       label: Command sequences
       description: |
-        Describe the steps to reproduce the error.\
         List the commands and operations you performed, in order and as best you can.
     validations:
       required: true
