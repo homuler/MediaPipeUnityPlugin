@@ -1,4 +1,4 @@
-name: Bug Report Form
+name: Bug Report
 description: File a bug report.
 labels: ["type:bug"]
 body:
