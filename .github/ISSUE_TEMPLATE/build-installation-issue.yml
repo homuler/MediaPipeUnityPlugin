@@ -1,107 +1,118 @@
-name: Build Installation Issue Form
-description: Report issues that you found while building/installing the project.
-title: '[BUILD ISSUE] issue name here'
+name: Build/Install Issue Form
+description: Report issues that you found while building/installing the plugin.
+labels: ["type:build/install"]
 body:
   - type: markdown
     attributes:
-      value: "## Before you continue, please search our open/closed issues to see if a similar issue has been addressed."
+      value: |
+        This is a build/install form.\
+        If you are having trouble running apps (includeing the sample app), please use bug form instead.
 
-  - type: checkboxes
+        * Make sure you're using the latest version.
+        * Check [the troubleshooting page](https://github.com/homuler/MediaPipeUnityPlugin/wiki/Installation-Guide#troubleshooting) to see if the solution is listed there.
+        * Check to make sure someone hasn't already opened a similar [issue](https://github.com/homuler/MediaPipeUnityPlugin/issues).
+
+  - type: input
+    id: plugin_version
     attributes:
-      label: I have searched through the issues and didn't find my problem.
+      label: Plugin version or commit id
+      placeholder: v0.8.2
+    validations:
+      required: true
+
+  - type: input
+    id: unity_version
+    attributes:
+      label: Unity version
+      placeholder: 2020.3.23f1
+    validations:
+      required: true
+
+  - type: input
+    id: host_os
+    attributes:
+      label: Your host OS
+      description: OS where you're building/installing the plugin
+      placeholder: Ubuntu 20.04, Windows 10 Home, macOS Monterey 12.2
+    validations:
+      required: true
+
+  - type: dropdown
+    id: target_platform
+    attributes:
+      label: Target Platform
+      multiple: true
       options:
-        - label: Confirm
-          required: true
-
-  - type: input
-    attributes:
-      label: OS Platform and Distribution
-      description: List your OS and distribution here (e.g., Linux Ubuntu 20.04, Windows 10, etc.)
-    validations:
-      required: true
-
-  - type: input
-    attributes:
-      label: Target Platform and Distribution
-      description: List your target OS and distribution here. This is where your code will run in production. (e.g., Linux Ubuntu 20.04)
-    validations:
-      required: true
-
-  - type: input
-    attributes:
-      label: Mobile Device (if target is Android/iOS/other mobile OS)
-      description: List your mobile device make and model (Samsung, Apple etc);
-
-  - type: input
-    attributes:
-      label: Android NDK version (if target is Android)
-
-  - type: input
-    attributes:
-      label: XCode version (if target is iOS)
-
-  - type: input
-    attributes:
-      label: MediaPipeUnityPlugin version or commit id
-    validations:
-      required: true
-
-  - type: input
-    attributes:
-      label: Bazel version or commit id
-    validations:
-      required: true
-
-  - type: input
-    attributes:
-      label: GCC/G++ version or commit id
+        - UnityEditor
+        - Windows Standalone
+        - Mac Standalone
+        - Linux Standalone
+        - Android
+        - iOS
+        - WebGL
     validations:
       required: true
 
   - type: textarea
+    id: windows_build_env
     attributes:
-      label: Problem description
-      description: Short description of the problem that you found. 
-    validations:
-      required: true
-
-  - type: textarea
-    attributes:
-      label: What is your expected behaviour?
-      description: Describe what you expected to happen and list out what you were doing.
-      value: |
-        **Expectation**: ....
-
-        **Steps**:
-
-        1. 
-        2. 
-        3. 
-
-        Add more steps as needed
-    validations:
-      required: true
-
-  - type: textarea
-    attributes:
-      label: Full Error Log
+      label: "[Windows Only] Visual Studio C++ and Windows SDK version"
       description: |
-        If you have a command line error, copy and paste it here.
-        If you have a log file, please attach Editor.log (if it occurs on Unity Editor) or Player.log (if it occurs at runtime).
-        See https://docs.unity3d.com/Manual/LogFiles.html
-      value: |
-        <details><summary>Error Log</summary><p>
+        Required if your host OS is Windows and the Target Platform is UnityEditor or PC Standalone.
+      placeholder: |
+        Visual Studio C++: 14.16.27023
+        Windows SDK: 10.0.10240.0
 
-        ```
-          // put code here in between the backticks or attach a log file
-        ```
-        </p></details>
+  - type: textarea
+    id: linux_build_env
+    attributes:
+      label: "[Linux Only] GCC/G++ and GLIBC version"
+      description: |
+        Required if your host OS is Linux and the Target Platform is UnityEditor or Linux Standalone.\
+        You can get GLIBC version by running `ldd --version`.
+      placeholder: |
+        GCC: 11.1.0
+        G++: 11.1.0
+        GLIBC: GNU libc 2.33
 
-        **Put images here if applicable**
+  - type: textarea
+    id: android_build_env
+    attributes:
+      label: "[Android Only] Android Build Tools and NDK version"
+      description: Required if the Target Platform is Android
+      placeholder: |
+        Build Tools: 30.0.2
+        NDK: 21.4.7075529
+
+  - type: input
+    id: ios_build_env
+    attributes:
+      label: "[iOS Only] XCode version"
+      description: Required if the Target Platform is iOS
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Command sequences
+      description: |
+        Describe the steps to reproduce the error.\
+        List the commands and operations you performed, in order and as best you can.
     validations:
       required: true
 
   - type: textarea
     attributes:
-      label: Additional information
-      description: Is there anything else we should know about this problem?
+      label: Log
+      description: |
+        Attach full log in _text_ format.\
+        When executing build command, make sure to add `-vv` option (e.g. `python build.py build --desktop cpu -vv`).
+        
+        It is preferable to include a log of commands executed during installation (e.g. `sudo apt-get install ...`).
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: |
+        If there is something that does not fit in the above form, describe it here.
