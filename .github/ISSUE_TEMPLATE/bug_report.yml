@@ -14,7 +14,7 @@ body:
         * If the issue is caused by MediaPipe, you may want to open an issue in google/mediapipe repo instead.
 
   - type: input
-    id: version
+    id: plugin_version
     attributes:
       label: Plugin version or commit id
       placeholder: v0.8.2
@@ -22,9 +22,17 @@ body:
       required: true
 
   - type: input
+    id: unity_version
+    attributes:
+      label: Unity version
+      placeholder: 2020.3.23f1
+    validations:
+      required: true
+
+  - type: input
     id: host_os
     attributes:
-      label: Your Host OS
+      label: Your host OS
       description: OS where UnityEditor runs
       placeholder: Ubuntu 20.04, Windows 10 Home, macOS Monterey 12.2
     validations:
