@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         This is a bug report form.\
-        If you are having trouble building libraries or apps, please use build/install form instead.
+        If you are having trouble building libraries or apps, please [choose build/install form](https://github.com/homuler/MediaPipeUnityPlugin/issues/new/choose) instead.
 
         * Be sure to check that the bug is still present in the latest commit.
         * Check to make sure someone hasn't already opened a similar [issue](https://github.com/homuler/MediaPipeUnityPlugin/issues).
