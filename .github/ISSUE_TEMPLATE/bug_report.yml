@@ -6,15 +6,26 @@ body:
   - type: markdown
     attributes:
       value: |
+        This is a bug report form.\
+        If you are having trouble building libraries or apps, please use build/install form instead.
+
+        * Be sure to check that the bug is still present in the latest commit.
         * Check to make sure someone hasn't already opened a similar [issue](https://github.com/homuler/MediaPipeUnityPlugin/issues).
         * If the issue is caused by MediaPipe, you may want to open an issue in google/mediapipe repo instead.
+
+  - type: input
+    id: version
+    attributes:
+      label: Plugin version or commit id
+    validations:
+      required: true
 
   - type: input
     id: host_os
     attributes:
       label: Your Host OS
       description: OS where UnityEditor runs
-      placeholder: Ubuntu 20.04, Windows 10 Home, macOS Monterey 12.2
+      placeholder: e.g. Ubuntu 20.04, Windows 10 Home, macOS Monterey 12.2
     validations:
       required: true
 
@@ -22,7 +33,9 @@ body:
     id: target_platform
     attributes:
       label: Target Platform
+      multiple: true
       options:
+        - UnityEditor
         - Windows Standalone
         - Mac Standalone
         - Linux Standalone
@@ -33,40 +46,54 @@ body:
       required: true
 
   - type: input
+    id: target_device
     attributes:
-      label: Mobile Device (if target is Android/iOS/other mobile OS)
-      description: List your mobile device make and model (Samsung, Apple etc);
-
-  - type: input
-    attributes:
-      label: Android NDK version (if target is Android)
-
-  - type: input
-    attributes:
-      label: XCode version (if target is iOS)
-
-  - type: input
-    attributes:
-      label: MediaPipeUnityPlugin version or commit id
-    validations:
-      required: true
-
-  - type: input
-    attributes:
-      label: Bazel version or commit id
-    validations:
-      required: true
-
-  - type: input
-    attributes:
-      label: GCC/G++ version or commit id
-    validations:
-      required: true
+      label: Target Device
+      description: Device name where the bug occurs
+      placeholder: e.g. MacBook Pro 14-inch (2021), iPhone 13, Google Pixel 6 Pro
 
   - type: textarea
+    id: windows_build_env
+    attributes:
+      label: Visual Studio C++ and Windows SDK version
+      description: |
+        Required if your host OS is Windows and the Target Platform is UnityEditor or PC Standalone.
+      placeholder: |
+        Visual Studio C++: 14.16.27023
+        Windows SDK: 10.0.10240.0
+
+  - type: textarea
+    id: linux_build_env
+    attributes:
+      label: GCC/G++ and GLIBC version
+      description: |
+        Required if your host OS is Linux and the Target Platform is UnityEditor or Linux Standalone.\
+        You can get GLIBC version by running `ldd --version`.
+      placeholder: |
+        GCC: 11.1.0
+        G++: 11.1.0
+        GLIBC: GNU libc 2.33
+
+  - type: textarea
+    id: android_build_env
+    attributes:
+      label: Android Build Tools and NDK version
+      description: Required if the Target Platform is Android
+      placeholder:
+        Build Tools: 30.0.2
+        NDK: 21.4.7075529
+
+  - type: input
+    id: ios_build_env
+    attributes:
+      label: XCode version
+      description: Required if the Target Platform is iOS
+
+  - type: textarea
+    id: description
     attributes:
       label: Bug description
-      description: Short description of the bug that you found. 
+      description: Describe the bug. 
     validations:
       required: true
 
