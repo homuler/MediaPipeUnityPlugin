@@ -129,8 +129,9 @@ ENV ANDROID_HOME /opt/android
 ENV ANDROID_NDK_HOME /opt/android/ndk/${ANDROID_NDK_VERSION}
 ENV PYTHON_BIN_PATH /usr/bin/python3.9
 
-COPY .bazelrc .
 COPY packages.config .
+COPY .bazelrc .
+COPY .bazelversion .
 COPY build.py .
 COPY WORKSPACE .
 COPY mediapipe_api mediapipe_api

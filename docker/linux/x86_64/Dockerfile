@@ -87,8 +87,9 @@ ARG ANDROID_NDK_VERSION
 ENV ANDROID_HOME /opt/android
 ENV ANDROID_NDK_HOME /opt/android/ndk/${ANDROID_NDK_VERSION}
 
-ADD .bazelrc .
 ADD packages.config .
+ADD .bazelrc .
+ADD .bazelversion .
 ADD build.py .
 ADD WORKSPACE .
 ADD mediapipe_api mediapipe_api
