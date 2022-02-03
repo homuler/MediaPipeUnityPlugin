@@ -68,15 +68,6 @@ FROM base AS builder
 # install Android SDK and NDK
 COPY --from=android /opt/android /opt/android
 
-# install FFmpeg
-RUN mkdir ffmpeg
-ADD docker/linux/x86_64/ffmpeg/ ffmpeg/
-RUN cd ffmpeg && \
-    yay -Sy && \
-    makepkg -si --needed --noconfirm && \
-    cd .. && \
-    rm -rf ffmpeg
-
 ENV NPM_PREFIX /home/mediapipe/.npm-packages
 ENV PATH ${NPM_PREFIX}/bin:/home/mediapipe/.local/bin:${PATH}
 

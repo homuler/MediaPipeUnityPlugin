@@ -107,46 +107,6 @@ RUN apt-get install -y --no-install-recommends mono-complete && \
 RUN apt-get install -y --no-install-recommends npm && \
     npm install -g @bazel/bazelisk
 
-# install FFmpeg
-RUN git clone https://git.ffmpeg.org/ffmpeg.git && \
-    cd ffmpeg && \
-    git checkout n4.4 && \
-    ./configure \
-        --prefix=/usr \
-        --disable-debug \
-        --disable-doc \
-        --disable-programs \
-        --disable-stripping \
-        --enable-avresample \
-        --enable-lto \
-        --enable-gpl \
-        --enable-shared \
-        --enable-version3 \
-        --disable-alsa \
-        --disable-bzlib \
-        --disable-iconv \
-        --disable-libxcb \
-        --disable-amf \
-        --disable-lzma \
-        --disable-sndio \
-        --disable-sdl2 \
-        --disable-xlib \
-        --disable-zlib \
-        --disable-audiotoolbox \
-        --disable-cuda-llvm \
-        --disable-cuvid \
-        --disable-ffnvcodec \
-        --disable-nvdec \
-        --disable-nvenc \
-        --disable-v4l2-m2m \
-        --disable-vaapi \
-        --disable-vdpau \
-        --disable-videotoolbox && \
-    make -j "$(nproc)" && \
-    make install && \
-    cd .. && \
-    rm -rf ffmpeg
-
 # Create user
 RUN bash -c 'echo -e "%wheel ALL=(ALL) NOPASSWD: ALL\n" > /etc/sudoers.d/01_wheel'
 RUN addgroup wheel && useradd -u ${UID} -m mediapipe && usermod -aG wheel mediapipe
