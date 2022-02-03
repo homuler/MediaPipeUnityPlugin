@@ -80,13 +80,6 @@ RUN yay -Sy npm --needed --noconfirm && \
 RUN yay -Sy mesa nuget python-pip --needed --noconfirm && \
     pip install --user numpy
 
-# gcc-11 is not supported yet, so switch default gcc version
-RUN yay -Sy gcc10 gcc10-libs --needed --noconfirm && \
-    sudo ln -s $(which gcc-10) /usr/local/bin/gcc && \
-    sudo ln -s $(which g++-10) /usr/local/bin/g++ && \
-    hash -r
-
-
 FROM builder
 
 ARG ANDROID_NDK_VERSION
