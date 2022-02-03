@@ -85,7 +85,7 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E03280
 
 ####
 # NOTE
-#   At the moment (2021.12), very unstable in some country (https://github.com/mono/mono/issues/21273).
+#   At the moment (2021.12), the next step is very unstable in some country (https://github.com/mono/mono/issues/21273).
 #
 #   If you encounter 504 Timeout errors, insert RUN commands as follows and install those *.deb files forcefully (note `; exit 0` at the end).
 #
