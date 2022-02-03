@@ -1,14 +1,15 @@
 diff --git a/mediapipe/BUILD b/mediapipe/BUILD
-index 1171ea6..58a8c46 100644
+index 1171ea6..6c4a7fb 100644
 --- a/mediapipe/BUILD
 +++ b/mediapipe/BUILD
-@@ -139,6 +139,28 @@ config_setting(
+@@ -139,6 +139,31 @@ config_setting(
      values = {"cpu": "x64_windows"},
  )
  
 +config_setting(
 +    name = "emscripten",
 +    values = {"crosstool_top": "@emsdk//emscripten_toolchain:everything"},
++    visibility = ["//visibility:public"],
 +)
 +
 +config_setting(
@@ -17,6 +18,7 @@ index 1171ea6..58a8c46 100644
 +        "crosstool_top": "@emsdk//emscripten_toolchain:everything",
 +        "cpu": "wasm",
 +    },
++    visibility = ["//visibility:public"],
 +)
 +
 +config_setting(
@@ -26,6 +28,7 @@ index 1171ea6..58a8c46 100644
 +        "cpu": "wasm",
 +        "copt": "-msimd128",
 +    },
++    visibility = ["//visibility:public"],
 +)
 +
  exports_files(
