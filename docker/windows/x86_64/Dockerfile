@@ -141,12 +141,12 @@ RUN del C:\TEMP\%WS_LONG_PATHS_7Z% && `
 
 WORKDIR C:\mediapipe
 
-ADD packages.config .
-ADD .bazelrc .
-ADD .bazelversion .
-ADD build.py .
-ADD WORKSPACE .
-ADD mediapipe_api mediapipe_api
-ADD third_party third_party
+COPY packages.config .
+COPY .bazelrc .
+COPY .bazelversion .
+COPY build.py .
+COPY WORKSPACE .
+COPY mediapipe_api mediapipe_api
+COPY third_party third_party
 
 CMD ["cmd"]
