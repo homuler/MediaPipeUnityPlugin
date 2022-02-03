@@ -9,8 +9,6 @@ ARG ANDROID_NDK_VERSION=21.4.7075529
 
 FROM ubuntu:18.04 AS base
 
-ARG UID
-
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
