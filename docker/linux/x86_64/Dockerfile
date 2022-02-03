@@ -1,4 +1,5 @@
 ARG UID=1000
+ARG GID=1000
 ARG ANDROID_SDK_VERSION=30
 ARG ANDROID_NDK_VERSION=21.4.7075529
 
@@ -24,11 +25,12 @@ RUN if [[ "${RANKMIRROS}" ]]; then \
     fi
 
 ARG UID
+ARG GID
 
 # Create a privileged user
 RUN pacman -Syuu archlinux-keyring sudo --needed --noconfirm
 RUN echo -e "%wheel ALL=(ALL) NOPASSWD: ALL\n" > /etc/sudoers.d/01_wheel
-RUN useradd -u ${UID} -m mediapipe && usermod -aG wheel mediapipe
+RUN useradd -u ${UID} -g ${GID} -m mediapipe && usermod -aG wheel mediapipe
 
 USER mediapipe
 WORKDIR /home/mediapipe
