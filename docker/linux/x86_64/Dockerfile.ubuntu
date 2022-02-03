@@ -9,8 +9,6 @@ ARG ANDROID_NDK_VERSION=21.4.7075529
 
 FROM ubuntu:18.04 AS base
 
-ARG UID
-
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
@@ -58,7 +56,6 @@ RUN curl -L https://dl.google.com/android/repository/commandlinetools-linux-7583
 RUN  yes | /opt/android/cmdline-tools/bin/sdkmanager --sdk_root=/opt/android --licenses
 RUN /opt/android/cmdline-tools/bin/sdkmanager --sdk_root=/opt/android --install \
         "platforms;android-${ANDROID_SDK_VERSION}" \
-        "platform-tools" \
         "build-tools;${ANDROID_SDK_BUILD_TOOLS_VERSION}" \
         "ndk;${ANDROID_NDK_VERSION}" && \
     rm ${COMMANDLINETOOLS_ZIP}
@@ -85,7 +82,7 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E03280
 
 ####
 # NOTE
-#   At the moment (2021.12), very unstable in some country (https://github.com/mono/mono/issues/21273).
+#   At the moment (2021.12), the next step is very unstable in some country (https://github.com/mono/mono/issues/21273).
 #
 #   If you encounter 504 Timeout errors, insert RUN commands as follows and install those *.deb files forcefully (note `; exit 0` at the end).
 #
@@ -106,46 +103,6 @@ RUN apt-get install -y --no-install-recommends mono-complete && \
 # install Bazelisk
 RUN apt-get install -y --no-install-recommends npm && \
     npm install -g @bazel/bazelisk
-
-# install FFmpeg
-RUN git clone https://git.ffmpeg.org/ffmpeg.git && \
-    cd ffmpeg && \
-    git checkout n4.4 && \
-    ./configure \
-        --prefix=/usr \
-        --disable-debug \
-        --disable-doc \
-        --disable-programs \
-        --disable-stripping \
-        --enable-avresample \
-        --enable-lto \
-        --enable-gpl \
-        --enable-shared \
-        --enable-version3 \
-        --disable-alsa \
-        --disable-bzlib \
-        --disable-iconv \
-        --disable-libxcb \
-        --disable-amf \
-        --disable-lzma \
-        --disable-sndio \
-        --disable-sdl2 \
-        --disable-xlib \
-        --disable-zlib \
-        --disable-audiotoolbox \
-        --disable-cuda-llvm \
-        --disable-cuvid \
-        --disable-ffnvcodec \
-        --disable-nvdec \
-        --disable-nvenc \
-        --disable-v4l2-m2m \
-        --disable-vaapi \
-        --disable-vdpau \
-        --disable-videotoolbox && \
-    make -j "$(nproc)" && \
-    make install && \
-    cd .. && \
-    rm -rf ffmpeg
 
 # Create user
 RUN bash -c 'echo -e "%wheel ALL=(ALL) NOPASSWD: ALL\n" > /etc/sudoers.d/01_wheel'
@@ -169,8 +126,9 @@ ENV ANDROID_HOME /opt/android
 ENV ANDROID_NDK_HOME /opt/android/ndk/${ANDROID_NDK_VERSION}
 ENV PYTHON_BIN_PATH /usr/bin/python3.9
 
-COPY .bazelrc .
 COPY packages.config .
+COPY .bazelrc .
+COPY .bazelversion .
 COPY build.py .
 COPY WORKSPACE .
 COPY mediapipe_api mediapipe_api

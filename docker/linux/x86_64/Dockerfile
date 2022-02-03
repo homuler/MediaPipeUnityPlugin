@@ -57,7 +57,6 @@ RUN sudo unzip ${COMMANDLINETOOLS_ZIP} -d /opt/android
 RUN yes | /opt/android/cmdline-tools/bin/sdkmanager --sdk_root=/opt/android --licenses
 RUN /opt/android/cmdline-tools/bin/sdkmanager --sdk_root=/opt/android --install \
     "platforms;android-${ANDROID_SDK_VERSION}" \
-    "platform-tools" \
     "build-tools;30.0.3" \
     "ndk;${ANDROID_NDK_VERSION}"
 RUN rm ${COMMANDLINETOOLS_ZIP}
@@ -67,15 +66,6 @@ FROM base AS builder
 
 # install Android SDK and NDK
 COPY --from=android /opt/android /opt/android
-
-# install FFmpeg
-RUN mkdir ffmpeg
-ADD docker/linux/x86_64/ffmpeg/ ffmpeg/
-RUN cd ffmpeg && \
-    yay -Sy && \
-    makepkg -si --needed --noconfirm && \
-    cd .. && \
-    rm -rf ffmpeg
 
 ENV NPM_PREFIX /home/mediapipe/.npm-packages
 ENV PATH ${NPM_PREFIX}/bin:/home/mediapipe/.local/bin:${PATH}
@@ -89,13 +79,6 @@ RUN yay -Sy npm --needed --noconfirm && \
 RUN yay -Sy mesa nuget python-pip --needed --noconfirm && \
     pip install --user numpy
 
-# gcc-11 is not supported yet, so switch default gcc version
-RUN yay -Sy gcc10 gcc10-libs --needed --noconfirm && \
-    sudo ln -s $(which gcc-10) /usr/local/bin/gcc && \
-    sudo ln -s $(which g++-10) /usr/local/bin/g++ && \
-    hash -r
-
-
 FROM builder
 
 ARG ANDROID_NDK_VERSION
@@ -103,11 +86,12 @@ ARG ANDROID_NDK_VERSION
 ENV ANDROID_HOME /opt/android
 ENV ANDROID_NDK_HOME /opt/android/ndk/${ANDROID_NDK_VERSION}
 
-ADD .bazelrc .
-ADD packages.config .
-ADD build.py .
-ADD WORKSPACE .
-ADD mediapipe_api mediapipe_api
-ADD third_party third_party
+COPY packages.config .
+COPY .bazelrc .
+COPY .bazelversion .
+COPY build.py .
+COPY WORKSPACE .
+COPY mediapipe_api mediapipe_api
+COPY third_party third_party
 
 CMD ["/bin/bash"]
