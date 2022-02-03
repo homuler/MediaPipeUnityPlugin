@@ -57,7 +57,6 @@ RUN sudo unzip ${COMMANDLINETOOLS_ZIP} -d /opt/android
 RUN yes | /opt/android/cmdline-tools/bin/sdkmanager --sdk_root=/opt/android --licenses
 RUN /opt/android/cmdline-tools/bin/sdkmanager --sdk_root=/opt/android --install \
     "platforms;android-${ANDROID_SDK_VERSION}" \
-    "platform-tools" \
     "build-tools;30.0.3" \
     "ndk;${ANDROID_NDK_VERSION}"
 RUN rm ${COMMANDLINETOOLS_ZIP}

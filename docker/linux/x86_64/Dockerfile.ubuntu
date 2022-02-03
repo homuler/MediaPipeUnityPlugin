@@ -58,7 +58,6 @@ RUN curl -L https://dl.google.com/android/repository/commandlinetools-linux-7583
 RUN  yes | /opt/android/cmdline-tools/bin/sdkmanager --sdk_root=/opt/android --licenses
 RUN /opt/android/cmdline-tools/bin/sdkmanager --sdk_root=/opt/android --install \
         "platforms;android-${ANDROID_SDK_VERSION}" \
-        "platform-tools" \
         "build-tools;${ANDROID_SDK_BUILD_TOOLS_VERSION}" \
         "ndk;${ANDROID_NDK_VERSION}" && \
     rm ${COMMANDLINETOOLS_ZIP}

@@ -99,7 +99,6 @@ RUN curl -L https://dl.google.com/android/repository/commandlinetools-win-758392
 RUN powershell -command "for($i=0;$i -lt 30;$i++) { $response += """y`n""" }; $response" | C:\Android\cmdline-tools\bin\sdkmanager --sdk_root=C:\Android --licenses && `
     C:\Android\cmdline-tools\bin\sdkmanager --sdk_root=C:\Android --install `
         "platforms;android-%ANDROID_SDK_VERSION%" `
-        "platform-tools" `
         "build-tools;30.0.3" `
         "ndk;%ANDROID_NDK_VERSION%"
 
