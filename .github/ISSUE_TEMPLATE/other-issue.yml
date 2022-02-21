@@ -6,10 +6,11 @@ body:
       value: |
         This is a fallback form.
 
-        Do not use this form if you are creating an issue about a bug or build.\
-        If you create an issue using this form even though there is more appropriate one, we may silently close it.
+        If you cannot find more appropriate form, please use this form.\
+        For example, you can use it when asking questions about the internal implementation.
 
         * If you don't know how to use MediaPipe itself, please ask it in the official community.
+        * Check to see if there's a more appropriate [form](https://github.com/homuler/MediaPipeUnityPlugin/issues/new/choose).
         * Check to make sure someone hasn't already opened a similar [issue](https://github.com/homuler/MediaPipeUnityPlugin/issues).
 
   - type: textarea

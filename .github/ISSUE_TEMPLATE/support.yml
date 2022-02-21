@@ -1,0 +1,82 @@
+name: Support
+description: Request support
+labels: ["type:support"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is a support form.
+
+        If you're having trouble using the plugin in your project or want to know how to use the plugin, please use this form.
+
+        * If you don't know how to use MediaPipe itself, please ask it in the official community.
+        * Check to see if there's a more appropriate [form](https://github.com/homuler/MediaPipeUnityPlugin/issues/new/choose).
+        * Check to make sure someone hasn't already opened a similar [issue](https://github.com/homuler/MediaPipeUnityPlugin/issues).
+
+  - type: input
+    id: plugin_version
+    attributes:
+      label: Plugin Version or Commit ID
+      placeholder: v0.8.2
+    validations:
+      required: true
+
+  - type: input
+    id: unity_version
+    attributes:
+      label: Unity Version
+      placeholder: 2020.3.29f1
+    validations:
+      required: true
+
+  - type: input
+    id: host_os
+    attributes:
+      label: Your Host OS
+      description: OS where UnityEditor runs
+      placeholder: Ubuntu 20.04, Windows 10 Home, macOS Monterey 12.2
+    validations:
+      required: true
+
+  - type: dropdown
+    id: target_platform
+    attributes:
+      label: Target Platform
+      multiple: true
+      options:
+        - UnityEditor
+        - Windows Standalone
+        - Mac Standalone
+        - Linux Standalone
+        - Android
+        - iOS
+        - WebGL
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Describe the issue so that we can understand what you want to do and what is not working.\
+        Even if you just want to ask how to use the plugin, make it clear where you know and where you don't know.
+    validations:
+      required: true
+
+  - type: textarea
+    id: source_code
+    attributes:
+      label: Code to Reproduce the issue
+      description: |
+        Provide source code to reporoduce the issue (share the link to your repository if possible).\
+        Note that we won't support you if we cannot understand your issue by seeing the information given here.
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: |
+        Something that does not fit in the above form.\
+        For example, if you have done your own research on the problem, describe it here.

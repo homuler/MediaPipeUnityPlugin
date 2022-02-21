@@ -95,7 +95,8 @@ body:
     attributes:
       label: Command Sequences
       description: |
-        List the commands and operations you performed, in order and as best you can.
+        List the commands and operations you performed, in order and as best you can.\
+        Be careful to describe what you actually did (e.g. run `export PYTHON_BIN_PATH=...`), not what you wanted to do (e.g. set `PYTHON_BIN_PATH`).
     validations:
       required: true
 
@@ -103,7 +104,7 @@ body:
     attributes:
       label: Log
       description: |
-        Attach full log in _text_ format.\
+        Attach _full_ log in _text_ format.\
         When executing build command, make sure to add `-vv` option (e.g. `python build.py build --desktop cpu -vv`).
 
         It is preferable to include a log of commands executed during installation (e.g. `sudo apt-get install ...`).
