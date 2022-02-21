@@ -54,7 +54,7 @@ emsdk_emscripten_deps(emscripten_version = "2.0.22")
 new_local_repository(
     name = "unity",
     build_file = "@//third_party:unity.BUILD",
-    path = "/path/to/unity/2020.3.23f1",
+    path = "/path/to/unity/2020.3.29f1",
 )
 
 # mediapipe
