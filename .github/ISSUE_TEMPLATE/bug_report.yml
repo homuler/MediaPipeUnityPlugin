@@ -139,7 +139,7 @@ body:
         Attach Editor.log (if it occurs on Unity Editor) or Player.log (if it occurs at runtime).\
         For Android, filter the log like this: `adb -s [device_id] logcat Unity:V native:V tflite:V CRASH:E AndroidRuntime:E "*:S"`
 
-        See https://docs.unity3d.com/Manual/LogFiles.html for more details.  
+        See https://docs.unity3d.com/Manual/LogFiles.html for more details.
     validations:
       required: true
 

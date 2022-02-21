@@ -105,7 +105,7 @@ body:
       description: |
         Attach full log in _text_ format.\
         When executing build command, make sure to add `-vv` option (e.g. `python build.py build --desktop cpu -vv`).
-        
+
         It is preferable to include a log of commands executed during installation (e.g. `sudo apt-get install ...`).
     validations:
       required: true
