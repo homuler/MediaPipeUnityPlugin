@@ -69,6 +69,7 @@ node {
   calculator: "PoseLandmarkGpu"
   input_stream: "IMAGE:transformed_input_video"
   input_side_packet: "MODEL_COMPLEXITY:model_complexity"
+  input_side_packet: "SMOOTH_LANDMARKS:smooth_landmarks"
   output_stream: "LANDMARKS:pose_landmarks"
   output_stream: "WORLD_LANDMARKS:pose_world_landmarks"
   output_stream: "DETECTION:pose_detection"
