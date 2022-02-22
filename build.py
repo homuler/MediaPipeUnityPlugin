@@ -151,7 +151,7 @@ class BuildCommand(Command):
           self._run_command(self._build_opencv_libs())
           self._unzip(
             os.path.join(_BAZEL_BIN_PATH, 'mediapipe_api', 'opencv_libs.zip'),
-            os.path.join(_BUILD_PATH, 'Plugins', 'OpenCV'))
+            os.path.join(_BUILD_PATH, 'Plugins'))
 
       self.console.info('Built native libraries for Desktop')
 
