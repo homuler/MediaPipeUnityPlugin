@@ -16,7 +16,7 @@ namespace Mediapipe
         [MarshalAs(UnmanagedType.FunctionPtr)] Protobuf.ProtobufLogHandler logHandler);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern void mp_api_SerializedProtoArray__delete(IntPtr serializedProtoVectorData);
+    public static extern void mp_api_SerializedProtoArray__delete(IntPtr serializedProtoVectorData, int size);
 
     #region MessageProto
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
