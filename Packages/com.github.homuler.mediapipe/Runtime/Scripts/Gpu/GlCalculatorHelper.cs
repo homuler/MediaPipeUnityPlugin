@@ -50,7 +50,7 @@ namespace Mediapipe
     {
       Status tmpStatus = null;
 
-      NativeGlStatusFunction nativeGlStatusFunc = () =>
+      var status = RunInGlContext(() =>
       {
         try
         {
@@ -61,11 +61,7 @@ namespace Mediapipe
           tmpStatus = Status.FailedPrecondition(e.ToString());
         }
         return tmpStatus.mpPtr;
-      };
-
-      var nativeGlStatusFuncHandle = GCHandle.Alloc(nativeGlStatusFunc, GCHandleType.Pinned);
-      var status = RunInGlContext(nativeGlStatusFunc);
-      nativeGlStatusFuncHandle.Free();
+      });
 
       if (tmpStatus != null) { tmpStatus.Dispose(); }
 
