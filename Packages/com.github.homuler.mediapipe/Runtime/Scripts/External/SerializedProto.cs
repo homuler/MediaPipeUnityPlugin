@@ -12,20 +12,20 @@ using pb = Google.Protobuf;
 namespace Mediapipe
 {
   [StructLayout(LayoutKind.Sequential)]
-  internal struct SerializedProto
+  internal readonly struct SerializedProto
   {
-    public IntPtr str;
-    public int length;
+    private readonly IntPtr _str;
+    private readonly int _length;
 
     public void Dispose()
     {
-      UnsafeNativeMethods.delete_array__PKc(str);
+      UnsafeNativeMethods.delete_array__PKc(_str);
     }
 
     public T Deserialize<T>(pb::MessageParser<T> parser) where T : pb::IMessage<T>
     {
-      var bytes = new byte[length];
-      Marshal.Copy(str, bytes, 0, bytes.Length);
+      var bytes = new byte[_length];
+      Marshal.Copy(_str, bytes, 0, bytes.Length);
       return parser.ParseFrom(bytes);
     }
   }
