@@ -26,7 +26,7 @@ RUN if [[ "${RANKMIRROS}" ]]; then \
 ARG UID
 
 # Create a privileged user
-RUN pacman -Syuu archlinux-keyring sudo --needed --noconfirm
+RUN pacman -Sy archlinux-keyring --noconfirm && pacman -Syuu sudo --needed --noconfirm
 RUN echo -e "%wheel ALL=(ALL) NOPASSWD: ALL\n" > /etc/sudoers.d/01_wheel
 RUN useradd -u ${UID} -m mediapipe && usermod -aG wheel mediapipe
 
