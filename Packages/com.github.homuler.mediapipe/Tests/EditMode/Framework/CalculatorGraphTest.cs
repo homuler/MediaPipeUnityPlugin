@@ -5,6 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using Mediapipe;
+using Mediapipe.Unity;
 using NUnit.Framework;
 
 namespace Tests
