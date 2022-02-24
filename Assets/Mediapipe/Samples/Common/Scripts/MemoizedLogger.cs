@@ -9,7 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using LogLevel = Mediapipe.Logger.LogLevel;
+using LogLevel = Mediapipe.Unity.Logger.LogLevel;
 
 namespace Mediapipe.Unity
 {
