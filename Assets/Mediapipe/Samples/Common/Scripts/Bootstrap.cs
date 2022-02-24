@@ -80,8 +80,8 @@ namespace Mediapipe.Unity
             AssetLoader.Provide(new LocalResourceManager());
             break;
 #else
-          Logger.LogError("LocalResourceManager is only supported on UnityEditor");
-          yield break;
+            Logger.LogError("LocalResourceManager is only supported on UnityEditor");
+            yield break;
 #endif
           }
         default:
