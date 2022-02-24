@@ -11,7 +11,6 @@ using UnityEngine;
 
 namespace Mediapipe.Unity
 {
-
   public class TextureFramePool : MonoBehaviour
   {
     private const string _TAG = nameof(TextureFramePool);
@@ -81,6 +80,47 @@ namespace Mediapipe.Unity
     public void ResizeTexture(int textureWidth, int textureHeight)
     {
       ResizeTexture(textureWidth, textureHeight, _format);
+    }
+
+    public bool TryGetTextureFrame(out TextureFrame outFrame)
+    {
+      TextureFrame nextFrame = null;
+
+      lock (((ICollection)_availableTextureFrames).SyncRoot)
+      {
+        if (_poolSize <= frameCount)
+        {
+          while (_availableTextureFrames.Count > 0)
+          {
+            var textureFrame = _availableTextureFrames.Dequeue();
+
+            if (!IsStale(textureFrame))
+            {
+              nextFrame = textureFrame;
+              break;
+            }
+          }
+        }
+        else
+        {
+          nextFrame = CreateNewTextureFrame();
+        }
+      }
+
+      if (nextFrame == null)
+      {
+        outFrame = null;
+        return false;
+      }
+
+      lock (((ICollection)_textureFramesInUse).SyncRoot)
+      {
+        _textureFramesInUse.Add(nextFrame.GetInstanceID(), nextFrame);
+      }
+
+      nextFrame.WaitUntilReleased();
+      outFrame = nextFrame;
+      return true;
     }
 
     public WaitForResult<TextureFrame> WaitForNextTextureFrame(Action<TextureFrame> callback)
