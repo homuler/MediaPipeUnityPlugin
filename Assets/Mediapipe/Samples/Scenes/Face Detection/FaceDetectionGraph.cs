@@ -26,15 +26,17 @@ namespace Mediapipe.Unity.FaceDetection
     private OutputStream<DetectionVectorPacket, List<Detection>> _faceDetectionsStream;
     protected long prevFaceDetectionsMicrosec = 0;
 
-    public override Status StartRun(ImageSource imageSource)
+    public override void StartRun(ImageSource imageSource)
     {
-      return (runningMode.IsSynchronous() ? _faceDetectionsStream.StartPolling() : _faceDetectionsStream.AddListener(FaceDetectionsCallback)).And(() =>
+      if (runningMode.IsSynchronous())
       {
-        return calculatorGraph.StartRun(BuildSidePacket(imageSource));
-      }).And(() =>
+        _faceDetectionsStream.StartPolling().AssertOk();
+      }
+      else
       {
-        return StartRun(BuildSidePacket(imageSource));
-      });
+        _faceDetectionsStream.AddListener(FaceDetectionsCallback).AssertOk();
+      }
+      StartRun(BuildSidePacket(imageSource));
     }
 
     public override void Stop()

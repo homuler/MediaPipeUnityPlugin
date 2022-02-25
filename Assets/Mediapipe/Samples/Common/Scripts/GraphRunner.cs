@@ -135,17 +135,12 @@ namespace Mediapipe.Unity
       }
     }
 
-    public abstract Status StartRun(ImageSource imageSource);
+    public abstract void StartRun(ImageSource imageSource);
 
-    protected Status StartRun(SidePacket sidePacket)
+    protected void StartRun(SidePacket sidePacket)
     {
-      var status = calculatorGraph.StartRun(sidePacket);
-
-      if (status.Ok())
-      {
-        _isRunning = true;
-      }
-      return status;
+      calculatorGraph.StartRun(sidePacket).AssertOk();
+      _isRunning = true;
     }
 
     public virtual void Stop()
@@ -183,25 +178,26 @@ namespace Mediapipe.Unity
       }
     }
 
-    public Status AddPacketToInputStream<T>(string streamName, Packet<T> packet)
+    public void AddPacketToInputStream<T>(string streamName, Packet<T> packet)
     {
-      return calculatorGraph.AddPacketToInputStream(streamName, packet);
+      calculatorGraph.AddPacketToInputStream(streamName, packet).AssertOk();
     }
 
-    public Status AddTextureFrameToInputStream(string streamName, TextureFrame textureFrame)
+    public void AddTextureFrameToInputStream(string streamName, TextureFrame textureFrame)
     {
       currentTimestamp = GetCurrentTimestamp();
 
       if (configType == ConfigType.OpenGLES)
       {
         var gpuBuffer = textureFrame.BuildGpuBuffer(GpuManager.GlCalculatorHelper.GetGlContext());
-        return calculatorGraph.AddPacketToInputStream(streamName, new GpuBufferPacket(gpuBuffer, currentTimestamp));
+        AddPacketToInputStream(streamName, new GpuBufferPacket(gpuBuffer, currentTimestamp));
+        return;
       }
 
       var imageFrame = textureFrame.BuildImageFrame();
       textureFrame.Release();
 
-      return AddPacketToInputStream(streamName, new ImageFramePacket(imageFrame, currentTimestamp));
+      AddPacketToInputStream(streamName, new ImageFramePacket(imageFrame, currentTimestamp));
     }
 
     protected bool TryGetNext<TPacket, TValue>(OutputStream<TPacket, TValue> stream, out TValue value, bool allowBlock, long currentTimestampMicrosec) where TPacket : Packet<TValue>, new()

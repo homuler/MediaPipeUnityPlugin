@@ -80,7 +80,7 @@ namespace Mediapipe.Unity
       // Use RGBA32 as the input format.
       // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
       textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
-      graphRunner.StartRun(imageSource).AssertOk();
+      graphRunner.StartRun(imageSource);
 
       OnStartRun();
 
@@ -101,7 +101,7 @@ namespace Mediapipe.Unity
 
         // Copy current image to TextureFrame
         ReadFromImageSource(imageSource, textureFrame);
-        graphRunner.AddTextureFrameToInputStream("input_video", textureFrame).AssertOk();
+        graphRunner.AddTextureFrameToInputStream("input_video", textureFrame);
 
         if (runningMode.IsSynchronous())
         {
