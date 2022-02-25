@@ -449,15 +449,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 074337820eff7f441910fadfc931aa08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _screen: {fileID: 1375628860}
+  screen: {fileID: 1375628860}
+  graphRunner: {fileID: 275874968}
+  textureFramePool: {fileID: 275874970}
+  runningMode: 0
   _worldAnnotationArea: {fileID: 1936307554}
   _poseDetectionAnnotationController: {fileID: 1375628863}
   _holisticAnnotationController: {fileID: 1375628862}
   _poseWorldLandmarksAnnotationController: {fileID: 1936307555}
   _poseRoiAnnotationController: {fileID: 1375628861}
-  _graphRunner: {fileID: 275874968}
-  _textureFramePool: {fileID: 275874970}
-  runningMode: 0
 --- !u!114 &275874970
 MonoBehaviour:
   m_ObjectHideFlags: 0

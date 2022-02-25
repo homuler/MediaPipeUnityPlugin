@@ -68,6 +68,9 @@ namespace Mediapipe.Unity
         yield break;
       }
 
+      // Use RGBA32 as the input format.
+      // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
+      textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
       SetupScreen(imageSource);
 
       yield return graphInitRequest;
@@ -77,11 +80,7 @@ namespace Mediapipe.Unity
         yield break;
       }
 
-      // Use RGBA32 as the input format.
-      // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
-      textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
       graphRunner.StartRun(imageSource);
-
       OnStartRun();
 
       var waitWhilePausing = new WaitWhile(() => isPaused);
@@ -101,11 +100,11 @@ namespace Mediapipe.Unity
 
         // Copy current image to TextureFrame
         ReadFromImageSource(imageSource, textureFrame);
-        graphRunner.AddTextureFrameToInputStream("input_video", textureFrame);
+        AddTextureFrameToInputStream(textureFrame);
 
         if (runningMode.IsSynchronous())
         {
-          screen.ReadSync(textureFrame);
+          RenderCurrentFrame(textureFrame);
           yield return WaitForNextValue();
         }
         else
@@ -121,7 +120,14 @@ namespace Mediapipe.Unity
       screen.Initialize(imageSource);
     }
 
+    protected virtual void RenderCurrentFrame(TextureFrame textureFrame)
+    {
+      screen.ReadSync(textureFrame);
+    }
+
     protected abstract void OnStartRun();
+
+    protected abstract void AddTextureFrameToInputStream(TextureFrame textureFrame);
 
     protected abstract IEnumerator WaitForNextValue();
   }

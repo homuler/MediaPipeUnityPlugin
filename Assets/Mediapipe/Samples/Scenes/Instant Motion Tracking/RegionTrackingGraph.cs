@@ -26,53 +26,46 @@ namespace Mediapipe.Unity.InstantMotionTracking
 
     private const string _TrackedAnchorDataStreamName = "tracked_anchor_data";
     private OutputStream<Anchor3dVectorPacket, List<Anchor3d>> _trackedAnchorDataStream;
-    protected long prevTrackedAnchorDataMicrosec = 0;
 
-    public override Status StartRun(ImageSource imageSource)
+    public override void StartRun(ImageSource imageSource)
     {
-      InitializeOutputStreams();
-      _trackedAnchorDataStream.StartPolling(true).AssertOk();
-      return calculatorGraph.StartRun(BuildSidePacket(imageSource));
-    }
-
-    public Status StartRunAsync(ImageSource imageSource)
-    {
-      InitializeOutputStreams();
-      _trackedAnchorDataStream.AddListener(TrackedAnchorDataCallback, true).AssertOk();
-      return calculatorGraph.StartRun(BuildSidePacket(imageSource));
+      if (runningMode.IsSynchronous())
+      {
+        _trackedAnchorDataStream.StartPolling().AssertOk();
+      }
+      else
+      {
+        _trackedAnchorDataStream.AddListener(TrackedAnchorDataCallback).AssertOk();
+      }
+      StartRun(BuildSidePacket(imageSource));
     }
 
     public override void Stop()
     {
       base.Stop();
       OnTrackedAnchorDataOutput.RemoveAllListeners();
+      _trackedAnchorDataStream = null;
     }
 
-    public Status AddTextureFrameToInputStream(TextureFrame textureFrame)
+    public void AddTextureFrameToInputStream(TextureFrame textureFrame)
     {
-      var status = AddTextureFrameToInputStream(_InputStreamName, textureFrame);
-      if (!status.Ok())
-      {
-        return status;
-      }
+      AddTextureFrameToInputStream(_InputStreamName, textureFrame);
 
       var stickerSentinelId = _isTracking ? -1 : _currentStickerSentinelId;
-      status = AddPacketToInputStream(_StickerSentinelStreamName, new IntPacket(stickerSentinelId, currentTimestamp));
-
-      if (!status.Ok())
-      {
-        return status;
-      }
+      AddPacketToInputStream(_StickerSentinelStreamName, new IntPacket(stickerSentinelId, currentTimestamp));
 
       _isTracking = true;
-      return AddPacketToInputStream(_InitialAnchorDataStreamName, new Anchor3dVectorPacket(_anchors, currentTimestamp));
+      AddPacketToInputStream(_InitialAnchorDataStreamName, new Anchor3dVectorPacket(_anchors, currentTimestamp));
     }
 
-    public List<Anchor3d> FetchNextValue()
+    public bool TryGetNext(out List<Anchor3d> trackedAnchorData, bool allowBlock = true)
     {
-      var _ = _trackedAnchorDataStream.TryGetNext(out var trackedAnchorData);
-      OnTrackedAnchorDataOutput.Invoke(trackedAnchorData);
-      return trackedAnchorData;
+      if (TryGetNext(_trackedAnchorDataStream, out trackedAnchorData, allowBlock, GetCurrentTimestampMicrosec()))
+      {
+        OnTrackedAnchorDataOutput.Invoke(trackedAnchorData);
+        return true;
+      }
+      return false;
     }
 
     public void ResetAnchor(float normalizedX = 0.5f, float normalizedY = 0.5f)
@@ -91,7 +84,7 @@ namespace Mediapipe.Unity.InstantMotionTracking
       {
         using (var packet = new Anchor3dVectorPacket(ptr, false))
         {
-          if (regionTrackingGraph.TryGetPacketValue(packet, ref regionTrackingGraph.prevTrackedAnchorDataMicrosec, out var value))
+          if (regionTrackingGraph._trackedAnchorDataStream.TryGetPacketValue(packet, out var value, regionTrackingGraph.timeoutMicrosec))
           {
             regionTrackingGraph.OnTrackedAnchorDataOutput.Invoke(value);
           }
@@ -106,9 +99,17 @@ namespace Mediapipe.Unity.InstantMotionTracking
       };
     }
 
-    protected void InitializeOutputStreams()
+    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      _trackedAnchorDataStream = new OutputStream<Anchor3dVectorPacket, List<Anchor3d>>(calculatorGraph, _TrackedAnchorDataStreamName);
+      if (runningMode == RunningMode.SyncNonBlock)
+      {
+        _trackedAnchorDataStream = new OutputStream<Anchor3dVectorPacket, List<Anchor3d>>(calculatorGraph, _TrackedAnchorDataStreamName, config.AddPacketPresenceCalculator(_TrackedAnchorDataStreamName));
+      }
+      else
+      {
+        _trackedAnchorDataStream = new OutputStream<Anchor3dVectorPacket, List<Anchor3d>>(calculatorGraph, _TrackedAnchorDataStreamName, true);
+      }
+      return calculatorGraph.Initialize(config);
     }
 
     private SidePacket BuildSidePacket(ImageSource imageSource)

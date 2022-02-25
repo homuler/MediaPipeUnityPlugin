@@ -21,22 +21,20 @@ namespace Mediapipe.Unity.FaceDetection
 
     protected override void OnStartRun()
     {
-      if (runningMode == RunningMode.Async)
-      {
-        graphRunner.OnFaceDetectionsOutput.AddListener(_faceDetectionsAnnotationController.DrawLater);
-      }
-      else
-      {
-        graphRunner.OnFaceDetectionsOutput.AddListener(_faceDetectionsAnnotationController.DrawNow);
-      }
+      graphRunner.OnFaceDetectionsOutput.AddListener(_faceDetectionsAnnotationController.DrawLater);
       SetupAnnotationController(_faceDetectionsAnnotationController, ImageSourceProvider.ImageSource);
+    }
+
+    protected override void AddTextureFrameToInputStream(TextureFrame textureFrame)
+    {
+      graphRunner.AddTextureFrameToInputStream(textureFrame);
     }
 
     protected override IEnumerator WaitForNextValue()
     {
       if (runningMode == RunningMode.Sync)
       {
-        var _ = graphRunner.TryGetNext(out var detections, true);
+        var _ = graphRunner.TryGetNext(out var _, true);
         yield return new WaitForEndOfFrame();
       }
       else if (runningMode == RunningMode.SyncNonBlock)

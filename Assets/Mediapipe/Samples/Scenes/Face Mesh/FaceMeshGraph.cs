@@ -33,33 +33,23 @@ namespace Mediapipe.Unity.FaceMesh
     private OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>> _faceRectsFromLandmarksStream;
     private OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>> _faceRectsFromDetectionsStream;
 
-    protected long prevFaceDetectionsMicrosec = 0;
-    protected long prevMultiFaceLandmarksMicrosec = 0;
-    protected long prevFaceRectsFromLandmarksMicrosec = 0;
-    protected long prevFaceRectsFromDetectionsMicrosec = 0;
-
-    public override Status StartRun(ImageSource imageSource)
+    public override void StartRun(ImageSource imageSource)
     {
-      InitializeOutputStreams();
-
-      _faceDetectionsStream.StartPolling(true).AssertOk();
-      _multiFaceLandmarksStream.StartPolling(true).AssertOk();
-      _faceRectsFromLandmarksStream.StartPolling(true).AssertOk();
-      _faceRectsFromDetectionsStream.StartPolling(true).AssertOk();
-
-      return calculatorGraph.StartRun(BuildSidePacket(imageSource));
-    }
-
-    public Status StartRunAsync(ImageSource imageSource)
-    {
-      InitializeOutputStreams();
-
-      _faceDetectionsStream.AddListener(FaceDetectionsCallback, true).AssertOk();
-      _multiFaceLandmarksStream.AddListener(MultiFaceLandmarksCallback, true).AssertOk();
-      _faceRectsFromLandmarksStream.AddListener(FaceRectsFromLandmarksCallback, true).AssertOk();
-      _faceRectsFromDetectionsStream.AddListener(FaceRectsFromDetectionsCallback, true).AssertOk();
-
-      return calculatorGraph.StartRun(BuildSidePacket(imageSource));
+      if (runningMode.IsSynchronous())
+      {
+        _faceDetectionsStream.StartPolling().AssertOk();
+        _multiFaceLandmarksStream.StartPolling().AssertOk();
+        _faceRectsFromLandmarksStream.StartPolling().AssertOk();
+        _faceRectsFromDetectionsStream.StartPolling().AssertOk();
+      }
+      else
+      {
+        _faceDetectionsStream.AddListener(FaceDetectionsCallback).AssertOk();
+        _multiFaceLandmarksStream.AddListener(MultiFaceLandmarksCallback).AssertOk();
+        _faceRectsFromLandmarksStream.AddListener(FaceRectsFromLandmarksCallback).AssertOk();
+        _faceRectsFromDetectionsStream.AddListener(FaceRectsFromDetectionsCallback).AssertOk();
+      }
+      StartRun(BuildSidePacket(imageSource));
     }
 
     public override void Stop()
@@ -69,26 +59,32 @@ namespace Mediapipe.Unity.FaceMesh
       OnMultiFaceLandmarksOutput.RemoveAllListeners();
       OnFaceRectsFromLandmarksOutput.RemoveAllListeners();
       OnFaceRectsFromDetectionsOutput.RemoveAllListeners();
+      _faceDetectionsStream = null;
+      _multiFaceLandmarksStream = null;
+      _faceRectsFromLandmarksStream = null;
+      _faceRectsFromDetectionsStream = null;
     }
 
-    public Status AddTextureFrameToInputStream(TextureFrame textureFrame)
+    public void AddTextureFrameToInputStream(TextureFrame textureFrame)
     {
-      return AddTextureFrameToInputStream(_InputStreamName, textureFrame);
+      AddTextureFrameToInputStream(_InputStreamName, textureFrame);
     }
 
-    public FaceMeshValue FetchNextValue()
+    public bool TryGetNext(out List<Detection> faceDetections, out List<NormalizedLandmarkList> multiFaceLandmarks,
+                           out List<NormalizedRect> faceRectsFromLandmarks, out List<NormalizedRect> faceRectsFromDetections, bool allowBlock = true)
     {
-      var _ = _faceDetectionsStream.TryGetNext(out var faceDetections);
-      _ = _multiFaceLandmarksStream.TryGetNext(out var multiFaceLandmarks);
-      _ = _faceRectsFromLandmarksStream.TryGetNext(out var faceRectsFromLandmarks);
-      _ = _faceRectsFromDetectionsStream.TryGetNext(out var faceRectsFromDetections);
+      var currentTimestampMicrosec = GetCurrentTimestampMicrosec();
+      var r1 = TryGetNext(_faceDetectionsStream, out faceDetections, allowBlock, currentTimestampMicrosec);
+      var r2 = TryGetNext(_multiFaceLandmarksStream, out multiFaceLandmarks, allowBlock, currentTimestampMicrosec);
+      var r3 = TryGetNext(_faceRectsFromLandmarksStream, out faceRectsFromLandmarks, allowBlock, currentTimestampMicrosec);
+      var r4 = TryGetNext(_faceRectsFromDetectionsStream, out faceRectsFromDetections, allowBlock, currentTimestampMicrosec);
 
-      OnFaceDetectionsOutput.Invoke(faceDetections);
-      OnMultiFaceLandmarksOutput.Invoke(multiFaceLandmarks);
-      OnFaceRectsFromLandmarksOutput.Invoke(faceRectsFromLandmarks);
-      OnFaceRectsFromDetectionsOutput.Invoke(faceRectsFromDetections);
+      if (r1) { OnFaceDetectionsOutput.Invoke(faceDetections); }
+      if (r2) { OnMultiFaceLandmarksOutput.Invoke(multiFaceLandmarks); }
+      if (r3) { OnFaceRectsFromLandmarksOutput.Invoke(faceRectsFromLandmarks); }
+      if (r4) { OnFaceRectsFromDetectionsOutput.Invoke(faceRectsFromDetections); }
 
-      return new FaceMeshValue(faceDetections, multiFaceLandmarks, faceRectsFromLandmarks, faceRectsFromDetections);
+      return r1 || r2 || r3 || r4;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
@@ -98,7 +94,7 @@ namespace Mediapipe.Unity.FaceMesh
       {
         using (var packet = new DetectionVectorPacket(ptr, false))
         {
-          if (faceMeshGraph.TryGetPacketValue(packet, ref faceMeshGraph.prevFaceDetectionsMicrosec, out var value))
+          if (faceMeshGraph._faceDetectionsStream.TryGetPacketValue(packet, out var value, faceMeshGraph.timeoutMicrosec))
           {
             faceMeshGraph.OnFaceDetectionsOutput.Invoke(value);
           }
@@ -113,7 +109,7 @@ namespace Mediapipe.Unity.FaceMesh
       {
         using (var packet = new NormalizedLandmarkListVectorPacket(ptr, false))
         {
-          if (faceMeshGraph.TryGetPacketValue(packet, ref faceMeshGraph.prevMultiFaceLandmarksMicrosec, out var value))
+          if (faceMeshGraph._multiFaceLandmarksStream.TryGetPacketValue(packet, out var value, faceMeshGraph.timeoutMicrosec))
           {
             faceMeshGraph.OnMultiFaceLandmarksOutput.Invoke(value);
           }
@@ -128,7 +124,7 @@ namespace Mediapipe.Unity.FaceMesh
       {
         using (var packet = new NormalizedRectVectorPacket(ptr, false))
         {
-          if (faceMeshGraph.TryGetPacketValue(packet, ref faceMeshGraph.prevFaceRectsFromLandmarksMicrosec, out var value))
+          if (faceMeshGraph._faceRectsFromLandmarksStream.TryGetPacketValue(packet, out var value, faceMeshGraph.timeoutMicrosec))
           {
             faceMeshGraph.OnFaceRectsFromLandmarksOutput.Invoke(value);
           }
@@ -143,7 +139,7 @@ namespace Mediapipe.Unity.FaceMesh
       {
         using (var packet = new NormalizedRectVectorPacket(ptr, false))
         {
-          if (faceMeshGraph.TryGetPacketValue(packet, ref faceMeshGraph.prevFaceRectsFromDetectionsMicrosec, out var value))
+          if (faceMeshGraph._faceRectsFromDetectionsStream.TryGetPacketValue(packet, out var value, faceMeshGraph.timeoutMicrosec))
           {
             faceMeshGraph.OnFaceRectsFromDetectionsOutput.Invoke(value);
           }
@@ -151,12 +147,23 @@ namespace Mediapipe.Unity.FaceMesh
       }).mpPtr;
     }
 
-    protected void InitializeOutputStreams()
+    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _FaceDetectionsStreamName);
-      _multiFaceLandmarksStream = new OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(calculatorGraph, _MultiFaceLandmarksStreamName);
-      _faceRectsFromLandmarksStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _FaceRectsFromLandmarksStreamName);
-      _faceRectsFromDetectionsStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _FaceRectsFromDetectionsStreamName);
+      if (runningMode == RunningMode.SyncNonBlock)
+      {
+        _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _FaceDetectionsStreamName, config.AddPacketPresenceCalculator(_FaceDetectionsStreamName));
+        _multiFaceLandmarksStream = new OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(calculatorGraph, _MultiFaceLandmarksStreamName, config.AddPacketPresenceCalculator(_MultiFaceLandmarksStreamName));
+        _faceRectsFromLandmarksStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _FaceRectsFromLandmarksStreamName, config.AddPacketPresenceCalculator(_FaceRectsFromLandmarksStreamName));
+        _faceRectsFromDetectionsStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _FaceRectsFromDetectionsStreamName, config.AddPacketPresenceCalculator(_FaceDetectionsStreamName));
+      }
+      else
+      {
+        _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _FaceDetectionsStreamName, true);
+        _multiFaceLandmarksStream = new OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(calculatorGraph, _MultiFaceLandmarksStreamName, true);
+        _faceRectsFromLandmarksStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _FaceRectsFromLandmarksStreamName, true);
+        _faceRectsFromDetectionsStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _FaceRectsFromDetectionsStreamName, true);
+      }
+      return calculatorGraph.Initialize(config);
     }
 
     protected override IList<WaitForResult> RequestDependentAssets()
@@ -174,6 +181,9 @@ namespace Mediapipe.Unity.FaceMesh
       SetImageTransformationOptions(sidePacket, imageSource);
       sidePacket.Emplace("num_faces", new IntPacket(maxNumFaces));
       sidePacket.Emplace("with_attention", new BoolPacket(refineLandmarks));
+
+      Logger.LogInfo(TAG, $"Max Num Faces = {maxNumFaces}");
+      Logger.LogInfo(TAG, $"Refine Landmarks = {refineLandmarks}");
 
       return sidePacket;
     }

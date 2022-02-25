@@ -42,7 +42,7 @@ namespace Mediapipe.Unity
     private bool _isRunning = false;
 
     public InferenceMode inferenceMode => configType == ConfigType.CPU ? InferenceMode.CPU : InferenceMode.GPU;
-    public ConfigType configType
+    public virtual ConfigType configType
     {
       get
       {

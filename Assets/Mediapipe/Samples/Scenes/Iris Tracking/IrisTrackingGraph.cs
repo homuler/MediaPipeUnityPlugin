@@ -28,30 +28,21 @@ namespace Mediapipe.Unity.IrisTracking
     private OutputStream<NormalizedRectPacket, NormalizedRect> _faceRectStream;
     private OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList> _faceLandmarksWithIrisStream;
 
-    protected long prevFaceDetectionsMicrosec = 0;
-    protected long prevFaceRectMicrosec = 0;
-    protected long prevFaceLandmarksWithIrisMicrosec = 0;
-
-    public override Status StartRun(ImageSource imageSource)
+    public override void StartRun(ImageSource imageSource)
     {
-      InitializeOutputStreams();
-
-      _faceDetectionsStream.StartPolling(true).AssertOk();
-      _faceRectStream.StartPolling(true).AssertOk();
-      _faceLandmarksWithIrisStream.StartPolling(true).AssertOk();
-
-      return calculatorGraph.StartRun(BuildSidePacket(imageSource));
-    }
-
-    public Status StartRunAsync(ImageSource imageSource)
-    {
-      InitializeOutputStreams();
-
-      _faceDetectionsStream.AddListener(FaceDetectionsCallback, true).AssertOk();
-      _faceRectStream.AddListener(FaceRectCallback, true).AssertOk();
-      _faceLandmarksWithIrisStream.AddListener(FaceLandmarksWithIrisCallback, true).AssertOk();
-
-      return calculatorGraph.StartRun(BuildSidePacket(imageSource));
+      if (runningMode.IsSynchronous())
+      {
+        _faceDetectionsStream.StartPolling().AssertOk();
+        _faceRectStream.StartPolling().AssertOk();
+        _faceLandmarksWithIrisStream.StartPolling().AssertOk();
+      }
+      else
+      {
+        _faceDetectionsStream.AddListener(FaceDetectionsCallback).AssertOk();
+        _faceRectStream.AddListener(FaceRectCallback).AssertOk();
+        _faceLandmarksWithIrisStream.AddListener(FaceLandmarksWithIrisCallback).AssertOk();
+      }
+      StartRun(BuildSidePacket(imageSource));
     }
 
     public override void Stop()
@@ -60,24 +51,28 @@ namespace Mediapipe.Unity.IrisTracking
       OnFaceDetectionsOutput.RemoveAllListeners();
       OnFaceRectOutput.RemoveAllListeners();
       OnFaceLandmarksWithIrisOutput.RemoveAllListeners();
+      _faceDetectionsStream = null;
+      _faceRectStream = null;
+      _faceLandmarksWithIrisStream = null;
     }
 
-    public Status AddTextureFrameToInputStream(TextureFrame textureFrame)
+    public void AddTextureFrameToInputStream(TextureFrame textureFrame)
     {
-      return AddTextureFrameToInputStream(_InputStreamName, textureFrame);
+      AddTextureFrameToInputStream(_InputStreamName, textureFrame);
     }
 
-    public IrisTrackingValue FetchNextValue()
+    public bool TryGetNext(out List<Detection> faceDetections, out NormalizedRect faceRect, out NormalizedLandmarkList faceLandmarksWithIris, bool allowBlock = true)
     {
-      var _ = _faceDetectionsStream.TryGetNext(out var faceDetections);
-      _ = _faceRectStream.TryGetNext(out var faceRect);
-      _ = _faceLandmarksWithIrisStream.TryGetNext(out var faceLandmarksWithIris);
+      var currentTimestampMicrosec = GetCurrentTimestampMicrosec();
+      var r1 = TryGetNext(_faceDetectionsStream, out faceDetections, allowBlock, currentTimestampMicrosec);
+      var r2 = TryGetNext(_faceRectStream, out faceRect, allowBlock, currentTimestampMicrosec);
+      var r3 = TryGetNext(_faceLandmarksWithIrisStream, out faceLandmarksWithIris, allowBlock, currentTimestampMicrosec);
 
-      OnFaceDetectionsOutput.Invoke(faceDetections);
-      OnFaceRectOutput.Invoke(faceRect);
-      OnFaceLandmarksWithIrisOutput.Invoke(faceLandmarksWithIris);
+      if (r1) { OnFaceDetectionsOutput.Invoke(faceDetections); }
+      if (r2) { OnFaceRectOutput.Invoke(faceRect); }
+      if (r3) { OnFaceLandmarksWithIrisOutput.Invoke(faceLandmarksWithIris); }
 
-      return new IrisTrackingValue(faceDetections, faceRect, faceLandmarksWithIris);
+      return r1 || r2 || r3;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
@@ -87,7 +82,7 @@ namespace Mediapipe.Unity.IrisTracking
       {
         using (var packet = new DetectionVectorPacket(ptr, false))
         {
-          if (irisTrackingGraph.TryGetPacketValue(packet, ref irisTrackingGraph.prevFaceDetectionsMicrosec, out var value))
+          if (irisTrackingGraph._faceDetectionsStream.TryGetPacketValue(packet, out var value, irisTrackingGraph.timeoutMicrosec))
           {
             irisTrackingGraph.OnFaceDetectionsOutput.Invoke(value);
           }
@@ -102,7 +97,7 @@ namespace Mediapipe.Unity.IrisTracking
       {
         using (var packet = new NormalizedRectPacket(ptr, false))
         {
-          if (irisTrackingGraph.TryGetPacketValue(packet, ref irisTrackingGraph.prevFaceRectMicrosec, out var value))
+          if (irisTrackingGraph._faceRectStream.TryGetPacketValue(packet, out var value, irisTrackingGraph.timeoutMicrosec))
           {
             irisTrackingGraph.OnFaceRectOutput.Invoke(value);
           }
@@ -117,7 +112,7 @@ namespace Mediapipe.Unity.IrisTracking
       {
         using (var packet = new NormalizedLandmarkListPacket(ptr, false))
         {
-          if (irisTrackingGraph.TryGetPacketValue(packet, ref irisTrackingGraph.prevFaceLandmarksWithIrisMicrosec, out var value))
+          if (irisTrackingGraph._faceLandmarksWithIrisStream.TryGetPacketValue(packet, out var value, irisTrackingGraph.timeoutMicrosec))
           {
             irisTrackingGraph.OnFaceLandmarksWithIrisOutput.Invoke(value);
           }
@@ -134,11 +129,21 @@ namespace Mediapipe.Unity.IrisTracking
       };
     }
 
-    protected void InitializeOutputStreams()
+    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _FaceDetectionsStreamName);
-      _faceRectStream = new OutputStream<NormalizedRectPacket, NormalizedRect>(calculatorGraph, _FaceRectStreamName);
-      _faceLandmarksWithIrisStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _FaceLandmarksWithIrisStreamName);
+      if (runningMode == RunningMode.SyncNonBlock)
+      {
+        _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _FaceDetectionsStreamName, config.AddPacketPresenceCalculator(_FaceDetectionsStreamName));
+        _faceRectStream = new OutputStream<NormalizedRectPacket, NormalizedRect>(calculatorGraph, _FaceRectStreamName, config.AddPacketPresenceCalculator(_FaceRectStreamName));
+        _faceLandmarksWithIrisStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _FaceLandmarksWithIrisStreamName, config.AddPacketPresenceCalculator(_FaceLandmarksWithIrisStreamName));
+      }
+      else
+      {
+        _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _FaceDetectionsStreamName, true);
+        _faceRectStream = new OutputStream<NormalizedRectPacket, NormalizedRect>(calculatorGraph, _FaceRectStreamName, true);
+        _faceLandmarksWithIrisStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _FaceLandmarksWithIrisStreamName, true);
+      }
+      return calculatorGraph.Initialize(config);
     }
 
     private SidePacket BuildSidePacket(ImageSource imageSource)

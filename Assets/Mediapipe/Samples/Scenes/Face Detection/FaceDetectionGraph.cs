@@ -22,9 +22,9 @@ namespace Mediapipe.Unity.FaceDetection
     public UnityEvent<List<Detection>> OnFaceDetectionsOutput = new UnityEvent<List<Detection>>();
 #pragma warning restore IDE1006
 
+    private const string _InputStreamName = "input_video";
     private const string _FaceDetectionsStreamName = "face_detections";
     private OutputStream<DetectionVectorPacket, List<Detection>> _faceDetectionsStream;
-    protected long prevFaceDetectionsMicrosec = 0;
 
     public override void StartRun(ImageSource imageSource)
     {
@@ -44,6 +44,11 @@ namespace Mediapipe.Unity.FaceDetection
       base.Stop();
       OnFaceDetectionsOutput.RemoveAllListeners();
       _faceDetectionsStream = null;
+    }
+
+    public void AddTextureFrameToInputStream(TextureFrame textureFrame)
+    {
+      AddTextureFrameToInputStream(_InputStreamName, textureFrame);
     }
 
     public bool TryGetNext(out List<Detection> faceDetections, bool allowBlock = true)
@@ -83,14 +88,12 @@ namespace Mediapipe.Unity.FaceDetection
     {
       if (runningMode == RunningMode.SyncNonBlock)
       {
-        var presenceStreamName = config.AddPacketPresenceCalculator(_FaceDetectionsStreamName);
-        _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _FaceDetectionsStreamName, presenceStreamName);
+        _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _FaceDetectionsStreamName, config.AddPacketPresenceCalculator(_FaceDetectionsStreamName));
       }
       else
       {
         _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _FaceDetectionsStreamName, true);
       }
-
       return calculatorGraph.Initialize(config);
     }
 

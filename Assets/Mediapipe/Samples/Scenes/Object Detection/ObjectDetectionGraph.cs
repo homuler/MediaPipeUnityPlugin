@@ -20,38 +20,40 @@ namespace Mediapipe.Unity.ObjectDetection
 
     private const string _OutputDetectionsStreamName = "output_detections";
     private OutputStream<DetectionVectorPacket, List<Detection>> _outputDetectionsStream;
-    protected long prevOutputDetectionsMicrosec = 0;
 
-    public override Status StartRun(ImageSource imageSource)
+    public override void StartRun(ImageSource imageSource)
     {
-      InitializeOutputStreams();
-      _outputDetectionsStream.StartPolling(true).AssertOk();
-      return calculatorGraph.StartRun(BuildSidePacket(imageSource));
-    }
-
-    public Status StartRunAsync(ImageSource imageSource)
-    {
-      InitializeOutputStreams();
-      _outputDetectionsStream.AddListener(OutputDetectionsCallback, true).AssertOk();
-      return calculatorGraph.StartRun(BuildSidePacket(imageSource));
+      if (runningMode.IsSynchronous())
+      {
+        _outputDetectionsStream.StartPolling().AssertOk();
+      }
+      else
+      {
+        _outputDetectionsStream.AddListener(OutputDetectionsCallback).AssertOk();
+      }
+      StartRun(BuildSidePacket(imageSource));
     }
 
     public override void Stop()
     {
       base.Stop();
       OnOutputDetectionsOutput.RemoveAllListeners();
+      _outputDetectionsStream = null;
     }
 
-    public Status AddTextureFrameToInputStream(TextureFrame textureFrame)
+    public void AddTextureFrameToInputStream(TextureFrame textureFrame)
     {
-      return AddTextureFrameToInputStream(_InputStreamName, textureFrame);
+      AddTextureFrameToInputStream(_InputStreamName, textureFrame);
     }
 
-    public List<Detection> FetchNextDetections()
+    public bool TryGetNext(out List<Detection> outputDetections, bool allowBlock = true)
     {
-      var _ = _outputDetectionsStream.TryGetNext(out var outputDetections);
-      OnOutputDetectionsOutput.Invoke(outputDetections);
-      return outputDetections;
+      if (TryGetNext(_outputDetectionsStream, out outputDetections, allowBlock, GetCurrentTimestampMicrosec()))
+      {
+        OnOutputDetectionsOutput.Invoke(outputDetections);
+        return true;
+      }
+      return false;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
@@ -61,7 +63,7 @@ namespace Mediapipe.Unity.ObjectDetection
       {
         using (var packet = new DetectionVectorPacket(ptr, false))
         {
-          if (objectDetectionGraph.TryGetPacketValue(packet, ref objectDetectionGraph.prevOutputDetectionsMicrosec, out var value))
+          if (objectDetectionGraph._outputDetectionsStream.TryGetPacketValue(packet, out var value, objectDetectionGraph.timeoutMicrosec))
           {
             objectDetectionGraph.OnOutputDetectionsOutput.Invoke(value);
           }
@@ -77,9 +79,17 @@ namespace Mediapipe.Unity.ObjectDetection
       };
     }
 
-    protected void InitializeOutputStreams()
+    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      _outputDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _OutputDetectionsStreamName);
+      if (runningMode == RunningMode.SyncNonBlock)
+      {
+        _outputDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _OutputDetectionsStreamName, config.AddPacketPresenceCalculator(_OutputDetectionsStreamName));
+      }
+      else
+      {
+        _outputDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _OutputDetectionsStreamName, true);
+      }
+      return calculatorGraph.Initialize(config);
     }
 
     private SidePacket BuildSidePacket(ImageSource imageSource)

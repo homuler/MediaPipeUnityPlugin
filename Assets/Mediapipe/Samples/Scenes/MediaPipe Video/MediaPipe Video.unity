@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4465791, g: 0.4964133, b: 0.57481784, a: 1}
+  m_IndirectSpecularColor: {r: 0.44402248, g: 0.49316555, b: 0.5722324, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -254,10 +254,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 386ee87194003cbd899dddcd6a2e6add, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _screen: {fileID: 1567625567}
-  _graphRunner: {fileID: 1064799460}
-  _textureFramePool: {fileID: 1064799463}
-  runningMode: 1
+  screen: {fileID: 1567625569}
+  graphRunner: {fileID: 1064799460}
+  textureFramePool: {fileID: 1064799463}
+  runningMode: 2
 --- !u!114 &1064799463
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -283,6 +283,7 @@ GameObject:
   - component: {fileID: 1567625568}
   - component: {fileID: 1567625567}
   - component: {fileID: 1567625566}
+  - component: {fileID: 1567625569}
   m_Layer: 5
   m_Name: Screen
   m_TagString: Untagged
@@ -357,6 +358,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1567625564}
   m_CullTransparentMesh: 1
+--- !u!114 &1567625569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1567625564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 827c4431af677e057aa6f14170d0785c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _screen: {fileID: 1567625567}
 --- !u!1 &1806680259
 GameObject:
   m_ObjectHideFlags: 0

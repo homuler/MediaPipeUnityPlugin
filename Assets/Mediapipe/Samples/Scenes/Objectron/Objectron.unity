@@ -570,13 +570,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79851c6ecd8cfe01da18bbad5ebfc1a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _screen: {fileID: 544675422}
-  _graphRunner: {fileID: 1064799460}
+  screen: {fileID: 544675422}
+  graphRunner: {fileID: 1064799460}
+  textureFramePool: {fileID: 1064799463}
+  runningMode: 0
   _liftedObjectsAnnotationController: {fileID: 544675421}
   _multiBoxRectsAnnotationController: {fileID: 544675423}
   _multiBoxLandmarksAnnotationController: {fileID: 544675424}
-  _textureFramePool: {fileID: 1064799463}
-  runningMode: 0
 --- !u!114 &1064799463
 MonoBehaviour:
   m_ObjectHideFlags: 0

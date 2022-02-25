@@ -419,11 +419,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66bf0cd8d727b10e1a965a4c97487d05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _screen: {fileID: 107400413}
-  _hairMaskAnnotationController: {fileID: 107400412}
-  _graphRunner: {fileID: 1064799460}
-  _textureFramePool: {fileID: 1064799463}
+  screen: {fileID: 107400413}
+  graphRunner: {fileID: 1064799460}
+  textureFramePool: {fileID: 1064799463}
   runningMode: 0
+  _hairMaskAnnotationController: {fileID: 107400412}
 --- !u!114 &1064799463
 MonoBehaviour:
   m_ObjectHideFlags: 0

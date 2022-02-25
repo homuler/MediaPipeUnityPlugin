@@ -59,26 +59,21 @@ namespace Mediapipe.Unity.Objectron
     protected long prevMultiBoxRectsMicrosec = 0;
     protected long prevMultiBoxLandmarksMicrosec = 0;
 
-    public override Status StartRun(ImageSource imageSource)
+    public override void StartRun(ImageSource imageSource)
     {
-      InitializeOutputStreams();
-
-      _liftedObjectsStream.StartPolling(true).AssertOk();
-      _multiBoxRectsStream.StartPolling(true).AssertOk();
-      _multiBoxLandmarksStream.StartPolling(true).AssertOk();
-
-      return calculatorGraph.StartRun(BuildSidePacket(imageSource));
-    }
-
-    public Status StartRunAsync(ImageSource imageSource)
-    {
-      InitializeOutputStreams();
-
-      _liftedObjectsStream.AddListener(LiftedObjectsCallback, true).AssertOk();
-      _multiBoxRectsStream.AddListener(MultiBoxRectsCallback, true).AssertOk();
-      _multiBoxLandmarksStream.AddListener(MultiBoxLandmarksCallback, true).AssertOk();
-
-      return calculatorGraph.StartRun(BuildSidePacket(imageSource));
+      if (runningMode.IsSynchronous())
+      {
+        _liftedObjectsStream.StartPolling().AssertOk();
+        _multiBoxRectsStream.StartPolling().AssertOk();
+        _multiBoxLandmarksStream.StartPolling().AssertOk();
+      }
+      else
+      {
+        _liftedObjectsStream.AddListener(LiftedObjectsCallback).AssertOk();
+        _multiBoxRectsStream.AddListener(MultiBoxRectsCallback).AssertOk();
+        _multiBoxLandmarksStream.AddListener(MultiBoxLandmarksCallback).AssertOk();
+      }
+      StartRun(BuildSidePacket(imageSource));
     }
 
     public override void Stop()
@@ -87,24 +82,28 @@ namespace Mediapipe.Unity.Objectron
       OnLiftedObjectsOutput.RemoveAllListeners();
       OnMultiBoxRectsOutput.RemoveAllListeners();
       OnMultiBoxLandmarksOutput.RemoveAllListeners();
+      _liftedObjectsStream = null;
+      _multiBoxRectsStream = null;
+      _multiBoxLandmarksStream = null;
     }
 
-    public Status AddTextureFrameToInputStream(TextureFrame textureFrame)
+    public void AddTextureFrameToInputStream(TextureFrame textureFrame)
     {
-      return AddTextureFrameToInputStream(_InputStreamName, textureFrame);
+      AddTextureFrameToInputStream(_InputStreamName, textureFrame);
     }
 
-    public ObjectronValue FetchNextValue()
+    public bool TryGetNext(out FrameAnnotation liftedObjects, out List<NormalizedRect> multiBoxRects, out List<NormalizedLandmarkList> multiBoxLandmarks, bool allowBlock = true)
     {
-      var _ = _liftedObjectsStream.TryGetNext(out var liftedObjects);
-      _ = _multiBoxRectsStream.TryGetNext(out var multiBoxRects);
-      _ = _multiBoxLandmarksStream.TryGetNext(out var multiBoxLandmarks);
+      var currentTimestampMicrosec = GetCurrentTimestampMicrosec();
+      var r1 = TryGetNext(_liftedObjectsStream, out liftedObjects, allowBlock, currentTimestampMicrosec);
+      var r2 = TryGetNext(_multiBoxRectsStream, out multiBoxRects, allowBlock, currentTimestampMicrosec);
+      var r3 = TryGetNext(_multiBoxLandmarksStream, out multiBoxLandmarks, allowBlock, currentTimestampMicrosec);
 
-      OnLiftedObjectsOutput.Invoke(liftedObjects);
-      OnMultiBoxRectsOutput.Invoke(multiBoxRects);
-      OnMultiBoxLandmarksOutput.Invoke(multiBoxLandmarks);
+      if (r1) { OnLiftedObjectsOutput.Invoke(liftedObjects); }
+      if (r2) { OnMultiBoxRectsOutput.Invoke(multiBoxRects); }
+      if (r3) { OnMultiBoxLandmarksOutput.Invoke(multiBoxLandmarks); }
 
-      return new ObjectronValue(liftedObjects, multiBoxRects, multiBoxLandmarks);
+      return r1 || r2 || r3;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
@@ -114,7 +113,7 @@ namespace Mediapipe.Unity.Objectron
       {
         using (var packet = new FrameAnnotationPacket(ptr, false))
         {
-          if (objectronGraph.TryGetPacketValue(packet, ref objectronGraph.prevLiftedObjectsMicrosec, out var value))
+          if (objectronGraph._liftedObjectsStream.TryGetPacketValue(packet, out var value, objectronGraph.timeoutMicrosec))
           {
             objectronGraph.OnLiftedObjectsOutput.Invoke(value);
           }
@@ -129,7 +128,7 @@ namespace Mediapipe.Unity.Objectron
       {
         using (var packet = new NormalizedRectVectorPacket(ptr, false))
         {
-          if (objectronGraph.TryGetPacketValue(packet, ref objectronGraph.prevMultiBoxRectsMicrosec, out var value))
+          if (objectronGraph._multiBoxRectsStream.TryGetPacketValue(packet, out var value, objectronGraph.timeoutMicrosec))
           {
             objectronGraph.OnMultiBoxRectsOutput.Invoke(value);
           }
@@ -144,7 +143,7 @@ namespace Mediapipe.Unity.Objectron
       {
         using (var packet = new NormalizedLandmarkListVectorPacket(ptr, false))
         {
-          if (objectronGraph.TryGetPacketValue(packet, ref objectronGraph.prevMultiBoxLandmarksMicrosec, out var value))
+          if (objectronGraph._multiBoxLandmarksStream.TryGetPacketValue(packet, out var value, objectronGraph.timeoutMicrosec))
           {
             objectronGraph.OnMultiBoxLandmarksOutput.Invoke(value);
           }
@@ -161,11 +160,21 @@ namespace Mediapipe.Unity.Objectron
       };
     }
 
-    protected void InitializeOutputStreams()
+    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      _liftedObjectsStream = new OutputStream<FrameAnnotationPacket, FrameAnnotation>(calculatorGraph, _LiftedObjectsStreamName);
-      _multiBoxRectsStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _MultiBoxRectsStreamName);
-      _multiBoxLandmarksStream = new OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(calculatorGraph, _MultiBoxLandmarksStreamName);
+      if (runningMode == RunningMode.SyncNonBlock)
+      {
+        _liftedObjectsStream = new OutputStream<FrameAnnotationPacket, FrameAnnotation>(calculatorGraph, _LiftedObjectsStreamName, config.AddPacketPresenceCalculator(_LiftedObjectsStreamName));
+        _multiBoxRectsStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _MultiBoxRectsStreamName, config.AddPacketPresenceCalculator(_MultiBoxRectsStreamName));
+        _multiBoxLandmarksStream = new OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(calculatorGraph, _MultiBoxLandmarksStreamName, config.AddPacketPresenceCalculator(_MultiBoxLandmarksStreamName));
+      }
+      else
+      {
+        _liftedObjectsStream = new OutputStream<FrameAnnotationPacket, FrameAnnotation>(calculatorGraph, _LiftedObjectsStreamName, true);
+        _multiBoxRectsStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _MultiBoxRectsStreamName, true);
+        _multiBoxLandmarksStream = new OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(calculatorGraph, _MultiBoxLandmarksStreamName, true);
+      }
+      return calculatorGraph.Initialize(config);
     }
 
     private SidePacket BuildSidePacket(ImageSource imageSource)
@@ -175,6 +184,9 @@ namespace Mediapipe.Unity.Objectron
       SetImageTransformationOptions(sidePacket, imageSource);
       sidePacket.Emplace("allowed_labels", new StringPacket(GetAllowedLabels(category)));
       sidePacket.Emplace("max_num_objects", new IntPacket(maxNumObjects));
+
+      Logger.LogInfo(TAG, $"Category = {category}");
+      Logger.LogInfo(TAG, $"Max Num Objects = {maxNumObjects}");
 
       return sidePacket;
     }
