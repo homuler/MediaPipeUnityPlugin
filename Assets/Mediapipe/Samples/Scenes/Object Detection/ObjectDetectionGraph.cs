@@ -81,7 +81,7 @@ namespace Mediapipe.Unity.ObjectDetection
 
     protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      if (runningMode == RunningMode.SyncNonBlock)
+      if (runningMode == RunningMode.NonBlockingSync)
       {
         _outputDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _OutputDetectionsStreamName, config.AddPacketPresenceCalculator(_OutputDetectionsStreamName));
       }

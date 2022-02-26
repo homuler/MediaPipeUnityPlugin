@@ -162,7 +162,7 @@ namespace Mediapipe.Unity.Objectron
 
     protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      if (runningMode == RunningMode.SyncNonBlock)
+      if (runningMode == RunningMode.NonBlockingSync)
       {
         _liftedObjectsStream = new OutputStream<FrameAnnotationPacket, FrameAnnotation>(calculatorGraph, _LiftedObjectsStreamName, config.AddPacketPresenceCalculator(_LiftedObjectsStreamName));
         _multiBoxRectsStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _MultiBoxRectsStreamName, config.AddPacketPresenceCalculator(_MultiBoxRectsStreamName));

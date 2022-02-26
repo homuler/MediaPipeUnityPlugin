@@ -80,7 +80,7 @@ namespace Mediapipe.Unity.BoxTracking
 
     protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      if (runningMode == RunningMode.SyncNonBlock)
+      if (runningMode == RunningMode.NonBlockingSync)
       {
         _trackedDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _TrackedDetectionsStreamName, config.AddPacketPresenceCalculator(_TrackedDetectionsStreamName));
       }

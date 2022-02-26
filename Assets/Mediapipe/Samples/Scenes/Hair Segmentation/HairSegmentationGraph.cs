@@ -84,7 +84,7 @@ namespace Mediapipe.Unity.HairSegmentation
 
     protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      if (runningMode == RunningMode.SyncNonBlock)
+      if (runningMode == RunningMode.NonBlockingSync)
       {
         _hairMaskStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _HairMaskStreamName, config.AddPacketPresenceCalculator(_HairMaskStreamName));
       }

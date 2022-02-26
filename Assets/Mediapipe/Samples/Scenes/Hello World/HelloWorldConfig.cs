@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using Mediapipe.Unity.UI;
@@ -45,7 +46,8 @@ namespace Mediapipe.Unity.HelloWorld.UI
 
     public void SwitchRunningMode()
     {
-      _solution.runningMode = (RunningMode)_runningModeInput.value;
+      var text = _runningModeInput.options[_runningModeInput.value].text;
+      _solution.runningMode = (RunningMode)Enum.Parse(typeof(RunningMode), text);
       _isChanged = true;
     }
 
@@ -67,7 +69,7 @@ namespace Mediapipe.Unity.HelloWorld.UI
       _runningModeInput = gameObject.transform.Find(_RunningModePath).gameObject.GetComponent<Dropdown>();
       _runningModeInput.ClearOptions();
 
-      var options = new List<string>(Enum.GetNames(typeof(RunningMode)));
+      var options = Enum.GetNames(typeof(RunningMode)).Where((name) => name != RunningMode.NonBlockingSync.ToString()).ToList();
       _runningModeInput.AddOptions(options);
 
       var currentRunningMode = _solution.runningMode;

@@ -101,7 +101,7 @@ namespace Mediapipe.Unity.InstantMotionTracking
 
     protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      if (runningMode == RunningMode.SyncNonBlock)
+      if (runningMode == RunningMode.NonBlockingSync)
       {
         _trackedAnchorDataStream = new OutputStream<Anchor3dVectorPacket, List<Anchor3d>>(calculatorGraph, _TrackedAnchorDataStreamName, config.AddPacketPresenceCalculator(_TrackedAnchorDataStreamName));
       }

@@ -31,7 +31,7 @@ namespace Mediapipe.Unity.BoxTracking
         var _ = graphRunner.TryGetNext(out var _, true);
         yield return new WaitForEndOfFrame();
       }
-      else if (runningMode == RunningMode.SyncNonBlock)
+      else if (runningMode == RunningMode.NonBlockingSync)
       {
         yield return new WaitUntil(() => graphRunner.TryGetNext(out var _, false));
       }

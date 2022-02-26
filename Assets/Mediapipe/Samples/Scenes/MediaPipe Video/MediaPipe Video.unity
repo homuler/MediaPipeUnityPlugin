@@ -257,7 +257,7 @@ MonoBehaviour:
   screen: {fileID: 1567625569}
   graphRunner: {fileID: 1064799460}
   textureFramePool: {fileID: 1064799463}
-  runningMode: 2
+  runningMode: 1
 --- !u!114 &1064799463
 MonoBehaviour:
   m_ObjectHideFlags: 0

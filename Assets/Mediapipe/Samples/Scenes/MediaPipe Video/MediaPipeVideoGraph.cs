@@ -89,7 +89,7 @@ namespace Mediapipe.Unity.MediaPipeVideo
         sinkNode.InputSidePacket.Add($"DESTINATION:{_destinationBufferName}");
       }
 
-      if (runningMode == RunningMode.SyncNonBlock)
+      if (runningMode == RunningMode.NonBlockingSync)
       {
         _outputVideoStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _OutputVideoStreamName, config.AddPacketPresenceCalculator(_OutputVideoStreamName));
       }
