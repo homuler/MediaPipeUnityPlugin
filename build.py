@@ -5,6 +5,7 @@ import platform
 import shutil
 import stat
 import subprocess
+import sys
 
 try:
   from ctypes import windll
@@ -198,12 +199,8 @@ class BuildCommand(Command):
     commands += self._build_linkopt()
 
     if self._is_windows():
-      python_bin_path_key = 'PYTHON_BIN_PATH'
-      if python_bin_path_key not in os.environ:
-        raise RuntimeError(f'`{python_bin_path_key}` is not set')
-
-      python_bin_path = os.environ[python_bin_path_key].replace('\\', '//')
-      commands += ['--action_env', f'{python_bin_path_key}="{python_bin_path}"']
+      python_bin_path = sys.executable.replace('\\', '//')
+      commands += ['--action_env', f'PYTHON_BIN_PATH="{python_bin_path}"']
 
       # Required to compile OpenCV
       # Without this environment variable, Visual Studio instances won't be found
