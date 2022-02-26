@@ -157,6 +157,9 @@ class BuildCommand(Command):
       self.console.info('Built native libraries for Desktop')
 
     if self.android:
+      self.console.v('Checking if androidsdk and androidndk repositories are configured...')
+      self._test_android_repositories()
+
       self.console.info('Building native libraries for Android...')
       self._run_command(self._build_android_commands())
       self._copy(
@@ -309,6 +312,19 @@ class BuildCommand(Command):
 
   def _build_proto_dlls_commands(self):
     return ['nuget', 'install', '-o', _NUGET_PATH, '-Source', 'https://api.nuget.org/v3/index.json']
+
+  def _test_android_repositories(self):
+    try:
+      self._run_command(['bazel', 'query', '@androidsdk//...'])
+    except:
+      self.console.error(f'"androidsdk" repository is not configured yet. You may have forgetten to edit the WORKSPACE file or set ANDROID_HOME.')
+      raise
+
+    try:
+      self._run_command(['bazel', 'query', '@androidndk//...'])
+    except:
+      self.console.error(f'"androidndk" repository is not configured yet. You may have forgetten to edit the WORKSPACE file or set ANDROID_NDK_HOME.')
+      raise
 
   def _find_latest_built_framework(self):
     zip_files = glob.glob(os.path.join(_BAZEL_OUT_PATH, '*', 'bin', 'mediapipe_api', 'objc', 'MediaPipeUnity.zip'))
