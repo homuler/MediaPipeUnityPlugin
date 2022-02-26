@@ -75,8 +75,8 @@ RUN yay -Sy npm --needed --noconfirm && \
     echo -e "prefix = ${NPM_PREFIX}\n" > /home/mediapipe/.npmrc && \
     npm install -g @bazel/bazelisk
 
-# install other dependencies
-RUN yay -Sy mesa nuget python-pip --needed --noconfirm && \
+# install other dependencies and tools
+RUN yay -Sy mesa nuget python-pip vim --needed --noconfirm && \
     pip install --user numpy
 
 FROM builder

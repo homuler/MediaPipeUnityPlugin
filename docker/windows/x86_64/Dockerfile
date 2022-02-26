@@ -30,7 +30,7 @@ RUN curl -L http://repo.msys2.org/distrib/x86_64/msys2-base-x86_64-20210604.sfx.
 RUN bash.exe -l -c "pacman -Syuu --needed --noconfirm --noprogressbar" && `
     bash.exe -l -c "pacman -Syu --needed --noconfirm --noprogressbar" && `
     bash.exe -l -c "pacman -Sy --needed --noconfirm --noprogressbar" && `
-    bash.exe -l -c "pacman -S --needed --noconfirm git patch unzip zip p7zip" && `
+    bash.exe -l -c "pacman -S --needed --noconfirm git patch unzip vim zip p7zip" && `
     bash.exe -l -c "rm -r /var/cache/pacman/pkg/*"
 
 # Install Visual C++ Build Tools 2019 and WinSDK
