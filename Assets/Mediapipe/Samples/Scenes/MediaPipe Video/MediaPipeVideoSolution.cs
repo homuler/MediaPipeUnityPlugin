@@ -60,12 +60,11 @@ namespace Mediapipe.Unity.MediaPipeVideo
     {
       if (graphRunner.configType == GraphRunner.ConfigType.OpenGLES)
       {
-        yield return new WaitForEndOfFrame();
+        yield break;
       }
-      else if (runningMode == RunningMode.Sync)
+      if (runningMode == RunningMode.Sync)
       {
         var _ = graphRunner.TryGetNext(out var _, true);
-        yield return new WaitForEndOfFrame();
       }
       else if (runningMode == RunningMode.NonBlockingSync)
       {

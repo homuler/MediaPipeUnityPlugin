@@ -68,7 +68,6 @@ namespace Mediapipe.Unity.Holistic
       if (runningMode == RunningMode.Sync)
       {
         var _ = graphRunner.TryGetNext(out var _, out var _, out var _, out var _, out var _, out var _, out var _, true);
-        yield return new WaitForEndOfFrame();
       }
       else if (runningMode == RunningMode.NonBlockingSync)
       {

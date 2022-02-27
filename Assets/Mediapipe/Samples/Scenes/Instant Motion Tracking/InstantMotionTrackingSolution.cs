@@ -51,7 +51,6 @@ namespace Mediapipe.Unity.InstantMotionTracking
       if (runningMode == RunningMode.Sync)
       {
         var _ = graphRunner.TryGetNext(out var _, true);
-        yield return new WaitForEndOfFrame();
       }
       else if (runningMode == RunningMode.NonBlockingSync)
       {
