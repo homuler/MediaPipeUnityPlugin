@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.8.3](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.8.2...v0.8.3) (2022-02-27)
+
+
+### Features
+
+* add Non-Blocking Sync mode to the sample app ([#471](https://github.com/homuler/MediaPipeUnityPlugin/issues/471)) ([3a33e9d](https://github.com/homuler/MediaPipeUnityPlugin/commit/3a33e9ddb4c1069a0d44a20c8e459a8d8ee8d568))
+* compile with emscripten ([#395](https://github.com/homuler/MediaPipeUnityPlugin/issues/395)) ([de44dac](https://github.com/homuler/MediaPipeUnityPlugin/commit/de44dac3ad5261212d95bc59f57ef1c65802de11))
+
+
+### Bug Fixes
+
+* build AAR on Docker ([#441](https://github.com/homuler/MediaPipeUnityPlugin/issues/441)) ([75a736a](https://github.com/homuler/MediaPipeUnityPlugin/commit/75a736a8753850794ed7587561ac437d72ce3785))
+* configure plugin settings ([#381](https://github.com/homuler/MediaPipeUnityPlugin/issues/381)) ([ee27e24](https://github.com/homuler/MediaPipeUnityPlugin/commit/ee27e24e963c5485a36f5a63fc7215e732f4d49f))
+* memory for RenderTexture leaks ([#451](https://github.com/homuler/MediaPipeUnityPlugin/issues/451)) ([6a1d120](https://github.com/homuler/MediaPipeUnityPlugin/commit/6a1d120a531495941297bb4d41bcf20027b942db))
+* no need to pin callbacks ([#460](https://github.com/homuler/MediaPipeUnityPlugin/issues/460)) ([0dafc8a](https://github.com/homuler/MediaPipeUnityPlugin/commit/0dafc8ac1359f759a23bda20ba392dacfc75df2b))
+* OpenCV installation path is incorrect ([#459](https://github.com/homuler/MediaPipeUnityPlugin/issues/459)) ([6e60f75](https://github.com/homuler/MediaPipeUnityPlugin/commit/6e60f75a1056ad3f220215f32341d8bb1127a689))
+* **plugin:** load mediapipe_c.dll on Windows properly ([#455](https://github.com/homuler/MediaPipeUnityPlugin/issues/455)) ([e237ba7](https://github.com/homuler/MediaPipeUnityPlugin/commit/e237ba78fe0b8c024304248b1855777ed4b380af))
+* **sample:** smooth_landmarks option is not working ([#454](https://github.com/homuler/MediaPipeUnityPlugin/issues/454)) ([c90861c](https://github.com/homuler/MediaPipeUnityPlugin/commit/c90861cc7ac4f42e13e2906ad056e562e80a77f7))
+* SerializedProto's memory leaks ([#461](https://github.com/homuler/MediaPipeUnityPlugin/issues/461)) ([ac6316d](https://github.com/homuler/MediaPipeUnityPlugin/commit/ac6316d63fd882c562e3c5c10ffab86a58d71ccb))
+* typo and missing [Test] ([#426](https://github.com/homuler/MediaPipeUnityPlugin/issues/426)) ([018bd9f](https://github.com/homuler/MediaPipeUnityPlugin/commit/018bd9ffccdaaf2365b0590ba24fbee7f46b9be8))
+
 ### [0.8.2](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.8.1...v0.8.2) (2021-12-15)
 
 
