@@ -92,7 +92,7 @@ namespace Mediapipe.Unity
 
     private Stopwatch _stopwatch;
     protected CalculatorGraph calculatorGraph { get; private set; }
-    protected Timestamp currentTimestamp;
+    protected Timestamp latestTimestamp;
 
     protected virtual void Start()
     {
@@ -178,26 +178,26 @@ namespace Mediapipe.Unity
       }
     }
 
-    public void AddPacketToInputStream<T>(string streamName, Packet<T> packet)
+    protected void AddPacketToInputStream<T>(string streamName, Packet<T> packet)
     {
       calculatorGraph.AddPacketToInputStream(streamName, packet).AssertOk();
     }
 
-    public void AddTextureFrameToInputStream(string streamName, TextureFrame textureFrame)
+    protected void AddTextureFrameToInputStream(string streamName, TextureFrame textureFrame)
     {
-      currentTimestamp = GetCurrentTimestamp();
+      latestTimestamp = GetCurrentTimestamp();
 
       if (configType == ConfigType.OpenGLES)
       {
         var gpuBuffer = textureFrame.BuildGpuBuffer(GpuManager.GlCalculatorHelper.GetGlContext());
-        AddPacketToInputStream(streamName, new GpuBufferPacket(gpuBuffer, currentTimestamp));
+        AddPacketToInputStream(streamName, new GpuBufferPacket(gpuBuffer, latestTimestamp));
         return;
       }
 
       var imageFrame = textureFrame.BuildImageFrame();
       textureFrame.Release();
 
-      AddPacketToInputStream(streamName, new ImageFramePacket(imageFrame, currentTimestamp));
+      AddPacketToInputStream(streamName, new ImageFramePacket(imageFrame, latestTimestamp));
     }
 
     protected bool TryGetNext<TPacket, TValue>(OutputStream<TPacket, TValue> stream, out TValue value, bool allowBlock, long currentTimestampMicrosec) where TPacket : Packet<TValue>, new()

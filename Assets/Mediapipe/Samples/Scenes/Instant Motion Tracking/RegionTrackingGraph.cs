@@ -52,10 +52,10 @@ namespace Mediapipe.Unity.InstantMotionTracking
       AddTextureFrameToInputStream(_InputStreamName, textureFrame);
 
       var stickerSentinelId = _isTracking ? -1 : _currentStickerSentinelId;
-      AddPacketToInputStream(_StickerSentinelStreamName, new IntPacket(stickerSentinelId, currentTimestamp));
+      AddPacketToInputStream(_StickerSentinelStreamName, new IntPacket(stickerSentinelId, latestTimestamp));
 
       _isTracking = true;
-      AddPacketToInputStream(_InitialAnchorDataStreamName, new Anchor3dVectorPacket(_anchors, currentTimestamp));
+      AddPacketToInputStream(_InitialAnchorDataStreamName, new Anchor3dVectorPacket(_anchors, latestTimestamp));
     }
 
     public bool TryGetNext(out List<Anchor3d> trackedAnchorData, bool allowBlock = true)
