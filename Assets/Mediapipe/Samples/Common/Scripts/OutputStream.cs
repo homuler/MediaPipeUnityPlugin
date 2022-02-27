@@ -97,6 +97,7 @@ namespace Mediapipe.Unity
 
     /// <summary>
     ///   Gets the next value from the stream.
+    ///   This method drops a packet whose timestamp is less than <paramref name="timestampThreshold" />.
     /// </summary>
     /// <remarks>
     ///   <para>
@@ -111,6 +112,9 @@ namespace Mediapipe.Unity
     ///   When this method returns, it contains the next output value if it's present and retrieved successfully; otherwise, the default value for the type of the value parameter.
     ///   This parameter is passed uninitialized.
     /// </param>
+    /// <param name="timestampThreshold">
+    ///   Drops outputs whose timestamp is less than this value.
+    /// </param>
     /// <param name="allowBlock">
     ///   If <c>true</c>, this method can block the thread until the value is retrieved.<br />
     ///   It can be set to <c>false</c> only if <see cref="presenceStreamName" /> is set.
@@ -118,82 +122,72 @@ namespace Mediapipe.Unity
     /// <returns>
     ///   <c>true</c> if <paramref name="value" /> is successfully retrieved; otherwise <c>false</c>.
     /// </returns>
-    public bool TryGetNext(out TValue value, bool allowBlock = true)
+    public bool TryGetNext(out TValue value, long timestampThreshold, bool allowBlock = true)
     {
-      if (!CanCallNext(allowBlock) || !Next())
-      {
-        value = default;
-        return false;
-      }
+      var timestampMicrosec = long.MinValue;
 
-      return TryGetPacketValue(out value);
-    }
-
-    public bool TryGetLatest(out TValue value, bool allowBlock = true)
-    {
-      if (!CanCallNext(allowBlock) || !Next())
+      while (timestampMicrosec < timestampThreshold)
       {
-        value = default;
-        return false;
-      }
-
-      // Assume that queue size will not be reduced from another thread.
-      var presenceQueueSize = _presencePoller.QueueSize();
-      while (presenceQueueSize-- > 0)
-      {
-        var _ = NextPresence(); // pop all
-      }
-
-      var queueSize = _poller.QueueSize();
-      while (queueSize-- > 0)
-      {
-        if (!Next())
+        if (!CanCallNext(allowBlock) || !Next())
         {
           value = default;
           return false;
         }
+        using (var timestamp = _outputPacket.Timestamp())
+        {
+          timestampMicrosec = timestamp.Microseconds();
+        }
       }
 
-      return TryGetPacketValue(out value);
+      if (_outputPacket.IsEmpty())
+      {
+        value = default; // TODO: distinguish when the output is empty and when it's not (retrieved value can be the default value).
+        return false;
+      }
+
+      _lastTimestampMicrosec = timestampMicrosec;
+      value = _outputPacket.Get();
+      return true;
+    }
+
+    public bool TryGetNext(out TValue value, bool allowBlock = true)
+    {
+      return TryGetNext(out value, 0, allowBlock);
+    }
+
+    public bool TryConsumeNext(out TValue value, long timestampThreshold, bool allowBlock = true)
+    {
+      long timestampMicrosec = 0;
+
+      while (timestampMicrosec <= timestampThreshold)
+      {
+        if (!CanCallNext(allowBlock) || !Next())
+        {
+          value = default;
+          return true;
+        }
+        using (var timestamp = _outputPacket.Timestamp())
+        {
+          timestampMicrosec = timestamp.Microseconds();
+        }
+      }
+
+      if (_outputPacket.IsEmpty())
+      {
+        value = default; // TODO: distinguish when the output is empty and when it's not (retrieved value can be the default value).
+        return false;
+      }
+
+      _lastTimestampMicrosec = timestampMicrosec;
+      var statusOrValue = _outputPacket.Consume();
+
+      value = statusOrValue.ValueOr();
+      return true;
     }
 
     public bool TryConsumeNext(out TValue value, bool allowBlock = true)
     {
-      if (!CanCallNext(allowBlock) || !Next())
-      {
-        value = default;
-        return false;
-      }
-
-      return TryConsumePacketValue(out value);
-    }
-
-    public bool TryConsumeLatest(out TValue value, bool allowBlock = true)
-    {
-      if (!CanCallNext(allowBlock) || !Next())
-      {
-        value = default;
-        return false;
-      }
-
-      // Assume that queue size will not be reduced from another thread.
-      var presenceQueueSize = _presencePoller.QueueSize();
-      while (presenceQueueSize-- > 0)
-      {
-        var _ = NextPresence(); // pop all
-      }
-
-      var queueSize = _poller.QueueSize();
-      while (queueSize-- > 0)
-      {
-        if (!Next())
-        {
-          value = default;
-          return false;
-        }
-      }
-
-      return TryConsumePacketValue(out value);
+      return TryConsumeNext(out value, 0, allowBlock);
     }
 
     public bool TryGetPacketValue(Packet<TValue> packet, out TValue value, long timeoutMicrosec = 0)
@@ -254,40 +248,6 @@ namespace Mediapipe.Unity
       }
       _lastTimestampMicrosec = timestampMicrosec;
       return true;
-    }
-
-    protected bool TryGetPacketValue(out TValue value)
-    {
-      if (_outputPacket.IsEmpty())
-      {
-        value = default; // TODO: distinguish when the output is empty and when it's not (retrieved value can be the default value).
-        return false;
-      }
-
-      using (var timestamp = _outputPacket.Timestamp())
-      {
-        _lastTimestampMicrosec = timestamp.Microseconds();
-        value = _outputPacket.Get();
-        return true;
-      }
-    }
-
-    protected bool TryConsumePacketValue(out TValue value)
-    {
-      if (_outputPacket.IsEmpty())
-      {
-        value = default; // TODO: distinguish when the output is empty and when it's not (retrieved value can be the default value).
-        return false;
-      }
-
-      using (var timestamp = _outputPacket.Timestamp())
-      {
-        _lastTimestampMicrosec = timestamp.Microseconds();
-        var statusOrValue = _outputPacket.Consume();
-
-        value = statusOrValue.ValueOr();
-        return true;
-      }
     }
 
     protected bool CanCallNext(bool allowBlock)
