@@ -123,16 +123,6 @@ namespace Mediapipe.Unity
       return true;
     }
 
-    public WaitForResult<TextureFrame> WaitForNextTextureFrame(Action<TextureFrame> callback)
-    {
-      return new WaitForResult<TextureFrame>(this, YieldTextureFrame(callback));
-    }
-
-    public WaitForResult<TextureFrame> WaitForNextTextureFrame()
-    {
-      return new WaitForResult<TextureFrame>(this, YieldTextureFrame((TextureFrame textureFrame) => { /* do nothing */ }));
-    }
-
     private void OnTextureFrameRelease(TextureFrame textureFrame)
     {
       lock (((ICollection)_textureFramesInUse).SyncRoot)
@@ -166,48 +156,6 @@ namespace Mediapipe.Unity
       textureFrame.OnRelease.AddListener(OnTextureFrameRelease);
 
       return textureFrame;
-    }
-
-    private IEnumerator YieldTextureFrame(Action<TextureFrame> callback)
-    {
-      TextureFrame nextFrame = null;
-
-      lock (((ICollection)_availableTextureFrames).SyncRoot)
-      {
-        yield return new WaitUntil(() =>
-        {
-          return _poolSize > frameCount || _availableTextureFrames.Count > 0;
-        });
-
-        if (_poolSize <= frameCount)
-        {
-          while (_availableTextureFrames.Count > 0)
-          {
-            var textureFrame = _availableTextureFrames.Dequeue();
-
-            if (!IsStale(textureFrame))
-            {
-              nextFrame = textureFrame;
-              break;
-            }
-          }
-        }
-
-        if (nextFrame == null)
-        {
-          nextFrame = CreateNewTextureFrame();
-        }
-      }
-
-      lock (((ICollection)_textureFramesInUse).SyncRoot)
-      {
-        _textureFramesInUse.Add(nextFrame.GetInstanceID(), nextFrame);
-      }
-
-      nextFrame.WaitUntilReleased();
-      callback(nextFrame);
-
-      yield return nextFrame;
     }
   }
 }
