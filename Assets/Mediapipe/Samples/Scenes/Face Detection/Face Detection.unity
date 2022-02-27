@@ -458,11 +458,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90c6d9633837e7c06aeaebb5b7ba866a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _screen: {fileID: 1006057043}
-  _faceDetectionsAnnotationController: {fileID: 1006057044}
-  _graphRunner: {fileID: 1064799462}
-  _textureFramePool: {fileID: 1064799463}
+  screen: {fileID: 1006057043}
+  graphRunner: {fileID: 1064799462}
+  textureFramePool: {fileID: 1064799463}
   runningMode: 0
+  _faceDetectionsAnnotationController: {fileID: 1006057044}
 --- !u!4 &1064799461
 Transform:
   m_ObjectHideFlags: 0
@@ -492,7 +492,7 @@ MonoBehaviour:
   _cpuConfig: {fileID: 4900000, guid: d0012308a4a6db23394e3599fc15e82c, type: 3}
   _gpuConfig: {fileID: 4900000, guid: be38c22dedc4a1b02964b6d091e6bddb, type: 3}
   _openGlEsConfig: {fileID: 4900000, guid: 6070cea8cbd80191199591327316f26c, type: 3}
-  _timeoutMicrosec: 0
+  _timeoutMicrosec: 50000
   modelType: 0
   OnFaceDetectionsOutput:
     m_PersistentCalls:

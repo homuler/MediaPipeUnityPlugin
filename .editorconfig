@@ -63,6 +63,12 @@ dotnet_diagnostic.IDE0064.severity = warning
 # Parentheses preferences
 
 # Expression-level preferences
+### Use conditional expression for assignment (IDE0045)
+dotnet_diagnostic.IDE0045.severity = silent
+
+### Use conditional expression for return (IDE0046)
+dotnet_diagnostic.IDE0046.severity = silent
+
 ### Use range operator (IDE0057)
 csharp_style_prefer_range_operator = false
 

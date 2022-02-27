@@ -5,6 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Events;
@@ -26,32 +27,31 @@ namespace Mediapipe.Unity.MediaPipeVideo
 
     private const string _OutputVideoStreamName = "output_video";
     private OutputStream<ImageFramePacket, ImageFrame> _outputVideoStream;
-    protected long prevOutputVideoMicrosec = 0;
 
-    public override Status StartRun(ImageSource imageSource)
+    public override void StartRun(ImageSource imageSource)
     {
       if (configType != ConfigType.OpenGLES)
       {
-        InitializeOutputStreams();
-        _outputVideoStream.StartPolling(true).AssertOk();
+        _outputVideoStream.StartPolling().AssertOk();
       }
-      return calculatorGraph.StartRun(BuildSidePacket(imageSource));
-    }
-
-    public Status StartRunAsync(ImageSource imageSource)
-    {
-      if (configType != ConfigType.OpenGLES)
-      {
-        InitializeOutputStreams();
-        _outputVideoStream.AddListener(OutputVideoCallback, true).AssertOk();
-      }
-      return calculatorGraph.StartRun(BuildSidePacket(imageSource));
+      StartRun(BuildSidePacket(imageSource));
     }
 
     public override void Stop()
     {
       base.Stop();
       OnOutput.RemoveAllListeners();
+      _outputVideoStream = null;
+    }
+
+
+    public override IEnumerator Initialize(RunningMode runningMode)
+    {
+      if (runningMode == RunningMode.Async)
+      {
+        throw new ArgumentException("Asynchronous mode is not supported");
+      }
+      return base.Initialize(runningMode);
     }
 
     public void SetupOutputPacket(TextureFrame textureFrame)
@@ -64,46 +64,41 @@ namespace Mediapipe.Unity.MediaPipeVideo
       _outputGpuBufferPacket = new GpuBufferPacket(_destinationTexture.BuildGpuBuffer(GpuManager.GlCalculatorHelper.GetGlContext()));
     }
 
-    public Status AddTextureFrameToInputStream(TextureFrame textureFrame)
+    public void AddTextureFrameToInputStream(TextureFrame textureFrame)
     {
-      return AddTextureFrameToInputStream(_InputStreamName, textureFrame);
+      AddTextureFrameToInputStream(_InputStreamName, textureFrame);
     }
 
-    public ImageFrame FetchNextValue()
+    public bool TryGetNext(out ImageFrame outputVideo, bool allowBlock = true)
     {
-      var _ = _outputVideoStream.TryGetNext(out var outputVideo);
-      OnOutput.Invoke(outputVideo);
-      return outputVideo;
-    }
-
-    [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr OutputVideoCallback(IntPtr graphPtr, IntPtr packetPtr)
-    {
-      return InvokeIfGraphRunnerFound<MediaPipeVideoGraph>(graphPtr, packetPtr, (mediaPipeVideoGraph, ptr) =>
+      if (TryGetNext(_outputVideoStream, out outputVideo, allowBlock, GetCurrentTimestampMicrosec()) && outputVideo != null)
       {
-        using (var packet = new ImageFramePacket(ptr, false))
-        {
-          if (mediaPipeVideoGraph.TryConsumePacketValue(packet, ref mediaPipeVideoGraph.prevOutputVideoMicrosec, out var value))
-          {
-            mediaPipeVideoGraph.OnOutput.Invoke(value);
-          }
-        }
-      }).mpPtr;
+        OnOutput.Invoke(outputVideo);
+        return true;
+      }
+      return false;
     }
 
-    protected override CalculatorGraphConfig GetCalculatorGraphConfig()
+    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      var calculatorGraphConfig = CalculatorGraphConfig.Parser.ParseFromTextFormat(config.text);
-
       if (configType == ConfigType.OpenGLES)
       {
-        var sinkNode = calculatorGraphConfig.Node.Last((node) => node.Calculator == "GlScalerCalculator");
-        _destinationBufferName = Tool.GetUnusedSidePacketName(calculatorGraphConfig, "destination_buffer");
+        var sinkNode = config.Node.Last((node) => node.Calculator == "GlScalerCalculator");
+        _destinationBufferName = Tool.GetUnusedSidePacketName(config, "destination_buffer");
 
         sinkNode.InputSidePacket.Add($"DESTINATION:{_destinationBufferName}");
       }
 
-      return calculatorGraphConfig;
+      if (runningMode == RunningMode.NonBlockingSync)
+      {
+        _outputVideoStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _OutputVideoStreamName, config.AddPacketPresenceCalculator(_OutputVideoStreamName));
+      }
+      else
+      {
+        _outputVideoStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _OutputVideoStreamName, true);
+      }
+
+      return calculatorGraph.Initialize(config);
     }
 
     protected override IList<WaitForResult> RequestDependentAssets()
@@ -114,11 +109,6 @@ namespace Mediapipe.Unity.MediaPipeVideo
         WaitForAsset("handedness.txt"),
         WaitForAsset("palm_detection_full.bytes"),
       };
-    }
-
-    protected void InitializeOutputStreams()
-    {
-      _outputVideoStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _OutputVideoStreamName);
     }
 
     private SidePacket BuildSidePacket(ImageSource imageSource)

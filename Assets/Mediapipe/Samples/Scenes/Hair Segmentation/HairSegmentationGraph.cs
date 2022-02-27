@@ -16,42 +16,48 @@ namespace Mediapipe.Unity.HairSegmentation
     public UnityEvent<ImageFrame> OnHairMaskOutput = new UnityEvent<ImageFrame>();
 #pragma warning restore IDE1006
 
-    private const string _InputStreamName = "input_video";
+#if UNITY_IOS
+    public override ConfigType configType => ConfigType.CPU;
+#endif
 
+    private const string _InputStreamName = "input_video";
     private const string _HairMaskStreamName = "hair_mask";
     private OutputStream<ImageFramePacket, ImageFrame> _hairMaskStream;
-    protected long prevHairMaskMicrosec = 0;
 
-    public override Status StartRun(ImageSource imageSource)
+    public override void StartRun(ImageSource imageSource)
     {
-      InitializeOutputStreams();
-      _hairMaskStream.StartPolling(true).AssertOk();
-      return calculatorGraph.StartRun(BuildSidePacket(imageSource));
+      if (runningMode.IsSynchronous())
+      {
+        _hairMaskStream.StartPolling().AssertOk();
+      }
+      else
+      {
+        _hairMaskStream.AddListener(HairMaskCallback).AssertOk();
+      }
+      StartRun(BuildSidePacket(imageSource));
     }
 
-    public Status StartRunAsync(ImageSource imageSource)
-    {
-      InitializeOutputStreams();
-      _hairMaskStream.AddListener(HairMaskCallback, true).AssertOk();
-      return calculatorGraph.StartRun(BuildSidePacket(imageSource));
-    }
 
     public override void Stop()
     {
       base.Stop();
       OnHairMaskOutput.RemoveAllListeners();
+      _hairMaskStream = null;
     }
 
-    public Status AddTextureFrameToInputStream(TextureFrame textureFrame)
+    public void AddTextureFrameToInputStream(TextureFrame textureFrame)
     {
-      return AddTextureFrameToInputStream(_InputStreamName, textureFrame);
+      AddTextureFrameToInputStream(_InputStreamName, textureFrame);
     }
 
-    public ImageFrame FetchNextValue()
+    public bool TryGetNext(out ImageFrame hairMask, bool allowBlock = true)
     {
-      var _ = _hairMaskStream.TryGetNext(out var hairMask);
-      OnHairMaskOutput.Invoke(hairMask);
-      return hairMask;
+      if (TryGetNext(_hairMaskStream, out hairMask, allowBlock, GetCurrentTimestampMicrosec()))
+      {
+        OnHairMaskOutput.Invoke(hairMask);
+        return true;
+      }
+      return false;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
@@ -61,20 +67,13 @@ namespace Mediapipe.Unity.HairSegmentation
       {
         using (var packet = new ImageFramePacket(ptr, false))
         {
-          if (hairSegmentationGraph.TryGetPacketValue(packet, ref hairSegmentationGraph.prevHairMaskMicrosec, out var value))
+          if (hairSegmentationGraph._hairMaskStream.TryGetPacketValue(packet, out var value, hairSegmentationGraph.timeoutMicrosec))
           {
             hairSegmentationGraph.OnHairMaskOutput.Invoke(value);
           }
         }
       }).mpPtr;
     }
-
-
-#if UNITY_IOS
-    protected override ConfigType DetectConfigType() {
-      return ConfigType.CPU;
-    }
-#endif
 
     protected override IList<WaitForResult> RequestDependentAssets()
     {
@@ -83,9 +82,17 @@ namespace Mediapipe.Unity.HairSegmentation
       };
     }
 
-    protected void InitializeOutputStreams()
+    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      _hairMaskStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _HairMaskStreamName);
+      if (runningMode == RunningMode.NonBlockingSync)
+      {
+        _hairMaskStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _HairMaskStreamName, config.AddPacketPresenceCalculator(_HairMaskStreamName));
+      }
+      else
+      {
+        _hairMaskStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _HairMaskStreamName);
+      }
+      return calculatorGraph.Initialize(config);
     }
 
     private SidePacket BuildSidePacket(ImageSource imageSource)

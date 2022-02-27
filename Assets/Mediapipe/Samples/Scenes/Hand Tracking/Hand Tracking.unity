@@ -172,6 +172,7 @@ MonoBehaviour:
   _gpuConfig: {fileID: 4900000, guid: d1c2a5074cb12172d9cbc3098fe038ba, type: 3}
   _openGlEsConfig: {fileID: 4900000, guid: 155e81a0de3136db88c8ac8c72fad8b7, type: 3}
   _timeoutMicrosec: 50000
+  modelComplexity: 1
   maxNumHands: 2
   OnPalmDetectectionsOutput:
     m_PersistentCalls:
@@ -180,6 +181,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnHandLandmarksOutput:
+    m_PersistentCalls:
+      m_Calls: []
+  OnHandWorldLandmarksOutput:
     m_PersistentCalls:
       m_Calls: []
   OnHandRectsFromLandmarksOutput:
@@ -200,14 +204,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a486eb3af7bca42f6bb2383c732639be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _screen: {fileID: 841116734}
+  screen: {fileID: 841116734}
+  graphRunner: {fileID: 275874968}
+  textureFramePool: {fileID: 275874970}
+  runningMode: 0
   _palmDetectionsAnnotationController: {fileID: 841116733}
   _handRectsFromPalmDetectionsAnnotationController: {fileID: 841116732}
   _handLandmarksAnnotationController: {fileID: 841116731}
   _handRectsFromLandmarksAnnotationController: {fileID: 841116730}
-  _graphRunner: {fileID: 275874968}
-  _textureFramePool: {fileID: 275874970}
-  runningMode: 0
 --- !u!114 &275874970
 MonoBehaviour:
   m_ObjectHideFlags: 0

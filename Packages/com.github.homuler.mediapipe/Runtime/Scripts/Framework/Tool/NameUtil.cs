@@ -59,6 +59,31 @@ namespace Mediapipe
       return candidate;
     }
 
+    public static string GetUnusedStreamName(CalculatorGraphConfig config, string streamNameBase)
+    {
+      var outputStreamNames = config.Node.SelectMany(node => node.OutputStream)
+        .Select(outputStream =>
+        {
+          ParseTagIndexName(outputStream, out var tag, out var index, out var name);
+          return name;
+        });
+
+      var candidate = streamNameBase;
+      var iter = 1;
+
+      while (config.InputStream.Contains(candidate))
+      {
+        candidate = $"{streamNameBase}_{++iter:D2}";
+      }
+
+      while (outputStreamNames.Contains(candidate))
+      {
+        candidate = $"{streamNameBase}_{++iter:D2}";
+      }
+
+      return candidate;
+    }
+
     /// <exception cref="ArgumentOutOfRangeException">
     ///   Thrown when <paramref name="nodeId" /> is invalid
     /// </exception>

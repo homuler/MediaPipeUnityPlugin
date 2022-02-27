@@ -460,11 +460,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca7e7aeec1769819a867aab938387fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _screen: {fileID: 544675422}
-  _trackedAnchorDataAnnotationController: {fileID: 544675421}
-  _graphRunner: {fileID: 1064799460}
-  _textureFramePool: {fileID: 1064799463}
+  screen: {fileID: 544675422}
+  graphRunner: {fileID: 1064799460}
+  textureFramePool: {fileID: 1064799463}
   runningMode: 0
+  _trackedAnchorDataAnnotationController: {fileID: 544675421}
 --- !u!114 &1064799463
 MonoBehaviour:
   m_ObjectHideFlags: 0

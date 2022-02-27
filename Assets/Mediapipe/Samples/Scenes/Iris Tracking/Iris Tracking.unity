@@ -193,13 +193,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f016b6b2a48c853e3aa5922f70b018e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _screen: {fileID: 1228562680}
+  screen: {fileID: 1228562680}
+  graphRunner: {fileID: 275874968}
+  textureFramePool: {fileID: 275874970}
+  runningMode: 0
   _faceDetectionsAnnotationController: {fileID: 1228562677}
   _faceRectAnnotationController: {fileID: 1228562678}
   _faceLandmarksWithIrisAnnotationController: {fileID: 1228562679}
-  _graphRunner: {fileID: 275874968}
-  _textureFramePool: {fileID: 275874970}
-  runningMode: 0
 --- !u!114 &275874970
 MonoBehaviour:
   m_ObjectHideFlags: 0

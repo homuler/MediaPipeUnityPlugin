@@ -6,158 +6,70 @@
 
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Mediapipe.Unity.MediaPipeVideo
 {
-  public class MediaPipeVideoSolution : Solution
+  public class MediaPipeVideoSolution : ImageSourceSolution<MediaPipeVideoGraph>
   {
-    [SerializeField] private RawImage _screen;
-    [SerializeField] private MediaPipeVideoGraph _graphRunner;
-    [SerializeField] private TextureFramePool _textureFramePool;
-
     private Texture2D _outputTexture;
-    private static ImageFrame _CurrentOutput;
 
-    private Coroutine _coroutine;
-
-    public RunningMode runningMode;
-
-    public long timeoutMillisec
+    protected override void SetupScreen(ImageSource imageSource)
     {
-      get => _graphRunner.timeoutMillisec;
-      set => _graphRunner.SetTimeoutMillisec(value);
-    }
-
-    public override void Play()
-    {
-      if (_coroutine != null)
-      {
-        Stop();
-      }
-      base.Play();
-      _coroutine = StartCoroutine(Run());
-    }
-
-    public override void Pause()
-    {
-      base.Pause();
-      ImageSourceProvider.ImageSource.Pause();
-    }
-
-    public override void Resume()
-    {
-      base.Resume();
-      var _ = StartCoroutine(ImageSourceProvider.ImageSource.Resume());
-    }
-
-    public override void Stop()
-    {
-      base.Stop();
-      StopCoroutine(_coroutine);
-      ImageSourceProvider.ImageSource.Stop();
-      _graphRunner.Stop();
-    }
-
-    private void Update()
-    {
-      if (_CurrentOutput != null)
-      {
-        var outputVideo = _CurrentOutput;
-        _CurrentOutput = null;
-
-        DrawNow(outputVideo);
-        outputVideo.Dispose();
-      }
-    }
-
-    private IEnumerator Run()
-    {
-      var graphInitRequest = _graphRunner.WaitForInit();
-      var imageSource = ImageSourceProvider.ImageSource;
-
-      yield return imageSource.Play();
-
-      if (!imageSource.isPrepared)
-      {
-        Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
-        yield break;
-      }
-      // NOTE: The _screen will be resized later, keeping the aspect ratio.
-      _screen.rectTransform.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
-      _screen.rectTransform.localEulerAngles = imageSource.rotation.Reverse().GetEulerAngles();
-
-      Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
-
-      // Use RGBA32 as the input format.
-      // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
-      _textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
+      // NOTE: The screen will be resized later, keeping the aspect ratio.
+      screen.Resize(imageSource.textureWidth, imageSource.textureHeight);
+      screen.Rotate(imageSource.rotation.Reverse());
 
       // Setup output texture
-      if (_graphRunner.configType == GraphRunner.ConfigType.OpenGLES)
+      if (graphRunner.configType == GraphRunner.ConfigType.OpenGLES)
       {
-        var textureFrameRequest = _textureFramePool.WaitForNextTextureFrame();
-        yield return textureFrameRequest;
-        var _outputTexture = textureFrameRequest.result;
+        if (textureFramePool.TryGetTextureFrame(out var textureFrame))
+        {
+          textureFrame.RemoveAllReleaseListeners();
+          graphRunner.SetupOutputPacket(textureFrame);
 
-        // Exclude from TextureFramePool
-        _outputTexture.RemoveAllReleaseListeners();
-        _graphRunner.SetupOutputPacket(_outputTexture);
-
-        _screen.texture = Texture2D.CreateExternalTexture(_outputTexture.width, _outputTexture.height, _outputTexture.format, false, false, _outputTexture.GetNativeTexturePtr());
+          screen.texture = Texture2D.CreateExternalTexture(textureFrame.width, textureFrame.height, textureFrame.format, false, false, textureFrame.GetNativeTexturePtr());
+        }
+        else
+        {
+          throw new InternalException("Failed to get the output texture");
+        }
       }
       else
       {
         _outputTexture = new Texture2D(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32, false);
-        _screen.texture = _outputTexture;
-      }
-
-      yield return graphInitRequest;
-      if (graphInitRequest.isError)
-      {
-        Logger.LogError(TAG, graphInitRequest.error);
-        yield break;
-      }
-
-      if (runningMode == RunningMode.Async)
-      {
-        _graphRunner.OnOutput.AddListener(OnOutput);
-        _graphRunner.StartRunAsync(imageSource).AssertOk();
-      }
-      else
-      {
-        _graphRunner.StartRun(imageSource).AssertOk();
-      }
-
-      while (true)
-      {
-        yield return new WaitWhile(() => isPaused);
-
-        var textureFrameRequest = _textureFramePool.WaitForNextTextureFrame();
-        yield return textureFrameRequest;
-        var textureFrame = textureFrameRequest.result;
-
-        // Copy current image to TextureFrame
-        ReadFromImageSource(imageSource, textureFrame);
-
-        _graphRunner.AddTextureFrameToInputStream(textureFrame).AssertOk();
-
-        if (runningMode == RunningMode.Sync && _graphRunner.configType != GraphRunner.ConfigType.OpenGLES)
-        {
-          // When running synchronously, wait for the outputs here (blocks the main thread).
-          var output = _graphRunner.FetchNextValue();
-          DrawNow(output);
-        }
-
-        yield return new WaitForEndOfFrame();
+        screen.texture = _outputTexture;
       }
     }
 
-    private void OnOutput(ImageFrame outputVideo)
+    protected override void OnStartRun()
     {
-      if (outputVideo != null)
+      graphRunner.OnOutput.AddListener(DrawNow);
+    }
+
+    protected override void AddTextureFrameToInputStream(TextureFrame textureFrame)
+    {
+      graphRunner.AddTextureFrameToInputStream(textureFrame);
+    }
+
+    protected override void RenderCurrentFrame(TextureFrame textureFrame)
+    {
+      // Do nothing because the screen will be updated later in `DrawNow`. 
+    }
+
+    protected override IEnumerator WaitForNextValue()
+    {
+      if (graphRunner.configType == GraphRunner.ConfigType.OpenGLES)
       {
-        _CurrentOutput = outputVideo;
+        yield return new WaitForEndOfFrame();
+      }
+      else if (runningMode == RunningMode.Sync)
+      {
+        var _ = graphRunner.TryGetNext(out var _, true);
+        yield return new WaitForEndOfFrame();
+      }
+      else if (runningMode == RunningMode.NonBlockingSync)
+      {
+        yield return new WaitUntil(() => graphRunner.TryGetNext(out var _, false));
       }
     }
 

@@ -31,7 +31,6 @@ namespace Mediapipe.Unity.HandTracking
 #pragma warning restore IDE1006
 
     private const string _InputStreamName = "input_video";
-
     private const string _PalmDetectionsStreamName = "palm_detections";
     private const string _HandRectsFromPalmDetectionsStreamName = "hand_rects_from_palm_detections";
     private const string _HandLandmarksStreamName = "hand_landmarks";
@@ -46,39 +45,27 @@ namespace Mediapipe.Unity.HandTracking
     private OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>> _handRectsFromLandmarksStream;
     private OutputStream<ClassificationListVectorPacket, List<ClassificationList>> _handednessStream;
 
-    protected long prevPalmDetectionMicrosec = 0;
-    protected long prevHandRectsFromPalmDetectionsMicrosec = 0;
-    protected long prevHandLandmarksMicrosec = 0;
-    protected long prevHandWorldLandmarksMicrosec = 0;
-    protected long prevHandRectsFromLandmarksMicrosec = 0;
-    protected long prevHandednessMicrosec = 0;
-
-    public override Status StartRun(ImageSource imageSource)
+    public override void StartRun(ImageSource imageSource)
     {
-      InitializeOutputStreams();
-
-      _palmDetectionsStream.StartPolling(true).AssertOk();
-      _handRectsFromPalmDetectionsStream.StartPolling(true).AssertOk();
-      _handLandmarksStream.StartPolling(true).AssertOk();
-      _handWorldLandmarksStream.StartPolling(true).AssertOk();
-      _handRectsFromLandmarksStream.StartPolling(true).AssertOk();
-      _handednessStream.StartPolling(true).AssertOk();
-
-      return calculatorGraph.StartRun(BuildSidePacket(imageSource));
-    }
-
-    public Status StartRunAsync(ImageSource imageSource)
-    {
-      InitializeOutputStreams();
-
-      _palmDetectionsStream.AddListener(PalmDetectionsCallback, true).AssertOk();
-      _handRectsFromPalmDetectionsStream.AddListener(HandRectsFromPalmDetectionsCallback, true).AssertOk();
-      _handLandmarksStream.AddListener(HandLandmarksCallback, true).AssertOk();
-      _handWorldLandmarksStream.AddListener(HandWorldLandmarksCallback, true).AssertOk();
-      _handRectsFromLandmarksStream.AddListener(HandRectsFromLandmarksCallback, true).AssertOk();
-      _handednessStream.AddListener(HandednessCallback, true).AssertOk();
-
-      return calculatorGraph.StartRun(BuildSidePacket(imageSource));
+      if (runningMode.IsSynchronous())
+      {
+        _palmDetectionsStream.StartPolling().AssertOk();
+        _handRectsFromPalmDetectionsStream.StartPolling().AssertOk();
+        _handLandmarksStream.StartPolling().AssertOk();
+        _handWorldLandmarksStream.StartPolling().AssertOk();
+        _handRectsFromLandmarksStream.StartPolling().AssertOk();
+        _handednessStream.StartPolling().AssertOk();
+      }
+      else
+      {
+        _palmDetectionsStream.AddListener(PalmDetectionsCallback).AssertOk();
+        _handRectsFromPalmDetectionsStream.AddListener(HandRectsFromPalmDetectionsCallback).AssertOk();
+        _handLandmarksStream.AddListener(HandLandmarksCallback).AssertOk();
+        _handWorldLandmarksStream.AddListener(HandWorldLandmarksCallback).AssertOk();
+        _handRectsFromLandmarksStream.AddListener(HandRectsFromLandmarksCallback).AssertOk();
+        _handednessStream.AddListener(HandednessCallback).AssertOk();
+      }
+      StartRun(BuildSidePacket(imageSource));
     }
 
     public override void Stop()
@@ -90,30 +77,38 @@ namespace Mediapipe.Unity.HandTracking
       OnHandWorldLandmarksOutput.RemoveAllListeners();
       OnHandRectsFromLandmarksOutput.RemoveAllListeners();
       OnHandednessOutput.RemoveAllListeners();
+      _palmDetectionsStream = null;
+      _handRectsFromPalmDetectionsStream = null;
+      _handLandmarksStream = null;
+      _handWorldLandmarksStream = null;
+      _handRectsFromLandmarksStream = null;
+      _handednessStream = null;
     }
 
-    public Status AddTextureFrameToInputStream(TextureFrame textureFrame)
+    public void AddTextureFrameToInputStream(TextureFrame textureFrame)
     {
-      return AddTextureFrameToInputStream(_InputStreamName, textureFrame);
+      AddTextureFrameToInputStream(_InputStreamName, textureFrame);
     }
 
-    public HandTrackingValue FetchNextValue()
+    public bool TryGetNext(out List<Detection> palmDetections, out List<NormalizedRect> handRectsFromPalmDetections, out List<NormalizedLandmarkList> handLandmarks,
+                           out List<LandmarkList> handWorldLandmarks, out List<NormalizedRect> handRectsFromLandmarks, out List<ClassificationList> handedness, bool allowBlock = true)
     {
-      var _ = _palmDetectionsStream.TryGetNext(out var palmDetections);
-      _ = _handRectsFromPalmDetectionsStream.TryGetNext(out var handRectsFromPalmDetections);
-      _ = _handLandmarksStream.TryGetNext(out var handLandmarks);
-      _ = _handWorldLandmarksStream.TryGetNext(out var handWorldLandmarks);
-      _ = _handRectsFromLandmarksStream.TryGetNext(out var handRectsFromLandmarks);
-      _ = _handednessStream.TryGetNext(out var handedness);
+      var currentTimestampMicrosec = GetCurrentTimestampMicrosec();
+      var r1 = TryGetNext(_palmDetectionsStream, out palmDetections, allowBlock, currentTimestampMicrosec);
+      var r2 = TryGetNext(_handRectsFromPalmDetectionsStream, out handRectsFromPalmDetections, allowBlock, currentTimestampMicrosec);
+      var r3 = TryGetNext(_handLandmarksStream, out handLandmarks, allowBlock, currentTimestampMicrosec);
+      var r4 = TryGetNext(_handWorldLandmarksStream, out handWorldLandmarks, allowBlock, currentTimestampMicrosec);
+      var r5 = TryGetNext(_handRectsFromLandmarksStream, out handRectsFromLandmarks, allowBlock, currentTimestampMicrosec);
+      var r6 = TryGetNext(_handednessStream, out handedness, allowBlock, currentTimestampMicrosec);
 
-      OnPalmDetectectionsOutput.Invoke(palmDetections);
-      OnHandRectsFromPalmDetectionsOutput.Invoke(handRectsFromPalmDetections);
-      OnHandLandmarksOutput.Invoke(handLandmarks);
-      OnHandWorldLandmarksOutput.Invoke(handWorldLandmarks);
-      OnHandRectsFromLandmarksOutput.Invoke(handRectsFromLandmarks);
-      OnHandednessOutput.Invoke(handedness);
+      if (r1) { OnPalmDetectectionsOutput.Invoke(palmDetections); }
+      if (r2) { OnHandRectsFromPalmDetectionsOutput.Invoke(handRectsFromPalmDetections); }
+      if (r3) { OnHandLandmarksOutput.Invoke(handLandmarks); }
+      if (r4) { OnHandWorldLandmarksOutput.Invoke(handWorldLandmarks); }
+      if (r5) { OnHandRectsFromLandmarksOutput.Invoke(handRectsFromLandmarks); }
+      if (r6) { OnHandednessOutput.Invoke(handedness); }
 
-      return new HandTrackingValue(palmDetections, handRectsFromPalmDetections, handLandmarks, handWorldLandmarks, handRectsFromLandmarks, handedness);
+      return r1 || r2 || r3 || r4 || r5 || r6;
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
@@ -123,7 +118,7 @@ namespace Mediapipe.Unity.HandTracking
       {
         using (var packet = new DetectionVectorPacket(ptr, false))
         {
-          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevPalmDetectionMicrosec, out var value))
+          if (handTrackingGraph._palmDetectionsStream.TryGetPacketValue(packet, out var value, handTrackingGraph.timeoutMicrosec))
           {
             handTrackingGraph.OnPalmDetectectionsOutput.Invoke(value);
           }
@@ -138,7 +133,7 @@ namespace Mediapipe.Unity.HandTracking
       {
         using (var packet = new NormalizedRectVectorPacket(ptr, false))
         {
-          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandRectsFromPalmDetectionsMicrosec, out var value))
+          if (handTrackingGraph._handRectsFromPalmDetectionsStream.TryGetPacketValue(packet, out var value, handTrackingGraph.timeoutMicrosec))
           {
             handTrackingGraph.OnHandRectsFromPalmDetectionsOutput.Invoke(value);
           }
@@ -153,7 +148,7 @@ namespace Mediapipe.Unity.HandTracking
       {
         using (var packet = new NormalizedLandmarkListVectorPacket(ptr, false))
         {
-          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandLandmarksMicrosec, out var value))
+          if (handTrackingGraph._handLandmarksStream.TryGetPacketValue(packet, out var value, handTrackingGraph.timeoutMicrosec))
           {
             handTrackingGraph.OnHandLandmarksOutput.Invoke(value);
           }
@@ -168,7 +163,7 @@ namespace Mediapipe.Unity.HandTracking
       {
         using (var packet = new LandmarkListVectorPacket(ptr, false))
         {
-          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandWorldLandmarksMicrosec, out var value))
+          if (handTrackingGraph._handWorldLandmarksStream.TryGetPacketValue(packet, out var value, handTrackingGraph.timeoutMicrosec))
           {
             handTrackingGraph.OnHandWorldLandmarksOutput.Invoke(value);
           }
@@ -183,7 +178,7 @@ namespace Mediapipe.Unity.HandTracking
       {
         using (var packet = new NormalizedRectVectorPacket(ptr, false))
         {
-          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandRectsFromLandmarksMicrosec, out var value))
+          if (handTrackingGraph._handRectsFromLandmarksStream.TryGetPacketValue(packet, out var value, handTrackingGraph.timeoutMicrosec))
           {
             handTrackingGraph.OnHandRectsFromLandmarksOutput.Invoke(value);
           }
@@ -198,7 +193,7 @@ namespace Mediapipe.Unity.HandTracking
       {
         using (var packet = new ClassificationListVectorPacket(ptr, false))
         {
-          if (handTrackingGraph.TryGetPacketValue(packet, ref handTrackingGraph.prevHandednessMicrosec, out var value))
+          if (handTrackingGraph._handednessStream.TryGetPacketValue(packet, out var value, handTrackingGraph.timeoutMicrosec))
           {
             handTrackingGraph.OnHandednessOutput.Invoke(value);
           }
@@ -216,14 +211,27 @@ namespace Mediapipe.Unity.HandTracking
       };
     }
 
-    protected void InitializeOutputStreams()
+    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      _palmDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _PalmDetectionsStreamName);
-      _handRectsFromPalmDetectionsStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _HandRectsFromPalmDetectionsStreamName);
-      _handLandmarksStream = new OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(calculatorGraph, _HandLandmarksStreamName);
-      _handWorldLandmarksStream = new OutputStream<LandmarkListVectorPacket, List<LandmarkList>>(calculatorGraph, _HandWorldLandmarksStreamName);
-      _handRectsFromLandmarksStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _HandRectsFromLandmarksStreamName);
-      _handednessStream = new OutputStream<ClassificationListVectorPacket, List<ClassificationList>>(calculatorGraph, _HandednessStreamName);
+      if (runningMode == RunningMode.NonBlockingSync)
+      {
+        _palmDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _PalmDetectionsStreamName, config.AddPacketPresenceCalculator(_PalmDetectionsStreamName));
+        _handRectsFromPalmDetectionsStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _HandRectsFromPalmDetectionsStreamName, config.AddPacketPresenceCalculator(_HandRectsFromPalmDetectionsStreamName));
+        _handLandmarksStream = new OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(calculatorGraph, _HandLandmarksStreamName, config.AddPacketPresenceCalculator(_HandLandmarksStreamName));
+        _handWorldLandmarksStream = new OutputStream<LandmarkListVectorPacket, List<LandmarkList>>(calculatorGraph, _HandWorldLandmarksStreamName, config.AddPacketPresenceCalculator(_HandWorldLandmarksStreamName));
+        _handRectsFromLandmarksStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _HandRectsFromLandmarksStreamName, config.AddPacketPresenceCalculator(_HandRectsFromLandmarksStreamName));
+        _handednessStream = new OutputStream<ClassificationListVectorPacket, List<ClassificationList>>(calculatorGraph, _HandednessStreamName, config.AddPacketPresenceCalculator(_HandednessStreamName));
+      }
+      else
+      {
+        _palmDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _PalmDetectionsStreamName, true);
+        _handRectsFromPalmDetectionsStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _HandRectsFromPalmDetectionsStreamName, true);
+        _handLandmarksStream = new OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(calculatorGraph, _HandLandmarksStreamName, true);
+        _handWorldLandmarksStream = new OutputStream<LandmarkListVectorPacket, List<LandmarkList>>(calculatorGraph, _HandWorldLandmarksStreamName, true);
+        _handRectsFromLandmarksStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _HandRectsFromLandmarksStreamName, true);
+        _handednessStream = new OutputStream<ClassificationListVectorPacket, List<ClassificationList>>(calculatorGraph, _HandednessStreamName, true);
+      }
+      return calculatorGraph.Initialize(config);
     }
 
     private WaitForResult WaitForHandLandmarkModel()
@@ -253,6 +261,9 @@ namespace Mediapipe.Unity.HandTracking
       SetImageTransformationOptions(sidePacket, imageSource, true);
       sidePacket.Emplace("model_complexity", new IntPacket((int)modelComplexity));
       sidePacket.Emplace("num_hands", new IntPacket(maxNumHands));
+
+      Logger.LogInfo(TAG, $"Model Complexity = {modelComplexity}");
+      Logger.LogInfo(TAG, $"Max Num Hands = {maxNumHands}");
 
       return sidePacket;
     }
