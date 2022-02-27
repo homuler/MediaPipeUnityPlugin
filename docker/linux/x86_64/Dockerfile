@@ -28,6 +28,11 @@ ARG UID
 # Create a privileged user
 RUN pacman -Sy archlinux-keyring --noconfirm && pacman -Syuu sudo --needed --noconfirm
 RUN echo -e "%wheel ALL=(ALL) NOPASSWD: ALL\n" > /etc/sudoers.d/01_wheel
+
+# Support systemd-homed
+RUN sed -r -i 's/^UID_MAX\s*[0-9]+/UID_MAX\t\t\t60513/' /etc/login.defs && \
+    sed -r -i 's/^GID_MAX\s*[0-9]+/GID_MAX\t\t\t60513/' /etc/login.defs
+
 RUN useradd -u ${UID} -m mediapipe && usermod -aG wheel mediapipe
 
 USER mediapipe
