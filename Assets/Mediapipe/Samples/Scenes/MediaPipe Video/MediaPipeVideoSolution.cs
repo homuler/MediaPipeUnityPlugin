@@ -58,7 +58,11 @@ namespace Mediapipe.Unity.MediaPipeVideo
 
     protected override IEnumerator WaitForNextValue()
     {
-      if (runningMode == RunningMode.Sync)
+      if (graphRunner.configType == GraphRunner.ConfigType.OpenGLES)
+      {
+        yield return new WaitForEndOfFrame();
+      }
+      else if (runningMode == RunningMode.Sync)
       {
         var _ = graphRunner.TryGetNext(out var _, true);
         yield return new WaitForEndOfFrame();
