@@ -115,13 +115,15 @@ namespace Tests
 
     #region #Consume
     [Test]
-    public void Consume_ShouldThrowNotSupportedException()
+    public void Consume_ShouldReturnStatusOrString()
     {
-      using (var packet = new StringPacket())
+      using (var packet = new StringPacket("abc"))
       {
-#pragma warning disable IDE0058
-        Assert.Throws<NotSupportedException>(() => { packet.Consume(); });
-#pragma warning restore IDE0058
+        using (var statusOrString = packet.Consume())
+        {
+          Assert.True(statusOrString.Ok());
+          Assert.AreEqual(statusOrString.Value(), "abc");
+        }
       }
     }
     #endregion

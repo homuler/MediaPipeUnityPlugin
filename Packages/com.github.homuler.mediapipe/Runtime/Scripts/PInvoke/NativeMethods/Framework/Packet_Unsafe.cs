@@ -113,6 +113,9 @@ namespace Mediapipe
     public static extern MpReturnCode mp_Packet__GetByteString(IntPtr packet, out IntPtr value, out int size);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__ConsumeString(IntPtr packet, out IntPtr statusOrValue);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__ValidateAsString(IntPtr packet, out IntPtr status);
     #endregion
 

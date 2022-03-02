@@ -60,7 +60,10 @@ namespace Mediapipe
 
     public override StatusOr<string> Consume()
     {
-      throw new NotSupportedException();
+      UnsafeNativeMethods.mp_Packet__ConsumeString(mpPtr, out var statusOrStringPtr).Assert();
+
+      GC.KeepAlive(this);
+      return new StatusOrString(statusOrStringPtr);
     }
 
     public override Status ValidateAsType()
