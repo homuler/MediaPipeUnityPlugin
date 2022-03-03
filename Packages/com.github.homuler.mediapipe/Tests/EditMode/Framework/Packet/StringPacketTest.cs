@@ -115,7 +115,20 @@ namespace Tests
 
     #region #Consume
     [Test]
-    public void Consume_ShouldReturnStatusOrString()
+    public void Consume_ShouldReturnStatusOrString_When_PacketIsEmpty()
+    {
+      using (var packet = new StringPacket())
+      {
+        using (var statusOrString = packet.Consume())
+        {
+          Assert.False(statusOrString.Ok());
+          Assert.AreEqual(statusOrString.status.Code(), Status.StatusCode.Internal);
+        }
+      }
+    }
+
+    [Test]
+    public void Consume_ShouldReturnStatusOrString_When_PacketIsNotEmpty()
     {
       using (var packet = new StringPacket("abc"))
       {
@@ -124,6 +137,7 @@ namespace Tests
           Assert.True(statusOrString.Ok());
           Assert.AreEqual(statusOrString.Value(), "abc");
         }
+        Assert.True(packet.IsEmpty());
       }
     }
     #endregion
