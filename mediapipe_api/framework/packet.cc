@@ -237,9 +237,9 @@ MpReturnCode mp_Packet__ConsumeString(mediapipe::Packet* packet, absl::StatusOr<
     auto status_or_string = packet->Consume<std::string>();
 
     if (status_or_string.ok()) {
-      *status_or_value_out = new absl::StatusOr<std::string>(std::move(*status_or_string.value().release()));
+      *status_or_value_out = new absl::StatusOr<std::string>{std::move(*status_or_string.value().release())};
     } else {
-      *status_or_value_out = new absl::StatusOr<std::string>(status_or_string.status());
+      *status_or_value_out = new absl::StatusOr<std::string>{status_or_string.status()};
     }
     RETURN_CODE(MpReturnCode::Success);
   CATCH_ALL
