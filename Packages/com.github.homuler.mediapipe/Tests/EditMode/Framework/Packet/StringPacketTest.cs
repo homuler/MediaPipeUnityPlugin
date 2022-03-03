@@ -6,7 +6,6 @@
 
 using Mediapipe;
 using NUnit.Framework;
-using System;
 using System.Text.RegularExpressions;
 
 namespace Tests
