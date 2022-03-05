@@ -19,6 +19,7 @@ cc_library(
         "//mediapipe_api/framework:calculator_graph",
         "//mediapipe_api/framework:output_stream_poller",
         "//mediapipe_api/framework:timestamp",
+        "//mediapipe_api/framework:validated_graph_config",
         "//mediapipe_api/framework/formats:classification",
         "//mediapipe_api/framework/formats:detection",
         "//mediapipe_api/framework/formats:image_frame",
