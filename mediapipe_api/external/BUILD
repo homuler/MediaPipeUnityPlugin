@@ -35,6 +35,7 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         "//mediapipe_api:common",
+        "//mediapipe_api/external/absl:statusor",
     ],
     alwayslink = True,
 )

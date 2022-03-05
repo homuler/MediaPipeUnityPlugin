@@ -77,6 +77,18 @@ cc_library(
     alwayslink = True,
 )
 
+cc_library(
+    name = "validated_graph_config",
+    srcs = ["validated_graph_config.cc"],
+    hdrs = ["validated_graph_config.h"],
+    deps = [
+        "//mediapipe_api:common",
+        "//mediapipe_api/external:protobuf",
+        "@com_google_mediapipe//mediapipe/framework:validated_graph_config",
+    ],
+    alwayslink = True,
+)
+
 csharp_proto_src(
     name = "calculator_cs",
     proto_src = "mediapipe/framework/calculator.proto",

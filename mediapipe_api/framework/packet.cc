@@ -232,6 +232,19 @@ MpReturnCode mp_Packet__GetByteString(mediapipe::Packet* packet, const char** va
   CATCH_ALL
 }
 
+MpReturnCode mp_Packet__ConsumeString(mediapipe::Packet* packet, absl::StatusOr<std::string>** status_or_value_out) {
+  TRY_ALL
+    auto status_or_string = packet->Consume<std::string>();
+
+    if (status_or_string.ok()) {
+      *status_or_value_out = new absl::StatusOr<std::string>{std::move(*status_or_string.value().release())};
+    } else {
+      *status_or_value_out = new absl::StatusOr<std::string>{status_or_string.status()};
+    }
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_ALL
+}
+
 MpReturnCode mp_Packet__ValidateAsString(mediapipe::Packet* packet, absl::Status** status_out) {
   TRY
     *status_out = new absl::Status{packet->ValidateAsType<std::string>()};
