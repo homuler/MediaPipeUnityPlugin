@@ -135,12 +135,13 @@ namespace Mediapipe
       return new Status(statusPtr);
     }
 
-    public CalculatorGraphConfig Config()
+    public CalculatorGraphConfig Config(ExtensionRegistry extensionRegistry = null)
     {
       UnsafeNativeMethods.mp_ValidatedGraphConfig__Config(mpPtr, out var serializedProto).Assert();
       GC.KeepAlive(this);
 
-      var config = serializedProto.Deserialize(CalculatorGraphConfig.Parser);
+      var parser = extensionRegistry == null ? CalculatorGraphConfig.Parser : CalculatorGraphConfig.Parser.WithExtensionRegistry(extensionRegistry);
+      var config = serializedProto.Deserialize(parser);
       serializedProto.Dispose();
 
       return config;
