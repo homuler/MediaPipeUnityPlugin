@@ -1,8 +1,22 @@
+diff --git a/mediapipe/calculators/tensor/BUILD b/mediapipe/calculators/tensor/BUILD
+index 72c2f51..f400da5 100644
+--- a/mediapipe/calculators/tensor/BUILD
++++ b/mediapipe/calculators/tensor/BUILD
+@@ -886,3 +886,9 @@ cc_library(
+     }),
+     alwayslink = 1,
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
 diff --git a/mediapipe/framework/BUILD b/mediapipe/framework/BUILD
-index c25e9d8..d1de343 100644
+index ef32c6c..75f56fb 100644
 --- a/mediapipe/framework/BUILD
 +++ b/mediapipe/framework/BUILD
-@@ -1676,5 +1676,5 @@ cc_test(
+@@ -1666,5 +1666,5 @@ cc_test(
  filegroup(
      name = "protos_src",
      srcs = glob(["*.proto"]),
@@ -10,10 +24,10 @@ index c25e9d8..d1de343 100644
 +    visibility = ["//visibility:public"],
  )
 diff --git a/mediapipe/framework/formats/BUILD b/mediapipe/framework/formats/BUILD
-index e0ec40e..7620d71 100644
+index f79e6aa..546750c 100644
 --- a/mediapipe/framework/formats/BUILD
 +++ b/mediapipe/framework/formats/BUILD
-@@ -276,7 +276,7 @@ mediapipe_register_type(
+@@ -310,7 +310,7 @@ mediapipe_register_type(
  filegroup(
      name = "protos_src",
      srcs = glob(["*.proto"]),
@@ -109,10 +123,10 @@ index 48b7b66..2d53a28 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/modules/objectron/calculators/BUILD b/mediapipe/modules/objectron/calculators/BUILD
-index 66150c5..7ab59ce 100644
+index fb75eb3..92b306d 100644
 --- a/mediapipe/modules/objectron/calculators/BUILD
 +++ b/mediapipe/modules/objectron/calculators/BUILD
-@@ -387,3 +387,9 @@ cc_test(
+@@ -405,3 +405,9 @@ cc_test(
          "@com_google_absl//absl/container:flat_hash_set",
      ],
  )

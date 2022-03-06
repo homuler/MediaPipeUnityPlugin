@@ -194,6 +194,7 @@ pkg_asset(
 pkg_zip(
     name = "mediapipe_proto_srcs",
     srcs = [
+        "//mediapipe_api/calculators/tensor:proto_srcs",
         "//mediapipe_api/framework:proto_srcs",
         "//mediapipe_api/framework/formats:proto_srcs",
         "//mediapipe_api/graphs/instant_motion_tracking/calculators:proto_srcs",
