@@ -4,6 +4,7 @@
 # license that can be found in the LICENSE file or at
 # https://opensource.org/licenses/MIT.
 
+load("@rules_pkg//pkg:mappings.bzl", "pkg_files")
 load("//mediapipe_api:csharp_proto_src.bzl", "csharp_proto_src")
 
 package(default_visibility = ["//visibility:public"])
@@ -19,6 +20,16 @@ cc_library(
         "@com_google_mediapipe//mediapipe/modules/objectron/calculators:annotation_cc_proto",
     ],
     alwayslink = True,
+)
+
+pkg_files(
+    name = "proto_srcs",
+    srcs = [
+        ":annotation_data_cs",
+        ":object_cs",
+        ":a_r_capture_metadata_cs",
+    ],
+    prefix = "Modules/Objectron/Calculators",
 )
 
 csharp_proto_src(

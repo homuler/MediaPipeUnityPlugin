@@ -381,9 +381,8 @@ class UninstallCommand(Command):
       for f in glob.glob(os.path.join(_INSTALL_PATH, 'Plugins', 'Protobuf', '*.dll'), recursive=True):
         self._remove(f)
 
-      for f in glob.glob(os.path.join(_INSTALL_PATH, 'Scripts', 'Protobuf', '*'), recursive=True):
-        if not f.endswith('.meta'):
-          self._remove(f)
+      for f in glob.glob(os.path.join(_INSTALL_PATH, 'Scripts', 'Protobuf', '*.cs'), recursive=True):
+        self._remove(f)
 
     if self.analyzers:
       self.console.info('Uninstalling analyzers...')
