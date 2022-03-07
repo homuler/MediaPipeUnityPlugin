@@ -4,6 +4,7 @@
 # license that can be found in the LICENSE file or at
 # https://opensource.org/licenses/MIT.
 
+load("@rules_pkg//pkg:mappings.bzl", "pkg_files")
 load("//mediapipe_api:csharp_proto_src.bzl", "csharp_proto_src")
 
 package(
@@ -21,6 +22,14 @@ cc_library(
         "@com_google_mediapipe//mediapipe/graphs/object_detection_3d/calculators:model_matrix_cc_proto",
     ],
     alwayslink = True,
+)
+
+pkg_files(
+    name = "proto_srcs",
+    srcs = [
+        ":model_matrix_cs",
+    ],
+    prefix = "Graphs/ObjectDetection3d/Calculators",
 )
 
 csharp_proto_src(

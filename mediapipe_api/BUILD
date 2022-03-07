@@ -194,29 +194,13 @@ pkg_asset(
 pkg_zip(
     name = "mediapipe_proto_srcs",
     srcs = [
-        "//mediapipe_api/framework:calculator_cs",
-        "//mediapipe_api/framework:calculator_options_cs",
-        "//mediapipe_api/framework:mediapipe_options_cs",
-        "//mediapipe_api/framework:packet_factory_cs",
-        "//mediapipe_api/framework:packet_generator_cs",
-        "//mediapipe_api/framework:status_handler_cs",
-        "//mediapipe_api/framework:stream_handler_cs",
-        "//mediapipe_api/framework/formats:classification_cs",
-        "//mediapipe_api/framework/formats:detection_cs",
-        "//mediapipe_api/framework/formats:landmark_cs",
-        "//mediapipe_api/framework/formats:location_data_cs",
-        "//mediapipe_api/framework/formats:matrix_data_cs",
-        "//mediapipe_api/framework/formats:rasterization_cs",
-        "//mediapipe_api/framework/formats:rect_cs",
-        "//mediapipe_api/graphs/instant_motion_tracking/calculators:sticker_buffer_cs",
-        "//mediapipe_api/graphs/object_detection_3d/calculators:model_matrix_cs",
-        "//mediapipe_api/modules/face_geometry/protos:face_geometry_cs",
-        "//mediapipe_api/modules/face_geometry/protos:mesh_3d_cs",
-        "//mediapipe_api/modules/objectron/calculators:a_r_capture_metadata_cs",
-        "//mediapipe_api/modules/objectron/calculators:annotation_data_cs",
-        "//mediapipe_api/modules/objectron/calculators:object_cs",
+        "//mediapipe_api/framework:proto_srcs",
+        "//mediapipe_api/framework/formats:proto_srcs",
+        "//mediapipe_api/graphs/instant_motion_tracking/calculators:proto_srcs",
+        "//mediapipe_api/graphs/object_detection_3d/calculators:proto_srcs",
+        "//mediapipe_api/modules/face_geometry/protos:proto_srcs",
+        "//mediapipe_api/modules/objectron/calculators:proto_srcs",
     ],
-    # TODO: keep directory structure
 )
 
 pkg_zip(

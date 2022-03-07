@@ -4,6 +4,7 @@
 # license that can be found in the LICENSE file or at
 # https://opensource.org/licenses/MIT.
 
+load("@rules_pkg//pkg:mappings.bzl", "pkg_files")
 load("//mediapipe_api:csharp_proto_src.bzl", "csharp_proto_src")
 
 package(
@@ -21,6 +22,14 @@ cc_library(
         "@com_google_mediapipe//mediapipe/graphs/instant_motion_tracking/calculators:tracked_anchor_manager_calculator",
     ],
     alwayslink = True,
+)
+
+pkg_files(
+    name = "proto_srcs",
+    srcs = [
+        ":sticker_buffer_cs",
+    ],
+    prefix = "Graphs/InstantMotionTracking/Calculators",
 )
 
 csharp_proto_src(
