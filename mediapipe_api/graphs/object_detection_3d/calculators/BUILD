@@ -34,7 +34,6 @@ pkg_files(
 
 csharp_proto_src(
     name = "model_matrix_cs",
-    import_prefix = "Graphs/ObjectDetection3d",
     proto_src = "mediapipe/graphs/object_detection_3d/calculators/model_matrix.proto",
     deps = [
         "@com_google_mediapipe//mediapipe/graphs/object_detection_3d/calculators:protos_src",

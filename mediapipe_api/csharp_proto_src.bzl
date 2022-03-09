@@ -9,23 +9,18 @@
 Macro for generating C# source files corresponding to .proto files
 """
 
-def csharp_proto_src(name, proto_src, deps, import_prefix = ""):
+def csharp_proto_src(name, proto_src, deps):
     """Generate C# source code for *.proto
 
     Args:
       name: target name
       deps: label list of dependent targets
-      import_prefix: Directory where the generated source code is placed
       proto_src: target .proto file path
     """
 
-    # e.g.
-    #  If import_prefix is "Annotation" and proto_src is "mediapipe/framework/formats/annotation/rasterization", then
-    #    csharp_out -> Rasterization.cs
-    #    outdir -> $GENDIR/Annotation
     base_name = proto_src.split("/")[-1]
     csharp_out = _camelize(base_name.split(".")[0]) + ".cs"
-    outdir = "$(GENDIR)" if len(import_prefix) == 0 else "$(GENDIR)/" + import_prefix
+    outdir = "$(GENDIR)"
 
     native.genrule(
         name = name,
