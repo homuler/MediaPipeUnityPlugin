@@ -95,11 +95,11 @@ pkg_files(
     srcs = [
         ":calculator_cs",
         ":calculator_options_cs",
-        "mediapipe_options_cs",
-        "packet_factory_cs",
-        "packet_generator_cs",
-        "status_handler_cs",
-        "stream_handler_cs",
+        ":mediapipe_options_cs",
+        ":packet_factory_cs",
+        ":packet_generator_cs",
+        ":status_handler_cs",
+        ":stream_handler_cs",
     ],
     prefix = "Framework",
 )

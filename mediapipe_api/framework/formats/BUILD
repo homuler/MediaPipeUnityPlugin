@@ -143,7 +143,6 @@ csharp_proto_src(
 
 csharp_proto_src(
     name = "rasterization_cs",
-    import_prefix = "Annotation",
     proto_src = "mediapipe/framework/formats/annotation/rasterization.proto",
     deps = [
         "@com_google_mediapipe//mediapipe/framework/formats/annotation:protos_src",

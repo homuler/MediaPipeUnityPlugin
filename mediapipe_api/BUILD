@@ -194,12 +194,15 @@ pkg_asset(
 pkg_zip(
     name = "mediapipe_proto_srcs",
     srcs = [
+        "//mediapipe_api/calculators/tensor:proto_srcs",
+        "//mediapipe_api/calculators/util:proto_srcs",
         "//mediapipe_api/framework:proto_srcs",
         "//mediapipe_api/framework/formats:proto_srcs",
         "//mediapipe_api/graphs/instant_motion_tracking/calculators:proto_srcs",
         "//mediapipe_api/graphs/object_detection_3d/calculators:proto_srcs",
         "//mediapipe_api/modules/face_geometry/protos:proto_srcs",
         "//mediapipe_api/modules/objectron/calculators:proto_srcs",
+        "//mediapipe_api/util:proto_srcs",
     ],
 )
 

@@ -34,7 +34,6 @@ pkg_files(
 
 csharp_proto_src(
     name = "sticker_buffer_cs",
-    import_prefix = "Graphs/InstantMotionTracking",
     proto_src = "mediapipe/graphs/instant_motion_tracking/calculators/sticker_buffer.proto",
     deps = [
         "@com_google_mediapipe//mediapipe/graphs/instant_motion_tracking/calculators:protos_src",

@@ -6,7 +6,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 using UnityEngine.Events;
+
+using Google.Protobuf;
 
 namespace Mediapipe.Unity.PoseTracking
 {
@@ -21,6 +25,20 @@ namespace Mediapipe.Unity.PoseTracking
 
     public ModelComplexity modelComplexity = ModelComplexity.Full;
     public bool smoothLandmarks = true;
+
+    private float _minDetectionConfidence = 0.5f;
+    public float minDetectionConfidence
+    {
+      get => _minDetectionConfidence;
+      set => _minDetectionConfidence = Mathf.Clamp01(value);
+    }
+
+    private float _minTrackingConfidence = 0.5f;
+    public float minTrackingConfidence
+    {
+      get => _minTrackingConfidence;
+      set => _minTrackingConfidence = Mathf.Clamp01(value);
+    }
 
 #pragma warning disable IDE1006  // UnityEvent is PascalCase
     public UnityEvent<Detection> OnPoseDetectionOutput = new UnityEvent<Detection>();
@@ -177,7 +195,39 @@ namespace Mediapipe.Unity.PoseTracking
         _poseWorldLandmarksStream = new OutputStream<LandmarkListPacket, LandmarkList>(calculatorGraph, _PoseWorldLandmarksStreamName, true);
         _roiFromLandmarksStream = new OutputStream<NormalizedRectPacket, NormalizedRect>(calculatorGraph, _RoiFromLandmarksStreamName, true);
       }
-      return calculatorGraph.Initialize(config);
+
+      using (var validatedGraphConfig = new ValidatedGraphConfig())
+      {
+        var status = validatedGraphConfig.Initialize(config);
+
+        if (!status.Ok()) { return status; }
+
+        var extensionRegistry = new ExtensionRegistry() { TensorsToDetectionsCalculatorOptions.Extensions.Ext, ThresholdingCalculatorOptions.Extensions.Ext };
+        var cannonicalizedConfig = validatedGraphConfig.Config(extensionRegistry);
+        var tensorsToDetectionsCalculators = cannonicalizedConfig.Node.Where((node) => node.Calculator == "TensorsToDetectionsCalculator").ToList();
+        var thresholdingCalculators = cannonicalizedConfig.Node.Where((node) => node.Calculator == "ThresholdingCalculator").ToList();
+
+        Debug.Log(tensorsToDetectionsCalculators.Count);
+        Debug.Log(thresholdingCalculators.Count);
+        foreach (var calculator in tensorsToDetectionsCalculators)
+        {
+          if (calculator.Options.HasExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext))
+          {
+            var options = calculator.Options.GetExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext);
+            options.MinScoreThresh = minDetectionConfidence;
+          }
+        }
+
+        foreach (var calculator in thresholdingCalculators)
+        {
+          if (calculator.Options.HasExtension(ThresholdingCalculatorOptions.Extensions.Ext))
+          {
+            var options = calculator.Options.GetExtension(ThresholdingCalculatorOptions.Extensions.Ext);
+            options.Threshold = minTrackingConfidence;
+          }
+        }
+        return calculatorGraph.Initialize(cannonicalizedConfig);
+      }
     }
 
     private WaitForResult WaitForPoseLandmarkModel()

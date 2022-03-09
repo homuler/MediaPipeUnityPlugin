@@ -6,7 +6,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 using UnityEngine.Events;
+
+using Google.Protobuf;
 
 namespace Mediapipe.Unity.HandTracking
 {
@@ -20,6 +24,20 @@ namespace Mediapipe.Unity.HandTracking
 
     public ModelComplexity modelComplexity = ModelComplexity.Full;
     public int maxNumHands = 2;
+
+    private float _minDetectionConfidence = 0.5f;
+    public float minDetectionConfidence
+    {
+      get => _minDetectionConfidence;
+      set => _minDetectionConfidence = Mathf.Clamp01(value);
+    }
+
+    private float _minTrackingConfidence = 0.5f;
+    public float minTrackingConfidence
+    {
+      get => _minTrackingConfidence;
+      set => _minTrackingConfidence = Mathf.Clamp01(value);
+    }
 
 #pragma warning disable IDE1006  // UnityEvent is PascalCase
     public UnityEvent<List<Detection>> OnPalmDetectectionsOutput = new UnityEvent<List<Detection>>();
@@ -231,7 +249,37 @@ namespace Mediapipe.Unity.HandTracking
         _handRectsFromLandmarksStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _HandRectsFromLandmarksStreamName, true);
         _handednessStream = new OutputStream<ClassificationListVectorPacket, List<ClassificationList>>(calculatorGraph, _HandednessStreamName, true);
       }
-      return calculatorGraph.Initialize(config);
+
+      using (var validatedGraphConfig = new ValidatedGraphConfig())
+      {
+        var status = validatedGraphConfig.Initialize(config);
+
+        if (!status.Ok()) { return status; }
+
+        var extensionRegistry = new ExtensionRegistry() { TensorsToDetectionsCalculatorOptions.Extensions.Ext, ThresholdingCalculatorOptions.Extensions.Ext };
+        var cannonicalizedConfig = validatedGraphConfig.Config(extensionRegistry);
+        var tensorsToDetectionsCalculators = cannonicalizedConfig.Node.Where((node) => node.Calculator == "TensorsToDetectionsCalculator").ToList();
+        var thresholdingCalculators = cannonicalizedConfig.Node.Where((node) => node.Calculator == "ThresholdingCalculator").ToList();
+
+        foreach (var calculator in tensorsToDetectionsCalculators)
+        {
+          if (calculator.Options.HasExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext))
+          {
+            var options = calculator.Options.GetExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext);
+            options.MinScoreThresh = minDetectionConfidence;
+          }
+        }
+
+        foreach (var calculator in thresholdingCalculators)
+        {
+          if (calculator.Options.HasExtension(ThresholdingCalculatorOptions.Extensions.Ext))
+          {
+            var options = calculator.Options.GetExtension(ThresholdingCalculatorOptions.Extensions.Ext);
+            options.Threshold = minTrackingConfidence;
+          }
+        }
+        return calculatorGraph.Initialize(cannonicalizedConfig);
+      }
     }
 
     private WaitForResult WaitForHandLandmarkModel()

@@ -8,6 +8,10 @@ using UnityEngine;
 
 namespace Mediapipe.Unity
 {
+#pragma warning disable IDE0065
+  using Color = UnityEngine.Color;
+#pragma warning restore IDE0065
+
   public class CircleAnnotation : HierarchicalAnnotation
   {
     [SerializeField] private LineRenderer _lineRenderer;
