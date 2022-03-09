@@ -9,6 +9,10 @@ using UnityEngine.UI;
 
 namespace Mediapipe.Unity
 {
+#pragma warning disable IDE0065
+  using Color = UnityEngine.Color;
+#pragma warning restore IDE0065
+
   public class LabelAnnotation : HierarchicalAnnotation
   {
     [SerializeField] private Text _labelText;

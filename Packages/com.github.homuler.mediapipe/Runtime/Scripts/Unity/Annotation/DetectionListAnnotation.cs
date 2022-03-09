@@ -9,6 +9,10 @@ using UnityEngine;
 
 namespace Mediapipe.Unity
 {
+#pragma warning disable IDE0065
+  using Color = UnityEngine.Color;
+#pragma warning restore IDE0065
+
   public sealed class DetectionListAnnotation : ListAnnotation<DetectionAnnotation>
   {
     [SerializeField, Range(0, 1)] private float _lineWidth = 1.0f;

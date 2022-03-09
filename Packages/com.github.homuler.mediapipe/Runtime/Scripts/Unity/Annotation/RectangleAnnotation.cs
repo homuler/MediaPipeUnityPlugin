@@ -11,6 +11,10 @@ using mplt = Mediapipe.LocationData.Types;
 
 namespace Mediapipe.Unity
 {
+#pragma warning disable IDE0065
+  using Color = UnityEngine.Color;
+#pragma warning restore IDE0065
+
   public class RectangleAnnotation : HierarchicalAnnotation
   {
     [SerializeField] private LineRenderer _lineRenderer;
