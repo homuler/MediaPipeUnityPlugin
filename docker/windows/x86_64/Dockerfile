@@ -66,7 +66,7 @@ RUN curl -L https://www.python.org/ftp/python/%PYTHON_VERSION%/python-%PYTHON_VE
 FROM base as opencv
 
 # Install OpenCV
-RUN curl -L https://github.com/opencv/opencv/releases/download/3.4.10/opencv-3.4.10-vc14_vc15.exe -o C:\TEMP\opencv-installer.exe && `
+RUN curl -L https://github.com/opencv/opencv/releases/download/3.4.16/opencv-3.4.16-vc14_vc15.exe -o C:\TEMP\opencv-installer.exe && `
     start /wait C:\TEMP\opencv-installer.exe -gm2 -y -oC:\ && `
     del C:\TEMP\opencv-installer.exe
 
