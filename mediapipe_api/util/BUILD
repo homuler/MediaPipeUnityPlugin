@@ -28,6 +28,7 @@ cc_library(
 pkg_files(
     name = "proto_srcs",
     srcs = [
+        ":audio_decoder_cs",
         ":color_cs",
         ":render_data_cs",
     ],
@@ -35,9 +36,18 @@ pkg_files(
 )
 
 csharp_proto_src(
+    name = "audio_decoder_cs",
+    proto_src = "mediapipe/util/audio_decoder.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/util:protos_src",
+        "@com_google_mediapipe//mediapipe/framework:protos_src",
+    ],
+)
+
+csharp_proto_src(
     name = "color_cs",
     proto_src = "mediapipe/util/color.proto",
-    deps = [
+    deps =[
         "@com_google_mediapipe//mediapipe/util:protos_src",
     ],
 )
