@@ -6,8 +6,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+
+using Google.Protobuf;
 
 namespace Mediapipe.Unity.Objectron
 {
@@ -24,6 +27,20 @@ namespace Mediapipe.Unity.Objectron
 
     public Category category;
     public int maxNumObjects = 5;
+
+    private float _minDetectionConfidence = 0.5f;
+    public float minDetectionConfidence
+    {
+      get => _minDetectionConfidence;
+      set => _minDetectionConfidence = Mathf.Clamp01(value);
+    }
+
+    private float _minTrackingConfidence = 0.99f;
+    public float minTrackingConfidence
+    {
+      get => _minTrackingConfidence;
+      set => _minTrackingConfidence = Mathf.Clamp01(value);
+    }
 
     public Vector2 focalLength
     {
@@ -174,7 +191,39 @@ namespace Mediapipe.Unity.Objectron
         _multiBoxRectsStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _MultiBoxRectsStreamName, true);
         _multiBoxLandmarksStream = new OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(calculatorGraph, _MultiBoxLandmarksStreamName, true);
       }
-      return calculatorGraph.Initialize(config);
+
+      using (var validatedGraphConfig = new ValidatedGraphConfig())
+      {
+        var status = validatedGraphConfig.Initialize(config);
+
+        if (!status.Ok()) { return status; }
+
+        var extensionRegistry = new ExtensionRegistry() { TensorsToDetectionsCalculatorOptions.Extensions.Ext, ThresholdingCalculatorOptions.Extensions.Ext };
+        var cannonicalizedConfig = validatedGraphConfig.Config(extensionRegistry);
+        var tensorsToDetectionsCalculators = cannonicalizedConfig.Node.Where((node) => node.Calculator == "TensorsToDetectionsCalculator").ToList();
+        var thresholdingCalculators = cannonicalizedConfig.Node.Where((node) => node.Calculator == "ThresholdingCalculator").ToList();
+
+        Debug.Log(tensorsToDetectionsCalculators.Count);
+        Debug.Log(thresholdingCalculators.Count);
+        foreach (var calculator in tensorsToDetectionsCalculators)
+        {
+          if (calculator.Options.HasExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext))
+          {
+            var options = calculator.Options.GetExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext);
+            options.MinScoreThresh = minDetectionConfidence;
+          }
+        }
+
+        foreach (var calculator in thresholdingCalculators)
+        {
+          if (calculator.Options.HasExtension(ThresholdingCalculatorOptions.Extensions.Ext))
+          {
+            var options = calculator.Options.GetExtension(ThresholdingCalculatorOptions.Extensions.Ext);
+            options.Threshold = minTrackingConfidence;
+          }
+        }
+        return calculatorGraph.Initialize(cannonicalizedConfig);
+      }
     }
 
     private SidePacket BuildSidePacket(ImageSource imageSource)
