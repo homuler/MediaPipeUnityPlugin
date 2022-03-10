@@ -54,12 +54,12 @@ namespace Mediapipe.Unity
     public readonly int height;
     public readonly TextureFormat format;
 
-    private ImageFormat.Format _format = ImageFormat.Format.UNKNOWN;
-    public ImageFormat.Format imageFormat
+    private ImageFormat.Types.Format _format = ImageFormat.Types.Format.Unknown;
+    public ImageFormat.Types.Format imageFormat
     {
       get
       {
-        if (_format == ImageFormat.Format.UNKNOWN)
+        if (_format == ImageFormat.Types.Format.Unknown)
         {
           _format = format.ToImageFormat();
         }

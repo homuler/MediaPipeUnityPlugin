@@ -26,15 +26,15 @@ namespace Mediapipe
 
     public ImageFrame(IntPtr imageFramePtr, bool isOwner = true) : base(imageFramePtr, isOwner) { }
 
-    public ImageFrame(ImageFormat.Format format, int width, int height) : this(format, width, height, DefaultAlignmentBoundary) { }
+    public ImageFrame(ImageFormat.Types.Format format, int width, int height) : this(format, width, height, DefaultAlignmentBoundary) { }
 
-    public ImageFrame(ImageFormat.Format format, int width, int height, uint alignmentBoundary) : base()
+    public ImageFrame(ImageFormat.Types.Format format, int width, int height, uint alignmentBoundary) : base()
     {
       UnsafeNativeMethods.mp_ImageFrame__ui_i_i_ui(format, width, height, alignmentBoundary, out var ptr).Assert();
       this.ptr = ptr;
     }
 
-    public ImageFrame(ImageFormat.Format format, int width, int height, int widthStep, NativeArray<byte> pixelData)
+    public ImageFrame(ImageFormat.Types.Format format, int width, int height, int widthStep, NativeArray<byte> pixelData)
     {
       unsafe
       {
@@ -77,7 +77,7 @@ namespace Mediapipe
       return value;
     }
 
-    public ImageFormat.Format Format()
+    public ImageFormat.Types.Format Format()
     {
       return SafeNativeMethods.mp_ImageFrame__Format(mpPtr);
     }
@@ -173,12 +173,12 @@ namespace Mediapipe
 #pragma warning disable IDE0010
       switch (format)
       {
-        case ImageFormat.Format.SRGB:
+        case ImageFormat.Types.Format.Srgb:
           {
             ReadSRGBByteArray(MutablePixelData(), Width(), Height(), WidthStep(), flipVertically, ref colors);
             return colors;
           }
-        case ImageFormat.Format.SRGBA:
+        case ImageFormat.Types.Format.Srgba:
           {
             ReadSRGBAByteArray(MutablePixelData(), Width(), Height(), WidthStep(), flipVertically, ref colors);
             return colors;
@@ -214,7 +214,7 @@ namespace Mediapipe
 #pragma warning disable IDE0010
       switch (format)
       {
-        case ImageFormat.Format.SRGB:
+        case ImageFormat.Types.Format.Srgb:
           {
             if (channelNumber < 0 || channelNumber > 3)
             {
@@ -223,7 +223,7 @@ namespace Mediapipe
             ReadChannel(MutablePixelData(), channelNumber, 3, Width(), Height(), WidthStep(), flipVertically, colors);
             return colors;
           }
-        case ImageFormat.Format.SRGBA:
+        case ImageFormat.Types.Format.Srgba:
           {
             if (channelNumber < 0 || channelNumber > 4)
             {
