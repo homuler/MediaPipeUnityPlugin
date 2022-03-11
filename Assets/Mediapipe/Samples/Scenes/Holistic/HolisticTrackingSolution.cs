@@ -20,6 +20,8 @@ namespace Mediapipe.Unity.Holistic
     [SerializeField] private HolisticTrackingGraph _graphRunner;
     [SerializeField] private TextureFramePool _textureFramePool;
 
+    [SerializeField] private PoseSolver poseSolver;
+
     private Coroutine _coroutine;
 
     public RunningMode runningMode;
@@ -130,7 +132,7 @@ namespace Mediapipe.Unity.Holistic
       SetupAnnotationController(_poseDetectionAnnotationController, imageSource);
       SetupAnnotationController(_holisticAnnotationController, imageSource);
       SetupAnnotationController(_poseWorldLandmarksAnnotationController, imageSource);
-      SetupAnnotationController(_poseRoiAnnotationController, imageSource);
+      //SetupAnnotationController(_poseRoiAnnotationController, imageSource);
 
       while (true)
       {
@@ -155,7 +157,7 @@ namespace Mediapipe.Unity.Holistic
           _poseDetectionAnnotationController.DrawNow(value.poseDetection);
           _holisticAnnotationController.DrawNow(value.faceLandmarks, value.poseLandmarks, value.leftHandLandmarks, value.rightHandLandmarks);
           _poseWorldLandmarksAnnotationController.DrawNow(value.poseWorldLandmarks);
-          _poseRoiAnnotationController.DrawNow(value.poseRoi);
+          //_poseRoiAnnotationController.DrawNow(value.poseRoi);
         }
 
         yield return new WaitForEndOfFrame();
@@ -190,11 +192,13 @@ namespace Mediapipe.Unity.Holistic
     private void OnPoseWorldLandmarksOutput(LandmarkList poseWorldLandmarks)
     {
       _poseWorldLandmarksAnnotationController.DrawLater(poseWorldLandmarks);
+    
+      poseSolver.SetPoseLandmarks(poseWorldLandmarks);
     }
 
     private void OnPoseRoiOutput(NormalizedRect roiFromLandmarks)
     {
-      _poseRoiAnnotationController.DrawLater(roiFromLandmarks);
+      //_poseRoiAnnotationController.DrawLater(roiFromLandmarks);
     }
   }
 }
