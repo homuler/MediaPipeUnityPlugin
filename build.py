@@ -245,7 +245,8 @@ class BuildCommand(Command):
     return ['--linkopt={}'.format(l) for l in self.linkopt]
 
   def _build_opencv_switch(self):
-    commands = [f'--@opencv//:switch={self.opencv}']
+    switch = 'static' if self.opencv == 'cmake' else self.opencv
+    commands = [f'--@opencv//:switch={switch}']
 
     return commands
 
@@ -420,7 +421,7 @@ class Argument:
     build_command_parser.add_argument('--resources', action=argparse.BooleanOptionalAction, default=True)
     build_command_parser.add_argument('--analyzers', action=argparse.BooleanOptionalAction, default=False, help='Install Roslyn Analyzers')
     build_command_parser.add_argument('--compilation_mode', '-c', choices=['fastbuild', 'opt', 'dbg'], default='opt')
-    build_command_parser.add_argument('--opencv', choices=['local', 'cmake'], default='local', help='Decide to which OpenCV to link for Desktop native libraries')
+    build_command_parser.add_argument('--opencv', choices=['local', 'cmake', 'static', 'dynamic'], default='local', help='Decide to which OpenCV to link for Desktop native libraries')
     build_command_parser.add_argument('--include_opencv_libs', action='store_true', help='Include OpenCV\'s native libraries for Desktop')
     build_command_parser.add_argument('--linkopt', '-l', action='append', help='Linker options')
     build_command_parser.add_argument('--verbose', '-v', action='count', default=0)
