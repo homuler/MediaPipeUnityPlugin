@@ -1,7 +1,6 @@
 # escape=`
 
 ARG NODE_VERSION=16.13.0
-ARG BAZEL_VERSION=4.2.1
 ARG PYTHON_VERSION=3.9.9
 ARG ANDROID_SDK_VERSION=30
 ARG ANDROID_NDK_VERSION=21.4.7075529
@@ -76,6 +75,16 @@ FROM builder as android
 ARG ANDROID_SDK_VERSION
 ARG ANDROID_NDK_VERSION
 
+ENV OPENJDK_ZIP OpenJDK11U-jdk_x64.zip
+ENV OPENJDK_SHA256 087d096032efe273d7e754a25c85d8e8cf44738a3e597ad86f55e0971acc3b8e
+ENV JAVA_HOME C:\Java\jdk-11.0.13+8
+
+# Install Java
+RUN curl -L https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.13%2B8/OpenJDK11U-jdk_x64_windows_hotspot_11.0.13_8.zip -o C:\TEMP\%OPENJDK_ZIP% && `
+    for /F %s in ('sha256sum /c/TEMP/%OPENJDK_ZIP%') do ((test "%s" = "%OPENJDK_SHA256%" || (echo %s 'Checksum Failed' && exit 1))) && `
+    unzip C:\TEMP\%OPENJDK_ZIP% -d C:\Java && `
+    del C:\TEMP\%OPENJDK_ZIP%
+
 ENV COMMANDLINETOOLS_ZIP commandlinetools.zip
 ENV COMMANDLINETOOLS_SHA256 f9e6f91743bcb1cc6905648ca751bc33975b0dd11b50d691c2085d025514278c
 
@@ -96,7 +105,6 @@ RUN powershell -command "for($i=0;$i -lt 30;$i++) { $response += """y`n""" }; $r
 FROM builder
 
 ARG ANDROID_NDK_VERSION
-ARG BAZEL_VERSION
 
 ENV ANDROID_HOME C:\Android
 ENV ANDROID_NDK_HOME ${ANDROID_HOME}\ndk\${ANDROID_NDK_VERSION}
@@ -106,7 +114,7 @@ ENV PYTHON_BIN_PATH=${PYTHON_INSTALL_PATH}\python.exe
 # Install Bazel and NuGet
 RUN setx path "C:\bin;%PYTHON_INSTALL_PATH%;%PYTHON_INSTALL_PATH%\Scripts;%PATH%" && `
     mkdir C:\bin && `
-    curl -L https://github.com/bazelbuild/bazel/releases/download/%BAZEL_VERSION%/bazel-%BAZEL_VERSION%-windows-x86_64.exe -o C:\bin\bazel.exe && `
+    curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.11.0/bazelisk-windows-amd64.exe -o C:\bin\bazel.exe && `
     curl -L https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -o C:\bin\nuget.exe
 
 COPY --from=python C:\Python C:\Python
