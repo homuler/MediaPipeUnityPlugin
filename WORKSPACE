@@ -323,18 +323,11 @@ http_archive(
     urls = ["https://github.com/nothings/stb/archive/b42009b3b9d4ca35bc703f5310eedc74f584be58.tar.gz"],
 )
 
-# You may run setup_android.sh to install Android SDK and NDK.
-android_ndk_repository(
-    name = "androidndk",
-    # If you need to support older versions of Android, please specify the API Level.
-    # Otherwise, some symbols in libmediapipe_jni.so cannot be resolved and `DllNotFoundException` will be thrown.
+load("//third_party:android_configure.bzl", "android_configure")
+android_configure(name = "local_config_android")
 
-    # api_level = 21,
-)
-
-android_sdk_repository(
-    name = "androidsdk",
-)
+load("@local_config_android//:android_configure.bzl", "android_workspace")
+android_workspace()
 
 # iOS basic build deps.
 
