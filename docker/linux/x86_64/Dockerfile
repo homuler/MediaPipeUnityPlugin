@@ -39,7 +39,7 @@ USER mediapipe
 WORKDIR /home/mediapipe
 
 # install yay
-RUN sudo pacman -Sy base-devel git glibc jdk11-openjdk unzip zip --needed --noconfirm
+RUN sudo pacman -Sy base-devel git glibc unzip zip --needed --noconfirm
 RUN git clone https://aur.archlinux.org/yay.git
 RUN cd yay && makepkg -si --noconfirm
 RUN rm -rf yay
