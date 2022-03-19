@@ -100,6 +100,7 @@ class BuildCommand(Command):
     self.system = platform.system()
     self.desktop = command_args.args.desktop
     self.android = command_args.args.android
+    self.android_ndk_api_level = command_args.args.android_ndk_api_level
     self.ios= command_args.args.ios
     self.resources = command_args.args.resources
     self.analyzers = command_args.args.analyzers
@@ -197,6 +198,9 @@ class BuildCommand(Command):
 
     commands += ['build', '-c', self.compilation_mode]
     commands += self._build_linkopt()
+
+    if self.android_ndk_api_level:
+      commands += ['--action_env', f'ANDROID_NDK_API_LEVEL="{self.android_ndk_api_level}"']
 
     if self._is_windows():
       python_bin_path = sys.executable.replace('\\', '//')
@@ -410,6 +414,7 @@ class Argument:
     build_command_parser = subparsers.add_parser('build', help='Build and install native libraries')
     build_command_parser.add_argument('--desktop', choices=['cpu', 'gpu'])
     build_command_parser.add_argument('--android', choices=['armv7', 'arm64', 'fat'])
+    build_command_parser.add_argument('--android_ndk_api_level', type=int, choices=range(16, 31))
     build_command_parser.add_argument('--ios', choices=['arm64'])
     build_command_parser.add_argument('--resources', action=argparse.BooleanOptionalAction, default=True)
     build_command_parser.add_argument('--analyzers', action=argparse.BooleanOptionalAction, default=False, help='Install Roslyn Analyzers')
