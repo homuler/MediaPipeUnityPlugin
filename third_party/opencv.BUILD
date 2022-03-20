@@ -40,6 +40,13 @@ config_setting(
     },
 )
 
+config_setting(
+    name = "local_build",
+    flag_values = {
+        ":switch": "local",
+    },
+)
+
 selects.config_setting_group(
     name = "source_build",
     match_any = [":cmake_static", ":cmake_dynamic"],
@@ -63,6 +70,11 @@ config_setting(
 selects.config_setting_group(
     name = "dbg_build_win",
     match_all = ["@bazel_tools//src/conditions:windows", ":dbg_build"],
+)
+
+selects.config_setting_group(
+    name = "local_build_win",
+    match_all = ["@bazel_tools//src/conditions:windows", ":local_build"],
 )
 
 alias(
@@ -95,7 +107,7 @@ filegroup(
     name = "opencv_world_dll",
     srcs = select({
         ":source_build": [":opencv_world_dll_from_source"],
-        "@com_google_mediapipe//mediapipe:windows": ["@windows_opencv//:opencv_world_dll"],
+        ":local_build_win": ["@windows_opencv//:opencv_world_dll"],
         "//conditions:default": [],
     }),
 )
@@ -225,7 +237,7 @@ cmake(
     }),
     lib_source = "@opencv//:all",
     out_lib_dir = select({
-        ":cmake_dynamic_win": "x64/vc16/lib",
+        ":cmake_dynamic_win": "x64/vc16/bin",
         ":cmake_static_win": "x64/vc16/staticlib",
         "//conditions:default": "lib",
     }),
@@ -318,14 +330,14 @@ genrule(
     name = "opencv_dynamic_libs_win",
     srcs = [":opencv_gen_dir"],
     outs = ["opencv_world3416.dll"],
-    cmd = "cp -f $</x64/vc16/lib/opencv_world3416.dll $(@D)",
+    cmd = "cp -f $</x64/vc16/bin/opencv_world3416.dll $(@D)",
 )
 
 genrule(
     name = "opencv_dynamic_libs_win_dbg",
     srcs = [":opencv_gen_dir"],
     outs = ["opencv_world3416d.dll"],
-    cmd = "cp -f $</x64/vc16/lib/opencv_world3416d.dll $(@D)",
+    cmd = "cp -f $</x64/vc16/bin/opencv_world3416d.dll $(@D)",
 )
 
 genrule(
