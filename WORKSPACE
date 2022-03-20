@@ -18,7 +18,7 @@ bazel_skylib_workspace()
 
 load("@bazel_skylib//lib:versions.bzl", "versions")
 
-versions.check(minimum_bazel_version = "5.0.0")
+versions.check(minimum_bazel_version = "4.2.1")
 
 http_archive(
     name = "rules_pkg",
