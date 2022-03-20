@@ -251,6 +251,7 @@ cmake(
         ":cmake_static": [],
         ":dbg_build_win": ["opencv_world3416d.dll"],
         "@bazel_tools//src/conditions:windows": ["opencv_world3416.dll"],
+        "@bazel_tools//src/conditions:darwin": ["libopencv_world.3.4.dylib"],
         "//conditions:default": ["libopencv_world.so"],
     }),
 )
@@ -261,6 +262,7 @@ cc_library(
         ":cmake_static": [],
         ":dbg_build_win": ["opencv_world3416d.dll"],
         "@bazel_tools//src/conditions:windows": ["opencv_world3416.dll"],
+        "@bazel_tools//src/conditions:darwin": ["libopencv_world.3.4.dylib"],
         "//conditions:default": ["libopencv_world.so"],
     }) + select({
         ":cmake_dynamic": [],
@@ -279,6 +281,7 @@ cc_library(
         ":cmake_static": [],
         ":dbg_build_win": [":opencv_dynamic_libs_win_dbg"],
         "@bazel_tools//src/conditions:windows": [":opencv_dynamic_libs_win"],
+        "@bazel_tools//src/conditions:darwin": [":opencv_dynamic_libs_darwin"],
         "//conditions:default": [":opencv_dynamic_libs"],
     }) + select({
         ":cmake_dynamic": [],
@@ -309,6 +312,7 @@ filegroup(
         ":cmake_static": [],
         ":dbg_build_win": [":opencv_dynamic_libs_win_dbg"],
         "@bazel_tools//src/conditions:windows": [":opencv_dynamic_libs_win"],
+        "@bazel_tools//src/conditions:darwin": [":opencv_dynamic_libs_darwin"],
         "//conditions:default": [":opencv_dynamic_libs"],
     }),
 )
@@ -324,6 +328,13 @@ genrule(
     srcs = [":opencv_gen_dir"],
     outs = ["libopencv_world.so"],
     cmd = "cp $</lib/libopencv_world.so $(@D)",
+)
+
+genrule(
+    name = "opencv_dynamic_libs_darwin",
+    srcs = [":opencv_gen_dir"],
+    outs = ["libopencv_world.3.4.dylib"],
+    cmd = "cp $</lib/libopencv_world.3.4.dylib $(@D)",
 )
 
 genrule(
