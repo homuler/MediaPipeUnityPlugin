@@ -80,7 +80,7 @@ selects.config_setting_group(
 alias(
     name = "opencv",
     actual = select({
-        ":source_build": ":opencv_from_source",
+        ":source_build": ":opencv_cmake",
         "//conditions:default": ":opencv_binary",
     }),
 )
@@ -246,13 +246,31 @@ cmake(
         ":dbg_build_win": ["opencv_world3416d.lib"],
         "@bazel_tools//src/conditions:windows": ["opencv_world3416.lib"],
         "//conditions:default": ["libopencv_world.a"],
-    }),
+    }), # + select({
+    #    ":cmake_dynamic": [],
+    #    ":dbg_build_win": ["%sd.lib" % lib for lib in OPENCV_3RDPARTY_LIBS],
+    #    "@bazel_tools//src/conditions:windows": ["%s.lib" % lib for lib in OPENCV_3RDPARTY_LIBS],
+    #    "@bazel_tools//src/conditions:darwin_arm64": ["3rdparty/m1/lib%s.a" % lib for lib in OPENCV_3RDPARTY_LIBS_M1],
+    #    "//conditions:default": ["3rdparty/default/lib%s.a" % lib for lib in OPENCV_3RDPARTY_LIBS],
+    # }),
     out_shared_libs =  select({
         ":cmake_static": [],
         ":dbg_build_win": ["opencv_world3416d.dll"],
         "@bazel_tools//src/conditions:windows": ["opencv_world3416.dll"],
         "@bazel_tools//src/conditions:darwin": ["libopencv_world.3.4.dylib"],
         "//conditions:default": ["libopencv_world.so"],
+    }),
+    linkopts = select({
+        "@bazel_tools//src/conditions:windows": [],
+        "//conditions:default": [
+            "-ldl",
+            "-lm",
+            "-lpthread",
+        ],
+    }) + select({
+        "@bazel_tools//src/conditions:windows": [],
+        "@bazel_tools//src/conditions:darwin": [],
+        "//conditions:default": ["-lrt"],
     }),
 )
 
