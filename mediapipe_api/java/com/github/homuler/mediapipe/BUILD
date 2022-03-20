@@ -9,9 +9,7 @@ load("//mediapipe_api/java/com/google/mediapipe:mediapipe_aar.bzl", "mediapipe_a
 # A sample aar to extend UnityPlayerActivity
 mediapipe_aar(
     name = "mediapipe_android",
-    srcs = [
-        # "MediaPipeUnityPlayerActivity.java",
-    ],
+    srcs = [],
     assets = [
         # If preferable, model files can be included to aar
     ],
@@ -19,7 +17,6 @@ mediapipe_aar(
         "//mediapipe_api:mediapipe_c",
     ],
     deps = [
-        # "@unity//:activity",
         "@opencv",
     ],
 )

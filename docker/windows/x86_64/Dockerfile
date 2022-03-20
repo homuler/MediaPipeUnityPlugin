@@ -1,7 +1,6 @@
 # escape=`
 
 ARG NODE_VERSION=16.13.0
-ARG BAZEL_VERSION=4.2.1
 ARG PYTHON_VERSION=3.9.9
 ARG ANDROID_SDK_VERSION=30
 ARG ANDROID_NDK_VERSION=21.4.7075529
@@ -106,24 +105,21 @@ RUN powershell -command "for($i=0;$i -lt 30;$i++) { $response += """y`n""" }; $r
 FROM builder
 
 ARG ANDROID_NDK_VERSION
-ARG BAZEL_VERSION
 
 ENV ANDROID_HOME C:\Android
 ENV ANDROID_NDK_HOME ${ANDROID_HOME}\ndk\${ANDROID_NDK_VERSION}
-ENV JAVA_HOME=C:\Java\jdk-11.0.13+8
 ENV PYTHON_INSTALL_PATH=C:\Python
 ENV PYTHON_BIN_PATH=${PYTHON_INSTALL_PATH}\python.exe
 
 # Install Bazel and NuGet
-RUN setx path "C:\bin;%PYTHON_INSTALL_PATH%;%PYTHON_INSTALL_PATH%\Scripts;%JAVA_HOME%\bin;%PATH%" && `
+RUN setx path "C:\bin;%PYTHON_INSTALL_PATH%;%PYTHON_INSTALL_PATH%\Scripts;%PATH%" && `
     mkdir C:\bin && `
-    curl -L https://github.com/bazelbuild/bazel/releases/download/%BAZEL_VERSION%/bazel-%BAZEL_VERSION%-windows-x86_64.exe -o C:\bin\bazel.exe && `
+    curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.11.0/bazelisk-windows-amd64.exe -o C:\bin\bazel.exe && `
     curl -L https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -o C:\bin\nuget.exe
 
 COPY --from=python C:\Python C:\Python
 COPY --from=opencv C:\opencv C:\opencv
 COPY --from=android C:\Android C:\Android
-COPY --from=android C:\Java C:\Java
 
 ENV WS_LONG_PATHS_VERSION 3.4.1
 ENV WS_LONG_PATHS_BASE ndk-wsls-${WS_LONG_PATHS_VERSION}

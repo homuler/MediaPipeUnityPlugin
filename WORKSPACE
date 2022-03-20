@@ -18,7 +18,7 @@ bazel_skylib_workspace()
 
 load("@bazel_skylib//lib:versions.bzl", "versions")
 
-versions.check(minimum_bazel_version = "3.7.2")
+versions.check(minimum_bazel_version = "4.2.1")
 
 http_archive(
     name = "rules_pkg",
@@ -50,12 +50,6 @@ emsdk_deps()
 load("@emsdk//:emscripten_deps.bzl", emsdk_emscripten_deps = "emscripten_deps")
 
 emsdk_emscripten_deps(emscripten_version = "2.0.22")
-
-new_local_repository(
-    name = "unity",
-    build_file = "@//third_party:unity.BUILD",
-    path = "/path/to/unity/2020.3.30f1",
-)
 
 # mediapipe
 http_archive(
@@ -323,18 +317,11 @@ http_archive(
     urls = ["https://github.com/nothings/stb/archive/b42009b3b9d4ca35bc703f5310eedc74f584be58.tar.gz"],
 )
 
-# You may run setup_android.sh to install Android SDK and NDK.
-android_ndk_repository(
-    name = "androidndk",
-    # If you need to support older versions of Android, please specify the API Level.
-    # Otherwise, some symbols in libmediapipe_jni.so cannot be resolved and `DllNotFoundException` will be thrown.
+load("//third_party:android_configure.bzl", "android_configure")
+android_configure(name = "local_config_android")
 
-    # api_level = 21,
-)
-
-android_sdk_repository(
-    name = "androidsdk",
-)
+load("@local_config_android//:android_configure.bzl", "android_workspace")
+android_workspace()
 
 # iOS basic build deps.
 
@@ -389,64 +376,6 @@ http_archive(
     sha256 = "e3ac053813c989a88703556df4dc4466e424e30d32108433ed6beaec76ba4fdc",
     strip_prefix = "google-toolbox-for-mac-2.2.1",
     url = "https://github.com/google/google-toolbox-for-mac/archive/v2.2.1.zip",
-)
-
-# Maven dependencies.
-
-RULES_JVM_EXTERNAL_TAG = "4.0"
-
-RULES_JVM_EXTERNAL_SHA = "31701ad93dbfe544d597dbe62c9a1fdd76d81d8a9150c2bf1ecf928ecdf97169"
-
-http_archive(
-    name = "rules_jvm_external",
-    sha256 = RULES_JVM_EXTERNAL_SHA,
-    strip_prefix = "rules_jvm_external-%s" % RULES_JVM_EXTERNAL_TAG,
-    url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % RULES_JVM_EXTERNAL_TAG,
-)
-
-load("@rules_jvm_external//:defs.bzl", "maven_install")
-
-# Important: there can only be one maven_install rule. Add new maven deps here.
-maven_install(
-    artifacts = [
-        "androidx.concurrent:concurrent-futures:1.0.0-alpha03",
-        "androidx.lifecycle:lifecycle-common:2.3.1",
-        "androidx.activity:activity:1.2.2",
-        "androidx.exifinterface:exifinterface:1.3.3",
-        "androidx.fragment:fragment:1.3.4",
-        "androidx.annotation:annotation:aar:1.1.0",
-        "androidx.appcompat:appcompat:aar:1.1.0-rc01",
-        "androidx.camera:camera-core:1.0.0-beta10",
-        "androidx.camera:camera-camera2:1.0.0-beta10",
-        "androidx.camera:camera-lifecycle:1.0.0-beta10",
-        "androidx.constraintlayout:constraintlayout:aar:1.1.3",
-        "androidx.core:core:aar:1.1.0-rc03",
-        "androidx.legacy:legacy-support-v4:aar:1.0.0",
-        "androidx.recyclerview:recyclerview:aar:1.1.0-beta02",
-        "androidx.test.espresso:espresso-core:3.1.1",
-        "com.github.bumptech.glide:glide:4.11.0",
-        "com.google.android.material:material:aar:1.0.0-rc01",
-        "com.google.auto.value:auto-value:1.8.1",
-        "com.google.auto.value:auto-value-annotations:1.8.1",
-        "com.google.code.findbugs:jsr305:latest.release",
-        "com.google.android.datatransport:transport-api:3.0.0",
-        "com.google.android.datatransport:transport-backend-cct:3.1.0",
-        "com.google.android.datatransport:transport-runtime:3.1.0",
-        "com.google.flogger:flogger-system-backend:0.6",
-        "com.google.flogger:flogger:0.6",
-        "com.google.guava:guava:27.0.1-android",
-        "com.google.guava:listenablefuture:1.0",
-        "junit:junit:4.12",
-        "org.hamcrest:hamcrest-library:1.3",
-    ],
-    fetch_sources = True,
-    repositories = [
-        "https://maven.google.com",
-        "https://dl.google.com/dl/android/maven2",
-        "https://repo1.maven.org/maven2",
-        "https://jcenter.bintray.com",
-    ],
-    version_conflict_policy = "pinned",
 )
 
 # Needed by TensorFlow
