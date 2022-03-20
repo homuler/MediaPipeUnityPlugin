@@ -104,7 +104,7 @@ http_archive(
 
 http_archive(
     name = "rules_foreign_cc",
-    # sha256 = "30c970bfaeda3485100c62b13093da2be2c70ed99ec8d30f4fac6dd37cb25f34",
+    sha256 = "47f94195f144952c5a47245363d4a27b0e7ef3037a58ecf13aca8b5dbe3c2609",
     strip_prefix = "rules_foreign_cc-feat-cache_entries_target",
     url = "https://github.com/homuler/rules_foreign_cc/archive/feat/cache_entries_target.zip",
 )
