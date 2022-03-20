@@ -91,6 +91,15 @@ alias(
     }),
 )
 
+filegroup(
+    name = "opencv_world_dll",
+    srcs = select({
+        ":source_build": [":opencv_world_dll_from_source"],
+        "@com_google_mediapipe//mediapipe:windows": ["@windows_opencv//:opencv_world_dll"],
+        "//conditions:default": [],
+    }),
+)
+
 OPENCV_MODULES = [
     "calib3d",
     "features2d",
@@ -240,7 +249,7 @@ cc_library(
         ":cmake_static": [],
         ":dbg_build_win": ["opencv_world3416d.dll"],
         "@bazel_tools//src/conditions:windows": ["opencv_world3416.dll"],
-        "//conditions:default": ["libopencv_world.so.3.4.16"],
+        "//conditions:default": ["libopencv_world.so"],
     }) + select({
         ":cmake_dynamic": [],
         ":dbg_build_win": ["opencv_world3416d.lib"],
@@ -283,6 +292,16 @@ cc_library(
 )
 
 filegroup(
+    name = "opencv_world_dll_from_source",
+    srcs = select({
+        ":cmake_static": [],
+        ":dbg_build_win": [":opencv_dynamic_libs_win_dbg"],
+        "@bazel_tools//src/conditions:windows": [":opencv_dynamic_libs_win"],
+        "//conditions:default": [":opencv_dynamic_libs"],
+    }),
+)
+
+filegroup(
     name = "opencv_gen_dir",
     srcs = [":opencv_cmake"],
     output_group = "gen_dir",
@@ -291,8 +310,8 @@ filegroup(
 genrule(
     name = "opencv_dynamic_libs",
     srcs = [":opencv_gen_dir"],
-    outs = ["libopencv_world.so.3.4.16"],
-    cmd = "cp $</lib/libopencv_world.so.3.4.16 $(@D)",
+    outs = ["libopencv_world.so"],
+    cmd = "cp $</lib/libopencv_world.so $(@D)",
 )
 
 genrule(

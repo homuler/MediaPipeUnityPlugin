@@ -54,18 +54,3 @@ cc_library(
     linkstatic = 1,
     visibility = ["//visibility:public"],
 )
-
-filegroup(
-    name = "opencv_libs",
-    srcs = [
-        "lib/libopencv_calib3d.so",
-        "lib/libopencv_core.so",
-        "lib/libopencv_features2d.so",
-        "lib/libopencv_highgui.so",
-        "lib/libopencv_imgcodecs.so",
-        "lib/libopencv_imgproc.so",
-        "lib/libopencv_video.so",
-        "lib/libopencv_videoio.so",
-    ],
-    visibility = ["//visibility:public"],
-)
