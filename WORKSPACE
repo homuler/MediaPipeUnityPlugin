@@ -94,10 +94,19 @@ http_archive(
 )
 
 http_archive(
+    name = "bazel_rules_dict",
+    strip_prefix = "bazel_rules_dict-0.1.1",
+    sha256 = "00adce0dc43d7ef39dcb7f59f8cc5644cde02766bb193f342ecff13d70f60b07",
+    urls = [
+        "https://github.com/homuler/bazel_rules_dict/archive/refs/tags/v0.1.1.tar.gz",
+    ],
+)
+
+http_archive(
     name = "rules_foreign_cc",
-    sha256 = "30c970bfaeda3485100c62b13093da2be2c70ed99ec8d30f4fac6dd37cb25f34",
-    strip_prefix = "rules_foreign_cc-0.6.0",
-    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.6.0.zip",
+    sha256 = "47f94195f144952c5a47245363d4a27b0e7ef3037a58ecf13aca8b5dbe3c2609",
+    strip_prefix = "rules_foreign_cc-feat-cache_entries_target",
+    url = "https://github.com/homuler/rules_foreign_cc/archive/feat/cache_entries_target.zip",
 )
 
 load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")

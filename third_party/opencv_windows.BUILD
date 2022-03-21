@@ -37,7 +37,7 @@ cc_library(
 )
 
 filegroup(
-    name = "opencv_libs",
+    name = "opencv_world_dll",
     srcs = [
         "x64/vc15/bin/opencv_world" + OPENCV_VERSION + ".dll",
     ],

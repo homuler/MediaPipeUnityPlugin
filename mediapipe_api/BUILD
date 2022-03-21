@@ -155,7 +155,10 @@ cc_library(
 
 pkg_zip(
     name = "mediapipe_desktop",
-    srcs = [":libmediapipe_c"],
+    srcs = [
+        ":libmediapipe_c",
+        "@opencv//:opencv_world_dll",
+    ],
 )
 
 pkg_asset(
@@ -204,16 +207,4 @@ pkg_zip(
         "//mediapipe_api/modules/objectron/calculators:proto_srcs",
         "//mediapipe_api/util:proto_srcs",
     ],
-)
-
-pkg_zip(
-    name = "opencv_libs",
-    srcs = select({
-        "@opencv//:source_build": ["@opencv//:opencv_libs"],
-        "@com_google_mediapipe//mediapipe:windows": ["@windows_opencv//:opencv_libs"],
-        "@com_google_mediapipe//mediapipe:macos": [],
-        "@com_google_mediapipe//mediapipe:android": [],
-        "@com_google_mediapipe//mediapipe:ios": [],
-        "//conditions:default": ["@linux_opencv//:opencv_libs"],
-    }),
 )

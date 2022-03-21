@@ -79,7 +79,10 @@ class Command:
 
   def _remove(self, path):
     self.console.v(f"Removing '{path}'...")
-    os.remove(path)
+    try:
+      os.remove(path)
+    except PermissionError:
+      self._run_command(['rm', path])
 
   def _rmtree(self, path):
     if os.path.exists(path):
@@ -105,7 +108,6 @@ class BuildCommand(Command):
     self.resources = command_args.args.resources
     self.analyzers = command_args.args.analyzers
     self.opencv = command_args.args.opencv
-    self.include_opencv_libs = command_args.args.include_opencv_libs
 
     self.compilation_mode = command_args.args.compilation_mode
     self.linkopt = command_args.args.linkopt
@@ -145,15 +147,6 @@ class BuildCommand(Command):
       self._unzip(
         os.path.join(_BAZEL_BIN_PATH, 'mediapipe_api', 'mediapipe_desktop.zip'),
         os.path.join(_BUILD_PATH, 'Plugins'))
-
-      if self.include_opencv_libs:
-        if self.opencv == 'cmake':
-          self.console.warn('OpenCV objects are included in libmediapipe_c, so skip copying OpenCV library files')
-        else:
-          self._run_command(self._build_opencv_libs())
-          self._unzip(
-            os.path.join(_BAZEL_BIN_PATH, 'mediapipe_api', 'opencv_libs.zip'),
-            os.path.join(_BUILD_PATH, 'Plugins'))
 
       self.console.info('Built native libraries for Desktop')
 
@@ -245,7 +238,8 @@ class BuildCommand(Command):
     return ['--linkopt={}'.format(l) for l in self.linkopt]
 
   def _build_opencv_switch(self):
-    commands = [f'--@opencv//:switch={self.opencv}']
+    switch = 'cmake_static' if self.opencv == 'cmake' else self.opencv
+    commands = [f'--@opencv//:switch={switch}']
 
     return commands
 
@@ -268,16 +262,6 @@ class BuildCommand(Command):
     commands = self._build_common_commands()
     commands += self._build_desktop_options()
     commands.append('//mediapipe_api:mediapipe_desktop')
-    return commands
-
-  def _build_opencv_libs(self):
-    if not self.include_opencv_libs:
-      return []
-
-    commands = self._build_common_commands()
-    commands += self._build_desktop_options()
-    commands.append('//mediapipe_api:opencv_libs')
-
     return commands
 
   def _build_android_commands(self):
@@ -420,8 +404,7 @@ class Argument:
     build_command_parser.add_argument('--resources', action=argparse.BooleanOptionalAction, default=True)
     build_command_parser.add_argument('--analyzers', action=argparse.BooleanOptionalAction, default=False, help='Install Roslyn Analyzers')
     build_command_parser.add_argument('--compilation_mode', '-c', choices=['fastbuild', 'opt', 'dbg'], default='opt')
-    build_command_parser.add_argument('--opencv', choices=['local', 'cmake'], default='local', help='Decide to which OpenCV to link for Desktop native libraries')
-    build_command_parser.add_argument('--include_opencv_libs', action='store_true', help='Include OpenCV\'s native libraries for Desktop')
+    build_command_parser.add_argument('--opencv', choices=['local', 'cmake', 'cmake_static', 'cmake_dynamic'], default='local', help='Decide to which OpenCV to link for Desktop native libraries')
     build_command_parser.add_argument('--linkopt', '-l', action='append', help='Linker options')
     build_command_parser.add_argument('--verbose', '-v', action='count', default=0)
 
