@@ -21,22 +21,22 @@ string_flag(
     build_setting_default = "local",
     values = [
         "local",
-        "static",
-        "dynamic",
+        "cmake_static",
+        "cmake_dynamic",
     ],
 )
 
 config_setting(
     name = "cmake_static",
     flag_values = {
-        ":switch": "static",
+        ":switch": "cmake_static",
     },
 )
 
 config_setting(
     name = "cmake_dynamic",
     flag_values = {
-        ":switch": "dynamic",
+        ":switch": "cmake_dynamic",
     },
 )
 
