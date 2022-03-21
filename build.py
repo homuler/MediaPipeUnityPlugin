@@ -79,7 +79,10 @@ class Command:
 
   def _remove(self, path):
     self.console.v(f"Removing '{path}'...")
-    os.remove(path)
+    try:
+      os.remove(path)
+    except PermissionError:
+      self._run_command(['rm', path])
 
   def _rmtree(self, path):
     if os.path.exists(path):
