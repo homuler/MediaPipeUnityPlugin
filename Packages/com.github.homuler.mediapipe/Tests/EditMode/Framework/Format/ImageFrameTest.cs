@@ -15,12 +15,11 @@ namespace Tests
   public class ImageFrameTest
   {
     #region Constructor
-    [Test, SignalAbort]
+    [Test]
     public void Ctor_ShouldInstantiateImageFrame_When_CalledWithNoArguments()
     {
       using (var imageFrame = new ImageFrame())
       {
-#pragma warning disable IDE0058
         Assert.AreEqual(imageFrame.Format(), ImageFormat.Types.Format.Unknown);
         Assert.AreEqual(imageFrame.Width(), 0);
         Assert.AreEqual(imageFrame.Height(), 0);
@@ -34,7 +33,6 @@ namespace Tests
         Assert.False(imageFrame.IsContiguous());
         Assert.False(imageFrame.IsAligned(16));
         Assert.AreEqual(imageFrame.MutablePixelData(), IntPtr.Zero);
-#pragma warning restore IDE0058
       }
     }
 
