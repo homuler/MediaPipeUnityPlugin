@@ -47,7 +47,7 @@ csharp_proto_src(
 csharp_proto_src(
     name = "color_cs",
     proto_src = "mediapipe/util/color.proto",
-    deps =[
+    deps = [
         "@com_google_mediapipe//mediapipe/util:protos_src",
     ],
 )
