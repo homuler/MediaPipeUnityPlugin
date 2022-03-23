@@ -62,39 +62,9 @@ int mp_ImageFrame__Width(mediapipe::ImageFrame* image_frame) { return image_fram
 
 int mp_ImageFrame__Height(mediapipe::ImageFrame* image_frame) { return image_frame->Height(); }
 
-MpReturnCode mp_ImageFrame__ChannelSize(mediapipe::ImageFrame* image_frame, int* value_out) {
-  TRY_ALL
-    *value_out = image_frame->ChannelSize();
-    RETURN_CODE(MpReturnCode::Success);
-  CATCH_ALL
-}
-
-MpReturnCode mp_ImageFrame__NumberOfChannels(mediapipe::ImageFrame* image_frame, int* value_out) {
-  TRY_ALL
-    *value_out = image_frame->NumberOfChannels();
-    RETURN_CODE(MpReturnCode::Success);
-  CATCH_ALL
-}
-
-MpReturnCode mp_ImageFrame__ByteDepth(mediapipe::ImageFrame* image_frame, int* value_out) {
-  TRY_ALL
-    *value_out = image_frame->ByteDepth();
-    RETURN_CODE(MpReturnCode::Success);
-  CATCH_ALL
-}
-
 int mp_ImageFrame__WidthStep(mediapipe::ImageFrame* image_frame) { return image_frame->WidthStep(); }
 
 uint8* mp_ImageFrame__MutablePixelData(mediapipe::ImageFrame* image_frame) { return image_frame->MutablePixelData(); }
-
-int mp_ImageFrame__PixelDataSize(mediapipe::ImageFrame* image_frame) { return image_frame->PixelDataSize(); }
-
-MpReturnCode mp_ImageFrame__PixelDataSizeStoredContiguously(mediapipe::ImageFrame* image_frame, int* value_out) {
-  TRY_ALL
-    *value_out = image_frame->PixelDataSizeStoredContiguously();
-    RETURN_CODE(MpReturnCode::Success);
-  CATCH_ALL
-}
 
 MpReturnCode mp_ImageFrame__CopyToBuffer__Pui8_i(mediapipe::ImageFrame* image_frame, uint8* buffer, int buffer_size) {
   TRY_ALL
