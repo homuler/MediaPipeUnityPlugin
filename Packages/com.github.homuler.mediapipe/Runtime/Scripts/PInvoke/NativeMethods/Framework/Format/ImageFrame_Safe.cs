@@ -25,7 +25,7 @@ namespace Mediapipe
         IntPtr imageFrame, uint alignmentBoundary, [MarshalAs(UnmanagedType.I1)] out bool value);
 
     [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern ImageFormat.Format mp_ImageFrame__Format(IntPtr imageFrame);
+    public static extern ImageFormat.Types.Format mp_ImageFrame__Format(IntPtr imageFrame);
 
     [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern int mp_ImageFrame__Width(IntPtr imageFrame);

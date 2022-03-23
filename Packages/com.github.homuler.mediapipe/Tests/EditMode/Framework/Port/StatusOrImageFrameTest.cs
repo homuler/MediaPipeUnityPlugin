@@ -63,7 +63,7 @@ namespace Tests
 
     private StatusOrImageFrame InitializeSubject()
     {
-      var imageFrame = new ImageFrame(ImageFormat.Format.SBGRA, 10, 10);
+      var imageFrame = new ImageFrame(ImageFormat.Types.Format.Sbgra, 10, 10);
       var packet = new ImageFramePacket(imageFrame, new Timestamp(1));
 
       return (StatusOrImageFrame)packet.Consume();

@@ -80,15 +80,27 @@ cc_library(
 pkg_files(
     name = "proto_srcs",
     srcs = [
+        ":affine_transform_data_cs",
         ":classification_cs",
         ":detection_cs",
+        ":image_file_properties_cs",
+        ":image_format_cs",
         ":landmark_cs",
         ":location_data_cs",
         ":matrix_data_cs",
         ":rect_cs",
-        ":rasterization_cs",
+        ":time_series_header_cs",
     ],
     prefix = "Framework/Formats",
+)
+
+
+csharp_proto_src(
+    name = "affine_transform_data_cs",
+    proto_src = "mediapipe/framework/formats/affine_transform_data.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+    ],
 )
 
 csharp_proto_src(
@@ -105,6 +117,22 @@ csharp_proto_src(
     deps = [
         "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
         "@com_google_mediapipe//mediapipe/framework/formats/annotation:protos_src",
+    ],
+)
+
+csharp_proto_src(
+    name = "image_file_properties_cs",
+    proto_src = "mediapipe/framework/formats/image_file_properties.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+    ],
+)
+
+csharp_proto_src(
+    name = "image_format_cs",
+    proto_src = "mediapipe/framework/formats/image_format.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
     ],
 )
 
@@ -142,9 +170,9 @@ csharp_proto_src(
 )
 
 csharp_proto_src(
-    name = "rasterization_cs",
-    proto_src = "mediapipe/framework/formats/annotation/rasterization.proto",
+    name = "time_series_header_cs",
+    proto_src = "mediapipe/framework/formats/time_series_header.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats/annotation:protos_src",
+        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
     ],
 )

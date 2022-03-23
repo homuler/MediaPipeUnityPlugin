@@ -25,10 +25,20 @@ cc_library(
 pkg_files(
     name = "proto_srcs",
     srcs = [
+        ":environment_cs",
         ":face_geometry_cs",
+        ":geometry_pipeline_metadata_cs",
         ":mesh_3d_cs",
     ],
     prefix = "Modules/FaceGeometry",
+)
+
+csharp_proto_src(
+    name = "environment_cs",
+    proto_src = "mediapipe/modules/face_geometry/protos/environment.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/modules/face_geometry/protos:protos_src",
+    ],
 )
 
 csharp_proto_src(
@@ -36,6 +46,14 @@ csharp_proto_src(
     proto_src = "mediapipe/modules/face_geometry/protos/face_geometry.proto",
     deps = [
         "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+        "@com_google_mediapipe//mediapipe/modules/face_geometry/protos:protos_src",
+    ],
+)
+
+csharp_proto_src(
+    name = "geometry_pipeline_metadata_cs",
+    proto_src = "mediapipe/modules/face_geometry/protos/geometry_pipeline_metadata.proto",
+    deps = [
         "@com_google_mediapipe//mediapipe/modules/face_geometry/protos:protos_src",
     ],
 )

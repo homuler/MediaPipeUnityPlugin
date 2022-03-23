@@ -16,11 +16,11 @@ namespace Mediapipe
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_ImageFrame__ui_i_i_ui(
-        ImageFormat.Format format, int width, int height, uint alignmentBoundary, out IntPtr imageFrame);
+        ImageFormat.Types.Format format, int width, int height, uint alignmentBoundary, out IntPtr imageFrame);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_ImageFrame__ui_i_i_i_Pui8_PF(
-        ImageFormat.Format format, int width, int height, int widthStep, IntPtr pixelData,
+        ImageFormat.Types.Format format, int width, int height, int widthStep, IntPtr pixelData,
         [MarshalAs(UnmanagedType.FunctionPtr)] ImageFrame.Deleter deleter, out IntPtr imageFrame);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
