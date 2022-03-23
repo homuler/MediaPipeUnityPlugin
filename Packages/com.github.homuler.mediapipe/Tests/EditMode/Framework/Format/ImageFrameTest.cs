@@ -24,12 +24,12 @@ namespace Tests
         Assert.AreEqual(imageFrame.Format(), ImageFormat.Types.Format.Unknown);
         Assert.AreEqual(imageFrame.Width(), 0);
         Assert.AreEqual(imageFrame.Height(), 0);
-        Assert.Throws<FormatException>(() => { imageFrame.ChannelSize(); });
-        Assert.Throws<FormatException>(() => { imageFrame.NumberOfChannels(); });
-        Assert.Throws<FormatException>(() => { imageFrame.ByteDepth(); });
+        Assert.AreEqual(imageFrame.ChannelSize(), 0);
+        Assert.AreEqual(imageFrame.NumberOfChannels(), 0);
+        Assert.AreEqual(imageFrame.ByteDepth(), 0);
         Assert.AreEqual(imageFrame.WidthStep(), 0);
         Assert.AreEqual(imageFrame.PixelDataSize(), 0);
-        Assert.Throws<FormatException>(() => { imageFrame.PixelDataSizeStoredContiguously(); });
+        Assert.AreEqual(imageFrame.PixelDataSizeStoredContiguously(), 0);
         Assert.True(imageFrame.IsEmpty());
         Assert.False(imageFrame.IsContiguous());
         Assert.False(imageFrame.IsAligned(16));
