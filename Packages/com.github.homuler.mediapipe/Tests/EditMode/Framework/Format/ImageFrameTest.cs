@@ -21,7 +21,7 @@ namespace Tests
       using (var imageFrame = new ImageFrame())
       {
 #pragma warning disable IDE0058
-        Assert.AreEqual(imageFrame.Format(), ImageFormat.Format.UNKNOWN);
+        Assert.AreEqual(imageFrame.Format(), ImageFormat.Types.Format.Unknown);
         Assert.AreEqual(imageFrame.Width(), 0);
         Assert.AreEqual(imageFrame.Height(), 0);
         Assert.Throws<FormatException>(() => { imageFrame.ChannelSize(); });
@@ -41,9 +41,9 @@ namespace Tests
     [Test]
     public void Ctor_ShouldInstantiateImageFrame_When_CalledWithFormat()
     {
-      using (var imageFrame = new ImageFrame(ImageFormat.Format.SBGRA, 640, 480))
+      using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Sbgra, 640, 480))
       {
-        Assert.AreEqual(imageFrame.Format(), ImageFormat.Format.SBGRA);
+        Assert.AreEqual(imageFrame.Format(), ImageFormat.Types.Format.Sbgra);
         Assert.AreEqual(imageFrame.Width(), 640);
         Assert.AreEqual(imageFrame.Height(), 480);
         Assert.AreEqual(imageFrame.ChannelSize(), 1);
@@ -62,7 +62,7 @@ namespace Tests
     [Test]
     public void Ctor_ShouldInstantiateImageFrame_When_CalledWithFormatAndAlignmentBoundary()
     {
-      using (var imageFrame = new ImageFrame(ImageFormat.Format.GRAY8, 100, 100, 8))
+      using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Gray8, 100, 100, 8))
       {
         Assert.AreEqual(imageFrame.Width(), 100);
         Assert.AreEqual(imageFrame.NumberOfChannels(), 1);
@@ -80,7 +80,7 @@ namespace Tests
       };
       pixelData.CopyFrom(srcBytes);
 
-      using (var imageFrame = new ImageFrame(ImageFormat.Format.SBGRA, 4, 2, 16, pixelData))
+      using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Sbgra, 4, 2, 16, pixelData))
       {
         Assert.AreEqual(imageFrame.Width(), 4);
         Assert.AreEqual(imageFrame.Height(), 2);
@@ -95,7 +95,7 @@ namespace Tests
     public void Ctor_ShouldThrowMediaPipeException_When_CalledWithInvalidArgument()
     {
 #pragma warning disable IDE0058
-      Assert.Throws<MediaPipeException>(() => { new ImageFrame(ImageFormat.Format.SBGRA, 640, 480, 0); });
+      Assert.Throws<MediaPipeException>(() => { new ImageFrame(ImageFormat.Types.Format.Sbgra, 640, 480, 0); });
 #pragma warning restore IDE0058
     }
     #endregion
@@ -124,7 +124,7 @@ namespace Tests
     [Test]
     public void SetToZero_ShouldSetZeroToAllBytes()
     {
-      using (var imageFrame = new ImageFrame(ImageFormat.Format.GRAY8, 10, 10))
+      using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Gray8, 10, 10))
       {
         var origBytes = imageFrame.CopyToByteBuffer(100);
 
@@ -139,7 +139,7 @@ namespace Tests
     [Test]
     public void SetAlignmentPaddingAreas_ShouldNotThrow()
     {
-      using (var imageFrame = new ImageFrame(ImageFormat.Format.GRAY8, 10, 10, 16))
+      using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Gray8, 10, 10, 16))
       {
         Assert.DoesNotThrow(() => { imageFrame.SetAlignmentPaddingAreas(); });
       }
@@ -150,7 +150,7 @@ namespace Tests
     [Test]
     public void CopyToByteBuffer_ShouldReturnByteArray_When_BufferSizeIsLargeEnough()
     {
-      using (var imageFrame = new ImageFrame(ImageFormat.Format.GRAY8, 10, 10))
+      using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Gray8, 10, 10))
       {
         var normalBuffer = imageFrame.CopyToByteBuffer(100);
         var largeBuffer = imageFrame.CopyToByteBuffer(120);
@@ -162,7 +162,7 @@ namespace Tests
     [Test]
     public void CopyToByteBuffer_ShouldThrowException_When_BufferSizeIsTooSmall()
     {
-      using (var imageFrame = new ImageFrame(ImageFormat.Format.GRAY8, 10, 10))
+      using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Gray8, 10, 10))
       {
 #pragma warning disable IDE0058
         Assert.Throws<MediaPipeException>(() => { imageFrame.CopyToByteBuffer(99); });
@@ -173,7 +173,7 @@ namespace Tests
     [Test]
     public void CopyToUshortBuffer_ShouldReturnUshortArray_When_BufferSizeIsLargeEnough()
     {
-      using (var imageFrame = new ImageFrame(ImageFormat.Format.GRAY16, 10, 10))
+      using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Gray16, 10, 10))
       {
         var normalBuffer = imageFrame.CopyToUshortBuffer(100);
         var largeBuffer = imageFrame.CopyToUshortBuffer(120);
@@ -185,7 +185,7 @@ namespace Tests
     [Test]
     public void CopyToUshortBuffer_ShouldThrowException_When_BufferSizeIsTooSmall()
     {
-      using (var imageFrame = new ImageFrame(ImageFormat.Format.GRAY16, 10, 10))
+      using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Gray16, 10, 10))
       {
 #pragma warning disable IDE0058
         Assert.Throws<MediaPipeException>(() => { imageFrame.CopyToUshortBuffer(99); });
@@ -196,7 +196,7 @@ namespace Tests
     [Test]
     public void CopyToFloatBuffer_ShouldReturnFloatArray_When_BufferSizeIsLargeEnough()
     {
-      using (var imageFrame = new ImageFrame(ImageFormat.Format.VEC32F1, 10, 10))
+      using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Vec32F1, 10, 10))
       {
         var normalBuffer = imageFrame.CopyToFloatBuffer(100);
         var largeBuffer = imageFrame.CopyToFloatBuffer(120);
@@ -208,7 +208,7 @@ namespace Tests
     [Test]
     public void CopyToFloatBuffer_ShouldThrowException_When_BufferSizeIsTooSmall()
     {
-      using (var imageFrame = new ImageFrame(ImageFormat.Format.VEC32F1, 10, 10))
+      using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Vec32F1, 10, 10))
       {
 #pragma warning disable IDE0058
         Assert.Throws<MediaPipeException>(() => { imageFrame.CopyToFloatBuffer(99); });

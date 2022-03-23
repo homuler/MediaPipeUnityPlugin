@@ -105,7 +105,7 @@ namespace Tests
       {
         glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
 
-        using (var imageFrame = new ImageFrame(ImageFormat.Format.SRGBA, 32, 24))
+        using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Srgba, 32, 24))
         {
           var status = glCalculatorHelper.RunInGlContext(() =>
           {
@@ -132,7 +132,7 @@ namespace Tests
       {
         glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
 
-        using (var imageFrame = new ImageFrame(ImageFormat.Format.SBGRA, 32, 24))
+        using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Sbgra, 32, 24))
         {
           var status = glCalculatorHelper.RunInGlContext(() =>
           {

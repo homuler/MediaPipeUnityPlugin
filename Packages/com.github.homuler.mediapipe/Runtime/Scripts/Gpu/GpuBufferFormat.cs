@@ -24,7 +24,7 @@ namespace Mediapipe
 
   public static class GpuBufferFormatExtension
   {
-    public static ImageFormat.Format ImageFormatFor(this GpuBufferFormat gpuBufferFormat)
+    public static ImageFormat.Types.Format ImageFormatFor(this GpuBufferFormat gpuBufferFormat)
     {
       return SafeNativeMethods.mp__ImageFormatForGpuBufferFormat__ui(gpuBufferFormat);
     }
