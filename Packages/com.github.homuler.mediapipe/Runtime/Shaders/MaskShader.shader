@@ -1,4 +1,4 @@
-Shader "Unlit/Mask Shader"
+Shader "Unlit/MediaPipe/Mask Shader"
 {
     Properties
     {

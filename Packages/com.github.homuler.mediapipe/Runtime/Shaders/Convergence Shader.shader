@@ -1,4 +1,4 @@
-Shader "Unlit/Convergence Shader"
+Shader "Unlit/MediaPipe/Convergence Shader"
 {
     Properties
     {

@@ -50,6 +50,7 @@ namespace Mediapipe.Unity
       _material.SetTexture("_MainTex", mainTex);
       _material.SetInt("_Width", _maskWidth);
       _material.SetInt("_Height", _maskHeight);
+      _material.SetFloat("_MinValue", _minValue);
       _material.SetColor("_Color", _color);
 
       var stride = Marshal.SizeOf(typeof(float));
