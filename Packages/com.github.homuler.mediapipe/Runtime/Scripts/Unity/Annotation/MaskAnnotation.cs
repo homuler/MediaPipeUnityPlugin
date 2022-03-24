@@ -24,7 +24,7 @@ namespace Mediapipe.Unity
     [SerializeField] private Color _color = Color.blue;
     [SerializeField] private int _maskWidth = 512;
     [SerializeField] private int _maskHeight = 512;
-    [SerializeField, Range(0, 1)] private float _minValue = 0.9f;
+    [SerializeField, Range(0, 1)] private float _minConfidence = 0.9f;
 
     private Material _material;
     private GraphicsBuffer _maskBuffer;
@@ -46,12 +46,11 @@ namespace Mediapipe.Unity
         renderQueue = (int)RenderQueue.Transparent
       };
 
-      var mainTex = _maskTexture == null ? CreateMonoColorTexture(_color) : _maskTexture;
-      _material.SetTexture("_MainTex", mainTex);
+      _material.SetTexture("_MainTex", _screen.texture);
+      _material.SetTexture("_MaskTex", _maskTexture == null ? CreateMonoColorTexture(_color) : _maskTexture);
       _material.SetInt("_Width", _maskWidth);
       _material.SetInt("_Height", _maskHeight);
-      _material.SetFloat("_MinValue", _minValue);
-      _material.SetColor("_Color", _color);
+      _material.SetFloat("_MinConfidence", _minConfidence);
 
       var stride = Marshal.SizeOf(typeof(float));
       _maskBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, _maskWidth * _maskHeight, stride);
