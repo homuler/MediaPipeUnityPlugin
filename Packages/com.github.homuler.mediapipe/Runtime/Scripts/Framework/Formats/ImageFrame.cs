@@ -318,63 +318,6 @@ namespace Mediapipe
       return GetPixels32(flipVertically, new Color32[Width() * Height()]);
     }
 
-    /// <summary>
-    ///   Get the value of a specific channel only.
-    ///   It's useful when only one channel is used (e.g. Hair Segmentation mask).
-    /// </summary>
-    /// <param name="channelNumber">
-    ///   Specify from which channel the data will be retrieved.
-    ///   For example, if the format is RGB, 0 means R channel, 1 means G channel, and 2 means B channel.
-    /// </param>
-    /// <param name="colors" >
-    ///   The array to which the output data will be written.
-    /// </param>
-    public byte[] GetChannel(int channelNumber, bool flipVertically, byte[] colors)
-    {
-      var format = Format();
-
-#pragma warning disable IDE0010
-      switch (format)
-      {
-        case ImageFormat.Types.Format.Srgb:
-          {
-            if (channelNumber < 0 || channelNumber > 3)
-            {
-              throw new ArgumentException($"There are only 3 channels, but No. {channelNumber} is specified");
-            }
-            ReadChannel(MutablePixelData(), channelNumber, 3, Width(), Height(), WidthStep(), flipVertically, colors);
-            return colors;
-          }
-        case ImageFormat.Types.Format.Srgba:
-          {
-            if (channelNumber < 0 || channelNumber > 4)
-            {
-              throw new ArgumentException($"There are only 4 channels, but No. {channelNumber} is specified");
-            }
-            ReadChannel(MutablePixelData(), channelNumber, 4, Width(), Height(), WidthStep(), flipVertically, colors);
-            return colors;
-          }
-        default:
-          {
-            throw new NotImplementedException($"Currently only SRGB and SRGBA format are supported: {format}");
-          }
-      }
-#pragma warning restore IDE0010
-    }
-
-    /// <summary>
-    ///   Get the value of a specific channel only.
-    ///   It's useful when only one channel is used (e.g. Hair Segmentation mask).
-    /// </summary>
-    /// <param name="channelNumber">
-    ///   Specify from which channel the data will be retrieved.
-    ///   For example, if the format is RGB, 0 means R channel, 1 means G channel, and 2 means B channel.
-    /// </param>
-    public byte[] GetChannel(int channelNumber, bool flipVertically)
-    {
-      return GetChannel(channelNumber, flipVertically, new byte[Width() * Height()]);
-    }
-
     private delegate MpReturnCode CopyToBufferHandler(IntPtr ptr, IntPtr buffer, int bufferSize);
 
     private T[] CopyToBuffer<T>(CopyToBufferHandler handler, int bufferSize) where T : unmanaged
@@ -496,58 +439,6 @@ namespace Mediapipe
                 var b = *pSrc++;
                 var a = *pSrc++;
                 *pDest++ = new Color32(r, g, b, a);
-              }
-              pSrc += padding;
-              pDest -= 2 * width;
-            }
-          }
-        }
-      }
-    }
-
-    /// <remarks>
-    ///   In the source array, pixels are laid out left to right, top to bottom,
-    ///   but in the returned array, left to right, top to bottom.
-    /// </remarks>
-    private static void ReadChannel(IntPtr ptr, int channelNumber, int channelCount, int width, int height, int widthStep, bool flipVertically, byte[] colors)
-    {
-      if (colors.Length != width * height)
-      {
-        throw new ArgumentException("colors length is invalid");
-      }
-      var padding = widthStep - (channelCount * width);
-
-      unsafe
-      {
-        fixed (byte* dest = colors)
-        {
-          var pSrc = (byte*)ptr.ToPointer();
-          pSrc += channelNumber;
-
-          if (flipVertically)
-          {
-            var pDest = dest + colors.Length - 1;
-
-            for (var i = 0; i < height; i++)
-            {
-              for (var j = 0; j < width; j++)
-              {
-                *pDest-- = *pSrc;
-                pSrc += channelCount;
-              }
-              pSrc += padding;
-            }
-          }
-          else
-          {
-            var pDest = dest + (width * (height - 1));
-
-            for (var i = 0; i < height; i++)
-            {
-              for (var j = 0; j < width; j++)
-              {
-                *pDest++ = *pSrc;
-                pSrc += channelCount;
               }
               pSrc += padding;
               pDest -= 2 * width;
