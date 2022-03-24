@@ -61,7 +61,7 @@ namespace Mediapipe
 
     /// <returns>
     ///   The number of channels for a <paramref name="format" />.
-    ///   If channels does not make sense in the <paramref name="format" />, returns <c>0</c>.
+    ///   If channels don't make sense in the <paramref name="format" />, returns <c>0</c>.
     /// </returns>
     /// <remarks>
     ///   Unlike the original implementation, this API won't signal SIGABRT.
@@ -96,7 +96,7 @@ namespace Mediapipe
 
     /// <returns>
     ///   The channel size for a <paramref name="format" />.
-    ///   If channels does not make sense in the <paramref name="format" />, returns <c>0</c>.
+    ///   If channels don't make sense in the <paramref name="format" />, returns <c>0</c>.
     /// </returns>
     /// <remarks>
     ///   Unlike the original implementation, this API won't signal SIGABRT.
@@ -132,7 +132,7 @@ namespace Mediapipe
 
     /// <returns>
     ///   The depth of each channel in bytes for a <paramref name="format" />.
-    ///   If channels does not make sense in the <paramref name="format" />, returns <c>0</c>.
+    ///   If channels don't make sense in the <paramref name="format" />, returns <c>0</c>.
     /// </returns>
     /// <remarks>
     ///   Unlike the original implementation, this API won't signal SIGABRT.
@@ -200,7 +200,7 @@ namespace Mediapipe
 
     /// <returns>
     ///   The channel size.
-    ///   If channels does not make sense, returns <c>0</c>.
+    ///   If channels don't make sense, returns <c>0</c>.
     /// </returns>
     /// <remarks>
     ///   Unlike the original implementation, this API won't signal SIGABRT.
@@ -212,7 +212,7 @@ namespace Mediapipe
 
     /// <returns>
     ///   The Number of channels.
-    ///   If channels does not make sense, returns <c>0</c>.
+    ///   If channels don't make sense, returns <c>0</c>.
     /// </returns>
     /// <remarks>
     ///   Unlike the original implementation, this API won't signal SIGABRT.
@@ -224,7 +224,7 @@ namespace Mediapipe
 
     /// <returns>
     ///   The depth of each image channel in bytes.
-    ///   If channels does not make sense, returns <c>0</c>.
+    ///   If channels don't make sense, returns <c>0</c>.
     /// </returns>
     /// <remarks>
     ///   Unlike the original implementation, this API won't signal SIGABRT.
@@ -251,7 +251,7 @@ namespace Mediapipe
 
     /// <returns>
     ///   The total size the pixel data would take if it was stored contiguously (which may not be the case).
-    ///   If channels does not make sense, returns <c>0</c>.
+    ///   If channels don't make sense, returns <c>0</c>.
     /// </returns>
     /// <remarks>
     ///   Unlike the original implementation, this API won't signal SIGABRT.

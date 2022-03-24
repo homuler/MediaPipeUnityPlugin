@@ -4,6 +4,8 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+using System;
+
 namespace Mediapipe.Unity
 {
   public static class ImageFrameExtension
@@ -128,6 +130,38 @@ namespace Mediapipe.Unity
 #pragma warning restore IDE0010
     }
 
+    public static bool TryReadChannelNormalized(this ImageFrame imageFrame, int channelNumber, bool isHorizontallyFlipped, float[] normalizedChannelData)
+    {
+      var format = imageFrame.Format();
+      var channelCount = ImageFrame.NumberOfChannelsForFormat(format);
+      if (!IsChannelNumberValid(channelCount, channelNumber))
+      {
+        return false;
+      }
+
+#pragma warning disable IDE0010
+      switch (format)
+      {
+        case ImageFormat.Types.Format.Srgb:
+        case ImageFormat.Types.Format.Srgba:
+        case ImageFormat.Types.Format.Sbgra:
+        case ImageFormat.Types.Format.Gray8:
+        case ImageFormat.Types.Format.Lab8:
+          return TryReadChannel<byte, float>(imageFrame, channelCount, channelNumber, isHorizontallyFlipped, v => (float)v / ((1 << 8) - 1), normalizedChannelData);
+        case ImageFormat.Types.Format.Srgb48:
+        case ImageFormat.Types.Format.Srgba64:
+        case ImageFormat.Types.Format.Gray16:
+          return TryReadChannel<ushort, float>(imageFrame, channelCount, channelNumber, isHorizontallyFlipped, v => (float)v / ((1 << 16) - 1), normalizedChannelData);
+        case ImageFormat.Types.Format.Vec32F1:
+        case ImageFormat.Types.Format.Vec32F2:
+          return TryReadChannel(imageFrame, channelCount, channelNumber, isHorizontallyFlipped, normalizedChannelData);
+        default:
+          Logger.LogWarning("Channels don't make sense in the current context");
+          return false;
+      }
+#pragma warning restore IDE0010
+    }
+
     private static bool TryReadChannel<T>(ImageFrame imageFrame, int channelCount, int channelNumber, bool isHorizontallyFlipped, T[] channelData) where T : unmanaged
     {
       var width = imageFrame.Width();
@@ -188,6 +222,66 @@ namespace Mediapipe.Unity
       return true;
     }
 
+    private static bool TryReadChannel<TSrc, TDst>(ImageFrame imageFrame, int channelCount, int channelNumber, bool isHorizontallyFlipped, Func<TSrc, TDst> transformer, TDst[] channelData) where TSrc : unmanaged where TDst : unmanaged
+    {
+      var width = imageFrame.Width();
+      var height = imageFrame.Height();
+      var length = width * height;
+
+      if (channelData.Length != length)
+      {
+        Logger.LogWarning($"The length of channelData () does not equal {length}");
+        return false;
+      }
+
+      var widthStep = imageFrame.WidthStep();
+      var byteDepth = imageFrame.ByteDepth();
+
+      unsafe
+      {
+        fixed (TDst* dest = channelData)
+        {
+          // NOTE: We cannot assume that the pixel data is aligned properly.
+          var pLine = (byte*)imageFrame.MutablePixelData();
+          pLine += byteDepth * channelNumber;
+
+          if (isHorizontallyFlipped)
+          {
+            var pDest = dest + length - 1;
+
+            for (var i = 0; i < height; i++)
+            {
+              var pSrc = (TSrc*)pLine;
+              for (var j = 0; j < width; j++)
+              {
+                *pDest-- = transformer(*pSrc);
+                pSrc += channelCount;
+              }
+              pLine += widthStep;
+            }
+          }
+          else
+          {
+            var pDest = dest + (width * (height - 1));
+
+            for (var i = 0; i < height; i++)
+            {
+              var pSrc = (TSrc*)pLine;
+              for (var j = 0; j < width; j++)
+              {
+                *pDest++ = transformer(*pSrc);
+                pSrc += channelCount;
+              }
+              pLine += widthStep;
+              pDest -= 2 * width;
+            }
+          }
+        }
+      }
+
+      return true;
+    }
+
     private static bool IsChannelNumberValid(int channelCount, int channelNumber)
     {
       if (channelNumber < 0)
@@ -198,7 +292,7 @@ namespace Mediapipe.Unity
 
       if (channelCount == 0)
       {
-        Logger.LogWarning("Channels does not make sense in the current context");
+        Logger.LogWarning("Channels don't make sense in the current context");
         return false;
       }
 
