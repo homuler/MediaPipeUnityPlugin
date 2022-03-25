@@ -85,12 +85,14 @@ namespace Mediapipe.Unity
       uvRect = rect;
     }
 
-    private UnityEngine.Rect FlipHorizontally(UnityEngine.Rect rect) {
-      return new UnityEngine.Rect(1 - rect.x, rect.y, - rect.width, rect.height);
+    private UnityEngine.Rect FlipHorizontally(UnityEngine.Rect rect)
+    {
+      return new UnityEngine.Rect(1 - rect.x, rect.y, -rect.width, rect.height);
     }
 
-    private UnityEngine.Rect FlipVertically(UnityEngine.Rect rect) {
-      return new UnityEngine.Rect(rect.x, 1 - rect.y, rect.width, - rect.height);
+    private UnityEngine.Rect FlipVertically(UnityEngine.Rect rect)
+    {
+      return new UnityEngine.Rect(rect.x, 1 - rect.y, rect.width, -rect.height);
     }
   }
 }
