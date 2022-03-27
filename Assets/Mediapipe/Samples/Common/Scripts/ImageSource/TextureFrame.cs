@@ -25,6 +25,13 @@ namespace Mediapipe.Unity
     private const string _TAG = nameof(TextureFrame);
 
     private static readonly GlobalInstanceTable<Guid, TextureFrame> _InstanceTable = new GlobalInstanceTable<Guid, TextureFrame>(100);
+    /// <summary>
+    ///   A dictionary to look up which native texture belongs to which <see cref="TextureFrame" />.
+    /// </summary>
+    /// <remarks>
+    ///   Not all the <see cref="TextureFrame" /> instances are registered.
+    ///   Texture names are queried only when necessary, and the corresponding data will be saved then.
+    /// </remarks>
     private static readonly Dictionary<uint, Guid> _NameTable = new Dictionary<uint, Guid>();
 
     private readonly Texture2D _texture;
@@ -87,7 +94,7 @@ namespace Mediapipe.Unity
       format = texture.format;
       OnRelease = new ReleaseEvent();
       _instanceId = Guid.NewGuid();
-      RegisterInstance(this);
+      _InstanceTable.Add(_instanceId, this);
     }
 
     public TextureFrame(int width, int height, TextureFormat format) : this(new Texture2D(width, height, format, false)) { }
@@ -182,13 +189,14 @@ namespace Mediapipe.Unity
 
     public void SetPixels32(Color32[] pixels)
     {
-      var oldName = GetTextureName();
-
       _texture.SetPixels32(pixels);
       _texture.Apply();
-      _nativeTexturePtr = IntPtr.Zero;
 
-      ChangeNameFrom(oldName);
+      if (!RevokeNativeTexturePtr())
+      {
+        // If this line was executed, there must be a bug.
+        Logger.LogError("Failed to revoke the native texture.");
+      }
     }
 
     public NativeArray<T> GetRawTextureData<T>() where T : struct
@@ -196,11 +204,22 @@ namespace Mediapipe.Unity
       return _texture.GetRawTextureData<T>();
     }
 
+    /// <returns>The texture's native pointer</returns>
     public IntPtr GetNativeTexturePtr()
     {
       if (_nativeTexturePtr == IntPtr.Zero)
       {
         _nativeTexturePtr = _texture.GetNativeTexturePtr();
+        var name = (uint)_nativeTexturePtr;
+
+        lock (((ICollection)_NameTable).SyncRoot)
+        {
+          if (!AcquireName(name, _instanceId))
+          {
+            throw new InvalidProgramException($"Another instance (id={_instanceId}) is using the specified name ({name}) now");
+          }
+          _NameTable.Add(name, _instanceId);
+        }
       }
       return _nativeTexturePtr;
     }
@@ -284,22 +303,6 @@ namespace Mediapipe.Unity
       textureFrame.Release(_glSyncToken);
     }
 
-    private static void RegisterInstance(TextureFrame textureFrame)
-    {
-      var name = textureFrame.GetTextureName();
-      var id = textureFrame._instanceId;
-      lock (((ICollection)_NameTable).SyncRoot)
-      {
-        if (AcquireName(name, id))
-        {
-          _InstanceTable.Add(id, textureFrame);
-          _NameTable.Add(name, id);
-          return;
-        }
-      }
-      throw new ArgumentException("Another instance has the same name");
-    }
-
     /// <summary>
     ///   Remove <paramref name="name" /> from <see cref="_NameTable" /> if it's stale.
     ///   If <paramref name="name" /> does not exist in <see cref="_NameTable" />, do nothing.
@@ -328,18 +331,24 @@ namespace Mediapipe.Unity
       return GraphicsFormatUtility.GetTextureFormat(texture.graphicsFormat);
     }
 
-    private void ChangeNameFrom(uint oldName)
+    /// <summary>
+    ///   Remove the texture name from <see cref="_NameTable" /> and empty <see cref="_nativeTexturePtr" />.
+    ///   This method needs to be called when an operation is performed that may change the internal texture.
+    /// </summary>
+    private bool RevokeNativeTexturePtr()
     {
-      var newName = GetTextureName();
-      lock (((ICollection)_NameTable).SyncRoot)
+      if (_nativeTexturePtr == IntPtr.Zero)
       {
-        if (!AcquireName(newName, _instanceId))
-        {
-          throw new ArgumentException("Another instance is using the specified name now");
-        }
-        var _ = _NameTable.Remove(oldName);
-        _NameTable.Add(newName, _instanceId);
+        return true;
       }
+
+      var currentName = GetTextureName();
+      if (!_NameTable.Remove(currentName))
+      {
+        return false;
+      }
+      _nativeTexturePtr = IntPtr.Zero;
+      return true;
     }
 
     private Texture2D LoadToTextureBuffer(Texture texture)
