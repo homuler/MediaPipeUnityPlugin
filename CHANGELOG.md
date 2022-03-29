@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.8.4](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.8.3...v0.8.4) (2022-03-29)
+
+
+### Features
+
+* **plugin:** port ValidatedGraphConfig API ([#477](https://github.com/homuler/MediaPipeUnityPlugin/issues/477)) ([bde6874](https://github.com/homuler/MediaPipeUnityPlugin/commit/bde68746974b84ad7e8723c0fa927dcddc842907))
+* **sample:** implement MIN_(DETECTION|TRACKING)_CONFIDENCE ([#483](https://github.com/homuler/MediaPipeUnityPlugin/issues/483)) ([13c2a38](https://github.com/homuler/MediaPipeUnityPlugin/commit/13c2a38e129b1d0de59867ee57f65920fdee8f30))
+
+
+### Bug Fixes
+
+* install OpenCV 3.4.16 on Docker Windows Containers ([#484](https://github.com/homuler/MediaPipeUnityPlugin/issues/484)) ([4210673](https://github.com/homuler/MediaPipeUnityPlugin/commit/42106737e3d4b57efddd2e4d8e646b7b8e283fba))
+* **sample:** Anchor position is flipped ([#506](https://github.com/homuler/MediaPipeUnityPlugin/issues/506)) ([98cb0c4](https://github.com/homuler/MediaPipeUnityPlugin/commit/98cb0c432d710623a53994cdf3a47e9e1db1ff5a))
+* **sample:** front camera image is not rotated properly ([#504](https://github.com/homuler/MediaPipeUnityPlugin/issues/504)) ([9d47f7c](https://github.com/homuler/MediaPipeUnityPlugin/commit/9d47f7c0e7cea557c4feba3dd468901c65bd601c))
+* **sample:** GetNativeTexturePtr may never return on M1 Mac ([#505](https://github.com/homuler/MediaPipeUnityPlugin/issues/505)) ([9d7e390](https://github.com/homuler/MediaPipeUnityPlugin/commit/9d7e390b6012b2f5ebed14de599d90821f4f7f62))
+
 ### [0.8.3](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.8.2...v0.8.3) (2022-02-27)
 
 
