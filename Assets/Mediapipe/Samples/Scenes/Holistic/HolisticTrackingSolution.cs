@@ -182,6 +182,7 @@ namespace Mediapipe.Unity.Holistic
     private void OnLeftHandLandmarksOutput(NormalizedLandmarkList leftHandLandmarks)
     {
       _holisticAnnotationController.DrawLeftHandLandmarkListLater(leftHandLandmarks);
+      poseSolver.SetLeftHandLandmarks(leftHandLandmarks);
     }
 
     private void OnRightHandLandmarksOutput(NormalizedLandmarkList rightHandLandmarks)
