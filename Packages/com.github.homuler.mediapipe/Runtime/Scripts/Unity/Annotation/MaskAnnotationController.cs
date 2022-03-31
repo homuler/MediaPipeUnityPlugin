@@ -19,7 +19,7 @@ namespace Mediapipe.Unity
     public void InitScreen()
     {
       _maskArray = new float[_maskWidth * _maskHeight];
-      annotation.InitScreen();
+      annotation.InitScreen(_maskWidth, _maskHeight);
     }
 
     public void DrawNow(ImageFrame target)

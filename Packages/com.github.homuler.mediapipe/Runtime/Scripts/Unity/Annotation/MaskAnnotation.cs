@@ -22,12 +22,27 @@ namespace Mediapipe.Unity
     [SerializeField] private Shader _maskShader;
     [SerializeField] private Texture2D _maskTexture;
     [SerializeField] private Color _color = Color.blue;
-    [SerializeField] private int _maskWidth = 512;
-    [SerializeField] private int _maskHeight = 512;
     [SerializeField, Range(0, 1)] private float _minConfidence = 0.9f;
 
     private Material _material;
     private GraphicsBuffer _maskBuffer;
+
+    private void OnEnable()
+    {
+      ApplyMaskTexture(_maskTexture, _color);
+      ApplyMinConfidence(_minConfidence);
+    }
+
+    private void OnDisable()
+    {
+      ApplyMinConfidence(1.1f); // larger than the maximum value (1.0).
+    }
+
+    private void OnValidate()
+    {
+      ApplyMaskTexture(_maskTexture, _color);
+      ApplyMinConfidence(_minConfidence);
+    }
 
     private void OnDestroy()
     {
@@ -37,7 +52,7 @@ namespace Mediapipe.Unity
       }
     }
 
-    public void InitScreen()
+    public void InitScreen(int width, int height)
     {
       _screen.color = new Color(1, 1, 1, 1);
 
@@ -48,12 +63,12 @@ namespace Mediapipe.Unity
 
       _material.SetTexture("_MainTex", _screen.texture);
       _material.SetTexture("_MaskTex", _maskTexture == null ? CreateMonoColorTexture(_color) : _maskTexture);
-      _material.SetInt("_Width", _maskWidth);
-      _material.SetInt("_Height", _maskHeight);
+      _material.SetInt("_Width", width);
+      _material.SetInt("_Height", height);
       _material.SetFloat("_MinConfidence", _minConfidence);
 
       var stride = Marshal.SizeOf(typeof(float));
-      _maskBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, _maskWidth * _maskHeight, stride);
+      _maskBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, width * height, stride);
       _material.SetBuffer("_MaskBuffer", _maskBuffer);
 
       _screen.material = _material;
@@ -77,6 +92,22 @@ namespace Mediapipe.Unity
       texture.Apply();
 
       return texture;
+    }
+
+    private void ApplyMaskTexture(Texture maskTexture, Color color)
+    {
+      if (_material != null)
+      {
+        _material.SetTexture("_MaskTex", maskTexture == null ? CreateMonoColorTexture(color) : maskTexture);
+      }
+    }
+
+    private void ApplyMinConfidence(float minConfidence)
+    {
+      if (_material != null)
+      {
+        _material.SetFloat("_MinConfidence", minConfidence);
+      }
     }
   }
 }
