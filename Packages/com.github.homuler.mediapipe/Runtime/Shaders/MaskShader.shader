@@ -63,7 +63,12 @@ Shader "Unlit/MediaPipe/Mask Shader"
                 fixed4 maskCol = tex2D(_MaskTex, i.uv);
                 int idx = int(i.uv.y * _Height) * _Width + int(i.uv.x * _Width);
                 float mask = _MaskBuffer[idx];
-                fixed4 col = lerp(mainCol, lerp(mainCol, maskCol, mask), step(_MinConfidence, mask));
+
+                // TODO: mix color if possible. It doesn't work if the UV of Main Texture is modified (e.g. iOS).
+                //   fixed4 col = lerp(mainCol, lerp(mainCol, maskCol, mask), step(_MinConfidence, mask));
+                clip(mask - _MinConfidence);
+                fixed4 col = maskCol;
+
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;

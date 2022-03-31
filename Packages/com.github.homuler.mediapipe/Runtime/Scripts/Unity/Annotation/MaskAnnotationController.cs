@@ -39,7 +39,7 @@ namespace Mediapipe.Unity
     {
       if (imageFrame != null)
       {
-        var _ = imageFrame.TryReadChannelNormalized(0, false, _maskArray);
+        var _ = imageFrame.TryReadChannelNormalized(0, isMirrored, _maskArray);
       }
     }
 
