@@ -20,6 +20,7 @@ namespace Mediapipe.Unity.Holistic
     [SerializeField] private HolisticTrackingGraph _graphRunner;
     [SerializeField] private TextureFramePool _textureFramePool;
 
+    [SerializeField] private FaceSolver faceSolver;
     [SerializeField] private PoseSolver poseSolver;
 
     private Coroutine _coroutine;
@@ -172,6 +173,8 @@ namespace Mediapipe.Unity.Holistic
     private void OnFaceLandmarksOutput(NormalizedLandmarkList faceLandmarks)
     {
       _holisticAnnotationController.DrawFaceLandmarkListLater(faceLandmarks);
+
+      faceSolver.SetFaceLandmarks(faceLandmarks);
     }
 
     private void OnPoseLandmarksOutput(NormalizedLandmarkList poseLandmarks)
@@ -182,6 +185,7 @@ namespace Mediapipe.Unity.Holistic
     private void OnLeftHandLandmarksOutput(NormalizedLandmarkList leftHandLandmarks)
     {
       _holisticAnnotationController.DrawLeftHandLandmarkListLater(leftHandLandmarks);
+
       poseSolver.SetLeftHandLandmarks(leftHandLandmarks);
     }
 
