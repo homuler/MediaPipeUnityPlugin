@@ -62,14 +62,11 @@ namespace Mediapipe.Unity
       };
 
       _material.SetTexture("_MainTex", _screen.texture);
-      _material.SetTexture("_MaskTex", _maskTexture == null ? CreateMonoColorTexture(_color) : _maskTexture);
+      ApplyMaskTexture(_maskTexture, _color);
       _material.SetInt("_Width", width);
       _material.SetInt("_Height", height);
-      _material.SetFloat("_MinConfidence", _minConfidence);
-
-      var stride = Marshal.SizeOf(typeof(float));
-      _maskBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, width * height, stride);
-      _material.SetBuffer("_MaskBuffer", _maskBuffer);
+      ApplyMinConfidence(_minConfidence);
+      InitMaskBuffer(width, height);
 
       _screen.material = _material;
     }
@@ -92,6 +89,17 @@ namespace Mediapipe.Unity
       texture.Apply();
 
       return texture;
+    }
+
+    private void InitMaskBuffer(int width, int height)
+    {
+      if (_maskBuffer != null)
+      {
+        _maskBuffer.Release();
+      }
+      var stride = Marshal.SizeOf(typeof(float));
+      _maskBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, width * height, stride);
+      _material.SetBuffer("_MaskBuffer", _maskBuffer);
     }
 
     private void ApplyMaskTexture(Texture maskTexture, Color color)
