@@ -273,19 +273,19 @@ namespace Mediapipe
       GC.KeepAlive(this);
     }
 
-    public byte[] CopyToByteBuffer(int bufferSize)
+    public void CopyToBuffer(byte[] buffer)
     {
-      return CopyToBuffer<byte>(UnsafeNativeMethods.mp_ImageFrame__CopyToBuffer__Pui8_i, bufferSize);
+      CopyToBuffer(UnsafeNativeMethods.mp_ImageFrame__CopyToBuffer__Pui8_i, buffer);
     }
 
-    public ushort[] CopyToUshortBuffer(int bufferSize)
+    public void CopyToBuffer(ushort[] buffer)
     {
-      return CopyToBuffer<ushort>(UnsafeNativeMethods.mp_ImageFrame__CopyToBuffer__Pui16_i, bufferSize);
+      CopyToBuffer(UnsafeNativeMethods.mp_ImageFrame__CopyToBuffer__Pui16_i, buffer);
     }
 
-    public float[] CopyToFloatBuffer(int bufferSize)
+    public void CopyToBuffer(float[] buffer)
     {
-      return CopyToBuffer<float>(UnsafeNativeMethods.mp_ImageFrame__CopyToBuffer__Pf_i, bufferSize);
+      CopyToBuffer(UnsafeNativeMethods.mp_ImageFrame__CopyToBuffer__Pf_i, buffer);
     }
 
     public Color32[] GetPixels32(bool flipVertically, Color32[] colors)
@@ -320,20 +320,17 @@ namespace Mediapipe
 
     private delegate MpReturnCode CopyToBufferHandler(IntPtr ptr, IntPtr buffer, int bufferSize);
 
-    private T[] CopyToBuffer<T>(CopyToBufferHandler handler, int bufferSize) where T : unmanaged
+    private void CopyToBuffer<T>(CopyToBufferHandler handler, T[] buffer) where T : unmanaged
     {
-      var buffer = new T[bufferSize];
-
       unsafe
       {
         fixed (T* bufferPtr = buffer)
         {
-          handler(mpPtr, (IntPtr)bufferPtr, bufferSize).Assert();
+          handler(mpPtr, (IntPtr)bufferPtr, buffer.Length).Assert();
         }
       }
 
       GC.KeepAlive(this);
-      return buffer;
     }
 
     /// <remarks>
