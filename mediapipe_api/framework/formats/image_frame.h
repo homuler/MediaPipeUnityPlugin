@@ -35,13 +35,8 @@ MP_CAPI(MpReturnCode) mp_ImageFrame__IsAligned__ui(mediapipe::ImageFrame* image_
 MP_CAPI(mediapipe::ImageFormat::Format) mp_ImageFrame__Format(mediapipe::ImageFrame* image_frame);
 MP_CAPI(int) mp_ImageFrame__Width(mediapipe::ImageFrame* image_frame);
 MP_CAPI(int) mp_ImageFrame__Height(mediapipe::ImageFrame* image_frame);
-MP_CAPI(MpReturnCode) mp_ImageFrame__ChannelSize(mediapipe::ImageFrame* image_frame, int* value_out);
-MP_CAPI(MpReturnCode) mp_ImageFrame__NumberOfChannels(mediapipe::ImageFrame* image_frame, int* value_out);
-MP_CAPI(MpReturnCode) mp_ImageFrame__ByteDepth(mediapipe::ImageFrame* image_frame, int* value_out);
 MP_CAPI(int) mp_ImageFrame__WidthStep(mediapipe::ImageFrame* image_frame);
 MP_CAPI(uint8*) mp_ImageFrame__MutablePixelData(mediapipe::ImageFrame* image_frame);
-MP_CAPI(int) mp_ImageFrame__PixelDataSize(mediapipe::ImageFrame* image_frame);
-MP_CAPI(MpReturnCode) mp_ImageFrame__PixelDataSizeStoredContiguously(mediapipe::ImageFrame* image_frame, int* value_out);
 MP_CAPI(MpReturnCode) mp_ImageFrame__CopyToBuffer__Pui8_i(mediapipe::ImageFrame* image_frame, uint8* buffer, int buffer_size);
 MP_CAPI(MpReturnCode) mp_ImageFrame__CopyToBuffer__Pui16_i(mediapipe::ImageFrame* image_frame, uint16* buffer, int buffer_size);
 MP_CAPI(MpReturnCode) mp_ImageFrame__CopyToBuffer__Pf_i(mediapipe::ImageFrame* image_frame, float* buffer, int buffer_size);
