@@ -119,7 +119,6 @@ namespace Mediapipe.Unity.HairSegmentation
       sidePacket.Emplace("output_horizontally_flipped", new BoolPacket(outputHorizontallyFlipped));
       sidePacket.Emplace("output_vertically_flipped", new BoolPacket(outputVerticallyFlipped));
 
-      Logger.LogDebug($"rotation = {imageSource.rotation}, is front facing = {imageSource.isFrontFacing}, is horizontally flipped = {imageSource.isHorizontallyFlipped}, is vertically flipped = {imageSource.isVerticallyFlipped}");
       Logger.LogDebug($"output_rotation = {outputRotation}, output_horizontally_flipped = {outputHorizontallyFlipped}, output_vertically_flipped = {outputVerticallyFlipped}");
       return sidePacket;
     }
