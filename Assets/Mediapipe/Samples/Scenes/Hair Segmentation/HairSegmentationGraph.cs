@@ -100,9 +100,27 @@ namespace Mediapipe.Unity.HairSegmentation
       var sidePacket = new SidePacket();
 
       SetImageTransformationOptions(sidePacket, imageSource);
-      var outputRotation = imageSource.isHorizontallyFlipped ? imageSource.rotation.Reverse() : imageSource.rotation;
-      sidePacket.Emplace("output_rotation", new IntPacket((int)outputRotation));
 
+      // TODO: refactoring
+      // The orientation of the output image must match that of the input image.
+      var isInverted = CoordinateSystem.ImageCoordinate.IsInverted(imageSource.rotation);
+      var outputRotation = imageSource.rotation;
+      var outputHorizontallyFlipped = !isInverted && imageSource.isHorizontallyFlipped;
+      var outputVerticallyFlipped = isInverted ? imageSource.isHorizontallyFlipped : imageSource.isVerticallyFlipped;
+
+      if ((outputHorizontallyFlipped && outputVerticallyFlipped) || outputRotation == RotationAngle.Rotation180)
+      {
+        outputRotation = outputRotation.Add(RotationAngle.Rotation180);
+        outputHorizontallyFlipped = !outputHorizontallyFlipped;
+        outputVerticallyFlipped = !outputVerticallyFlipped;
+      }
+
+      sidePacket.Emplace("output_rotation", new IntPacket((int)outputRotation));
+      sidePacket.Emplace("output_horizontally_flipped", new BoolPacket(outputHorizontallyFlipped));
+      sidePacket.Emplace("output_vertically_flipped", new BoolPacket(outputVerticallyFlipped));
+
+      Logger.LogDebug($"rotation = {imageSource.rotation}, is front facing = {imageSource.isFrontFacing}, is horizontally flipped = {imageSource.isHorizontallyFlipped}, is vertically flipped = {imageSource.isVerticallyFlipped}");
+      Logger.LogDebug($"output_rotation = {outputRotation}, output_horizontally_flipped = {outputHorizontallyFlipped}, output_vertically_flipped = {outputVerticallyFlipped}");
       return sidePacket;
     }
   }

@@ -165,5 +165,7 @@ node: {
   calculator: "ImageTransformationCalculator"
   input_stream: "IMAGE:hair_mask_rotated"
   input_side_packet: "ROTATION_DEGREES:output_rotation"
+  input_side_packet: "FLIP_HORIZONTALLY:output_horizontally_flipped"
+  input_side_packet: "FLIP_VERTICALLY:output_vertically_flipped"
   output_stream: "IMAGE:hair_mask"
 }

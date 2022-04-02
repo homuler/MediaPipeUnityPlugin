@@ -39,7 +39,8 @@ namespace Mediapipe.Unity
     {
       if (imageFrame != null)
       {
-        var _ = imageFrame.TryReadChannelNormalized(0, _maskArray, isMirrored);
+        // NOTE: assume that the image is transformed properly by calculators.
+        var _ = imageFrame.TryReadChannelNormalized(0, _maskArray);
       }
     }
 
