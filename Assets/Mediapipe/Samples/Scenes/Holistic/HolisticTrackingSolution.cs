@@ -22,6 +22,7 @@ namespace Mediapipe.Unity.Holistic
 
     [SerializeField] private FaceSolver faceSolver;
     [SerializeField] private PoseSolver poseSolver;
+    [SerializeField] private HandSolver handSolver;
 
     private Coroutine _coroutine;
 
@@ -186,12 +187,14 @@ namespace Mediapipe.Unity.Holistic
     {
       _holisticAnnotationController.DrawLeftHandLandmarkListLater(leftHandLandmarks);
 
-      poseSolver.SetLeftHandLandmarks(leftHandLandmarks);
+      handSolver.SetLeftHandLandmarks(leftHandLandmarks);
     }
 
     private void OnRightHandLandmarksOutput(NormalizedLandmarkList rightHandLandmarks)
     {
       _holisticAnnotationController.DrawRightHandLandmarkListLater(rightHandLandmarks);
+
+      handSolver.SetRightHandLandmarks(rightHandLandmarks);
     }
 
     private void OnPoseWorldLandmarksOutput(LandmarkList poseWorldLandmarks)
