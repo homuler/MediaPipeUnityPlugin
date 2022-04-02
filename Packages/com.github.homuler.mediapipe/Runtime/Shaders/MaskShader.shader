@@ -1,13 +1,17 @@
-Shader "Unlit/MediaPipe/Convergence Shader"
+Shader "Unlit/MediaPipe/Mask Shader"
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "white" {}
-        _Color ("Main Color", Color) = (1, 1, 1, 1)
+        _MainTex ("Main Texture", 2D) = "" {}
+        _MaskTex ("Mask Texture", 2D) = "blue" {}
+        _Width ("Mask Width", Int) = 0
+        _Height ("Mask Height", Int) = 0
+        _MinConfidence ("Min Confidence", Range(0.0, 1.0)) = 0.9
     }
+
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "RenderType"="Transparent" }
         LOD 100
 
         Pass
@@ -34,27 +38,33 @@ Shader "Unlit/MediaPipe/Convergence Shader"
             };
 
             sampler2D _MainTex;
-            float4 _Color;
             float4 _MainTex_ST;
 
             v2f vert (appdata v)
             {
                 v2f o;
-                if (v.vertex.y > 0)
-                {
-                    v.vertex.x = 0;
-                    v.vertex.z = 0;
-                }
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
 
+            sampler2D _MaskTex;
+
+            int _Width;
+            int _Height;
+            float _MinConfidence;
+            uniform StructuredBuffer<float> _MaskBuffer;
+
             fixed4 frag (v2f i) : SV_Target
             {
                 // sample the texture
-                fixed4 col = _Color;
+                fixed4 mainCol = tex2D(_MainTex, i.uv);
+                fixed4 maskCol = tex2D(_MaskTex, i.uv);
+                int idx = int(i.uv.y * _Height) * _Width + int(i.uv.x * _Width);
+                float mask = _MaskBuffer[idx];
+                fixed4 col = lerp(mainCol, lerp(mainCol, maskCol, mask), step(_MinConfidence, mask));
+
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;

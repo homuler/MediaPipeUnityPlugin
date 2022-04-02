@@ -34,25 +34,10 @@ namespace Mediapipe
     public static extern int mp_ImageFrame__Height(IntPtr imageFrame);
 
     [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_ImageFrame__ChannelSize(IntPtr imageFrame, out int value);
-
-    [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_ImageFrame__NumberOfChannels(IntPtr imageFrame, out int value);
-
-    [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_ImageFrame__ByteDepth(IntPtr imageFrame, out int value);
-
-    [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern int mp_ImageFrame__WidthStep(IntPtr imageFrame);
 
     [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern IntPtr mp_ImageFrame__MutablePixelData(IntPtr imageFrame);
-
-    [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern int mp_ImageFrame__PixelDataSize(IntPtr imageFrame);
-
-    [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_ImageFrame__PixelDataSizeStoredContiguously(IntPtr imageFrame, out int value);
 
     #region StatusOr
     [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]

@@ -5,8 +5,9 @@
 // https://opensource.org/licenses/MIT.
 
 using System;
-using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 namespace Mediapipe.Unity
@@ -18,121 +19,102 @@ namespace Mediapipe.Unity
   public class MaskAnnotation : HierarchicalAnnotation
   {
     [SerializeField] private RawImage _screen;
+    [SerializeField] private Shader _maskShader;
+    [SerializeField] private Texture2D _maskTexture;
     [SerializeField] private Color _color = Color.blue;
+    [SerializeField, Range(0, 1)] private float _minConfidence = 0.9f;
 
-    private Texture2D _texture;
-    private Color32[] _colors;
+    private Material _material;
+    private GraphicsBuffer _maskBuffer;
 
-    public void InitScreen()
+    private void OnEnable()
     {
-      var rect = GetAnnotationLayer().rect;
-      var width = (int)rect.width;
-      var height = (int)rect.height;
+      ApplyMaskTexture(_maskTexture, _color);
+      ApplyMinConfidence(_minConfidence);
+    }
 
-      var transparentColor = new Color32((byte)(255 * _color.r), (byte)(255 * _color.g), (byte)(255 * _color.b), 0);
-      _colors = Enumerable.Repeat(transparentColor, width * height).ToArray();
+    private void OnDisable()
+    {
+      ApplyMinConfidence(1.1f); // larger than the maximum value (1.0).
+    }
 
-      _texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
-      _texture.SetPixels32(_colors);
-      _screen.texture = _texture;
+    private void OnValidate()
+    {
+      ApplyMaskTexture(_maskTexture, _color);
+      ApplyMinConfidence(_minConfidence);
+    }
+
+    private void OnDestroy()
+    {
+      if (_maskBuffer != null)
+      {
+        _maskBuffer.Release();
+      }
+    }
+
+    public void InitScreen(int width, int height)
+    {
       _screen.color = new Color(1, 1, 1, 1);
+
+      _material = new Material(_maskShader)
+      {
+        renderQueue = (int)RenderQueue.Transparent
+      };
+
+      _material.SetTexture("_MainTex", _screen.texture);
+      ApplyMaskTexture(_maskTexture, _color);
+      _material.SetInt("_Width", width);
+      _material.SetInt("_Height", height);
+      ApplyMinConfidence(_minConfidence);
+      InitMaskBuffer(width, height);
+
+      _screen.material = _material;
     }
 
-    public void SetColor(Color color)
-    {
-      _color = color;
-      ApplyColor(_color);
-    }
-
-    public void Draw(byte[] mask, int width, int height, float minAlpha = 0.9f, float maxAlpha = 1.0f)
+    public void Draw(float[] mask, int width, int height)
     {
       if (mask.Length != width * height)
       {
         throw new ArgumentException("mask size must equal width * height");
       }
 
-      ResetAlpha();
-      var alphaCoeff = Mathf.Clamp(maxAlpha, 0.0f, 1.0f);
-      var threshold = (byte)(255 * minAlpha);
-      var wInterval = (float)_texture.width / width;
-      var hInterval = (float)_texture.height / height;
-
-      unsafe
-      {
-        fixed (byte* ptr = mask)
-        {
-          var maskPtr = ptr;
-
-          for (var i = 0; i < height; i++)
-          {
-            for (var j = 0; j < width; j++)
-            {
-              if (*maskPtr >= threshold)
-              {
-                var alpha = (byte)((*maskPtr) * alphaCoeff);
-                SetColorAlpha(GetNearestRange(j, wInterval, _texture.width), GetNearestRange(i, hInterval, _texture.height), alpha);
-              }
-              maskPtr++;
-            }
-          }
-        }
-      }
-      _texture.SetPixels32(_colors);
-      _texture.Apply();
+      _maskBuffer.SetData(mask);
     }
 
-    private void SetColorAlpha((int, int) xRange, (int, int) yRange, byte alpha)
+    private Texture2D CreateMonoColorTexture(Color color)
     {
-      unsafe
-      {
-        fixed (Color32* ptr = _colors)
-        {
-          var rowPtr = ptr + (yRange.Item1 * _texture.width);
+      var texture = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+      var textureColor = new Color32((byte)(255 * color.r), (byte)(255 * color.g), (byte)(255 * color.b), 255);
+      texture.SetPixels32(new Color32[] { textureColor });
+      texture.Apply();
 
-          for (var i = yRange.Item1; i <= yRange.Item2; i++)
-          {
-            var colorPtr = rowPtr + xRange.Item1;
-            for (var j = xRange.Item1; j <= xRange.Item2; j++)
-            {
-              colorPtr++->a = alpha;
-            }
-            rowPtr += _texture.width;
-          }
-        }
+      return texture;
+    }
+
+    private void InitMaskBuffer(int width, int height)
+    {
+      if (_maskBuffer != null)
+      {
+        _maskBuffer.Release();
+      }
+      var stride = Marshal.SizeOf(typeof(float));
+      _maskBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, width * height, stride);
+      _material.SetBuffer("_MaskBuffer", _maskBuffer);
+    }
+
+    private void ApplyMaskTexture(Texture maskTexture, Color color)
+    {
+      if (_material != null)
+      {
+        _material.SetTexture("_MaskTex", maskTexture == null ? CreateMonoColorTexture(color) : maskTexture);
       }
     }
 
-    private (int, int) GetNearestRange(int p, float interval, int max)
+    private void ApplyMinConfidence(float minConfidence)
     {
-      var start = (int)Math.Ceiling((p - 0.5) * interval);
-      var end = (int)Math.Floor((p + 0.5f) * interval);
-
-      return (Mathf.Max(0, start), Mathf.Min(end, max - 1));
-    }
-
-    private void ApplyColor(Color color)
-    {
-      if (_colors == null) { return; }
-
-      var r = (byte)(255 * color.r);
-      var g = (byte)(255 * color.g);
-      var b = (byte)(255 * color.b);
-
-      for (var i = 0; i < _colors.Length; i++)
+      if (_material != null)
       {
-        _colors[i].r = r;
-        _colors[i].g = g;
-        _colors[i].b = b;
-      }
-    }
-
-    private void ResetAlpha()
-    {
-      if (_colors == null) { return; }
-
-      for (var i = 0; i < _colors.Length; i++)
-      {
-        _colors[i].a = 0;
+        _material.SetFloat("_MinConfidence", minConfidence);
       }
     }
   }
