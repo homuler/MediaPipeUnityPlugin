@@ -7,7 +7,6 @@
 using System;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
-using UnityEngine;
 
 namespace Mediapipe
 {
@@ -273,179 +272,34 @@ namespace Mediapipe
       GC.KeepAlive(this);
     }
 
-    public byte[] CopyToByteBuffer(int bufferSize)
+    public void CopyToBuffer(byte[] buffer)
     {
-      return CopyToBuffer<byte>(UnsafeNativeMethods.mp_ImageFrame__CopyToBuffer__Pui8_i, bufferSize);
+      CopyToBuffer(UnsafeNativeMethods.mp_ImageFrame__CopyToBuffer__Pui8_i, buffer);
     }
 
-    public ushort[] CopyToUshortBuffer(int bufferSize)
+    public void CopyToBuffer(ushort[] buffer)
     {
-      return CopyToBuffer<ushort>(UnsafeNativeMethods.mp_ImageFrame__CopyToBuffer__Pui16_i, bufferSize);
+      CopyToBuffer(UnsafeNativeMethods.mp_ImageFrame__CopyToBuffer__Pui16_i, buffer);
     }
 
-    public float[] CopyToFloatBuffer(int bufferSize)
+    public void CopyToBuffer(float[] buffer)
     {
-      return CopyToBuffer<float>(UnsafeNativeMethods.mp_ImageFrame__CopyToBuffer__Pf_i, bufferSize);
-    }
-
-    public Color32[] GetPixels32(bool flipVertically, Color32[] colors)
-    {
-      var format = Format();
-
-#pragma warning disable IDE0010
-      switch (format)
-      {
-        case ImageFormat.Types.Format.Srgb:
-          {
-            ReadSRGBByteArray(MutablePixelData(), Width(), Height(), WidthStep(), flipVertically, ref colors);
-            return colors;
-          }
-        case ImageFormat.Types.Format.Srgba:
-          {
-            ReadSRGBAByteArray(MutablePixelData(), Width(), Height(), WidthStep(), flipVertically, ref colors);
-            return colors;
-          }
-        default:
-          {
-            throw new NotImplementedException($"Currently only SRGB and SRGBA format are supported: {format}");
-          }
-      }
-#pragma warning restore IDE0010
-    }
-
-    public Color32[] GetPixels32(bool flipVertically = false)
-    {
-      return GetPixels32(flipVertically, new Color32[Width() * Height()]);
+      CopyToBuffer(UnsafeNativeMethods.mp_ImageFrame__CopyToBuffer__Pf_i, buffer);
     }
 
     private delegate MpReturnCode CopyToBufferHandler(IntPtr ptr, IntPtr buffer, int bufferSize);
 
-    private T[] CopyToBuffer<T>(CopyToBufferHandler handler, int bufferSize) where T : unmanaged
+    private void CopyToBuffer<T>(CopyToBufferHandler handler, T[] buffer) where T : unmanaged
     {
-      var buffer = new T[bufferSize];
-
       unsafe
       {
         fixed (T* bufferPtr = buffer)
         {
-          handler(mpPtr, (IntPtr)bufferPtr, bufferSize).Assert();
+          handler(mpPtr, (IntPtr)bufferPtr, buffer.Length).Assert();
         }
       }
 
       GC.KeepAlive(this);
-      return buffer;
-    }
-
-    /// <remarks>
-    ///   In the source array, pixels are laid out left to right, top to bottom,
-    ///   but in the returned array, left to right, top to bottom.
-    /// </remarks>
-    private static void ReadSRGBByteArray(IntPtr ptr, int width, int height, int widthStep, bool flipVertically, ref Color32[] colors)
-    {
-      if (colors.Length != width * height)
-      {
-        throw new ArgumentException("colors length is invalid");
-      }
-      var padding = widthStep - (3 * width);
-
-      unsafe
-      {
-        fixed (Color32* dest = colors)
-        {
-          var pSrc = (byte*)ptr.ToPointer();
-
-          if (flipVertically)
-          {
-            var pDest = dest + colors.Length - 1;
-
-            for (var i = 0; i < height; i++)
-            {
-              for (var j = 0; j < width; j++)
-              {
-                var r = *pSrc++;
-                var g = *pSrc++;
-                var b = *pSrc++;
-                *pDest-- = new Color32(r, g, b, 255);
-              }
-              pSrc += padding;
-            }
-          }
-          else
-          {
-            var pDest = dest + (width * (height - 1));
-
-            for (var i = 0; i < height; i++)
-            {
-              for (var j = 0; j < width; j++)
-              {
-                var r = *pSrc++;
-                var g = *pSrc++;
-                var b = *pSrc++;
-                *pDest++ = new Color32(r, g, b, 255);
-              }
-              pSrc += padding;
-              pDest -= 2 * width;
-            }
-          }
-        }
-      }
-    }
-
-    /// <remarks>
-    ///   In the source array, pixels are laid out left to right, top to bottom,
-    ///   but in the returned array, left to right, top to bottom.
-    /// </remarks>
-    private static void ReadSRGBAByteArray(IntPtr ptr, int width, int height, int widthStep, bool flipVertically, ref Color32[] colors)
-    {
-      if (colors.Length != width * height)
-      {
-        throw new ArgumentException("colors length is invalid");
-      }
-      var padding = widthStep - (4 * width);
-
-      unsafe
-      {
-        fixed (Color32* dest = colors)
-        {
-          var pSrc = (byte*)ptr.ToPointer();
-
-          if (flipVertically)
-          {
-            var pDest = dest + colors.Length - 1;
-
-            for (var i = 0; i < height; i++)
-            {
-              for (var j = 0; j < width; j++)
-              {
-                var r = *pSrc++;
-                var g = *pSrc++;
-                var b = *pSrc++;
-                var a = *pSrc++;
-                *pDest-- = new Color32(r, g, b, a);
-              }
-              pSrc += padding;
-            }
-          }
-          else
-          {
-            var pDest = dest + (width * (height - 1));
-
-            for (var i = 0; i < height; i++)
-            {
-              for (var j = 0; j < width; j++)
-              {
-                var r = *pSrc++;
-                var g = *pSrc++;
-                var b = *pSrc++;
-                var a = *pSrc++;
-                *pDest++ = new Color32(r, g, b, a);
-              }
-              pSrc += padding;
-              pDest -= 2 * width;
-            }
-          }
-        }
-      }
     }
   }
 }

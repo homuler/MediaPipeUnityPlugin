@@ -9,6 +9,7 @@ using Mediapipe.Unity;
 
 using NUnit.Framework;
 using Unity.Collections;
+using UnityEngine;
 
 using System.Linq;
 
@@ -684,8 +685,8 @@ namespace Tests
     {
       var floats = new float[] {
         // padding is 16 - 3 * 4 = 4
-        1.0f, 2.0f, 3.0f, 0,
-        4.0f, 5.0f, 6.0f, 0,
+        1.0f / 255, 2.0f / 255, 3.0f / 255, 0,
+        4.0f / 255, 5.0f / 255, 6.0f / 255, 0,
       };
       var bytes = FloatsToBytes(floats);
       var result = new float[6];
@@ -693,16 +694,16 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Vec32F1, 3, 2, 16, bytes))
       {
         Assert.True(imageFrame.TryReadChannel(0, result, false, false));
-        Assert.AreEqual(result, new float[] { 4.0f, 5.0f, 6.0f, 1.0f, 2.0f, 3.0f });
+        Assert.AreEqual(result, new float[] { 4.0f / 255, 5.0f / 255, 6.0f / 255, 1.0f / 255, 2.0f / 255, 3.0f / 255 });
 
         Assert.True(imageFrame.TryReadChannel(0, result, false, true));
-        Assert.AreEqual(result, new float[] { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f });
+        Assert.AreEqual(result, new float[] { 1.0f / 255, 2.0f / 255, 3.0f / 255, 4.0f / 255, 5.0f / 255, 6.0f / 255 });
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, false));
-        Assert.AreEqual(result, new float[] { 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f });
+        Assert.AreEqual(result, new float[] { 6.0f / 255, 5.0f / 255, 4.0f / 255, 3.0f / 255, 2.0f / 255, 1.0f / 255 });
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, true));
-        Assert.AreEqual(result, new float[] { 3.0f, 2.0f, 1.0f, 6.0f, 5.0f, 4.0f });
+        Assert.AreEqual(result, new float[] { 3.0f / 255, 2.0f / 255, 1.0f / 255, 6.0f / 255, 5.0f / 255, 4.0f / 255 });
       }
     }
 
@@ -712,8 +713,8 @@ namespace Tests
       // (w, h, c) -> w << 5 + h << 3 + (c + 1)
       var floats = new float[] {
         // padding is 32 - 2 * 3 * 4 = 8
-        1.0f,  2.0f, 33.0f, 34.0f, 65.0f, 66.0f, 0, 0,
-        9.0f, 10.0f, 41.0f, 42.0f, 73.0f, 74.0f, 0, 0,
+        1.0f / 255,  2.0f / 255, 33.0f / 255, 34.0f / 255, 65.0f / 255, 66.0f / 255, 0, 0,
+        9.0f / 255, 10.0f / 255, 41.0f / 255, 42.0f / 255, 73.0f / 255, 74.0f / 255, 0, 0,
       };
       var bytes = FloatsToBytes(floats);
       var result = new float[6];
@@ -721,28 +722,28 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Vec32F2, 3, 2, 32, bytes))
       {
         Assert.True(imageFrame.TryReadChannel(0, result, false, false));
-        Assert.AreEqual(result, new float[] { 9.0f, 41.0f, 73.0f, 1.0f, 33.0f, 65.0f });
+        Assert.AreEqual(result, new float[] { 9.0f / 255, 41.0f / 255, 73.0f / 255, 1.0f / 255, 33.0f / 255, 65.0f / 255 });
 
         Assert.True(imageFrame.TryReadChannel(0, result, false, true));
-        Assert.AreEqual(result, new float[] { 1.0f, 33.0f, 65.0f, 9.0f, 41.0f, 73.0f });
+        Assert.AreEqual(result, new float[] { 1.0f / 255, 33.0f / 255, 65.0f / 255, 9.0f / 255, 41.0f / 255, 73.0f / 255 });
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, false));
-        Assert.AreEqual(result, new float[] { 73.0f, 41.0f, 9.0f, 65.0f, 33.0f, 1.0f });
+        Assert.AreEqual(result, new float[] { 73.0f / 255, 41.0f / 255, 9.0f / 255, 65.0f / 255, 33.0f / 255, 1.0f / 255 });
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, true));
-        Assert.AreEqual(result, new float[] { 65.0f, 33.0f, 1.0f, 73.0f, 41.0f, 9.0f });
+        Assert.AreEqual(result, new float[] { 65.0f / 255, 33.0f / 255, 1.0f / 255, 73.0f / 255, 41.0f / 255, 9.0f / 255 });
 
         Assert.True(imageFrame.TryReadChannel(1, result, false, false));
-        Assert.AreEqual(result, new float[] { 10.0f, 42.0f, 74.0f, 2.0f, 34.0f, 66.0f });
+        Assert.AreEqual(result, new float[] { 10.0f / 255, 42.0f / 255, 74.0f / 255, 2.0f / 255, 34.0f / 255, 66.0f / 255 });
 
         Assert.True(imageFrame.TryReadChannel(1, result, false, true));
-        Assert.AreEqual(result, new float[] { 2.0f, 34.0f, 66.0f, 10.0f, 42.0f, 74.0f });
+        Assert.AreEqual(result, new float[] { 2.0f / 255, 34.0f / 255, 66.0f / 255, 10.0f / 255, 42.0f / 255, 74.0f / 255 });
 
         Assert.True(imageFrame.TryReadChannel(1, result, true, false));
-        Assert.AreEqual(result, new float[] { 74.0f, 42.0f, 10.0f, 66.0f, 34.0f, 2.0f });
+        Assert.AreEqual(result, new float[] { 74.0f / 255, 42.0f / 255, 10.0f / 255, 66.0f / 255, 34.0f / 255, 2.0f / 255 });
 
         Assert.True(imageFrame.TryReadChannel(1, result, true, true));
-        Assert.AreEqual(result, new float[] { 66.0f, 34.0f, 2.0f, 74.0f, 42.0f, 10.0f });
+        Assert.AreEqual(result, new float[] { 66.0f / 255, 34.0f / 255, 2.0f / 255, 74.0f / 255, 42.0f / 255, 10.0f / 255 });
       }
     }
     #endregion
@@ -1044,6 +1045,225 @@ namespace Tests
     }
     #endregion
 
+    #region TryReadPixelData
+    [Test]
+    public void TryReadPixelData_ShouldReturnFalse_When_TheFormatIsInvalid()
+    {
+      using (var imageFrame = new ImageFrame())
+      {
+        Assert.False(imageFrame.TryReadPixelData(new Color32[] { }));
+      }
+    }
+
+    [Test]
+    public void TryReadPixelData_ShouldReturnFalse_When_ColorsLengthIsWrong()
+    {
+      using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Srgba, 0, 0, 0, new byte[] { }))
+      {
+        Assert.False(imageFrame.TryReadPixelData(new Color32[1] { new Color32() }));
+      }
+    }
+
+    [Test]
+    public void TryReadPixelData_ShouldReturnTrue_When_TheFormatIsSrgb()
+    {
+      // (w, h, c) -> w << 5 + h << 3 + (c + 1)
+      var bytes = new byte[] {
+        // padding is 16 - 3 * 3 = 7
+        1,  2,  3, 33, 34, 35, 65, 66, 67, 0, 0, 0, 0, 0, 0, 0,
+        9, 10, 11, 41, 42, 43, 73, 74, 75, 0, 0, 0, 0, 0, 0, 0,
+      };
+      var expected = new Color32[] {
+        new Color32(9, 10, 11, 255), new Color32(41, 42, 43, 255), new Color32(73, 74, 75, 255),
+        new Color32(1, 2, 3, 255), new Color32(33, 34, 35, 255), new Color32(65, 66, 67, 255),
+      };
+      var result = new Color32[6];
+
+      using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Srgb, 3, 2, 16, bytes))
+      {
+        Assert.True(imageFrame.TryReadPixelData(result));
+        Assert.AreEqual(result, expected);
+      }
+    }
+
+    [Test]
+    public void TryReadPixelData_ShouldReturnTrue_When_TheFormatIsSrgba()
+    {
+      // (w, h, c) -> w << 5 + h << 3 + (c + 1)
+      var bytes = new byte[] {
+        // padding is 16 - 3 * 4 = 4
+        1,  2,  3,  4, 33, 34, 35, 36, 65, 66, 67, 68, 0, 0, 0, 0,
+        9, 10, 11, 12, 41, 42, 43, 44, 73, 74, 75, 76, 0, 0, 0, 0,
+      };
+      var expected = new Color32[] {
+        new Color32(9, 10, 11, 12), new Color32(41, 42, 43, 44), new Color32(73, 74, 75, 76),
+        new Color32(1, 2, 3, 4), new Color32(33, 34, 35, 36), new Color32(65, 66, 67, 68),
+      };
+      var result = new Color32[6];
+
+      using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Srgba, 3, 2, 16, bytes))
+      {
+        Assert.True(imageFrame.TryReadPixelData(result));
+        Assert.AreEqual(result, expected);
+      }
+    }
+
+    [Test]
+    public void TryReadPixelData_ShouldReturnTrue_When_TheFormatIsSbgra()
+    {
+      // (w, h, c) -> w << 5 + h << 3 + (c + 1)
+      var bytes = new byte[] {
+        // padding is 16 - 3 * 4 = 4
+        1,  2,  3,  4, 33, 34, 35, 36, 65, 66, 67, 68, 0, 0, 0, 0,
+        9, 10, 11, 12, 41, 42, 43, 44, 73, 74, 75, 76, 0, 0, 0, 0,
+      };
+      var expected = new Color32[] {
+        new Color32(11, 10, 9, 12), new Color32(43, 42, 41, 44), new Color32(75, 74, 73, 76),
+        new Color32(3, 2, 1, 4), new Color32(35, 34, 33, 36), new Color32(67, 66, 65, 68),
+      };
+      var result = new Color32[6];
+
+      using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Sbgra, 3, 2, 16, bytes))
+      {
+        Assert.True(imageFrame.TryReadPixelData(result));
+        Assert.AreEqual(result, expected);
+      }
+    }
+
+    [Test]
+    public void TryReadPixelData_ShouldReturnTrue_When_TheFormatIsGray8()
+    {
+      var bytes = new byte[] {
+        // padding is 16 - 3 * 1 = 13
+        1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        4, 5, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      };
+      var expected = new Color32[] {
+        new Color32(4, 4, 4, 255), new Color32(5, 5, 5, 255), new Color32(6, 6, 6, 255),
+        new Color32(1, 1, 1, 255), new Color32(2, 2, 2, 255), new Color32(3, 3, 3, 255),
+      };
+      var result = new Color32[6];
+
+      using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Gray8, 3, 2, 16, bytes))
+      {
+        Assert.True(imageFrame.TryReadPixelData(result));
+        Assert.AreEqual(result, expected);
+      }
+    }
+
+    [Test]
+    public void TryReadPixelData_ShouldReturnTrue_When_TheFormatIsLab8()
+    {
+      var bytes = new byte[] {
+        // padding is 16 - 3 * 1 = 13
+        0, 0, 0, 0, 128, 128, 0, 128, 127, 0, 127, 128, 0, 127, 127, 0,
+        50, 0, 0, 50, 128, 128, 50, 128, 127, 50, 127, 128, 50, 127, 127, 0,
+        100, 0, 0, 100, 128, 128, 100, 128, 127, 100, 127, 128, 100, 127, 127, 0,
+        69, 10, 30, 62, 207, 87, 27, 241, 100, 12, 79, 78, 36, 70, 2, 0, // random
+      };
+      var expected = new Color32[] {
+        new Color32(204, 161, 115, 255), new Color32(93, 169, 0, 255), new Color32(71, 68, 0, 255), new Color32(122, 0, 0, 255), new Color32(178, 0, 84, 255),
+        new Color32(255, 255, 255, 255), new Color32(0, 255, 255, 255), new Color32(0, 255, 0, 255), new Color32(255, 139, 255, 255), new Color32(255, 70, 0, 255),
+        new Color32(119, 119, 119, 255), new Color32(0, 169, 255, 255), new Color32(0, 152, 0, 255), new Color32(183, 0, 255, 255), new Color32(255, 0, 0, 255),
+        new Color32(0, 0, 0, 255), new Color32(0, 64, 194, 255), new Color32(0, 45, 0, 255), new Color32(0, 0, 195, 255), new Color32(132, 0, 0, 255),
+      };
+      var result = new Color32[20];
+
+      using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Lab8, 5, 4, 16, bytes))
+      {
+        Assert.True(imageFrame.TryReadPixelData(result));
+        Assert.AreEqual(result, expected);
+      }
+    }
+
+    [Test]
+    public void TryReadPixelData_ShouldReturnTrue_When_TheFormatIsSrgb48()
+    {
+      // (w, h, c) -> w << 5 + h << 3 + (c + 1)
+      var bytes = new byte[] {
+        // padding is 24 - 2 * 3 * 3 = 6
+        0, 1, 0,  2, 0,  3, 0, 33, 0, 34, 0, 35, 0, 65, 0, 66, 0, 67, 0, 0, 0, 0, 0, 0,
+        0, 9, 0, 10, 0, 11, 0, 41, 0, 42, 0, 43, 0, 73, 0, 74, 0, 75, 0, 0, 0, 0, 0, 0,
+      };
+      var expected = new Color32[] {
+        new Color32(9, 10, 11, 255), new Color32(41, 42, 43, 255), new Color32(73, 74, 75, 255),
+        new Color32(1, 2, 3, 255), new Color32(33, 34, 35, 255), new Color32(65, 66, 67, 255),
+      };
+      var result = new Color32[6];
+
+      using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Srgb48, 3, 2, 24, bytes))
+      {
+        Assert.True(imageFrame.TryReadPixelData(result));
+        Assert.AreEqual(result, expected);
+      }
+    }
+
+    [Test]
+    public void TryReadPixelData_ShouldReturnTrue_When_TheFormatIsSrgba64()
+    {
+      // (w, h, c) -> w << 5 + h << 3 + (c + 1)
+      var bytes = new byte[] {
+        // padding is 24 - 2 * 3 * 4 = 0
+        0, 1, 0,  2, 0,  3, 0,  4, 0, 33, 0, 34, 0, 35, 0, 36, 0, 65, 0, 66, 0, 67, 0, 68,
+        0, 9, 0, 10, 0, 11, 0, 12, 0, 41, 0, 42, 0, 43, 0, 44, 0, 73, 0, 74, 0, 75, 0, 76,
+      };
+      var expected = new Color32[] {
+        new Color32(9, 10, 11, 12), new Color32(41, 42, 43, 44), new Color32(73, 74, 75, 76),
+        new Color32(1, 2, 3, 4), new Color32(33, 34, 35, 36), new Color32(65, 66, 67, 68),
+      };
+      var result = new Color32[6];
+
+      using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Srgba64, 3, 2, 24, bytes))
+      {
+        Assert.True(imageFrame.TryReadPixelData(result));
+        Assert.AreEqual(result, expected);
+      }
+    }
+
+    [Test]
+    public void TryReadPixelData_ShouldReturnTrue_When_TheFormatIsGray16()
+    {
+      var bytes = new byte[] {
+        // padding is 16 - 2 * 3 = 10
+        0, 1, 0, 2, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 4, 0, 5, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      };
+      var expected = new Color32[] {
+        new Color32(4, 4, 4, 255), new Color32(5, 5, 5, 255), new Color32(6, 6, 6, 255),
+        new Color32(1, 1, 1, 255), new Color32(2, 2, 2, 255), new Color32(3, 3, 3, 255),
+      };
+      var result = new Color32[6];
+
+      using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Gray16, 3, 2, 16, bytes))
+      {
+        Assert.True(imageFrame.TryReadPixelData(result));
+        Assert.AreEqual(result, expected);
+      }
+    }
+
+    [Test]
+    public void TryReadPixelData_ShouldReturnTrue_When_TheFormatIsVec32f1()
+    {
+      var floats = new float[] {
+        // padding is 16 - 3 * 4 = 4
+        1.0f / 255, 2.0f / 255, 3.0f / 255, 0,
+        4.0f / 255, 5.0f / 255, 6.0f / 255, 0,
+      };
+      var bytes = FloatsToBytes(floats);
+      var expected = new Color32[] {
+        new Color32(4, 4, 4, 255), new Color32(5, 5, 5, 255), new Color32(6, 6, 6, 255),
+        new Color32(1, 1, 1, 255), new Color32(2, 2, 2, 255), new Color32(3, 3, 3, 255),
+      };
+      var result = new Color32[6];
+
+      using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Vec32F1, 3, 2, 16, bytes))
+      {
+        Assert.True(imageFrame.TryReadPixelData(result));
+        Assert.AreEqual(result, expected);
+      }
+    }
+    #endregion
+
     private ImageFrame BuildImageFrame(ImageFormat.Types.Format format, int width, int height, int widthStep, byte[] pixelData)
     {
       var array = new NativeArray<byte>(pixelData.Length, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
@@ -1085,7 +1305,7 @@ namespace Tests
     private void AreAlmostEqual(float[] xs, float[] ys, double threshold)
     {
       Assert.AreEqual(xs.Length, ys.Length);
-      Assert.True(xs.Zip(ys, (x, y) => x - y).All((diff) => UnityEngine.Mathf.Abs(diff) < threshold));
+      Assert.True(xs.Zip(ys, (x, y) => x - y).All((diff) => Mathf.Abs(diff) < threshold));
     }
   }
 }
