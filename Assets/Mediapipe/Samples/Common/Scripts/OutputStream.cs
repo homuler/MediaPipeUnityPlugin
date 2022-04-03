@@ -92,7 +92,7 @@ namespace Mediapipe.Unity
 
     public Status AddListener(CalculatorGraph.NativePacketCallback callback)
     {
-      return calculatorGraph.ObserveOutputStream(streamName, callback, observeTimestampBounds);
+      return calculatorGraph.ObserveOutputStream(streamName, 0, callback, observeTimestampBounds);
     }
 
     /// <summary>

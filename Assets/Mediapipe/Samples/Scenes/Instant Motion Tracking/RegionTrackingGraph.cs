@@ -78,7 +78,7 @@ namespace Mediapipe.Unity.InstantMotionTracking
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr TrackedAnchorDataCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr TrackedAnchorDataCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<RegionTrackingGraph>(graphPtr, packetPtr, (regionTrackingGraph, ptr) =>
       {

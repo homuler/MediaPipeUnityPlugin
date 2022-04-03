@@ -61,7 +61,7 @@ namespace Mediapipe.Unity.HairSegmentation
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr HairMaskCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr HairMaskCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<HairSegmentationGraph>(graphPtr, packetPtr, (hairSegmentationGraph, ptr) =>
       {

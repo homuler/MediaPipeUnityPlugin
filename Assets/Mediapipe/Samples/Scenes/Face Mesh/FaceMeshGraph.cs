@@ -107,7 +107,7 @@ namespace Mediapipe.Unity.FaceMesh
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr FaceDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr FaceDetectionsCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<FaceMeshGraph>(graphPtr, packetPtr, (faceMeshGraph, ptr) =>
       {
@@ -122,7 +122,7 @@ namespace Mediapipe.Unity.FaceMesh
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr MultiFaceLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr MultiFaceLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<FaceMeshGraph>(graphPtr, packetPtr, (faceMeshGraph, ptr) =>
       {
@@ -137,7 +137,7 @@ namespace Mediapipe.Unity.FaceMesh
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr FaceRectsFromLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr FaceRectsFromLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<FaceMeshGraph>(graphPtr, packetPtr, (faceMeshGraph, ptr) =>
       {
@@ -152,7 +152,7 @@ namespace Mediapipe.Unity.FaceMesh
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr FaceRectsFromDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr FaceRectsFromDetectionsCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<FaceMeshGraph>(graphPtr, packetPtr, (faceMeshGraph, ptr) =>
       {

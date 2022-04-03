@@ -130,7 +130,7 @@ namespace Mediapipe.Unity.HandTracking
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr PalmDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr PalmDetectionsCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) =>
       {
@@ -145,7 +145,7 @@ namespace Mediapipe.Unity.HandTracking
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr HandRectsFromPalmDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr HandRectsFromPalmDetectionsCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) =>
       {
@@ -160,7 +160,7 @@ namespace Mediapipe.Unity.HandTracking
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr HandLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr HandLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) =>
       {
@@ -175,7 +175,7 @@ namespace Mediapipe.Unity.HandTracking
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr HandWorldLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr HandWorldLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) =>
       {
@@ -190,7 +190,7 @@ namespace Mediapipe.Unity.HandTracking
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr HandRectsFromLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr HandRectsFromLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) =>
       {
@@ -205,7 +205,7 @@ namespace Mediapipe.Unity.HandTracking
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr HandednessCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr HandednessCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<HandTrackingGraph>(graphPtr, packetPtr, (handTrackingGraph, ptr) =>
       {

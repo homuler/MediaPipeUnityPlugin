@@ -13,7 +13,7 @@ namespace Mediapipe
 {
   public class CalculatorGraph : MpResourceHandle
   {
-    public delegate IntPtr NativePacketCallback(IntPtr graphPtr, IntPtr packetPtr);
+    public delegate IntPtr NativePacketCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr);
     public delegate Status PacketCallback<TPacket, TValue>(TPacket packet) where TPacket : Packet<TValue>;
 
     public CalculatorGraph() : base()
@@ -71,9 +71,9 @@ namespace Mediapipe
       return config;
     }
 
-    public Status ObserveOutputStream(string streamName, NativePacketCallback nativePacketCallback, bool observeTimestampBounds = false)
+    public Status ObserveOutputStream(string streamName, int streamId, NativePacketCallback nativePacketCallback, bool observeTimestampBounds = false)
     {
-      UnsafeNativeMethods.mp_CalculatorGraph__ObserveOutputStream__PKc_PF_b(mpPtr, streamName, nativePacketCallback, observeTimestampBounds, out var statusPtr).Assert();
+      UnsafeNativeMethods.mp_CalculatorGraph__ObserveOutputStream__PKc_PF_b(mpPtr, streamName, streamId, nativePacketCallback, observeTimestampBounds, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       return new Status(statusPtr);
@@ -81,7 +81,7 @@ namespace Mediapipe
 
     public Status ObserveOutputStream<TPacket, TValue>(string streamName, PacketCallback<TPacket, TValue> packetCallback, bool observeTimestampBounds, out GCHandle callbackHandle) where TPacket : Packet<TValue>, new()
     {
-      NativePacketCallback nativePacketCallback = (IntPtr _, IntPtr packetPtr) =>
+      NativePacketCallback nativePacketCallback = (IntPtr graphPtr, int streamId, IntPtr packetPtr) =>
       {
         Status status = null;
         try
@@ -97,7 +97,7 @@ namespace Mediapipe
       };
       callbackHandle = GCHandle.Alloc(nativePacketCallback, GCHandleType.Pinned);
 
-      return ObserveOutputStream(streamName, nativePacketCallback, observeTimestampBounds);
+      return ObserveOutputStream(streamName, 0, nativePacketCallback, observeTimestampBounds);
     }
 
     public Status ObserveOutputStream<TPacket, TValue>(string streamName, PacketCallback<TPacket, TValue> packetCallback, out GCHandle callbackHandle) where TPacket : Packet<TValue>, new()

@@ -124,7 +124,7 @@ namespace Mediapipe.Unity.Objectron
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr LiftedObjectsCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr LiftedObjectsCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<ObjectronGraph>(graphPtr, packetPtr, (objectronGraph, ptr) =>
       {
@@ -139,7 +139,7 @@ namespace Mediapipe.Unity.Objectron
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr MultiBoxRectsCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr MultiBoxRectsCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<ObjectronGraph>(graphPtr, packetPtr, (objectronGraph, ptr) =>
       {
@@ -154,7 +154,7 @@ namespace Mediapipe.Unity.Objectron
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr MultiBoxLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr MultiBoxLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<ObjectronGraph>(graphPtr, packetPtr, (objectronGraph, ptr) =>
       {

@@ -57,7 +57,7 @@ namespace Mediapipe.Unity.ObjectDetection
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr OutputDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr OutputDetectionsCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<ObjectDetectionGraph>(graphPtr, packetPtr, (objectDetectionGraph, ptr) =>
       {

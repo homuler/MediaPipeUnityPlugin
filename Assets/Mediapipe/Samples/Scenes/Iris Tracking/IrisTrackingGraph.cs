@@ -76,7 +76,7 @@ namespace Mediapipe.Unity.IrisTracking
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr FaceDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr FaceDetectionsCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<IrisTrackingGraph>(graphPtr, packetPtr, (irisTrackingGraph, ptr) =>
       {
@@ -91,7 +91,7 @@ namespace Mediapipe.Unity.IrisTracking
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr FaceRectCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr FaceRectCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<IrisTrackingGraph>(graphPtr, packetPtr, (irisTrackingGraph, ptr) =>
       {
@@ -106,7 +106,7 @@ namespace Mediapipe.Unity.IrisTracking
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr FaceLandmarksWithIrisCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr FaceLandmarksWithIrisCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<IrisTrackingGraph>(graphPtr, packetPtr, (irisTrackingGraph, ptr) =>
       {

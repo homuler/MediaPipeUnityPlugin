@@ -142,7 +142,7 @@ namespace Mediapipe.Unity.Holistic
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr PoseDetectionCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr PoseDetectionCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
       {
@@ -157,7 +157,7 @@ namespace Mediapipe.Unity.Holistic
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr PoseLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr PoseLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
       {
@@ -172,7 +172,7 @@ namespace Mediapipe.Unity.Holistic
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr FaceLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr FaceLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
       {
@@ -187,7 +187,7 @@ namespace Mediapipe.Unity.Holistic
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr LeftHandLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr LeftHandLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
       {
@@ -202,7 +202,7 @@ namespace Mediapipe.Unity.Holistic
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr RightHandLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr RightHandLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
       {
@@ -217,7 +217,7 @@ namespace Mediapipe.Unity.Holistic
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr PoseWorldLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr PoseWorldLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
       {
@@ -232,7 +232,7 @@ namespace Mediapipe.Unity.Holistic
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr PoseRoiCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr PoseRoiCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
       {

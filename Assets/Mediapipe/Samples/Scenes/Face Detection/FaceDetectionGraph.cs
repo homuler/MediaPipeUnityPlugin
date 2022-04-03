@@ -74,7 +74,7 @@ namespace Mediapipe.Unity.FaceDetection
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr FaceDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr FaceDetectionsCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<FaceDetectionGraph>(graphPtr, packetPtr, (faceDetectionGraph, ptr) =>
       {

@@ -112,7 +112,7 @@ namespace Mediapipe.Unity.PoseTracking
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr PoseDetectionCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr PoseDetectionCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) =>
       {
@@ -127,7 +127,7 @@ namespace Mediapipe.Unity.PoseTracking
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr PoseLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr PoseLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) =>
       {
@@ -142,7 +142,7 @@ namespace Mediapipe.Unity.PoseTracking
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr PoseWorldLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr PoseWorldLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) =>
       {
@@ -157,7 +157,7 @@ namespace Mediapipe.Unity.PoseTracking
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr RoiFromLandmarksCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr RoiFromLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<PoseTrackingGraph>(graphPtr, packetPtr, (poseTrackingGraph, ptr) =>
       {

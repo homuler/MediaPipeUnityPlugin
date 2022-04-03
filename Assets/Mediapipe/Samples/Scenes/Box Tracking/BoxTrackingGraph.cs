@@ -56,7 +56,7 @@ namespace Mediapipe.Unity.BoxTracking
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr TrackedDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr TrackedDetectionsCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       return InvokeIfGraphRunnerFound<BoxTrackingGraph>(graphPtr, packetPtr, (boxTrackingGraph, ptr) =>
       {
