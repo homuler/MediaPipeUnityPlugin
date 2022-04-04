@@ -29,8 +29,7 @@ namespace Tests
           Assert.AreEqual(newPacket.Timestamp(), newTimestamp);
         }
 
-        Assert.True(packet.Get());
-        Assert.AreEqual(packet.Timestamp(), timestamp);
+        Assert.True(packet.isDisposed);
       }
     }
     #endregion

@@ -11,7 +11,10 @@ namespace Mediapipe
 {
   public class StringPacket : Packet<string>
   {
-    public StringPacket() : base() { }
+    /// <summary>
+    ///   Creates an empty <see cref="StringPacket" /> instance.
+    /// </summary>
+    public StringPacket() : base(true) { }
 
     public StringPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
@@ -39,6 +42,11 @@ namespace Mediapipe
       UnsafeNativeMethods.mp__MakeStringPacket_At__PKc_i_Rt(bytes, bytes.Length, timestamp.mpPtr, out var ptr).Assert();
       GC.KeepAlive(timestamp);
       this.ptr = ptr;
+    }
+
+    public StringPacket At(Timestamp timestamp)
+    {
+      return At<StringPacket>(timestamp);
     }
 
     public override string Get()

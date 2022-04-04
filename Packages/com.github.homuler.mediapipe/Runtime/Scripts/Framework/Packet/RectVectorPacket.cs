@@ -11,8 +11,17 @@ namespace Mediapipe
 {
   public class RectVectorPacket : Packet<List<Rect>>
   {
-    public RectVectorPacket() : base() { }
+    /// <summary>
+    ///   Creates an empty <see cref="RectVectorPacket" /> instance.
+    /// </summary>
+    public RectVectorPacket() : base(true) { }
+
     public RectVectorPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
+
+    public RectVectorPacket At(Timestamp timestamp)
+    {
+      return At<RectVectorPacket>(timestamp);
+    }
 
     public override List<Rect> Get()
     {

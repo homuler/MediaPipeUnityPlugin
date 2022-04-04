@@ -10,7 +10,19 @@ namespace Mediapipe
 {
   public abstract class MpResourceHandle : DisposableObject, IMpResourceHandle
   {
-    protected IntPtr ptr;
+    private IntPtr _ptr = IntPtr.Zero;
+    protected IntPtr ptr
+    {
+      get => _ptr;
+      set
+      {
+        if (value != IntPtr.Zero && OwnsResource())
+        {
+          throw new InvalidOperationException($"This object owns another resource");
+        }
+        _ptr = value;
+      }
+    }
 
     protected MpResourceHandle(bool isOwner = true) : this(IntPtr.Zero, isOwner) { }
 
@@ -40,7 +52,7 @@ namespace Mediapipe
 
     public bool OwnsResource()
     {
-      return isOwner && ptr != IntPtr.Zero;
+      return isOwner && IsResourcePresent();
     }
     #endregion
 
@@ -79,6 +91,11 @@ namespace Mediapipe
       UnsafeNativeMethods.delete_array__PKc(strPtr);
 
       return str;
+    }
+
+    protected bool IsResourcePresent()
+    {
+      return ptr != IntPtr.Zero;
     }
   }
 }

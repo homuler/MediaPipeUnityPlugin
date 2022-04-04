@@ -26,7 +26,10 @@ namespace Mediapipe
       }
     }
 
-    public FloatArrayPacket() : base() { }
+    /// <summary>
+    ///   Creates an empty <see cref="FloatArrayPacket" /> instance.
+    /// </summary>
+    public FloatArrayPacket() : base(true) { }
 
     public FloatArrayPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
@@ -43,6 +46,11 @@ namespace Mediapipe
       GC.KeepAlive(timestamp);
       this.ptr = ptr;
       length = value.Length;
+    }
+
+    public FloatArrayPacket At(Timestamp timestamp)
+    {
+      return At<FloatArrayPacket>(timestamp);
     }
 
     public override float[] Get()
