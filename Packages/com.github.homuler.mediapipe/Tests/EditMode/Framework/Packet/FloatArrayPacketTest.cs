@@ -87,6 +87,29 @@ namespace Tests
     }
     #endregion
 
+    #region #At
+    [Test]
+    public void At_ShouldReturnNewPacketWithTimestamp()
+    {
+      using (var timestamp = new Timestamp(1))
+      {
+        float[] array = { 0.0f };
+        var packet = new FloatArrayPacket(array).At(timestamp);
+        Assert.AreEqual(packet.Get(), array);
+        Assert.AreEqual(packet.Timestamp(), timestamp);
+
+        using (var newTimestamp = new Timestamp(2))
+        {
+          var newPacket = packet.At(newTimestamp);
+          Assert.AreEqual(newPacket.Get(), array);
+          Assert.AreEqual(newPacket.Timestamp(), newTimestamp);
+        }
+
+        Assert.True(packet.isDisposed);
+      }
+    }
+    #endregion
+
     #region #Consume
     [Test]
     public void Consume_ShouldThrowNotSupportedException()
