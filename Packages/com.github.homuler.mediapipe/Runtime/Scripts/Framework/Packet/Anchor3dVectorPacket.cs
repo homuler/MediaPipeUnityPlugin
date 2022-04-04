@@ -11,7 +11,11 @@ namespace Mediapipe
 {
   public class Anchor3dVectorPacket : Packet<List<Anchor3d>>
   {
-    public Anchor3dVectorPacket() : base() { }
+    /// <summary>
+    ///   Creates an empty <see cref="Anchor3dVectorPacket" /> instance.
+    /// </summary>
+    public Anchor3dVectorPacket() : base(true) { }
+
     public Anchor3dVectorPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
     public Anchor3dVectorPacket(Anchor3d[] value) : base()
@@ -25,6 +29,11 @@ namespace Mediapipe
       UnsafeNativeMethods.mp__MakeAnchor3dVectorPacket_At__PA_i_Rt(value, value.Length, timestamp.mpPtr, out var ptr).Assert();
       GC.KeepAlive(timestamp);
       this.ptr = ptr;
+    }
+
+    public Anchor3dVectorPacket At(Timestamp timestamp)
+    {
+      return At<Anchor3dVectorPacket>(timestamp);
     }
 
     public override List<Anchor3d> Get()

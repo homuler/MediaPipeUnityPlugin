@@ -45,13 +45,13 @@ namespace Tests
       using (var sidePacket = new SidePacket())
       {
         Assert.AreEqual(sidePacket.size, 0);
-        Assert.IsNull(sidePacket.At<FloatPacket>("value"));
+        Assert.IsNull(sidePacket.At<FloatPacket, float>("value"));
 
         var flagPacket = new FloatPacket(1.0f);
         sidePacket.Emplace("value", flagPacket);
 
         Assert.AreEqual(sidePacket.size, 1);
-        Assert.AreEqual(sidePacket.At<FloatPacket>("value").Get(), 1.0f);
+        Assert.AreEqual(sidePacket.At<FloatPacket, float>("value").Get(), 1.0f);
         Assert.True(flagPacket.isDisposed);
       }
     }
@@ -63,11 +63,11 @@ namespace Tests
       {
         var oldValuePacket = new FloatPacket(1.0f);
         sidePacket.Emplace("value", oldValuePacket);
-        Assert.AreEqual(sidePacket.At<FloatPacket>("value").Get(), 1.0f);
+        Assert.AreEqual(sidePacket.At<FloatPacket, float>("value").Get(), 1.0f);
 
         var newValuePacket = new FloatPacket(2.0f);
         sidePacket.Emplace("value", newValuePacket);
-        Assert.AreEqual(sidePacket.At<FloatPacket>("value").Get(), 1.0f);
+        Assert.AreEqual(sidePacket.At<FloatPacket, float>("value").Get(), 1.0f);
       }
     }
     #endregion

@@ -99,6 +99,29 @@ namespace Tests
     }
     #endregion
 
+    #region #At
+    [Test]
+    public void At_ShouldReturnNewPacketWithTimestamp()
+    {
+      using (var timestamp = new Timestamp(1))
+      {
+        var str = "str";
+        var packet = new StringPacket(str).At(timestamp);
+        Assert.AreEqual(packet.Get(), str);
+        Assert.AreEqual(packet.Timestamp(), timestamp);
+
+        using (var newTimestamp = new Timestamp(2))
+        {
+          var newPacket = packet.At(newTimestamp);
+          Assert.AreEqual(newPacket.Get(), str);
+          Assert.AreEqual(newPacket.Timestamp(), newTimestamp);
+        }
+
+        Assert.True(packet.isDisposed);
+      }
+    }
+    #endregion
+
     #region #GetByteArray
     [Test]
     public void GetByteArray_ShouldReturnByteArray()

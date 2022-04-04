@@ -10,8 +10,17 @@ namespace Mediapipe
 {
   public class FaceGeometryPacket : Packet<FaceGeometry.FaceGeometry>
   {
-    public FaceGeometryPacket() : base() { }
+    /// <summary>
+    ///   Creates an empty <see cref="FaceGeometryPacket" /> instance.
+    /// </summary>
+    public FaceGeometryPacket() : base(true) { }
+
     public FaceGeometryPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
+
+    public FaceGeometryPacket At(Timestamp timestamp)
+    {
+      return At<FaceGeometryPacket>(timestamp);
+    }
 
     public override FaceGeometry.FaceGeometry Get()
     {

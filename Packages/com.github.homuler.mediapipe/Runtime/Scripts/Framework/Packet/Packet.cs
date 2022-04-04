@@ -8,30 +8,52 @@ using System;
 
 namespace Mediapipe
 {
-  public abstract class Packet<T> : MpResourceHandle
+  public abstract class Packet<TValue> : MpResourceHandle
   {
-    public Packet() : base()
+    /// <remarks>
+    ///   The native resource won't be initialized.
+    /// </remarks>
+    protected Packet() : base() { }
+
+    /// <remarks>
+    ///   If <paramref name="isOwner" /> is set to <c>false</c>, the native resource won't be initialized.
+    /// </remarks>
+    protected Packet(bool isOwner) : base(isOwner)
     {
-      UnsafeNativeMethods.mp_Packet__(out var ptr).Assert();
-      this.ptr = ptr;
+      if (isOwner)
+      {
+        UnsafeNativeMethods.mp_Packet__(out var ptr).Assert();
+        this.ptr = ptr;
+      }
     }
 
-    public Packet(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
+    protected Packet(IntPtr ptr, bool isOwner) : base(ptr, isOwner) { }
+
+    /// <summary>
+    ///   Creates a read-write <typeparamref name="TPacket" /> instance.
+    /// </summary>
+    /// <remarks>
+    ///   This is a slow operation that makes use of <see cref="Activator.CreateInstance" /> internally, so you should avoid calling it in a loop.<br/>
+    ///   If you need to call it in a loop and <paramref name="isOwner" /> is set to <c>false</c>, call <see cref="SwitchNativePtr" /> instead.
+    /// </remarks>
+    public static TPacket Create<TPacket>(IntPtr packetPtr, bool isOwner) where TPacket : Packet<TValue>, new()
+    {
+      return (TPacket)Activator.CreateInstance(typeof(TPacket), packetPtr, isOwner);
+    }
+
+    public void SwitchNativePtr(IntPtr packetPtr)
+    {
+      if (isOwner)
+      {
+        throw new InvalidOperationException("This operation is permitted only when the packet instance is for reference");
+      }
+      ptr = packetPtr;
+    }
 
     /// <exception cref="MediaPipeException">Thrown when the value is not set</exception>
-    public abstract T Get();
+    public abstract TValue Get();
 
-    public abstract StatusOr<T> Consume();
-
-    /// <remarks>To avoid copying the value, instantiate the packet with timestamp</remarks>
-    /// <returns>New packet with the given timestamp and the copied value</returns>
-    public Packet<T> At(Timestamp timestamp)
-    {
-      UnsafeNativeMethods.mp_Packet__At__Rt(mpPtr, timestamp.mpPtr, out var packetPtr).Assert();
-
-      GC.KeepAlive(timestamp);
-      return (Packet<T>)Activator.CreateInstance(GetType(), packetPtr, true);
-    }
+    public abstract StatusOr<TValue> Consume();
 
     public bool IsEmpty()
     {
@@ -80,6 +102,21 @@ namespace Mediapipe
     protected override void DeleteMpPtr()
     {
       UnsafeNativeMethods.mp_Packet__delete(ptr);
+    }
+
+    /// <remarks>
+    ///   This method will copy the value and create another packet internally.
+    ///   To avoid copying the value, it's preferable to instantiate the packet with timestamp in the first place.
+    /// </remarks>
+    /// <returns>New packet with the given timestamp and the copied value</returns>
+    protected TPacket At<TPacket>(Timestamp timestamp) where TPacket : Packet<TValue>, new()
+    {
+      UnsafeNativeMethods.mp_Packet__At__Rt(mpPtr, timestamp.mpPtr, out var packetPtr).Assert();
+      GC.KeepAlive(timestamp);
+
+      var packet = Create<TPacket>(packetPtr, true);
+      Dispose();
+      return packet;
     }
   }
 }

@@ -10,7 +10,10 @@ namespace Mediapipe
 {
   public class IntPacket : Packet<int>
   {
-    public IntPacket() : base() { }
+    /// <summary>
+    ///   Creates an empty <see cref="IntPacket" /> instance.
+    /// </summary>
+    public IntPacket() : base(true) { }
 
     public IntPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
@@ -25,6 +28,11 @@ namespace Mediapipe
       UnsafeNativeMethods.mp__MakeIntPacket_At__i_Rt(value, timestamp.mpPtr, out var ptr).Assert();
       GC.KeepAlive(timestamp);
       this.ptr = ptr;
+    }
+
+    public IntPacket At(Timestamp timestamp)
+    {
+      return At<IntPacket>(timestamp);
     }
 
     public override int Get()

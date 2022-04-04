@@ -10,7 +10,10 @@ namespace Mediapipe
 {
   public class BoolPacket : Packet<bool>
   {
-    public BoolPacket() : base() { }
+    /// <summary>
+    ///   Creates an empty <see cref="BoolPacket" /> instance.
+    /// </summary>
+    public BoolPacket() : base(true) { }
 
     public BoolPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
@@ -25,6 +28,11 @@ namespace Mediapipe
       UnsafeNativeMethods.mp__MakeBoolPacket_At__b_Rt(value, timestamp.mpPtr, out var ptr).Assert();
       GC.KeepAlive(timestamp);
       this.ptr = ptr;
+    }
+
+    public BoolPacket At(Timestamp timestamp)
+    {
+      return At<BoolPacket>(timestamp);
     }
 
     public override bool Get()

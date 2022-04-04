@@ -10,8 +10,17 @@ namespace Mediapipe
 {
   public class TimedModelMatrixProtoListPacket : Packet<TimedModelMatrixProtoList>
   {
-    public TimedModelMatrixProtoListPacket() : base() { }
+    /// <summary>
+    ///   Creates an empty <see cref="TimedModelMatrixProtoListPacket" /> instance.
+    /// </summary>
+    public TimedModelMatrixProtoListPacket() : base(true) { }
+
     public TimedModelMatrixProtoListPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
+
+    public TimedModelMatrixProtoListPacket At(Timestamp timestamp)
+    {
+      return At<TimedModelMatrixProtoListPacket>(timestamp);
+    }
 
     public override TimedModelMatrixProtoList Get()
     {

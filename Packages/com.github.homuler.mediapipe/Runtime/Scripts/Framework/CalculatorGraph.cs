@@ -79,14 +79,14 @@ namespace Mediapipe
       return new Status(statusPtr);
     }
 
-    public Status ObserveOutputStream<TPacket, TValue>(string streamName, PacketCallback<TPacket, TValue> packetCallback, bool observeTimestampBounds, out GCHandle callbackHandle) where TPacket : Packet<TValue>
+    public Status ObserveOutputStream<TPacket, TValue>(string streamName, PacketCallback<TPacket, TValue> packetCallback, bool observeTimestampBounds, out GCHandle callbackHandle) where TPacket : Packet<TValue>, new()
     {
       NativePacketCallback nativePacketCallback = (IntPtr _, IntPtr packetPtr) =>
       {
         Status status = null;
         try
         {
-          var packet = (TPacket)Activator.CreateInstance(typeof(TPacket), packetPtr, false);
+          var packet = Packet<TValue>.Create<TPacket>(packetPtr, false);
           status = packetCallback(packet);
         }
         catch (Exception e)
@@ -100,7 +100,7 @@ namespace Mediapipe
       return ObserveOutputStream(streamName, nativePacketCallback, observeTimestampBounds);
     }
 
-    public Status ObserveOutputStream<TPacket, TValue>(string streamName, PacketCallback<TPacket, TValue> packetCallback, out GCHandle callbackHandle) where TPacket : Packet<TValue>
+    public Status ObserveOutputStream<TPacket, TValue>(string streamName, PacketCallback<TPacket, TValue> packetCallback, out GCHandle callbackHandle) where TPacket : Packet<TValue>, new()
     {
       return ObserveOutputStream(streamName, packetCallback, false, out callbackHandle);
     }

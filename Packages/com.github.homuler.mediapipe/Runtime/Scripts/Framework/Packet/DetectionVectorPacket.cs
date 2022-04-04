@@ -11,8 +11,17 @@ namespace Mediapipe
 {
   public class DetectionVectorPacket : Packet<List<Detection>>
   {
-    public DetectionVectorPacket() : base() { }
+    /// <summary>
+    ///   Creates an empty <see cref="DetectionVectorPacket" /> instance.
+    /// </summary>
+    public DetectionVectorPacket() : base(true) { }
+
     public DetectionVectorPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
+
+    public DetectionVectorPacket At(Timestamp timestamp)
+    {
+      return At<DetectionVectorPacket>(timestamp);
+    }
 
     public override List<Detection> Get()
     {

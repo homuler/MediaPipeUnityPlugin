@@ -10,8 +10,17 @@ namespace Mediapipe
 {
   public class LandmarkListPacket : Packet<LandmarkList>
   {
-    public LandmarkListPacket() : base() { }
+    /// <summary>
+    ///   Creates an empty <see cref="LandmarkListPacket" /> instance.
+    /// </summary>
+    public LandmarkListPacket() : base(true) { }
+
     public LandmarkListPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
+
+    public LandmarkListPacket At(Timestamp timestamp)
+    {
+      return At<LandmarkListPacket>(timestamp);
+    }
 
     public override LandmarkList Get()
     {

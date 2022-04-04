@@ -23,9 +23,11 @@ namespace Mediapipe
 
     public int size => SafeNativeMethods.mp_SidePacket__size(mpPtr);
 
-    /// TODO: force T to be Packet
-    /// <remarks>Make sure that the type of the returned packet value is correct</remarks>
-    public T At<T>(string key)
+    /// <remarks>
+    ///   This method cannot verify that the packet type corresponding to the <paramref name="key" /> is indeed a <typeparamref name="TPacket" />,
+    ///   so you must make sure by youreself that it is.
+    /// </remarks>
+    public TPacket At<TPacket, TValue>(string key) where TPacket : Packet<TValue>, new()
     {
       UnsafeNativeMethods.mp_SidePacket__at__PKc(mpPtr, key, out var packetPtr).Assert();
 
@@ -33,9 +35,8 @@ namespace Mediapipe
       {
         return default; // null
       }
-
       GC.KeepAlive(this);
-      return (T)Activator.CreateInstance(typeof(T), packetPtr, true);
+      return Packet<TValue>.Create<TPacket>(packetPtr, true);
     }
 
     public void Emplace<T>(string key, Packet<T> packet)

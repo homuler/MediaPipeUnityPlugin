@@ -11,30 +11,6 @@ namespace Tests
 {
   public class PacketTest
   {
-    #region #At
-    [Test]
-    public void At_ShouldReturnNewPacketWithTimestamp()
-    {
-      using (var timestamp = new Timestamp(1))
-      {
-        var packet = new BoolPacket(true).At(timestamp);
-        Assert.True(packet.Get());
-        Assert.AreEqual(packet.Timestamp(), timestamp);
-
-        using (var newTimestamp = new Timestamp(2))
-        {
-          var newPacket = packet.At(newTimestamp);
-          Assert.IsInstanceOf<BoolPacket>(newPacket);
-          Assert.True(newPacket.Get());
-          Assert.AreEqual(newPacket.Timestamp(), newTimestamp);
-        }
-
-        Assert.True(packet.Get());
-        Assert.AreEqual(packet.Timestamp(), timestamp);
-      }
-    }
-    #endregion
-
     #region #DebugString
     [Test]
     public void DebugString_ShouldReturnDebugString_When_InstantiatedWithDefaultConstructor()
