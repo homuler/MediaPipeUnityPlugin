@@ -50,7 +50,9 @@ namespace Mediapipe
 
     public FloatArrayPacket At(Timestamp timestamp)
     {
-      return At<FloatArrayPacket>(timestamp);
+      var packet = At<FloatArrayPacket>(timestamp);
+      packet.length = length;
+      return packet;
     }
 
     public override float[] Get()
