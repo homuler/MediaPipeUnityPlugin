@@ -8,16 +8,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.Events;
 
 namespace Mediapipe.Unity.MediaPipeVideo
 {
   public class MediaPipeVideoGraph : GraphRunner
   {
     public int maxNumHands = 2;
-#pragma warning disable IDE1006
-    public UnityEvent<ImageFrame> OnOutput = new UnityEvent<ImageFrame>();
-#pragma warning restore IDE1006
+
+    public event EventHandler<OutputEventArgs<ImageFrame>> OnOutput
+    {
+      add => _outputVideoStream.AddListener(value);
+      remove => _outputVideoStream.RemoveListener(value);
+    }
 
     private const string _InputStreamName = "input_video";
 
@@ -39,9 +41,9 @@ namespace Mediapipe.Unity.MediaPipeVideo
 
     public override void Stop()
     {
-      base.Stop();
-      OnOutput.RemoveAllListeners();
+      _outputVideoStream.RemoveAllListeners();
       _outputVideoStream = null;
+      base.Stop();
     }
 
 
@@ -71,12 +73,7 @@ namespace Mediapipe.Unity.MediaPipeVideo
 
     public bool TryGetNext(out ImageFrame outputVideo, bool allowBlock = true)
     {
-      if (TryGetNext(_outputVideoStream, out outputVideo, allowBlock, GetCurrentTimestampMicrosec()) && outputVideo != null)
-      {
-        OnOutput.Invoke(outputVideo);
-        return true;
-      }
-      return false;
+      return TryGetNext(_outputVideoStream, out outputVideo, allowBlock, GetCurrentTimestampMicrosec());
     }
 
     protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
@@ -91,11 +88,12 @@ namespace Mediapipe.Unity.MediaPipeVideo
 
       if (runningMode == RunningMode.NonBlockingSync)
       {
-        _outputVideoStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _OutputVideoStreamName, config.AddPacketPresenceCalculator(_OutputVideoStreamName));
+        _outputVideoStream = new OutputStream<ImageFramePacket, ImageFrame>(
+            calculatorGraph, _OutputVideoStreamName, config.AddPacketPresenceCalculator(_OutputVideoStreamName), timeoutMicrosec);
       }
       else
       {
-        _outputVideoStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _OutputVideoStreamName, true);
+        _outputVideoStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _OutputVideoStreamName, true, timeoutMicrosec);
       }
 
       return calculatorGraph.Initialize(config);

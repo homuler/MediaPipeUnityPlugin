@@ -4,12 +4,29 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+using System;
+
 namespace Mediapipe.Unity
 {
+  public class OutputEventArgs<TValue> : EventArgs
+  {
+    public readonly TValue value;
+
+    public OutputEventArgs(TValue value)
+    {
+      this.value = value;
+    }
+  }
+
   public class OutputStream<TPacket, TValue> where TPacket : Packet<TValue>, new()
   {
+    private static readonly object _CounterLock = new object();
+    private static int _Counter = 0;
+    private static readonly GlobalInstanceTable<int, OutputStream<TPacket, TValue>> _InstanceTable = new GlobalInstanceTable<int, OutputStream<TPacket, TValue>>(20);
+
     protected readonly CalculatorGraph calculatorGraph;
 
+    private readonly int _id;
     public readonly string streamName;
     public readonly string presenceStreamName;
     public readonly bool observeTimestampBounds;
@@ -21,6 +38,27 @@ namespace Mediapipe.Unity
     private BoolPacket _presencePacket;
 
     private long _lastTimestampMicrosec;
+    private long _timeoutMicrosec;
+    public long timeoutMicrosec
+    {
+      get => _timeoutMicrosec;
+      set => _timeoutMicrosec = Math.Max(0, value);
+    }
+
+    protected event EventHandler<OutputEventArgs<TValue>> OnReceived;
+
+    private TPacket _referencePacket;
+    protected TPacket referencePacket
+    {
+      get
+      {
+        if (_referencePacket == null)
+        {
+          _referencePacket = Packet<TValue>.Create<TPacket>(IntPtr.Zero, false);
+        }
+        return _referencePacket;
+      }
+    }
 
     protected bool canTestPresence => presenceStreamName != null;
 
@@ -39,11 +77,20 @@ namespace Mediapipe.Unity
     ///   This parameter controlls the behaviour when no output is present. <br/>
     ///   When no output is present, if it's set to <c>true</c>, the stream outputs an empty packet, but if it's <c>false</c>, the stream does not output packets.
     /// </param>
-    public OutputStream(CalculatorGraph calculatorGraph, string streamName, bool observeTimestampBounds = true)
+    /// <param name="timeoutMicrosec">
+    ///   If the output packet is empty, the <see cref="OutputStream" /> instance drops the packet until the period specified here elapses.
+    /// </param>
+    public OutputStream(CalculatorGraph calculatorGraph, string streamName, bool observeTimestampBounds = true, long timeoutMicrosec = 0)
     {
+      lock (_CounterLock)
+      {
+        _id = _Counter++;
+      }
       this.calculatorGraph = calculatorGraph;
       this.streamName = streamName;
       this.observeTimestampBounds = observeTimestampBounds;
+      this.timeoutMicrosec = timeoutMicrosec;
+      _InstanceTable.Add(_id, this);
     }
 
     /// <summary>
@@ -58,7 +105,10 @@ namespace Mediapipe.Unity
     /// <param name="presenceStreamName">
     ///   The name of the stream that outputs true iff the output is present.
     /// </param>
-    public OutputStream(CalculatorGraph calculatorGraph, string streamName, string presenceStreamName) : this(calculatorGraph, streamName, false)
+    /// <param name="timeoutMicrosec">
+    ///   If the output packet is empty, the <see cref="OutputStream" /> instance drops the packet until the period specified here elapses.
+    /// </param>
+    public OutputStream(CalculatorGraph calculatorGraph, string streamName, string presenceStreamName, long timeoutMicrosec = 0) : this(calculatorGraph, streamName, false, timeoutMicrosec)
     {
       this.presenceStreamName = presenceStreamName;
     }
@@ -90,9 +140,23 @@ namespace Mediapipe.Unity
       return status;
     }
 
-    public Status AddListener(CalculatorGraph.NativePacketCallback callback)
+    public void AddListener(EventHandler<OutputEventArgs<TValue>> callback)
     {
-      return calculatorGraph.ObserveOutputStream(streamName, 0, callback, observeTimestampBounds);
+      if (OnReceived == null)
+      {
+        calculatorGraph.ObserveOutputStream(streamName, _id, InvokeIfOutputStreamFound, observeTimestampBounds).AssertOk();
+      }
+      OnReceived += callback;
+    }
+
+    public void RemoveListener(EventHandler<OutputEventArgs<TValue>> eventHandler)
+    {
+      OnReceived -= eventHandler;
+    }
+
+    public void RemoveAllListeners()
+    {
+      OnReceived = null;
     }
 
     /// <summary>
@@ -190,56 +254,6 @@ namespace Mediapipe.Unity
       return TryConsumeNext(out value, 0, allowBlock);
     }
 
-    public bool TryGetPacketValue(Packet<TValue> packet, out TValue value, long timeoutMicrosec = 0)
-    {
-      using (var timestamp = packet.Timestamp())
-      {
-        var currentMicrosec = timestamp.Microseconds();
-
-        if (!packet.IsEmpty())
-        {
-          _lastTimestampMicrosec = currentMicrosec;
-          value = packet.Get();
-          return true;
-        }
-
-        value = default; // TODO: distinguish when the output is empty and when it's not (retrieved value can be the default value).
-        var hasTimedOut = currentMicrosec - _lastTimestampMicrosec >= timeoutMicrosec;
-
-        if (hasTimedOut)
-        {
-          _lastTimestampMicrosec = currentMicrosec;
-        }
-        return hasTimedOut;
-      }
-    }
-
-    public bool TryConsumePacketValue(Packet<TValue> packet, out TValue value, long timeoutMicrosec = 0)
-    {
-      using (var timestamp = packet.Timestamp())
-      {
-        var currentMicrosec = timestamp.Microseconds();
-
-        if (!packet.IsEmpty())
-        {
-          _lastTimestampMicrosec = currentMicrosec;
-          var statusOrValue = packet.Consume();
-
-          value = statusOrValue.ValueOr();
-          return true;
-        }
-
-        value = default; // TODO: distinguish when the output is empty and when it's not (retrieved value can be the default value).
-        var hasTimedOut = currentMicrosec - _lastTimestampMicrosec >= timeoutMicrosec;
-
-        if (hasTimedOut)
-        {
-          _lastTimestampMicrosec = currentMicrosec;
-        }
-        return hasTimedOut;
-      }
-    }
-
     public bool ResetTimestampIfTimedOut(long timestampMicrosec, long timeoutMicrosec)
     {
       if (timestampMicrosec - _lastTimestampMicrosec <= timeoutMicrosec)
@@ -293,6 +307,86 @@ namespace Mediapipe.Unity
         return false;
       }
       return true;
+    }
+
+    protected bool TryGetPacketValue(Packet<TValue> packet, out TValue value, long timeoutMicrosec = 0)
+    {
+      using (var timestamp = packet.Timestamp())
+      {
+        var currentMicrosec = timestamp.Microseconds();
+
+        if (!packet.IsEmpty())
+        {
+          _lastTimestampMicrosec = currentMicrosec;
+          value = packet.Get();
+          return true;
+        }
+
+        value = default; // TODO: distinguish when the output is empty and when it's not (retrieved value can be the default value).
+        var hasTimedOut = currentMicrosec - _lastTimestampMicrosec >= timeoutMicrosec;
+
+        if (hasTimedOut)
+        {
+          _lastTimestampMicrosec = currentMicrosec;
+        }
+        return hasTimedOut;
+      }
+    }
+
+    protected bool TryConsumePacketValue(Packet<TValue> packet, out TValue value, long timeoutMicrosec = 0)
+    {
+      using (var timestamp = packet.Timestamp())
+      {
+        var currentMicrosec = timestamp.Microseconds();
+
+        if (!packet.IsEmpty())
+        {
+          _lastTimestampMicrosec = currentMicrosec;
+          var statusOrValue = packet.Consume();
+
+          value = statusOrValue.ValueOr();
+          return true;
+        }
+
+        value = default; // TODO: distinguish when the output is empty and when it's not (retrieved value can be the default value).
+        var hasTimedOut = currentMicrosec - _lastTimestampMicrosec >= timeoutMicrosec;
+
+        if (hasTimedOut)
+        {
+          _lastTimestampMicrosec = currentMicrosec;
+        }
+        return hasTimedOut;
+      }
+    }
+
+    [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
+    protected static IntPtr InvokeIfOutputStreamFound(IntPtr graphPtr, int streamId, IntPtr packetPtr)
+    {
+      try
+      {
+        var isFound = _InstanceTable.TryGetValue(streamId, out var outputStream);
+        if (!isFound)
+        {
+          return Status.FailedPrecondition($"OutputStream with id {streamId} is not found").mpPtr;
+        }
+        if (outputStream.calculatorGraph.mpPtr != graphPtr)
+        {
+          return Status.FailedPrecondition($"OutputStream is found, but is not linked to the specified CalclatorGraph").mpPtr;
+        }
+
+        outputStream.referencePacket.SwitchNativePtr(packetPtr);
+        if (outputStream.TryGetPacketValue(outputStream.referencePacket, out var value, outputStream.timeoutMicrosec))
+        {
+          outputStream.OnReceived?.Invoke(outputStream, new OutputEventArgs<TValue>(value));
+        }
+        outputStream.referencePacket.ReleaseMpResource();
+
+        return Status.Ok().mpPtr;
+      }
+      catch (Exception e)
+      {
+        return Status.FailedPrecondition(e.ToString()).mpPtr;
+      }
     }
   }
 }

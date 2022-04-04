@@ -43,7 +43,7 @@ namespace Mediapipe.Unity.MediaPipeVideo
 
     protected override void OnStartRun()
     {
-      graphRunner.OnOutput.AddListener(DrawNow);
+      // Do nothing
     }
 
     protected override void AddTextureFrameToInputStream(TextureFrame textureFrame)
@@ -62,20 +62,28 @@ namespace Mediapipe.Unity.MediaPipeVideo
       {
         yield break;
       }
+
+      ImageFrame outputVideo = null;
+
       if (runningMode == RunningMode.Sync)
       {
-        var _ = graphRunner.TryGetNext(out var _, true);
+        var _ = graphRunner.TryGetNext(out outputVideo, true);
       }
       else if (runningMode == RunningMode.NonBlockingSync)
       {
-        yield return new WaitUntil(() => graphRunner.TryGetNext(out var _, false));
+        yield return new WaitUntil(() => graphRunner.TryGetNext(out outputVideo, false));
       }
+
+      DrawNow(outputVideo);
     }
 
     private void DrawNow(ImageFrame imageFrame)
     {
-      _outputTexture.LoadRawTextureData(imageFrame.MutablePixelData(), imageFrame.PixelDataSize());
-      _outputTexture.Apply();
+      if (imageFrame != null)
+      {
+        _outputTexture.LoadRawTextureData(imageFrame.MutablePixelData(), imageFrame.PixelDataSize());
+        _outputTexture.Apply();
+      }
     }
   }
 }

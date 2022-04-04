@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
 
 using Google.Protobuf;
 
@@ -33,12 +32,29 @@ namespace Mediapipe.Unity.FaceMesh
       set => _minTrackingConfidence = Mathf.Clamp01(value);
     }
 
-#pragma warning disable IDE1006  // UnityEvent is PascalCase
-    public UnityEvent<List<Detection>> OnFaceDetectionsOutput = new UnityEvent<List<Detection>>();
-    public UnityEvent<List<NormalizedLandmarkList>> OnMultiFaceLandmarksOutput = new UnityEvent<List<NormalizedLandmarkList>>();
-    public UnityEvent<List<NormalizedRect>> OnFaceRectsFromLandmarksOutput = new UnityEvent<List<NormalizedRect>>();
-    public UnityEvent<List<NormalizedRect>> OnFaceRectsFromDetectionsOutput = new UnityEvent<List<NormalizedRect>>();
-#pragma warning restore IDE1006
+    public event EventHandler<OutputEventArgs<List<Detection>>> OnFaceDetectionsOutput
+    {
+      add => _faceDetectionsStream.AddListener(value);
+      remove => _faceDetectionsStream.RemoveListener(value);
+    }
+
+    public event EventHandler<OutputEventArgs<List<NormalizedLandmarkList>>> OnMultiFaceLandmarksOutput
+    {
+      add => _multiFaceLandmarksStream.AddListener(value);
+      remove => _multiFaceLandmarksStream.RemoveListener(value);
+    }
+
+    public event EventHandler<OutputEventArgs<List<NormalizedRect>>> OnFaceRectsFromLandmarksOutput
+    {
+      add => _faceRectsFromLandmarksStream.AddListener(value);
+      remove => _faceRectsFromLandmarksStream.RemoveListener(value);
+    }
+
+    public event EventHandler<OutputEventArgs<List<NormalizedRect>>> OnFaceRectsFromDetectionsOutput
+    {
+      add => _faceRectsFromDetectionsStream.AddListener(value);
+      remove => _faceRectsFromDetectionsStream.RemoveListener(value);
+    }
 
     private const string _InputStreamName = "input_video";
 
@@ -61,27 +77,20 @@ namespace Mediapipe.Unity.FaceMesh
         _faceRectsFromLandmarksStream.StartPolling().AssertOk();
         _faceRectsFromDetectionsStream.StartPolling().AssertOk();
       }
-      else
-      {
-        _faceDetectionsStream.AddListener(FaceDetectionsCallback).AssertOk();
-        _multiFaceLandmarksStream.AddListener(MultiFaceLandmarksCallback).AssertOk();
-        _faceRectsFromLandmarksStream.AddListener(FaceRectsFromLandmarksCallback).AssertOk();
-        _faceRectsFromDetectionsStream.AddListener(FaceRectsFromDetectionsCallback).AssertOk();
-      }
       StartRun(BuildSidePacket(imageSource));
     }
 
     public override void Stop()
     {
-      base.Stop();
-      OnFaceDetectionsOutput.RemoveAllListeners();
-      OnMultiFaceLandmarksOutput.RemoveAllListeners();
-      OnFaceRectsFromLandmarksOutput.RemoveAllListeners();
-      OnFaceRectsFromDetectionsOutput.RemoveAllListeners();
+      _faceDetectionsStream.RemoveAllListeners();
       _faceDetectionsStream = null;
+      _multiFaceLandmarksStream.RemoveAllListeners();
       _multiFaceLandmarksStream = null;
+      _faceRectsFromLandmarksStream.RemoveAllListeners();
       _faceRectsFromLandmarksStream = null;
+      _faceRectsFromDetectionsStream.RemoveAllListeners();
       _faceRectsFromDetectionsStream = null;
+      base.Stop();
     }
 
     public void AddTextureFrameToInputStream(TextureFrame textureFrame)
@@ -98,89 +107,28 @@ namespace Mediapipe.Unity.FaceMesh
       var r3 = TryGetNext(_faceRectsFromLandmarksStream, out faceRectsFromLandmarks, allowBlock, currentTimestampMicrosec);
       var r4 = TryGetNext(_faceRectsFromDetectionsStream, out faceRectsFromDetections, allowBlock, currentTimestampMicrosec);
 
-      if (r1) { OnFaceDetectionsOutput.Invoke(faceDetections); }
-      if (r2) { OnMultiFaceLandmarksOutput.Invoke(multiFaceLandmarks); }
-      if (r3) { OnFaceRectsFromLandmarksOutput.Invoke(faceRectsFromLandmarks); }
-      if (r4) { OnFaceRectsFromDetectionsOutput.Invoke(faceRectsFromDetections); }
-
       return r1 || r2 || r3 || r4;
-    }
-
-    [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr FaceDetectionsCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
-    {
-      return InvokeIfGraphRunnerFound<FaceMeshGraph>(graphPtr, packetPtr, (faceMeshGraph, ptr) =>
-      {
-        using (var packet = new DetectionVectorPacket(ptr, false))
-        {
-          if (faceMeshGraph._faceDetectionsStream.TryGetPacketValue(packet, out var value, faceMeshGraph.timeoutMicrosec))
-          {
-            faceMeshGraph.OnFaceDetectionsOutput.Invoke(value);
-          }
-        }
-      }).mpPtr;
-    }
-
-    [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr MultiFaceLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
-    {
-      return InvokeIfGraphRunnerFound<FaceMeshGraph>(graphPtr, packetPtr, (faceMeshGraph, ptr) =>
-      {
-        using (var packet = new NormalizedLandmarkListVectorPacket(ptr, false))
-        {
-          if (faceMeshGraph._multiFaceLandmarksStream.TryGetPacketValue(packet, out var value, faceMeshGraph.timeoutMicrosec))
-          {
-            faceMeshGraph.OnMultiFaceLandmarksOutput.Invoke(value);
-          }
-        }
-      }).mpPtr;
-    }
-
-    [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr FaceRectsFromLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
-    {
-      return InvokeIfGraphRunnerFound<FaceMeshGraph>(graphPtr, packetPtr, (faceMeshGraph, ptr) =>
-      {
-        using (var packet = new NormalizedRectVectorPacket(ptr, false))
-        {
-          if (faceMeshGraph._faceRectsFromLandmarksStream.TryGetPacketValue(packet, out var value, faceMeshGraph.timeoutMicrosec))
-          {
-            faceMeshGraph.OnFaceRectsFromLandmarksOutput.Invoke(value);
-          }
-        }
-      }).mpPtr;
-    }
-
-    [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr FaceRectsFromDetectionsCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
-    {
-      return InvokeIfGraphRunnerFound<FaceMeshGraph>(graphPtr, packetPtr, (faceMeshGraph, ptr) =>
-      {
-        using (var packet = new NormalizedRectVectorPacket(ptr, false))
-        {
-          if (faceMeshGraph._faceRectsFromDetectionsStream.TryGetPacketValue(packet, out var value, faceMeshGraph.timeoutMicrosec))
-          {
-            faceMeshGraph.OnFaceRectsFromDetectionsOutput.Invoke(value);
-          }
-        }
-      }).mpPtr;
     }
 
     protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
       if (runningMode == RunningMode.NonBlockingSync)
       {
-        _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _FaceDetectionsStreamName, config.AddPacketPresenceCalculator(_FaceDetectionsStreamName));
-        _multiFaceLandmarksStream = new OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(calculatorGraph, _MultiFaceLandmarksStreamName, config.AddPacketPresenceCalculator(_MultiFaceLandmarksStreamName));
-        _faceRectsFromLandmarksStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _FaceRectsFromLandmarksStreamName, config.AddPacketPresenceCalculator(_FaceRectsFromLandmarksStreamName));
-        _faceRectsFromDetectionsStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _FaceRectsFromDetectionsStreamName, config.AddPacketPresenceCalculator(_FaceDetectionsStreamName));
+        _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(
+            calculatorGraph, _FaceDetectionsStreamName, config.AddPacketPresenceCalculator(_FaceDetectionsStreamName), timeoutMicrosec);
+        _multiFaceLandmarksStream = new OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(
+            calculatorGraph, _MultiFaceLandmarksStreamName, config.AddPacketPresenceCalculator(_MultiFaceLandmarksStreamName), timeoutMicrosec);
+        _faceRectsFromLandmarksStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(
+            calculatorGraph, _FaceRectsFromLandmarksStreamName, config.AddPacketPresenceCalculator(_FaceRectsFromLandmarksStreamName), timeoutMicrosec);
+        _faceRectsFromDetectionsStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(
+            calculatorGraph, _FaceRectsFromDetectionsStreamName, config.AddPacketPresenceCalculator(_FaceDetectionsStreamName), timeoutMicrosec);
       }
       else
       {
-        _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _FaceDetectionsStreamName, true);
-        _multiFaceLandmarksStream = new OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(calculatorGraph, _MultiFaceLandmarksStreamName, true);
-        _faceRectsFromLandmarksStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _FaceRectsFromLandmarksStreamName, true);
-        _faceRectsFromDetectionsStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _FaceRectsFromDetectionsStreamName, true);
+        _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _FaceDetectionsStreamName, true, timeoutMicrosec);
+        _multiFaceLandmarksStream = new OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(calculatorGraph, _MultiFaceLandmarksStreamName, true, timeoutMicrosec);
+        _faceRectsFromLandmarksStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _FaceRectsFromLandmarksStreamName, true, timeoutMicrosec);
+        _faceRectsFromDetectionsStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _FaceRectsFromDetectionsStreamName, true, timeoutMicrosec);
       }
 
       using (var validatedGraphConfig = new ValidatedGraphConfig())

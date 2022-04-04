@@ -128,7 +128,7 @@ node {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr OutputCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
+    private static IntPtr OutputCallback(IntPtr graphPtr, int _, IntPtr packetPtr)
     {
       try
       {

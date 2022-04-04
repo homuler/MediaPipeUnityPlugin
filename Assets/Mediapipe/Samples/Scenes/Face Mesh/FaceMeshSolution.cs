@@ -5,6 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity.FaceMesh
@@ -30,10 +31,10 @@ namespace Mediapipe.Unity.FaceMesh
 
     protected override void OnStartRun()
     {
-      graphRunner.OnFaceDetectionsOutput.AddListener(_faceDetectionsAnnotationController.DrawLater);
-      graphRunner.OnMultiFaceLandmarksOutput.AddListener(_multiFaceLandmarksAnnotationController.DrawLater);
-      graphRunner.OnFaceRectsFromLandmarksOutput.AddListener(_faceRectsFromLandmarksAnnotationController.DrawLater);
-      graphRunner.OnFaceRectsFromDetectionsOutput.AddListener(_faceRectsFromDetectionsAnnotationController.DrawLater);
+      graphRunner.OnFaceDetectionsOutput += OnFaceDetectionsOutput;
+      graphRunner.OnMultiFaceLandmarksOutput += OnMultiFaceLandmarksOutput;
+      graphRunner.OnFaceRectsFromLandmarksOutput += OnFaceRectsFromLandmarksOutput;
+      graphRunner.OnFaceRectsFromDetectionsOutput += OnFaceRectsFromDetectionsOutput;
 
       var imageSource = ImageSourceProvider.ImageSource;
       SetupAnnotationController(_faceDetectionsAnnotationController, imageSource);
@@ -49,14 +50,44 @@ namespace Mediapipe.Unity.FaceMesh
 
     protected override IEnumerator WaitForNextValue()
     {
+      List<Detection> faceDetections = null;
+      List<NormalizedLandmarkList> multiFaceLandmarks = null;
+      List<NormalizedRect> faceRectsFromLandmarks = null;
+      List<NormalizedRect> faceRectsFromDetections = null;
+
       if (runningMode == RunningMode.Sync)
       {
-        var _ = graphRunner.TryGetNext(out var _, out var _, out var _, out var _, true);
+        var _ = graphRunner.TryGetNext(out faceDetections, out multiFaceLandmarks, out faceRectsFromLandmarks, out faceRectsFromDetections, true);
       }
       else if (runningMode == RunningMode.NonBlockingSync)
       {
-        yield return new WaitUntil(() => graphRunner.TryGetNext(out var _, out var _, out var _, out var _, false));
+        yield return new WaitUntil(() => graphRunner.TryGetNext(out faceDetections, out multiFaceLandmarks, out faceRectsFromLandmarks, out faceRectsFromDetections, false));
       }
+
+      _faceDetectionsAnnotationController.DrawNow(faceDetections);
+      _multiFaceLandmarksAnnotationController.DrawNow(multiFaceLandmarks);
+      _faceRectsFromLandmarksAnnotationController.DrawNow(faceRectsFromLandmarks);
+      _faceRectsFromDetectionsAnnotationController.DrawNow(faceRectsFromDetections);
+    }
+
+    private void OnFaceDetectionsOutput(object stream, OutputEventArgs<List<Detection>> eventArgs)
+    {
+      _faceDetectionsAnnotationController.DrawLater(eventArgs.value);
+    }
+
+    private void OnMultiFaceLandmarksOutput(object stream, OutputEventArgs<List<NormalizedLandmarkList>> eventArgs)
+    {
+      _multiFaceLandmarksAnnotationController.DrawLater(eventArgs.value);
+    }
+
+    private void OnFaceRectsFromLandmarksOutput(object stream, OutputEventArgs<List<NormalizedRect>> eventArgs)
+    {
+      _faceRectsFromLandmarksAnnotationController.DrawLater(eventArgs.value);
+    }
+
+    private void OnFaceRectsFromDetectionsOutput(object stream, OutputEventArgs<List<NormalizedRect>> eventArgs)
+    {
+      _faceRectsFromDetectionsAnnotationController.DrawLater(eventArgs.value);
     }
   }
 }

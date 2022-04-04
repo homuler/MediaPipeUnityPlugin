@@ -15,7 +15,7 @@ namespace Mediapipe.Unity.HairSegmentation
 
     protected override void OnStartRun()
     {
-      graphRunner.OnHairMaskOutput.AddListener(_hairMaskAnnotationController.DrawLater);
+      graphRunner.OnHairMaskOutput += OnHairMaskOutput;
       SetupAnnotationController(_hairMaskAnnotationController, ImageSourceProvider.ImageSource);
       _hairMaskAnnotationController.InitScreen();
     }
@@ -27,14 +27,23 @@ namespace Mediapipe.Unity.HairSegmentation
 
     protected override IEnumerator WaitForNextValue()
     {
+      ImageFrame hairMask = null;
+
       if (runningMode == RunningMode.Sync)
       {
-        var _ = graphRunner.TryGetNext(out var _, true);
+        var _ = graphRunner.TryGetNext(out hairMask, true);
       }
       else if (runningMode == RunningMode.NonBlockingSync)
       {
-        yield return new WaitUntil(() => graphRunner.TryGetNext(out var _, false));
+        yield return new WaitUntil(() => graphRunner.TryGetNext(out var hairMask, false));
       }
+
+      _hairMaskAnnotationController.DrawNow(hairMask);
+    }
+
+    private void OnHairMaskOutput(object stream, OutputEventArgs<ImageFrame> eventArgs)
+    {
+      _hairMaskAnnotationController.DrawLater(eventArgs.value);
     }
   }
 }

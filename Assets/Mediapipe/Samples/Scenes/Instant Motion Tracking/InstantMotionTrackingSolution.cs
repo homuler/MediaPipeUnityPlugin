@@ -6,6 +6,7 @@
 
 using Mediapipe.Unity.CoordinateSystem;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity.InstantMotionTracking
@@ -36,7 +37,7 @@ namespace Mediapipe.Unity.InstantMotionTracking
     protected override void OnStartRun()
     {
       graphRunner.ResetAnchor();
-      graphRunner.OnTrackedAnchorDataOutput.AddListener(_trackedAnchorDataAnnotationController.DrawLater);
+      graphRunner.OnTrackedAnchorDataOutput += OnTrackedAnchorDataOutput;
 
       SetupAnnotationController(_trackedAnchorDataAnnotationController, ImageSourceProvider.ImageSource);
       _trackedAnchorDataAnnotationController.ResetAnchor();
@@ -49,14 +50,23 @@ namespace Mediapipe.Unity.InstantMotionTracking
 
     protected override IEnumerator WaitForNextValue()
     {
+      List<Anchor3d> trackedAnchorData = null;
+
       if (runningMode == RunningMode.Sync)
       {
-        var _ = graphRunner.TryGetNext(out var _, true);
+        var _ = graphRunner.TryGetNext(out trackedAnchorData, true);
       }
       else if (runningMode == RunningMode.NonBlockingSync)
       {
-        yield return new WaitUntil(() => graphRunner.TryGetNext(out var _, false));
+        yield return new WaitUntil(() => graphRunner.TryGetNext(out trackedAnchorData, false));
       }
+
+      _trackedAnchorDataAnnotationController.DrawNow(trackedAnchorData);
+    }
+
+    private void OnTrackedAnchorDataOutput(object stream, OutputEventArgs<List<Anchor3d>> eventArgs)
+    {
+      _trackedAnchorDataAnnotationController.DrawLater(eventArgs.value);
     }
   }
 }

@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using UnityEngine.Events;
 
 using Google.Protobuf;
 
@@ -42,15 +41,47 @@ namespace Mediapipe.Unity.Holistic
       set => _minTrackingConfidence = Mathf.Clamp01(value);
     }
 
-#pragma warning disable IDE1006  // UnityEvent is PascalCase
-    public UnityEvent<Detection> OnPoseDetectionOutput = new UnityEvent<Detection>();
-    public UnityEvent<NormalizedLandmarkList> OnPoseLandmarksOutput = new UnityEvent<NormalizedLandmarkList>();
-    public UnityEvent<NormalizedLandmarkList> OnFaceLandmarksOutput = new UnityEvent<NormalizedLandmarkList>();
-    public UnityEvent<NormalizedLandmarkList> OnLeftHandLandmarksOutput = new UnityEvent<NormalizedLandmarkList>();
-    public UnityEvent<NormalizedLandmarkList> OnRightHandLandmarksOutput = new UnityEvent<NormalizedLandmarkList>();
-    public UnityEvent<LandmarkList> OnPoseWorldLandmarksOutput = new UnityEvent<LandmarkList>();
-    public UnityEvent<NormalizedRect> OnPoseRoiOutput = new UnityEvent<NormalizedRect>();
-#pragma warning restore IDE1006
+    public event EventHandler<OutputEventArgs<Detection>> OnPoseDetectionOutput
+    {
+      add => _poseDetectionStream.AddListener(value);
+      remove => _poseDetectionStream.RemoveListener(value);
+    }
+
+    public event EventHandler<OutputEventArgs<NormalizedLandmarkList>> OnPoseLandmarksOutput
+    {
+      add => _poseLandmarksStream.AddListener(value);
+      remove => _poseLandmarksStream.RemoveListener(value);
+    }
+
+    public event EventHandler<OutputEventArgs<NormalizedLandmarkList>> OnFaceLandmarksOutput
+    {
+      add => _faceLandmarksStream.AddListener(value);
+      remove => _faceLandmarksStream.RemoveListener(value);
+    }
+
+    public event EventHandler<OutputEventArgs<NormalizedLandmarkList>> OnLeftHandLandmarksOutput
+    {
+      add => _leftHandLandmarksStream.AddListener(value);
+      remove => _leftHandLandmarksStream.RemoveListener(value);
+    }
+
+    public event EventHandler<OutputEventArgs<NormalizedLandmarkList>> OnRightHandLandmarksOutput
+    {
+      add => _rightHandLandmarksStream.AddListener(value);
+      remove => _rightHandLandmarksStream.RemoveListener(value);
+    }
+
+    public event EventHandler<OutputEventArgs<LandmarkList>> OnPoseWorldLandmarksOutput
+    {
+      add => _poseWorldLandmarksStream.AddListener(value);
+      remove => _poseWorldLandmarksStream.RemoveListener(value);
+    }
+
+    public event EventHandler<OutputEventArgs<NormalizedRect>> OnPoseRoiOutput
+    {
+      add => _poseRoiStream.AddListener(value);
+      remove => _poseRoiStream.RemoveListener(value);
+    }
 
     private const string _InputStreamName = "input_video";
     private const string _PoseDetectionStreamName = "pose_detection";
@@ -81,36 +112,26 @@ namespace Mediapipe.Unity.Holistic
         _poseWorldLandmarksStream.StartPolling().AssertOk();
         _poseRoiStream.StartPolling().AssertOk();
       }
-      else
-      {
-        _poseDetectionStream.AddListener(PoseDetectionCallback).AssertOk();
-        _poseLandmarksStream.AddListener(PoseLandmarksCallback).AssertOk();
-        _faceLandmarksStream.AddListener(FaceLandmarksCallback).AssertOk();
-        _leftHandLandmarksStream.AddListener(LeftHandLandmarksCallback).AssertOk();
-        _rightHandLandmarksStream.AddListener(RightHandLandmarksCallback).AssertOk();
-        _poseWorldLandmarksStream.AddListener(PoseWorldLandmarksCallback).AssertOk();
-        _poseRoiStream.AddListener(PoseRoiCallback).AssertOk();
-      }
       StartRun(BuildSidePacket(imageSource));
     }
 
     public override void Stop()
     {
-      base.Stop();
-      OnPoseDetectionOutput.RemoveAllListeners();
-      OnPoseLandmarksOutput.RemoveAllListeners();
-      OnFaceLandmarksOutput.RemoveAllListeners();
-      OnLeftHandLandmarksOutput.RemoveAllListeners();
-      OnRightHandLandmarksOutput.RemoveAllListeners();
-      OnPoseWorldLandmarksOutput.RemoveAllListeners();
-      OnPoseRoiOutput.RemoveAllListeners();
+      _poseDetectionStream.RemoveAllListeners();
       _poseDetectionStream = null;
+      _poseLandmarksStream.RemoveAllListeners();
       _poseLandmarksStream = null;
+      _faceLandmarksStream.RemoveAllListeners();
       _faceLandmarksStream = null;
+      _leftHandLandmarksStream.RemoveAllListeners();
       _leftHandLandmarksStream = null;
+      _rightHandLandmarksStream.RemoveAllListeners();
       _rightHandLandmarksStream = null;
+      _poseWorldLandmarksStream.RemoveAllListeners();
       _poseWorldLandmarksStream = null;
+      _poseRoiStream.RemoveAllListeners();
       _poseRoiStream = null;
+      base.Stop();
     }
 
     public void AddTextureFrameToInputStream(TextureFrame textureFrame)
@@ -130,120 +151,7 @@ namespace Mediapipe.Unity.Holistic
       var r6 = TryGetNext(_poseWorldLandmarksStream, out poseWorldLandmarks, allowBlock, currentTimestampMicrosec);
       var r7 = TryGetNext(_poseRoiStream, out poseRoi, allowBlock, currentTimestampMicrosec);
 
-      if (r1) { OnPoseDetectionOutput.Invoke(poseDetection); }
-      if (r2) { OnPoseLandmarksOutput.Invoke(poseLandmarks); }
-      if (r3) { OnFaceLandmarksOutput.Invoke(faceLandmarks); }
-      if (r4) { OnLeftHandLandmarksOutput.Invoke(leftHandLandmarks); }
-      if (r5) { OnRightHandLandmarksOutput.Invoke(rightHandLandmarks); }
-      if (r6) { OnPoseWorldLandmarksOutput.Invoke(poseWorldLandmarks); }
-      if (r7) { OnPoseRoiOutput.Invoke(poseRoi); }
-
       return r1 || r2 || r3 || r4 || r5 || r6 || r7;
-    }
-
-    [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr PoseDetectionCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
-    {
-      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
-      {
-        using (var packet = new DetectionPacket(ptr, false))
-        {
-          if (holisticTrackingGraph._poseDetectionStream.TryGetPacketValue(packet, out var value, holisticTrackingGraph.timeoutMicrosec))
-          {
-            holisticTrackingGraph.OnPoseDetectionOutput.Invoke(value);
-          }
-        }
-      }).mpPtr;
-    }
-
-    [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr PoseLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
-    {
-      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
-      {
-        using (var packet = new NormalizedLandmarkListPacket(ptr, false))
-        {
-          if (holisticTrackingGraph._poseLandmarksStream.TryGetPacketValue(packet, out var value, holisticTrackingGraph.timeoutMicrosec))
-          {
-            holisticTrackingGraph.OnPoseLandmarksOutput.Invoke(value);
-          }
-        }
-      }).mpPtr;
-    }
-
-    [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr FaceLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
-    {
-      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
-      {
-        using (var packet = new NormalizedLandmarkListPacket(ptr, false))
-        {
-          if (holisticTrackingGraph._faceLandmarksStream.TryGetPacketValue(packet, out var value, holisticTrackingGraph.timeoutMicrosec))
-          {
-            holisticTrackingGraph.OnFaceLandmarksOutput.Invoke(value);
-          }
-        }
-      }).mpPtr;
-    }
-
-    [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr LeftHandLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
-    {
-      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
-      {
-        using (var packet = new NormalizedLandmarkListPacket(ptr, false))
-        {
-          if (holisticTrackingGraph._leftHandLandmarksStream.TryGetPacketValue(packet, out var value, holisticTrackingGraph.timeoutMicrosec))
-          {
-            holisticTrackingGraph.OnLeftHandLandmarksOutput.Invoke(value);
-          }
-        }
-      }).mpPtr;
-    }
-
-    [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr RightHandLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
-    {
-      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
-      {
-        using (var packet = new NormalizedLandmarkListPacket(ptr, false))
-        {
-          if (holisticTrackingGraph._rightHandLandmarksStream.TryGetPacketValue(packet, out var value, holisticTrackingGraph.timeoutMicrosec))
-          {
-            holisticTrackingGraph.OnRightHandLandmarksOutput.Invoke(value);
-          }
-        }
-      }).mpPtr;
-    }
-
-    [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr PoseWorldLandmarksCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
-    {
-      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
-      {
-        using (var packet = new LandmarkListPacket(ptr, false))
-        {
-          if (holisticTrackingGraph._poseWorldLandmarksStream.TryGetPacketValue(packet, out var value, holisticTrackingGraph.timeoutMicrosec))
-          {
-            holisticTrackingGraph.OnPoseWorldLandmarksOutput.Invoke(value);
-          }
-        }
-      }).mpPtr;
-    }
-
-    [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr PoseRoiCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr)
-    {
-      return InvokeIfGraphRunnerFound<HolisticTrackingGraph>(graphPtr, packetPtr, (holisticTrackingGraph, ptr) =>
-      {
-        using (var packet = new NormalizedRectPacket(ptr, false))
-        {
-          if (holisticTrackingGraph._poseRoiStream.TryGetPacketValue(packet, out var value, holisticTrackingGraph.timeoutMicrosec))
-          {
-            holisticTrackingGraph.OnPoseRoiOutput.Invoke(value);
-          }
-        }
-      }).mpPtr;
     }
 
     protected override IList<WaitForResult> RequestDependentAssets()
@@ -276,23 +184,30 @@ namespace Mediapipe.Unity.Holistic
     {
       if (runningMode == RunningMode.NonBlockingSync)
       {
-        _poseDetectionStream = new OutputStream<DetectionPacket, Detection>(calculatorGraph, _PoseDetectionStreamName, config.AddPacketPresenceCalculator(_PoseDetectionStreamName));
-        _poseLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _PoseLandmarksStreamName, config.AddPacketPresenceCalculator(_PoseLandmarksStreamName));
-        _faceLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _FaceLandmarksStreamName, config.AddPacketPresenceCalculator(_FaceLandmarksStreamName));
-        _leftHandLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _LeftHandLandmarksStreamName, config.AddPacketPresenceCalculator(_LeftHandLandmarksStreamName));
-        _rightHandLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _RightHandLandmarksStreamName, config.AddPacketPresenceCalculator(_RightHandLandmarksStreamName));
-        _poseWorldLandmarksStream = new OutputStream<LandmarkListPacket, LandmarkList>(calculatorGraph, _PoseWorldLandmarksStreamName, config.AddPacketPresenceCalculator(_PoseWorldLandmarksStreamName));
-        _poseRoiStream = new OutputStream<NormalizedRectPacket, NormalizedRect>(calculatorGraph, _PoseRoiStreamName, config.AddPacketPresenceCalculator(_PoseRoiStreamName));
+        _poseDetectionStream = new OutputStream<DetectionPacket, Detection>(
+            calculatorGraph, _PoseDetectionStreamName, config.AddPacketPresenceCalculator(_PoseDetectionStreamName), timeoutMicrosec);
+        _poseLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(
+            calculatorGraph, _PoseLandmarksStreamName, config.AddPacketPresenceCalculator(_PoseLandmarksStreamName), timeoutMicrosec);
+        _faceLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(
+            calculatorGraph, _FaceLandmarksStreamName, config.AddPacketPresenceCalculator(_FaceLandmarksStreamName), timeoutMicrosec);
+        _leftHandLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(
+            calculatorGraph, _LeftHandLandmarksStreamName, config.AddPacketPresenceCalculator(_LeftHandLandmarksStreamName), timeoutMicrosec);
+        _rightHandLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(
+            calculatorGraph, _RightHandLandmarksStreamName, config.AddPacketPresenceCalculator(_RightHandLandmarksStreamName), timeoutMicrosec);
+        _poseWorldLandmarksStream = new OutputStream<LandmarkListPacket, LandmarkList>(
+            calculatorGraph, _PoseWorldLandmarksStreamName, config.AddPacketPresenceCalculator(_PoseWorldLandmarksStreamName), timeoutMicrosec);
+        _poseRoiStream = new OutputStream<NormalizedRectPacket, NormalizedRect>(
+            calculatorGraph, _PoseRoiStreamName, config.AddPacketPresenceCalculator(_PoseRoiStreamName), timeoutMicrosec);
       }
       else
       {
-        _poseDetectionStream = new OutputStream<DetectionPacket, Detection>(calculatorGraph, _PoseDetectionStreamName, true);
-        _poseLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _PoseLandmarksStreamName, true);
-        _faceLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _FaceLandmarksStreamName, true);
-        _leftHandLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _LeftHandLandmarksStreamName, true);
-        _rightHandLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _RightHandLandmarksStreamName, true);
-        _poseWorldLandmarksStream = new OutputStream<LandmarkListPacket, LandmarkList>(calculatorGraph, _PoseWorldLandmarksStreamName, true);
-        _poseRoiStream = new OutputStream<NormalizedRectPacket, NormalizedRect>(calculatorGraph, _PoseRoiStreamName, true);
+        _poseDetectionStream = new OutputStream<DetectionPacket, Detection>(calculatorGraph, _PoseDetectionStreamName, true, timeoutMicrosec);
+        _poseLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _PoseLandmarksStreamName, true, timeoutMicrosec);
+        _faceLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _FaceLandmarksStreamName, true, timeoutMicrosec);
+        _leftHandLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _LeftHandLandmarksStreamName, true, timeoutMicrosec);
+        _rightHandLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _RightHandLandmarksStreamName, true, timeoutMicrosec);
+        _poseWorldLandmarksStream = new OutputStream<LandmarkListPacket, LandmarkList>(calculatorGraph, _PoseWorldLandmarksStreamName, true, timeoutMicrosec);
+        _poseRoiStream = new OutputStream<NormalizedRectPacket, NormalizedRect>(calculatorGraph, _PoseRoiStreamName, true, timeoutMicrosec);
       }
 
       using (var validatedGraphConfig = new ValidatedGraphConfig())

@@ -5,6 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity.ObjectDetection
@@ -15,7 +16,7 @@ namespace Mediapipe.Unity.ObjectDetection
 
     protected override void OnStartRun()
     {
-      graphRunner.OnOutputDetectionsOutput.AddListener(_outputDetectionsAnnotationController.DrawLater);
+      graphRunner.OnOutputDetectionsOutput += OnOutputDetectionsOutput;
       SetupAnnotationController(_outputDetectionsAnnotationController, ImageSourceProvider.ImageSource);
     }
 
@@ -26,14 +27,23 @@ namespace Mediapipe.Unity.ObjectDetection
 
     protected override IEnumerator WaitForNextValue()
     {
+      List<Detection> outputDetections = null;
+
       if (runningMode == RunningMode.Sync)
       {
-        var _ = graphRunner.TryGetNext(out var _, true);
+        var _ = graphRunner.TryGetNext(out outputDetections, true);
       }
       else if (runningMode == RunningMode.NonBlockingSync)
       {
-        yield return new WaitUntil(() => graphRunner.TryGetNext(out var _, false));
+        yield return new WaitUntil(() => graphRunner.TryGetNext(out outputDetections, false));
       }
+
+      _outputDetectionsAnnotationController.DrawNow(outputDetections);
+    }
+
+    private void OnOutputDetectionsOutput(object stream, OutputEventArgs<List<Detection>> eventArgs)
+    {
+      _outputDetectionsAnnotationController.DrawLater(eventArgs.value);
     }
   }
 }
