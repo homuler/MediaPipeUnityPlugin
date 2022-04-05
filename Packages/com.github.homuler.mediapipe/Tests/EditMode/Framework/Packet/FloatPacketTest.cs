@@ -89,7 +89,7 @@ namespace Tests
           Assert.AreEqual(newPacket.Timestamp(), newTimestamp);
         }
 
-        Assert.True(packet.isDisposed);
+        Assert.AreEqual(packet.Timestamp(), timestamp);
       }
     }
     #endregion

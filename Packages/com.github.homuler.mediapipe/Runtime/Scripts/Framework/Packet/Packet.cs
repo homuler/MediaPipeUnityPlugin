@@ -114,9 +114,7 @@ namespace Mediapipe
       UnsafeNativeMethods.mp_Packet__At__Rt(mpPtr, timestamp.mpPtr, out var packetPtr).Assert();
       GC.KeepAlive(timestamp);
 
-      var packet = Create<TPacket>(packetPtr, true);
-      Dispose();
-      return packet;
+      return Create<TPacket>(packetPtr, true);
     }
   }
 }
