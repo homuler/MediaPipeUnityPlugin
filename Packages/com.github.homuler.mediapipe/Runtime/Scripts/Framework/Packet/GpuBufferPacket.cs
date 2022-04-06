@@ -25,7 +25,7 @@ namespace Mediapipe
       this.ptr = ptr;
     }
 
-    public GpuBufferPacket(GpuBuffer gpuBuffer, Timestamp timestamp)
+    public GpuBufferPacket(GpuBuffer gpuBuffer, Timestamp timestamp) : base()
     {
       UnsafeNativeMethods.mp__MakeGpuBufferPacket_At__Rgb_Rts(gpuBuffer.mpPtr, timestamp.mpPtr, out var ptr).Assert();
       GC.KeepAlive(timestamp);

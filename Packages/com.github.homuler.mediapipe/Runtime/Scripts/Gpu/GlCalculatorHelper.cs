@@ -5,7 +5,6 @@
 // https://opensource.org/licenses/MIT.
 
 using System;
-using System.Runtime.InteropServices;
 
 namespace Mediapipe
 {
