@@ -20,7 +20,6 @@ namespace Mediapipe.Unity
 
   public class OutputStream<TPacket, TValue> where TPacket : Packet<TValue>, new()
   {
-    private static readonly object _CounterLock = new object();
     private static int _Counter = 0;
     private static readonly GlobalInstanceTable<int, OutputStream<TPacket, TValue>> _InstanceTable = new GlobalInstanceTable<int, OutputStream<TPacket, TValue>>(20);
 
@@ -82,10 +81,7 @@ namespace Mediapipe.Unity
     /// </param>
     public OutputStream(CalculatorGraph calculatorGraph, string streamName, bool observeTimestampBounds = true, long timeoutMicrosec = 0)
     {
-      lock (_CounterLock)
-      {
-        _id = _Counter++;
-      }
+      _id = System.Threading.Interlocked.Increment(ref _Counter);
       this.calculatorGraph = calculatorGraph;
       this.streamName = streamName;
       this.observeTimestampBounds = observeTimestampBounds;
