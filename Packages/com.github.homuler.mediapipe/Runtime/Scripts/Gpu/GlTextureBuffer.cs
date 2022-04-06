@@ -30,7 +30,7 @@ namespace Mediapipe
     ///   Make sure that this function doesn't throw exceptions and won't be GCed.
     /// </param>
     public GlTextureBuffer(uint target, uint name, int width, int height,
-        GpuBufferFormat format, DeletionCallback callback, GlContext glContext)
+        GpuBufferFormat format, DeletionCallback callback, GlContext glContext) : base()
     {
       var sharedContextPtr = glContext == null ? IntPtr.Zero : glContext.sharedPtr;
       UnsafeNativeMethods.mp_SharedGlTextureBuffer__ui_ui_i_i_ui_PF_PSgc(

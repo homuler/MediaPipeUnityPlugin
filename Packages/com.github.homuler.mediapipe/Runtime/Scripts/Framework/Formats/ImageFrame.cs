@@ -34,7 +34,7 @@ namespace Mediapipe
       this.ptr = ptr;
     }
 
-    public ImageFrame(ImageFormat.Format format, int width, int height, int widthStep, NativeArray<byte> pixelData)
+    public ImageFrame(ImageFormat.Format format, int width, int height, int widthStep, NativeArray<byte> pixelData) : base()
     {
       unsafe
       {
