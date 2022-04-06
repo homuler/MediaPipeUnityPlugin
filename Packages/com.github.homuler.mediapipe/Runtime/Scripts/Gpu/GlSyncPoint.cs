@@ -12,7 +12,7 @@ namespace Mediapipe
   {
     private SharedPtrHandle _sharedPtrHandle;
 
-    public GlSyncPoint(IntPtr ptr) : base(ptr)
+    public GlSyncPoint(IntPtr ptr) : base()
     {
       _sharedPtrHandle = new SharedPtr(ptr);
       this.ptr = _sharedPtrHandle.Get();
