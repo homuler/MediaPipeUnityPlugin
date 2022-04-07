@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.9.0](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.8.4...v0.9.0) (2022-04-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* implement ImageFrame#TryReadChannel and MaskShader (#507)
+
+### Features
+
+* OutputStream API ([#516](https://github.com/homuler/MediaPipeUnityPlugin/issues/516)) ([2679000](https://github.com/homuler/MediaPipeUnityPlugin/commit/2679000e86942353a7e165932f8ee6fc127c1abf))
+
+
+### Bug Fixes
+
+* check Packet types at compile-time more properly ([#509](https://github.com/homuler/MediaPipeUnityPlugin/issues/509)) ([d03895d](https://github.com/homuler/MediaPipeUnityPlugin/commit/d03895d1e63c1f4e60c4e080b8cd89fbd9a3e797))
+* forget to commit ([#510](https://github.com/homuler/MediaPipeUnityPlugin/issues/510)) ([81fe7f8](https://github.com/homuler/MediaPipeUnityPlugin/commit/81fe7f8f809aa4eab095e474762a04bd11e56698))
+* ignore vertically_flipped in sync mode ([#517](https://github.com/homuler/MediaPipeUnityPlugin/issues/517)) ([7d080e3](https://github.com/homuler/MediaPipeUnityPlugin/commit/7d080e3b20530586b0158fdec3bd00115ca4df03))
+* **plugin:** fail to initialize GlSyncPoint ([#515](https://github.com/homuler/MediaPipeUnityPlugin/issues/515)) ([11188cb](https://github.com/homuler/MediaPipeUnityPlugin/commit/11188cb699b14f443aed8aac17b983b4271703f6))
+
+
+* implement ImageFrame#TryReadChannel and MaskShader ([#507](https://github.com/homuler/MediaPipeUnityPlugin/issues/507)) ([05adcb5](https://github.com/homuler/MediaPipeUnityPlugin/commit/05adcb54c487441075824dd502c2e31c2cf5c62b))
+
 ### [0.8.4](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.8.3...v0.8.4) (2022-03-29)
 
 
