@@ -4,20 +4,20 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using UnityEngine;
-
 namespace Mediapipe.Unity
 {
   public class MaskAnnotationController : AnnotationController<MaskAnnotation>
   {
-    [SerializeField] private int _maskWidth = 512;
-    [SerializeField] private int _maskHeight = 512;
+    private int _maskWidth;
+    private int _maskHeight;
 
     private ImageFrame _currentTarget;
     private float[] _maskArray;
 
-    public void InitScreen()
+    public void InitScreen(int maskWidth, int maskHeight)
     {
+      _maskWidth = maskWidth;
+      _maskHeight = maskHeight;
       _maskArray = new float[_maskWidth * _maskHeight];
       annotation.InitScreen(_maskWidth, _maskHeight);
     }
