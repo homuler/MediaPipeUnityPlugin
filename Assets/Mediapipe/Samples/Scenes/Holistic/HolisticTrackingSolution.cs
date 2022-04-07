@@ -75,11 +75,11 @@ namespace Mediapipe.Unity.Holistic
 
       if (runningMode == RunningMode.Sync)
       {
-        var _ = graphRunner.TryGetNext(out poseDetection, out faceLandmarks, out poseLandmarks, out leftHandLandmarks, out rightHandLandmarks, out poseWorldLandmarks, out poseRoi, true);
+        var _ = graphRunner.TryGetNext(out poseDetection, out poseLandmarks, out faceLandmarks, out leftHandLandmarks, out rightHandLandmarks, out poseWorldLandmarks, out poseRoi, true);
       }
       else if (runningMode == RunningMode.NonBlockingSync)
       {
-        yield return new WaitUntil(() => graphRunner.TryGetNext(out poseDetection, out faceLandmarks, out poseLandmarks, out leftHandLandmarks, out rightHandLandmarks, out poseWorldLandmarks, out poseRoi, false));
+        yield return new WaitUntil(() => graphRunner.TryGetNext(out poseDetection, out poseLandmarks, out faceLandmarks, out leftHandLandmarks, out rightHandLandmarks, out poseWorldLandmarks, out poseRoi, false));
       }
 
       _poseDetectionAnnotationController.DrawNow(poseDetection);
