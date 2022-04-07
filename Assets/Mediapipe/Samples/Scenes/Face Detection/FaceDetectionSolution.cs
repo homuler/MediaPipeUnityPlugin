@@ -22,7 +22,11 @@ namespace Mediapipe.Unity.FaceDetection
 
     protected override void OnStartRun()
     {
-      graphRunner.OnFaceDetectionsOutput += OnFaceDetectionsOutput;
+      if (!runningMode.IsSynchronous())
+      {
+        graphRunner.OnFaceDetectionsOutput += OnFaceDetectionsOutput;
+      }
+
       SetupAnnotationController(_faceDetectionsAnnotationController, ImageSourceProvider.ImageSource);
     }
 

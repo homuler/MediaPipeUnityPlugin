@@ -38,10 +38,13 @@ namespace Mediapipe.Unity.PoseTracking
 
     protected override void OnStartRun()
     {
-      graphRunner.OnPoseDetectionOutput += OnPoseDetectionOutput;
-      graphRunner.OnPoseLandmarksOutput += OnPoseLandmarksOutput;
-      graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
-      graphRunner.OnRoiFromLandmarksOutput += OnRoiFromLandmarksOutput;
+      if (!runningMode.IsSynchronous())
+      {
+        graphRunner.OnPoseDetectionOutput += OnPoseDetectionOutput;
+        graphRunner.OnPoseLandmarksOutput += OnPoseLandmarksOutput;
+        graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
+        graphRunner.OnRoiFromLandmarksOutput += OnRoiFromLandmarksOutput;
+      }
 
       var imageSource = ImageSourceProvider.ImageSource;
       SetupAnnotationController(_poseDetectionAnnotationController, imageSource);

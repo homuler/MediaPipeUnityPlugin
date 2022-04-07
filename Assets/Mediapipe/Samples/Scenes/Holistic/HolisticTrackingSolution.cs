@@ -43,13 +43,16 @@ namespace Mediapipe.Unity.Holistic
 
     protected override void OnStartRun()
     {
-      graphRunner.OnPoseDetectionOutput += OnPoseDetectionOutput;
-      graphRunner.OnFaceLandmarksOutput += OnFaceLandmarksOutput;
-      graphRunner.OnPoseLandmarksOutput += OnPoseLandmarksOutput;
-      graphRunner.OnLeftHandLandmarksOutput += OnLeftHandLandmarksOutput;
-      graphRunner.OnRightHandLandmarksOutput += OnRightHandLandmarksOutput;
-      graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
-      graphRunner.OnPoseRoiOutput += OnPoseRoiOutput;
+      if (!runningMode.IsSynchronous())
+      {
+        graphRunner.OnPoseDetectionOutput += OnPoseDetectionOutput;
+        graphRunner.OnFaceLandmarksOutput += OnFaceLandmarksOutput;
+        graphRunner.OnPoseLandmarksOutput += OnPoseLandmarksOutput;
+        graphRunner.OnLeftHandLandmarksOutput += OnLeftHandLandmarksOutput;
+        graphRunner.OnRightHandLandmarksOutput += OnRightHandLandmarksOutput;
+        graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
+        graphRunner.OnPoseRoiOutput += OnPoseRoiOutput;
+      }
 
       var imageSource = ImageSourceProvider.ImageSource;
       SetupAnnotationController(_poseDetectionAnnotationController, imageSource);

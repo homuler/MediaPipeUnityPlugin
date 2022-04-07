@@ -31,12 +31,15 @@ namespace Mediapipe.Unity.HandTracking
 
     protected override void OnStartRun()
     {
-      graphRunner.OnPalmDetectectionsOutput += OnPalmDetectionsOutput;
-      graphRunner.OnHandRectsFromPalmDetectionsOutput += OnHandRectsFromPalmDetectionsOutput;
-      graphRunner.OnHandLandmarksOutput += OnHandLandmarksOutput;
-      // TODO: render HandWorldLandmarks annotations
-      graphRunner.OnHandRectsFromLandmarksOutput += OnHandRectsFromLandmarksOutput;
-      graphRunner.OnHandednessOutput += OnHandednessOutput;
+      if (!runningMode.IsSynchronous())
+      {
+        graphRunner.OnPalmDetectectionsOutput += OnPalmDetectionsOutput;
+        graphRunner.OnHandRectsFromPalmDetectionsOutput += OnHandRectsFromPalmDetectionsOutput;
+        graphRunner.OnHandLandmarksOutput += OnHandLandmarksOutput;
+        // TODO: render HandWorldLandmarks annotations
+        graphRunner.OnHandRectsFromLandmarksOutput += OnHandRectsFromLandmarksOutput;
+        graphRunner.OnHandednessOutput += OnHandednessOutput;
+      }
 
       var imageSource = ImageSourceProvider.ImageSource;
       SetupAnnotationController(_palmDetectionsAnnotationController, imageSource, true);

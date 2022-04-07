@@ -16,7 +16,11 @@ namespace Mediapipe.Unity.ObjectDetection
 
     protected override void OnStartRun()
     {
-      graphRunner.OnOutputDetectionsOutput += OnOutputDetectionsOutput;
+      if (!runningMode.IsSynchronous())
+      {
+        graphRunner.OnOutputDetectionsOutput += OnOutputDetectionsOutput;
+      }
+
       SetupAnnotationController(_outputDetectionsAnnotationController, ImageSourceProvider.ImageSource);
     }
 

@@ -18,9 +18,12 @@ namespace Mediapipe.Unity.IrisTracking
 
     protected override void OnStartRun()
     {
-      graphRunner.OnFaceDetectionsOutput += OnFaceDetectionsOutput;
-      graphRunner.OnFaceRectOutput += OnFaceRectOutput;
-      graphRunner.OnFaceLandmarksWithIrisOutput += OnFaceLandmarksWithIrisOutput;
+      if (!runningMode.IsSynchronous())
+      {
+        graphRunner.OnFaceDetectionsOutput += OnFaceDetectionsOutput;
+        graphRunner.OnFaceRectOutput += OnFaceRectOutput;
+        graphRunner.OnFaceLandmarksWithIrisOutput += OnFaceLandmarksWithIrisOutput;
+      }
 
       var imageSource = ImageSourceProvider.ImageSource;
       SetupAnnotationController(_faceDetectionsAnnotationController, imageSource);

@@ -37,7 +37,11 @@ namespace Mediapipe.Unity.InstantMotionTracking
     protected override void OnStartRun()
     {
       graphRunner.ResetAnchor();
-      graphRunner.OnTrackedAnchorDataOutput += OnTrackedAnchorDataOutput;
+
+      if (!runningMode.IsSynchronous())
+      {
+        graphRunner.OnTrackedAnchorDataOutput += OnTrackedAnchorDataOutput;
+      }
 
       SetupAnnotationController(_trackedAnchorDataAnnotationController, ImageSourceProvider.ImageSource);
       _trackedAnchorDataAnnotationController.ResetAnchor();

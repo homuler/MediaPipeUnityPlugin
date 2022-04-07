@@ -16,7 +16,11 @@ namespace Mediapipe.Unity.BoxTracking
 
     protected override void OnStartRun()
     {
-      graphRunner.OnTrackedDetectionsOutput += OnTrackedDetectionsOutput;
+      if (!runningMode.IsSynchronous())
+      {
+        graphRunner.OnTrackedDetectionsOutput += OnTrackedDetectionsOutput;
+      }
+
       SetupAnnotationController(_trackedDetectionsAnnotationController, ImageSourceProvider.ImageSource);
     }
 

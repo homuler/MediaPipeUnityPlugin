@@ -30,9 +30,12 @@ namespace Mediapipe.Unity.Objectron
 
     protected override void OnStartRun()
     {
-      graphRunner.OnLiftedObjectsOutput += OnLiftedObjectsOutput;
-      graphRunner.OnMultiBoxRectsOutput += OnMultiBoxRectsOutput;
-      graphRunner.OnMultiBoxLandmarksOutput += OnMultiBoxLandmarksOutput;
+      if (!runningMode.IsSynchronous())
+      {
+        graphRunner.OnLiftedObjectsOutput += OnLiftedObjectsOutput;
+        graphRunner.OnMultiBoxRectsOutput += OnMultiBoxRectsOutput;
+        graphRunner.OnMultiBoxLandmarksOutput += OnMultiBoxLandmarksOutput;
+      }
 
       var imageSource = ImageSourceProvider.ImageSource;
       SetupAnnotationController(_liftedObjectsAnnotationController, imageSource);

@@ -31,10 +31,13 @@ namespace Mediapipe.Unity.FaceMesh
 
     protected override void OnStartRun()
     {
-      graphRunner.OnFaceDetectionsOutput += OnFaceDetectionsOutput;
-      graphRunner.OnMultiFaceLandmarksOutput += OnMultiFaceLandmarksOutput;
-      graphRunner.OnFaceRectsFromLandmarksOutput += OnFaceRectsFromLandmarksOutput;
-      graphRunner.OnFaceRectsFromDetectionsOutput += OnFaceRectsFromDetectionsOutput;
+      if (!runningMode.IsSynchronous())
+      {
+        graphRunner.OnFaceDetectionsOutput += OnFaceDetectionsOutput;
+        graphRunner.OnMultiFaceLandmarksOutput += OnMultiFaceLandmarksOutput;
+        graphRunner.OnFaceRectsFromLandmarksOutput += OnFaceRectsFromLandmarksOutput;
+        graphRunner.OnFaceRectsFromDetectionsOutput += OnFaceRectsFromDetectionsOutput;
+      }
 
       var imageSource = ImageSourceProvider.ImageSource;
       SetupAnnotationController(_faceDetectionsAnnotationController, imageSource);
