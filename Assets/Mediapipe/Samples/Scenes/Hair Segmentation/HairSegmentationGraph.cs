@@ -83,7 +83,7 @@ namespace Mediapipe.Unity.HairSegmentation
       var isInverted = CoordinateSystem.ImageCoordinate.IsInverted(imageSource.rotation);
       var outputRotation = imageSource.rotation;
       var outputHorizontallyFlipped = !isInverted && imageSource.isHorizontallyFlipped;
-      var outputVerticallyFlipped = imageSource.isVerticallyFlipped ^ (isInverted && imageSource.isHorizontallyFlipped);
+      var outputVerticallyFlipped = (!runningMode.IsSynchronous() && imageSource.isVerticallyFlipped) ^ (isInverted && imageSource.isHorizontallyFlipped);
 
       if ((outputHorizontallyFlipped && outputVerticallyFlipped) || outputRotation == RotationAngle.Rotation180)
       {
