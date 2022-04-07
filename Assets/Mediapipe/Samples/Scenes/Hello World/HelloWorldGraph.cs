@@ -75,7 +75,7 @@ node {
 
     public Status StartRunAsync()
     {
-      _calculatorGraph.ObserveOutputStream(_OutputStreamName, OutputCallback, true).AssertOk();
+      _calculatorGraph.ObserveOutputStream(_OutputStreamName, 0, OutputCallback, true).AssertOk();
       return _calculatorGraph.StartRun();
     }
 
@@ -128,7 +128,7 @@ node {
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr OutputCallback(IntPtr graphPtr, IntPtr packetPtr)
+    private static IntPtr OutputCallback(IntPtr graphPtr, int _, IntPtr packetPtr)
     {
       try
       {

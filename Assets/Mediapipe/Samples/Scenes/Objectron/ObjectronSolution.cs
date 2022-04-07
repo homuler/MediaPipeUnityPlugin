@@ -5,6 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity.Objectron
@@ -29,9 +30,12 @@ namespace Mediapipe.Unity.Objectron
 
     protected override void OnStartRun()
     {
-      graphRunner.OnLiftedObjectsOutput.AddListener(_liftedObjectsAnnotationController.DrawLater);
-      graphRunner.OnMultiBoxRectsOutput.AddListener(_multiBoxRectsAnnotationController.DrawLater);
-      graphRunner.OnMultiBoxLandmarksOutput.AddListener(_multiBoxLandmarksAnnotationController.DrawLater);
+      if (!runningMode.IsSynchronous())
+      {
+        graphRunner.OnLiftedObjectsOutput += OnLiftedObjectsOutput;
+        graphRunner.OnMultiBoxRectsOutput += OnMultiBoxRectsOutput;
+        graphRunner.OnMultiBoxLandmarksOutput += OnMultiBoxLandmarksOutput;
+      }
 
       var imageSource = ImageSourceProvider.ImageSource;
       SetupAnnotationController(_liftedObjectsAnnotationController, imageSource);
@@ -49,14 +53,37 @@ namespace Mediapipe.Unity.Objectron
 
     protected override IEnumerator WaitForNextValue()
     {
+      FrameAnnotation liftedObjects = null;
+      List<NormalizedRect> multiBoxRects = null;
+      List<NormalizedLandmarkList> multiBoxLandmarks = null;
+
       if (runningMode == RunningMode.Sync)
       {
-        var _ = graphRunner.TryGetNext(out var _, out var _, out var _, true);
+        var _ = graphRunner.TryGetNext(out liftedObjects, out multiBoxRects, out multiBoxLandmarks, true);
       }
       else if (runningMode == RunningMode.NonBlockingSync)
       {
-        yield return new WaitUntil(() => graphRunner.TryGetNext(out var _, out var _, out var _, false));
+        yield return new WaitUntil(() => graphRunner.TryGetNext(out liftedObjects, out multiBoxRects, out multiBoxLandmarks, false));
       }
+
+      _liftedObjectsAnnotationController.DrawNow(liftedObjects);
+      _multiBoxRectsAnnotationController.DrawNow(multiBoxRects);
+      _multiBoxLandmarksAnnotationController.DrawNow(multiBoxLandmarks);
+    }
+
+    private void OnLiftedObjectsOutput(object stream, OutputEventArgs<FrameAnnotation> eventArgs)
+    {
+      _liftedObjectsAnnotationController.DrawLater(eventArgs.value);
+    }
+
+    private void OnMultiBoxRectsOutput(object stream, OutputEventArgs<List<NormalizedRect>> eventArgs)
+    {
+      _multiBoxRectsAnnotationController.DrawLater(eventArgs.value);
+    }
+
+    private void OnMultiBoxLandmarksOutput(object stream, OutputEventArgs<List<NormalizedLandmarkList>> eventArgs)
+    {
+      _multiBoxLandmarksAnnotationController.DrawLater(eventArgs.value);
     }
   }
 }

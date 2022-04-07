@@ -206,42 +206,6 @@ namespace Mediapipe.Unity
       return result || allowBlock || stream.ResetTimestampIfTimedOut(currentTimestampMicrosec, timeoutMicrosec);
     }
 
-    protected static bool TryGetGraphRunner(IntPtr graphPtr, out GraphRunner graphRunner)
-    {
-      var isInstanceIdFound = _NameTable.TryGetValue(graphPtr, out var instanceId);
-
-      if (isInstanceIdFound)
-      {
-        return _InstanceTable.TryGetValue(instanceId, out graphRunner);
-      }
-      graphRunner = null;
-      return false;
-    }
-
-    protected static Status InvokeIfGraphRunnerFound<T>(IntPtr graphPtr, IntPtr packetPtr, Action<T, IntPtr> action) where T : GraphRunner
-    {
-      try
-      {
-        var isFound = TryGetGraphRunner(graphPtr, out var graphRunner);
-        if (!isFound)
-        {
-          return Status.FailedPrecondition("Graph runner is not found");
-        }
-        var graph = (T)graphRunner;
-        action(graph, packetPtr);
-        return Status.Ok();
-      }
-      catch (Exception e)
-      {
-        return Status.FailedPrecondition(e.ToString());
-      }
-    }
-
-    protected static Status InvokeIfGraphRunnerFound<T>(IntPtr graphPtr, Action<T> action) where T : GraphRunner
-    {
-      return InvokeIfGraphRunnerFound<T>(graphPtr, IntPtr.Zero, (graph, ptr) => { action(graph); });
-    }
-
     protected long GetCurrentTimestampMicrosec()
     {
       return _stopwatch == null || !_stopwatch.IsRunning ? -1 : _stopwatch.ElapsedTicks / (TimeSpan.TicksPerMillisecond / 1000);

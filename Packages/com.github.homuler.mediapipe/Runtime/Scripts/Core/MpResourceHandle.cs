@@ -47,6 +47,7 @@ namespace Mediapipe
       {
         DeleteMpPtr();
       }
+      ReleaseMpPtr();
       TransferOwnership();
     }
 

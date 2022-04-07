@@ -6,15 +6,16 @@
 
 using System;
 using System.Collections.Generic;
-using UnityEngine.Events;
 
 namespace Mediapipe.Unity.BoxTracking
 {
   public class BoxTrackingGraph : GraphRunner
   {
-#pragma warning disable IDE1006  // UnityEvent is PascalCase
-    public UnityEvent<List<Detection>> OnTrackedDetectionsOutput = new UnityEvent<List<Detection>>();
-#pragma warning restore IDE1006
+    public event EventHandler<OutputEventArgs<List<Detection>>> OnTrackedDetectionsOutput
+    {
+      add => _trackedDetectionsStream.AddListener(value);
+      remove => _trackedDetectionsStream.RemoveListener(value);
+    }
 
     private const string _InputStreamName = "input_video";
     private const string _TrackedDetectionsStreamName = "tracked_detections";
@@ -26,18 +27,14 @@ namespace Mediapipe.Unity.BoxTracking
       {
         _trackedDetectionsStream.StartPolling().AssertOk();
       }
-      else
-      {
-        _trackedDetectionsStream.AddListener(TrackedDetectionsCallback).AssertOk();
-      }
       StartRun(BuildSidePacket(imageSource));
     }
 
     public override void Stop()
     {
-      base.Stop();
-      OnTrackedDetectionsOutput.RemoveAllListeners();
+      _trackedDetectionsStream.RemoveAllListeners();
       _trackedDetectionsStream = null;
+      base.Stop();
     }
 
     public void AddTextureFrameToInputStream(TextureFrame textureFrame)
@@ -47,27 +44,7 @@ namespace Mediapipe.Unity.BoxTracking
 
     public bool TryGetNext(out List<Detection> trackedDetections, bool allowBlock = true)
     {
-      if (TryGetNext(_trackedDetectionsStream, out trackedDetections, allowBlock, GetCurrentTimestampMicrosec()))
-      {
-        OnTrackedDetectionsOutput.Invoke(trackedDetections);
-        return true;
-      }
-      return false;
-    }
-
-    [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr TrackedDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr)
-    {
-      return InvokeIfGraphRunnerFound<BoxTrackingGraph>(graphPtr, packetPtr, (boxTrackingGraph, ptr) =>
-      {
-        using (var packet = new DetectionVectorPacket(ptr, false))
-        {
-          if (boxTrackingGraph._trackedDetectionsStream.TryGetPacketValue(packet, out var value, boxTrackingGraph.timeoutMicrosec))
-          {
-            boxTrackingGraph.OnTrackedDetectionsOutput.Invoke(value);
-          }
-        }
-      }).mpPtr;
+      return TryGetNext(_trackedDetectionsStream, out trackedDetections, allowBlock, GetCurrentTimestampMicrosec());
     }
 
     protected override IList<WaitForResult> RequestDependentAssets()
@@ -82,11 +59,12 @@ namespace Mediapipe.Unity.BoxTracking
     {
       if (runningMode == RunningMode.NonBlockingSync)
       {
-        _trackedDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _TrackedDetectionsStreamName, config.AddPacketPresenceCalculator(_TrackedDetectionsStreamName));
+        _trackedDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(
+            calculatorGraph, _TrackedDetectionsStreamName, config.AddPacketPresenceCalculator(_TrackedDetectionsStreamName), timeoutMicrosec);
       }
       else
       {
-        _trackedDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _TrackedDetectionsStreamName, true);
+        _trackedDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _TrackedDetectionsStreamName, true, timeoutMicrosec);
       }
       return calculatorGraph.Initialize(config);
     }

@@ -65,13 +65,15 @@ MpReturnCode mp_CalculatorGraph__Config(mediapipe::CalculatorGraph* graph, mp_ap
   CATCH_ALL
 }
 
-MpReturnCode mp_CalculatorGraph__ObserveOutputStream__PKc_PF_b(mediapipe::CalculatorGraph* graph, const char* stream_name,
+MpReturnCode mp_CalculatorGraph__ObserveOutputStream__PKc_PF_b(mediapipe::CalculatorGraph* graph, const char* stream_name, int stream_id,
                                                                NativePacketCallback* packet_callback, bool observe_timestamp_bounds,
                                                                absl::Status** status_out) {
   TRY_ALL
     auto status = graph->ObserveOutputStream(
         stream_name,
-        [graph, packet_callback](const mediapipe::Packet& packet) -> ::absl::Status { return absl::Status{std::move(*packet_callback(graph, packet))}; },
+        [graph, stream_id, packet_callback](const mediapipe::Packet& packet) -> ::absl::Status {
+          return absl::Status{std::move(*packet_callback(graph, stream_id, packet))};
+        },
         observe_timestamp_bounds);
     *status_out = new absl::Status{std::move(status)};
     RETURN_CODE(MpReturnCode::Success);

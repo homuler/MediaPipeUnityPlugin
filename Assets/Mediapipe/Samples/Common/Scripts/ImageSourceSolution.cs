@@ -80,8 +80,8 @@ namespace Mediapipe.Unity
         yield break;
       }
 
-      graphRunner.StartRun(imageSource);
       OnStartRun();
+      graphRunner.StartRun(imageSource);
 
       var waitWhilePausing = new WaitWhile(() => isPaused);
 

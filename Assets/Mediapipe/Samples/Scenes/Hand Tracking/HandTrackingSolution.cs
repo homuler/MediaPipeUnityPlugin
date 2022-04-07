@@ -5,6 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity.HandTracking
@@ -30,12 +31,15 @@ namespace Mediapipe.Unity.HandTracking
 
     protected override void OnStartRun()
     {
-      graphRunner.OnPalmDetectectionsOutput.AddListener(_palmDetectionsAnnotationController.DrawLater);
-      graphRunner.OnHandRectsFromPalmDetectionsOutput.AddListener(_handRectsFromPalmDetectionsAnnotationController.DrawLater);
-      graphRunner.OnHandLandmarksOutput.AddListener(_handLandmarksAnnotationController.DrawLater);
-      // TODO: render HandWorldLandmarks annotations
-      graphRunner.OnHandRectsFromLandmarksOutput.AddListener(_handRectsFromLandmarksAnnotationController.DrawLater);
-      graphRunner.OnHandednessOutput.AddListener(_handLandmarksAnnotationController.DrawLater);
+      if (!runningMode.IsSynchronous())
+      {
+        graphRunner.OnPalmDetectectionsOutput += OnPalmDetectionsOutput;
+        graphRunner.OnHandRectsFromPalmDetectionsOutput += OnHandRectsFromPalmDetectionsOutput;
+        graphRunner.OnHandLandmarksOutput += OnHandLandmarksOutput;
+        // TODO: render HandWorldLandmarks annotations
+        graphRunner.OnHandRectsFromLandmarksOutput += OnHandRectsFromLandmarksOutput;
+        graphRunner.OnHandednessOutput += OnHandednessOutput;
+      }
 
       var imageSource = ImageSourceProvider.ImageSource;
       SetupAnnotationController(_palmDetectionsAnnotationController, imageSource, true);
@@ -51,14 +55,52 @@ namespace Mediapipe.Unity.HandTracking
 
     protected override IEnumerator WaitForNextValue()
     {
+      List<Detection> palmDetections = null;
+      List<NormalizedRect> handRectsFromPalmDetections = null;
+      List<NormalizedLandmarkList> handLandmarks = null;
+      List<LandmarkList> handWorldLandmarks = null;
+      List<NormalizedRect> handRectsFromLandmarks = null;
+      List<ClassificationList> handedness = null;
+
       if (runningMode == RunningMode.Sync)
       {
-        var _ = graphRunner.TryGetNext(out var _, out var _, out var _, out var _, out var _, out var _, true);
+        var _ = graphRunner.TryGetNext(out palmDetections, out handRectsFromPalmDetections, out handLandmarks, out handWorldLandmarks, out handRectsFromLandmarks, out handedness, true);
       }
       else if (runningMode == RunningMode.NonBlockingSync)
       {
-        yield return new WaitUntil(() => graphRunner.TryGetNext(out var _, out var _, out var _, out var _, out var _, out var _, false));
+        yield return new WaitUntil(() => graphRunner.TryGetNext(out palmDetections, out handRectsFromPalmDetections, out handLandmarks, out handWorldLandmarks, out handRectsFromLandmarks, out handedness, false));
       }
+
+      _palmDetectionsAnnotationController.DrawNow(palmDetections);
+      _handRectsFromPalmDetectionsAnnotationController.DrawNow(handRectsFromPalmDetections);
+      _handLandmarksAnnotationController.DrawNow(handLandmarks, handedness);
+      // TODO: render HandWorldLandmarks annotations
+      _handRectsFromLandmarksAnnotationController.DrawNow(handRectsFromLandmarks);
+    }
+
+    private void OnPalmDetectionsOutput(object stream, OutputEventArgs<List<Detection>> eventArgs)
+    {
+      _palmDetectionsAnnotationController.DrawLater(eventArgs.value);
+    }
+
+    private void OnHandRectsFromPalmDetectionsOutput(object stream, OutputEventArgs<List<NormalizedRect>> eventArgs)
+    {
+      _handRectsFromPalmDetectionsAnnotationController.DrawLater(eventArgs.value);
+    }
+
+    private void OnHandLandmarksOutput(object stream, OutputEventArgs<List<NormalizedLandmarkList>> eventArgs)
+    {
+      _handLandmarksAnnotationController.DrawLater(eventArgs.value);
+    }
+
+    private void OnHandRectsFromLandmarksOutput(object stream, OutputEventArgs<List<NormalizedRect>> eventArgs)
+    {
+      _handRectsFromLandmarksAnnotationController.DrawLater(eventArgs.value);
+    }
+
+    private void OnHandednessOutput(object stream, OutputEventArgs<List<ClassificationList>> eventArgs)
+    {
+      _handLandmarksAnnotationController.DrawLater(eventArgs.value);
     }
   }
 }

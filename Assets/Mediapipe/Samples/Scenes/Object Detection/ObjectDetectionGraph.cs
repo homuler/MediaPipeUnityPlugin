@@ -6,15 +6,16 @@
 
 using System;
 using System.Collections.Generic;
-using UnityEngine.Events;
 
 namespace Mediapipe.Unity.ObjectDetection
 {
   public class ObjectDetectionGraph : GraphRunner
   {
-#pragma warning disable IDE1006  // UnityEvent is PascalCase
-    public UnityEvent<List<Detection>> OnOutputDetectionsOutput = new UnityEvent<List<Detection>>();
-#pragma warning restore IDE1006
+    public event EventHandler<OutputEventArgs<List<Detection>>> OnOutputDetectionsOutput
+    {
+      add => _outputDetectionsStream.AddListener(value);
+      remove => _outputDetectionsStream.RemoveListener(value);
+    }
 
     private const string _InputStreamName = "input_video";
 
@@ -27,18 +28,14 @@ namespace Mediapipe.Unity.ObjectDetection
       {
         _outputDetectionsStream.StartPolling().AssertOk();
       }
-      else
-      {
-        _outputDetectionsStream.AddListener(OutputDetectionsCallback).AssertOk();
-      }
       StartRun(BuildSidePacket(imageSource));
     }
 
     public override void Stop()
     {
-      base.Stop();
-      OnOutputDetectionsOutput.RemoveAllListeners();
+      _outputDetectionsStream.RemoveAllListeners();
       _outputDetectionsStream = null;
+      base.Stop();
     }
 
     public void AddTextureFrameToInputStream(TextureFrame textureFrame)
@@ -48,27 +45,7 @@ namespace Mediapipe.Unity.ObjectDetection
 
     public bool TryGetNext(out List<Detection> outputDetections, bool allowBlock = true)
     {
-      if (TryGetNext(_outputDetectionsStream, out outputDetections, allowBlock, GetCurrentTimestampMicrosec()))
-      {
-        OnOutputDetectionsOutput.Invoke(outputDetections);
-        return true;
-      }
-      return false;
-    }
-
-    [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr OutputDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr)
-    {
-      return InvokeIfGraphRunnerFound<ObjectDetectionGraph>(graphPtr, packetPtr, (objectDetectionGraph, ptr) =>
-      {
-        using (var packet = new DetectionVectorPacket(ptr, false))
-        {
-          if (objectDetectionGraph._outputDetectionsStream.TryGetPacketValue(packet, out var value, objectDetectionGraph.timeoutMicrosec))
-          {
-            objectDetectionGraph.OnOutputDetectionsOutput.Invoke(value);
-          }
-        }
-      }).mpPtr;
+      return TryGetNext(_outputDetectionsStream, out outputDetections, allowBlock, GetCurrentTimestampMicrosec());
     }
 
     protected override IList<WaitForResult> RequestDependentAssets()
@@ -83,11 +60,12 @@ namespace Mediapipe.Unity.ObjectDetection
     {
       if (runningMode == RunningMode.NonBlockingSync)
       {
-        _outputDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _OutputDetectionsStreamName, config.AddPacketPresenceCalculator(_OutputDetectionsStreamName));
+        _outputDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(
+            calculatorGraph, _OutputDetectionsStreamName, config.AddPacketPresenceCalculator(_OutputDetectionsStreamName), timeoutMicrosec);
       }
       else
       {
-        _outputDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _OutputDetectionsStreamName, true);
+        _outputDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _OutputDetectionsStreamName, true, timeoutMicrosec);
       }
       return calculatorGraph.Initialize(config);
     }

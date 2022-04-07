@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
 
 using Google.Protobuf;
 
@@ -30,9 +29,11 @@ namespace Mediapipe.Unity.FaceDetection
       set => _minDetectionConfidence = Mathf.Clamp01(value);
     }
 
-#pragma warning disable IDE1006
-    public UnityEvent<List<Detection>> OnFaceDetectionsOutput = new UnityEvent<List<Detection>>();
-#pragma warning restore IDE1006
+    public event EventHandler<OutputEventArgs<List<Detection>>> OnFaceDetectionsOutput
+    {
+      add => _faceDetectionsStream.AddListener(value);
+      remove => _faceDetectionsStream.RemoveListener(value);
+    }
 
     private const string _InputStreamName = "input_video";
     private const string _FaceDetectionsStreamName = "face_detections";
@@ -44,18 +45,14 @@ namespace Mediapipe.Unity.FaceDetection
       {
         _faceDetectionsStream.StartPolling().AssertOk();
       }
-      else
-      {
-        _faceDetectionsStream.AddListener(FaceDetectionsCallback).AssertOk();
-      }
       StartRun(BuildSidePacket(imageSource));
     }
 
     public override void Stop()
     {
-      base.Stop();
-      OnFaceDetectionsOutput.RemoveAllListeners();
+      _faceDetectionsStream.RemoveAllListeners();
       _faceDetectionsStream = null;
+      base.Stop();
     }
 
     public void AddTextureFrameToInputStream(TextureFrame textureFrame)
@@ -65,27 +62,7 @@ namespace Mediapipe.Unity.FaceDetection
 
     public bool TryGetNext(out List<Detection> faceDetections, bool allowBlock = true)
     {
-      if (TryGetNext(_faceDetectionsStream, out faceDetections, allowBlock, GetCurrentTimestampMicrosec()))
-      {
-        OnFaceDetectionsOutput.Invoke(faceDetections);
-        return true;
-      }
-      return false;
-    }
-
-    [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    private static IntPtr FaceDetectionsCallback(IntPtr graphPtr, IntPtr packetPtr)
-    {
-      return InvokeIfGraphRunnerFound<FaceDetectionGraph>(graphPtr, packetPtr, (faceDetectionGraph, ptr) =>
-      {
-        using (var packet = new DetectionVectorPacket(ptr, false))
-        {
-          if (faceDetectionGraph._faceDetectionsStream.TryGetPacketValue(packet, out var value, faceDetectionGraph.timeoutMicrosec))
-          {
-            faceDetectionGraph.OnFaceDetectionsOutput.Invoke(value);
-          }
-        }
-      }).mpPtr;
+      return TryGetNext(_faceDetectionsStream, out faceDetections, allowBlock, GetCurrentTimestampMicrosec());
     }
 
     protected override IList<WaitForResult> RequestDependentAssets()
@@ -100,11 +77,12 @@ namespace Mediapipe.Unity.FaceDetection
     {
       if (runningMode == RunningMode.NonBlockingSync)
       {
-        _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _FaceDetectionsStreamName, config.AddPacketPresenceCalculator(_FaceDetectionsStreamName));
+        _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(
+            calculatorGraph, _FaceDetectionsStreamName, config.AddPacketPresenceCalculator(_FaceDetectionsStreamName), timeoutMicrosec);
       }
       else
       {
-        _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _FaceDetectionsStreamName, true);
+        _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _FaceDetectionsStreamName, true, timeoutMicrosec);
       }
 
       using (var validatedGraphConfig = new ValidatedGraphConfig())

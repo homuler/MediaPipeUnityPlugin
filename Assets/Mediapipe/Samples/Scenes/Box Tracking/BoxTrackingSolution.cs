@@ -5,6 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity.BoxTracking
@@ -15,7 +16,11 @@ namespace Mediapipe.Unity.BoxTracking
 
     protected override void OnStartRun()
     {
-      graphRunner.OnTrackedDetectionsOutput.AddListener(_trackedDetectionsAnnotationController.DrawLater);
+      if (!runningMode.IsSynchronous())
+      {
+        graphRunner.OnTrackedDetectionsOutput += OnTrackedDetectionsOutput;
+      }
+
       SetupAnnotationController(_trackedDetectionsAnnotationController, ImageSourceProvider.ImageSource);
     }
 
@@ -26,14 +31,23 @@ namespace Mediapipe.Unity.BoxTracking
 
     protected override IEnumerator WaitForNextValue()
     {
+      List<Detection> trackedDetections = null;
+
       if (runningMode == RunningMode.Sync)
       {
-        var _ = graphRunner.TryGetNext(out var _, true);
+        var _ = graphRunner.TryGetNext(out trackedDetections, true);
       }
       else if (runningMode == RunningMode.NonBlockingSync)
       {
-        yield return new WaitUntil(() => graphRunner.TryGetNext(out var _, false));
+        yield return new WaitUntil(() => graphRunner.TryGetNext(out trackedDetections, false));
       }
+
+      _trackedDetectionsAnnotationController.DrawNow(trackedDetections);
+    }
+
+    private void OnTrackedDetectionsOutput(object stream, OutputEventArgs<List<Detection>> eventArgs)
+    {
+      _trackedDetectionsAnnotationController.DrawLater(eventArgs.value);
     }
   }
 }
