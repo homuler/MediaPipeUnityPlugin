@@ -6,7 +6,7 @@ Shader "Unlit/MediaPipe/Mask Shader"
         _MaskTex ("Mask Texture", 2D) = "blue" {}
         _Width ("Mask Width", Int) = 0
         _Height ("Mask Height", Int) = 0
-        _MinConfidence ("Min Confidence", Range(0.0, 1.0)) = 0.9
+        _Threshold ("Threshold", Range(0.0, 1.0)) = 0.9
     }
 
     SubShader
@@ -53,7 +53,7 @@ Shader "Unlit/MediaPipe/Mask Shader"
 
             int _Width;
             int _Height;
-            float _MinConfidence;
+            float _Threshold;
             uniform StructuredBuffer<float> _MaskBuffer;
 
             fixed4 frag (v2f i) : SV_Target
@@ -63,7 +63,7 @@ Shader "Unlit/MediaPipe/Mask Shader"
                 fixed4 maskCol = tex2D(_MaskTex, i.uv);
                 int idx = int(i.uv.y * _Height) * _Width + int(i.uv.x * _Width);
                 float mask = _MaskBuffer[idx];
-                fixed4 col = lerp(mainCol, lerp(mainCol, maskCol, mask), step(_MinConfidence, mask));
+                fixed4 col = lerp(mainCol, lerp(mainCol, maskCol, mask), step(_Threshold, mask));
 
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);

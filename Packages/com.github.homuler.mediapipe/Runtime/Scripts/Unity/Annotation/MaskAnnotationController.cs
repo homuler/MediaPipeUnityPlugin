@@ -19,7 +19,7 @@ namespace Mediapipe.Unity
       _maskWidth = maskWidth;
       _maskHeight = maskHeight;
       _maskArray = new float[_maskWidth * _maskHeight];
-      annotation.InitScreen(_maskWidth, _maskHeight);
+      annotation.Init(_maskWidth, _maskHeight);
     }
 
     public void DrawNow(ImageFrame target)
@@ -47,7 +47,7 @@ namespace Mediapipe.Unity
     protected override void SyncNow()
     {
       isStale = false;
-      annotation.Draw(_maskArray, _maskWidth, _maskHeight);
+      annotation.Draw(_currentTarget == null ? null : _maskArray, _maskWidth, _maskHeight);
     }
   }
 }
