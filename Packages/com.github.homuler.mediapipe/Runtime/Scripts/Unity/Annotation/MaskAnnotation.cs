@@ -22,26 +22,30 @@ namespace Mediapipe.Unity
     [SerializeField] private Shader _maskShader;
     [SerializeField] private Texture2D _maskTexture;
     [SerializeField] private Color _color = Color.blue;
-    [SerializeField, Range(0, 1)] private float _minConfidence = 0.9f;
+    [SerializeField, Range(0, 1)] private float _threshold = 0.9f;
 
+    private Material _prevMaterial;
     private Material _material;
     private GraphicsBuffer _maskBuffer;
 
     private void OnEnable()
     {
       ApplyMaskTexture(_maskTexture, _color);
-      ApplyMinConfidence(_minConfidence);
+      ApplyThreshold(_threshold);
     }
 
     private void OnDisable()
     {
-      ApplyMinConfidence(1.1f); // larger than the maximum value (1.0).
+      if (_prevMaterial != null)
+      {
+        ApplyMaterial(_prevMaterial);
+      }
     }
 
     private void OnValidate()
     {
       ApplyMaskTexture(_maskTexture, _color);
-      ApplyMinConfidence(_minConfidence);
+      ApplyThreshold(_threshold);
     }
 
     private void OnDestroy()
@@ -52,10 +56,8 @@ namespace Mediapipe.Unity
       }
     }
 
-    public void InitScreen(int width, int height)
+    public void Init(int width, int height)
     {
-      _screen.color = new Color(1, 1, 1, 1);
-
       _material = new Material(_maskShader)
       {
         renderQueue = (int)RenderQueue.Transparent
@@ -65,26 +67,31 @@ namespace Mediapipe.Unity
       ApplyMaskTexture(_maskTexture, _color);
       _material.SetInt("_Width", width);
       _material.SetInt("_Height", height);
-      ApplyMinConfidence(_minConfidence);
+      ApplyThreshold(_threshold);
       InitMaskBuffer(width, height);
-
-      _screen.material = _material;
     }
 
     public void Draw(float[] mask, int width, int height)
     {
+      if (mask == null)
+      {
+        ApplyMaterial(_prevMaterial);
+        return;
+      }
+
       if (mask.Length != width * height)
       {
         throw new ArgumentException("mask size must equal width * height");
       }
 
+      ApplyMaterial(_material);
       _maskBuffer.SetData(mask);
     }
 
     private Texture2D CreateMonoColorTexture(Color color)
     {
       var texture = new Texture2D(1, 1, TextureFormat.RGBA32, false);
-      var textureColor = new Color32((byte)(255 * color.r), (byte)(255 * color.g), (byte)(255 * color.b), 255);
+      var textureColor = new Color32((byte)(255 * color.r), (byte)(255 * color.g), (byte)(255 * color.b), (byte)(255 * color.a));
       texture.SetPixels32(new Color32[] { textureColor });
       texture.Apply();
 
@@ -102,19 +109,32 @@ namespace Mediapipe.Unity
       _material.SetBuffer("_MaskBuffer", _maskBuffer);
     }
 
-    private void ApplyMaskTexture(Texture maskTexture, Color color)
+    private void ApplyMaterial(Material material)
     {
-      if (_material != null)
+      if (_prevMaterial == null)
       {
-        _material.SetTexture("_MaskTex", maskTexture == null ? CreateMonoColorTexture(color) : maskTexture);
+        // backup
+        _prevMaterial = _screen.material;
+      }
+      if (_screen.material != material)
+      {
+        _screen.material = material;
       }
     }
 
-    private void ApplyMinConfidence(float minConfidence)
+    private void ApplyMaskTexture(Texture maskTexture, Color maskColor)
     {
       if (_material != null)
       {
-        _material.SetFloat("_MinConfidence", minConfidence);
+        _material.SetTexture("_MaskTex", maskTexture == null ? CreateMonoColorTexture(maskColor) : maskTexture);
+      }
+    }
+
+    private void ApplyThreshold(float threshold)
+    {
+      if (_material != null)
+      {
+        _material.SetFloat("_Threshold", threshold);
       }
     }
   }

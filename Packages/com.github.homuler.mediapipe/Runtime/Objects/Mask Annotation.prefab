@@ -43,5 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f993d16dcccfcecb6892ad3cc2ea76c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screen: {fileID: 0}
-  color: {r: 0, g: 0, b: 1, a: 1}
+  _screen: {fileID: 0}
+  _maskShader: {fileID: 0}
+  _maskTexture: {fileID: 0}
+  _color: {r: 0, g: 0, b: 1, a: 1}
+  _threshold: 0.9

@@ -21,7 +21,7 @@ namespace Mediapipe.Unity.HairSegmentation
       }
 
       SetupAnnotationController(_hairMaskAnnotationController, ImageSourceProvider.ImageSource);
-      _hairMaskAnnotationController.InitScreen();
+      _hairMaskAnnotationController.InitScreen(512, 512);
     }
 
     protected override void AddTextureFrameToInputStream(TextureFrame textureFrame)

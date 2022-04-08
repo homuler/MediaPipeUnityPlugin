@@ -16,12 +16,16 @@ namespace Mediapipe.Unity.PoseTracking.UI
   {
     private const string _ModelComplexityPath = "Scroll View/Viewport/Contents/Model Complexity/Dropdown";
     private const string _SmoothLandmarksPath = "Scroll View/Viewport/Contents/Smooth Landmarks/Toggle";
+    private const string _EnableSegmentationPath = "Scroll View/Viewport/Contents/Enable Segmentation/Toggle";
+    private const string _SmoothSegmentationPath = "Scroll View/Viewport/Contents/Smooth Segmentation/Toggle";
     private const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
     private const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
 
     private PoseTrackingSolution _solution;
     private Dropdown _modelComplexityInput;
     private Toggle _smoothLandmarksInput;
+    private Toggle _enableSegmentationInput;
+    private Toggle _smoothSegmentationInput;
     private Dropdown _runningModeInput;
     private InputField _timeoutMillisecInput;
 
@@ -50,6 +54,18 @@ namespace Mediapipe.Unity.PoseTracking.UI
       _isChanged = true;
     }
 
+    public void ToggleEnableSegmentation()
+    {
+      _solution.enableSegmentation = _enableSegmentationInput.isOn;
+      _isChanged = true;
+    }
+
+    public void ToggleSmoothSegmentation()
+    {
+      _solution.smoothSegmentation = _smoothSegmentationInput.isOn;
+      _isChanged = true;
+    }
+
     public void SwitchRunningMode()
     {
       _solution.runningMode = (RunningMode)_runningModeInput.value;
@@ -69,6 +85,8 @@ namespace Mediapipe.Unity.PoseTracking.UI
     {
       InitializeModelComplexity();
       InitializeSmoothLandmarksInput();
+      InitializeEnableSegmentationInput();
+      InitializeSmoothSegmentationInput();
       InitializeRunningMode();
       InitializeTimeoutMillisec();
     }
@@ -97,6 +115,20 @@ namespace Mediapipe.Unity.PoseTracking.UI
       _smoothLandmarksInput = gameObject.transform.Find(_SmoothLandmarksPath).gameObject.GetComponent<Toggle>();
       _smoothLandmarksInput.isOn = _solution.smoothLandmarks;
       _smoothLandmarksInput.onValueChanged.AddListener(delegate { ToggleSmoothLandmarks(); });
+    }
+
+    private void InitializeEnableSegmentationInput()
+    {
+      _enableSegmentationInput = gameObject.transform.Find(_EnableSegmentationPath).gameObject.GetComponent<Toggle>();
+      _enableSegmentationInput.isOn = _solution.enableSegmentation;
+      _enableSegmentationInput.onValueChanged.AddListener(delegate { ToggleEnableSegmentation(); });
+    }
+
+    private void InitializeSmoothSegmentationInput()
+    {
+      _smoothSegmentationInput = gameObject.transform.Find(_SmoothSegmentationPath).gameObject.GetComponent<Toggle>();
+      _smoothSegmentationInput.isOn = _solution.smoothSegmentation;
+      _smoothSegmentationInput.onValueChanged.AddListener(delegate { ToggleSmoothSegmentation(); });
     }
 
     private void InitializeRunningMode()

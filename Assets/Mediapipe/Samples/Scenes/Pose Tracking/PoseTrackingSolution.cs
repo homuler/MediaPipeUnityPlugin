@@ -15,8 +15,8 @@ namespace Mediapipe.Unity.PoseTracking
     [SerializeField] private DetectionAnnotationController _poseDetectionAnnotationController;
     [SerializeField] private PoseLandmarkListAnnotationController _poseLandmarksAnnotationController;
     [SerializeField] private PoseWorldLandmarkListAnnotationController _poseWorldLandmarksAnnotationController;
+    [SerializeField] private MaskAnnotationController _segmentationMaskAnnotationController;
     [SerializeField] private NormalizedRectAnnotationController _roiFromLandmarksAnnotationController;
-
 
     public PoseTrackingGraph.ModelComplexity modelComplexity
     {
@@ -28,6 +28,18 @@ namespace Mediapipe.Unity.PoseTracking
     {
       get => graphRunner.smoothLandmarks;
       set => graphRunner.smoothLandmarks = value;
+    }
+
+    public bool enableSegmentation
+    {
+      get => graphRunner.enableSegmentation;
+      set => graphRunner.enableSegmentation = value;
+    }
+
+    public bool smoothSegmentation
+    {
+      get => graphRunner.smoothSegmentation;
+      set => graphRunner.smoothSegmentation = value;
     }
 
     protected override void SetupScreen(ImageSource imageSource)
@@ -43,6 +55,7 @@ namespace Mediapipe.Unity.PoseTracking
         graphRunner.OnPoseDetectionOutput += OnPoseDetectionOutput;
         graphRunner.OnPoseLandmarksOutput += OnPoseLandmarksOutput;
         graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
+        graphRunner.OnSegmentationMaskOutput += OnSegmentationMaskOutput;
         graphRunner.OnRoiFromLandmarksOutput += OnRoiFromLandmarksOutput;
       }
 
@@ -50,6 +63,8 @@ namespace Mediapipe.Unity.PoseTracking
       SetupAnnotationController(_poseDetectionAnnotationController, imageSource);
       SetupAnnotationController(_poseLandmarksAnnotationController, imageSource);
       SetupAnnotationController(_poseWorldLandmarksAnnotationController, imageSource);
+      SetupAnnotationController(_segmentationMaskAnnotationController, imageSource);
+      _segmentationMaskAnnotationController.InitScreen(imageSource.textureWidth, imageSource.textureHeight);
       SetupAnnotationController(_roiFromLandmarksAnnotationController, imageSource);
     }
 
@@ -63,20 +78,22 @@ namespace Mediapipe.Unity.PoseTracking
       Detection poseDetection = null;
       NormalizedLandmarkList poseLandmarks = null;
       LandmarkList poseWorldLandmarks = null;
+      ImageFrame segmentationMask = null;
       NormalizedRect roiFromLandmarks = null;
 
       if (runningMode == RunningMode.Sync)
       {
-        var _ = graphRunner.TryGetNext(out poseDetection, out poseLandmarks, out poseWorldLandmarks, out roiFromLandmarks, true);
+        var _ = graphRunner.TryGetNext(out poseDetection, out poseLandmarks, out poseWorldLandmarks, out segmentationMask, out roiFromLandmarks, true);
       }
       else if (runningMode == RunningMode.NonBlockingSync)
       {
-        yield return new WaitUntil(() => graphRunner.TryGetNext(out poseDetection, out poseLandmarks, out poseWorldLandmarks, out roiFromLandmarks, false));
+        yield return new WaitUntil(() => graphRunner.TryGetNext(out poseDetection, out poseLandmarks, out poseWorldLandmarks, out segmentationMask, out roiFromLandmarks, false));
       }
 
       _poseDetectionAnnotationController.DrawNow(poseDetection);
       _poseLandmarksAnnotationController.DrawNow(poseLandmarks);
       _poseWorldLandmarksAnnotationController.DrawNow(poseWorldLandmarks);
+      _segmentationMaskAnnotationController.DrawNow(segmentationMask);
       _roiFromLandmarksAnnotationController.DrawNow(roiFromLandmarks);
     }
 
@@ -93,6 +110,11 @@ namespace Mediapipe.Unity.PoseTracking
     private void OnPoseWorldLandmarksOutput(object stream, OutputEventArgs<LandmarkList> eventArgs)
     {
       _poseWorldLandmarksAnnotationController.DrawLater(eventArgs.value);
+    }
+
+    private void OnSegmentationMaskOutput(object stream, OutputEventArgs<ImageFrame> eventArgs)
+    {
+      _segmentationMaskAnnotationController.DrawLater(eventArgs.value);
     }
 
     private void OnRoiFromLandmarksOutput(object stream, OutputEventArgs<NormalizedRect> eventArgs)
