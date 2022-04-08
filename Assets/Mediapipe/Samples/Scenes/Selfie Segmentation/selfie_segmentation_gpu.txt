@@ -1,0 +1,84 @@
+# Copyright 2020 The MediaPipe Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Copied from mediapipe/graphs/selfie_segmentation/selfie_segmentation_gpu.pbtxt
+#
+# CHANGES:
+#   - `input_video` is ImageFrame (ImageFrameToGpuBufferCalculator converts it into GpuBuffer)
+#   - Add ImageTransformationCalculator and rotate the input
+#   - Remove RecolorCalculator
+
+# MediaPipe graph that performs selfie segmentation with TensorFlow Lite on GPU.
+
+input_stream: "input_video"
+
+output_stream: "segmentation_mask"
+
+# Throttles the images flowing downstream for flow control. It passes through
+# the very first incoming image unaltered, and waits for downstream nodes
+# (calculators and subgraphs) in the graph to finish their tasks before it
+# passes through another image. All images that come in while waiting are
+# dropped, limiting the number of in-flight images in most part of the graph to
+# 1. This prevents the downstream nodes from queuing up incoming images and data
+# excessively, which leads to increased latency and memory usage, unwanted in
+# real-time mobile applications. It also eliminates unnecessarily computation,
+# e.g., the output produced by a node may get dropped downstream if the
+# subsequent nodes are still busy processing previous inputs.
+node {
+  calculator: "FlowLimiterCalculator"
+  input_stream: "input_video"
+  input_stream: "FINISHED:segmentation_mask"
+  input_stream_info: {
+    tag_index: "FINISHED"
+    back_edge: true
+  }
+  output_stream: "throttled_input_video"
+}
+
+node: {
+  calculator: "ImageFrameToGpuBufferCalculator"
+  input_stream: "throttled_input_video"
+  output_stream: "throttled_input_video_gpu"
+}
+
+node: {
+  calculator: "ImageTransformationCalculator"
+  input_stream: "IMAGE_GPU:throttled_input_video_gpu"
+  input_side_packet: "ROTATION_DEGREES:input_rotation"
+  input_side_packet: "FLIP_HORIZONTALLY:input_horizontally_flipped"
+  input_side_packet: "FLIP_VERTICALLY:input_vertically_flipped"
+  output_stream: "IMAGE_GPU:transformed_input_video"
+}
+
+# Subgraph that performs selfie segmentation.
+node {
+  calculator: "SelfieSegmentationGpu"
+  input_stream: "IMAGE:transformed_input_video"
+  output_stream: "SEGMENTATION_MASK:segmentation_mask_gpu"
+}
+
+node: {
+  calculator: "ImageTransformationCalculator"
+  input_stream: "IMAGE_GPU:segmentation_mask_gpu"
+  input_side_packet: "ROTATION_DEGREES:output_rotation"
+  input_side_packet: "FLIP_HORIZONTALLY:output_horizontally_flipped"
+  input_side_packet: "FLIP_VERTICALLY:output_vertically_flipped"
+  output_stream: "IMAGE_GPU:segmentation_mask_unrotated_gpu"
+}
+
+node: {
+  calculator: "GpuBufferToImageFrameCalculator"
+  input_stream: "segmentation_mask_unrotated_gpu"
+  output_stream: "segmentation_mask"
+}
