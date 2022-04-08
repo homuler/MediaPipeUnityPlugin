@@ -18,6 +18,8 @@ namespace Mediapipe.Unity.PoseTracking.UI
     private const string _SmoothLandmarksPath = "Scroll View/Viewport/Contents/Smooth Landmarks/Toggle";
     private const string _EnableSegmentationPath = "Scroll View/Viewport/Contents/Enable Segmentation/Toggle";
     private const string _SmoothSegmentationPath = "Scroll View/Viewport/Contents/Smooth Segmentation/Toggle";
+    private const string _MinDetectionConfidencePath = "Scroll View/Viewport/Contents/Min Detection Confidence/InputField";
+    private const string _MinTrackingConfidencePath = "Scroll View/Viewport/Contents/Min Tracking Confidence/InputField";
     private const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
     private const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
 
@@ -26,6 +28,8 @@ namespace Mediapipe.Unity.PoseTracking.UI
     private Toggle _smoothLandmarksInput;
     private Toggle _enableSegmentationInput;
     private Toggle _smoothSegmentationInput;
+    private InputField _minDetectionConfidenceInput;
+    private InputField _minTrackingConfidenceInput;
     private Dropdown _runningModeInput;
     private InputField _timeoutMillisecInput;
 
@@ -66,6 +70,24 @@ namespace Mediapipe.Unity.PoseTracking.UI
       _isChanged = true;
     }
 
+    public void SetMinDetectionConfidence()
+    {
+      if (float.TryParse(_minDetectionConfidenceInput.text, out var value))
+      {
+        _solution.minDetectionConfidence = value;
+        _isChanged = true;
+      }
+    }
+
+    public void SetMinTrackingConfidence()
+    {
+      if (float.TryParse(_minTrackingConfidenceInput.text, out var value))
+      {
+        _solution.minTrackingConfidence = value;
+        _isChanged = true;
+      }
+    }
+
     public void SwitchRunningMode()
     {
       _solution.runningMode = (RunningMode)_runningModeInput.value;
@@ -87,6 +109,8 @@ namespace Mediapipe.Unity.PoseTracking.UI
       InitializeSmoothLandmarksInput();
       InitializeEnableSegmentationInput();
       InitializeSmoothSegmentationInput();
+      InitializeMinDetectionConfidence();
+      InitializeMinTrackingConfidence();
       InitializeRunningMode();
       InitializeTimeoutMillisec();
     }
@@ -129,6 +153,20 @@ namespace Mediapipe.Unity.PoseTracking.UI
       _smoothSegmentationInput = gameObject.transform.Find(_SmoothSegmentationPath).gameObject.GetComponent<Toggle>();
       _smoothSegmentationInput.isOn = _solution.smoothSegmentation;
       _smoothSegmentationInput.onValueChanged.AddListener(delegate { ToggleSmoothSegmentation(); });
+    }
+
+    private void InitializeMinDetectionConfidence()
+    {
+      _minDetectionConfidenceInput = gameObject.transform.Find(_MinDetectionConfidencePath).gameObject.GetComponent<InputField>();
+      _minDetectionConfidenceInput.text = _solution.minDetectionConfidence.ToString();
+      _minDetectionConfidenceInput.onValueChanged.AddListener(delegate { SetMinDetectionConfidence(); });
+    }
+
+    private void InitializeMinTrackingConfidence()
+    {
+      _minTrackingConfidenceInput = gameObject.transform.Find(_MinTrackingConfidencePath).gameObject.GetComponent<InputField>();
+      _minTrackingConfidenceInput.text = _solution.minTrackingConfidence.ToString();
+      _minTrackingConfidenceInput.onValueChanged.AddListener(delegate { SetMinTrackingConfidence(); });
     }
 
     private void InitializeRunningMode()
