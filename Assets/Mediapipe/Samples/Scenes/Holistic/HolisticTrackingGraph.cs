@@ -248,6 +248,7 @@ namespace Mediapipe.Unity.Holistic
           {
             var options = calculator.Options.GetExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext);
             options.MinScoreThresh = minDetectionConfidence;
+            Logger.LogInfo(TAG, $"Min Detection Confidence = {minDetectionConfidence}");
           }
         }
 
@@ -257,6 +258,7 @@ namespace Mediapipe.Unity.Holistic
           {
             var options = calculator.Options.GetExtension(ThresholdingCalculatorOptions.Extensions.Ext);
             options.Threshold = minTrackingConfidence;
+            Logger.LogInfo(TAG, $"Min Tracking Confidence = {minTrackingConfidence}");
           }
         }
         return calculatorGraph.Initialize(cannonicalizedConfig);
