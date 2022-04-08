@@ -24,6 +24,7 @@ input_stream: "input_video"
 
 output_stream: "pose_landmarks"
 output_stream: "pose_world_landmarks"
+output_stream: "segmentation_mask"
 output_stream: "pose_detection"
 output_stream: "roi_from_landmarks"
 

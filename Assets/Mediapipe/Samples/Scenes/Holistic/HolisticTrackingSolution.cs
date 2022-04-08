@@ -15,6 +15,7 @@ namespace Mediapipe.Unity.Holistic
     [SerializeField] private DetectionAnnotationController _poseDetectionAnnotationController;
     [SerializeField] private HolisticLandmarkListAnnotationController _holisticAnnotationController;
     [SerializeField] private PoseWorldLandmarkListAnnotationController _poseWorldLandmarksAnnotationController;
+    [SerializeField] private MaskAnnotationController _segmentationMaskAnnotationController;
     [SerializeField] private NormalizedRectAnnotationController _poseRoiAnnotationController;
 
     public HolisticTrackingGraph.ModelComplexity modelComplexity
@@ -35,6 +36,18 @@ namespace Mediapipe.Unity.Holistic
       set => graphRunner.refineFaceLandmarks = value;
     }
 
+    public bool enableSegmentation
+    {
+      get => graphRunner.enableSegmentation;
+      set => graphRunner.enableSegmentation = value;
+    }
+
+    public bool smoothSegmentation
+    {
+      get => graphRunner.smoothSegmentation;
+      set => graphRunner.smoothSegmentation = value;
+    }
+
     protected override void SetupScreen(ImageSource imageSource)
     {
       base.SetupScreen(imageSource);
@@ -51,6 +64,7 @@ namespace Mediapipe.Unity.Holistic
         graphRunner.OnLeftHandLandmarksOutput += OnLeftHandLandmarksOutput;
         graphRunner.OnRightHandLandmarksOutput += OnRightHandLandmarksOutput;
         graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
+        graphRunner.OnSegmentationMaskOutput += OnSegmentationMaskOutput;
         graphRunner.OnPoseRoiOutput += OnPoseRoiOutput;
       }
 
@@ -58,6 +72,8 @@ namespace Mediapipe.Unity.Holistic
       SetupAnnotationController(_poseDetectionAnnotationController, imageSource);
       SetupAnnotationController(_holisticAnnotationController, imageSource);
       SetupAnnotationController(_poseWorldLandmarksAnnotationController, imageSource);
+      SetupAnnotationController(_segmentationMaskAnnotationController, imageSource);
+      _segmentationMaskAnnotationController.InitScreen(imageSource.textureWidth, imageSource.textureHeight);
       SetupAnnotationController(_poseRoiAnnotationController, imageSource);
     }
 
@@ -74,20 +90,23 @@ namespace Mediapipe.Unity.Holistic
       NormalizedLandmarkList leftHandLandmarks = null;
       NormalizedLandmarkList rightHandLandmarks = null;
       LandmarkList poseWorldLandmarks = null;
+      ImageFrame segmentationMask = null;
       NormalizedRect poseRoi = null;
 
       if (runningMode == RunningMode.Sync)
       {
-        var _ = graphRunner.TryGetNext(out poseDetection, out poseLandmarks, out faceLandmarks, out leftHandLandmarks, out rightHandLandmarks, out poseWorldLandmarks, out poseRoi, true);
+        var _ = graphRunner.TryGetNext(out poseDetection, out poseLandmarks, out faceLandmarks, out leftHandLandmarks, out rightHandLandmarks, out poseWorldLandmarks, out segmentationMask, out poseRoi, true);
       }
       else if (runningMode == RunningMode.NonBlockingSync)
       {
-        yield return new WaitUntil(() => graphRunner.TryGetNext(out poseDetection, out poseLandmarks, out faceLandmarks, out leftHandLandmarks, out rightHandLandmarks, out poseWorldLandmarks, out poseRoi, false));
+        yield return new WaitUntil(() =>
+          graphRunner.TryGetNext(out poseDetection, out poseLandmarks, out faceLandmarks, out leftHandLandmarks, out rightHandLandmarks, out poseWorldLandmarks, out segmentationMask, out poseRoi, false));
       }
 
       _poseDetectionAnnotationController.DrawNow(poseDetection);
       _holisticAnnotationController.DrawNow(faceLandmarks, poseLandmarks, leftHandLandmarks, rightHandLandmarks);
       _poseWorldLandmarksAnnotationController.DrawNow(poseWorldLandmarks);
+      _segmentationMaskAnnotationController.DrawNow(segmentationMask);
       _poseRoiAnnotationController.DrawNow(poseRoi);
     }
 
@@ -119,6 +138,11 @@ namespace Mediapipe.Unity.Holistic
     private void OnPoseWorldLandmarksOutput(object stream, OutputEventArgs<LandmarkList> eventArgs)
     {
       _poseWorldLandmarksAnnotationController.DrawLater(eventArgs.value);
+    }
+
+    private void OnSegmentationMaskOutput(object stream, OutputEventArgs<ImageFrame> eventArgs)
+    {
+      _segmentationMaskAnnotationController.DrawLater(eventArgs.value);
     }
 
     private void OnPoseRoiOutput(object stream, OutputEventArgs<NormalizedRect> eventArgs)

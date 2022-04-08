@@ -25,6 +25,7 @@ input_stream: "input_video"
 
 output_stream: "pose_landmarks"
 output_stream: "pose_world_landmarks"
+output_stream: "segmentation_mask"
 output_stream: "pose_roi"
 output_stream: "pose_detection"
 output_stream: "face_landmarks"
@@ -76,11 +77,23 @@ node {
   input_side_packet: "MODEL_COMPLEXITY:model_complexity"
   input_side_packet: "SMOOTH_LANDMARKS:smooth_landmarks"
   input_side_packet: "REFINE_FACE_LANDMARKS:refine_face_landmarks"
+  input_side_packet: "ENABLE_SEGMENTATION:enable_segmentation"
+  input_side_packet: "SMOOTH_SEGMENTATION:smooth_segmentation"
   output_stream: "POSE_LANDMARKS:pose_landmarks"
   output_stream: "WORLD_LANDMARKS:pose_world_landmarks"
+  output_stream: "SEGMENTATION_MASK:segmentation_mask_rotated"
   output_stream: "POSE_ROI:pose_roi"
   output_stream: "POSE_DETECTION:pose_detection"
   output_stream: "FACE_LANDMARKS:face_landmarks"
   output_stream: "LEFT_HAND_LANDMARKS:left_hand_landmarks"
   output_stream: "RIGHT_HAND_LANDMARKS:right_hand_landmarks"
+}
+
+node: {
+  calculator: "ImageTransformationCalculator"
+  input_stream: "IMAGE:segmentation_mask_rotated"
+  input_side_packet: "ROTATION_DEGREES:output_rotation"
+  input_side_packet: "FLIP_HORIZONTALLY:output_horizontally_flipped"
+  input_side_packet: "FLIP_VERTICALLY:output_vertically_flipped"
+  output_stream: "IMAGE:segmentation_mask"
 }
