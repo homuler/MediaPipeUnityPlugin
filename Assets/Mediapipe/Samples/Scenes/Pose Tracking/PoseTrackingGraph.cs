@@ -172,14 +172,13 @@ namespace Mediapipe.Unity.PoseTracking
         var tensorsToDetectionsCalculators = cannonicalizedConfig.Node.Where((node) => node.Calculator == "TensorsToDetectionsCalculator").ToList();
         var thresholdingCalculators = cannonicalizedConfig.Node.Where((node) => node.Calculator == "ThresholdingCalculator").ToList();
 
-        Debug.Log(tensorsToDetectionsCalculators.Count);
-        Debug.Log(thresholdingCalculators.Count);
         foreach (var calculator in tensorsToDetectionsCalculators)
         {
           if (calculator.Options.HasExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext))
           {
             var options = calculator.Options.GetExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext);
             options.MinScoreThresh = minDetectionConfidence;
+            Logger.LogInfo(TAG, $"Min Detection Confidence = {minDetectionConfidence}");
           }
         }
 
@@ -189,6 +188,7 @@ namespace Mediapipe.Unity.PoseTracking
           {
             var options = calculator.Options.GetExtension(ThresholdingCalculatorOptions.Extensions.Ext);
             options.Threshold = minTrackingConfidence;
+            Logger.LogInfo(TAG, $"Min Tracking Confidence = {minTrackingConfidence}");
           }
         }
         return calculatorGraph.Initialize(cannonicalizedConfig);

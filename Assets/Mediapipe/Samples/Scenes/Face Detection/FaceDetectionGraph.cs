@@ -101,6 +101,7 @@ namespace Mediapipe.Unity.FaceDetection
           {
             var options = calculator.Options.GetExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext);
             options.MinScoreThresh = minDetectionConfidence;
+            Logger.LogInfo(TAG, $"Min Detection Confidence = {minDetectionConfidence}");
           }
         }
         return calculatorGraph.Initialize(cannonicalizedConfig);

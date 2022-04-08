@@ -42,6 +42,18 @@ namespace Mediapipe.Unity.PoseTracking
       set => graphRunner.smoothSegmentation = value;
     }
 
+    public float minDetectionConfidence
+    {
+      get => graphRunner.minDetectionConfidence;
+      set => graphRunner.minDetectionConfidence = value;
+    }
+
+    public float minTrackingConfidence
+    {
+      get => graphRunner.minTrackingConfidence;
+      set => graphRunner.minTrackingConfidence = value;
+    }
+
     protected override void SetupScreen(ImageSource imageSource)
     {
       base.SetupScreen(imageSource);

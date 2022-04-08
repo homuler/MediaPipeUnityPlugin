@@ -15,11 +15,13 @@ namespace Mediapipe.Unity.FaceDetection.UI
   public class FaceDetectionConfig : ModalContents
   {
     private const string _ModelSelectionPath = "Scroll View/Viewport/Contents/Model Selection/Dropdown";
+    private const string _MinDetectionConfidencePath = "Scroll View/Viewport/Contents/Min Detection Confidence/InputField";
     private const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
     private const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
 
     private FaceDetectionSolution _solution;
     private Dropdown _modelSelectionInput;
+    private InputField _minDetectionConfidenceInput;
     private Dropdown _runningModeInput;
     private InputField _timeoutMillisecInput;
 
@@ -42,6 +44,15 @@ namespace Mediapipe.Unity.FaceDetection.UI
       _isChanged = true;
     }
 
+    public void SetMinDetectionConfidence()
+    {
+      if (float.TryParse(_minDetectionConfidenceInput.text, out var value))
+      {
+        _solution.minDetectionConfidence = value;
+        _isChanged = true;
+      }
+    }
+
     public void SwitchRunningMode()
     {
       _solution.runningMode = (RunningMode)_runningModeInput.value;
@@ -60,6 +71,7 @@ namespace Mediapipe.Unity.FaceDetection.UI
     private void InitializeContents()
     {
       InitializeModelSelection();
+      InitializeMinDetectionConfidence();
       InitializeRunningMode();
       InitializeTimeoutMillisec();
     }
@@ -81,6 +93,13 @@ namespace Mediapipe.Unity.FaceDetection.UI
       }
 
       _modelSelectionInput.onValueChanged.AddListener(delegate { SwitchModelType(); });
+    }
+
+    private void InitializeMinDetectionConfidence()
+    {
+      _minDetectionConfidenceInput = gameObject.transform.Find(_MinDetectionConfidencePath).gameObject.GetComponent<InputField>();
+      _minDetectionConfidenceInput.text = _solution.minDetectionConfidence.ToString();
+      _minDetectionConfidenceInput.onValueChanged.AddListener(delegate { SetMinDetectionConfidence(); });
     }
 
     private void InitializeRunningMode()

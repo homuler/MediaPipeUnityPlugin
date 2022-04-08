@@ -20,6 +20,12 @@ namespace Mediapipe.Unity.FaceDetection
       set => graphRunner.modelType = value;
     }
 
+    public float minDetectionConfidence
+    {
+      get => graphRunner.minDetectionConfidence;
+      set => graphRunner.minDetectionConfidence = value;
+    }
+
     protected override void OnStartRun()
     {
       if (!runningMode.IsSynchronous())

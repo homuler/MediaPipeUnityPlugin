@@ -16,12 +16,16 @@ namespace Mediapipe.Unity.HandTracking.UI
   {
     private const string _ModelComplexityPath = "Scroll View/Viewport/Contents/Model Complexity/Dropdown";
     private const string _MaxNumHandsPath = "Scroll View/Viewport/Contents/Max Num Hands/InputField";
+    private const string _MinDetectionConfidencePath = "Scroll View/Viewport/Contents/Min Detection Confidence/InputField";
+    private const string _MinTrackingConfidencePath = "Scroll View/Viewport/Contents/Min Tracking Confidence/InputField";
     private const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
     private const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
 
     private HandTrackingSolution _solution;
     private Dropdown _modelComplexityInput;
     private InputField _maxNumHandsInput;
+    private InputField _minDetectionConfidenceInput;
+    private InputField _minTrackingConfidenceInput;
     private Dropdown _runningModeInput;
     private InputField _timeoutMillisecInput;
 
@@ -53,6 +57,24 @@ namespace Mediapipe.Unity.HandTracking.UI
       }
     }
 
+    public void SetMinDetectionConfidence()
+    {
+      if (float.TryParse(_minDetectionConfidenceInput.text, out var value))
+      {
+        _solution.minDetectionConfidence = value;
+        _isChanged = true;
+      }
+    }
+
+    public void SetMinTrackingConfidence()
+    {
+      if (float.TryParse(_minTrackingConfidenceInput.text, out var value))
+      {
+        _solution.minTrackingConfidence = value;
+        _isChanged = true;
+      }
+    }
+
     public void SwitchRunningMode()
     {
       _solution.runningMode = (RunningMode)_runningModeInput.value;
@@ -72,6 +94,8 @@ namespace Mediapipe.Unity.HandTracking.UI
     {
       InitializeModelComplexity();
       InitializeMaxNumHands();
+      InitializeMinDetectionConfidence();
+      InitializeMinTrackingConfidence();
       InitializeRunningMode();
       InitializeTimeoutMillisec();
     }
@@ -100,6 +124,20 @@ namespace Mediapipe.Unity.HandTracking.UI
       _maxNumHandsInput = gameObject.transform.Find(_MaxNumHandsPath).gameObject.GetComponent<InputField>();
       _maxNumHandsInput.text = _solution.maxNumHands.ToString();
       _maxNumHandsInput.onEndEdit.AddListener(delegate { UpdateMaxNumHands(); });
+    }
+
+    private void InitializeMinDetectionConfidence()
+    {
+      _minDetectionConfidenceInput = gameObject.transform.Find(_MinDetectionConfidencePath).gameObject.GetComponent<InputField>();
+      _minDetectionConfidenceInput.text = _solution.minDetectionConfidence.ToString();
+      _minDetectionConfidenceInput.onValueChanged.AddListener(delegate { SetMinDetectionConfidence(); });
+    }
+
+    private void InitializeMinTrackingConfidence()
+    {
+      _minTrackingConfidenceInput = gameObject.transform.Find(_MinTrackingConfidencePath).gameObject.GetComponent<InputField>();
+      _minTrackingConfidenceInput.text = _solution.minTrackingConfidence.ToString();
+      _minTrackingConfidenceInput.onValueChanged.AddListener(delegate { SetMinTrackingConfidence(); });
     }
 
     private void InitializeRunningMode()
