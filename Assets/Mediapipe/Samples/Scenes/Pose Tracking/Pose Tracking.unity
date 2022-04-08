@@ -2339,8 +2339,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 2100215833}
-  _maskWidth: 512
-  _maskHeight: 512
 --- !u!1 &1936307553
 GameObject:
   m_ObjectHideFlags: 0
@@ -2753,6 +2751,11 @@ PrefabInstance:
       objectReference: {fileID: 1889892134}
     - target: {fileID: 5850198979010014858, guid: 24d349d9c78db0f3d94d4657029f4c5e,
         type: 3}
+      propertyPath: _color.a
+      value: 0.49803922
+      objectReference: {fileID: 0}
+    - target: {fileID: 5850198979010014858, guid: 24d349d9c78db0f3d94d4657029f4c5e,
+        type: 3}
       propertyPath: _color.b
       value: 0
       objectReference: {fileID: 0}
@@ -2764,6 +2767,31 @@ PrefabInstance:
     - target: {fileID: 5850198979010014858, guid: 24d349d9c78db0f3d94d4657029f4c5e,
         type: 3}
       propertyPath: _color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5850198979010014858, guid: 24d349d9c78db0f3d94d4657029f4c5e,
+        type: 3}
+      propertyPath: _reverse
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5850198979010014858, guid: 24d349d9c78db0f3d94d4657029f4c5e,
+        type: 3}
+      propertyPath: _threshold
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5850198979010014858, guid: 24d349d9c78db0f3d94d4657029f4c5e,
+        type: 3}
+      propertyPath: _maskShader
+      value: 
+      objectReference: {fileID: 4800000, guid: d684c6d125278d05fbb1904ee5103f3a, type: 3}
+    - target: {fileID: 5850198979010014858, guid: 24d349d9c78db0f3d94d4657029f4c5e,
+        type: 3}
+      propertyPath: _maxConfidence
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5850198979010014858, guid: 24d349d9c78db0f3d94d4657029f4c5e,
+        type: 3}
+      propertyPath: _minConfidence
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _screen: {fileID: 0}
-  _maskShader: {fileID: 4800000, guid: 7adfa9ebe754989caa35dbb2c5526d1c, type: 3}
+  _maskShader: {fileID: 0}
   _maskTexture: {fileID: 0}
   _color: {r: 0, g: 0, b: 1, a: 1}
-  _minConfidence: 0.9
+  _threshold: 0.9
