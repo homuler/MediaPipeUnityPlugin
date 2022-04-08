@@ -49,7 +49,7 @@ node {
             graph.AddPacketToInputStream("in", new StringPacket("Hello World!", new Timestamp(i))).AssertOk();
         }
 
-        graph.CloseInputStream("in");
+        graph.CloseInputStream("in").AssertOk();
         var packet = new StringPacket();
 
         while (poller.Next(packet))
