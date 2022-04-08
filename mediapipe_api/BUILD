@@ -116,6 +116,7 @@ cc_library(
             "@com_google_mediapipe//mediapipe/graphs/object_detection:desktop_tflite_calculators",
             "@com_google_mediapipe//mediapipe/graphs/object_detection_3d:desktop_cpu_calculators",
             "@com_google_mediapipe//mediapipe/graphs/pose_tracking:pose_tracking_cpu_deps",
+            "@com_google_mediapipe//mediapipe/graphs/selfie_segmentation:selfie_segmentation_cpu_deps",
             "@com_google_mediapipe//mediapipe/graphs/tracking:desktop_calculators",
         ],
         "//conditions:default": [
@@ -137,6 +138,7 @@ cc_library(
             "@com_google_mediapipe//mediapipe/graphs/object_detection:mobile_calculators",
             "@com_google_mediapipe//mediapipe/graphs/object_detection_3d:mobile_calculators",
             "@com_google_mediapipe//mediapipe/graphs/pose_tracking:pose_tracking_gpu_deps",
+            "@com_google_mediapipe//mediapipe/graphs/selfie_segmentation:selfie_segmentation_gpu_deps",
             "@com_google_mediapipe//mediapipe/graphs/tracking:mobile_calculators",
         ],
     }),
@@ -191,6 +193,7 @@ pkg_asset(
         "@com_google_mediapipe//mediapipe/modules/pose_landmark:pose_landmark_full.tflite",
         "@com_google_mediapipe//mediapipe/modules/pose_landmark:pose_landmark_heavy.tflite",
         "@com_google_mediapipe//mediapipe/modules/pose_landmark:pose_landmark_lite.tflite",
+        "@com_google_mediapipe//mediapipe/modules/selfie_segmentation:selfie_segmentation.tflite",
     ],
 )
 
