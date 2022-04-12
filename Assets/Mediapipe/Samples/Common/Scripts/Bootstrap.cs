@@ -40,6 +40,8 @@ namespace Mediapipe.Unity
       Logger.SetLogger(new MemoizedLogger(100));
       Logger.minLogLevel = Logger.LogLevel.Debug;
 
+      Protobuf.SetLogHandler(Protobuf.DefaultLogHandler);
+
       Logger.LogInfo(_TAG, "Starting console window...");
       Instantiate(_consolePrefab, _screen.transform);
       yield return new WaitForEndOfFrame();
@@ -131,6 +133,7 @@ namespace Mediapipe.Unity
         Glog.Shutdown();
       }
 
+      Protobuf.ResetLogHandler();
       Logger.SetLogger(null);
     }
   }

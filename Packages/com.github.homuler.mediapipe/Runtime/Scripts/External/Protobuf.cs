@@ -6,9 +6,51 @@
 
 namespace Mediapipe
 {
-  internal static class Protobuf
+  public static class Protobuf
   {
-    public delegate void ProtobufLogHandler(int level, string filename, int line, string message);
-    // TODO: Overwrite protobuf logger to show logs in Console Window.
+    public delegate void LogHandler(int level, string filename, int line, string message);
+    public static readonly LogHandler DefaultLogHandler = LogProtobufMessage;
+
+    public static void SetLogHandler(LogHandler logHandler)
+    {
+      UnsafeNativeMethods.google_protobuf__SetLogHandler__PF(logHandler).Assert();
+    }
+
+    /// <summary>
+    ///   Reset the <see cref="LogHandler" />.
+    ///   If <see cref="SetLogHandler" /> is called, this method should be called before the program exits.
+    /// </summary>
+    public static void ResetLogHandler()
+    {
+      UnsafeNativeMethods.google_protobuf__ResetLogHandler().Assert();
+    }
+
+    [AOT.MonoPInvokeCallback(typeof(LogHandler))]
+    private static void LogProtobufMessage(int level, string filename, int line, string message)
+    {
+      switch (level)
+      {
+        case 1:
+          {
+            UnityEngine.Debug.LogWarning($"[libprotobuf WARNING {filename}:{line}] {message}");
+            return;
+          }
+        case 2:
+          {
+            UnityEngine.Debug.LogError($"[libprotobuf ERROR {filename}:{line}] {message}");
+            return;
+          }
+        case 3:
+          {
+            UnityEngine.Debug.LogError($"[libprotobuf FATAL {filename}:{line}] {message}");
+            return;
+          }
+        default:
+          {
+            UnityEngine.Debug.Log($"[libprotobuf INFO {filename}:{line}] {message}");
+            return;
+          }
+      }
+    }
   }
 }
