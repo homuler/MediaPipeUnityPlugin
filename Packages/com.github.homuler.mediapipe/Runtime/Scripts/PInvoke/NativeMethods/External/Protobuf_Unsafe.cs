@@ -13,7 +13,10 @@ namespace Mediapipe
   {
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode google_protobuf__SetLogHandler__PF(
-        [MarshalAs(UnmanagedType.FunctionPtr)] Protobuf.ProtobufLogHandler logHandler);
+        [MarshalAs(UnmanagedType.FunctionPtr)] Protobuf.LogHandler logHandler);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode google_protobuf__ResetLogHandler();
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern void mp_api_SerializedProtoArray__delete(IntPtr serializedProtoVectorData, int size);

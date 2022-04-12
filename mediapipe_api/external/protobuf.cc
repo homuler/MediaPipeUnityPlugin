@@ -15,6 +15,7 @@ using google::protobuf::LogLevel;
 
 namespace {
 LogHandler* logHandler;
+google::protobuf::LogHandler* defaultLogHandler;
 }
 
 void HandleProtobufLog(LogLevel level, const char* filename, int line, const std::string& message) { logHandler(level, filename, line, message.c_str()); }
@@ -22,7 +23,21 @@ void HandleProtobufLog(LogLevel level, const char* filename, int line, const std
 MpReturnCode google_protobuf__SetLogHandler__PF(LogHandler* handler) {
   TRY
     logHandler = handler;
-    google::protobuf::SetLogHandler(&HandleProtobufLog);
+    auto prevLogHandler = google::protobuf::SetLogHandler(&HandleProtobufLog);
+
+    if (defaultLogHandler == nullptr) {
+      defaultLogHandler = prevLogHandler;
+    }
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
+MpReturnCode google_protobuf__ResetLogHandler() {
+  TRY
+    if (logHandler) {
+      google::protobuf::SetLogHandler(defaultLogHandler);
+    }
+    logHandler = nullptr;
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }
