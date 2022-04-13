@@ -5,6 +5,9 @@
 // https://opensource.org/licenses/MIT.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Mediapipe.Unity
 {
@@ -22,6 +25,7 @@ namespace Mediapipe.Unity
   {
     private static int _Counter = 0;
     private static readonly GlobalInstanceTable<int, OutputStream<TPacket, TValue>> _InstanceTable = new GlobalInstanceTable<int, OutputStream<TPacket, TValue>>(20);
+    private static readonly Dictionary<int, Status> _CallbackStatus = new Dictionary<int, Status>();
 
     protected readonly CalculatorGraph calculatorGraph;
 
@@ -59,6 +63,8 @@ namespace Mediapipe.Unity
       }
     }
 
+    private Status _callbackStatus;
+
     protected bool canTestPresence => presenceStreamName != null;
 
     /// <summary>
@@ -86,7 +92,9 @@ namespace Mediapipe.Unity
       this.streamName = streamName;
       this.observeTimestampBounds = observeTimestampBounds;
       this.timeoutMicrosec = timeoutMicrosec;
+
       _InstanceTable.Add(_id, this);
+      CompressCallbackStatus();
     }
 
     /// <summary>
@@ -363,11 +371,11 @@ namespace Mediapipe.Unity
         var isFound = _InstanceTable.TryGetValue(streamId, out var outputStream);
         if (!isFound)
         {
-          return Status.FailedPrecondition($"OutputStream with id {streamId} is not found").mpPtr;
+          return GetPinnedStatusPtr(streamId, Status.FailedPrecondition($"OutputStream with id {streamId} is not found"));
         }
         if (outputStream.calculatorGraph.mpPtr != graphPtr)
         {
-          return Status.FailedPrecondition($"OutputStream is found, but is not linked to the specified CalclatorGraph").mpPtr;
+          return GetPinnedStatusPtr(streamId, Status.FailedPrecondition($"OutputStream is found, but is not linked to the specified CalclatorGraph"));
         }
 
         outputStream.referencePacket.SwitchNativePtr(packetPtr);
@@ -377,11 +385,48 @@ namespace Mediapipe.Unity
         }
         outputStream.referencePacket.ReleaseMpResource();
 
-        return Status.Ok().mpPtr;
+        return outputStream.GetPinnedStatusPtr(Status.Ok());
       }
       catch (Exception e)
       {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
+        return GetPinnedStatusPtr(streamId, Status.FailedPrecondition(e.ToString()));
+      }
+    }
+
+    /// <summary>
+    ///   To prevent <paramref name="status" /> from being GCed, store it in <see cref="_CallbackStatus" />.
+    /// </summary>
+    /// <remarks>
+    ///   Prefer the instance method with the same name.
+    /// </remarks>
+    protected static IntPtr GetPinnedStatusPtr(int streamId, Status status)
+    {
+      lock (((ICollection)_CallbackStatus).SyncRoot)
+      {
+        _CallbackStatus[streamId] = status;
+        return status.mpPtr;
+      }
+    }
+
+    /// <summary>
+    ///   To prevent <paramref name="status" /> from being GCed, store it in <see cref="_callbackStatus" />.
+    /// </summary>
+    protected IntPtr GetPinnedStatusPtr(Status status)
+    {
+      _callbackStatus = status;
+      return status.mpPtr;
+    }
+
+    protected static void CompressCallbackStatus()
+    {
+      lock (((ICollection)_CallbackStatus).SyncRoot)
+      {
+        var deadKeys = _CallbackStatus.Where(x => !_InstanceTable.ContainsKey(x.Key)).Select(x => x.Key);
+
+        foreach (var key in deadKeys)
+        {
+          var _ = _CallbackStatus.Remove(key);
+        }
       }
     }
   }
