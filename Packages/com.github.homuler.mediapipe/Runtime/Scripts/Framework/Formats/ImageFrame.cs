@@ -33,19 +33,37 @@ namespace Mediapipe
       this.ptr = ptr;
     }
 
-    public ImageFrame(ImageFormat.Types.Format format, int width, int height, int widthStep, NativeArray<byte> pixelData) : base()
+    public ImageFrame(ImageFormat.Types.Format format, int width, int height, int widthStep, IntPtr pixelData, Deleter deleter) : base()
     {
       unsafe
       {
-        UnsafeNativeMethods.mp_ImageFrame__ui_i_i_i_Pui8_PF(
-          format, width, height, widthStep,
-          (IntPtr)NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(pixelData),
-          ReleasePixelData,
-          out var ptr
-        ).Assert();
+        UnsafeNativeMethods.mp_ImageFrame__ui_i_i_i_Pui8_PF(format, width, height, widthStep, pixelData, deleter, out var ptr).Assert();
         this.ptr = ptr;
       }
     }
+
+    public unsafe ImageFrame(ImageFormat.Types.Format format, int width, int height, int widthStep, NativeArray<byte> pixelData, Deleter deleter)
+      : this(format, width, height, widthStep, (IntPtr)NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr(pixelData), deleter)
+    { }
+
+    /// <summary>
+    ///   Initialize an <see cref="ImageFrame" />.
+    /// </summary>
+    /// <remarks>
+    ///   <paramref name="pixelData" /> won't be released if the instance is disposed of.<br />
+    ///   It's useful when:
+    ///   <list type="bullet">
+    ///     <item>
+    ///       <description>You can reuse the memory allocated to <paramref name="pixelData" />.</description>
+    ///     </item>
+    ///     <item>
+    ///       <description>You've not allocated the memory (e.g. <see cref="Texture2D.GetRawTextureData" />).</description>
+    ///     </item>
+    ///   </list>
+    /// </remarks>
+    public ImageFrame(ImageFormat.Types.Format format, int width, int height, int widthStep, NativeArray<byte> pixelData)
+          : this(format, width, height, widthStep, pixelData, VoidDeleter)
+    { }
 
     protected override void DeleteMpPtr()
     {
@@ -53,10 +71,7 @@ namespace Mediapipe
     }
 
     [AOT.MonoPInvokeCallback(typeof(Deleter))]
-    private static void ReleasePixelData(IntPtr ptr)
-    {
-      // Do nothing (pixelData is moved)
-    }
+    private static void VoidDeleter(IntPtr _) { }
 
     /// <returns>
     ///   The number of channels for a <paramref name="format" />.
