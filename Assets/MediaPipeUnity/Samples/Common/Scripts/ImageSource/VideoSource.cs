@@ -29,8 +29,6 @@ namespace Mediapipe.Unity
 
     private VideoPlayer _videoPlayer;
 
-    public override SourceType type => SourceType.Video;
-
     public override string sourceName => video != null ? video.name : null;
 
     public override string[] sourceCandidateNames => _availableSources?.Select(source => source.name).ToArray();

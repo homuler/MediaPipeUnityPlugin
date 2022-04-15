@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Mediapipe.Unity.UI
@@ -18,6 +19,7 @@ namespace Mediapipe.Unity.UI
     private const string _ResolutionPath = "Scroll View/Viewport/Contents/Resolution/Dropdown";
     private const string _IsHorizontallyFlippedPath = "Scroll View/Viewport/Contents/IsHorizontallyFlipped/Toggle";
 
+    private Solution _solution;
     private Dropdown _sourceTypeInput;
     private Dropdown _sourceInput;
     private Dropdown _resolutionInput;
@@ -27,6 +29,7 @@ namespace Mediapipe.Unity.UI
 
     private void Start()
     {
+      _solution = GameObject.Find("Solution").GetComponent<Solution>();
       InitializeContents();
     }
 
@@ -49,10 +52,10 @@ namespace Mediapipe.Unity.UI
       _sourceTypeInput.ClearOptions();
       _sourceTypeInput.onValueChanged.RemoveAllListeners();
 
-      var options = new List<string>(Enum.GetNames(typeof(ImageSource.SourceType)));
+      var options = Enum.GetNames(typeof(ImageSourceType)).Where(x => x != ImageSourceType.Unknown.ToString()).ToList();
       _sourceTypeInput.AddOptions(options);
 
-      var currentSourceType = ImageSourceProvider.ImageSource.type;
+      var currentSourceType = ImageSourceProvider.CurrentSourceType;
       var defaultValue = options.FindIndex(option => option == currentSourceType.ToString());
 
       if (defaultValue >= 0)
@@ -62,7 +65,7 @@ namespace Mediapipe.Unity.UI
 
       _sourceTypeInput.onValueChanged.AddListener(delegate
       {
-        ImageSourceProvider.SwitchSource((ImageSource.SourceType)_sourceTypeInput.value);
+        ImageSourceProvider.ImageSource = _solution.bootstrap.GetImageSource((ImageSourceType)_sourceTypeInput.value);
         _isChanged = true;
         InitializeContents();
       });
