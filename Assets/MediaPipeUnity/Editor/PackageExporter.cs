@@ -31,14 +31,6 @@ using UnityEngine;
 
 public static class PackageExporter
 {
-  private static readonly string[] _TargetExtensions = new string[] {
-    ".json", ".meta",
-    ".asmdef", ".cs",
-    ".mat", "png", ".prefab", ".shader",
-    ".bytes", ".txt", // MediaPipe resource files
-    ".aar", ".dll", ".dylib", ".so", ".framework", // native libraries
-  };
-
   [MenuItem("Tools/Export Unitypackage")]
   public static void Export()
   {
@@ -48,9 +40,8 @@ public static class PackageExporter
     var fileName = string.IsNullOrEmpty(version) ? "MediaPipeUnity.unitypackage" : $"MediaPipeUnity.{version}.unitypackage";
     var exportPath = "./" + fileName;
 
-
-    var pluginAssets = EnumerateAssets(Path.Combine("Packages", "com.github.homuler.mediapipe"));
-    var sampleAssets = EnumerateAssets(Path.Combine("Assets", "MediaPipeUnity"));
+    var pluginAssets = EnumerateAssets(Path.Combine("Packages", "com.github.homuler.mediapipe")); // export all the files
+    var sampleAssets = EnumerateAssets(Path.Combine("Assets", "MediaPipeUnity", "Samples", "Scenes"), new string[] { ".unity" });
     var assets = pluginAssets.Concat(sampleAssets).ToArray();
 
     Debug.Log("Export below files" + Environment.NewLine + string.Join(Environment.NewLine, assets));
@@ -58,7 +49,7 @@ public static class PackageExporter
     AssetDatabase.ExportPackage(
         assets,
         exportPath,
-        ExportPackageOptions.Default);
+        ExportPackageOptions.IncludeDependencies);
 
     Debug.Log("Export complete: " + Path.GetFullPath(exportPath));
   }
@@ -69,8 +60,12 @@ public static class PackageExporter
     var assetRoot = Path.Combine(projectRoot, path);
 
     return Directory.EnumerateFiles(assetRoot, "*", SearchOption.AllDirectories)
-        .Where(x => Array.IndexOf(_TargetExtensions, Path.GetExtension(x)) >= 0)
-        .Select(x => path + x.Replace(projectRoot, "").Replace(@"\", "/"));
+        .Select(x => path + x.Replace(assetRoot, "").Replace(@"\", "/"));
+  }
+
+  private static IEnumerable<string> EnumerateAssets(string path, string[] extensions)
+  {
+    return EnumerateAssets(path).Where(x => Array.IndexOf(extensions, Path.GetExtension(x)) >= 0);
   }
 
   private static string GetVersion(string packagePath)
