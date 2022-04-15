@@ -14,7 +14,13 @@ namespace Mediapipe.Unity
   public class StaticImageSource : ImageSource
   {
     [SerializeField] private Texture[] _availableSources;
-    [SerializeField] private ResolutionStruct[] _defaultAvailableResolutions;
+
+    [SerializeField]
+    private ResolutionStruct[] _defaultAvailableResolutions = new ResolutionStruct[] {
+      new ResolutionStruct(512, 512, 0),
+      new ResolutionStruct(640, 480, 0),
+      new ResolutionStruct(1280, 720, 0),
+    };
 
     private Texture2D _outputTexture;
     private Texture _image;
@@ -27,8 +33,6 @@ namespace Mediapipe.Unity
         resolution = GetDefaultResolution();
       }
     }
-
-    public override SourceType type => SourceType.Image;
 
     public override double frameRate => 0;
 

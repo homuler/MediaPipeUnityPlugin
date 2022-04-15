@@ -47,13 +47,6 @@ namespace Mediapipe.Unity
       }
     }
 
-    public enum SourceType
-    {
-      Camera = 0,
-      Image = 1,
-      Video = 2,
-    }
-
     public ResolutionStruct resolution { get; protected set; }
 
     /// <remarks>
@@ -75,7 +68,6 @@ namespace Mediapipe.Unity
     public virtual bool isFrontFacing { get; } = false;
     public virtual RotationAngle rotation { get; } = RotationAngle.Rotation0;
 
-    public abstract SourceType type { get; }
     public abstract string sourceName { get; }
     public abstract string[] sourceCandidateNames { get; }
     public abstract ResolutionStruct[] availableResolutions { get; }

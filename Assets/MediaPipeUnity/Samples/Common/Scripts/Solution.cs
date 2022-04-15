@@ -16,20 +16,12 @@ namespace Mediapipe.Unity
     protected virtual string TAG => GetType().Name;
 #pragma warning restore IDE1006
 
-    protected Bootstrap bootstrap;
+    public Bootstrap bootstrap;
     protected bool isPaused;
 
     protected virtual IEnumerator Start()
     {
-      var bootstrapObj = GameObject.Find("Bootstrap");
-
-      if (bootstrapObj == null)
-      {
-        Logger.LogError(TAG, "Bootstrap is not found. Please play 'Start Scene' first");
-        yield break;
-      }
-
-      bootstrap = bootstrapObj.GetComponent<Bootstrap>();
+      bootstrap = FindBootstrap();
       yield return new WaitUntil(() => bootstrap.isFinished);
 
       Play();
@@ -94,6 +86,32 @@ namespace Mediapipe.Unity
       {
         textureFrame.ReadTextureFromOnCPU(sourceTexture);
       }
+    }
+
+    protected Bootstrap FindBootstrap()
+    {
+      var bootstrapObj = GameObject.Find("Bootstrap");
+
+      if (bootstrapObj != null)
+      {
+        return bootstrapObj.GetComponent<Bootstrap>();
+      }
+
+      Logger.LogWarning(TAG, "Global Bootstrap instance is not found (maybe running a sample scene directly), "
+                            + "so activating a fallback Bootstrap instance attached to each Solution object");
+
+      var bootstrap = GetComponent<Bootstrap>();
+      bootstrap.enabled = true;
+
+      // hide menu button when trying a single scene.
+      DisableMenuButton();
+      return bootstrap;
+    }
+
+    private void DisableMenuButton()
+    {
+      var menuButton = GameObject.Find("MenuButton");
+      menuButton.SetActive(false);
     }
   }
 }

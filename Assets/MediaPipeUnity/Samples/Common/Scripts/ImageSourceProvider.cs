@@ -4,39 +4,41 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using UnityEngine;
-
 namespace Mediapipe.Unity
 {
   public static class ImageSourceProvider
   {
-    public static ImageSource ImageSource { get; private set; }
-
-    public static void SwitchSource(ImageSource.SourceType sourceType)
+    private static ImageSource _ImageSource;
+    public static ImageSource ImageSource
     {
-      var obj = GameObject.Find("Image Source");
-
-      switch (sourceType)
+      get => _ImageSource;
+      set
       {
-        case ImageSource.SourceType.Camera:
-          {
-            ImageSource = obj.GetComponent<WebCamSource>();
-            break;
-          }
-        case ImageSource.SourceType.Image:
-          {
-            ImageSource = obj.GetComponent<StaticImageSource>();
-            break;
-          }
-        case ImageSource.SourceType.Video:
-          {
-            ImageSource = obj.GetComponent<VideoSource>();
-            break;
-          }
-        default:
-          {
-            throw new System.ArgumentException($"Unknown Image Source: {sourceType}");
-          }
+        if (value != null && !value.enabled)
+        {
+          value.enabled = true;
+        }
+        _ImageSource = value;
+      }
+    }
+
+    public static ImageSourceType CurrentSourceType
+    {
+      get
+      {
+        if (_ImageSource is WebCamSource)
+        {
+          return ImageSourceType.WebCamera;
+        }
+        if (_ImageSource is StaticImageSource)
+        {
+          return ImageSourceType.Image;
+        }
+        if (_ImageSource is VideoSource)
+        {
+          return ImageSourceType.Video;
+        }
+        return ImageSourceType.Unknown;
       }
     }
   }

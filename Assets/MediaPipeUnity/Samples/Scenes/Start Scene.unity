@@ -133,6 +133,10 @@ GameObject:
   m_Component:
   - component: {fileID: 542027324}
   - component: {fileID: 542027323}
+  - component: {fileID: 542027325}
+  - component: {fileID: 542027328}
+  - component: {fileID: 542027327}
+  - component: {fileID: 542027326}
   m_Layer: 0
   m_Name: Bootstrap
   m_TagString: Global Resource
@@ -152,9 +156,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4d846393f8d9f20fa64b924b0d95e68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _screen: {fileID: 941420919}
-  _consolePrefab: {fileID: 3481718972971892304, guid: 3bd1ffa1267fbef6fbdd99b4a8e699ff,
-    type: 3}
   _defaultImageSource: 0
   _preferableInferenceMode: 0
   _assetLoaderType: 0
@@ -173,59 +174,42 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &805128649
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 805128650}
-  - component: {fileID: 805128653}
-  - component: {fileID: 805128652}
-  - component: {fileID: 805128651}
-  m_Layer: 0
-  m_Name: Image Source
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &805128650
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 805128649}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &805128651
+--- !u!114 &542027325
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 805128649}
+  m_GameObject: {fileID: 542027322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ca6b5afaa693af02957f0d68cf058d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _screen: {fileID: 941420919}
+  _consolePrefab: {fileID: 2286573430237446446, guid: 5920f5c607ecc6ea88b86fbecab72418,
+    type: 3}
+--- !u!114 &542027326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 542027322}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 04085488e5fac35599866a2a6fceeda3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _availableSources: []
---- !u!114 &805128652
+  _availableSources:
+  - {fileID: 32900000, guid: f7b4fac4ac8f4aab0958fc99c452a503, type: 3}
+--- !u!114 &542027327
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 805128649}
+  m_GameObject: {fileID: 542027322}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bd7955705ab46c72b9124bb116a2dca9, type: 3}
@@ -242,13 +226,13 @@ MonoBehaviour:
   - width: 1280
     height: 720
     frameRate: 0
---- !u!114 &805128653
+--- !u!114 &542027328
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 805128649}
+  m_GameObject: {fileID: 542027322}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 498146e99d4934673bd948c8be11227e, type: 3}
@@ -256,11 +240,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _preferableDefaultWidth: 1280
   _defaultAvailableResolutions:
+  - width: 176
+    height: 144
+    frameRate: 30
+  - width: 320
+    height: 240
+    frameRate: 30
+  - width: 424
+    height: 240
+    frameRate: 30
+  - width: 640
+    height: 360
+    frameRate: 30
   - width: 640
     height: 480
     frameRate: 30
+  - width: 848
+    height: 480
+    frameRate: 30
+  - width: 960
+    height: 540
+    frameRate: 30
   - width: 1280
     height: 720
+    frameRate: 30
+  - width: 1600
+    height: 896
     frameRate: 30
   - width: 1920
     height: 1080

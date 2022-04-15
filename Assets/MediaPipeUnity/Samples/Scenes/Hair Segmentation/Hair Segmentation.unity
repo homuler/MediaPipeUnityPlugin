@@ -279,8 +279,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 1452360049}
-  _maskWidth: 512
-  _maskHeight: 512
 --- !u!114 &107400413 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2020366215714292840, guid: 5713b959e3c77a58fb258133fc8e4aef,
@@ -371,6 +369,10 @@ GameObject:
   - component: {fileID: 1064799462}
   - component: {fileID: 1064799460}
   - component: {fileID: 1064799463}
+  - component: {fileID: 1064799467}
+  - component: {fileID: 1064799466}
+  - component: {fileID: 1064799465}
+  - component: {fileID: 1064799464}
   m_Layer: 0
   m_Name: Solution
   m_TagString: Untagged
@@ -394,9 +396,6 @@ MonoBehaviour:
   _gpuConfig: {fileID: 4900000, guid: e6797b0a13853e9bc932f11e7fcc9036, type: 3}
   _openGlEsConfig: {fileID: 4900000, guid: f1b291f7d16d89cd19d0384c2cf00c9e, type: 3}
   _timeoutMicrosec: 50000
-  OnHairMaskOutput:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!4 &1064799461
 Transform:
   m_ObjectHideFlags: 0
@@ -423,6 +422,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66bf0cd8d727b10e1a965a4c97487d05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bootstrap: {fileID: 0}
   screen: {fileID: 107400413}
   graphRunner: {fileID: 1064799460}
   textureFramePool: {fileID: 1064799463}
@@ -441,6 +441,102 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _poolSize: 10
+--- !u!114 &1064799464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064799459}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04085488e5fac35599866a2a6fceeda3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _availableSources: []
+--- !u!114 &1064799465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064799459}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd7955705ab46c72b9124bb116a2dca9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _availableSources: []
+  _defaultAvailableResolutions:
+  - width: 512
+    height: 512
+    frameRate: 0
+  - width: 640
+    height: 480
+    frameRate: 0
+  - width: 1280
+    height: 720
+    frameRate: 0
+--- !u!114 &1064799466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064799459}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 498146e99d4934673bd948c8be11227e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _preferableDefaultWidth: 1280
+  _defaultAvailableResolutions:
+  - width: 176
+    height: 144
+    frameRate: 30
+  - width: 320
+    height: 240
+    frameRate: 30
+  - width: 424
+    height: 240
+    frameRate: 30
+  - width: 640
+    height: 360
+    frameRate: 30
+  - width: 640
+    height: 480
+    frameRate: 30
+  - width: 848
+    height: 480
+    frameRate: 30
+  - width: 960
+    height: 540
+    frameRate: 30
+  - width: 1280
+    height: 720
+    frameRate: 30
+  - width: 1600
+    height: 896
+    frameRate: 30
+  - width: 1920
+    height: 1080
+    frameRate: 30
+--- !u!114 &1064799467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064799459}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4d846393f8d9f20fa64b924b0d95e68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _defaultImageSource: 0
+  _preferableInferenceMode: 0
+  _assetLoaderType: 0
+  _enableGlog: 1
 --- !u!1001 &1452360048
 PrefabInstance:
   m_ObjectHideFlags: 0
