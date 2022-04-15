@@ -31,6 +31,14 @@ using UnityEngine;
 
 public static class PackageExporter
 {
+  private static readonly string[] _TargetExtensions = new string[] {
+    ".json", ".meta",
+    ".asmdef", ".cs",
+    ".mat", "png", ".prefab", ".shader",
+    ".bytes", ".txt", // MediaPipe resource files
+    ".aar", ".dll", ".dylib", ".so", ".framework", // native libraries
+  };
+
   [MenuItem("Tools/Export Unitypackage")]
   public static void Export()
   {
@@ -40,16 +48,10 @@ public static class PackageExporter
     var fileName = string.IsNullOrEmpty(version) ? "MediaPipeUnity.unitypackage" : $"MediaPipeUnity.{version}.unitypackage";
     var exportPath = "./" + fileName;
 
-    var targetExts = new string[] {
-      ".json", ".meta",
-      ".asmdef", ".cs",
-      ".mat", ".prefab", ".shader",
-      ".aar", ".dll", ".dylib", ".so", ".framework",
-    };
-    var assets = Directory.EnumerateFiles(packageRoot, "*", SearchOption.AllDirectories)
-        .Where(x => Array.IndexOf(targetExts, Path.GetExtension(x)) >= 0)
-        .Select(x => "Packages/com.github.homuler.mediapipe" + x.Replace(packageRoot, "").Replace(@"\", "/"))
-        .ToArray();
+
+    var pluginAssets = EnumerateAssets(Path.Combine("Packages", "com.github.homuler.mediapipe"));
+    var sampleAssets = EnumerateAssets(Path.Combine("Assets", "MediaPipeUnity"));
+    var assets = pluginAssets.Concat(sampleAssets).ToArray();
 
     Debug.Log("Export below files" + Environment.NewLine + string.Join(Environment.NewLine, assets));
 
@@ -59,6 +61,16 @@ public static class PackageExporter
         ExportPackageOptions.Default);
 
     Debug.Log("Export complete: " + Path.GetFullPath(exportPath));
+  }
+
+  private static IEnumerable<string> EnumerateAssets(string path)
+  {
+    var projectRoot = Path.Combine(Application.dataPath, "..");
+    var assetRoot = Path.Combine(projectRoot, path);
+
+    return Directory.EnumerateFiles(assetRoot, "*", SearchOption.AllDirectories)
+        .Where(x => Array.IndexOf(_TargetExtensions, Path.GetExtension(x)) >= 0)
+        .Select(x => path + x.Replace(projectRoot, "").Replace(@"\", "/"));
   }
 
   private static string GetVersion(string packagePath)
