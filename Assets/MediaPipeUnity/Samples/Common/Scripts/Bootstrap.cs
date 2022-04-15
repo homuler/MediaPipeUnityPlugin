@@ -7,8 +7,6 @@
 using System.Collections;
 using System.IO;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 namespace Mediapipe.Unity
 {
@@ -24,9 +22,7 @@ namespace Mediapipe.Unity
 
     private const string _TAG = nameof(Bootstrap);
 
-    [SerializeField] private Image _screen;
-    [SerializeField] private GameObject _consolePrefab;
-    [SerializeField] private ImageSource.SourceType _defaultImageSource;
+    [SerializeField] private ImageSourceType _defaultImageSource;
     [SerializeField] private InferenceMode _preferableInferenceMode;
     [SerializeField] private AssetLoaderType _assetLoaderType;
     [SerializeField] private bool _enableGlog = true;
@@ -35,16 +31,17 @@ namespace Mediapipe.Unity
     public bool isFinished { get; private set; }
     private bool _isGlogInitialized;
 
-    private IEnumerator Start()
+    private void OnEnable()
+    {
+      var _ = StartCoroutine(Init());
+    }
+
+    private IEnumerator Init()
     {
       Logger.SetLogger(new MemoizedLogger(100));
       Logger.minLogLevel = Logger.LogLevel.Debug;
 
       Protobuf.SetLogHandler(Protobuf.DefaultLogHandler);
-
-      Logger.LogInfo(_TAG, "Starting console window...");
-      Instantiate(_consolePrefab, _screen.transform);
-      yield return new WaitForEndOfFrame();
 
       Logger.LogInfo(_TAG, "Setting global flags...");
       GlobalConfigManager.SetFlags();
@@ -101,15 +98,33 @@ namespace Mediapipe.Unity
       }
 
       Logger.LogInfo(_TAG, "Preparing ImageSource...");
-      ImageSourceProvider.SwitchSource(_defaultImageSource);
-      DontDestroyOnLoad(GameObject.Find("Image Source"));
+      ImageSourceProvider.ImageSource = GetImageSource(_defaultImageSource);
 
-      DontDestroyOnLoad(gameObject);
       isFinished = true;
+    }
 
-      Logger.LogInfo(_TAG, "Loading the first scene...");
-      var sceneLoadReq = SceneManager.LoadSceneAsync(1);
-      yield return new WaitUntil(() => sceneLoadReq.isDone);
+    public ImageSource GetImageSource(ImageSourceType imageSourceType)
+    {
+      switch (imageSourceType)
+      {
+        case ImageSourceType.WebCamera:
+          {
+            return GetComponent<WebCamSource>();
+          }
+        case ImageSourceType.Image:
+          {
+            return GetComponent<StaticImageSource>();
+          }
+        case ImageSourceType.Video:
+          {
+            return GetComponent<VideoSource>();
+          }
+        case ImageSourceType.Unknown:
+        default:
+          {
+            throw new System.ArgumentException($"Unsupported source type: {imageSourceType}");
+          }
+      }
     }
 
     private void DecideInferenceMode()
