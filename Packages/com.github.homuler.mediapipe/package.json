@@ -14,9 +14,19 @@
     "MediaPipe"
   ],
   "scripts": {
-    "prepack": "rm -rf $(npm prefix)/Samples~ && cp -r $(npm prefix)/../../Assets/MediaPipeUnity/Samples $(npm prefix)/Samples~",
+    "setupSampleDir": "rm -rf $(npm prefix)/Samples~ && mkdir -p $(npm prefix)/Samples~",
+    "removeStartScene": "rm \"$(npm prefix)/Samples~/Solutions/Scenes/Start Scene.unity\" && rm \"$(npm prefix)/Samples~/Solutions/Scenes/Start Scene.unity.meta\"",
+    "copySolutionSamples": "cp -r $(npm prefix)/../../Assets/MediaPipeUnity/Samples $(npm prefix)/Samples~/Solutions && npm run removeStartScene",
+    "prepack": "npm run setupSampleDir &&  npm run copySolutionSamples",
     "postpack": "rm -rf $(npm prefix)/Samples~"
   },
   "license": "MIT",
-  "licenseUrl": "https://github.com/homuler/MediaPipeUnityPlugin/blob/master/LICENSE"
+  "licenseUrl": "https://github.com/homuler/MediaPipeUnityPlugin/blob/master/LICENSE",
+  "samples": [
+    {
+      "displayName": "Official Solutions",
+      "description": "MediaPipe Official Solutions Sample",
+      "path": "Samples~/Solutions"
+    }
+  ]
 }
