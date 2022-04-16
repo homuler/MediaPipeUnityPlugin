@@ -2,14 +2,21 @@
   "name": "com.github.homuler.mediapipe",
   "version": "0.9.0",
   "displayName": "MediaPipe Unity Plugin",
-  "description": "MediaPipe Plugin for Unity",
+  "description": "A Unity Plugin to run MediaPipe CalculatorGraph",
   "unity": "2019.4",
+  "author": {
+    "name": "homuler"
+  },
+  "changelogUrl": "https://github.com/homuler/MediaPipeUnityPlugin/blob/master/CHANGELOG.md",
+  "documentationUrl": "https://github.com/homuler/MediaPipeUnityPlugin/wiki",
   "keywords": [
     "mediapipe",
     "MediaPipe"
   ],
-  "author": {
-    "name": "homuler"
+  "scripts": {
+    "prepack": "rm -rf $(npm prefix)/Samples~ && cp -r $(npm prefix)/../../Assets/MediaPipeUnity/Samples $(npm prefix)/Samples~",
+    "postpack": "rm -rf $(npm prefix)/Samples~"
   },
-  "license": "mit"
+  "license": "MIT",
+  "licenseUrl": "https://github.com/homuler/MediaPipeUnityPlugin/blob/master/LICENSE"
 }

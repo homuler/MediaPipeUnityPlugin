@@ -109,16 +109,17 @@ public static class PackageExporter
     public string unity;
     public Author author;
     public string changelogUrl;
-    public IDictionary<string, string> dependencies;
+    // public Dictionary<string, string> dependencies;
     public string documentationUrl;
     public bool hideInEditor;
-    public IList<string> keywords;
+    public List<string> keywords;
     public string license;
     public string licenseUrl;
-    public IList<Sample> samples;
+    public List<Sample> samples;
     public string type;
     public string unityRelease;
 
+    [Serializable]
     public class Author
     {
       public string name;
@@ -126,6 +127,7 @@ public static class PackageExporter
       public string url;
     }
 
+    [Serializable]
     public class Sample
     {
       public string displayName;
