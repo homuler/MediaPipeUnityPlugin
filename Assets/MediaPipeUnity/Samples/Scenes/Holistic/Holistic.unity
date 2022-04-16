@@ -552,7 +552,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _defaultImageSource: 0
   _preferableInferenceMode: 0
-  _assetLoaderType: 0
+  _assetLoaderType: 2
   _enableGlog: 1
 --- !u!1 &298505179
 GameObject:
