@@ -22,19 +22,15 @@ namespace Mediapipe
       this.ptr = ptr;
     }
 
-    public CalculatorGraph(string textFormatConfig) : base()
-    {
-      UnsafeNativeMethods.mp_CalculatorGraph__PKc(textFormatConfig, out var ptr).Assert();
-      this.ptr = ptr;
-    }
-
-    public CalculatorGraph(byte[] serializedConfig) : base()
+    private CalculatorGraph(byte[] serializedConfig) : base()
     {
       UnsafeNativeMethods.mp_CalculatorGraph__PKc_i(serializedConfig, serializedConfig.Length, out var ptr).Assert();
       this.ptr = ptr;
     }
 
     public CalculatorGraph(CalculatorGraphConfig config) : this(config.ToByteArray()) { }
+
+    public CalculatorGraph(string textFormatConfig) : this(CalculatorGraphConfig.Parser.ParseFromTextFormat(textFormatConfig)) { }
 
     protected override void DeleteMpPtr()
     {
