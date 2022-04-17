@@ -10,17 +10,6 @@ namespace Mediapipe.Unity
 {
   public static class CalculatorGraphConfigExtension
   {
-    public static CalculatorGraphConfig ParseFromTextFormat(this pb::MessageParser<CalculatorGraphConfig> _, string configText)
-    {
-      if (UnsafeNativeMethods.mp_api__ConvertFromCalculatorGraphConfigTextFormat(configText, out var serializedProto))
-      {
-        var config = serializedProto.Deserialize(CalculatorGraphConfig.Parser);
-        serializedProto.Dispose();
-        return config;
-      }
-      throw new MediaPipeException("Failed to parse config text. See error logs for more details");
-    }
-
     public static string AddPacketPresenceCalculator(this CalculatorGraphConfig config, string outputStreamName)
     {
       var presenceStreamName = Tool.GetUnusedStreamName(config, $"{outputStreamName}_presence");

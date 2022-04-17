@@ -15,9 +15,6 @@ namespace Mediapipe
     public static extern MpReturnCode mp_CalculatorGraph__(out IntPtr graph);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_CalculatorGraph__PKc(string textFormatConfig, out IntPtr graph);
-
-    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_CalculatorGraph__PKc_i(byte[] serializedConfig, int size, out IntPtr graph);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
