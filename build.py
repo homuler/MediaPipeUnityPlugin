@@ -320,8 +320,10 @@ class CleanCommand(Command):
     self._rmtree(_BUILD_PATH)
     self._rmtree(_NUGET_PATH)
 
-    startup_opts = self.command_args or []
+    startup_opts = self.command_args.bazel_startup_opts or []
     commands = ['bazel'] + startup_opts + ['clean', '--expunge']
+
+    self._run_command(commands)
 
 
 class UninstallCommand(Command):
