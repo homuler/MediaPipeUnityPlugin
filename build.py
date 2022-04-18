@@ -45,6 +45,7 @@ class Console:
 class Command:
   def __init__(self, command_args):
     self.console = Console(command_args.args.verbose)
+    self.system = platform.system()
 
   def _run_command(self, command_list, shell=True):
     self.console.v(f"Running `{' '.join(command_list)}`")
@@ -94,12 +95,13 @@ class Command:
     self.console.v(f"Unarchiving '{source}' to '{dest}'...")
     shutil.unpack_archive(source, dest)
 
+  def _is_windows(self):
+    return self.system == 'Windows'
+
 
 class BuildCommand(Command):
   def __init__(self, command_args):
     Command.__init__(self, command_args)
-
-    self.system = platform.system()
     self.command_args = command_args.args
 
   def run(self):
@@ -167,9 +169,6 @@ class BuildCommand(Command):
         self._copy(f, _ANALYZER_PATH)
 
     self.console.info('Installed')
-
-  def _is_windows(self):
-    return self.system == 'Windows'
 
   def _build_common_commands(self):
     commands = ['bazel']
@@ -320,11 +319,19 @@ class CleanCommand(Command):
     self._rmtree(_BUILD_PATH)
     self._rmtree(_NUGET_PATH)
 
-    startup_opts = self.command_args.bazel_startup_opts or []
-    commands = ['bazel'] + startup_opts + ['clean', '--expunge']
-
+    commands = ['bazel'] + self._build_startup_opts() + ['clean', '--expunge']
     self._run_command(commands)
 
+  def _build_startup_opts(self):
+    commands = []
+
+    if self._is_windows():
+      # limit the path length for Windows
+      # @see https://docs.bazel.build/versions/master/windows.html#avoid-long-path-issues
+      commands += ['--output_user_root', 'C:/_bzl']
+
+    commands += self.command_args.bazel_startup_opts or []
+    return commands
 
 class UninstallCommand(Command):
   def __init__(self, command_args):
