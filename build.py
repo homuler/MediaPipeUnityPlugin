@@ -44,8 +44,7 @@ class Console:
 
 class Command:
   def __init__(self, command_args):
-    self.verbose = command_args.args.verbose
-    self.console = Console(self.verbose)
+    self.console = Console(command_args.args.verbose)
 
   def _run_command(self, command_list, shell=True):
     self.console.v(f"Running `{' '.join(command_list)}`")
@@ -101,16 +100,7 @@ class BuildCommand(Command):
     Command.__init__(self, command_args)
 
     self.system = platform.system()
-    self.desktop = command_args.args.desktop
-    self.android = command_args.args.android
-    self.android_ndk_api_level = command_args.args.android_ndk_api_level
-    self.ios= command_args.args.ios
-    self.resources = command_args.args.resources
-    self.analyzers = command_args.args.analyzers
-    self.opencv = command_args.args.opencv
-
-    self.compilation_mode = command_args.args.compilation_mode
-    self.linkopt = command_args.args.linkopt
+    self.command_args = command_args.args
 
   def run(self):
     self.console.info('Building protobuf sources...')
@@ -129,7 +119,7 @@ class BuildCommand(Command):
 
     self.console.info('Downloaded protobuf dlls')
 
-    if self.resources:
+    if self.command_args.resources:
       self.console.info('Building resource files')
       self._run_command(self._build_resources_commands())
       self._unzip(
@@ -141,7 +131,7 @@ class BuildCommand(Command):
 
       self.console.info('Built resource files')
 
-    if self.desktop:
+    if self.command_args.desktop:
       self.console.info('Building native libraries for Desktop...')
       self._run_command(self._build_desktop_commands())
       self._unzip(
@@ -150,7 +140,7 @@ class BuildCommand(Command):
 
       self.console.info('Built native libraries for Desktop')
 
-    if self.android:
+    if self.command_args.android:
       self.console.info('Building native libraries for Android...')
       self._run_command(self._build_android_commands())
       self._copy(
@@ -159,7 +149,7 @@ class BuildCommand(Command):
 
       self.console.info('Built native libraries for Android')
 
-    if self.ios:
+    if self.command_args.ios:
       self.console.info('Building native libaries for iOS...')
       self._run_command(self._build_ios_commands())
       self._unzip(self._find_latest_built_framework(), os.path.join(_BUILD_PATH, 'Plugins', 'iOS'))
@@ -171,7 +161,7 @@ class BuildCommand(Command):
     self._copytree(_BUILD_PATH, _INSTALL_PATH)
 
     # install analyzers
-    if self.analyzers:
+    if self.command_args.analyzers:
       self.console.info('Installing Roslyn Analyzers...')
       for f in glob.glob(os.path.join(_NUGET_PATH, '**', 'analyzers', 'dotnet', 'cs', '*.dll'), recursive=True):
         self._copy(f, _ANALYZER_PATH)
@@ -183,17 +173,13 @@ class BuildCommand(Command):
 
   def _build_common_commands(self):
     commands = ['bazel']
+    commands += self._build_startup_opts()
 
-    if self._is_windows():
-      # limit the path length for Windows
-      # @see https://docs.bazel.build/versions/master/windows.html#avoid-long-path-issues
-      commands += ['--output_user_root', 'C:/_bzl']
-
-    commands += ['build', '-c', self.compilation_mode]
+    commands += ['build', '-c', self.command_args.compilation_mode]
     commands += self._build_linkopt()
 
-    if self.android_ndk_api_level:
-      commands += ['--action_env', f'ANDROID_NDK_API_LEVEL="{self.android_ndk_api_level}"']
+    if self.command_args.android_ndk_api_level:
+      commands += ['--action_env', f'ANDROID_NDK_API_LEVEL="{self.command_args.android_ndk_api_level}"']
 
     if self._is_windows():
       python_bin_path = sys.executable.replace('\\', '//')
@@ -223,22 +209,35 @@ class BuildCommand(Command):
       if processor_revision_key in os.environ:
         commands += ['--action_env', processor_revision_key]
 
-    if self.verbose > 1:
+    if self.command_args.verbose > 1:
       commands.append('--verbose_failures')
 
-    if self.verbose > 2:
+    if self.command_args.verbose > 2:
       commands.append('--sandbox_debug')
+
+    commands += self.command_args.bazel_build_opts or []
 
     return commands
 
+  def _build_startup_opts(self):
+    commands = []
+
+    if self._is_windows():
+      # limit the path length for Windows
+      # @see https://docs.bazel.build/versions/master/windows.html#avoid-long-path-issues
+      commands += ['--output_user_root', 'C:/_bzl']
+
+    commands += self.command_args.bazel_startup_opts or []
+    return commands
+
   def _build_linkopt(self):
-    if self.linkopt is None or len(self.linkopt) == 0:
+    if self.command_args.linkopt is None or len(self.command_args.linkopt) == 0:
       return []
 
-    return ['--linkopt={}'.format(l) for l in self.linkopt]
+    return ['--linkopt={}'.format(l) for l in self.command_args.linkopt]
 
   def _build_opencv_switch(self):
-    switch = 'cmake_static' if self.opencv == 'cmake' else self.opencv
+    switch = 'cmake_static' if self.command_args.opencv == 'cmake' else self.command_args.opencv
     commands = [f'--@opencv//:switch={switch}']
 
     return commands
@@ -246,7 +245,7 @@ class BuildCommand(Command):
   def _build_desktop_options(self):
     commands = []
 
-    if self.desktop == 'gpu':
+    if self.command_args.desktop == 'gpu':
       commands += ['--copt', '-DMESA_EGL_NO_X11_HEADERS', '--copt', '-DEGL_NO_X11']
     else:
       commands += ['--define', 'MEDIAPIPE_DISABLE_GPU=1']
@@ -256,7 +255,7 @@ class BuildCommand(Command):
     return commands
 
   def _build_desktop_commands(self):
-    if self.desktop is None:
+    if self.command_args.desktop is None:
       return []
 
     commands = self._build_common_commands()
@@ -265,26 +264,26 @@ class BuildCommand(Command):
     return commands
 
   def _build_android_commands(self):
-    if self.android is None:
+    if self.command_args.android is None:
       return []
 
     commands = self._build_common_commands()
-    commands.append(f'--config=android_{self.android}')
+    commands.append(f'--config=android_{self.command_args.android}')
     commands.append(f'--java_runtime_version=remotejdk_11')
     commands.append('//mediapipe_api/java/com/github/homuler/mediapipe:mediapipe_android')
     return commands
 
   def _build_ios_commands(self):
-    if self.ios is None:
+    if self.command_args.ios is None:
       return []
 
     commands = self._build_common_commands()
-    commands += [f'--config=ios_{self.ios}', '--copt=-fembed-bitcode', '--apple_bitcode=embedded']
+    commands += [f'--config=ios_{self.command_args.ios}', '--copt=-fembed-bitcode', '--apple_bitcode=embedded']
     commands.append('//mediapipe_api/objc:MediaPipeUnity')
     return commands
 
   def _build_resources_commands(self):
-    if not self.resources:
+    if not self.command_args.resources:
       return []
 
     commands = self._build_common_commands()
@@ -311,34 +310,32 @@ class BuildCommand(Command):
 class CleanCommand(Command):
   def __init__(self, command_args):
     Command.__init__(self, command_args)
+    self.command_args = command_args.args
 
   def run(self):
     self._rmtree(_BUILD_PATH)
     self._rmtree(_NUGET_PATH)
-    self._run_command(['bazel', 'clean', '--expunge'])
+
+    startup_opts = self.command_args or []
+    commands = ['bazel'] + startup_opts + ['clean', '--expunge']
 
 
 class UninstallCommand(Command):
   def __init__(self, command_args):
     Command.__init__(self, command_args)
 
-    self.desktop = command_args.args.desktop
-    self.android = command_args.args.android
-    self.ios = command_args.args.ios
-    self.resources = command_args.args.resources
-    self.protobuf = command_args.args.protobuf
-    self.analyzers = command_args.args.analyzers
+    self.command_args = command_args.args
 
   def run(self):
     self._rmtree(_BUILD_PATH)
 
-    if self.desktop:
+    if self.command_args.desktop:
       self.console.info('Uninstalling native libraries for Desktop...')
       for f in glob.glob(os.path.join(_INSTALL_PATH, 'Plugins', '*'), recursive=True):
         if f.endswith('.dll') or f.endswith('.dylib') or f.endswith('.so'):
           self._remove(f)
 
-    if self.android:
+    if self.command_args.android:
       self.console.info('Uninstalling native libraries for Android...')
 
       aar_path = os.path.join(_INSTALL_PATH, 'Plugins', 'Android', 'mediapipe_android.aar')
@@ -346,7 +343,7 @@ class UninstallCommand(Command):
       if os.path.exists(aar_path):
         self._remove(aar_path)
 
-    if self.ios:
+    if self.command_args.ios:
       self.console.info('Uninstalling native libraries for iOS...')
 
       ios_framework_path = os.path.join(_INSTALL_PATH, 'Plugins', 'iOS', 'MediaPipeUnity.framework')
@@ -354,7 +351,7 @@ class UninstallCommand(Command):
       if os.path.exists(ios_framework_path):
         self._rmtree(ios_framework_path)
 
-    if self.resources:
+    if self.command_args.resources:
       self.console.info('Uninstalling resource files...')
 
       for f in glob.glob(os.path.join(_INSTALL_PATH, 'Resources', '*'), recursive=True):
@@ -364,7 +361,7 @@ class UninstallCommand(Command):
       for f in glob.glob(os.path.join(_STREAMING_ASSETS_PATH, '*'), recursive=False):
         self._remove(f)
 
-    if self.protobuf:
+    if self.command_args.protobuf:
       self.console.info('Uninstalling protobuf sources and dlls...')
 
       for f in glob.glob(os.path.join(_INSTALL_PATH, 'Plugins', 'Protobuf', '*.dll'), recursive=True):
@@ -373,7 +370,7 @@ class UninstallCommand(Command):
       for f in glob.glob(os.path.join(_INSTALL_PATH, 'Scripts', 'Protobuf', '**', '*.cs'), recursive=True):
         self._remove(f)
 
-    if self.analyzers:
+    if self.command_args.analyzers:
       self.console.info('Uninstalling analyzers...')
 
       for f in glob.glob(os.path.join(_ANALYZER_PATH, '*.dll'), recursive=True):
@@ -406,9 +403,12 @@ class Argument:
     build_command_parser.add_argument('--compilation_mode', '-c', choices=['fastbuild', 'opt', 'dbg'], default='opt')
     build_command_parser.add_argument('--opencv', choices=['local', 'cmake', 'cmake_static', 'cmake_dynamic'], default='local', help='Decide to which OpenCV to link for Desktop native libraries')
     build_command_parser.add_argument('--linkopt', '-l', action='append', help='Linker options')
+    build_command_parser.add_argument('--bazel_startup_opts', '-S', action='append', help='Bazel startup options')
+    build_command_parser.add_argument('--bazel_build_opts', '-B', action='append', help='Bazel startup options')
     build_command_parser.add_argument('--verbose', '-v', action='count', default=0)
 
     clean_command_parser = subparsers.add_parser('clean', help='Clean cache files')
+    clean_command_parser.add_argument('--bazel_startup_opts', '-S', action='append', help='Bazel startup options')
     clean_command_parser.add_argument('--verbose', '-v', action='count', default=0)
 
     uninstall_command_parser = subparsers.add_parser('uninstall', help='Remove installed files')
