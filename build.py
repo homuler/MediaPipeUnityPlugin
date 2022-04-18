@@ -278,7 +278,11 @@ class BuildCommand(Command):
       return []
 
     commands = self._build_common_commands()
-    commands += [f'--config=ios_{self.command_args.ios}', '--copt=-fembed-bitcode', '--apple_bitcode=embedded']
+    commands += [f'--config=ios_{self.command_args.ios}']
+
+    if self.command_args.apple_bitcode:
+      commands += ['--copt=-fembed-bitcode', '--apple_bitcode=embedded']
+
     commands.append('//mediapipe_api/objc:MediaPipeUnity')
     return commands
 
@@ -403,6 +407,7 @@ class Argument:
     build_command_parser.add_argument('--compilation_mode', '-c', choices=['fastbuild', 'opt', 'dbg'], default='opt')
     build_command_parser.add_argument('--opencv', choices=['local', 'cmake', 'cmake_static', 'cmake_dynamic'], default='local', help='Decide to which OpenCV to link for Desktop native libraries')
     build_command_parser.add_argument('--linkopt', '-l', action='append', help='Linker options')
+    build_command_parser.add_argument('--apple_bitcode', action=argparse.BooleanOptionalAction, default=True, help='Embed bitcode to iOS Framework')
     build_command_parser.add_argument('--bazel_startup_opts', '-S', action='append', help='Bazel startup options')
     build_command_parser.add_argument('--bazel_build_opts', '-B', action='append', help='Bazel startup options')
     build_command_parser.add_argument('--verbose', '-v', action='count', default=0)
