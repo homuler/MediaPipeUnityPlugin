@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.1](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.9.0...v0.9.1) (2022-04-19)
+
+
+### Features
+
+* **sample:** Holistic Segmentation Mask ([#521](https://github.com/homuler/MediaPipeUnityPlugin/issues/521)) ([30e968c](https://github.com/homuler/MediaPipeUnityPlugin/commit/30e968c66a168f69c33084593ee68e5b4a7e9533))
+* **sample:** MIN_DETECTION_CONFIDENCE and MIN_TRACKING_CONFIDENCE ([#523](https://github.com/homuler/MediaPipeUnityPlugin/issues/523)) ([5222faa](https://github.com/homuler/MediaPipeUnityPlugin/commit/5222faa9a21e1c523614f8c082b92ec521c2005b))
+* **sample:** Pose Segmentation Mask ([#520](https://github.com/homuler/MediaPipeUnityPlugin/issues/520)) ([b25430d](https://github.com/homuler/MediaPipeUnityPlugin/commit/b25430d68f4963940b6f79c5e7209e2a8f1bd6d6))
+* **sample:** Selfie Segmentation ([#522](https://github.com/homuler/MediaPipeUnityPlugin/issues/522)) ([7d6090d](https://github.com/homuler/MediaPipeUnityPlugin/commit/7d6090de1ae39e040e9a463228ae73cc5a388b04))
+* set Protobuf LogHandler ([#526](https://github.com/homuler/MediaPipeUnityPlugin/issues/526)) ([cc3ac5c](https://github.com/homuler/MediaPipeUnityPlugin/commit/cc3ac5ce25d1f2af3db6f8da4ba44897e31277b3))
+
+
+### Bug Fixes
+
+* constructor should throw if it fails to initialize ([#533](https://github.com/homuler/MediaPipeUnityPlugin/issues/533)) ([e58408e](https://github.com/homuler/MediaPipeUnityPlugin/commit/e58408e142e8aec45dd90351bd021e42c54204a5))
+
 ## [0.9.0](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.8.4...v0.9.0) (2022-04-07)
 
 
