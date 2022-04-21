@@ -58,11 +58,11 @@ namespace Mediapipe.Unity
       _lineRenderer.SetPositions(positions ?? _EmptyPositions);
     }
 
-    public void Draw(Rect target, Vector2 imageSize)
+    public void Draw(Rect target, Vector2Int imageSize)
     {
       if (ActivateFor(target))
       {
-        Draw(GetAnnotationLayer().GetRectVertices(target, imageSize, rotationAngle, isMirrored));
+        Draw(GetScreenRect().GetRectVertices(target, imageSize, rotationAngle, isMirrored));
       }
     }
 
@@ -70,11 +70,11 @@ namespace Mediapipe.Unity
     {
       if (ActivateFor(target))
       {
-        Draw(GetAnnotationLayer().GetRectVertices(target, rotationAngle, isMirrored));
+        Draw(GetScreenRect().GetRectVertices(target, rotationAngle, isMirrored));
       }
     }
 
-    public void Draw(LocationData target, Vector2 imageSize)
+    public void Draw(LocationData target, Vector2Int imageSize)
     {
       if (ActivateFor(target))
       {
@@ -82,12 +82,12 @@ namespace Mediapipe.Unity
         {
           case mplt.Format.BoundingBox:
             {
-              Draw(GetAnnotationLayer().GetRectVertices(target.BoundingBox, imageSize, rotationAngle, isMirrored));
+              Draw(GetScreenRect().GetRectVertices(target.BoundingBox, imageSize, rotationAngle, isMirrored));
               break;
             }
           case mplt.Format.RelativeBoundingBox:
             {
-              Draw(GetAnnotationLayer().GetRectVertices(target.RelativeBoundingBox, rotationAngle, isMirrored));
+              Draw(GetScreenRect().GetRectVertices(target.RelativeBoundingBox, rotationAngle, isMirrored));
               break;
             }
           case mplt.Format.Global:
@@ -108,7 +108,7 @@ namespace Mediapipe.Unity
         {
           case mplt.Format.RelativeBoundingBox:
             {
-              Draw(GetAnnotationLayer().GetRectVertices(target.RelativeBoundingBox, rotationAngle, isMirrored));
+              Draw(GetScreenRect().GetRectVertices(target.RelativeBoundingBox, rotationAngle, isMirrored));
               break;
             }
           case mplt.Format.BoundingBox:

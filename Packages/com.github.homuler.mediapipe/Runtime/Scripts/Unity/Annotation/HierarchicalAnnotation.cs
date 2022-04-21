@@ -13,6 +13,7 @@ namespace Mediapipe.Unity
     IHierachicalAnnotation root { get; }
     Transform transform { get; }
     RectTransform GetAnnotationLayer();
+    UnityEngine.Rect GetScreenRect();
   }
 
   public abstract class HierarchicalAnnotation : MonoBehaviour, IHierachicalAnnotation
@@ -35,6 +36,11 @@ namespace Mediapipe.Unity
     public RectTransform GetAnnotationLayer()
     {
       return root.transform.parent.gameObject.GetComponent<RectTransform>();
+    }
+
+    public UnityEngine.Rect GetScreenRect()
+    {
+      return GetAnnotationLayer().rect;
     }
 
     public bool isActive => gameObject.activeSelf;

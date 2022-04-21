@@ -26,7 +26,7 @@ namespace Mediapipe.Unity.InstantMotionTracking
           if (RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, Camera.main, out var localPoint))
           {
             var isMirrored = ImageSourceProvider.ImageSource.isFrontFacing ^ ImageSourceProvider.ImageSource.isHorizontallyFlipped;
-            var normalizedPoint = rectTransform.GetNormalizedPosition(localPoint, graphRunner.rotation, isMirrored);
+            var normalizedPoint = rectTransform.rect.PointToImageNormalized(localPoint, graphRunner.rotation, isMirrored);
             graphRunner.ResetAnchor(normalizedPoint.x, normalizedPoint.y);
             _trackedAnchorDataAnnotationController.ResetAnchor();
           }
