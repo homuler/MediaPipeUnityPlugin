@@ -26,7 +26,14 @@ namespace Mediapipe.Unity
     private Texture _image;
     private Texture image
     {
-      get => _image;
+      get
+      {
+        if (_image == null && _availableSources != null && _availableSources.Length > 0)
+        {
+          image = _availableSources[0];
+        }
+        return _image;
+      }
       set
       {
         _image = value;
@@ -46,14 +53,6 @@ namespace Mediapipe.Unity
 
     private bool _isPlaying = false;
     public override bool isPlaying => _isPlaying;
-
-    private void Start()
-    {
-      if (_availableSources != null && _availableSources.Length > 0)
-      {
-        image = _availableSources[0];
-      }
-    }
 
     public override void SelectSource(int sourceId)
     {

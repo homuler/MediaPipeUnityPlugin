@@ -19,7 +19,14 @@ namespace Mediapipe.Unity
     private VideoClip _video;
     private VideoClip video
     {
-      get => _video;
+      get
+      {
+        if (_video == null && _availableSources != null && _availableSources.Length > 0)
+        {
+          video = _availableSources[0];
+        }
+        return _video;
+      }
       set
       {
         _video = value;
@@ -37,14 +44,6 @@ namespace Mediapipe.Unity
 
     public override bool isPlaying => _videoPlayer != null && _videoPlayer.isPlaying;
     public override bool isPrepared => _videoPlayer != null && _videoPlayer.isPrepared;
-
-    private void Start()
-    {
-      if (_availableSources != null && _availableSources.Length > 0)
-      {
-        video = _availableSources[0];
-      }
-    }
 
     public override void SelectSource(int sourceId)
     {
