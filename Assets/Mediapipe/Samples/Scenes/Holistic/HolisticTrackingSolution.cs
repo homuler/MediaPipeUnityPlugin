@@ -20,9 +20,9 @@ namespace Mediapipe.Unity.Holistic
     [SerializeField] private HolisticTrackingGraph _graphRunner;
     [SerializeField] private TextureFramePool _textureFramePool;
 
-    [SerializeField] private FaceSolver faceSolver;
-    [SerializeField] private PoseSolver poseSolver;
-    [SerializeField] private HandSolver handSolver;
+    [SerializeField] public FaceSolver faceSolver;
+    [SerializeField] public PoseSolver poseSolver;
+    [SerializeField] public HandSolver handSolver;
 
     private Coroutine _coroutine;
 
