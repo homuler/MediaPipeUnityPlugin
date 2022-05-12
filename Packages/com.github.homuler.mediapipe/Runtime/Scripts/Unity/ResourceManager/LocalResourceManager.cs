@@ -52,6 +52,11 @@ namespace Mediapipe.Unity
       var assetPath = GetAssetPathFor(name);
       var asset = AssetDatabase.LoadAssetAtPath<TextAsset>(assetPath);
 
+      if (asset == null)
+      {
+        throw new FileNotFoundException($"{assetPath} is not found. Check if {name} is included in the package");
+      }
+
       Logger.LogVerbose(_TAG, $"Writing {name} data to {destFilePath}...");
       if (!Directory.Exists(_CachePathRoot))
       {
