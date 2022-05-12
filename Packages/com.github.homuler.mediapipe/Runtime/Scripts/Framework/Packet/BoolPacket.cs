@@ -15,6 +15,7 @@ namespace Mediapipe
     /// </summary>
     public BoolPacket() : base(true) { }
 
+    [UnityEngine.Scripting.Preserve]
     public BoolPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
     public BoolPacket(bool value) : base()

@@ -15,6 +15,7 @@ namespace Mediapipe
     /// </summary>
     public RectPacket() : base(true) { }
 
+    [UnityEngine.Scripting.Preserve]
     public RectPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
     public RectPacket At(Timestamp timestamp)

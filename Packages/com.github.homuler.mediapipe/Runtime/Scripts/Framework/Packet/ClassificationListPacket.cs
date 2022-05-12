@@ -15,6 +15,7 @@ namespace Mediapipe
     /// </summary>
     public ClassificationListPacket() : base(true) { }
 
+    [UnityEngine.Scripting.Preserve]
     public ClassificationListPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
     public ClassificationListPacket At(Timestamp timestamp)

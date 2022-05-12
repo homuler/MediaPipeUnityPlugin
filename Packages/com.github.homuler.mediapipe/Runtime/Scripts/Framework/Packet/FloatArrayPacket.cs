@@ -31,6 +31,7 @@ namespace Mediapipe
     /// </summary>
     public FloatArrayPacket() : base(true) { }
 
+    [UnityEngine.Scripting.Preserve]
     public FloatArrayPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
     public FloatArrayPacket(float[] value) : base()

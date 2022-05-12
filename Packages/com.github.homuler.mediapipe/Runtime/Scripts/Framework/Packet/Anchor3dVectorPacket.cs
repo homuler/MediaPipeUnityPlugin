@@ -16,6 +16,7 @@ namespace Mediapipe
     /// </summary>
     public Anchor3dVectorPacket() : base(true) { }
 
+    [UnityEngine.Scripting.Preserve]
     public Anchor3dVectorPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
     public Anchor3dVectorPacket(Anchor3d[] value) : base()

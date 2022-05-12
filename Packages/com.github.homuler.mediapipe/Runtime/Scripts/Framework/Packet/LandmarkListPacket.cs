@@ -15,6 +15,7 @@ namespace Mediapipe
     /// </summary>
     public LandmarkListPacket() : base(true) { }
 
+    [UnityEngine.Scripting.Preserve]
     public LandmarkListPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
     public LandmarkListPacket At(Timestamp timestamp)

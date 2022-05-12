@@ -16,6 +16,7 @@ namespace Mediapipe
     /// </summary>
     public DetectionVectorPacket() : base(true) { }
 
+    [UnityEngine.Scripting.Preserve]
     public DetectionVectorPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
     public DetectionVectorPacket At(Timestamp timestamp)

@@ -15,6 +15,7 @@ namespace Mediapipe
     /// </summary>
     public ImageFramePacket() : base(true) { }
 
+    [UnityEngine.Scripting.Preserve]
     public ImageFramePacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
     public ImageFramePacket(ImageFrame imageFrame) : base()
