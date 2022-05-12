@@ -99,15 +99,15 @@ namespace Mediapipe.Unity.PoseTracking
 
     public override void Stop()
     {
-      _poseDetectionStream.RemoveAllListeners();
+      _poseDetectionStream?.Close();
       _poseDetectionStream = null;
-      _poseLandmarksStream.RemoveAllListeners();
+      _poseLandmarksStream?.Close();
       _poseLandmarksStream = null;
-      _poseWorldLandmarksStream.RemoveAllListeners();
+      _poseWorldLandmarksStream?.Close();
       _poseWorldLandmarksStream = null;
-      _segmentationMaskStream.RemoveAllListeners();
+      _segmentationMaskStream?.Close();
       _segmentationMaskStream = null;
-      _roiFromLandmarksStream.RemoveAllListeners();
+      _roiFromLandmarksStream?.Close();
       _roiFromLandmarksStream = null;
       base.Stop();
     }

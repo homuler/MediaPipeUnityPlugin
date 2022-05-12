@@ -33,7 +33,7 @@ namespace Mediapipe.Unity.ObjectDetection
 
     public override void Stop()
     {
-      _outputDetectionsStream.RemoveAllListeners();
+      _outputDetectionsStream?.Close();
       _outputDetectionsStream = null;
       base.Stop();
     }

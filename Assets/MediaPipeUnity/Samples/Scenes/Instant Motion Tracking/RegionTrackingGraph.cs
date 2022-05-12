@@ -39,7 +39,7 @@ namespace Mediapipe.Unity.InstantMotionTracking
 
     public override void Stop()
     {
-      _trackedAnchorDataStream.RemoveAllListeners();
+      _trackedAnchorDataStream?.Close();
       _trackedAnchorDataStream = null;
       base.Stop();
     }

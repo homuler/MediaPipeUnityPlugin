@@ -105,17 +105,17 @@ namespace Mediapipe.Unity.HandTracking
 
     public override void Stop()
     {
-      _palmDetectionsStream.RemoveAllListeners();
+      _palmDetectionsStream?.Close();
       _palmDetectionsStream = null;
-      _handRectsFromPalmDetectionsStream.RemoveAllListeners();
+      _handRectsFromPalmDetectionsStream?.Close();
       _handRectsFromPalmDetectionsStream = null;
-      _handLandmarksStream.RemoveAllListeners();
+      _handLandmarksStream?.Close();
       _handLandmarksStream = null;
-      _handWorldLandmarksStream.RemoveAllListeners();
+      _handWorldLandmarksStream?.Close();
       _handWorldLandmarksStream = null;
-      _handRectsFromLandmarksStream.RemoveAllListeners();
+      _handRectsFromLandmarksStream?.Close();
       _handRectsFromLandmarksStream = null;
-      _handednessStream.RemoveAllListeners();
+      _handednessStream?.Close();
       _handednessStream = null;
       base.Stop();
     }

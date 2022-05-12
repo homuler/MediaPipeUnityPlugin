@@ -178,6 +178,25 @@ namespace Mediapipe.Unity
       OnReceived = null;
     }
 
+    public void Close()
+    {
+      RemoveAllListeners();
+      RemoveCallbackStatus();
+
+      _poller?.Dispose();
+      _poller = null;
+      _outputPacket?.Dispose();
+      _outputPacket = null;
+
+      _presencePoller?.Dispose();
+      _presencePoller = null;
+      _presencePacket?.Dispose();
+      _presencePacket = null;
+
+      _referencePacket?.Dispose();
+      _referencePacket = null;
+    }
+
     /// <summary>
     ///   Gets the next value from the stream.
     ///   This method drops a packet whose timestamp is less than <paramref name="timestampThreshold" />.
@@ -430,6 +449,21 @@ namespace Mediapipe.Unity
     {
       _callbackStatus = status;
       return _callbackStatus.mpPtr;
+    }
+
+    protected void RemoveCallbackStatus()
+    {
+      _callbackStatus?.Dispose();
+      _callbackStatus = null;
+
+      lock (((ICollection)_CallbackStatus).SyncRoot)
+      {
+        if (_CallbackStatus.TryGetValue(_id, out var status))
+        {
+          status.Dispose();
+        }
+        var _ = _CallbackStatus.Remove(_id);
+      }
     }
 
     protected static void CompressCallbackStatus()

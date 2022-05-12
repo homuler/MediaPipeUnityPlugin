@@ -52,11 +52,11 @@ namespace Mediapipe.Unity.IrisTracking
 
     public override void Stop()
     {
-      _faceDetectionsStream.RemoveAllListeners();
+      _faceDetectionsStream?.Close();
       _faceDetectionsStream = null;
-      _faceRectStream.RemoveAllListeners();
+      _faceRectStream?.Close();
       _faceRectStream = null;
-      _faceLandmarksWithIrisStream.RemoveAllListeners();
+      _faceLandmarksWithIrisStream?.Close();
       _faceLandmarksWithIrisStream = null;
       base.Stop();
     }

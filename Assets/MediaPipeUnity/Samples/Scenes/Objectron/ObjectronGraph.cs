@@ -100,11 +100,11 @@ namespace Mediapipe.Unity.Objectron
 
     public override void Stop()
     {
-      _liftedObjectsStream.RemoveAllListeners();
+      _liftedObjectsStream?.Close();
       _liftedObjectsStream = null;
-      _multiBoxRectsStream.RemoveAllListeners();
+      _multiBoxRectsStream?.Close();
       _multiBoxRectsStream = null;
-      _multiBoxLandmarksStream.RemoveAllListeners();
+      _multiBoxLandmarksStream?.Close();
       _multiBoxLandmarksStream = null;
       base.Stop();
     }

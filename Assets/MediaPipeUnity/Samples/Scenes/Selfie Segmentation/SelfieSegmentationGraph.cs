@@ -33,7 +33,7 @@ namespace Mediapipe.Unity.SelfieSegmentation
 
     public override void Stop()
     {
-      _segmentationMaskStream.RemoveAllListeners();
+      _segmentationMaskStream?.Close();
       _segmentationMaskStream = null;
       base.Stop();
     }

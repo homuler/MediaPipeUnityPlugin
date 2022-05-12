@@ -50,7 +50,7 @@ namespace Mediapipe.Unity.FaceDetection
 
     public override void Stop()
     {
-      _faceDetectionsStream.RemoveAllListeners();
+      _faceDetectionsStream?.Close();
       _faceDetectionsStream = null;
       base.Stop();
     }

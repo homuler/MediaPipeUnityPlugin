@@ -37,7 +37,7 @@ namespace Mediapipe.Unity.HairSegmentation
 
     public override void Stop()
     {
-      _hairMaskStream.RemoveAllListeners();
+      _hairMaskStream?.Close();
       _hairMaskStream = null;
       base.Stop();
     }
