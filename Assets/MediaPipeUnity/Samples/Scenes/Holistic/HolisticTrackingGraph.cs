@@ -128,21 +128,21 @@ namespace Mediapipe.Unity.Holistic
 
     public override void Stop()
     {
-      _poseDetectionStream.RemoveAllListeners();
+      _poseDetectionStream?.Close();
       _poseDetectionStream = null;
-      _poseLandmarksStream.RemoveAllListeners();
+      _poseLandmarksStream?.Close();
       _poseLandmarksStream = null;
-      _faceLandmarksStream.RemoveAllListeners();
+      _faceLandmarksStream?.Close();
       _faceLandmarksStream = null;
-      _leftHandLandmarksStream.RemoveAllListeners();
+      _leftHandLandmarksStream?.Close();
       _leftHandLandmarksStream = null;
-      _rightHandLandmarksStream.RemoveAllListeners();
+      _rightHandLandmarksStream?.Close();
       _rightHandLandmarksStream = null;
-      _poseWorldLandmarksStream.RemoveAllListeners();
+      _poseWorldLandmarksStream?.Close();
       _poseWorldLandmarksStream = null;
-      _segmentationMaskStream.RemoveAllListeners();
+      _segmentationMaskStream?.Close();
       _segmentationMaskStream = null;
-      _poseRoiStream.RemoveAllListeners();
+      _poseRoiStream?.Close();
       _poseRoiStream = null;
       base.Stop();
     }

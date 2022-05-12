@@ -82,13 +82,13 @@ namespace Mediapipe.Unity.FaceMesh
 
     public override void Stop()
     {
-      _faceDetectionsStream.RemoveAllListeners();
+      _faceDetectionsStream?.Close();
       _faceDetectionsStream = null;
-      _multiFaceLandmarksStream.RemoveAllListeners();
+      _multiFaceLandmarksStream?.Close();
       _multiFaceLandmarksStream = null;
-      _faceRectsFromLandmarksStream.RemoveAllListeners();
+      _faceRectsFromLandmarksStream?.Close();
       _faceRectsFromLandmarksStream = null;
-      _faceRectsFromDetectionsStream.RemoveAllListeners();
+      _faceRectsFromDetectionsStream?.Close();
       _faceRectsFromDetectionsStream = null;
       base.Stop();
     }

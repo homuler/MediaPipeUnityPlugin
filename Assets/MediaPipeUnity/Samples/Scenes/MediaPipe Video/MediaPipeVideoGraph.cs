@@ -41,7 +41,7 @@ namespace Mediapipe.Unity.MediaPipeVideo
 
     public override void Stop()
     {
-      _outputVideoStream.RemoveAllListeners();
+      _outputVideoStream?.Close();
       _outputVideoStream = null;
       base.Stop();
     }

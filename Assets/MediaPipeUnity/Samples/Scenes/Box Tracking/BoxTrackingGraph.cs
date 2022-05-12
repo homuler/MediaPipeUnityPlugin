@@ -32,7 +32,7 @@ namespace Mediapipe.Unity.BoxTracking
 
     public override void Stop()
     {
-      _trackedDetectionsStream.RemoveAllListeners();
+      _trackedDetectionsStream?.Close();
       _trackedDetectionsStream = null;
       base.Stop();
     }
