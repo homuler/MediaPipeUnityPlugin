@@ -16,6 +16,7 @@ namespace Mediapipe
     /// </summary>
     public StringPacket() : base(true) { }
 
+    [UnityEngine.Scripting.Preserve]
     public StringPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
     public StringPacket(string value) : base()

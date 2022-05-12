@@ -15,6 +15,7 @@ namespace Mediapipe
     /// </summary>
     public NormalizedRectPacket() : base(true) { }
 
+    [UnityEngine.Scripting.Preserve]
     public NormalizedRectPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
     public NormalizedRectPacket At(Timestamp timestamp)

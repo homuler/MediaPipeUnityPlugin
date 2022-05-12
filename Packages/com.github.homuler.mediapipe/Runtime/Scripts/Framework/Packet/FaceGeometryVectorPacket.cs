@@ -16,6 +16,7 @@ namespace Mediapipe
     /// </summary>
     public FaceGeometryVectorPacket() : base(true) { }
 
+    [UnityEngine.Scripting.Preserve]
     public FaceGeometryVectorPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
     public FaceGeometryVectorPacket At(Timestamp timestamp)

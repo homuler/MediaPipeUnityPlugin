@@ -16,6 +16,7 @@ namespace Mediapipe
     /// </summary>
     public NormalizedLandmarkListVectorPacket() : base(true) { }
 
+    [UnityEngine.Scripting.Preserve]
     public NormalizedLandmarkListVectorPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
     public NormalizedLandmarkListVectorPacket At(Timestamp timestamp)

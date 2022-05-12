@@ -15,6 +15,7 @@ namespace Mediapipe
     /// </summary>
     public FaceGeometryPacket() : base(true) { }
 
+    [UnityEngine.Scripting.Preserve]
     public FaceGeometryPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
     public FaceGeometryPacket At(Timestamp timestamp)

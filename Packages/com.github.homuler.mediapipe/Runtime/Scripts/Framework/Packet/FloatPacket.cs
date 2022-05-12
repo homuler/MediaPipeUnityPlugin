@@ -15,6 +15,7 @@ namespace Mediapipe
     /// </summary>
     public FloatPacket() : base(true) { }
 
+    [UnityEngine.Scripting.Preserve]
     public FloatPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
     public FloatPacket(float value) : base()

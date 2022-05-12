@@ -15,6 +15,7 @@ namespace Mediapipe
     /// </summary>
     public GpuBufferPacket() : base(true) { }
 
+    [UnityEngine.Scripting.Preserve]
     public GpuBufferPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
     public GpuBufferPacket(GpuBuffer gpuBuffer) : base()

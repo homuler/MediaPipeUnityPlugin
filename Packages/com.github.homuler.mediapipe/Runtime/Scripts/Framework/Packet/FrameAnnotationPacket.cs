@@ -15,6 +15,7 @@ namespace Mediapipe
     /// </summary>
     public FrameAnnotationPacket() : base(true) { }
 
+    [UnityEngine.Scripting.Preserve]
     public FrameAnnotationPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
     public FrameAnnotationPacket At(Timestamp timestamp)

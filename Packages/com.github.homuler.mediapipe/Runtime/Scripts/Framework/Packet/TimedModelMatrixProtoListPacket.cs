@@ -15,6 +15,7 @@ namespace Mediapipe
     /// </summary>
     public TimedModelMatrixProtoListPacket() : base(true) { }
 
+    [UnityEngine.Scripting.Preserve]
     public TimedModelMatrixProtoListPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
     public TimedModelMatrixProtoListPacket At(Timestamp timestamp)
