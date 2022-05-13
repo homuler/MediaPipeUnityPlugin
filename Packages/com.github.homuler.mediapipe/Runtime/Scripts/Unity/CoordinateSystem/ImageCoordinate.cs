@@ -31,7 +31,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="imageWidth">Image width in pixels</param>
     /// <param name="imageHeight">Image width in pixels</param>
     /// <param name="imageRotation">
-    ///   Counterclockwise rotation angle of the input image in the image coordinate system.<br/>
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
     ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
     /// </param>
     /// <param name="isMirrored">Set to true if the image coordinates is mirrored</param>
@@ -56,7 +56,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="imageWidth">Image width in pixels</param>
     /// <param name="imageHeight">Image width in pixels</param>
     /// <param name="imageRotation">
-    ///   Counterclockwise rotation angle of the input image in the image coordinate system.<br/>
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
     ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
     /// </param>
     /// <param name="isMirrored">Set to true if the image coordinates is mirrored</param>
@@ -71,12 +71,12 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// </summary>
     /// <param name="rectangle">Rectangle to get a point inside</param>
     /// <param name="position">
-    ///   The position in the image coordinate system.<br/>
+    ///   The position in the image coordinate system.
     ///   If <c>position.z</c> is not zero, it's assumed to be the depth value in the local coordinate system.
     /// </param>
     /// <param name="imageSize">Image size in pixels</param>
     /// <param name="imageRotation">
-    ///   Counterclockwise rotation angle of the input image in the image coordinate system.<br/>
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
     ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
     /// </param>
     /// <param name="isMirrored">Set to true if the image coordinates is mirrored</param>
@@ -95,7 +95,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="imageWidth">Image width in pixels</param>
     /// <param name="imageHeight">Image width in pixels</param>
     /// <param name="imageRotation">
-    ///   Counterclockwise rotation angle of the input image in the image coordinate system.<br/>
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
     ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
     /// </param>
     /// <param name="isMirrored">Set to true if the image coordinates is mirrored</param>
@@ -112,7 +112,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="position">The position in the image coordinate system</param>
     /// <param name="imageSize">Image size in pixels</param>
     /// <param name="imageRotation">
-    ///   Counterclockwise rotation angle of the input image in the image coordinate system.<br/>
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
     ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
     /// </param>
     /// <param name="isMirrored">Set to true if the image coordinates is mirrored</param>
@@ -135,7 +135,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="yMax">The maximum X coordinate of the target rectangle</param>
     /// <param name="zScale">Ratio of Z value in image coordinates to local coordinates in Unity</param>
     /// <param name="imageRotation">
-    ///   Counterclockwise rotation angle of the input image in the image coordinate system.<br/>
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
     ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
     /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
@@ -160,7 +160,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="normalizedZ">Normalized z value in the image coordinate system</param>
     /// <param name="zScale">Ratio of Z value in image coordinates to local coordinates in Unity</param>
     /// <param name="imageRotation">
-    ///   Counterclockwise rotation angle of the input image in the image coordinate system.<br/>
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
     ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
     /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
@@ -178,7 +178,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="position">The position in the image coordinate system</param>
     /// <param name="zScale">Ratio of Z value in image coordinates to local coordinates in Unity</param>
     /// <param name="imageRotation">
-    ///   Counterclockwise rotation angle of the input image in the image coordinate system.<br/>
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
     ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
     /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
@@ -200,7 +200,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="yMin">The minimum X coordinate of the target rectangle</param>
     /// <param name="yMax">The maximum X coordinate of the target rectangle</param>
     /// <param name="imageRotation">
-    ///   Counterclockwise rotation angle of the input image in the image coordinate system.<br/>
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
     ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
     /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
@@ -221,7 +221,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="normalizedY">Normalized y value in the image coordinate system</param>
     /// <param name="normalizedZ">Normalized z value in the image coordinate system</param>
     /// <param name="imageRotation">
-    ///   Counterclockwise rotation angle of the input image in the image coordinate system.<br/>
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
     ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
     /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
@@ -238,7 +238,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="rectangle">Rectangle to get a point inside</param>
     /// <param name="position">The position in the image coordinate system</param>
     /// <param name="imageRotation">
-    ///   Counterclockwise rotation angle of the input image in the image coordinate system.<br/>
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
     ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
     /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
@@ -255,7 +255,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="normalizedX">Normalized x value in the image coordinate system</param>
     /// <param name="normalizedY">Normalized y value in the image coordinate system</param>
     /// <param name="imageRotation">
-    ///   Counterclockwise rotation angle of the input image in the image coordinate system.<br/>
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
     ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
     /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
@@ -272,7 +272,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="rectangle">Rectangle to get a point inside</param>
     /// <param name="position">The position in the image coordinate system</param>
     /// <param name="imageRotation">
-    ///   Counterclockwise rotation angle of the input image in the image coordinate system.<br/>
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
     ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
     /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
@@ -282,7 +282,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     }
 
     /// <summary>
-    ///   Returns a Vector3 array which represents a rectangle's vertices.
+    ///   Returns a <see cref="Vector3" /> array which represents a rectangle's vertices.
     ///   They are in clockwise order, starting from the coordinate that was in the bottom-left.
     /// </summary>
     /// <remarks>
@@ -293,7 +293,10 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="yMin">Topmost Y value</param>
     /// <param name="imageWidth">Image width in pixels</param>
     /// <param name="imageHeight">Image width in pixels</param>
-    /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
+    /// <param name="imageRotation">
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
+    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
+    /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
     public static Vector3[] ImageToRectVertices(UnityEngine.Rect rectangle, int xMin, int yMin, int width, int height,
                                                 int imageWidth, int imageHeight, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
@@ -304,7 +307,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     }
 
     /// <summary>
-    ///   Returns a Vector3 array which represents a rectangle's vertices.
+    ///   Returns a <see cref="Vector3" /> array which represents a rectangle's vertices.
     ///   They are in clockwise order, starting from the coordinate that was in the bottom-left.
     /// </summary>
     /// <remarks>
@@ -314,7 +317,10 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="xMin">Leftmost X value</param>
     /// <param name="yMin">Topmost Y value</param>
     /// <param name="imageSize">Image size in pixels</param>
-    /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
+    /// <param name="imageRotation">
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
+    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
+    /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
     public static Vector3[] ImageToRectVertices(UnityEngine.Rect rectangle, int xMin, int yMin, int width, int height,
                                                 Vector2Int imageSize, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
@@ -323,7 +329,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     }
 
     /// <summary>
-    ///   Returns a Vector3 array which represents a rectangle's vertices.
+    ///   Returns a <see cref="Vector3" /> array which represents a rectangle's vertices.
     ///   They are in clockwise order, starting from the coordinate that was in the bottom-left.
     /// </summary>
     /// <remarks>
@@ -334,7 +340,10 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="normalizedYMin">Normalized topmost Y value</param>
     /// <param name="normalizedWidth">Normalized width</param>
     /// <param name="normalizedHeight">Normalized height</param>
-    /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
+    /// <param name="imageRotation">
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
+    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
+    /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
     public static Vector3[] ImageNormalizedToRectVertices(UnityEngine.Rect rectangle, float normalizedXMin, float normalizedYMin, float normalizedWidth, float normalizedHeight,
                                                           RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
@@ -345,7 +354,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     }
 
     /// <summary>
-    ///   Returns a Vector3 array which represents a rectangle's vertices.
+    ///   Returns a <see cref="Vector3" /> array which represents a rectangle's vertices.
     ///   They are in clockwise order, starting from the coordinate that was in the bottom-left before the rotation.
     /// </summary>
     /// <param name="rectangle">Rectangle to get a point inside</param>
@@ -354,7 +363,10 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="rotation">Clockwise rotation angle in radians</param>
     /// <param name="imageWidth">Image width in pixels</param>
     /// <param name="imageHeight">Image width in pixels</param>
-    /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
+    /// <param name="imageRotation">
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
+    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
+    /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
     public static Vector3[] ImageToRectVertices(UnityEngine.Rect rectangle, int xCenter, int yCenter, int width, int height, float rotation,
                                                 int imageWidth, int imageHeight, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
@@ -378,7 +390,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     }
 
     /// <summary>
-    ///   Returns a Vector3 array which represents a rectangle's vertices.
+    ///   Returns a <see cref="Vector3" /> array which represents a rectangle's vertices.
     ///   They are in clockwise order, starting from the coordinate that was in the bottom-left before the rotation.
     /// </summary>
     /// <param name="rectangle">Rectangle to get a point inside</param>
@@ -386,7 +398,10 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="yCenter">Y value of the rectangle's center coordinate</param>
     /// <param name="rotation">Clockwise rotation angle in radians</param>
     /// <param name="imageSize">Image size in pixels</param>
-    /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
+    /// <param name="imageRotation">
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
+    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
+    /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
     public static Vector3[] ImageToRectVertices(UnityEngine.Rect rectangle, int xCenter, int yCenter, int width, int height, float rotation,
                                                 Vector2Int imageSize, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
@@ -395,7 +410,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     }
 
     /// <summary>
-    ///   Returns a Vector3 array which represents a rectangle's vertices.
+    ///   Returns a <see cref="Vector3" /> array which represents a rectangle's vertices.
     ///   They are in clockwise order, starting from the coordinate that was in the bottom-left before the rotation.
     /// </summary>
     /// <param name="rectangle">Rectangle to get a point inside</param>
@@ -404,7 +419,10 @@ namespace Mediapipe.Unity.CoordinateSystem
     /// <param name="normalizedWidth">Normalized width</param>
     /// <param name="normalizedHeight">Normalized height</param>
     /// <param name="rotation">Clockwise rotation angle in radians</param>
-    /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
+    /// <param name="imageRotation">
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
+    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
+    /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
     public static Vector3[] ImageNormalizedToRectVertices(UnityEngine.Rect rectangle, float normalizedXCenter, float normalizedYCenter, float normalizedWidth, float normalizedHeight,
                                                           float rotation, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
@@ -447,7 +465,10 @@ namespace Mediapipe.Unity.CoordinateSystem
     ///   Get the coordinates represented by <paramref name="relativeKeypoint" /> in the local coordinate system.
     /// </summary>
     /// <param name="rectangle">Rectangle to get a point inside</param>
-    /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
+    /// <param name="imageRotation">
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
+    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
+    /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
     public static Vector2 GetPoint(this UnityEngine.Rect rectangle, mplt.RelativeKeypoint relativeKeypoint,
                                    RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
@@ -459,7 +480,10 @@ namespace Mediapipe.Unity.CoordinateSystem
     ///   Get the coordinates represented by <paramref name="normalizedLandmark" /> in the local coordinate system.
     /// </summary>
     /// <param name="rectangle">Rectangle to get a point inside</param>
-    /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
+    /// <param name="imageRotation">
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
+    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
+    /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
     public static Vector3 GetPoint(this UnityEngine.Rect rectangle, NormalizedLandmark normalizedLandmark,
                                    RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
@@ -468,10 +492,13 @@ namespace Mediapipe.Unity.CoordinateSystem
     }
 
     /// <summary>
-    ///   Get the coordinates represented by <paramref name="point2d" /> in local coordinate system.
+    ///   Get the coordinates represented by <paramref name="point2d" /> in the local coordinate system.
     /// </summary>
     /// <param name="rectangle">Rectangle to get a point inside</param>
-    /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
+    /// <param name="imageRotation">
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
+    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
+    /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
     public static Vector3 GetPoint(this UnityEngine.Rect rectangle, NormalizedPoint2D point2d, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
     {
@@ -479,10 +506,13 @@ namespace Mediapipe.Unity.CoordinateSystem
     }
 
     /// <summary>
-    ///   Get the coordinates represented by <paramref name="anchor3d" /> in local coordinate system.
+    ///   Get the coordinates represented by <paramref name="anchor3d" /> in the local coordinate system.
     /// </summary>
     /// <param name="rectangle">Rectangle to get a point inside</param>
-    /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
+    /// <param name="imageRotation">
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
+    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
+    /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
     public static Vector2 GetPoint(this UnityEngine.Rect rectangle, Anchor3d anchor3d, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
     {
@@ -490,13 +520,16 @@ namespace Mediapipe.Unity.CoordinateSystem
     }
 
     /// <summary>
-    ///   Get a Vector3 array which represents <paramref name="boundingBox" />'s vertex coordinates in local coordinate system.
+    ///   Get a Vector3 array which represents <paramref name="boundingBox" />'s vertex coordinates in the local coordinate system.
     ///   They are ordered clockwise from bottom-left point.
     /// </summary>
     /// <param name="rectangle">Rectangle to get a point inside</param>
     /// <param name="imageWidth">Image width in pixels</param>
     /// <param name="imageHeight">Image width in pixels</param>
-    /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
+    /// <param name="imageRotation">
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
+    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
+    /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
     public static Vector3[] GetRectVertices(this UnityEngine.Rect rectangle, mplt.BoundingBox boundingBox, int imageWidth, int imageHeight,
                                             RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
@@ -505,12 +538,15 @@ namespace Mediapipe.Unity.CoordinateSystem
     }
 
     /// <summary>
-    ///   Get a Vector3 array which represents <paramref name="boundingBox" />'s vertex coordinates in local coordinate system.
+    ///   Get a Vector3 array which represents <paramref name="boundingBox" />'s vertex coordinates in the local coordinate system.
     ///   They are ordered clockwise from bottom-left point.
     /// </summary>
     /// <param name="rectangle">Rectangle to get a point inside</param>
     /// <param name="imageSize">Image size in pixels</param>
-    /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
+    /// <param name="imageRotation">
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
+    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
+    /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
     public static Vector3[] GetRectVertices(this UnityEngine.Rect rectangle, mplt.BoundingBox boundingBox, Vector2Int imageSize,
                                             RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
@@ -519,11 +555,14 @@ namespace Mediapipe.Unity.CoordinateSystem
     }
 
     /// <summary>
-    ///   Get a Vector3 array which represents <paramref name="boundingBox" />'s vertex coordinates in local coordinate system.
+    ///   Get a Vector3 array which represents <paramref name="boundingBox" />'s vertex coordinates in the local coordinate system.
     ///   They are ordered clockwise from bottom-left point.
     /// </summary>
     /// <param name="rectangle">Rectangle to get a point inside</param>
-    /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
+    /// <param name="imageRotation">
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
+    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
+    /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
     public static Vector3[] GetRectVertices(this UnityEngine.Rect rectangle, mplt.RelativeBoundingBox boundingBox,
                                             RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
@@ -532,13 +571,16 @@ namespace Mediapipe.Unity.CoordinateSystem
     }
 
     /// <summary>
-    ///   Get a Vector3 array which represents <paramref name="rect" />'s vertex coordinates in local coordinate system.
+    ///   Get a Vector3 array which represents <paramref name="rect" />'s vertex coordinates in the local coordinate system.
     ///   They are ordered clockwise from bottom-left point.
     /// </summary>
     /// <param name="rectangle">Rectangle to get a point inside</param>
     /// <param name="imageWidth">Image width in pixels</param>
     /// <param name="imageHeight">Image width in pixels</param>
-    /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
+    /// <param name="imageRotation">
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
+    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
+    /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
     public static Vector3[] GetRectVertices(this UnityEngine.Rect rectangle, Rect rect, int imageWidth, int imageHeight,
                                             RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
@@ -547,12 +589,15 @@ namespace Mediapipe.Unity.CoordinateSystem
     }
 
     /// <summary>
-    ///   Get a Vector3 array which represents <paramref name="rect" />'s vertex coordinates in local coordinate system.
+    ///   Get a Vector3 array which represents <paramref name="rect" />'s vertex coordinates in the local coordinate system.
     ///   They are ordered clockwise from bottom-left point.
     /// </summary>
     /// <param name="rectangle">Rectangle to get a point inside</param>
     /// <param name="imageSize">Image size in pixels</param>
-    /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
+    /// <param name="imageRotation">
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
+    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
+    /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
     public static Vector3[] GetRectVertices(this UnityEngine.Rect rectangle, Rect rect, Vector2Int imageSize,
                                             RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
@@ -561,11 +606,14 @@ namespace Mediapipe.Unity.CoordinateSystem
     }
 
     /// <summary>
-    ///   Get a Vector3 array which represents <paramref name="normalizedRect" />'s vertex coordinates in local coordinate system.
+    ///   Get a Vector3 array which represents <paramref name="normalizedRect" />'s vertex coordinates in the local coordinate system.
     ///   They are ordered clockwise from bottom-left point.
     /// </summary>
     /// <param name="rectangle">Rectangle to get a point inside</param>
-    /// <param name="imageRotation">Counterclockwise rotation angle of the input image</param>
+    /// <param name="imageRotation">
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
+    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
+    /// </param>
     /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
     public static Vector3[] GetRectVertices(this UnityEngine.Rect rectangle, NormalizedRect normalizedRect,
                                             RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
@@ -573,6 +621,15 @@ namespace Mediapipe.Unity.CoordinateSystem
       return ImageNormalizedToRectVertices(rectangle, normalizedRect.XCenter, normalizedRect.YCenter, normalizedRect.Width, normalizedRect.Height, normalizedRect.Rotation, imageRotation, isMirrored);
     }
 
+    /// <summary>
+    ///   Get the image normalized point corresponding to <paramref name="localPosition" />.
+    /// </summary>
+    /// <param name="rectangle">Rectangle to get a point inside</param>
+    /// <param name="imageRotation">
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
+    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
+    /// </param>
+    /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
     public static Vector2 PointToImageNormalized(this UnityEngine.Rect rectangle, Vector2 localPosition, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
     {
       var normalizedX = IsXReversed(imageRotation, isMirrored) ?
@@ -586,7 +643,7 @@ namespace Mediapipe.Unity.CoordinateSystem
 
     /// <summary>
     ///   When the image is rotated back, returns whether the axis parallel to the X axis of the Unity coordinates is pointing in the same direction as the X axis of the Unity coordinates.
-    ///   For example, if <paramref name="rotationAngle" /> is <see cref="RotationAngle.Rotation90" /> and <paramRef name="isMirrored" /> is <c>False</c>, this returns <c>True</c>
+    ///   For example, if <paramref name="rotationAngle" /> is <see cref="RotationAngle.Rotation90" /> and <paramRef name="isMirrored" /> is <c>false</c>, this returns <c>true</c>
     ///   because the original Y axis will be exactly opposite the X axis in Unity coordinates if the image is rotated back.
     /// </summary>
     public static bool IsXReversed(RotationAngle rotationAngle, bool isMirrored = false)
@@ -598,7 +655,7 @@ namespace Mediapipe.Unity.CoordinateSystem
 
     /// <summary>
     ///   When the image is rotated back, returns whether the axis parallel to the X axis of the Unity coordinates is pointing in the same direction as the X axis of the Unity coordinates.
-    ///   For example, if <paramref name="rotationAngle" /> is <see cref="RotationAngle.Rotation90" /> and <paramRef name="isMirrored" /> is <c>False</c>, this returns <c>True</c>
+    ///   For example, if <paramref name="rotationAngle" /> is <see cref="RotationAngle.Rotation90" /> and <paramRef name="isMirrored" /> is <c>false</c>, this returns <c>true</c>
     ///   because the original X axis will be exactly opposite the Y axis in Unity coordinates if the image is rotated back.
     /// </summary>
     public static bool IsYReversed(RotationAngle rotationAngle, bool isMirrored = false)
@@ -608,6 +665,9 @@ namespace Mediapipe.Unity.CoordinateSystem
         rotationAngle == RotationAngle.Rotation0 || rotationAngle == RotationAngle.Rotation90;
     }
 
+    /// <summary>
+    ///   Returns <c>true</c> if <paramref name="rotationAngle" /> is <see cref="RotationAngle.Rotation90" /> or <see cref="RotationAngle.Rotation270" />.
+    /// </summary>
     public static bool IsInverted(RotationAngle rotationAngle)
     {
       return rotationAngle == RotationAngle.Rotation90 || rotationAngle == RotationAngle.Rotation270;
