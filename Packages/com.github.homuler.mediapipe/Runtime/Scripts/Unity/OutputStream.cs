@@ -470,7 +470,7 @@ namespace Mediapipe.Unity
     {
       lock (((ICollection)_CallbackStatus).SyncRoot)
       {
-        var deadKeys = _CallbackStatus.Where(x => !_InstanceTable.ContainsKey(x.Key)).Select(x => x.Key);
+        var deadKeys = _CallbackStatus.Where(x => !_InstanceTable.ContainsKey(x.Key)).Select(x => x.Key).ToArray();
 
         foreach (var key in deadKeys)
         {
