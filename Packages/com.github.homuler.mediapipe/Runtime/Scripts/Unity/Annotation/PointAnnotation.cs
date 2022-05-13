@@ -53,7 +53,7 @@ namespace Mediapipe.Unity
     {
       if (ActivateFor(target))
       {
-        var position = GetAnnotationLayer().GetLocalPosition(target, scale, rotationAngle, isMirrored);
+        var position = GetScreenRect().GetPoint(target, scale, rotationAngle, isMirrored);
         if (!visualizeZ)
         {
           position.z = 0.0f;
@@ -88,7 +88,7 @@ namespace Mediapipe.Unity
     {
       if (ActivateFor(target))
       {
-        var position = GetAnnotationLayer().GetLocalPosition(target, focalLength, principalPoint, zScale, rotationAngle, isMirrored);
+        var position = GetScreenRect().GetPoint(target, focalLength, principalPoint, zScale, rotationAngle, isMirrored);
         if (!visualizeZ)
         {
           position.z = 0.0f;
