@@ -81,7 +81,7 @@ namespace Mediapipe.Unity
     {
       lock (((ICollection)_table).SyncRoot)
       {
-        var deadKeys = _table.Where(x => !x.Value.TryGetTarget(out var target)).Select(x => x.Key);
+        var deadKeys = _table.Where(x => !x.Value.TryGetTarget(out var target)).Select(x => x.Key).ToArray();
 
         foreach (var key in deadKeys)
         {
