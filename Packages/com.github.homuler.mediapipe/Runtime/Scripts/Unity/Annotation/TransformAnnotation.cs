@@ -38,7 +38,7 @@ namespace Mediapipe.Unity
     public void Draw(Quaternion rotation, Vector3 scale, bool visualizeZ = true)
     {
       var q = Quaternion.Euler(0, 0, -(int)rotationAngle);
-      DrawArrow(_xArrow, scale.y * (q * rotation * Vector3.right), visualizeZ);
+      DrawArrow(_xArrow, scale.x * (q * rotation * Vector3.right), visualizeZ);
       DrawArrow(_yArrow, scale.y * (q * rotation * Vector3.up), visualizeZ);
       DrawArrow(_zArrow, scale.z * (q * rotation * Vector3.forward), visualizeZ);
     }
