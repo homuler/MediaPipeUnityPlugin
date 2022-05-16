@@ -127,7 +127,7 @@ namespace Mediapipe.Unity.CoordinateSystem
 
     /// <summary>
     ///   Convert from camera coordinates to local coordinates in Unity.
-    ///   It is assumed that the principal point is (0, 0) in the local coordinate system and the focal length is (0, 0).
+    ///   It is assumed that the principal point is (0, 0) in the camera coordinate system and the focal length is (1, 1).
     /// </summary>
     /// <param name="rectangle">Rectangle to get a point inside</param>
     /// <param name="x">X in camera coordinates</param>
@@ -142,8 +142,7 @@ namespace Mediapipe.Unity.CoordinateSystem
     public static Vector3 CameraToPoint(UnityEngine.Rect rectangle, float x, float y, float z,
                                         float zScale, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
     {
-      var principalPoint = rectangle.PointToNDC(new Vector2(0.0f, 0.0f), imageRotation, isMirrored);
-      return CameraToLocalPoint(x, y, z, rectangle.xMin, rectangle.xMax, rectangle.yMin, rectangle.yMax, Vector2.one, principalPoint, zScale, imageRotation, isMirrored);
+      return CameraToLocalPoint(x, y, z, rectangle.xMin, rectangle.xMax, rectangle.yMin, rectangle.yMax, Vector2.one, Vector2.zero, zScale, imageRotation, isMirrored);
     }
 
     /// <summary>
@@ -200,33 +199,66 @@ namespace Mediapipe.Unity.CoordinateSystem
       return CameraToPoint(rectangle, point3d.X, point3d.Y, point3d.Z, zScale, imageRotation, isMirrored);
     }
 
-    public static Vector2 PointToNDC(this UnityEngine.Rect rectangle, float x, float y, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    public static Quaternion GetApproximateQuaternion(ObjectAnnotation objectAnnotation, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
     {
-      var normalizedX = 0.0f;
-      if (rectangle.xMax != rectangle.xMin)
-      {
-        normalizedX = IsXReversed(imageRotation, isMirrored) ?
-            (rectangle.xMax - x) / (rectangle.xMax - rectangle.xMin) :
-            (x - rectangle.xMin) / (rectangle.xMax - rectangle.xMin);
-      }
+      var isInverted = IsInverted(imageRotation);
+      var isXReversed = IsXReversed(imageRotation, isMirrored);
+      var isYReversed = IsYReversed(imageRotation, isMirrored);
+      var forward = GetZDir(objectAnnotation, isXReversed, isYReversed, isInverted);
+      var upward = GetYDir(objectAnnotation, isXReversed, isYReversed, isInverted);
 
-      var normalizedY = 0.0f;
-      if (rectangle.yMax != rectangle.yMin)
-      {
-        normalizedX = IsXReversed(imageRotation, isMirrored) ?
-            (rectangle.yMax - y) / (rectangle.yMax - rectangle.yMin) :
-            (y - rectangle.yMin) / (rectangle.yMax - rectangle.yMin);
-      }
-
-      var ndcX = (2 * normalizedX) - 1.0f;
-      var ndcY = (2 * normalizedY) - 1.0f;
-
-      return IsInverted(imageRotation) ? new Vector2(ndcY, ndcX) : new Vector2(ndcX, ndcY);
+      return Quaternion.LookRotation(forward, upward);
     }
 
-    public static Vector2 PointToNDC(this UnityEngine.Rect rectangle, Vector2 localPosition, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    public static (Vector3, Vector3, Vector3) GetDirections(ObjectAnnotation objectAnnotation, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
     {
-      return rectangle.PointToNDC(localPosition.x, localPosition.y, imageRotation, isMirrored);
+      var isInverted = IsInverted(imageRotation);
+      var isXReversed = IsXReversed(imageRotation, isMirrored);
+      var isYReversed = IsYReversed(imageRotation, isMirrored);
+      var scale = objectAnnotation.Scale;
+      var xDir = scale[0] * GetXDir(objectAnnotation, isXReversed, isYReversed, isInverted);
+      var yDir = scale[1] * GetYDir(objectAnnotation, isXReversed, isYReversed, isInverted);
+      var zDir = scale[2] * GetZDir(objectAnnotation, isXReversed, isYReversed, isInverted);
+      return (xDir, yDir, zDir);
+    }
+
+    private static Vector3 GetXDir(ObjectAnnotation objectAnnotation, bool isXReversed, bool isYReversed, bool isInverted)
+    {
+      var points = objectAnnotation.Keypoints;
+      var v1 = GetDirection(points[5].Point3D, points[1].Point3D, isXReversed, isYReversed, isInverted).normalized;
+      var v2 = GetDirection(points[6].Point3D, points[2].Point3D, isXReversed, isYReversed, isInverted).normalized;
+      var v3 = GetDirection(points[7].Point3D, points[3].Point3D, isXReversed, isYReversed, isInverted).normalized;
+      var v4 = GetDirection(points[8].Point3D, points[4].Point3D, isXReversed, isYReversed, isInverted).normalized;
+      return (v1 + v2 + v3 + v4) / 4;
+    }
+
+    private static Vector3 GetYDir(ObjectAnnotation objectAnnotation, bool isXReversed, bool isYReversed, bool isInverted)
+    {
+      var points = objectAnnotation.Keypoints;
+      var v1 = GetDirection(points[1].Point3D, points[3].Point3D, isXReversed, isYReversed, isInverted).normalized;
+      var v2 = GetDirection(points[2].Point3D, points[4].Point3D, isXReversed, isYReversed, isInverted).normalized;
+      var v3 = GetDirection(points[5].Point3D, points[7].Point3D, isXReversed, isYReversed, isInverted).normalized;
+      var v4 = GetDirection(points[6].Point3D, points[8].Point3D, isXReversed, isYReversed, isInverted).normalized;
+      return (v1 + v2 + v3 + v4) / 4;
+    }
+
+    private static Vector3 GetZDir(ObjectAnnotation objectAnnotation, bool isXReversed, bool isYReversed, bool isInverted)
+    {
+      var points = objectAnnotation.Keypoints;
+      var v1 = GetDirection(points[2].Point3D, points[1].Point3D, isXReversed, isYReversed, isInverted).normalized;
+      var v2 = GetDirection(points[4].Point3D, points[3].Point3D, isXReversed, isYReversed, isInverted).normalized;
+      var v3 = GetDirection(points[6].Point3D, points[5].Point3D, isXReversed, isYReversed, isInverted).normalized;
+      var v4 = GetDirection(points[8].Point3D, points[7].Point3D, isXReversed, isYReversed, isInverted).normalized;
+      return (v1 + v2 + v3 + v4) / 4;
+    }
+
+    private static Vector3 GetDirection(Point3D from, Point3D to, bool isXReversed, bool isYReversed, bool isInverted)
+    {
+      var xDiff = to.X - from.X;
+      var yDiff = to.Y - from.Y;
+      var (xDir, yDir) = isInverted ? (yDiff, xDiff) : (xDiff, yDiff);
+      // convert from right-handed to left-handed
+      return new Vector3(isXReversed ? -xDir : xDir, isYReversed ? -yDir : yDir, from.Z - to.Z);
     }
 
     /// <summary>
