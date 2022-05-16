@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.2](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.9.1...v0.9.2) (2022-05-16)
+
+
+### Bug Fixes
+
+* Enumerator can be invalid when an item is deleted ([#565](https://github.com/homuler/MediaPipeUnityPlugin/issues/565)) ([d8e061a](https://github.com/homuler/MediaPipeUnityPlugin/commit/d8e061a1ea5668e4b0c3ec4a3ca1abb3232f1c0c))
+* **plugin:** check if the target local asset is missing ([#562](https://github.com/homuler/MediaPipeUnityPlugin/issues/562)) ([e3fa454](https://github.com/homuler/MediaPipeUnityPlugin/commit/e3fa454f30bced1f9342e8a3b41951dbe9eebc03))
+* **plugin:** preserve Packet constructors for Reflection ([#561](https://github.com/homuler/MediaPipeUnityPlugin/issues/561)) ([a6f27b1](https://github.com/homuler/MediaPipeUnityPlugin/commit/a6f27b127440825aa794a6744e1c0a7d2c6431ed))
+* **plugin:** prevent Status returned by a packet callback from being GCed prematurely ([#563](https://github.com/homuler/MediaPipeUnityPlugin/issues/563)) ([f4301af](https://github.com/homuler/MediaPipeUnityPlugin/commit/f4301af93dcca68514311d44ad6014c5b8ea5523))
+* **sample:** dispose OutputStream if only it exists ([#564](https://github.com/homuler/MediaPipeUnityPlugin/issues/564)) ([dcee215](https://github.com/homuler/MediaPipeUnityPlugin/commit/dcee215092b169a155d7780370d9b055df46d956))
+* **sample:** the default video/image is not selected ([#543](https://github.com/homuler/MediaPipeUnityPlugin/issues/543)) ([77ba1a4](https://github.com/homuler/MediaPipeUnityPlugin/commit/77ba1a4d2249b8db09b3a1e975a01f6e50d21e33))
+
 ### [0.9.1](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.9.0...v0.9.1) (2022-04-19)
 
 
