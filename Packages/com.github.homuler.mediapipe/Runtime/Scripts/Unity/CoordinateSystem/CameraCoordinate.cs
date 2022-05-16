@@ -50,8 +50,8 @@ namespace Mediapipe.Unity.CoordinateSystem
     {
       var (ndcX, ndcY) = ((-focalLengthX * x / z) + principalX, (focalLengthY * y / z) + principalY);
       var (width, height) = (xMax - xMin, yMax - yMin);
-      var (pixelX, pixelY) = ((1 + ndcX) / 2.0f * width, (1 - ndcY) / 2.0f * height);
-      var (rectX, rectY) = IsInverted(imageRotation) ? (pixelY, pixelX) : (pixelX, pixelY);
+      var (nx, ny) = ((1 + ndcX) / 2.0f, (1 - ndcY) / 2.0f);
+      var (rectX, rectY) = IsInverted(imageRotation) ? (ny * width, nx * height) : (nx * width, ny * height);
       var localX = (IsXReversed(imageRotation, isMirrored) ? width - rectX : rectX) + xMin;
       var localY = (IsYReversed(imageRotation, isMirrored) ? height - rectY : rectY) + yMin;
       // Reverse the sign of Z because camera coordinate system is right-handed
@@ -232,10 +232,10 @@ namespace Mediapipe.Unity.CoordinateSystem
     private static Vector3 GetXDir(ObjectAnnotation objectAnnotation, bool isXReversed, bool isYReversed, bool isInverted)
     {
       var points = objectAnnotation.Keypoints;
-      var v1 = GetDirection(points[5].Point3D, points[1].Point3D, isXReversed, isYReversed, isInverted).normalized;
-      var v2 = GetDirection(points[6].Point3D, points[2].Point3D, isXReversed, isYReversed, isInverted).normalized;
-      var v3 = GetDirection(points[7].Point3D, points[3].Point3D, isXReversed, isYReversed, isInverted).normalized;
-      var v4 = GetDirection(points[8].Point3D, points[4].Point3D, isXReversed, isYReversed, isInverted).normalized;
+      var v1 = GetDirection(points[1].Point3D, points[5].Point3D, isXReversed, isYReversed, isInverted).normalized;
+      var v2 = GetDirection(points[2].Point3D, points[6].Point3D, isXReversed, isYReversed, isInverted).normalized;
+      var v3 = GetDirection(points[3].Point3D, points[7].Point3D, isXReversed, isYReversed, isInverted).normalized;
+      var v4 = GetDirection(points[4].Point3D, points[8].Point3D, isXReversed, isYReversed, isInverted).normalized;
       return (v1 + v2 + v3 + v4) / 4;
     }
 
