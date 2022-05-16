@@ -17,6 +17,13 @@ namespace Mediapipe.Unity.CoordinateSystem
   /// </remarks>
   public static class CameraCoordinate
   {
+    public static Vector3 CameraToRealWorld(float x, float y, float z, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
+      var isInverted = IsInverted(imageRotation);
+      var (rx, ry) = isInverted ? (y, x) : (x, y);
+      return new Vector3(IsXReversed(imageRotation, isMirrored) ? -rx : rx, IsYReversed(imageRotation, isMirrored) ? -ry : ry, -z);
+    }
+
     /// <summary>
     ///   Convert from camera coordinates to local coordinates in Unity.
     /// </summary>
