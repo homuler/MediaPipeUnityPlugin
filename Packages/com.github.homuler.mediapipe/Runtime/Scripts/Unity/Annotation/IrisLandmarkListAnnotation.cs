@@ -65,13 +65,13 @@ namespace Mediapipe.Unity
       {
         _landmarkListAnnotation.Draw(target, visualizeZ);
 
-        var rectTransform = GetAnnotationLayer();
-        var center = rectTransform.GetLocalPosition(target[0], rotationAngle, isMirrored);
+        var rect = GetScreenRect();
+        var center = rect.GetPoint(target[0], rotationAngle, isMirrored);
         if (!visualizeZ)
         {
           center.z = 0.0f;
         }
-        var radius = CalculateRadius(rectTransform, target);
+        var radius = CalculateRadius(rect, target);
         _circleAnnotation.Draw(center, radius, vertices);
       }
     }
@@ -81,17 +81,17 @@ namespace Mediapipe.Unity
       Draw(target?.Landmark, visualizeZ, vertices);
     }
 
-    private float CalculateRadius(RectTransform rectTransform, IList<NormalizedLandmark> target)
+    private float CalculateRadius(UnityEngine.Rect rect, IList<NormalizedLandmark> target)
     {
-      var r1 = CalculateDistance(rectTransform, target[1], target[3]);
-      var r2 = CalculateDistance(rectTransform, target[2], target[4]);
+      var r1 = CalculateDistance(rect, target[1], target[3]);
+      var r2 = CalculateDistance(rect, target[2], target[4]);
       return (r1 + r2) / 4;
     }
 
-    private float CalculateDistance(RectTransform rectTransform, NormalizedLandmark a, NormalizedLandmark b)
+    private float CalculateDistance(UnityEngine.Rect rect, NormalizedLandmark a, NormalizedLandmark b)
     {
-      var aPos = rectTransform.GetLocalPosition(a, rotationAngle, isMirrored);
-      var bPos = rectTransform.GetLocalPosition(b, rotationAngle, isMirrored);
+      var aPos = rect.GetPoint(a, rotationAngle, isMirrored);
+      var bPos = rect.GetPoint(b, rotationAngle, isMirrored);
       aPos.z = 0.0f;
       bPos.z = 0.0f;
       return Vector3.Distance(aPos, bPos);

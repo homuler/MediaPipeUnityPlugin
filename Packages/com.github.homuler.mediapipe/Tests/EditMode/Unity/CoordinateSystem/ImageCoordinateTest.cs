@@ -13,7 +13,7 @@ namespace Tests
 {
   public class ImageCoordinateTest
   {
-    #region GetLocalPosition
+    #region ImageToPoint
     [TestCase(640, 480, -160, 0, 10, RotationAngle.Rotation0, false, -480, 240, 10)]
     [TestCase(640, 480, 0, -160, 10, RotationAngle.Rotation0, false, -320, 400, 10)]
     [TestCase(640, 480, 800, 0, 10, RotationAngle.Rotation0, false, 480, 240, 10)]
@@ -78,14 +78,12 @@ namespace Tests
     [TestCase(640, 480, 0, 800, 10, RotationAngle.Rotation270, true, 480, 240, 10)]
     [TestCase(640, 480, 640, 640, 10, RotationAngle.Rotation270, true, 320, -400, 10)]
     [TestCase(640, 480, 480, 800, 10, RotationAngle.Rotation270, true, 480, -240, 10)]
-    public void GetLocalPosition_ShouldReturnLocalPosition_When_ImageSizeIsNotSpecified(int width, int height, int x, int y, int z, RotationAngle imageRotation, bool isMirrored, float expectedX, float expectedY, float expectedZ)
+    public void ImageToPoint_ShouldReturnLocalPoint_When_ImageSizeIsSameAsScreenSize(int width, int height, int x, int y, int z, RotationAngle imageRotation, bool isMirrored,
+                                                                                     float expectedX, float expectedY, float expectedZ)
     {
-      WithRectTransform((rectTransform) =>
-      {
-        rectTransform.sizeDelta = new Vector2(width, height);
-        var result = ImageCoordinate.GetLocalPosition(rectTransform, x, y, z, imageRotation, isMirrored);
-        Assert.AreEqual(new Vector3(expectedX, expectedY, expectedZ), result);
-      });
+      var rect = BuildRect(-width / 2, width / 2, -height / 2, height / 2);
+      var result = ImageCoordinate.ImageToPoint(rect, x, y, z, width, height, imageRotation, isMirrored);
+      Assert.AreEqual(new Vector3(expectedX, expectedY, expectedZ), result);
     }
 
     [TestCase(640, 480, 720, 540, -160, 0, 0, RotationAngle.Rotation0, false, -540, 270, 0)]
@@ -120,18 +118,96 @@ namespace Tests
     [TestCase(640, 480, 320, 240, 0, 800, 0, RotationAngle.Rotation270, false, 240, -120, 0)]
     [TestCase(640, 480, 320, 240, 640, 640, 0, RotationAngle.Rotation270, false, 160, 200, 0)]
     [TestCase(640, 480, 320, 240, 480, 800, 0, RotationAngle.Rotation270, false, 240, 120, 0)]
-    public void GetLocalPosition_ShouldReturnLocalPosition_When_ImageSizeIsSpecified(int imageWidth, int imageHeight, int width, int height, int x, int y, int z, RotationAngle imageRotation, bool isMirrored, float expectedX, float expectedY, float expectedZ)
+    public void ImageToPoint_ShouldReturnLocalPoint_When_ImageSizeIsNotSameAsScreenSize(int imageWidth, int imageHeight, int width, int height, int x, int y, int z,
+                                                                                        RotationAngle imageRotation, bool isMirrored, float expectedX, float expectedY, float expectedZ)
     {
-      WithRectTransform((rectTransform) =>
-      {
-        rectTransform.sizeDelta = new Vector2(width, height);
-        var result = ImageCoordinate.GetLocalPosition(rectTransform, x, y, z, new Vector2(imageWidth, imageHeight), imageRotation, isMirrored);
-        Assert.AreEqual(new Vector3(expectedX, expectedY, expectedZ), result);
-      });
+      var rect = BuildRect(-width / 2, width / 2, -height / 2, height / 2);
+      var result = ImageCoordinate.ImageToPoint(rect, x, y, z, imageWidth, imageHeight, imageRotation, isMirrored);
+      Assert.AreEqual(new Vector3(expectedX, expectedY, expectedZ), result);
+    }
+
+    [TestCase(640, 480, 0, 0, 0, 640, 0, 480, RotationAngle.Rotation0, false, 0, 480)]
+    [TestCase(640, 480, 0, 0, 0, 640, 0, 480, RotationAngle.Rotation0, true, 640, 480)]
+    [TestCase(640, 480, 0, 0, 0, 640, 0, 480, RotationAngle.Rotation90, false, 640, 480)]
+    [TestCase(640, 480, 0, 0, 0, 640, 0, 480, RotationAngle.Rotation90, true, 640, 0)]
+    [TestCase(640, 480, 0, 0, 0, 640, 0, 480, RotationAngle.Rotation180, false, 640, 0)]
+    [TestCase(640, 480, 0, 0, 0, 640, 0, 480, RotationAngle.Rotation180, true, 0, 0)]
+    [TestCase(640, 480, 0, 0, 0, 640, 0, 480, RotationAngle.Rotation270, false, 0, 0)]
+    [TestCase(640, 480, 0, 0, 0, 640, 0, 480, RotationAngle.Rotation270, true, 0, 480)]
+    [TestCase(640, 480, 0, 0, -320, 320, 0, 480, RotationAngle.Rotation0, false, -320, 480)]
+    [TestCase(640, 480, 0, 0, -320, 320, 0, 480, RotationAngle.Rotation0, true, 320, 480)]
+    [TestCase(640, 480, 0, 0, -320, 320, 0, 480, RotationAngle.Rotation90, false, 320, 480)]
+    [TestCase(640, 480, 0, 0, -320, 320, 0, 480, RotationAngle.Rotation90, true, 320, 0)]
+    [TestCase(640, 480, 0, 0, -320, 320, 0, 480, RotationAngle.Rotation180, false, 320, 0)]
+    [TestCase(640, 480, 0, 0, -320, 320, 0, 480, RotationAngle.Rotation180, true, -320, 0)]
+    [TestCase(640, 480, 0, 0, -320, 320, 0, 480, RotationAngle.Rotation270, false, -320, 0)]
+    [TestCase(640, 480, 0, 0, -320, 320, 0, 480, RotationAngle.Rotation270, true, -320, 480)]
+    [TestCase(640, 480, 0, 0, -640, 0, 0, 480, RotationAngle.Rotation0, false, -640, 480)]
+    [TestCase(640, 480, 0, 0, -640, 0, 0, 480, RotationAngle.Rotation0, true, 0, 480)]
+    [TestCase(640, 480, 0, 0, -640, 0, 0, 480, RotationAngle.Rotation90, false, 0, 480)]
+    [TestCase(640, 480, 0, 0, -640, 0, 0, 480, RotationAngle.Rotation90, true, 0, 0)]
+    [TestCase(640, 480, 0, 0, -640, 0, 0, 480, RotationAngle.Rotation180, false, 0, 0)]
+    [TestCase(640, 480, 0, 0, -640, 0, 0, 480, RotationAngle.Rotation180, true, -640, 0)]
+    [TestCase(640, 480, 0, 0, -640, 0, 0, 480, RotationAngle.Rotation270, false, -640, 0)]
+    [TestCase(640, 480, 0, 0, -640, 0, 0, 480, RotationAngle.Rotation270, true, -640, 480)]
+    [TestCase(640, 480, 0, 0, 0, 640, -240, 240, RotationAngle.Rotation0, false, 0, 240)]
+    [TestCase(640, 480, 0, 0, 0, 640, -240, 240, RotationAngle.Rotation0, true, 640, 240)]
+    [TestCase(640, 480, 0, 0, 0, 640, -240, 240, RotationAngle.Rotation90, false, 640, 240)]
+    [TestCase(640, 480, 0, 0, 0, 640, -240, 240, RotationAngle.Rotation90, true, 640, -240)]
+    [TestCase(640, 480, 0, 0, 0, 640, -240, 240, RotationAngle.Rotation180, false, 640, -240)]
+    [TestCase(640, 480, 0, 0, 0, 640, -240, 240, RotationAngle.Rotation180, true, 0, -240)]
+    [TestCase(640, 480, 0, 0, 0, 640, -240, 240, RotationAngle.Rotation270, false, 0, -240)]
+    [TestCase(640, 480, 0, 0, 0, 640, -240, 240, RotationAngle.Rotation270, true, 0, 240)]
+    [TestCase(640, 480, 0, 0, -320, 320, -240, 240, RotationAngle.Rotation0, false, -320, 240)]
+    [TestCase(640, 480, 0, 0, -320, 320, -240, 240, RotationAngle.Rotation0, true, 320, 240)]
+    [TestCase(640, 480, 0, 0, -320, 320, -240, 240, RotationAngle.Rotation90, false, 320, 240)]
+    [TestCase(640, 480, 0, 0, -320, 320, -240, 240, RotationAngle.Rotation90, true, 320, -240)]
+    [TestCase(640, 480, 0, 0, -320, 320, -240, 240, RotationAngle.Rotation180, false, 320, -240)]
+    [TestCase(640, 480, 0, 0, -320, 320, -240, 240, RotationAngle.Rotation180, true, -320, -240)]
+    [TestCase(640, 480, 0, 0, -320, 320, -240, 240, RotationAngle.Rotation270, false, -320, -240)]
+    [TestCase(640, 480, 0, 0, -320, 320, -240, 240, RotationAngle.Rotation270, true, -320, 240)]
+    [TestCase(640, 480, 0, 0, -640, 0, -240, 240, RotationAngle.Rotation0, false, -640, 240)]
+    [TestCase(640, 480, 0, 0, -640, 0, -240, 240, RotationAngle.Rotation0, true, 0, 240)]
+    [TestCase(640, 480, 0, 0, -640, 0, -240, 240, RotationAngle.Rotation90, false, 0, 240)]
+    [TestCase(640, 480, 0, 0, -640, 0, -240, 240, RotationAngle.Rotation90, true, 0, -240)]
+    [TestCase(640, 480, 0, 0, -640, 0, -240, 240, RotationAngle.Rotation180, false, 0, -240)]
+    [TestCase(640, 480, 0, 0, -640, 0, -240, 240, RotationAngle.Rotation180, true, -640, -240)]
+    [TestCase(640, 480, 0, 0, -640, 0, -240, 240, RotationAngle.Rotation270, false, -640, -240)]
+    [TestCase(640, 480, 0, 0, -640, 0, -240, 240, RotationAngle.Rotation270, true, -640, 240)]
+    [TestCase(640, 480, 0, 0, 0, 640, -480, 0, RotationAngle.Rotation0, false, 0, 0)]
+    [TestCase(640, 480, 0, 0, 0, 640, -480, 0, RotationAngle.Rotation0, true, 640, 0)]
+    [TestCase(640, 480, 0, 0, 0, 640, -480, 0, RotationAngle.Rotation90, false, 640, 0)]
+    [TestCase(640, 480, 0, 0, 0, 640, -480, 0, RotationAngle.Rotation90, true, 640, -480)]
+    [TestCase(640, 480, 0, 0, 0, 640, -480, 0, RotationAngle.Rotation180, false, 640, -480)]
+    [TestCase(640, 480, 0, 0, 0, 640, -480, 0, RotationAngle.Rotation180, true, 0, -480)]
+    [TestCase(640, 480, 0, 0, 0, 640, -480, 0, RotationAngle.Rotation270, false, 0, -480)]
+    [TestCase(640, 480, 0, 0, 0, 640, -480, 0, RotationAngle.Rotation270, true, 0, 0)]
+    [TestCase(640, 480, 0, 0, -320, 320, -480, 0, RotationAngle.Rotation0, false, -320, 0)]
+    [TestCase(640, 480, 0, 0, -320, 320, -480, 0, RotationAngle.Rotation0, true, 320, 0)]
+    [TestCase(640, 480, 0, 0, -320, 320, -480, 0, RotationAngle.Rotation90, false, 320, 0)]
+    [TestCase(640, 480, 0, 0, -320, 320, -480, 0, RotationAngle.Rotation90, true, 320, -480)]
+    [TestCase(640, 480, 0, 0, -320, 320, -480, 0, RotationAngle.Rotation180, false, 320, -480)]
+    [TestCase(640, 480, 0, 0, -320, 320, -480, 0, RotationAngle.Rotation180, true, -320, -480)]
+    [TestCase(640, 480, 0, 0, -320, 320, -480, 0, RotationAngle.Rotation270, false, -320, -480)]
+    [TestCase(640, 480, 0, 0, -320, 320, -480, 0, RotationAngle.Rotation270, true, -320, 0)]
+    [TestCase(640, 480, 0, 0, -640, 0, -480, 0, RotationAngle.Rotation0, false, -640, 0)]
+    [TestCase(640, 480, 0, 0, -640, 0, -480, 0, RotationAngle.Rotation0, true, 0, 0)]
+    [TestCase(640, 480, 0, 0, -640, 0, -480, 0, RotationAngle.Rotation90, false, 0, 0)]
+    [TestCase(640, 480, 0, 0, -640, 0, -480, 0, RotationAngle.Rotation90, true, 0, -480)]
+    [TestCase(640, 480, 0, 0, -640, 0, -480, 0, RotationAngle.Rotation180, false, 0, -480)]
+    [TestCase(640, 480, 0, 0, -640, 0, -480, 0, RotationAngle.Rotation180, true, -640, -480)]
+    [TestCase(640, 480, 0, 0, -640, 0, -480, 0, RotationAngle.Rotation270, false, -640, -480)]
+    [TestCase(640, 480, 0, 0, -640, 0, -480, 0, RotationAngle.Rotation270, true, -640, 0)]
+    public void ImageToPoint_ShouldReturnLocalPoint_When_TheAnchorOfRectIsNotAtTheCenter(int width, int height, int x, int y, float xMin, float xMax, float yMin, float yMax,
+                                                                                         RotationAngle imageRotation, bool isMirrored, float expectedX, float expectedY)
+    {
+      var rect = BuildRect(xMin, xMax, yMin, yMax);
+      var result = ImageCoordinate.ImageToPoint(rect, x, y, width, height, imageRotation, isMirrored);
+      Assert.AreEqual(new Vector3(expectedX, expectedY, 0), result);
     }
     #endregion
 
-    #region GetLocalPositionNormalized
+    #region ImageNormalizedToPoint
     [TestCase(640, 480, -0.25f, 0, 0, RotationAngle.Rotation0, false, -480, 240, 0)]
     [TestCase(640, 480, 0, -0.25f, 0, RotationAngle.Rotation0, false, -320, 360, 0)]
     [TestCase(640, 480, 1.25f, 0, 1, RotationAngle.Rotation0, false, 480, 240, 640)]
@@ -196,14 +272,92 @@ namespace Tests
     [TestCase(640, 480, 0, 1.25f, -1, RotationAngle.Rotation270, true, 480, 240, -480)]
     [TestCase(640, 480, 1.25f, 1, 0, RotationAngle.Rotation270, true, 320, -360, 0)]
     [TestCase(640, 480, 1, 1.25f, 0, RotationAngle.Rotation270, true, 480, -240, 0)]
-    public void GetLocalPositionNormalized_ShouldReturnLocalPosition_When_ImageRotationAndIsMirroredAreSpecified(int width, int height, float normalizedX, float normalizedY, float normalizedZ, RotationAngle imageRotation, bool isMirrored, float expectedX, float expectedY, float expectedZ)
+    public void ImageNormalizedToPoint_ShouldReturnLocalPoint_When_TheAnchorOfRectIsAtTheCenter(int width, int height, float normalizedX, float normalizedY, float normalizedZ,
+                                                                                                RotationAngle imageRotation, bool isMirrored, float expectedX, float expectedY, float expectedZ)
     {
-      WithRectTransform((rectTransform) =>
-      {
-        rectTransform.sizeDelta = new Vector2(width, height);
-        var result = ImageCoordinate.GetLocalPositionNormalized(rectTransform, normalizedX, normalizedY, normalizedZ, imageRotation, isMirrored);
-        Assert.AreEqual(new Vector3(expectedX, expectedY, expectedZ), result);
-      });
+      var rect = BuildRect(-width / 2, width / 2, -height / 2, height / 2);
+      var result = ImageCoordinate.ImageNormalizedToPoint(rect, normalizedX, normalizedY, normalizedZ, imageRotation, isMirrored);
+      Assert.AreEqual(new Vector3(expectedX, expectedY, expectedZ), result);
+    }
+
+    [TestCase(0, 0, 0, 0, 640, 0, 480, RotationAngle.Rotation0, false, 0, 480, 0)]
+    [TestCase(0, 0, 0, 0, 640, 0, 480, RotationAngle.Rotation0, true, 640, 480, 0)]
+    [TestCase(0, 0, 0, 0, 640, 0, 480, RotationAngle.Rotation90, false, 640, 480, 0)]
+    [TestCase(0, 0, 0, 0, 640, 0, 480, RotationAngle.Rotation90, true, 640, 0, 0)]
+    [TestCase(0, 0, 0, 0, 640, 0, 480, RotationAngle.Rotation180, false, 640, 0, 0)]
+    [TestCase(0, 0, 0, 0, 640, 0, 480, RotationAngle.Rotation180, true, 0, 0, 0)]
+    [TestCase(0, 0, 0, 0, 640, 0, 480, RotationAngle.Rotation270, false, 0, 0, 0)]
+    [TestCase(0, 0, 0, 0, 640, 0, 480, RotationAngle.Rotation270, true, 0, 480, 0)]
+    [TestCase(0, 0, 0, -320, 320, 0, 480, RotationAngle.Rotation0, false, -320, 480, 0)]
+    [TestCase(0, 0, 0, -320, 320, 0, 480, RotationAngle.Rotation0, true, 320, 480, 0)]
+    [TestCase(0, 0, 0, -320, 320, 0, 480, RotationAngle.Rotation90, false, 320, 480, 0)]
+    [TestCase(0, 0, 0, -320, 320, 0, 480, RotationAngle.Rotation90, true, 320, 0, 0)]
+    [TestCase(0, 0, 0, -320, 320, 0, 480, RotationAngle.Rotation180, false, 320, 0, 0)]
+    [TestCase(0, 0, 0, -320, 320, 0, 480, RotationAngle.Rotation180, true, -320, 0, 0)]
+    [TestCase(0, 0, 0, -320, 320, 0, 480, RotationAngle.Rotation270, false, -320, 0, 0)]
+    [TestCase(0, 0, 0, -320, 320, 0, 480, RotationAngle.Rotation270, true, -320, 480, 0)]
+    [TestCase(0, 0, 0, -640, 0, 0, 480, RotationAngle.Rotation0, false, -640, 480, 0)]
+    [TestCase(0, 0, 0, -640, 0, 0, 480, RotationAngle.Rotation0, true, 0, 480, 0)]
+    [TestCase(0, 0, 0, -640, 0, 0, 480, RotationAngle.Rotation90, false, 0, 480, 0)]
+    [TestCase(0, 0, 0, -640, 0, 0, 480, RotationAngle.Rotation90, true, 0, 0, 0)]
+    [TestCase(0, 0, 0, -640, 0, 0, 480, RotationAngle.Rotation180, false, 0, 0, 0)]
+    [TestCase(0, 0, 0, -640, 0, 0, 480, RotationAngle.Rotation180, true, -640, 0, 0)]
+    [TestCase(0, 0, 0, -640, 0, 0, 480, RotationAngle.Rotation270, false, -640, 0, 0)]
+    [TestCase(0, 0, 0, -640, 0, 0, 480, RotationAngle.Rotation270, true, -640, 480, 0)]
+    [TestCase(0, 0, 0, 0, 640, -240, 240, RotationAngle.Rotation0, false, 0, 240, 0)]
+    [TestCase(0, 0, 0, 0, 640, -240, 240, RotationAngle.Rotation0, true, 640, 240, 0)]
+    [TestCase(0, 0, 0, 0, 640, -240, 240, RotationAngle.Rotation90, false, 640, 240, 0)]
+    [TestCase(0, 0, 0, 0, 640, -240, 240, RotationAngle.Rotation90, true, 640, -240, 0)]
+    [TestCase(0, 0, 0, 0, 640, -240, 240, RotationAngle.Rotation180, false, 640, -240, 0)]
+    [TestCase(0, 0, 0, 0, 640, -240, 240, RotationAngle.Rotation180, true, 0, -240, 0)]
+    [TestCase(0, 0, 0, 0, 640, -240, 240, RotationAngle.Rotation270, false, 0, -240, 0)]
+    [TestCase(0, 0, 0, 0, 640, -240, 240, RotationAngle.Rotation270, true, 0, 240, 0)]
+    [TestCase(0, 0, 0, -320, 320, -240, 240, RotationAngle.Rotation0, false, -320, 240, 0)]
+    [TestCase(0, 0, 0, -320, 320, -240, 240, RotationAngle.Rotation0, true, 320, 240, 0)]
+    [TestCase(0, 0, 0, -320, 320, -240, 240, RotationAngle.Rotation90, false, 320, 240, 0)]
+    [TestCase(0, 0, 0, -320, 320, -240, 240, RotationAngle.Rotation90, true, 320, -240, 0)]
+    [TestCase(0, 0, 0, -320, 320, -240, 240, RotationAngle.Rotation180, false, 320, -240, 0)]
+    [TestCase(0, 0, 0, -320, 320, -240, 240, RotationAngle.Rotation180, true, -320, -240, 0)]
+    [TestCase(0, 0, 0, -320, 320, -240, 240, RotationAngle.Rotation270, false, -320, -240, 0)]
+    [TestCase(0, 0, 0, -320, 320, -240, 240, RotationAngle.Rotation270, true, -320, 240, 0)]
+    [TestCase(0, 0, 0, -640, 0, -240, 240, RotationAngle.Rotation0, false, -640, 240, 0)]
+    [TestCase(0, 0, 0, -640, 0, -240, 240, RotationAngle.Rotation0, true, 0, 240, 0)]
+    [TestCase(0, 0, 0, -640, 0, -240, 240, RotationAngle.Rotation90, false, 0, 240, 0)]
+    [TestCase(0, 0, 0, -640, 0, -240, 240, RotationAngle.Rotation90, true, 0, -240, 0)]
+    [TestCase(0, 0, 0, -640, 0, -240, 240, RotationAngle.Rotation180, false, 0, -240, 0)]
+    [TestCase(0, 0, 0, -640, 0, -240, 240, RotationAngle.Rotation180, true, -640, -240, 0)]
+    [TestCase(0, 0, 0, -640, 0, -240, 240, RotationAngle.Rotation270, false, -640, -240, 0)]
+    [TestCase(0, 0, 0, -640, 0, -240, 240, RotationAngle.Rotation270, true, -640, 240, 0)]
+    [TestCase(0, 0, 0, 0, 640, -480, 0, RotationAngle.Rotation0, false, 0, 0, 0)]
+    [TestCase(0, 0, 0, 0, 640, -480, 0, RotationAngle.Rotation0, true, 640, 0, 0)]
+    [TestCase(0, 0, 0, 0, 640, -480, 0, RotationAngle.Rotation90, false, 640, 0, 0)]
+    [TestCase(0, 0, 0, 0, 640, -480, 0, RotationAngle.Rotation90, true, 640, -480, 0)]
+    [TestCase(0, 0, 0, 0, 640, -480, 0, RotationAngle.Rotation180, false, 640, -480, 0)]
+    [TestCase(0, 0, 0, 0, 640, -480, 0, RotationAngle.Rotation180, true, 0, -480, 0)]
+    [TestCase(0, 0, 0, 0, 640, -480, 0, RotationAngle.Rotation270, false, 0, -480, 0)]
+    [TestCase(0, 0, 0, 0, 640, -480, 0, RotationAngle.Rotation270, true, 0, 0, 0)]
+    [TestCase(0, 0, 0, -320, 320, -480, 0, RotationAngle.Rotation0, false, -320, 0, 0)]
+    [TestCase(0, 0, 0, -320, 320, -480, 0, RotationAngle.Rotation0, true, 320, 0, 0)]
+    [TestCase(0, 0, 0, -320, 320, -480, 0, RotationAngle.Rotation90, false, 320, 0, 0)]
+    [TestCase(0, 0, 0, -320, 320, -480, 0, RotationAngle.Rotation90, true, 320, -480, 0)]
+    [TestCase(0, 0, 0, -320, 320, -480, 0, RotationAngle.Rotation180, false, 320, -480, 0)]
+    [TestCase(0, 0, 0, -320, 320, -480, 0, RotationAngle.Rotation180, true, -320, -480, 0)]
+    [TestCase(0, 0, 0, -320, 320, -480, 0, RotationAngle.Rotation270, false, -320, -480, 0)]
+    [TestCase(0, 0, 0, -320, 320, -480, 0, RotationAngle.Rotation270, true, -320, 0, 0)]
+    [TestCase(0, 0, 0, -640, 0, -480, 0, RotationAngle.Rotation0, false, -640, 0, 0)]
+    [TestCase(0, 0, 0, -640, 0, -480, 0, RotationAngle.Rotation0, true, 0, 0, 0)]
+    [TestCase(0, 0, 0, -640, 0, -480, 0, RotationAngle.Rotation90, false, 0, 0, 0)]
+    [TestCase(0, 0, 0, -640, 0, -480, 0, RotationAngle.Rotation90, true, 0, -480, 0)]
+    [TestCase(0, 0, 0, -640, 0, -480, 0, RotationAngle.Rotation180, false, 0, -480, 0)]
+    [TestCase(0, 0, 0, -640, 0, -480, 0, RotationAngle.Rotation180, true, -640, -480, 0)]
+    [TestCase(0, 0, 0, -640, 0, -480, 0, RotationAngle.Rotation270, false, -640, -480, 0)]
+    [TestCase(0, 0, 0, -640, 0, -480, 0, RotationAngle.Rotation270, true, -640, 0, 0)]
+    public void ImageNormalizedToPoint_ShouldReturnLocalPoint_When_TheAnchorOfRectIsNotAtTheCenter(float normalizedX, float normalizedY, float normalizedZ, float xMin, float xMax, float yMin, float yMax,
+                                                                                                   RotationAngle imageRotation, bool isMirrored, float expectedX, float expectedY, float expectedZ)
+    {
+      var rect = BuildRect(xMin, xMax, yMin, yMax);
+      var result = ImageCoordinate.ImageNormalizedToPoint(rect, normalizedX, normalizedY, normalizedZ, imageRotation, isMirrored);
+      Assert.AreEqual(new Vector3(expectedX, expectedY, expectedZ), result);
     }
 
     [TestCase(640, 480, 0, 0, 1, 100, RotationAngle.Rotation0, false, 100)]
@@ -238,29 +392,40 @@ namespace Tests
     [TestCase(640, 480, 0, 0, 0.5f, 100, RotationAngle.Rotation270, true, 50)]
     [TestCase(640, 480, 0, 0, -1, 100, RotationAngle.Rotation270, true, -100)]
     [TestCase(640, 480, 0, 0, -0.5f, 100, RotationAngle.Rotation270, true, -50)]
-    public void GetLocalPositionNormalized_ShouldScaleZ_When_ZScaleIsSpecified(int width, int height, float normalizedX, float normalizedY, float normalizedZ, float zScale, RotationAngle imageRotation, bool isMirrored, float expectedZ)
+    public void ImageNormalizedToPoint_ShouldReturnLocalPoint_When_ZScaleIsSpecified(int width, int height, float normalizedX, float normalizedY, float normalizedZ, float zScale,
+                                                                                     RotationAngle imageRotation, bool isMirrored, float expectedZ)
     {
-      WithRectTransform((rectTransform) =>
-      {
-        rectTransform.sizeDelta = new Vector2(width, height);
-        var result = ImageCoordinate.GetLocalPositionNormalized(rectTransform, normalizedX, normalizedY, normalizedZ, zScale, imageRotation, isMirrored);
-        Assert.AreEqual(expectedZ, result.z);
-      });
+      var rect = BuildRect(-width / 2, width / 2, -height / 2, height / 2);
+      var result = ImageCoordinate.ImageNormalizedToPoint(rect, normalizedX, normalizedY, normalizedZ, zScale, imageRotation, isMirrored);
+      Assert.AreEqual(expectedZ, result.z);
     }
     #endregion
 
-    private void WithRectTransform(System.Action<RectTransform> action)
+    private Rect BuildRect(float xMin, float xMax, float yMin, float yMax)
     {
-      var gameObject = new GameObject();
-      var rectTransform = gameObject.AddComponent<RectTransform>();
-      rectTransform.pivot = 0.5f * Vector2.one;
-      rectTransform.anchorMin = 0.5f * Vector2.one;
-      rectTransform.anchorMax = 0.5f * Vector2.one;
+      var x = xMax < 0 ? xMin : -xMax;
+      var y = yMax < 0 ? yMin : -yMax;
+      var rect = new Rect(x, y, -2 * x, -2 * y);
 
-      action(rectTransform);
-#pragma warning disable IDE0002
-      GameObject.DestroyImmediate(gameObject);
-#pragma warning restore IDE0002
+      if (xMax < 0)
+      {
+        rect.xMax = xMax;
+      }
+      else
+      {
+        rect.xMin = xMin;
+      }
+
+      if (yMax < 0)
+      {
+        rect.yMax = yMax;
+      }
+      else
+      {
+        rect.yMin = yMin;
+      }
+
+      return rect;
     }
   }
 }

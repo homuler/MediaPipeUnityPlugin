@@ -65,7 +65,7 @@ namespace Mediapipe.Unity
 
         // Assume that location data's format is always RelativeBoundingBox
         // TODO: fix if there are cases where this assumption is not correct.
-        var rectVertices = GetAnnotationLayer().GetRectVertices(target.LocationData.RelativeBoundingBox, rotationAngle, isMirrored);
+        var rectVertices = GetScreenRect().GetRectVertices(target.LocationData.RelativeBoundingBox, rotationAngle, isMirrored);
         _locationDataAnnotation.SetColor(GetColor(score, Mathf.Clamp(threshold, 0.0f, 1.0f)));
         _locationDataAnnotation.Draw(rectVertices);
 
