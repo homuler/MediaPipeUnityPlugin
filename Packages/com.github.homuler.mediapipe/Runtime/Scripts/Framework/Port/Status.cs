@@ -91,9 +91,84 @@ namespace Mediapipe
       return Build(StatusCode.Ok, "", isOwner);
     }
 
+    public static Status Cancelled(string message = "", bool isOwner = true)
+    {
+      return Build(StatusCode.Cancelled, message, isOwner);
+    }
+
+    public static Status Unknown(string message = "", bool isOwner = true)
+    {
+      return Build(StatusCode.Unknown, message, isOwner);
+    }
+
+    public static Status InvalidArgument(string message = "", bool isOwner = true)
+    {
+      return Build(StatusCode.InvalidArgument, message, isOwner);
+    }
+
+    public static Status DeadlineExceeded(string message = "", bool isOwner = true)
+    {
+      return Build(StatusCode.DeadlineExceeded, message, isOwner);
+    }
+
+    public static Status NotFound(string message = "", bool isOwner = true)
+    {
+      return Build(StatusCode.NotFound, message, isOwner);
+    }
+
+    public static Status AlreadyExists(string message = "", bool isOwner = true)
+    {
+      return Build(StatusCode.AlreadyExists, message, isOwner);
+    }
+
+    public static Status PermissionDenied(string message = "", bool isOwner = true)
+    {
+      return Build(StatusCode.PermissionDenied, message, isOwner);
+    }
+
+    public static Status ResourceExhausted(string message = "", bool isOwner = true)
+    {
+      return Build(StatusCode.ResourceExhausted, message, isOwner);
+    }
+
     public static Status FailedPrecondition(string message = "", bool isOwner = true)
     {
       return Build(StatusCode.FailedPrecondition, message, isOwner);
+    }
+
+    public static Status Aborted(string message = "", bool isOwner = true)
+    {
+      return Build(StatusCode.Aborted, message, isOwner);
+    }
+
+    public static Status OutOfRange(string message = "", bool isOwner = true)
+    {
+      return Build(StatusCode.OutOfRange, message, isOwner);
+    }
+
+    public static Status Unimplemented(string message = "", bool isOwner = true)
+    {
+      return Build(StatusCode.Unimplemented, message, isOwner);
+    }
+
+    public static Status Internal(string message = "", bool isOwner = true)
+    {
+      return Build(StatusCode.Internal, message, isOwner);
+    }
+
+    public static Status Unavailable(string message = "", bool isOwner = true)
+    {
+      return Build(StatusCode.Unavailable, message, isOwner);
+    }
+
+    public static Status DataLoss(string message = "", bool isOwner = true)
+    {
+      return Build(StatusCode.DataLoss, message, isOwner);
+    }
+
+    public static Status Unauthenticated(string message = "", bool isOwner = true)
+    {
+      return Build(StatusCode.Unauthenticated, message, isOwner);
     }
   }
 }

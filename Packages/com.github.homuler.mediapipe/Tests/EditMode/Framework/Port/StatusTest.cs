@@ -124,12 +124,162 @@ namespace Tests
     }
 
     [Test]
+    public void ToString_ShouldReturnMessage_When_StatusIsCancelled()
+    {
+      var message = "Some error";
+      using (var status = Status.Cancelled(message))
+      {
+        Assert.AreEqual(status.ToString(), $"CANCELLED: {message}");
+      }
+    }
+
+    [Test]
+    public void ToString_ShouldReturnMessage_When_StatusIsUnknown()
+    {
+      var message = "Some error";
+      using (var status = Status.Unknown(message))
+      {
+        Assert.AreEqual(status.ToString(), $"UNKNOWN: {message}");
+      }
+    }
+
+    [Test]
+    public void ToString_ShouldReturnMessage_When_StatusIsInvalidArgument()
+    {
+      var message = "Some error";
+      using (var status = Status.InvalidArgument(message))
+      {
+        Assert.AreEqual(status.ToString(), $"INVALID_ARGUMENT: {message}");
+      }
+    }
+
+    [Test]
+    public void ToString_ShouldReturnMessage_When_StatusIsDeadlineExceeded()
+    {
+      var message = "Some error";
+      using (var status = Status.DeadlineExceeded(message))
+      {
+        Assert.AreEqual(status.ToString(), $"DEADLINE_EXCEEDED: {message}");
+      }
+    }
+
+    [Test]
+    public void ToString_ShouldReturnMessage_When_StatusIsNotFound()
+    {
+      var message = "Some error";
+      using (var status = Status.NotFound(message))
+      {
+        Assert.AreEqual(status.ToString(), $"NOT_FOUND: {message}");
+      }
+    }
+
+    [Test]
+    public void ToString_ShouldReturnMessage_When_StatusIsAlreadyExists()
+    {
+      var message = "Some error";
+      using (var status = Status.AlreadyExists(message))
+      {
+        Assert.AreEqual(status.ToString(), $"ALREADY_EXISTS: {message}");
+      }
+    }
+
+    [Test]
+    public void ToString_ShouldReturnMessage_When_StatusIsPermissionDenied()
+    {
+      var message = "Some error";
+      using (var status = Status.PermissionDenied(message))
+      {
+        Assert.AreEqual(status.ToString(), $"PERMISSION_DENIED: {message}");
+      }
+    }
+
+    [Test]
+    public void ToString_ShouldReturnMessage_When_StatusIsResourceExhausted()
+    {
+      var message = "Some error";
+      using (var status = Status.ResourceExhausted(message))
+      {
+        Assert.AreEqual(status.ToString(), $"RESOURCE_EXHAUSTED: {message}");
+      }
+    }
+
+    [Test]
     public void ToString_ShouldReturnMessage_When_StatusIsFailedPrecondition()
     {
       var message = "Some error";
       using (var status = Status.FailedPrecondition(message))
       {
         Assert.AreEqual(status.ToString(), $"FAILED_PRECONDITION: {message}");
+      }
+    }
+
+    [Test]
+    public void ToString_ShouldReturnMessage_When_StatusIsAborted()
+    {
+      var message = "Some error";
+      using (var status = Status.Aborted(message))
+      {
+        Assert.AreEqual(status.ToString(), $"ABORTED: {message}");
+      }
+    }
+
+    [Test]
+    public void ToString_ShouldReturnMessage_When_StatusIsOutOfRange()
+    {
+      var message = "Some error";
+      using (var status = Status.OutOfRange(message))
+      {
+        Assert.AreEqual(status.ToString(), $"OUT_OF_RANGE: {message}");
+      }
+    }
+
+    [Test]
+    public void ToString_ShouldReturnMessage_When_StatusIsUnimplemented()
+    {
+      var message = "Some error";
+      using (var status = Status.Unimplemented(message))
+      {
+        Assert.AreEqual(status.ToString(), $"UNIMPLEMENTED: {message}");
+      }
+    }
+
+    [Test]
+    public void ToString_ShouldReturnMessage_When_StatusIsInternal()
+    {
+      var message = "Some error";
+      using (var status = Status.Internal(message))
+      {
+        Assert.AreEqual(status.ToString(), $"INTERNAL: {message}");
+      }
+    }
+
+    [Test]
+    public void ToString_ShouldReturnMessage_When_StatusIsUnavailable()
+    {
+      var message = "Some error";
+      using (var status = Status.Unavailable(message))
+      {
+        Assert.AreEqual(status.ToString(), $"UNAVAILABLE: {message}");
+      }
+    }
+
+    [Test]
+    public void ToString_ShouldReturnMessage_When_StatusIsDataLoss()
+    {
+      var message = "Some error";
+      using (var status = Status.DataLoss(message))
+      {
+        Assert.AreEqual(status.ToString(), $"DATA_LOSS: {message}");
+      }
+    }
+
+    [Test]
+    public void ToString_ShouldReturnMessage_When_StatusIsUnauthenticated()
+    {
+      var message = "Some error";
+      using (var status = Status.Unauthenticated(message))
+      {
+        Assert.AreEqual(status.ToString(), $"UNAUTHENTICATED: {message}");
       }
     }
     #endregion
