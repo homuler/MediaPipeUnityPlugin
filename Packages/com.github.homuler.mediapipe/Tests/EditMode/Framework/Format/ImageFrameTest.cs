@@ -90,7 +90,7 @@ namespace Tests
       }
     }
 
-    [Test]
+    [Test, SignalAbort]
     public void Ctor_ShouldThrowMediaPipeException_When_CalledWithInvalidArgument()
     {
 #pragma warning disable IDE0058
@@ -145,7 +145,7 @@ namespace Tests
     #endregion
 
     #region CopyToBuffer
-    [Test]
+    [Test, SignalAbort]
     public void CopyToByteBuffer_ShouldThrowException_When_BufferDepthIsWrong()
     {
       using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Gray16, 10, 10))
@@ -170,7 +170,7 @@ namespace Tests
       }
     }
 
-    [Test]
+    [Test, SignalAbort]
     public void CopyToByteBuffer_ShouldThrowException_When_BufferSizeIsTooSmall()
     {
       using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Gray8, 10, 10))
@@ -181,7 +181,7 @@ namespace Tests
       }
     }
 
-    [Test]
+    [Test, SignalAbort]
     public void CopyToUshortBuffer_ShouldThrowException_When_BufferDepthIsWrong()
     {
       using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Gray8, 10, 10))
@@ -206,7 +206,7 @@ namespace Tests
       }
     }
 
-    [Test]
+    [Test, SignalAbort]
     public void CopyToUshortBuffer_ShouldThrowException_When_BufferSizeIsTooSmall()
     {
       using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Gray16, 10, 10))
@@ -217,7 +217,7 @@ namespace Tests
       }
     }
 
-    [Test]
+    [Test, SignalAbort]
     public void CopyToFloatBuffer_ShouldThrowException_When_BufferDepthIsWrong()
     {
       using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Gray8, 10, 10))
@@ -242,7 +242,7 @@ namespace Tests
       }
     }
 
-    [Test]
+    [Test, SignalAbort]
     public void CopyToFloatBuffer_ShouldThrowException_When_BufferSizeIsTooSmall()
     {
       using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Vec32F1, 10, 10))
