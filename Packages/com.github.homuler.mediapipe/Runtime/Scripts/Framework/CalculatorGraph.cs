@@ -79,15 +79,14 @@ namespace Mediapipe
     {
       NativePacketCallback nativePacketCallback = (IntPtr graphPtr, int streamId, IntPtr packetPtr) =>
       {
-        Status status = null;
         try
         {
           var packet = Packet<TValue>.Create<TPacket>(packetPtr, false);
+          packetCallback(packet);
           return Status.StatusArgs.Ok();
         }
         catch (Exception e)
         {
-          status = Status.FailedPrecondition(e.ToString());
           return Status.StatusArgs.Internal(e.ToString());
         }
       };

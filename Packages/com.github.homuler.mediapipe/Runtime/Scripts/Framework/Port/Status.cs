@@ -33,15 +33,15 @@ namespace Mediapipe
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct StatusArgs
+    public readonly struct StatusArgs
     {
-      public StatusCode code;
-      public string message;
+      private readonly StatusCode _code;
+      private readonly IntPtr _message;
 
       private StatusArgs(StatusCode code, string message = null)
       {
-        this.code = code;
-        this.message = message;
+        _code = code;
+        _message = Marshal.StringToHGlobalAnsi(message);
       }
 
       public static StatusArgs Ok()

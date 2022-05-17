@@ -12,3 +12,11 @@ thread_local sigjmp_buf mp_api::abrt_jbuf;
 
 void mp_api::sigabrt_handler(int sig) { siglongjmp(abrt_jbuf, 1); }
 #endif
+
+namespace mp_api {
+  FreeHGlobal* freeHGlobal;
+}
+
+void mp_api__SetFreeHGlobal(mp_api::FreeHGlobal* freeHGlobal) {
+  mp_api::freeHGlobal = freeHGlobal;
+}

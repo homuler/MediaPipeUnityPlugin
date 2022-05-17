@@ -64,35 +64,20 @@ namespace Tests
       {
         glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
 
-        var status = glCalculatorHelper.RunInGlContext(() => { return Status.Ok(); });
+        var status = glCalculatorHelper.RunInGlContext(() => { });
         Assert.True(status.Ok());
       }
     }
 
     [Test, GpuOnly]
-    public void RunInGlContext_ShouldReturnInternal_When_FunctionReturnsInternal()
+    public void RunInGlContext_ShouldReturnInternal_When_FunctionThrows()
     {
       using (var glCalculatorHelper = new GlCalculatorHelper())
       {
         glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
 
-        var status = glCalculatorHelper.RunInGlContext(() => { return Status.Build(Status.StatusCode.Internal, "error"); });
+        var status = glCalculatorHelper.RunInGlContext((GlCalculatorHelper.GlFunction)(() => { throw new Exception("Function Throws"); }));
         Assert.AreEqual(status.Code(), Status.StatusCode.Internal);
-      }
-    }
-
-    [Test, GpuOnly]
-    public void RunInGlContext_ShouldReturnFailedPreCondition_When_FunctionThrows()
-    {
-      using (var glCalculatorHelper = new GlCalculatorHelper())
-      {
-        glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
-
-#pragma warning disable IDE0039
-        GlCalculatorHelper.GlStatusFunction glStatusFunction = () => { throw new InvalidProgramException(); };
-#pragma warning restore IDE0039
-        var status = glCalculatorHelper.RunInGlContext(glStatusFunction);
-        Assert.AreEqual(status.Code(), Status.StatusCode.FailedPrecondition);
       }
     }
     #endregion
@@ -115,7 +100,6 @@ namespace Tests
             Assert.AreEqual(texture.height, 24);
 
             texture.Dispose();
-            return Status.Ok();
           });
           Assert.True(status.Ok());
 
@@ -140,7 +124,6 @@ namespace Tests
             {
               texture.Release();
             }
-            return Status.Ok();
           });
           Assert.AreEqual(status.Code(), Status.StatusCode.FailedPrecondition);
 
@@ -164,7 +147,6 @@ namespace Tests
 
           Assert.AreEqual(glTexture.width, 32);
           Assert.AreEqual(glTexture.height, 24);
-          return Status.Ok();
         });
 
         Assert.True(status.Ok());
