@@ -34,7 +34,6 @@ namespace Tests
           {
             Assert.NotNull(glContext);
             Assert.True(glContext.IsCurrent());
-            return Status.Ok();
           }
         }).AssertOk();
       }

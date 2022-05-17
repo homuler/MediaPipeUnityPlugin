@@ -28,7 +28,12 @@ MpReturnCode mp_GlCalculatorHelper__RunInGlContext__PF(mediapipe::GlCalculatorHe
                                                        absl::Status** status_out) {
   TRY
     auto status = gl_calculator_helper->RunInGlContext([&gl_func]() -> ::absl::Status {
-      return absl::Status{std::move(*(gl_func()))};
+      auto status_args = gl_func();
+      auto gl_status = absl::Status{status_args.code, absl::NullSafeStringView((const char*)status_args.message)};
+      if (status_args.message != nullptr) {
+        mp_api::freeHGlobal(status_args.message);
+      }
+      return std::move(gl_status);
     });
     *status_out = new absl::Status{std::move(status)};
     RETURN_CODE(MpReturnCode::Success);

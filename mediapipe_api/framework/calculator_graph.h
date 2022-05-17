@@ -26,7 +26,7 @@
 extern "C" {
 
 typedef std::map<std::string, mediapipe::Packet> SidePackets;
-typedef absl::Status* NativePacketCallback(mediapipe::CalculatorGraph* graph, int stream_id, const mediapipe::Packet&);
+typedef mp_api::StatusArgs NativePacketCallback(mediapipe::CalculatorGraph* graph, int stream_id, const mediapipe::Packet&);
 
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__(mediapipe::CalculatorGraph** graph_out);
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__PKc_i(const char* serialized_config, int size, mediapipe::CalculatorGraph** graph_out);

@@ -10,6 +10,15 @@
 #include "absl/status/status.h"
 #include "mediapipe_api/common.h"
 
+namespace mp_api {
+
+typedef struct StatusArgs {
+  absl::StatusCode code;
+  void* message;
+};
+
+}  // namespace mp_api
+
 extern "C" {
 
 MP_CAPI(MpReturnCode) absl_Status__i_PKc(int code, const char* message, absl::Status** status_out);
