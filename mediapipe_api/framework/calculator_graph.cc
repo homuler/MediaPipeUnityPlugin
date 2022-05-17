@@ -63,7 +63,8 @@ MpReturnCode mp_CalculatorGraph__ObserveOutputStream__PKc_PF_b(mediapipe::Calcul
     auto status = graph->ObserveOutputStream(
         stream_name,
         [graph, stream_id, packet_callback](const mediapipe::Packet& packet) -> ::absl::Status {
-          return absl::Status{std::move(*packet_callback(graph, stream_id, packet))};
+          auto status_args = packet_callback(graph, stream_id, packet);
+          return absl::Status{status_args.code, absl::NullSafeStringView(status_args.message)};
         },
         observe_timestamp_bounds);
     *status_out = new absl::Status{std::move(status)};

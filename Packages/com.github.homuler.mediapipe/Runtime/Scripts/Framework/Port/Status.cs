@@ -5,6 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using System;
+using System.Runtime.InteropServices;
 
 namespace Mediapipe
 {
@@ -29,6 +30,104 @@ namespace Mediapipe
       Unavailable = 14,
       DataLoss = 15,
       Unauthenticated = 16,
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct StatusArgs
+    {
+      public StatusCode code;
+      public string message;
+
+      private StatusArgs(StatusCode code, string message = null)
+      {
+        this.code = code;
+        this.message = message;
+      }
+
+      public static StatusArgs Ok()
+      {
+        return new StatusArgs(StatusCode.Ok);
+      }
+
+      public static StatusArgs Cancelled(string message = null)
+      {
+        return new StatusArgs(StatusCode.Cancelled, message);
+      }
+
+      public static StatusArgs Unknown(string message = null)
+      {
+        return new StatusArgs(StatusCode.Unknown, message);
+      }
+
+      public static StatusArgs InvalidArgument(string message = null)
+      {
+        return new StatusArgs(StatusCode.InvalidArgument, message);
+      }
+
+      public static StatusArgs DeadlineExceeded(string message = null)
+      {
+        return new StatusArgs(StatusCode.DeadlineExceeded, message);
+      }
+
+      public static StatusArgs NotFound(string message = null)
+      {
+        return new StatusArgs(StatusCode.NotFound, message);
+      }
+
+      public static StatusArgs AlreadyExists(string message = null)
+      {
+        return new StatusArgs(StatusCode.AlreadyExists, message);
+      }
+
+      public static StatusArgs PermissionDenied(string message = null)
+      {
+        return new StatusArgs(StatusCode.PermissionDenied, message);
+      }
+
+      public static StatusArgs ResourceExhausted(string message = null)
+      {
+        return new StatusArgs(StatusCode.ResourceExhausted, message);
+      }
+
+      public static StatusArgs FailedPrecondition(string message = null)
+      {
+        return new StatusArgs(StatusCode.FailedPrecondition, message);
+      }
+
+      public static StatusArgs Aborted(string message = null)
+      {
+        return new StatusArgs(StatusCode.Aborted, message);
+      }
+
+      public static StatusArgs OutOfRange(string message = null)
+      {
+        return new StatusArgs(StatusCode.OutOfRange, message);
+      }
+
+      public static StatusArgs Unimplemented(string message = null)
+      {
+        return new StatusArgs(StatusCode.Unimplemented, message);
+      }
+
+      public static StatusArgs Internal(string message = null)
+      {
+        return new StatusArgs(StatusCode.Internal, message);
+      }
+
+      public static StatusArgs Unavailable(string message = null)
+      {
+        return new StatusArgs(StatusCode.Unavailable, message);
+      }
+
+      public static StatusArgs DataLoss(string message = null)
+      {
+        return new StatusArgs(StatusCode.DataLoss, message);
+      }
+
+      public static StatusArgs Unauthenticated(string message = null)
+      {
+        return new StatusArgs(StatusCode.Unauthenticated, message);
+      }
     }
 
     public Status(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }

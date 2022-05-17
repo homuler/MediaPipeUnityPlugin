@@ -398,18 +398,18 @@ namespace Mediapipe.Unity
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    protected static IntPtr InvokeIfOutputStreamFound(IntPtr graphPtr, int streamId, IntPtr packetPtr)
+    protected static Status.StatusArgs InvokeIfOutputStreamFound(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       try
       {
         var isFound = _InstanceTable.TryGetValue(streamId, out var outputStream);
         if (!isFound)
         {
-          return GetPinnedStatusPtr(streamId, Status.FailedPrecondition($"OutputStream with id {streamId} is not found"));
+          return Status.StatusArgs.NotFound($"OutputStream with id {streamId} is not found");
         }
         if (outputStream.calculatorGraph.mpPtr != graphPtr)
         {
-          return GetPinnedStatusPtr(streamId, Status.FailedPrecondition($"OutputStream is found, but is not linked to the specified CalclatorGraph"));
+          return Status.StatusArgs.InvalidArgument($"OutputStream is found, but is not linked to the specified CalclatorGraph");
         }
 
         outputStream.referencePacket.SwitchNativePtr(packetPtr);
@@ -419,11 +419,11 @@ namespace Mediapipe.Unity
         }
         outputStream.referencePacket.ReleaseMpResource();
 
-        return outputStream.GetPinnedStatusPtr(Status.Ok());
+        return Status.StatusArgs.Ok();
       }
       catch (Exception e)
       {
-        return GetPinnedStatusPtr(streamId, Status.FailedPrecondition(e.ToString()));
+        return Status.StatusArgs.Internal(e.ToString());
       }
     }
 
