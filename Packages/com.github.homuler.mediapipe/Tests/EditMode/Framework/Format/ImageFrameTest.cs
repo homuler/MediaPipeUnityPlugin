@@ -4,13 +4,12 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using Mediapipe;
 using NUnit.Framework;
 using System;
 using System.Linq;
 using Unity.Collections;
 
-namespace Tests
+namespace Mediapipe.Tests
 {
   public class ImageFrameTest
   {

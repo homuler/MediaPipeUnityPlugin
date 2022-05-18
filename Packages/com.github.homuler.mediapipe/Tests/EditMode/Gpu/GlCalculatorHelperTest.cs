@@ -4,11 +4,10 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using Mediapipe;
 using NUnit.Framework;
 using System;
 
-namespace Tests
+namespace Mediapipe.Tests
 {
   public class GlCalculatorHelperTest
   {
@@ -109,7 +108,7 @@ namespace Tests
     }
 
     [Test, GpuOnly]
-    [Ignore("Skip because a thread hangs")]
+    [Ignore("Skip because a thread will hang")]
     public void CreateSourceTexture_ShouldFail_When_ImageFrameFormatIsInvalid()
     {
       using (var glCalculatorHelper = new GlCalculatorHelper())

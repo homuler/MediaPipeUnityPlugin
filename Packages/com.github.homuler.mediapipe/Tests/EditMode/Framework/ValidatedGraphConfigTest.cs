@@ -4,12 +4,10 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using Mediapipe;
-using Mediapipe.Unity;
 using NUnit.Framework;
 using System.Linq;
 
-namespace Tests
+namespace Mediapipe.Tests
 {
   public class ValidatedGraphConfigTest
   {
