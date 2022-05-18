@@ -4,12 +4,10 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using Mediapipe;
-using Mediapipe.Unity;
 using NUnit.Framework;
 using System.Linq;
 
-namespace Tests
+namespace Mediapipe.Tests
 {
   public class ValidatedGraphConfigTest
   {
@@ -139,7 +137,7 @@ node {
       {
         using (var status = config.Initialize("InvalidSubgraph"))
         {
-          Assert.AreEqual(status.Code(), Status.StatusCode.NotFound);
+          Assert.AreEqual(Status.StatusCode.NotFound, status.Code());
         }
         Assert.False(config.Initialized());
       }
@@ -206,7 +204,7 @@ node {
         {
           using (var status = config.ValidateRequiredSidePackets(sidePacket))
           {
-            Assert.AreEqual(status.Code(), Status.StatusCode.InvalidArgument);
+            Assert.AreEqual(Status.StatusCode.InvalidArgument, status.Code());
           }
         }
       }
@@ -223,7 +221,7 @@ node {
           sidePacket.Emplace("max_num_objects", new IntPacket(3));
           using (var status = config.ValidateRequiredSidePackets(sidePacket))
           {
-            Assert.AreEqual(status.Code(), Status.StatusCode.InvalidArgument);
+            Assert.AreEqual(Status.StatusCode.InvalidArgument, status.Code());
           }
         }
       }
@@ -241,7 +239,7 @@ node {
           sidePacket.Emplace("max_num_objects", new StringPacket("3"));
           using (var status = config.ValidateRequiredSidePackets(sidePacket))
           {
-            Assert.AreEqual(status.Code(), Status.StatusCode.InvalidArgument);
+            Assert.AreEqual(Status.StatusCode.InvalidArgument, status.Code());
           }
         }
       }
@@ -290,11 +288,11 @@ node {
         Assert.AreEqual(originalConfig.InputStream, canonicalizedConfig.InputStream);
         Assert.AreEqual(originalConfig.OutputStream, canonicalizedConfig.OutputStream);
         Assert.IsEmpty(originalConfig.Executor);
-        Assert.AreEqual(canonicalizedConfig.Executor.Count, 1);
-        Assert.AreEqual(canonicalizedConfig.Executor[0].CalculateSize(), 0);
+        Assert.AreEqual(1, canonicalizedConfig.Executor.Count);
+        Assert.AreEqual(0, canonicalizedConfig.Executor[0].CalculateSize());
 
-        Assert.AreEqual(originalConfig.CalculateSize(), 80);
-        Assert.AreEqual(canonicalizedConfig.CalculateSize(), 82);
+        Assert.AreEqual(80, originalConfig.CalculateSize());
+        Assert.AreEqual(82, canonicalizedConfig.CalculateSize());
       }
     }
 
@@ -307,8 +305,8 @@ node {
         config.Initialize(originalConfig).AssertOk();
         var canonicalizedConfig = config.Config();
 
-        Assert.AreEqual(originalConfig.CalculateSize(), 251);
-        Assert.AreEqual(canonicalizedConfig.CalculateSize(), 26514);
+        Assert.AreEqual(251, originalConfig.CalculateSize());
+        Assert.AreEqual(26514, canonicalizedConfig.CalculateSize());
       }
     }
     #endregion
@@ -344,15 +342,15 @@ node {
         Assert.AreEqual(inputStreamInfos.Count, 2);
 
         var inStream = inputStreamInfos.First((edgeInfo) => edgeInfo.name == "in");
-        Assert.AreEqual(inStream.upstream, 0);
-        Assert.AreEqual(inStream.parentNode.type, NodeType.Calculator);
-        Assert.AreEqual(inStream.parentNode.index, 0);
+        Assert.AreEqual(0, inStream.upstream);
+        Assert.AreEqual(NodeType.Calculator, inStream.parentNode.type);
+        Assert.AreEqual(0, inStream.parentNode.index);
         Assert.False(inStream.backEdge);
 
         var out1Stream = inputStreamInfos.First((edgeInfo) => edgeInfo.name == "out1");
-        Assert.AreEqual(out1Stream.upstream, 1);
-        Assert.AreEqual(out1Stream.parentNode.type, NodeType.Calculator);
-        Assert.AreEqual(out1Stream.parentNode.index, 1);
+        Assert.AreEqual(1, out1Stream.upstream);
+        Assert.AreEqual(NodeType.Calculator, out1Stream.parentNode.type);
+        Assert.AreEqual(1, out1Stream.parentNode.index);
         Assert.False(out1Stream.backEdge);
       }
     }
@@ -376,24 +374,24 @@ node {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PassThroughConfigText)).AssertOk();
         var outputStreamInfos = config.OutputStreamInfos();
 
-        Assert.AreEqual(outputStreamInfos.Count, 3);
+        Assert.AreEqual(3, outputStreamInfos.Count);
 
         var inStream = outputStreamInfos.First((edgeInfo) => edgeInfo.name == "in");
-        Assert.AreEqual(inStream.upstream, -1);
-        Assert.AreEqual(inStream.parentNode.type, NodeType.GraphInputStream);
-        Assert.AreEqual(inStream.parentNode.index, 2);
+        Assert.AreEqual(-1, inStream.upstream);
+        Assert.AreEqual(NodeType.GraphInputStream, inStream.parentNode.type);
+        Assert.AreEqual(2, inStream.parentNode.index, 2);
         Assert.False(inStream.backEdge);
 
         var out1Stream = outputStreamInfos.First((edgeInfo) => edgeInfo.name == "out1");
-        Assert.AreEqual(out1Stream.upstream, -1);
-        Assert.AreEqual(out1Stream.parentNode.type, NodeType.Calculator);
-        Assert.AreEqual(out1Stream.parentNode.index, 0);
+        Assert.AreEqual(-1, out1Stream.upstream);
+        Assert.AreEqual(NodeType.Calculator, out1Stream.parentNode.type);
+        Assert.AreEqual(0, out1Stream.parentNode.index);
         Assert.False(out1Stream.backEdge);
 
         var outStream = outputStreamInfos.First((edgeInfo) => edgeInfo.name == "out");
-        Assert.AreEqual(outStream.upstream, -1);
-        Assert.AreEqual(outStream.parentNode.type, NodeType.Calculator);
-        Assert.AreEqual(outStream.parentNode.index, 1);
+        Assert.AreEqual(-1, outStream.upstream);
+        Assert.AreEqual(NodeType.Calculator, outStream.parentNode.type);
+        Assert.AreEqual(1, outStream.parentNode.index);
         Assert.False(outStream.backEdge);
       }
     }
@@ -430,13 +428,13 @@ node {
         Assert.True(inputSidePacketInfos.Count >= 2);
 
         var modelComplexityPacket = inputSidePacketInfos.First((edgeInfo) => edgeInfo.name == "model_complexity");
-        Assert.AreEqual(modelComplexityPacket.upstream, -1);
-        Assert.AreEqual(modelComplexityPacket.parentNode.type, NodeType.Calculator);
+        Assert.AreEqual(-1, modelComplexityPacket.upstream);
+        Assert.AreEqual(NodeType.Calculator, modelComplexityPacket.parentNode.type);
         Assert.False(modelComplexityPacket.backEdge);
 
         var smoothLandmarksPacket = inputSidePacketInfos.First((edgeInfo) => edgeInfo.name == "smooth_landmarks");
-        Assert.AreEqual(smoothLandmarksPacket.upstream, -1);
-        Assert.AreEqual(smoothLandmarksPacket.parentNode.type, NodeType.Calculator);
+        Assert.AreEqual(-1, smoothLandmarksPacket.upstream);
+        Assert.AreEqual(NodeType.Calculator, smoothLandmarksPacket.parentNode.type);
         Assert.False(smoothLandmarksPacket.backEdge);
       }
     }
@@ -470,26 +468,26 @@ node {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ConstantSidePacketConfigText)).AssertOk();
         var outputSidePacketInfos = config.OutputSidePacketInfos();
 
-        Assert.AreEqual(outputSidePacketInfos.Count, 4);
+        Assert.AreEqual(4, outputSidePacketInfos.Count);
 
         var intPacket = outputSidePacketInfos.First((edgeInfo) => edgeInfo.name == "int_packet");
-        Assert.AreEqual(intPacket.upstream, -1);
-        Assert.AreEqual(intPacket.parentNode.type, NodeType.Calculator);
+        Assert.AreEqual(-1, intPacket.upstream);
+        Assert.AreEqual(NodeType.Calculator, intPacket.parentNode.type);
         Assert.False(intPacket.backEdge);
 
         var floatPacket = outputSidePacketInfos.First((edgeInfo) => edgeInfo.name == "float_packet");
-        Assert.AreEqual(floatPacket.upstream, -1);
-        Assert.AreEqual(floatPacket.parentNode.type, NodeType.Calculator);
+        Assert.AreEqual(-1, floatPacket.upstream);
+        Assert.AreEqual(NodeType.Calculator, floatPacket.parentNode.type);
         Assert.False(floatPacket.backEdge);
 
         var boolPacket = outputSidePacketInfos.First((edgeInfo) => edgeInfo.name == "bool_packet");
-        Assert.AreEqual(boolPacket.upstream, -1);
-        Assert.AreEqual(boolPacket.parentNode.type, NodeType.Calculator);
+        Assert.AreEqual(-1, boolPacket.upstream);
+        Assert.AreEqual(NodeType.Calculator, boolPacket.parentNode.type);
         Assert.False(boolPacket.backEdge);
 
         var stringPacket = outputSidePacketInfos.First((edgeInfo) => edgeInfo.name == "string_packet");
-        Assert.AreEqual(stringPacket.upstream, -1);
-        Assert.AreEqual(stringPacket.parentNode.type, NodeType.Calculator);
+        Assert.AreEqual(-1, stringPacket.upstream);
+        Assert.AreEqual(NodeType.Calculator, stringPacket.parentNode.type);
         Assert.False(stringPacket.backEdge);
       }
     }
@@ -501,7 +499,7 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        Assert.AreEqual(config.OutputStreamIndex(""), -1);
+        Assert.AreEqual(-1, config.OutputStreamIndex(""));
       }
     }
 
@@ -511,7 +509,7 @@ node {
       using (var config = new ValidatedGraphConfig())
       {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PassThroughConfigText)).AssertOk();
-        Assert.AreEqual(config.OutputStreamIndex("unknown"), -1);
+        Assert.AreEqual(-1, config.OutputStreamIndex("unknown"));
       }
     }
 
@@ -521,7 +519,7 @@ node {
       using (var config = new ValidatedGraphConfig())
       {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PassThroughConfigText)).AssertOk();
-        Assert.AreEqual(config.OutputStreamIndex("out"), 2);
+        Assert.AreEqual(2, config.OutputStreamIndex("out"));
       }
     }
 
@@ -531,7 +529,7 @@ node {
       using (var config = new ValidatedGraphConfig())
       {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PassThroughConfigText)).AssertOk();
-        Assert.AreEqual(config.OutputStreamIndex("out1"), 1);
+        Assert.AreEqual(1, config.OutputStreamIndex("out1"));
       }
     }
     #endregion
@@ -542,7 +540,7 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        Assert.AreEqual(config.OutputSidePacketIndex(""), -1);
+        Assert.AreEqual(-1, config.OutputSidePacketIndex(""));
       }
     }
 
@@ -552,7 +550,7 @@ node {
       using (var config = new ValidatedGraphConfig())
       {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ConstantSidePacketConfigText)).AssertOk();
-        Assert.AreEqual(config.OutputSidePacketIndex("unknown"), -1);
+        Assert.AreEqual(-1, config.OutputSidePacketIndex("unknown"));
       }
     }
 
@@ -562,7 +560,7 @@ node {
       using (var config = new ValidatedGraphConfig())
       {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ConstantSidePacketConfigText)).AssertOk();
-        Assert.AreEqual(config.OutputSidePacketIndex("int_packet"), 0);
+        Assert.AreEqual(0, config.OutputSidePacketIndex("int_packet"));
       }
     }
     #endregion
@@ -574,7 +572,7 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        Assert.AreEqual(config.OutputStreamToNode(""), -1);
+        Assert.AreEqual(-1, config.OutputStreamToNode(""));
       }
     }
 
@@ -584,7 +582,7 @@ node {
       using (var config = new ValidatedGraphConfig())
       {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PassThroughConfigText)).AssertOk();
-        Assert.AreEqual(config.OutputStreamToNode("unknown"), -1);
+        Assert.AreEqual(-1, config.OutputStreamToNode("unknown"));
       }
     }
 
@@ -594,7 +592,7 @@ node {
       using (var config = new ValidatedGraphConfig())
       {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PassThroughConfigText)).AssertOk();
-        Assert.AreEqual(config.OutputStreamToNode("out1"), 0);
+        Assert.AreEqual(0, config.OutputStreamToNode("out1"));
       }
     }
     #endregion
@@ -607,7 +605,7 @@ node {
       {
         using (var statusOrString = config.RegisteredSidePacketTypeName("model_complexity"))
         {
-          Assert.AreEqual(statusOrString.status.Code(), Status.StatusCode.InvalidArgument);
+          Assert.AreEqual(Status.StatusCode.InvalidArgument, statusOrString.status.Code());
         }
       }
     }
@@ -620,7 +618,7 @@ node {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PoseLandmarkConfigText)).AssertOk();
         using (var statusOrString = config.RegisteredSidePacketTypeName("model_complexity"))
         {
-          Assert.AreEqual(statusOrString.status.Code(), Status.StatusCode.Unknown);
+          Assert.AreEqual(Status.StatusCode.Unknown, statusOrString.status.Code());
         }
       }
     }
@@ -634,7 +632,7 @@ node {
       {
         using (var statusOrString = config.RegisteredStreamTypeName("in"))
         {
-          Assert.AreEqual(statusOrString.status.Code(), Status.StatusCode.InvalidArgument);
+          Assert.AreEqual(Status.StatusCode.InvalidArgument, statusOrString.status.Code());
         }
       }
     }
@@ -647,7 +645,7 @@ node {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PassThroughConfigText)).AssertOk();
         using (var statusOrString = config.RegisteredStreamTypeName("in"))
         {
-          Assert.AreEqual(statusOrString.status.Code(), Status.StatusCode.Unknown);
+          Assert.AreEqual(Status.StatusCode.Unknown, statusOrString.status.Code());
         }
       }
     }

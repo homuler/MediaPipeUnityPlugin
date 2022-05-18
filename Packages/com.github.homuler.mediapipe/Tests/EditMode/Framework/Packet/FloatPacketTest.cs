@@ -4,11 +4,10 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using Mediapipe;
 using NUnit.Framework;
 using System;
 
-namespace Tests
+namespace Mediapipe.Tests
 {
   public class FloatPacketTest
   {
@@ -19,9 +18,9 @@ namespace Tests
       using (var packet = new FloatPacket())
       {
 #pragma warning disable IDE0058
-        Assert.AreEqual(packet.ValidateAsType().Code(), Status.StatusCode.Internal);
+        Assert.AreEqual(Status.StatusCode.Internal, packet.ValidateAsType().Code());
         Assert.Throws<MediaPipeException>(() => { packet.Get(); });
-        Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
+        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
 #pragma warning restore IDE0058
       }
     }
@@ -32,8 +31,8 @@ namespace Tests
       using (var packet = new FloatPacket(0.01f))
       {
         Assert.True(packet.ValidateAsType().Ok());
-        Assert.AreEqual(packet.Get(), 0.01f);
-        Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
+        Assert.AreEqual(0.01f, packet.Get());
+        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
     }
 
@@ -45,8 +44,8 @@ namespace Tests
         using (var packet = new FloatPacket(0.01f, timestamp))
         {
           Assert.True(packet.ValidateAsType().Ok());
-          Assert.AreEqual(packet.Get(), 0.01f);
-          Assert.AreEqual(packet.Timestamp(), timestamp);
+          Assert.AreEqual(0.01f, packet.Get());
+          Assert.AreEqual(timestamp, packet.Timestamp());
         }
       }
     }
@@ -79,17 +78,17 @@ namespace Tests
       using (var timestamp = new Timestamp(1))
       {
         var packet = new FloatPacket(0).At(timestamp);
-        Assert.AreEqual(packet.Get(), 0.0f);
-        Assert.AreEqual(packet.Timestamp(), timestamp);
+        Assert.AreEqual(0.0f, packet.Get());
+        Assert.AreEqual(timestamp, packet.Timestamp());
 
         using (var newTimestamp = new Timestamp(2))
         {
           var newPacket = packet.At(newTimestamp);
-          Assert.AreEqual(newPacket.Get(), 0.0f);
-          Assert.AreEqual(newPacket.Timestamp(), newTimestamp);
+          Assert.AreEqual(0.0f, newPacket.Get());
+          Assert.AreEqual(newTimestamp, newPacket.Timestamp());
         }
 
-        Assert.AreEqual(packet.Timestamp(), timestamp);
+        Assert.AreEqual(timestamp, packet.Timestamp());
       }
     }
     #endregion
@@ -113,7 +112,7 @@ namespace Tests
     {
       using (var packet = new FloatPacket(0.01f))
       {
-        Assert.AreEqual(packet.DebugTypeName(), "float");
+        Assert.AreEqual("float", packet.DebugTypeName());
       }
     }
     #endregion

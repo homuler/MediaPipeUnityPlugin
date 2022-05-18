@@ -4,11 +4,10 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using Mediapipe;
 using NUnit.Framework;
 using System;
 
-namespace Tests
+namespace Mediapipe.Tests
 {
   public class BoolPacketTest
   {
@@ -19,9 +18,9 @@ namespace Tests
       using (var packet = new BoolPacket())
       {
 #pragma warning disable IDE0058
-        Assert.AreEqual(packet.ValidateAsType().Code(), Status.StatusCode.Internal);
+        Assert.AreEqual(Status.StatusCode.Internal, packet.ValidateAsType().Code());
         Assert.Throws<MediaPipeException>(() => { packet.Get(); });
-        Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
+        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
 #pragma warning restore IDE0058
       }
 
@@ -34,7 +33,7 @@ namespace Tests
       {
         Assert.True(packet.ValidateAsType().Ok());
         Assert.True(packet.Get());
-        Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
+        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
     }
 
@@ -45,7 +44,7 @@ namespace Tests
       {
         Assert.True(packet.ValidateAsType().Ok());
         Assert.False(packet.Get());
-        Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
+        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
     }
 
@@ -58,7 +57,7 @@ namespace Tests
         {
           Assert.True(packet.ValidateAsType().Ok());
           Assert.True(packet.Get());
-          Assert.AreEqual(packet.Timestamp(), timestamp);
+          Assert.AreEqual(timestamp, packet.Timestamp());
         }
       }
     }
@@ -92,16 +91,16 @@ namespace Tests
       {
         var packet = new BoolPacket(true).At(timestamp);
         Assert.True(packet.Get());
-        Assert.AreEqual(packet.Timestamp(), timestamp);
+        Assert.AreEqual(timestamp, packet.Timestamp());
 
         using (var newTimestamp = new Timestamp(2))
         {
           var newPacket = packet.At(newTimestamp);
           Assert.True(newPacket.Get());
-          Assert.AreEqual(newPacket.Timestamp(), newTimestamp);
+          Assert.AreEqual(newTimestamp, newPacket.Timestamp());
         }
 
-        Assert.AreEqual(packet.Timestamp(), timestamp);
+        Assert.AreEqual(timestamp, packet.Timestamp());
       }
     }
     #endregion
@@ -125,7 +124,7 @@ namespace Tests
     {
       using (var packet = new BoolPacket(true))
       {
-        Assert.AreEqual(packet.DebugTypeName(), "bool");
+        Assert.AreEqual("bool", packet.DebugTypeName());
       }
     }
     #endregion

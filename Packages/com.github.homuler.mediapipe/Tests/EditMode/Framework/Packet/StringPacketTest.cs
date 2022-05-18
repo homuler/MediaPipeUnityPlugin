@@ -4,11 +4,10 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using Mediapipe;
 using NUnit.Framework;
 using System.Text.RegularExpressions;
 
-namespace Tests
+namespace Mediapipe.Tests
 {
   public class StringPacketTest
   {
@@ -19,9 +18,9 @@ namespace Tests
       using (var packet = new StringPacket())
       {
 #pragma warning disable IDE0058
-        Assert.AreEqual(packet.ValidateAsType().Code(), Status.StatusCode.Internal);
+        Assert.AreEqual(Status.StatusCode.Internal, packet.ValidateAsType().Code());
         Assert.Throws<MediaPipeException>(() => { packet.Get(); });
-        Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
+        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
 #pragma warning restore IDE0058
       }
     }
@@ -32,8 +31,8 @@ namespace Tests
       using (var packet = new StringPacket("test"))
       {
         Assert.True(packet.ValidateAsType().Ok());
-        Assert.AreEqual(packet.Get(), "test");
-        Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
+        Assert.AreEqual("test", packet.Get());
+        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
     }
 
@@ -44,8 +43,8 @@ namespace Tests
       using (var packet = new StringPacket(bytes))
       {
         Assert.True(packet.ValidateAsType().Ok());
-        Assert.AreEqual(packet.Get(), "test");
-        Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
+        Assert.AreEqual("test", packet.Get());
+        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
     }
 
@@ -57,8 +56,8 @@ namespace Tests
         using (var packet = new StringPacket("test", timestamp))
         {
           Assert.True(packet.ValidateAsType().Ok());
-          Assert.AreEqual(packet.Get(), "test");
-          Assert.AreEqual(packet.Timestamp(), timestamp);
+          Assert.AreEqual("test", packet.Get());
+          Assert.AreEqual(timestamp, packet.Timestamp());
         }
       }
     }
@@ -72,8 +71,8 @@ namespace Tests
         using (var packet = new StringPacket(bytes, timestamp))
         {
           Assert.True(packet.ValidateAsType().Ok());
-          Assert.AreEqual(packet.Get(), "test");
-          Assert.AreEqual(packet.Timestamp(), timestamp);
+          Assert.AreEqual("test", packet.Get());
+          Assert.AreEqual(timestamp, packet.Timestamp());
         }
       }
     }
@@ -107,17 +106,17 @@ namespace Tests
       {
         var str = "str";
         var packet = new StringPacket(str).At(timestamp);
-        Assert.AreEqual(packet.Get(), str);
-        Assert.AreEqual(packet.Timestamp(), timestamp);
+        Assert.AreEqual(str, packet.Get());
+        Assert.AreEqual(timestamp, packet.Timestamp());
 
         using (var newTimestamp = new Timestamp(2))
         {
           var newPacket = packet.At(newTimestamp);
-          Assert.AreEqual(newPacket.Get(), str);
-          Assert.AreEqual(newPacket.Timestamp(), newTimestamp);
+          Assert.AreEqual(str, newPacket.Get());
+          Assert.AreEqual(newTimestamp, newPacket.Timestamp());
         }
 
-        Assert.AreEqual(packet.Timestamp(), timestamp);
+        Assert.AreEqual(timestamp, packet.Timestamp());
       }
     }
     #endregion
@@ -129,8 +128,8 @@ namespace Tests
       var bytes = new byte[] { (byte)'a', (byte)'b', 0, (byte)'c' };
       using (var packet = new StringPacket(bytes))
       {
-        Assert.AreEqual(packet.GetByteArray(), bytes);
-        Assert.AreEqual(packet.Get(), "ab");
+        Assert.AreEqual(bytes, packet.GetByteArray());
+        Assert.AreEqual("ab", packet.Get());
       }
     }
     #endregion
@@ -144,7 +143,7 @@ namespace Tests
         using (var statusOrString = packet.Consume())
         {
           Assert.False(statusOrString.Ok());
-          Assert.AreEqual(statusOrString.status.Code(), Status.StatusCode.Internal);
+          Assert.AreEqual(Status.StatusCode.Internal, statusOrString.status.Code());
         }
       }
     }
@@ -157,7 +156,7 @@ namespace Tests
         using (var statusOrString = packet.Consume())
         {
           Assert.True(statusOrString.Ok());
-          Assert.AreEqual(statusOrString.Value(), "abc");
+          Assert.AreEqual("abc", statusOrString.Value());
         }
         Assert.True(packet.IsEmpty());
       }

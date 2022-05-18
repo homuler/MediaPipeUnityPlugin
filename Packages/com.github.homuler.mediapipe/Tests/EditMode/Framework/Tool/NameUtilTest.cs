@@ -4,11 +4,10 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using Mediapipe;
 using NUnit.Framework;
 using System;
 
-namespace Tests
+namespace Mediapipe.Tests
 {
   public class NameUtilTest
   {
@@ -19,7 +18,7 @@ namespace Tests
     public void GetUnusedNodeName_ShouldReturnUniqueName(string configJson, string nameBase, string uniqueName)
     {
       var config = CalculatorGraphConfig.Parser.ParseJson(configJson);
-      Assert.AreEqual(Tool.GetUnusedNodeName(config, nameBase), uniqueName);
+      Assert.AreEqual(uniqueName, Tool.GetUnusedNodeName(config, nameBase));
     }
 
     [TestCase("{}", "base", "base")]
@@ -29,7 +28,7 @@ namespace Tests
     public void GetUnusedSidePacketName_ShouldReturnUniqueName(string configJson, string nameBase, string uniqueName)
     {
       var config = CalculatorGraphConfig.Parser.ParseJson(configJson);
-      Assert.AreEqual(Tool.GetUnusedSidePacketName(config, nameBase), uniqueName);
+      Assert.AreEqual(uniqueName, Tool.GetUnusedSidePacketName(config, nameBase));
     }
 
     [TestCase(@"{""node"":[{""name"":""x""}]}", 0, "x")]
@@ -44,7 +43,7 @@ namespace Tests
     public void CanonicalNodeName_ShouldReturnCanonicalNodeName_When_NodeIdIsValid(string configJson, int nodeId, string name)
     {
       var config = CalculatorGraphConfig.Parser.ParseJson(configJson);
-      Assert.AreEqual(Tool.CanonicalNodeName(config, nodeId), name);
+      Assert.AreEqual(name, Tool.CanonicalNodeName(config, nodeId));
     }
 
     [Test]
@@ -79,7 +78,7 @@ namespace Tests
     [TestCase("TAG:1:x", "x")]
     public void ParseNameFromStream_ShouldReturnName_When_InputIsValid(string stream, string name)
     {
-      Assert.AreEqual(Tool.ParseNameFromStream(stream), name);
+      Assert.AreEqual(name, Tool.ParseNameFromStream(stream));
     }
 
     [TestCase(":stream")]
@@ -100,8 +99,8 @@ namespace Tests
     {
       var output = Tool.ParseTagIndex(tagIndex);
 
-      Assert.AreEqual(output.Item1, tag);
-      Assert.AreEqual(output.Item2, index);
+      Assert.AreEqual(tag, output.Item1);
+      Assert.AreEqual(index, output.Item2);
     }
 
     [TestCase("tag")]
@@ -122,8 +121,8 @@ namespace Tests
     {
       var output = Tool.ParseTagIndexFromStream(stream);
 
-      Assert.AreEqual(output.Item1, tag);
-      Assert.AreEqual(output.Item2, index);
+      Assert.AreEqual(tag, output.Item1);
+      Assert.AreEqual(index, output.Item2);
     }
 
     [TestCase(":stream")]
@@ -142,7 +141,7 @@ namespace Tests
     [TestCase("TAG", 1, "TAG:1")]
     public void CatTag_ShouldReturnTag(string tag, int index, string output)
     {
-      Assert.AreEqual(Tool.CatTag(tag, index), output);
+      Assert.AreEqual(output, Tool.CatTag(tag, index));
     }
 
     [TestCase("", -1, "x", "x")]
@@ -151,7 +150,7 @@ namespace Tests
     [TestCase("TAG", 1, "x", "TAG:1:x")]
     public void CatStream_ShouldReturnStream(string tag, int index, string name, string output)
     {
-      Assert.AreEqual(Tool.CatStream((tag, index), name), output);
+      Assert.AreEqual(output, Tool.CatStream((tag, index), name));
     }
   }
 }

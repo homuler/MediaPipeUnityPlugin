@@ -4,10 +4,9 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using Mediapipe;
 using NUnit.Framework;
 
-namespace Tests
+namespace Mediapipe.Tests
 {
   public class StatusOrGpuResourcesTest
   {
@@ -17,7 +16,7 @@ namespace Tests
     {
       using (var statusOrGpuResources = GpuResources.Create())
       {
-        Assert.AreEqual(statusOrGpuResources.status.Code(), Status.StatusCode.Ok);
+        Assert.AreEqual(Status.StatusCode.Ok, statusOrGpuResources.status.Code());
       }
     }
     #endregion

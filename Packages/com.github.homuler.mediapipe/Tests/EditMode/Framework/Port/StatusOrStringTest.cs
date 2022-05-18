@@ -4,10 +4,9 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using Mediapipe;
 using NUnit.Framework;
 
-namespace Tests
+namespace Mediapipe.Tests
 {
   public class StatusOrStringTest
   {
@@ -18,7 +17,7 @@ namespace Tests
       using (var statusOrString = InitializeSubject(""))
       {
         Assert.True(statusOrString.Ok());
-        Assert.AreEqual(statusOrString.status.Code(), Status.StatusCode.Ok);
+        Assert.AreEqual(Status.StatusCode.Ok, statusOrString.status.Code());
       }
     }
     #endregion
@@ -51,7 +50,7 @@ namespace Tests
       using (var statusOrString = InitializeSubject(bytes))
       {
         Assert.True(statusOrString.Ok());
-        Assert.AreEqual(statusOrString.Value(), "ab");
+        Assert.AreEqual("ab", statusOrString.Value());
       }
     }
     #endregion
@@ -64,7 +63,7 @@ namespace Tests
       using (var statusOrString = InitializeSubject(bytes))
       {
         Assert.True(statusOrString.Ok());
-        Assert.AreEqual(statusOrString.ValueAsByteArray(), bytes);
+        Assert.AreEqual(bytes, statusOrString.ValueAsByteArray());
       }
     }
     #endregion

@@ -4,12 +4,10 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using Mediapipe.Unity;
-using Mediapipe.Unity.CoordinateSystem;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Tests
+namespace Mediapipe.Unity.CoordinateSystem.Tests
 {
   public class ImageCoordinateTest
   {
@@ -401,11 +399,11 @@ namespace Tests
     }
     #endregion
 
-    private Rect BuildRect(float xMin, float xMax, float yMin, float yMax)
+    private UnityEngine.Rect BuildRect(float xMin, float xMax, float yMin, float yMax)
     {
       var x = xMax < 0 ? xMin : -xMax;
       var y = yMax < 0 ? yMin : -yMax;
-      var rect = new Rect(x, y, -2 * x, -2 * y);
+      var rect = new UnityEngine.Rect(x, y, -2 * x, -2 * y);
 
       if (xMax < 0)
       {

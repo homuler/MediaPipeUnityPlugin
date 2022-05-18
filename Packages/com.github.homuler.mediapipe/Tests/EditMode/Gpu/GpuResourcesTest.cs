@@ -4,10 +4,9 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using Mediapipe;
 using NUnit.Framework;
 
-namespace Tests
+namespace Mediapipe.Tests
 {
   public class GpuResourcesTest
   {
