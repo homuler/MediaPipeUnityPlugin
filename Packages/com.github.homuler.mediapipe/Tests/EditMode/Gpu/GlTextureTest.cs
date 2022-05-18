@@ -17,8 +17,8 @@ namespace Tests
     {
       using (var glTexture = new GlTexture())
       {
-        Assert.AreEqual(glTexture.width, 0);
-        Assert.AreEqual(glTexture.height, 0);
+        Assert.AreEqual(0, glTexture.width);
+        Assert.AreEqual(0, glTexture.height);
       }
     }
     #endregion
@@ -49,7 +49,7 @@ namespace Tests
     {
       using (var glTexture = new GlTexture())
       {
-        Assert.AreEqual(glTexture.target, Gl.GL_TEXTURE_2D);
+        Assert.AreEqual(Gl.GL_TEXTURE_2D, glTexture.target);
       }
     }
     #endregion

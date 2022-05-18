@@ -18,7 +18,7 @@ namespace Tests
       using (var statusOrImageFrame = InitializeSubject())
       {
         Assert.True(statusOrImageFrame.Ok());
-        Assert.AreEqual(statusOrImageFrame.status.Code(), Status.StatusCode.Ok);
+        Assert.AreEqual(Status.StatusCode.Ok, statusOrImageFrame.status.Code());
       }
     }
     #endregion
@@ -53,8 +53,8 @@ namespace Tests
 
         using (var imageFrame = statusOrImageFrame.Value())
         {
-          Assert.AreEqual(imageFrame.Width(), 10);
-          Assert.AreEqual(imageFrame.Height(), 10);
+          Assert.AreEqual(10, imageFrame.Width());
+          Assert.AreEqual(10, imageFrame.Height());
           Assert.True(statusOrImageFrame.isDisposed);
         }
       }

@@ -128,40 +128,40 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Srgb, 3, 2, 16, bytes))
       {
         Assert.True(imageFrame.TryReadChannel(0, result, false, false));
-        Assert.AreEqual(result, new byte[] { 9, 41, 73, 1, 33, 65 });
+        Assert.AreEqual(new byte[] { 9, 41, 73, 1, 33, 65 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, false, true));
-        Assert.AreEqual(result, new byte[] { 1, 33, 65, 9, 41, 73 });
+        Assert.AreEqual(new byte[] { 1, 33, 65, 9, 41, 73 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, false));
-        Assert.AreEqual(result, new byte[] { 73, 41, 9, 65, 33, 1 });
+        Assert.AreEqual(new byte[] { 73, 41, 9, 65, 33, 1 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, true));
-        Assert.AreEqual(result, new byte[] { 65, 33, 1, 73, 41, 9 });
+        Assert.AreEqual(new byte[] { 65, 33, 1, 73, 41, 9 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, false, false));
-        Assert.AreEqual(result, new byte[] { 10, 42, 74, 2, 34, 66 });
+        Assert.AreEqual(new byte[] { 10, 42, 74, 2, 34, 66 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, false, true));
-        Assert.AreEqual(result, new byte[] { 2, 34, 66, 10, 42, 74 });
+        Assert.AreEqual(new byte[] { 2, 34, 66, 10, 42, 74 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, true, false));
-        Assert.AreEqual(result, new byte[] { 74, 42, 10, 66, 34, 2 });
+        Assert.AreEqual(new byte[] { 74, 42, 10, 66, 34, 2 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, true, true));
-        Assert.AreEqual(result, new byte[] { 66, 34, 2, 74, 42, 10 });
+        Assert.AreEqual(new byte[] { 66, 34, 2, 74, 42, 10 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, false, false));
-        Assert.AreEqual(result, new byte[] { 11, 43, 75, 3, 35, 67 });
+        Assert.AreEqual(new byte[] { 11, 43, 75, 3, 35, 67 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, false, true));
-        Assert.AreEqual(result, new byte[] { 3, 35, 67, 11, 43, 75 });
+        Assert.AreEqual(new byte[] { 3, 35, 67, 11, 43, 75 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, true, false));
-        Assert.AreEqual(result, new byte[] { 75, 43, 11, 67, 35, 3 });
+        Assert.AreEqual(new byte[] { 75, 43, 11, 67, 35, 3 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, true, true));
-        Assert.AreEqual(result, new byte[] { 67, 35, 3, 75, 43, 11 });
+        Assert.AreEqual(new byte[] { 67, 35, 3, 75, 43, 11 }, result);
 
       }
     }
@@ -180,52 +180,52 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Srgba, 3, 2, 16, bytes))
       {
         Assert.True(imageFrame.TryReadChannel(0, result, false, false));
-        Assert.AreEqual(result, new byte[] { 9, 41, 73, 1, 33, 65 });
+        Assert.AreEqual(new byte[] { 9, 41, 73, 1, 33, 65 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, false, true));
-        Assert.AreEqual(result, new byte[] { 1, 33, 65, 9, 41, 73 });
+        Assert.AreEqual(new byte[] { 1, 33, 65, 9, 41, 73 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, false));
-        Assert.AreEqual(result, new byte[] { 73, 41, 9, 65, 33, 1 });
+        Assert.AreEqual(new byte[] { 73, 41, 9, 65, 33, 1 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, true));
-        Assert.AreEqual(result, new byte[] { 65, 33, 1, 73, 41, 9 });
+        Assert.AreEqual(new byte[] { 65, 33, 1, 73, 41, 9 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, false, false));
-        Assert.AreEqual(result, new byte[] { 10, 42, 74, 2, 34, 66 });
+        Assert.AreEqual(new byte[] { 10, 42, 74, 2, 34, 66 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, false, true));
-        Assert.AreEqual(result, new byte[] { 2, 34, 66, 10, 42, 74 });
+        Assert.AreEqual(new byte[] { 2, 34, 66, 10, 42, 74 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, true, false));
-        Assert.AreEqual(result, new byte[] { 74, 42, 10, 66, 34, 2 });
+        Assert.AreEqual(new byte[] { 74, 42, 10, 66, 34, 2 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, true, true));
-        Assert.AreEqual(result, new byte[] { 66, 34, 2, 74, 42, 10 });
+        Assert.AreEqual(new byte[] { 66, 34, 2, 74, 42, 10 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, false, false));
-        Assert.AreEqual(result, new byte[] { 11, 43, 75, 3, 35, 67 });
+        Assert.AreEqual(new byte[] { 11, 43, 75, 3, 35, 67 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, false, true));
-        Assert.AreEqual(result, new byte[] { 3, 35, 67, 11, 43, 75 });
+        Assert.AreEqual(new byte[] { 3, 35, 67, 11, 43, 75 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, true, false));
-        Assert.AreEqual(result, new byte[] { 75, 43, 11, 67, 35, 3 });
+        Assert.AreEqual(new byte[] { 75, 43, 11, 67, 35, 3 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, true, true));
-        Assert.AreEqual(result, new byte[] { 67, 35, 3, 75, 43, 11 });
+        Assert.AreEqual(new byte[] { 67, 35, 3, 75, 43, 11 }, result);
 
         Assert.True(imageFrame.TryReadChannel(3, result, false, false));
-        Assert.AreEqual(result, new byte[] { 12, 44, 76, 4, 36, 68 });
+        Assert.AreEqual(new byte[] { 12, 44, 76, 4, 36, 68 }, result);
 
         Assert.True(imageFrame.TryReadChannel(3, result, false, true));
-        Assert.AreEqual(result, new byte[] { 4, 36, 68, 12, 44, 76 });
+        Assert.AreEqual(new byte[] { 4, 36, 68, 12, 44, 76 }, result);
 
         Assert.True(imageFrame.TryReadChannel(3, result, true, false));
-        Assert.AreEqual(result, new byte[] { 76, 44, 12, 68, 36, 4 });
+        Assert.AreEqual(new byte[] { 76, 44, 12, 68, 36, 4 }, result);
 
         Assert.True(imageFrame.TryReadChannel(3, result, true, true));
-        Assert.AreEqual(result, new byte[] { 68, 36, 4, 76, 44, 12 });
+        Assert.AreEqual(new byte[] { 68, 36, 4, 76, 44, 12 }, result);
       }
     }
 
@@ -243,52 +243,52 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Sbgra, 3, 2, 16, bytes))
       {
         Assert.True(imageFrame.TryReadChannel(0, result, false, false));
-        Assert.AreEqual(result, new byte[] { 9, 41, 73, 1, 33, 65 });
+        Assert.AreEqual(new byte[] { 9, 41, 73, 1, 33, 65 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, false, true));
-        Assert.AreEqual(result, new byte[] { 1, 33, 65, 9, 41, 73 });
+        Assert.AreEqual(new byte[] { 1, 33, 65, 9, 41, 73 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, false));
-        Assert.AreEqual(result, new byte[] { 73, 41, 9, 65, 33, 1 });
+        Assert.AreEqual(new byte[] { 73, 41, 9, 65, 33, 1 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, true));
-        Assert.AreEqual(result, new byte[] { 65, 33, 1, 73, 41, 9 });
+        Assert.AreEqual(new byte[] { 65, 33, 1, 73, 41, 9 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, false, false));
-        Assert.AreEqual(result, new byte[] { 10, 42, 74, 2, 34, 66 });
+        Assert.AreEqual(new byte[] { 10, 42, 74, 2, 34, 66 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, false, true));
-        Assert.AreEqual(result, new byte[] { 2, 34, 66, 10, 42, 74 });
+        Assert.AreEqual(new byte[] { 2, 34, 66, 10, 42, 74 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, true, false));
-        Assert.AreEqual(result, new byte[] { 74, 42, 10, 66, 34, 2 });
+        Assert.AreEqual(new byte[] { 74, 42, 10, 66, 34, 2 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, true, true));
-        Assert.AreEqual(result, new byte[] { 66, 34, 2, 74, 42, 10 });
+        Assert.AreEqual(new byte[] { 66, 34, 2, 74, 42, 10 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, false, false));
-        Assert.AreEqual(result, new byte[] { 11, 43, 75, 3, 35, 67 });
+        Assert.AreEqual(new byte[] { 11, 43, 75, 3, 35, 67 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, false, true));
-        Assert.AreEqual(result, new byte[] { 3, 35, 67, 11, 43, 75 });
+        Assert.AreEqual(new byte[] { 3, 35, 67, 11, 43, 75 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, true, false));
-        Assert.AreEqual(result, new byte[] { 75, 43, 11, 67, 35, 3 });
+        Assert.AreEqual(new byte[] { 75, 43, 11, 67, 35, 3 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, true, true));
-        Assert.AreEqual(result, new byte[] { 67, 35, 3, 75, 43, 11 });
+        Assert.AreEqual(new byte[] { 67, 35, 3, 75, 43, 11 }, result);
 
         Assert.True(imageFrame.TryReadChannel(3, result, false, false));
-        Assert.AreEqual(result, new byte[] { 12, 44, 76, 4, 36, 68 });
+        Assert.AreEqual(new byte[] { 12, 44, 76, 4, 36, 68 }, result);
 
         Assert.True(imageFrame.TryReadChannel(3, result, false, true));
-        Assert.AreEqual(result, new byte[] { 4, 36, 68, 12, 44, 76 });
+        Assert.AreEqual(new byte[] { 4, 36, 68, 12, 44, 76 }, result);
 
         Assert.True(imageFrame.TryReadChannel(3, result, true, false));
-        Assert.AreEqual(result, new byte[] { 76, 44, 12, 68, 36, 4 });
+        Assert.AreEqual(new byte[] { 76, 44, 12, 68, 36, 4 }, result);
 
         Assert.True(imageFrame.TryReadChannel(3, result, true, true));
-        Assert.AreEqual(result, new byte[] { 68, 36, 4, 76, 44, 12 });
+        Assert.AreEqual(new byte[] { 68, 36, 4, 76, 44, 12 }, result);
       }
     }
 
@@ -305,16 +305,16 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Gray8, 3, 2, 16, bytes))
       {
         Assert.True(imageFrame.TryReadChannel(0, result, false, false));
-        Assert.AreEqual(result, new byte[] { 4, 5, 6, 1, 2, 3 });
+        Assert.AreEqual(new byte[] { 4, 5, 6, 1, 2, 3 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, false, true));
-        Assert.AreEqual(result, new byte[] { 1, 2, 3, 4, 5, 6 });
+        Assert.AreEqual(new byte[] { 1, 2, 3, 4, 5, 6 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, false));
-        Assert.AreEqual(result, new byte[] { 6, 5, 4, 3, 2, 1 });
+        Assert.AreEqual(new byte[] { 6, 5, 4, 3, 2, 1 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, true));
-        Assert.AreEqual(result, new byte[] { 3, 2, 1, 6, 5, 4 });
+        Assert.AreEqual(new byte[] { 3, 2, 1, 6, 5, 4 }, result);
       }
     }
 
@@ -332,40 +332,40 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Lab8, 3, 2, 16, bytes))
       {
         Assert.True(imageFrame.TryReadChannel(0, result, false, false));
-        Assert.AreEqual(result, new byte[] { 9, 41, 73, 1, 33, 65 });
+        Assert.AreEqual(new byte[] { 9, 41, 73, 1, 33, 65 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, false, true));
-        Assert.AreEqual(result, new byte[] { 1, 33, 65, 9, 41, 73 });
+        Assert.AreEqual(new byte[] { 1, 33, 65, 9, 41, 73 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, false));
-        Assert.AreEqual(result, new byte[] { 73, 41, 9, 65, 33, 1 });
+        Assert.AreEqual(new byte[] { 73, 41, 9, 65, 33, 1 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, true));
-        Assert.AreEqual(result, new byte[] { 65, 33, 1, 73, 41, 9 });
+        Assert.AreEqual(new byte[] { 65, 33, 1, 73, 41, 9 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, false, false));
-        Assert.AreEqual(result, new byte[] { 10, 42, 74, 2, 34, 66 });
+        Assert.AreEqual(new byte[] { 10, 42, 74, 2, 34, 66 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, false, true));
-        Assert.AreEqual(result, new byte[] { 2, 34, 66, 10, 42, 74 });
+        Assert.AreEqual(new byte[] { 2, 34, 66, 10, 42, 74 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, true, false));
-        Assert.AreEqual(result, new byte[] { 74, 42, 10, 66, 34, 2 });
+        Assert.AreEqual(new byte[] { 74, 42, 10, 66, 34, 2 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, true, true));
-        Assert.AreEqual(result, new byte[] { 66, 34, 2, 74, 42, 10 });
+        Assert.AreEqual(new byte[] { 66, 34, 2, 74, 42, 10 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, false, false));
-        Assert.AreEqual(result, new byte[] { 11, 43, 75, 3, 35, 67 });
+        Assert.AreEqual(new byte[] { 11, 43, 75, 3, 35, 67 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, false, true));
-        Assert.AreEqual(result, new byte[] { 3, 35, 67, 11, 43, 75 });
+        Assert.AreEqual(new byte[] { 3, 35, 67, 11, 43, 75 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, true, false));
-        Assert.AreEqual(result, new byte[] { 75, 43, 11, 67, 35, 3 });
+        Assert.AreEqual(new byte[] { 75, 43, 11, 67, 35, 3 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, true, true));
-        Assert.AreEqual(result, new byte[] { 67, 35, 3, 75, 43, 11 });
+        Assert.AreEqual(new byte[] { 67, 35, 3, 75, 43, 11 }, result);
       }
     }
     #endregion
@@ -471,40 +471,40 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Srgb48, 3, 2, 24, bytes))
       {
         Assert.True(imageFrame.TryReadChannel(0, result, false, false));
-        Assert.AreEqual(result, new ushort[] { 9, 41, 73, 1, 33, 65 });
+        Assert.AreEqual(new ushort[] { 9, 41, 73, 1, 33, 65 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, false, true));
-        Assert.AreEqual(result, new ushort[] { 1, 33, 65, 9, 41, 73 });
+        Assert.AreEqual(new ushort[] { 1, 33, 65, 9, 41, 73 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, false));
-        Assert.AreEqual(result, new ushort[] { 73, 41, 9, 65, 33, 1 });
+        Assert.AreEqual(new ushort[] { 73, 41, 9, 65, 33, 1 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, true));
-        Assert.AreEqual(result, new ushort[] { 65, 33, 1, 73, 41, 9 });
+        Assert.AreEqual(new ushort[] { 65, 33, 1, 73, 41, 9 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, false, false));
-        Assert.AreEqual(result, new ushort[] { 10, 42, 74, 2, 34, 66 });
+        Assert.AreEqual(new ushort[] { 10, 42, 74, 2, 34, 66 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, false, true));
-        Assert.AreEqual(result, new ushort[] { 2, 34, 66, 10, 42, 74 });
+        Assert.AreEqual(new ushort[] { 2, 34, 66, 10, 42, 74 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, true, false));
-        Assert.AreEqual(result, new ushort[] { 74, 42, 10, 66, 34, 2 });
+        Assert.AreEqual(new ushort[] { 74, 42, 10, 66, 34, 2 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, true, true));
-        Assert.AreEqual(result, new ushort[] { 66, 34, 2, 74, 42, 10 });
+        Assert.AreEqual(new ushort[] { 66, 34, 2, 74, 42, 10 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, false, false));
-        Assert.AreEqual(result, new ushort[] { 11, 43, 75, 3, 35, 67 });
+        Assert.AreEqual(new ushort[] { 11, 43, 75, 3, 35, 67 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, false, true));
-        Assert.AreEqual(result, new ushort[] { 3, 35, 67, 11, 43, 75 });
+        Assert.AreEqual(new ushort[] { 3, 35, 67, 11, 43, 75 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, true, false));
-        Assert.AreEqual(result, new ushort[] { 75, 43, 11, 67, 35, 3 });
+        Assert.AreEqual(new ushort[] { 75, 43, 11, 67, 35, 3 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, true, true));
-        Assert.AreEqual(result, new ushort[] { 67, 35, 3, 75, 43, 11 });
+        Assert.AreEqual(new ushort[] { 67, 35, 3, 75, 43, 11 }, result);
       }
     }
 
@@ -522,52 +522,52 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Srgba64, 3, 2, 24, bytes))
       {
         Assert.True(imageFrame.TryReadChannel(0, result, false, false));
-        Assert.AreEqual(result, new ushort[] { 9, 41, 73, 1, 33, 65 });
+        Assert.AreEqual(new ushort[] { 9, 41, 73, 1, 33, 65 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, false, true));
-        Assert.AreEqual(result, new ushort[] { 1, 33, 65, 9, 41, 73 });
+        Assert.AreEqual(new ushort[] { 1, 33, 65, 9, 41, 73 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, false));
-        Assert.AreEqual(result, new ushort[] { 73, 41, 9, 65, 33, 1 });
+        Assert.AreEqual(new ushort[] { 73, 41, 9, 65, 33, 1 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, true));
-        Assert.AreEqual(result, new ushort[] { 65, 33, 1, 73, 41, 9 });
+        Assert.AreEqual(new ushort[] { 65, 33, 1, 73, 41, 9 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, false, false));
-        Assert.AreEqual(result, new ushort[] { 10, 42, 74, 2, 34, 66 });
+        Assert.AreEqual(new ushort[] { 10, 42, 74, 2, 34, 66 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, false, true));
-        Assert.AreEqual(result, new ushort[] { 2, 34, 66, 10, 42, 74 });
+        Assert.AreEqual(new ushort[] { 2, 34, 66, 10, 42, 74 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, true, false));
-        Assert.AreEqual(result, new ushort[] { 74, 42, 10, 66, 34, 2 });
+        Assert.AreEqual(new ushort[] { 74, 42, 10, 66, 34, 2 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, true, true));
-        Assert.AreEqual(result, new ushort[] { 66, 34, 2, 74, 42, 10 });
+        Assert.AreEqual(new ushort[] { 66, 34, 2, 74, 42, 10 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, false, false));
-        Assert.AreEqual(result, new ushort[] { 11, 43, 75, 3, 35, 67 });
+        Assert.AreEqual(new ushort[] { 11, 43, 75, 3, 35, 67 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, false, true));
-        Assert.AreEqual(result, new ushort[] { 3, 35, 67, 11, 43, 75 });
+        Assert.AreEqual(new ushort[] { 3, 35, 67, 11, 43, 75 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, true, false));
-        Assert.AreEqual(result, new ushort[] { 75, 43, 11, 67, 35, 3 });
+        Assert.AreEqual(new ushort[] { 75, 43, 11, 67, 35, 3 }, result);
 
         Assert.True(imageFrame.TryReadChannel(2, result, true, true));
-        Assert.AreEqual(result, new ushort[] { 67, 35, 3, 75, 43, 11 });
+        Assert.AreEqual(new ushort[] { 67, 35, 3, 75, 43, 11 }, result);
 
         Assert.True(imageFrame.TryReadChannel(3, result, false, false));
-        Assert.AreEqual(result, new ushort[] { 12, 44, 76, 4, 36, 68 });
+        Assert.AreEqual(new ushort[] { 12, 44, 76, 4, 36, 68 }, result);
 
         Assert.True(imageFrame.TryReadChannel(3, result, false, true));
-        Assert.AreEqual(result, new ushort[] { 4, 36, 68, 12, 44, 76 });
+        Assert.AreEqual(new ushort[] { 4, 36, 68, 12, 44, 76 }, result);
 
         Assert.True(imageFrame.TryReadChannel(3, result, true, false));
-        Assert.AreEqual(result, new ushort[] { 76, 44, 12, 68, 36, 4 });
+        Assert.AreEqual(new ushort[] { 76, 44, 12, 68, 36, 4 }, result);
 
         Assert.True(imageFrame.TryReadChannel(3, result, true, true));
-        Assert.AreEqual(result, new ushort[] { 68, 36, 4, 76, 44, 12 });
+        Assert.AreEqual(new ushort[] { 68, 36, 4, 76, 44, 12 }, result);
       }
     }
 
@@ -584,16 +584,16 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Gray16, 3, 2, 16, bytes))
       {
         Assert.True(imageFrame.TryReadChannel(0, result, false, false));
-        Assert.AreEqual(result, new ushort[] { 4, 5, 6, 1, 2, 3 });
+        Assert.AreEqual(new ushort[] { 4, 5, 6, 1, 2, 3 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, false, true));
-        Assert.AreEqual(result, new ushort[] { 1, 2, 3, 4, 5, 6 });
+        Assert.AreEqual(new ushort[] { 1, 2, 3, 4, 5, 6 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, false));
-        Assert.AreEqual(result, new ushort[] { 6, 5, 4, 3, 2, 1 });
+        Assert.AreEqual(new ushort[] { 6, 5, 4, 3, 2, 1 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, true));
-        Assert.AreEqual(result, new ushort[] { 3, 2, 1, 6, 5, 4 });
+        Assert.AreEqual(new ushort[] { 3, 2, 1, 6, 5, 4 }, result);
       }
     }
     #endregion
@@ -694,16 +694,16 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Vec32F1, 3, 2, 16, bytes))
       {
         Assert.True(imageFrame.TryReadChannel(0, result, false, false));
-        Assert.AreEqual(result, new float[] { 4.0f / 255, 5.0f / 255, 6.0f / 255, 1.0f / 255, 2.0f / 255, 3.0f / 255 });
+        Assert.AreEqual(new float[] { 4.0f / 255, 5.0f / 255, 6.0f / 255, 1.0f / 255, 2.0f / 255, 3.0f / 255 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, false, true));
-        Assert.AreEqual(result, new float[] { 1.0f / 255, 2.0f / 255, 3.0f / 255, 4.0f / 255, 5.0f / 255, 6.0f / 255 });
+        Assert.AreEqual(new float[] { 1.0f / 255, 2.0f / 255, 3.0f / 255, 4.0f / 255, 5.0f / 255, 6.0f / 255 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, false));
-        Assert.AreEqual(result, new float[] { 6.0f / 255, 5.0f / 255, 4.0f / 255, 3.0f / 255, 2.0f / 255, 1.0f / 255 });
+        Assert.AreEqual(new float[] { 6.0f / 255, 5.0f / 255, 4.0f / 255, 3.0f / 255, 2.0f / 255, 1.0f / 255 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, true));
-        Assert.AreEqual(result, new float[] { 3.0f / 255, 2.0f / 255, 1.0f / 255, 6.0f / 255, 5.0f / 255, 4.0f / 255 });
+        Assert.AreEqual(new float[] { 3.0f / 255, 2.0f / 255, 1.0f / 255, 6.0f / 255, 5.0f / 255, 4.0f / 255 }, result);
       }
     }
 
@@ -722,28 +722,28 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Vec32F2, 3, 2, 32, bytes))
       {
         Assert.True(imageFrame.TryReadChannel(0, result, false, false));
-        Assert.AreEqual(result, new float[] { 9.0f / 255, 41.0f / 255, 73.0f / 255, 1.0f / 255, 33.0f / 255, 65.0f / 255 });
+        Assert.AreEqual(new float[] { 9.0f / 255, 41.0f / 255, 73.0f / 255, 1.0f / 255, 33.0f / 255, 65.0f / 255 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, false, true));
-        Assert.AreEqual(result, new float[] { 1.0f / 255, 33.0f / 255, 65.0f / 255, 9.0f / 255, 41.0f / 255, 73.0f / 255 });
+        Assert.AreEqual(new float[] { 1.0f / 255, 33.0f / 255, 65.0f / 255, 9.0f / 255, 41.0f / 255, 73.0f / 255 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, false));
-        Assert.AreEqual(result, new float[] { 73.0f / 255, 41.0f / 255, 9.0f / 255, 65.0f / 255, 33.0f / 255, 1.0f / 255 });
+        Assert.AreEqual(new float[] { 73.0f / 255, 41.0f / 255, 9.0f / 255, 65.0f / 255, 33.0f / 255, 1.0f / 255 }, result);
 
         Assert.True(imageFrame.TryReadChannel(0, result, true, true));
-        Assert.AreEqual(result, new float[] { 65.0f / 255, 33.0f / 255, 1.0f / 255, 73.0f / 255, 41.0f / 255, 9.0f / 255 });
+        Assert.AreEqual(new float[] { 65.0f / 255, 33.0f / 255, 1.0f / 255, 73.0f / 255, 41.0f / 255, 9.0f / 255 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, false, false));
-        Assert.AreEqual(result, new float[] { 10.0f / 255, 42.0f / 255, 74.0f / 255, 2.0f / 255, 34.0f / 255, 66.0f / 255 });
+        Assert.AreEqual(new float[] { 10.0f / 255, 42.0f / 255, 74.0f / 255, 2.0f / 255, 34.0f / 255, 66.0f / 255 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, false, true));
-        Assert.AreEqual(result, new float[] { 2.0f / 255, 34.0f / 255, 66.0f / 255, 10.0f / 255, 42.0f / 255, 74.0f / 255 });
+        Assert.AreEqual(new float[] { 2.0f / 255, 34.0f / 255, 66.0f / 255, 10.0f / 255, 42.0f / 255, 74.0f / 255 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, true, false));
-        Assert.AreEqual(result, new float[] { 74.0f / 255, 42.0f / 255, 10.0f / 255, 66.0f / 255, 34.0f / 255, 2.0f / 255 });
+        Assert.AreEqual(new float[] { 74.0f / 255, 42.0f / 255, 10.0f / 255, 66.0f / 255, 34.0f / 255, 2.0f / 255 }, result);
 
         Assert.True(imageFrame.TryReadChannel(1, result, true, true));
-        Assert.AreEqual(result, new float[] { 66.0f / 255, 34.0f / 255, 2.0f / 255, 74.0f / 255, 42.0f / 255, 10.0f / 255 });
+        Assert.AreEqual(new float[] { 66.0f / 255, 34.0f / 255, 2.0f / 255, 74.0f / 255, 42.0f / 255, 10.0f / 255 }, result);
       }
     }
     #endregion
@@ -880,52 +880,52 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Srgba, 3, 2, 16, bytes))
       {
         Assert.True(imageFrame.TryReadChannelNormalized(0, result, false, false));
-        AssertNormalized(result, new byte[] { 9, 41, 73, 1, 33, 65 });
+        AssertNormalized(new byte[] { 9, 41, 73, 1, 33, 65 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(0, result, false, true));
-        AssertNormalized(result, new byte[] { 1, 33, 65, 9, 41, 73 });
+        AssertNormalized(new byte[] { 1, 33, 65, 9, 41, 73 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(0, result, true, false));
-        AssertNormalized(result, new byte[] { 73, 41, 9, 65, 33, 1 });
+        AssertNormalized(new byte[] { 73, 41, 9, 65, 33, 1 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(0, result, true, true));
-        AssertNormalized(result, new byte[] { 65, 33, 1, 73, 41, 9 });
+        AssertNormalized(new byte[] { 65, 33, 1, 73, 41, 9 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(1, result, false, false));
-        AssertNormalized(result, new byte[] { 10, 42, 74, 2, 34, 66 });
+        AssertNormalized(new byte[] { 10, 42, 74, 2, 34, 66 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(1, result, false, true));
-        AssertNormalized(result, new byte[] { 2, 34, 66, 10, 42, 74 });
+        AssertNormalized(new byte[] { 2, 34, 66, 10, 42, 74 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(1, result, true, false));
-        AssertNormalized(result, new byte[] { 74, 42, 10, 66, 34, 2 });
+        AssertNormalized(new byte[] { 74, 42, 10, 66, 34, 2 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(1, result, true, true));
-        AssertNormalized(result, new byte[] { 66, 34, 2, 74, 42, 10 });
+        AssertNormalized(new byte[] { 66, 34, 2, 74, 42, 10 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(2, result, false, false));
-        AssertNormalized(result, new byte[] { 11, 43, 75, 3, 35, 67 });
+        AssertNormalized(new byte[] { 11, 43, 75, 3, 35, 67 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(2, result, false, true));
-        AssertNormalized(result, new byte[] { 3, 35, 67, 11, 43, 75 });
+        AssertNormalized(new byte[] { 3, 35, 67, 11, 43, 75 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(2, result, true, false));
-        AssertNormalized(result, new byte[] { 75, 43, 11, 67, 35, 3 });
+        AssertNormalized(new byte[] { 75, 43, 11, 67, 35, 3 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(2, result, true, true));
-        AssertNormalized(result, new byte[] { 67, 35, 3, 75, 43, 11 });
+        AssertNormalized(new byte[] { 67, 35, 3, 75, 43, 11 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(3, result, false, false));
-        AssertNormalized(result, new byte[] { 12, 44, 76, 4, 36, 68 });
+        AssertNormalized(new byte[] { 12, 44, 76, 4, 36, 68 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(3, result, false, true));
-        AssertNormalized(result, new byte[] { 4, 36, 68, 12, 44, 76 });
+        AssertNormalized(new byte[] { 4, 36, 68, 12, 44, 76 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(3, result, true, false));
-        AssertNormalized(result, new byte[] { 76, 44, 12, 68, 36, 4 });
+        AssertNormalized(new byte[] { 76, 44, 12, 68, 36, 4 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(3, result, true, true));
-        AssertNormalized(result, new byte[] { 68, 36, 4, 76, 44, 12 });
+        AssertNormalized(new byte[] { 68, 36, 4, 76, 44, 12 }, result);
       }
     }
 
@@ -942,16 +942,16 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Gray8, 3, 2, 16, bytes))
       {
         Assert.True(imageFrame.TryReadChannelNormalized(0, result, false, false));
-        AssertNormalized(result, new byte[] { 4, 5, 6, 1, 2, 3 });
+        AssertNormalized(new byte[] { 4, 5, 6, 1, 2, 3 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(0, result, false, true));
-        AssertNormalized(result, new byte[] { 1, 2, 3, 4, 5, 6 });
+        AssertNormalized(new byte[] { 1, 2, 3, 4, 5, 6 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(0, result, true, false));
-        AssertNormalized(result, new byte[] { 6, 5, 4, 3, 2, 1 });
+        AssertNormalized(new byte[] { 6, 5, 4, 3, 2, 1 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(0, result, true, true));
-        AssertNormalized(result, new byte[] { 3, 2, 1, 6, 5, 4 });
+        AssertNormalized(new byte[] { 3, 2, 1, 6, 5, 4 }, result);
       }
     }
 
@@ -969,52 +969,52 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Srgba64, 3, 2, 24, bytes))
       {
         Assert.True(imageFrame.TryReadChannelNormalized(0, result, false, false));
-        AssertNormalized(result, new ushort[] { 9, 41, 73, 1, 33, 65 });
+        AssertNormalized(new ushort[] { 9, 41, 73, 1, 33, 65 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(0, result, false, true));
-        AssertNormalized(result, new ushort[] { 1, 33, 65, 9, 41, 73 });
+        AssertNormalized(new ushort[] { 1, 33, 65, 9, 41, 73 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(0, result, true, false));
-        AssertNormalized(result, new ushort[] { 73, 41, 9, 65, 33, 1 });
+        AssertNormalized(new ushort[] { 73, 41, 9, 65, 33, 1 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(0, result, true, true));
-        AssertNormalized(result, new ushort[] { 65, 33, 1, 73, 41, 9 });
+        AssertNormalized(new ushort[] { 65, 33, 1, 73, 41, 9 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(1, result, false, false));
-        AssertNormalized(result, new ushort[] { 10, 42, 74, 2, 34, 66 });
+        AssertNormalized(new ushort[] { 10, 42, 74, 2, 34, 66 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(1, result, false, true));
-        AssertNormalized(result, new ushort[] { 2, 34, 66, 10, 42, 74 });
+        AssertNormalized(new ushort[] { 2, 34, 66, 10, 42, 74 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(1, result, true, false));
-        AssertNormalized(result, new ushort[] { 74, 42, 10, 66, 34, 2 });
+        AssertNormalized(new ushort[] { 74, 42, 10, 66, 34, 2 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(1, result, true, true));
-        AssertNormalized(result, new ushort[] { 66, 34, 2, 74, 42, 10 });
+        AssertNormalized(new ushort[] { 66, 34, 2, 74, 42, 10 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(2, result, false, false));
-        AssertNormalized(result, new ushort[] { 11, 43, 75, 3, 35, 67 });
+        AssertNormalized(new ushort[] { 11, 43, 75, 3, 35, 67 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(2, result, false, true));
-        AssertNormalized(result, new ushort[] { 3, 35, 67, 11, 43, 75 });
+        AssertNormalized(new ushort[] { 3, 35, 67, 11, 43, 75 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(2, result, true, false));
-        AssertNormalized(result, new ushort[] { 75, 43, 11, 67, 35, 3 });
+        AssertNormalized(new ushort[] { 75, 43, 11, 67, 35, 3 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(2, result, true, true));
-        AssertNormalized(result, new ushort[] { 67, 35, 3, 75, 43, 11 });
+        AssertNormalized(new ushort[] { 67, 35, 3, 75, 43, 11 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(3, result, false, false));
-        AssertNormalized(result, new ushort[] { 12, 44, 76, 4, 36, 68 });
+        AssertNormalized(new ushort[] { 12, 44, 76, 4, 36, 68 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(3, result, false, true));
-        AssertNormalized(result, new ushort[] { 4, 36, 68, 12, 44, 76 });
+        AssertNormalized(new ushort[] { 4, 36, 68, 12, 44, 76 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(3, result, true, false));
-        AssertNormalized(result, new ushort[] { 76, 44, 12, 68, 36, 4 });
+        AssertNormalized(new ushort[] { 76, 44, 12, 68, 36, 4 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(3, result, true, true));
-        AssertNormalized(result, new ushort[] { 68, 36, 4, 76, 44, 12 });
+        AssertNormalized(new ushort[] { 68, 36, 4, 76, 44, 12 }, result);
       }
     }
 
@@ -1031,16 +1031,16 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Gray16, 3, 2, 16, bytes))
       {
         Assert.True(imageFrame.TryReadChannelNormalized(0, result, false, false));
-        AssertNormalized(result, new ushort[] { 4, 5, 6, 1, 2, 3 });
+        AssertNormalized(new ushort[] { 4, 5, 6, 1, 2, 3 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(0, result, false, true));
-        AssertNormalized(result, new ushort[] { 1, 2, 3, 4, 5, 6 });
+        AssertNormalized(new ushort[] { 1, 2, 3, 4, 5, 6 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(0, result, true, false));
-        AssertNormalized(result, new ushort[] { 6, 5, 4, 3, 2, 1 });
+        AssertNormalized(new ushort[] { 6, 5, 4, 3, 2, 1 }, result);
 
         Assert.True(imageFrame.TryReadChannelNormalized(0, result, true, true));
-        AssertNormalized(result, new ushort[] { 3, 2, 1, 6, 5, 4 });
+        AssertNormalized(new ushort[] { 3, 2, 1, 6, 5, 4 }, result);
       }
     }
     #endregion
@@ -1082,7 +1082,7 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Srgb, 3, 2, 16, bytes))
       {
         Assert.True(imageFrame.TryReadPixelData(result));
-        Assert.AreEqual(result, expected);
+        Assert.AreEqual(expected, result);
       }
     }
 
@@ -1104,7 +1104,7 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Srgba, 3, 2, 16, bytes))
       {
         Assert.True(imageFrame.TryReadPixelData(result));
-        Assert.AreEqual(result, expected);
+        Assert.AreEqual(expected, result);
       }
     }
 
@@ -1126,7 +1126,7 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Sbgra, 3, 2, 16, bytes))
       {
         Assert.True(imageFrame.TryReadPixelData(result));
-        Assert.AreEqual(result, expected);
+        Assert.AreEqual(expected, result);
       }
     }
 
@@ -1147,7 +1147,7 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Gray8, 3, 2, 16, bytes))
       {
         Assert.True(imageFrame.TryReadPixelData(result));
-        Assert.AreEqual(result, expected);
+        Assert.AreEqual(expected, result);
       }
     }
 
@@ -1172,7 +1172,7 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Lab8, 5, 4, 16, bytes))
       {
         Assert.True(imageFrame.TryReadPixelData(result));
-        Assert.AreEqual(result, expected);
+        Assert.AreEqual(expected, result);
       }
     }
 
@@ -1194,7 +1194,7 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Srgb48, 3, 2, 24, bytes))
       {
         Assert.True(imageFrame.TryReadPixelData(result));
-        Assert.AreEqual(result, expected);
+        Assert.AreEqual(expected, result);
       }
     }
 
@@ -1216,7 +1216,7 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Srgba64, 3, 2, 24, bytes))
       {
         Assert.True(imageFrame.TryReadPixelData(result));
-        Assert.AreEqual(result, expected);
+        Assert.AreEqual(expected, result);
       }
     }
 
@@ -1237,7 +1237,7 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Gray16, 3, 2, 16, bytes))
       {
         Assert.True(imageFrame.TryReadPixelData(result));
-        Assert.AreEqual(result, expected);
+        Assert.AreEqual(expected, result);
       }
     }
 
@@ -1259,7 +1259,7 @@ namespace Tests
       using (var imageFrame = BuildImageFrame(ImageFormat.Types.Format.Vec32F1, 3, 2, 16, bytes))
       {
         Assert.True(imageFrame.TryReadPixelData(result));
-        Assert.AreEqual(result, expected);
+        Assert.AreEqual(expected, result);
       }
     }
     #endregion
@@ -1290,22 +1290,22 @@ namespace Tests
       return bytes;
     }
 
-    private void AssertNormalized(float[] result, byte[] expectedUnnormalized)
+    private void AssertNormalized(byte[] expectedUnnormalized, float[] result)
     {
       Assert.True(result.All((v) => v >= 0.0f && v <= 1.0f));
-      AreAlmostEqual(result, expectedUnnormalized.Select((v) => (float)v / 255).ToArray(), 1e-6);
+      AreAlmostEqual(expectedUnnormalized.Select((v) => (float)v / 255).ToArray(), result, 1e-6);
     }
 
-    private void AssertNormalized(float[] result, ushort[] expectedUnnormalized)
+    private void AssertNormalized(ushort[] expectedUnnormalized, float[] result)
     {
       Assert.True(result.All((v) => v >= 0.0f && v <= 1.0f));
-      AreAlmostEqual(result, expectedUnnormalized.Select((v) => (float)v / 65525).ToArray(), 1e-6);
+      AreAlmostEqual(expectedUnnormalized.Select((v) => (float)v / 65525).ToArray(), result, 1e-6);
     }
 
-    private void AreAlmostEqual(float[] xs, float[] ys, double threshold)
+    private void AreAlmostEqual(float[] expected, float[] actual, double threshold)
     {
-      Assert.AreEqual(xs.Length, ys.Length);
-      Assert.True(xs.Zip(ys, (x, y) => x - y).All((diff) => Mathf.Abs(diff) < threshold));
+      Assert.AreEqual(expected.Length, actual.Length);
+      Assert.True(expected.Zip(actual, (x, y) => x - y).All((diff) => Mathf.Abs(diff) < threshold));
     }
   }
 }

@@ -17,7 +17,7 @@ namespace Tests
     {
       using (var packet = new BoolPacket())
       {
-        Assert.AreEqual(packet.DebugString(), "mediapipe::Packet with timestamp: Timestamp::Unset() and no data");
+        Assert.AreEqual("mediapipe::Packet with timestamp: Timestamp::Unset() and no data", packet.DebugString());
       }
     }
     #endregion
@@ -28,7 +28,7 @@ namespace Tests
     {
       using (var packet = new BoolPacket())
       {
-        Assert.AreEqual(packet.DebugTypeName(), "{empty}");
+        Assert.AreEqual("{empty}", packet.DebugTypeName());
       }
     }
     #endregion
@@ -39,7 +39,7 @@ namespace Tests
     {
       using (var packet = new BoolPacket())
       {
-        Assert.AreEqual(packet.RegisteredTypeName(), "");
+        Assert.AreEqual("", packet.RegisteredTypeName());
       }
     }
     #endregion
@@ -50,7 +50,7 @@ namespace Tests
     {
       using (var packet = new BoolPacket(true))
       {
-        Assert.AreEqual(packet.ValidateAsProtoMessageLite().Code(), Status.StatusCode.InvalidArgument);
+        Assert.AreEqual(Status.StatusCode.InvalidArgument, packet.ValidateAsProtoMessageLite().Code());
       }
     }
     #endregion

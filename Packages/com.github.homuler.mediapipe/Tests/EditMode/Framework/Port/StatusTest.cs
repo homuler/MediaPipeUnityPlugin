@@ -17,7 +17,7 @@ namespace Tests
     {
       using (var status = Status.Ok())
       {
-        Assert.AreEqual(status.Code(), Status.StatusCode.Ok);
+        Assert.AreEqual(Status.StatusCode.Ok, status.Code());
       }
     }
 
@@ -26,7 +26,7 @@ namespace Tests
     {
       using (var status = Status.FailedPrecondition())
       {
-        Assert.AreEqual(status.Code(), Status.StatusCode.FailedPrecondition);
+        Assert.AreEqual(Status.StatusCode.FailedPrecondition, status.Code());
       }
     }
     #endregion
@@ -57,7 +57,7 @@ namespace Tests
     {
       using (var status = Status.Ok())
       {
-        Assert.AreEqual(status.RawCode(), 0);
+        Assert.AreEqual(0, status.RawCode());
       }
     }
 
@@ -66,7 +66,7 @@ namespace Tests
     {
       using (var status = Status.FailedPrecondition())
       {
-        Assert.AreEqual(status.RawCode(), 9);
+        Assert.AreEqual(9, status.RawCode());
       }
     }
     #endregion
@@ -119,7 +119,7 @@ namespace Tests
     {
       using (var status = Status.Ok())
       {
-        Assert.AreEqual(status.ToString(), "OK");
+        Assert.AreEqual("OK", status.ToString());
       }
     }
 
@@ -129,7 +129,7 @@ namespace Tests
       var message = "Some error";
       using (var status = Status.Cancelled(message))
       {
-        Assert.AreEqual(status.ToString(), $"CANCELLED: {message}");
+        Assert.AreEqual($"CANCELLED: {message}", status.ToString());
       }
     }
 
@@ -139,7 +139,7 @@ namespace Tests
       var message = "Some error";
       using (var status = Status.Unknown(message))
       {
-        Assert.AreEqual(status.ToString(), $"UNKNOWN: {message}");
+        Assert.AreEqual($"UNKNOWN: {message}", status.ToString());
       }
     }
 
@@ -149,7 +149,7 @@ namespace Tests
       var message = "Some error";
       using (var status = Status.InvalidArgument(message))
       {
-        Assert.AreEqual(status.ToString(), $"INVALID_ARGUMENT: {message}");
+        Assert.AreEqual($"INVALID_ARGUMENT: {message}", status.ToString());
       }
     }
 
@@ -159,7 +159,7 @@ namespace Tests
       var message = "Some error";
       using (var status = Status.DeadlineExceeded(message))
       {
-        Assert.AreEqual(status.ToString(), $"DEADLINE_EXCEEDED: {message}");
+        Assert.AreEqual($"DEADLINE_EXCEEDED: {message}", status.ToString());
       }
     }
 
@@ -169,7 +169,7 @@ namespace Tests
       var message = "Some error";
       using (var status = Status.NotFound(message))
       {
-        Assert.AreEqual(status.ToString(), $"NOT_FOUND: {message}");
+        Assert.AreEqual($"NOT_FOUND: {message}", status.ToString());
       }
     }
 
@@ -179,7 +179,7 @@ namespace Tests
       var message = "Some error";
       using (var status = Status.AlreadyExists(message))
       {
-        Assert.AreEqual(status.ToString(), $"ALREADY_EXISTS: {message}");
+        Assert.AreEqual($"ALREADY_EXISTS: {message}", status.ToString());
       }
     }
 
@@ -189,7 +189,7 @@ namespace Tests
       var message = "Some error";
       using (var status = Status.PermissionDenied(message))
       {
-        Assert.AreEqual(status.ToString(), $"PERMISSION_DENIED: {message}");
+        Assert.AreEqual($"PERMISSION_DENIED: {message}", status.ToString());
       }
     }
 
@@ -199,7 +199,7 @@ namespace Tests
       var message = "Some error";
       using (var status = Status.ResourceExhausted(message))
       {
-        Assert.AreEqual(status.ToString(), $"RESOURCE_EXHAUSTED: {message}");
+        Assert.AreEqual($"RESOURCE_EXHAUSTED: {message}", status.ToString());
       }
     }
 
@@ -209,7 +209,7 @@ namespace Tests
       var message = "Some error";
       using (var status = Status.FailedPrecondition(message))
       {
-        Assert.AreEqual(status.ToString(), $"FAILED_PRECONDITION: {message}");
+        Assert.AreEqual($"FAILED_PRECONDITION: {message}", status.ToString());
       }
     }
 
@@ -219,7 +219,7 @@ namespace Tests
       var message = "Some error";
       using (var status = Status.Aborted(message))
       {
-        Assert.AreEqual(status.ToString(), $"ABORTED: {message}");
+        Assert.AreEqual($"ABORTED: {message}", status.ToString());
       }
     }
 
@@ -229,7 +229,7 @@ namespace Tests
       var message = "Some error";
       using (var status = Status.OutOfRange(message))
       {
-        Assert.AreEqual(status.ToString(), $"OUT_OF_RANGE: {message}");
+        Assert.AreEqual($"OUT_OF_RANGE: {message}", status.ToString());
       }
     }
 
@@ -239,7 +239,7 @@ namespace Tests
       var message = "Some error";
       using (var status = Status.Unimplemented(message))
       {
-        Assert.AreEqual(status.ToString(), $"UNIMPLEMENTED: {message}");
+        Assert.AreEqual($"UNIMPLEMENTED: {message}", status.ToString());
       }
     }
 
@@ -249,7 +249,7 @@ namespace Tests
       var message = "Some error";
       using (var status = Status.Internal(message))
       {
-        Assert.AreEqual(status.ToString(), $"INTERNAL: {message}");
+        Assert.AreEqual($"INTERNAL: {message}", status.ToString());
       }
     }
 
@@ -259,7 +259,7 @@ namespace Tests
       var message = "Some error";
       using (var status = Status.Unavailable(message))
       {
-        Assert.AreEqual(status.ToString(), $"UNAVAILABLE: {message}");
+        Assert.AreEqual($"UNAVAILABLE: {message}", status.ToString());
       }
     }
 
@@ -269,7 +269,7 @@ namespace Tests
       var message = "Some error";
       using (var status = Status.DataLoss(message))
       {
-        Assert.AreEqual(status.ToString(), $"DATA_LOSS: {message}");
+        Assert.AreEqual($"DATA_LOSS: {message}", status.ToString());
       }
     }
 
@@ -279,7 +279,7 @@ namespace Tests
       var message = "Some error";
       using (var status = Status.Unauthenticated(message))
       {
-        Assert.AreEqual(status.ToString(), $"UNAUTHENTICATED: {message}");
+        Assert.AreEqual($"UNAUTHENTICATED: {message}", status.ToString());
       }
     }
     #endregion

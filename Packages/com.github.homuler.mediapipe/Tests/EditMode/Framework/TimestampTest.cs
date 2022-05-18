@@ -37,7 +37,7 @@ namespace Tests
     {
       using (var timestamp = new Timestamp(10))
       {
-        Assert.AreEqual(timestamp.Value(), 10);
+        Assert.AreEqual(10, timestamp.Value());
       }
     }
     #endregion
@@ -48,7 +48,7 @@ namespace Tests
     {
       using (var timestamp = new Timestamp(1_000_000))
       {
-        Assert.AreEqual(timestamp.Seconds(), 1d, 1e-9);
+        Assert.AreEqual(1d, timestamp.Seconds(), 1e-9);
       }
     }
     #endregion
@@ -59,7 +59,7 @@ namespace Tests
     {
       using (var timestamp = new Timestamp(1_000_000))
       {
-        Assert.AreEqual(timestamp.Microseconds(), 1_000_000);
+        Assert.AreEqual(1_000_000, timestamp.Microseconds());
       }
     }
     #endregion
@@ -175,7 +175,7 @@ namespace Tests
     {
       using (var timestamp = new Timestamp(1))
       {
-        Assert.AreEqual(timestamp.DebugString(), "1");
+        Assert.AreEqual("1", timestamp.DebugString());
       }
     }
 
@@ -184,7 +184,7 @@ namespace Tests
     {
       using (var timestamp = Timestamp.Unset())
       {
-        Assert.AreEqual(timestamp.DebugString(), "Timestamp::Unset()");
+        Assert.AreEqual("Timestamp::Unset()", timestamp.DebugString());
       }
     }
     #endregion
@@ -197,7 +197,7 @@ namespace Tests
       {
         using (var nextTimestamp = timestamp.NextAllowedInStream())
         {
-          Assert.AreEqual(nextTimestamp.Microseconds(), 2);
+          Assert.AreEqual(2, nextTimestamp.Microseconds());
         }
       }
     }
@@ -209,7 +209,7 @@ namespace Tests
       {
         using (var nextTimestamp = timestamp.NextAllowedInStream())
         {
-          Assert.AreEqual(nextTimestamp, Timestamp.OneOverPostStream());
+          Assert.AreEqual(Timestamp.OneOverPostStream(), nextTimestamp);
         }
       }
     }
@@ -223,7 +223,7 @@ namespace Tests
       {
         using (var nextTimestamp = timestamp.PreviousAllowedInStream())
         {
-          Assert.AreEqual(nextTimestamp.Microseconds(), 0);
+          Assert.AreEqual(0, nextTimestamp.Microseconds());
         }
       }
     }
@@ -235,7 +235,7 @@ namespace Tests
       {
         using (var nextTimestamp = timestamp.PreviousAllowedInStream())
         {
-          Assert.AreEqual(nextTimestamp, Timestamp.Unstarted());
+          Assert.AreEqual(Timestamp.Unstarted(), nextTimestamp);
         }
       }
     }
@@ -247,7 +247,7 @@ namespace Tests
     {
       using (var timestamp = Timestamp.FromSeconds(1d))
       {
-        Assert.AreEqual(timestamp.Microseconds(), 1_000_000);
+        Assert.AreEqual(1_000_000, timestamp.Microseconds());
       }
     }
     #endregion

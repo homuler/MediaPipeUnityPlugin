@@ -17,7 +17,7 @@ namespace Tests
     {
       using (var sidePacket = new SidePacket())
       {
-        Assert.AreEqual(sidePacket.size, 0);
+        Assert.AreEqual(0, sidePacket.size);
       }
     }
 
@@ -31,7 +31,7 @@ namespace Tests
         sidePacket.Emplace("flag", flagPacket);
         sidePacket.Emplace("value", valuePacket);
 
-        Assert.AreEqual(sidePacket.size, 2);
+        Assert.AreEqual(2, sidePacket.size);
         Assert.True(flagPacket.isDisposed);
         Assert.True(valuePacket.isDisposed);
       }
@@ -44,14 +44,14 @@ namespace Tests
     {
       using (var sidePacket = new SidePacket())
       {
-        Assert.AreEqual(sidePacket.size, 0);
+        Assert.AreEqual(0, sidePacket.size);
         Assert.IsNull(sidePacket.At<FloatPacket, float>("value"));
 
         var flagPacket = new FloatPacket(1.0f);
         sidePacket.Emplace("value", flagPacket);
 
-        Assert.AreEqual(sidePacket.size, 1);
-        Assert.AreEqual(sidePacket.At<FloatPacket, float>("value").Get(), 1.0f);
+        Assert.AreEqual(1, sidePacket.size);
+        Assert.AreEqual(1.0f, sidePacket.At<FloatPacket, float>("value").Get());
         Assert.True(flagPacket.isDisposed);
       }
     }
@@ -63,11 +63,11 @@ namespace Tests
       {
         var oldValuePacket = new FloatPacket(1.0f);
         sidePacket.Emplace("value", oldValuePacket);
-        Assert.AreEqual(sidePacket.At<FloatPacket, float>("value").Get(), 1.0f);
+        Assert.AreEqual(1.0f, sidePacket.At<FloatPacket, float>("value").Get());
 
         var newValuePacket = new FloatPacket(2.0f);
         sidePacket.Emplace("value", newValuePacket);
-        Assert.AreEqual(sidePacket.At<FloatPacket, float>("value").Get(), 1.0f);
+        Assert.AreEqual(1.0f, sidePacket.At<FloatPacket, float>("value").Get());
       }
     }
     #endregion
@@ -80,8 +80,8 @@ namespace Tests
       {
         var count = sidePacket.Erase("value");
 
-        Assert.AreEqual(sidePacket.size, 0);
-        Assert.AreEqual(count, 0);
+        Assert.AreEqual(0, sidePacket.size);
+        Assert.AreEqual(0, count);
       }
     }
 
@@ -91,11 +91,11 @@ namespace Tests
       using (var sidePacket = new SidePacket())
       {
         sidePacket.Emplace("value", new BoolPacket(true));
-        Assert.AreEqual(sidePacket.size, 1);
+        Assert.AreEqual(1, sidePacket.size);
 
         var count = sidePacket.Erase("value");
-        Assert.AreEqual(sidePacket.size, 0);
-        Assert.AreEqual(count, 1);
+        Assert.AreEqual(0, sidePacket.size);
+        Assert.AreEqual(1, count);
       }
     }
     #endregion
@@ -108,7 +108,7 @@ namespace Tests
       {
         sidePacket.Clear();
 
-        Assert.AreEqual(sidePacket.size, 0);
+        Assert.AreEqual(0, sidePacket.size);
       }
     }
 
@@ -119,10 +119,10 @@ namespace Tests
       {
         sidePacket.Emplace("flag", new BoolPacket(true));
         sidePacket.Emplace("value", new FloatPacket(1.0f));
-        Assert.AreEqual(sidePacket.size, 2);
+        Assert.AreEqual(2, sidePacket.size);
 
         sidePacket.Clear();
-        Assert.AreEqual(sidePacket.size, 0);
+        Assert.AreEqual(0, sidePacket.size);
       }
     }
     #endregion

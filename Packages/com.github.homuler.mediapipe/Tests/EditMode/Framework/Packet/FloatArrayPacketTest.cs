@@ -20,9 +20,9 @@ namespace Tests
       {
 #pragma warning disable IDE0058
         packet.length = 0;
-        Assert.AreEqual(packet.ValidateAsType().Code(), Status.StatusCode.Internal);
+        Assert.AreEqual(Status.StatusCode.Internal, packet.ValidateAsType().Code());
         Assert.Throws<MediaPipeException>(() => { packet.Get(); });
-        Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
+        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
 #pragma warning restore IDE0058
       }
     }
@@ -34,8 +34,8 @@ namespace Tests
       using (var packet = new FloatArrayPacket(array))
       {
         Assert.True(packet.ValidateAsType().Ok());
-        Assert.AreEqual(packet.Get(), array);
-        Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
+        Assert.AreEqual(array, packet.Get());
+        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
     }
 
@@ -46,8 +46,8 @@ namespace Tests
       using (var packet = new FloatArrayPacket(array))
       {
         Assert.True(packet.ValidateAsType().Ok());
-        Assert.AreEqual(packet.Get(), array);
-        Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
+        Assert.AreEqual(array, packet.Get());
+        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
     }
 
@@ -60,8 +60,8 @@ namespace Tests
         using (var packet = new FloatArrayPacket(array, timestamp))
         {
           Assert.True(packet.ValidateAsType().Ok());
-          Assert.AreEqual(packet.Get(), array);
-          Assert.AreEqual(packet.Timestamp(), timestamp);
+          Assert.AreEqual(array, packet.Get());
+          Assert.AreEqual(timestamp, packet.Timestamp());
         }
       }
     }
@@ -95,17 +95,17 @@ namespace Tests
       {
         float[] array = { 0.0f };
         var packet = new FloatArrayPacket(array).At(timestamp);
-        Assert.AreEqual(packet.Get(), array);
-        Assert.AreEqual(packet.Timestamp(), timestamp);
+        Assert.AreEqual(array, packet.Get());
+        Assert.AreEqual(timestamp, packet.Timestamp());
 
         using (var newTimestamp = new Timestamp(2))
         {
           var newPacket = packet.At(newTimestamp);
-          Assert.AreEqual(newPacket.Get(), array);
-          Assert.AreEqual(newPacket.Timestamp(), newTimestamp);
+          Assert.AreEqual(array, newPacket.Get());
+          Assert.AreEqual(newTimestamp, newPacket.Timestamp());
         }
 
-        Assert.AreEqual(packet.Timestamp(), timestamp);
+        Assert.AreEqual(timestamp, packet.Timestamp());
       }
     }
     #endregion
@@ -130,7 +130,7 @@ namespace Tests
       float[] array = { 0.01f };
       using (var packet = new FloatArrayPacket(array))
       {
-        Assert.AreEqual(packet.DebugTypeName(), "float []");
+        Assert.AreEqual("float []", packet.DebugTypeName());
       }
     }
     #endregion

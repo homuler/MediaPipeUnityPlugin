@@ -17,7 +17,7 @@ namespace Tests
     {
       using (var statusOrGpuResources = GpuResources.Create())
       {
-        Assert.AreEqual(statusOrGpuResources.status.Code(), Status.StatusCode.Ok);
+        Assert.AreEqual(Status.StatusCode.Ok, statusOrGpuResources.status.Code());
       }
     }
     #endregion

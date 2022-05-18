@@ -56,16 +56,16 @@ namespace Tests
       using (var glContext = GetGlContext())
       {
 #if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_ANDROID
-        Assert.AreNotEqual(glContext.eglDisplay, IntPtr.Zero);
-        Assert.AreNotEqual(glContext.eglConfig, IntPtr.Zero);
-        Assert.AreNotEqual(glContext.eglContext, IntPtr.Zero);
-        Assert.AreEqual(glContext.glMajorVersion, 3);
-        Assert.AreEqual(glContext.glMinorVersion, 2);
-        Assert.AreEqual(glContext.glFinishCount, 0);
+        Assert.AreNotEqual(IntPtr.Zero, glContext.eglDisplay);
+        Assert.AreNotEqual(IntPtr.Zero, glContext.eglConfig);
+        Assert.AreNotEqual(IntPtr.Zero, glContext.eglContext);
+        Assert.AreEqual(3, glContext.glMajorVersion);
+        Assert.AreEqual(2, glContext.glMinorVersion);
+        Assert.AreEqual(0, glContext.glFinishCount);
 #elif UNITY_STANDALONE_OSX
-        Assert.AreNotEqual(glContext.nsglContext, IntPtr.Zero);
+        Assert.AreNotEqual(IntPtr.Zero, glContext.nsglContext);
 #elif UNITY_IOS
-        Assert.AreNotEqual(glContext.eaglContext, IntPtr.Zero);
+        Assert.AreNotEqual(IntPtr.Zero, glContext.eaglContext);
 #endif
       }
     }

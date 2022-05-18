@@ -19,9 +19,9 @@ namespace Tests
       {
         using (var statusOrImageFrame = packet.Consume())
         {
-          Assert.AreEqual(packet.ValidateAsType().Code(), Status.StatusCode.Internal);
-          Assert.AreEqual(statusOrImageFrame.status.Code(), Status.StatusCode.Internal);
-          Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
+          Assert.AreEqual(Status.StatusCode.Internal, packet.ValidateAsType().Code());
+          Assert.AreEqual(Status.StatusCode.Internal, statusOrImageFrame.status.Code());
+          Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
         }
       }
     }
@@ -35,7 +35,7 @@ namespace Tests
       {
         Assert.True(srcImageFrame.isDisposed);
         Assert.True(packet.ValidateAsType().Ok());
-        Assert.AreEqual(packet.Timestamp(), Timestamp.Unset());
+        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
 
         using (var statusOrImageFrame = packet.Consume())
         {
@@ -43,7 +43,7 @@ namespace Tests
 
           using (var imageFrame = statusOrImageFrame.Value())
           {
-            Assert.AreEqual(imageFrame.Format(), ImageFormat.Types.Format.Unknown);
+            Assert.AreEqual(ImageFormat.Types.Format.Unknown, imageFrame.Format());
           }
         }
       }
@@ -67,8 +67,8 @@ namespace Tests
 
             using (var imageFrame = statusOrImageFrame.Value())
             {
-              Assert.AreEqual(imageFrame.Format(), ImageFormat.Types.Format.Unknown);
-              Assert.AreEqual(packet.Timestamp(), timestamp);
+              Assert.AreEqual(ImageFormat.Types.Format.Unknown, imageFrame.Format());
+              Assert.AreEqual(timestamp, packet.Timestamp());
             }
           }
         }
@@ -103,17 +103,17 @@ namespace Tests
       using (var timestamp = new Timestamp(1))
       {
         var packet = new ImageFramePacket(new ImageFrame(ImageFormat.Types.Format.Srgba, 10, 10)).At(timestamp);
-        Assert.AreEqual(packet.Get().Width(), 10);
-        Assert.AreEqual(packet.Timestamp(), timestamp);
+        Assert.AreEqual(10, packet.Get().Width());
+        Assert.AreEqual(timestamp, packet.Timestamp());
 
         using (var newTimestamp = new Timestamp(2))
         {
           var newPacket = packet.At(newTimestamp);
-          Assert.AreEqual(newPacket.Get().Width(), 10);
-          Assert.AreEqual(newPacket.Timestamp(), newTimestamp);
+          Assert.AreEqual(10, newPacket.Get().Width());
+          Assert.AreEqual(newTimestamp, newPacket.Timestamp());
         }
 
-        Assert.AreEqual(packet.Timestamp(), timestamp);
+        Assert.AreEqual(timestamp, packet.Timestamp());
       }
     }
     #endregion
@@ -136,9 +136,9 @@ namespace Tests
       {
         using (var imageFrame = packet.Get())
         {
-          Assert.AreEqual(imageFrame.Format(), ImageFormat.Types.Format.Sbgra);
-          Assert.AreEqual(imageFrame.Width(), 10);
-          Assert.AreEqual(imageFrame.Height(), 10);
+          Assert.AreEqual(ImageFormat.Types.Format.Sbgra, imageFrame.Format());
+          Assert.AreEqual(10, imageFrame.Width());
+          Assert.AreEqual(10, imageFrame.Height());
         }
       }
     }
@@ -156,9 +156,9 @@ namespace Tests
 
           using (var imageFrame = statusOrImageFrame.Value())
           {
-            Assert.AreEqual(imageFrame.Format(), ImageFormat.Types.Format.Sbgra);
-            Assert.AreEqual(imageFrame.Width(), 10);
-            Assert.AreEqual(imageFrame.Height(), 10);
+            Assert.AreEqual(ImageFormat.Types.Format.Sbgra, imageFrame.Format());
+            Assert.AreEqual(10, imageFrame.Width());
+            Assert.AreEqual(10, imageFrame.Height());
           }
         }
       }
@@ -171,7 +171,7 @@ namespace Tests
     {
       using (var packet = new ImageFramePacket(new ImageFrame()))
       {
-        Assert.AreEqual(packet.DebugTypeName(), "mediapipe::ImageFrame");
+        Assert.AreEqual("mediapipe::ImageFrame", packet.DebugTypeName());
       }
     }
     #endregion

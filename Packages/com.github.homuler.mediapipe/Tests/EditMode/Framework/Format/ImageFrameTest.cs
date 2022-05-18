@@ -20,19 +20,19 @@ namespace Tests
     {
       using (var imageFrame = new ImageFrame())
       {
-        Assert.AreEqual(imageFrame.Format(), ImageFormat.Types.Format.Unknown);
-        Assert.AreEqual(imageFrame.Width(), 0);
-        Assert.AreEqual(imageFrame.Height(), 0);
-        Assert.AreEqual(imageFrame.ChannelSize(), 0);
-        Assert.AreEqual(imageFrame.NumberOfChannels(), 0);
-        Assert.AreEqual(imageFrame.ByteDepth(), 0);
-        Assert.AreEqual(imageFrame.WidthStep(), 0);
-        Assert.AreEqual(imageFrame.PixelDataSize(), 0);
-        Assert.AreEqual(imageFrame.PixelDataSizeStoredContiguously(), 0);
+        Assert.AreEqual(ImageFormat.Types.Format.Unknown, imageFrame.Format());
+        Assert.AreEqual(0, imageFrame.Width());
+        Assert.AreEqual(0, imageFrame.Height(), 0);
+        Assert.AreEqual(0, imageFrame.ChannelSize());
+        Assert.AreEqual(0, imageFrame.NumberOfChannels());
+        Assert.AreEqual(0, imageFrame.ByteDepth());
+        Assert.AreEqual(0, imageFrame.WidthStep());
+        Assert.AreEqual(0, imageFrame.PixelDataSize());
+        Assert.AreEqual(0, imageFrame.PixelDataSizeStoredContiguously());
         Assert.True(imageFrame.IsEmpty());
         Assert.False(imageFrame.IsContiguous());
         Assert.False(imageFrame.IsAligned(16));
-        Assert.AreEqual(imageFrame.MutablePixelData(), IntPtr.Zero);
+        Assert.AreEqual(IntPtr.Zero, imageFrame.MutablePixelData());
       }
     }
 
@@ -41,19 +41,19 @@ namespace Tests
     {
       using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Sbgra, 640, 480))
       {
-        Assert.AreEqual(imageFrame.Format(), ImageFormat.Types.Format.Sbgra);
-        Assert.AreEqual(imageFrame.Width(), 640);
-        Assert.AreEqual(imageFrame.Height(), 480);
-        Assert.AreEqual(imageFrame.ChannelSize(), 1);
-        Assert.AreEqual(imageFrame.NumberOfChannels(), 4);
-        Assert.AreEqual(imageFrame.ByteDepth(), 1);
-        Assert.AreEqual(imageFrame.WidthStep(), 640 * 4);
-        Assert.AreEqual(imageFrame.PixelDataSize(), 640 * 480 * 4);
-        Assert.AreEqual(imageFrame.PixelDataSizeStoredContiguously(), 640 * 480 * 4);
+        Assert.AreEqual(ImageFormat.Types.Format.Sbgra, imageFrame.Format());
+        Assert.AreEqual(640, imageFrame.Width());
+        Assert.AreEqual(480, imageFrame.Height());
+        Assert.AreEqual(1, imageFrame.ChannelSize());
+        Assert.AreEqual(4, imageFrame.NumberOfChannels());
+        Assert.AreEqual(1, imageFrame.ByteDepth());
+        Assert.AreEqual(640 * 4, imageFrame.WidthStep());
+        Assert.AreEqual(640 * 480 * 4, imageFrame.PixelDataSize());
+        Assert.AreEqual(640 * 480 * 4, imageFrame.PixelDataSizeStoredContiguously());
         Assert.False(imageFrame.IsEmpty());
         Assert.True(imageFrame.IsContiguous());
         Assert.True(imageFrame.IsAligned(16));
-        Assert.AreNotEqual(imageFrame.MutablePixelData(), IntPtr.Zero);
+        Assert.AreNotEqual(IntPtr.Zero, imageFrame.MutablePixelData());
       }
     }
 
@@ -62,9 +62,9 @@ namespace Tests
     {
       using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Gray8, 100, 100, 8))
       {
-        Assert.AreEqual(imageFrame.Width(), 100);
-        Assert.AreEqual(imageFrame.NumberOfChannels(), 1);
-        Assert.AreEqual(imageFrame.WidthStep(), 104);
+        Assert.AreEqual(100, imageFrame.Width());
+        Assert.AreEqual(1, imageFrame.NumberOfChannels());
+        Assert.AreEqual(104, imageFrame.WidthStep());
       }
     }
 
@@ -80,8 +80,8 @@ namespace Tests
 
       using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Sbgra, 4, 2, 16, pixelData))
       {
-        Assert.AreEqual(imageFrame.Width(), 4);
-        Assert.AreEqual(imageFrame.Height(), 2);
+        Assert.AreEqual(4, imageFrame.Width());
+        Assert.AreEqual(2, imageFrame.Height());
         Assert.False(imageFrame.IsEmpty());
 
         var bytes = new byte[32];
