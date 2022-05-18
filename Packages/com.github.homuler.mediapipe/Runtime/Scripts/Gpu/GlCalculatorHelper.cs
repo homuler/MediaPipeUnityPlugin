@@ -45,13 +45,13 @@ namespace Mediapipe
       return new Status(statusPtr);
     }
 
-    public Status RunInGlContext(GlFunction glStatusFunc)
+    public Status RunInGlContext(GlFunction glFunction)
     {
       return RunInGlContext(() =>
       {
         try
         {
-          glStatusFunc();
+          glFunction();
           return Status.StatusArgs.Ok();
         }
         catch (Exception e)

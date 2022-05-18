@@ -29,7 +29,7 @@ namespace Mediapipe
       mp_api__SetFreeHGlobal(FreeHGlobal);
     }
 
-    internal delegate void FreeHGlobalDelegate(IntPtr hglobal);
+    private delegate void FreeHGlobalDelegate(IntPtr hglobal);
 
     [AOT.MonoPInvokeCallback(typeof(FreeHGlobalDelegate))]
     private static void FreeHGlobal(IntPtr hglobal)
@@ -38,6 +38,6 @@ namespace Mediapipe
     }
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern void mp_api__SetFreeHGlobal([MarshalAs(UnmanagedType.FunctionPtr)] FreeHGlobalDelegate freeHGlobal);
+    private static extern void mp_api__SetFreeHGlobal([MarshalAs(UnmanagedType.FunctionPtr)] FreeHGlobalDelegate freeHGlobal);
   }
 }
