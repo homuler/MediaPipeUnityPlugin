@@ -1,5 +1,6 @@
 {
-    "name": "MediaPipeSDK",
+    "name": "Mediapipe.Runtime",
+    "rootNamespace": "",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
