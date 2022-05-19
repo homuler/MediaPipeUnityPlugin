@@ -45,12 +45,12 @@ namespace Mediapipe.Unity.UI
     {
       _contentRoot = gameObject.transform.Find(_ContentPath).gameObject.transform;
 
-      if (!(Logger.logger is MemoizedLogger))
+      if (!(Logger.InternalLogger is MemoizedLogger))
       {
         return;
       }
 
-      _logger = (MemoizedLogger)Logger.logger;
+      _logger = (MemoizedLogger)Logger.InternalLogger;
       lock (((ICollection)_logger.histories).SyncRoot)
       {
         foreach (var log in _logger.histories)
