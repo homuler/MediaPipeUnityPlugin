@@ -95,6 +95,11 @@ namespace Mediapipe.Unity
       {
         Logger.LogInfo(_TAG, "Initializing GPU resources...");
         yield return GpuManager.Initialize();
+
+        if (!GpuManager.IsInitialized)
+        {
+          Logger.LogWarning("If your native library is built for CPU, change 'Preferable Inference Mode' to CPU from the Inspector Window for Bootstrap");
+        }
       }
 
       Logger.LogInfo(_TAG, "Preparing ImageSource...");
