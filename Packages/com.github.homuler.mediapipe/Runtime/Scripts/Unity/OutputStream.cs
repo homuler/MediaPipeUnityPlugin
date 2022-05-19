@@ -282,6 +282,12 @@ namespace Mediapipe.Unity
 
     protected bool CanCallNext(bool allowBlock)
     {
+      if (_poller == null)
+      {
+        Logger.LogWarning("OutputStreamPoller is not initialized. Call StartPolling before running the CalculatorGraph");
+        return false;
+      }
+
       if (canTestPresence)
       {
         if (!allowBlock)
