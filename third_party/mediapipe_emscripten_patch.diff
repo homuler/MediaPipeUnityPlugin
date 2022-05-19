@@ -180,7 +180,7 @@ index 062fb2c..2d9d5ee 100644
  #endif  // !MEDIAPIPE_DISABLE_GPU
  
 diff --git a/mediapipe/calculators/image/segmentation_smoothing_calculator.cc b/mediapipe/calculators/image/segmentation_smoothing_calculator.cc
-index db339b7..817b894 100644
+index 62d3b0d..03d0ff0 100644
 --- a/mediapipe/calculators/image/segmentation_smoothing_calculator.cc
 +++ b/mediapipe/calculators/image/segmentation_smoothing_calculator.cc
 @@ -314,7 +314,7 @@ void SegmentationSmoothingCalculator::GlRender(CalculatorContext* cc) {
@@ -262,7 +262,7 @@ index 6154a24..da4f55e 100644
  
    // parameters
 diff --git a/mediapipe/calculators/tensor/image_to_tensor_converter_gl_buffer.cc b/mediapipe/calculators/tensor/image_to_tensor_converter_gl_buffer.cc
-index d01916f..dbccfd5 100644
+index ddc7ff8..e06b6ee 100644
 --- a/mediapipe/calculators/tensor/image_to_tensor_converter_gl_buffer.cc
 +++ b/mediapipe/calculators/tensor/image_to_tensor_converter_gl_buffer.cc
 @@ -85,7 +85,7 @@ class SubRectExtractorGl {
@@ -275,7 +275,7 @@ index d01916f..dbccfd5 100644
    return TFLITE_GPU_CALL_GL(glProgramUniformMatrix4fv, program.id(), uniform_id,
                              1, GL_TRUE, data);
 diff --git a/mediapipe/calculators/tensor/image_to_tensor_converter_gl_texture.cc b/mediapipe/calculators/tensor/image_to_tensor_converter_gl_texture.cc
-index eb96815..6e07c85 100644
+index 6f035e6..8c6b7f1 100644
 --- a/mediapipe/calculators/tensor/image_to_tensor_converter_gl_texture.cc
 +++ b/mediapipe/calculators/tensor/image_to_tensor_converter_gl_texture.cc
 @@ -140,11 +140,11 @@ class GlProcessor : public ImageToTensorConverter {
@@ -295,7 +295,7 @@ index eb96815..6e07c85 100644
  
        glGenFramebuffers(1, &framebuffer_);
  
-@@ -246,7 +246,7 @@ class GlProcessor : public ImageToTensorConverter {
+@@ -248,7 +248,7 @@ class GlProcessor : public ImageToTensorConverter {
        }
      }
  
@@ -359,10 +359,10 @@ index f3c7c7b..fc157c8 100644
  
  #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_31
 diff --git a/mediapipe/calculators/tensor/tensors_to_detections_calculator.cc b/mediapipe/calculators/tensor/tensors_to_detections_calculator.cc
-index 498036c..bb12587 100644
+index b1babaf..6f726f4 100644
 --- a/mediapipe/calculators/tensor/tensors_to_detections_calculator.cc
 +++ b/mediapipe/calculators/tensor/tensors_to_detections_calculator.cc
-@@ -420,14 +420,14 @@ absl::Status TensorsToDetectionsCalculator::ProcessGPU(
+@@ -495,7 +495,7 @@ absl::Status TensorsToDetectionsCalculator::ProcessGPU(
        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, input0_view.name());
        auto raw_anchors_view = raw_anchors_buffer_->GetOpenGlBufferReadView();
        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, raw_anchors_view.name());
@@ -371,15 +371,16 @@ index 498036c..bb12587 100644
        glDispatchCompute(num_boxes_, 1, 1);
  
        // Score boxes.
-       glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, scored_boxes_view.name());
-       auto input1_view = input_tensors[1].GetOpenGlBufferReadView();
+@@ -503,7 +503,7 @@ absl::Status TensorsToDetectionsCalculator::ProcessGPU(
+       auto input1_view = input_tensors[tensor_mapping_.scores_tensor_index()]
+                              .GetOpenGlBufferReadView();
        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, input1_view.name());
 -      glUseProgram(score_program_);
 +      __wrap_glUseProgram(score_program_);
        glDispatchCompute(num_boxes_, 1, 1);
      }
      return absl::OkStatus();
-@@ -817,9 +817,9 @@ void main() {
+@@ -949,9 +949,9 @@ void main() {
          options_.keypoint_coord_offset(), options_.num_values_per_keypoint());
  
      // Shader program
@@ -391,7 +392,7 @@ index 498036c..bb12587 100644
      glCompileShader(shader);
      GLint compiled = GL_FALSE;
      glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
-@@ -832,9 +832,9 @@ void main() {
+@@ -964,9 +964,9 @@ void main() {
        return str;
      }();
      decode_program_ = glCreateProgram();
@@ -403,7 +404,7 @@ index 498036c..bb12587 100644
  
      // Outputs
      decoded_boxes_buffer_ =
-@@ -844,7 +844,7 @@ void main() {
+@@ -976,7 +976,7 @@ void main() {
          Tensor::ElementType::kFloat32,
          Tensor::Shape{1, num_boxes_ * kNumCoordsPerBox});
      // Parameters
@@ -412,7 +413,7 @@ index 498036c..bb12587 100644
      glUniform4f(0, options_.x_scale(), options_.y_scale(), options_.w_scale(),
                  options_.h_scale());
  
-@@ -922,17 +922,17 @@ void main() {
+@@ -1061,17 +1061,17 @@ void main() {
  
      // Shader program
      {
@@ -435,10 +436,10 @@ index 498036c..bb12587 100644
  
      // Outputs
 diff --git a/mediapipe/calculators/tensor/tensors_to_segmentation_calculator.cc b/mediapipe/calculators/tensor/tensors_to_segmentation_calculator.cc
-index ffc96b2..821d38a 100644
+index a03a601..fb5fc65 100644
 --- a/mediapipe/calculators/tensor/tensors_to_segmentation_calculator.cc
 +++ b/mediapipe/calculators/tensor/tensors_to_segmentation_calculator.cc
-@@ -456,8 +456,8 @@ absl::Status TensorsToSegmentationCalculator::ProcessGpu(
+@@ -457,8 +457,8 @@ absl::Status TensorsToSegmentationCalculator::ProcessGpu(
          NumGroups(tensor_width, kWorkgroupSize),
          NumGroups(tensor_height, kWorkgroupSize), 1};
  
@@ -449,7 +450,7 @@ index ffc96b2..821d38a 100644
                  tensor_width, tensor_height);
  
      MP_RETURN_IF_ERROR(mask_program_31_->Dispatch(workgroups));
-@@ -513,7 +513,7 @@ absl::Status TensorsToSegmentationCalculator::ProcessGpu(
+@@ -514,7 +514,7 @@ absl::Status TensorsToSegmentationCalculator::ProcessGpu(
      gpu_helper_.BindFramebuffer(small_mask_texture);
      glActiveTexture(GL_TEXTURE1);
      glBindTexture(GL_TEXTURE_2D, read_view.name());
@@ -458,7 +459,7 @@ index ffc96b2..821d38a 100644
      GlRender();
      glBindTexture(GL_TEXTURE_2D, 0);
      glFlush();
-@@ -534,7 +534,7 @@ absl::Status TensorsToSegmentationCalculator::ProcessGpu(
+@@ -535,7 +535,7 @@ absl::Status TensorsToSegmentationCalculator::ProcessGpu(
  #else
      glBindTexture(GL_TEXTURE_2D, small_mask_texture.name());
  #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_31
@@ -467,7 +468,7 @@ index ffc96b2..821d38a 100644
      GlRender();
      glBindTexture(GL_TEXTURE_2D, 0);
      glFlush();
-@@ -859,8 +859,8 @@ void main() {
+@@ -860,8 +860,8 @@ void main() {
          mediapipe::kBasicVertexShader, shader_src_no_previous.c_str(),
          NUM_ATTRIBUTES, &attr_name[0], attr_location, &mask_program_20_);
      RET_CHECK(mask_program_20_) << "Problem initializing the program.";
@@ -478,7 +479,7 @@ index ffc96b2..821d38a 100644
  #endif  // MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_31
  
      // Simple pass-through program, used for hardware upsampling.
-@@ -868,8 +868,8 @@ void main() {
+@@ -869,8 +869,8 @@ void main() {
          mediapipe::kBasicVertexShader, mediapipe::kBasicTexturedFragmentShader,
          NUM_ATTRIBUTES, &attr_name[0], attr_location, &upsample_program_);
      RET_CHECK(upsample_program_) << "Problem initializing the program.";
@@ -503,10 +504,10 @@ index 2ed62c4..0342586 100644
                  options_.h_scale());
  
 diff --git a/mediapipe/calculators/tflite/tflite_tensors_to_segmentation_calculator.cc b/mediapipe/calculators/tflite/tflite_tensors_to_segmentation_calculator.cc
-index 22a9a8d..2372976 100644
+index ff1d1aa..078f1d8 100644
 --- a/mediapipe/calculators/tflite/tflite_tensors_to_segmentation_calculator.cc
 +++ b/mediapipe/calculators/tflite/tflite_tensors_to_segmentation_calculator.cc
-@@ -477,7 +477,7 @@ void TfLiteTensorsToSegmentationCalculator::GlRender() {
+@@ -478,7 +478,7 @@ void TfLiteTensorsToSegmentationCalculator::GlRender() {
    };
  
    // program
@@ -515,7 +516,7 @@ index 22a9a8d..2372976 100644
  
    // vertex storage
    GLuint vbo[2];
-@@ -637,17 +637,17 @@ void main() {
+@@ -638,17 +638,17 @@ void main() {
          tensor_length, tensor_buffer_.get()));
  
      // Parameters.
@@ -539,7 +540,7 @@ index 22a9a8d..2372976 100644
  
      // Vertex shader attributes.
      const GLint attr_location[NUM_ATTRIBUTES] = {
-@@ -692,8 +692,8 @@ void main() {
+@@ -693,8 +693,8 @@ void main() {
      RET_CHECK(upsample_program_) << "Problem initializing the program.";
  
      // Parameters
@@ -579,10 +580,10 @@ index 8af4a5d..ed6ec5c 100644
                kAnnotationBackgroundColor / 255.0,
                kAnnotationBackgroundColor / 255.0);
 diff --git a/mediapipe/gpu/BUILD b/mediapipe/gpu/BUILD
-index 2d163b4..edea795 100644
+index 8c9c433..4afcb29 100644
 --- a/mediapipe/gpu/BUILD
 +++ b/mediapipe/gpu/BUILD
-@@ -97,7 +97,7 @@ cc_library(
+@@ -104,7 +104,7 @@ cc_library(
      linkopts = GL_BASE_LINK_OPTS_OSS,
      textual_hdrs = ["gl_base.h"],
      visibility = ["//visibility:public"],
@@ -591,7 +592,7 @@ index 2d163b4..edea795 100644
          "//mediapipe:android": [],
          "//mediapipe:apple": [],
          "//conditions:default": [
-@@ -107,7 +107,9 @@ cc_library(
+@@ -114,7 +114,9 @@ cc_library(
  
  cc_library(
      name = "gl_base_hdr",
@@ -602,7 +603,7 @@ index 2d163b4..edea795 100644
      features = ["-layering_check"],
      # Note: need the frameworks on Apple platforms to get the headers.
      linkopts = select({
-@@ -130,6 +132,21 @@ cc_library(
+@@ -137,6 +139,21 @@ cc_library(
      }),
  )
  
@@ -624,19 +625,19 @@ index 2d163b4..edea795 100644
  cc_library(
      name = "gl_thread_collector",
      hdrs = ["gl_thread_collector.h"],
-@@ -166,6 +183,7 @@ cc_library(
+@@ -173,6 +190,7 @@ cc_library(
      visibility = ["//visibility:public"],
      deps = [
          ":gl_base",
 +        ":gl_wrapper",
          ":gl_thread_collector",
          ":gpu_buffer_format",
-         "//mediapipe/framework:executor",
+         "@com_google_absl//absl/status",
 diff --git a/mediapipe/gpu/gl_calculator_helper.h b/mediapipe/gpu/gl_calculator_helper.h
-index 5ac0ab1..dddc3ba 100644
+index e445232..0d04c24 100644
 --- a/mediapipe/gpu/gl_calculator_helper.h
 +++ b/mediapipe/gpu/gl_calculator_helper.h
-@@ -25,6 +25,7 @@
+@@ -27,6 +27,7 @@
  #include "mediapipe/framework/packet_type.h"
  #include "mediapipe/framework/port/status.h"
  #include "mediapipe/gpu/gl_base.h"
@@ -645,10 +646,10 @@ index 5ac0ab1..dddc3ba 100644
  #include "mediapipe/gpu/gpu_buffer.h"
  #include "mediapipe/gpu/graph_support.h"
 diff --git a/mediapipe/gpu/gl_context.h b/mediapipe/gpu/gl_context.h
-index 6cab706..2138e0f 100644
+index 7f1fbbb..c3613d8 100644
 --- a/mediapipe/gpu/gl_context.h
 +++ b/mediapipe/gpu/gl_context.h
-@@ -29,6 +29,7 @@
+@@ -30,6 +30,7 @@
  #include "mediapipe/framework/port/threadpool.h"
  #include "mediapipe/framework/timestamp.h"
  #include "mediapipe/gpu/gl_base.h"
@@ -657,10 +658,10 @@ index 6cab706..2138e0f 100644
  
  #ifdef __APPLE__
 diff --git a/mediapipe/gpu/gl_context_egl.cc b/mediapipe/gpu/gl_context_egl.cc
-index 9386f2c..972dbae 100644
+index 75eeeb9..27ace26 100644
 --- a/mediapipe/gpu/gl_context_egl.cc
 +++ b/mediapipe/gpu/gl_context_egl.cc
-@@ -190,7 +190,7 @@ void GlContext::DestroyContext() {
+@@ -206,7 +206,7 @@ void GlContext::DestroyContext() {
        // Note: cannot use ThisContextBinding because it calls shared_from_this,
        // which is not available during destruction.
        if (eglMakeCurrent(display_, surface_, surface_, context_)) {
@@ -670,7 +671,7 @@ index 9386f2c..972dbae 100644
          LOG(ERROR) << "eglMakeCurrent() returned error " << std::showbase
                     << std::hex << eglGetError();
 diff --git a/mediapipe/gpu/gl_quad_renderer.cc b/mediapipe/gpu/gl_quad_renderer.cc
-index c25a37e..e9fe4c2 100644
+index 309b832..757b95f 100644
 --- a/mediapipe/gpu/gl_quad_renderer.cc
 +++ b/mediapipe/gpu/gl_quad_renderer.cc
 @@ -77,11 +77,11 @@ absl::Status QuadRenderer::GlSetup(
@@ -688,7 +689,7 @@ index c25a37e..e9fe4c2 100644
  
    glGenVertexArrays(1, &vao_);
 @@ -114,7 +114,7 @@ absl::Status QuadRenderer::GlRender(float frame_width, float frame_height,
-                                     bool flip_texture) {
+                                     bool flip_texture) const {
    RET_CHECK(program_) << "Must setup the program before rendering.";
  
 -  glUseProgram(program_);
@@ -1020,7 +1021,7 @@ index 804e543..839b12b 100644
  namespace mediapipe {
  
 diff --git a/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc b/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
-index 9bc43ba..4630fc6 100644
+index 3a77e98..b15730f 100644
 --- a/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
 +++ b/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
 @@ -874,17 +874,17 @@ absl::Status GlAnimationOverlayCalculator::GlSetup() {

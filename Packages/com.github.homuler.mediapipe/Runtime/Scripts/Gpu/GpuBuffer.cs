@@ -26,13 +26,6 @@ namespace Mediapipe
       UnsafeNativeMethods.mp_GpuBuffer__delete(ptr);
     }
 
-#if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_ANDROID
-    public GlTextureBuffer GetGlTextureBuffer()
-    {
-      return new GlTextureBuffer(SafeNativeMethods.mp_GpuBuffer__GetGlTextureBufferSharedPtr(mpPtr), false);
-    }
-#endif
-
     public GpuBufferFormat Format()
     {
       return SafeNativeMethods.mp_GpuBuffer__format(mpPtr);

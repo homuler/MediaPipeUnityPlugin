@@ -63,11 +63,11 @@ http_archive(
         "@//third_party:mediapipe_visibility.diff",
         "@//third_party:mediapipe_model_path.diff",
         "@//third_party:mediapipe_extension.diff",
-        "@//third_party:mediapipe_emscripten_patch.diff",
+        # "@//third_party:mediapipe_emscripten_patch.diff",
     ],
-    sha256 = "54ce6da9f167d34fe53f928c804b3bc1fd1dd8fe2b32ca4bf0b63325d34680ac",
-    strip_prefix = "mediapipe-0.8.9",
-    urls = ["https://github.com/google/mediapipe/archive/v0.8.9.tar.gz"],
+    sha256 = "6b43a4304ca4aa3a698906e4b4ff696d698d0b788baffd8284c03632712b1020",
+    strip_prefix = "mediapipe-0.8.10",
+    urls = ["https://github.com/google/mediapipe/archive/v0.8.10.tar.gz"],
 )
 
 # ABSL cpp library lts_2021_03_24, patch 2.
@@ -122,12 +122,13 @@ http_archive(
     urls = ["https://github.com/google/googletest/archive/4ec4cd23f486bf70efcc5d2caa40f24368f752e3.zip"],
 )
 
-# Google Benchmark library.
+# Google Benchmark library v1.6.1 released on 2022-01-10.
 http_archive(
     name = "com_google_benchmark",
     build_file = "@com_google_mediapipe//third_party:benchmark.BUILD",
-    strip_prefix = "benchmark-main",
-    urls = ["https://github.com/google/benchmark/archive/main.zip"],
+    sha256 = "6132883bc8c9b0df5375b16ab520fac1a85dc9e4cf5be59480448ece74b278d4",
+    strip_prefix = "benchmark-1.6.1",
+    urls = ["https://github.com/google/benchmark/archive/refs/tags/v1.6.1.tar.gz"],
 )
 
 # gflags needed by glog
@@ -399,10 +400,10 @@ http_archive(
 )
 
 # Tensorflow repo should always go after the other external dependencies.
-# 2021-12-02
-_TENSORFLOW_GIT_COMMIT = "18a1dc0ba806dc023808531f0373d9ec068e64bf"
+# 2022-02-15
+_TENSORFLOW_GIT_COMMIT = "a3419acc751dfc19caf4d34a1594e1f76810ec58"
 
-_TENSORFLOW_SHA256 = "85b90416f7a11339327777bccd634de00ca0de2cf334f5f0727edcb11ff9289a"
+_TENSORFLOW_SHA256 = "b95b2a83632d4055742ae1a2dcc96b45da6c12a339462dbc76c8bca505308e3a"
 
 http_archive(
     name = "org_tensorflow",
@@ -411,10 +412,9 @@ http_archive(
     ],
     patches = [
         "@com_google_mediapipe//third_party:org_tensorflow_compatibility_fixes.diff",
-        "@com_google_mediapipe//third_party:org_tensorflow_objc_cxx17.diff",
         # Diff is generated with a script, don't update it manually.
         "@com_google_mediapipe//third_party:org_tensorflow_custom_ops.diff",
-        "@//third_party:tensorflow_xnnpack_emscripten_fixes.diff",
+        # "@//third_party:tensorflow_xnnpack_emscripten_fixes.diff",
     ],
     sha256 = _TENSORFLOW_SHA256,
     strip_prefix = "tensorflow-%s" % _TENSORFLOW_GIT_COMMIT,

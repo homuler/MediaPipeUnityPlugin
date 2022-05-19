@@ -12,11 +12,6 @@ namespace Mediapipe
 {
   internal static partial class SafeNativeMethods
   {
-#if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_ANDROID
-    [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern IntPtr mp_GpuBuffer__GetGlTextureBufferSharedPtr(IntPtr gpuBuffer);
-#endif
-
     [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern int mp_GpuBuffer__width(IntPtr gpuBuffer);
 
