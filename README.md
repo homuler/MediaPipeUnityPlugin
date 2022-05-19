@@ -61,6 +61,8 @@ node {
 }
 ```
 
+For more detailed usage, see [the API Overview](https://github.com/homuler/MediaPipeUnityPlugin/wiki/API-Overview) page or the tutorial on [the Getting Started page](https://github.com/homuler/MediaPipeUnityPlugin/wiki/Getting-Started).
+
 ## :hammer_and_wrench: Installation
 
 This repository does not contain required libraries (e.g. `libmediapipe_c.so`, `Google.Protobuf.dll`, etc), so you **need to build them** first.\
@@ -122,7 +124,7 @@ Make sure that you select `GPU` for inference mode before building the app, beca
 
 ## :book: Wiki
 
-:construction: https://github.com/homuler/MediaPipeUnityPlugin/wiki
+https://github.com/homuler/MediaPipeUnityPlugin/wiki
 
 ## :scroll: LICENSE
 
