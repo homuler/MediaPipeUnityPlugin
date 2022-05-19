@@ -1,8 +1,8 @@
 diff --git a/mediapipe/BUILD b/mediapipe/BUILD
-index 1171ea6..6c4a7fb 100644
+index 3187c0c..5056a26 100644
 --- a/mediapipe/BUILD
 +++ b/mediapipe/BUILD
-@@ -139,6 +139,31 @@ config_setting(
+@@ -149,6 +149,31 @@ config_setting(
      values = {"cpu": "x64_windows"},
  )
  
@@ -35,10 +35,10 @@ index 1171ea6..6c4a7fb 100644
      ["provisioning_profile.mobileprovision"],
      visibility = ["//visibility:public"],
 diff --git a/mediapipe/calculators/tensor/BUILD b/mediapipe/calculators/tensor/BUILD
-index 72c2f51..d43c261 100644
+index 586fb0d..ba8629d 100644
 --- a/mediapipe/calculators/tensor/BUILD
 +++ b/mediapipe/calculators/tensor/BUILD
-@@ -35,6 +35,7 @@ selects.config_setting_group(
+@@ -37,6 +37,7 @@ selects.config_setting_group(
      name = "compute_shader_unavailable",
      match_any = [
          "//mediapipe/gpu:disable_gpu",
@@ -46,7 +46,7 @@ index 72c2f51..d43c261 100644
      ],
  )
  
-@@ -572,6 +573,11 @@ cc_library(
+@@ -579,6 +580,11 @@ cc_library(
              "//mediapipe/gpu:MPPMetalHelper",
              "//mediapipe/gpu:gpu_buffer",
          ],
@@ -59,10 +59,10 @@ index 72c2f51..d43c261 100644
              ":image_to_tensor_converter_gl_buffer",
              "//mediapipe/gpu:gl_calculator_helper",
 diff --git a/mediapipe/gpu/BUILD b/mediapipe/gpu/BUILD
-index 2d163b4..e925edc 100644
+index 8c9c433..f6bb250 100644
 --- a/mediapipe/gpu/BUILD
 +++ b/mediapipe/gpu/BUILD
-@@ -154,6 +154,9 @@ cc_library(
+@@ -161,6 +161,9 @@ cc_library(
          "//mediapipe:macos": [
              "gl_context_nsgl.cc",
          ],
@@ -73,10 +73,10 @@ index 2d163b4..e925edc 100644
      hdrs = ["gl_context.h"],
      copts = select({
 diff --git a/mediapipe/gpu/gl_calculator_helper.cc b/mediapipe/gpu/gl_calculator_helper.cc
-index d015c59..05dee07 100644
+index ba14239..69de4ff 100644
 --- a/mediapipe/gpu/gl_calculator_helper.cc
 +++ b/mediapipe/gpu/gl_calculator_helper.cc
-@@ -128,6 +128,10 @@ GlTexture GlCalculatorHelper::CreateDestinationTexture(int output_width,
+@@ -142,6 +142,10 @@ GlTexture GlCalculatorHelper::CreateDestinationTexture(int output_width,
    return impl_->CreateDestinationTexture(output_width, output_height, format);
  }
  
@@ -88,10 +88,10 @@ index d015c59..05dee07 100644
    return impl_->GetGlContext();
  }
 diff --git a/mediapipe/gpu/gl_calculator_helper.h b/mediapipe/gpu/gl_calculator_helper.h
-index 5ac0ab1..f4007a0 100644
+index e445232..fe3f481 100644
 --- a/mediapipe/gpu/gl_calculator_helper.h
 +++ b/mediapipe/gpu/gl_calculator_helper.h
-@@ -141,6 +141,8 @@ class GlCalculatorHelper {
+@@ -154,6 +154,8 @@ class GlCalculatorHelper {
        int output_width, int output_height,
        GpuBufferFormat format = GpuBufferFormat::kBGRA32);
  
@@ -101,7 +101,7 @@ index 5ac0ab1..f4007a0 100644
    GLuint framebuffer() const;
  
 diff --git a/mediapipe/gpu/gl_calculator_helper_impl.h b/mediapipe/gpu/gl_calculator_helper_impl.h
-index c17c724..bab2fb2 100644
+index 72b3265..16a7998 100644
 --- a/mediapipe/gpu/gl_calculator_helper_impl.h
 +++ b/mediapipe/gpu/gl_calculator_helper_impl.h
 @@ -49,6 +49,7 @@ class GlCalculatorHelperImpl {
@@ -110,13 +110,13 @@ index c17c724..bab2fb2 100644
                                       GpuBufferFormat format);
 +  GlTexture CreateDestinationTexture(GpuBuffer& gpu_buffer);
  
-   GLuint framebuffer() const { return framebuffer_; }
-   void BindFramebuffer(const GlTexture& dst);
+   GpuBuffer GpuBufferWithImageFrame(std::shared_ptr<ImageFrame> image_frame);
+   GpuBuffer GpuBufferCopyingImageFrame(const ImageFrame& image_frame);
 diff --git a/mediapipe/gpu/gl_calculator_helper_impl_common.cc b/mediapipe/gpu/gl_calculator_helper_impl_common.cc
-index 0bcf089..23419ad 100644
+index 8dd03bf..7d0ec70 100644
 --- a/mediapipe/gpu/gl_calculator_helper_impl_common.cc
 +++ b/mediapipe/gpu/gl_calculator_helper_impl_common.cc
-@@ -143,12 +143,17 @@ std::unique_ptr<GpuBuffer> GlTexture::GetFrame<GpuBuffer>() const {
+@@ -169,12 +169,17 @@ std::unique_ptr<GpuBuffer> GlTexture::GetFrame<GpuBuffer>() const {
  
  GlTexture GlCalculatorHelperImpl::CreateDestinationTexture(
      int width, int height, GpuBufferFormat format) {
@@ -137,7 +137,7 @@ index 0bcf089..23419ad 100644
  }
  
 diff --git a/mediapipe/gpu/gl_context_webgl.cc b/mediapipe/gpu/gl_context_webgl.cc
-index 01fc12d..aed6686 100644
+index b1f5295..57892ab 100644
 --- a/mediapipe/gpu/gl_context_webgl.cc
 +++ b/mediapipe/gpu/gl_context_webgl.cc
 @@ -50,6 +50,10 @@ absl::Status GlContext::CreateContextInternal(
@@ -205,7 +205,7 @@ index 01fc12d..aed6686 100644
    );
    // clang-format on
 diff --git a/mediapipe/gpu/gl_scaler_calculator.cc b/mediapipe/gpu/gl_scaler_calculator.cc
-index fa06c88..0d0bd0c 100644
+index fa06c88..8641788 100644
 --- a/mediapipe/gpu/gl_scaler_calculator.cc
 +++ b/mediapipe/gpu/gl_scaler_calculator.cc
 @@ -12,6 +12,8 @@
@@ -277,7 +277,7 @@ index fa06c88..0d0bd0c 100644
 +    dst = helper_.CreateDestinationTexture(dst_width, dst_height, GetOutputFormat());
 +#else
 +    if (dst_buffer_) {
-+      dst_buffer_.GetGlTextureBufferSharedPtr()->Reuse();
++      dst_buffer_.internal_storage<mediapipe::GlTextureBuffer>()->Reuse();
 +      dst = helper_.CreateDestinationTexture(dst_buffer_);
 +    } else {
 +      dst = helper_.CreateDestinationTexture(dst_width, dst_height, GetOutputFormat());

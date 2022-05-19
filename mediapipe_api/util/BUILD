@@ -30,6 +30,7 @@ pkg_files(
     srcs = [
         ":audio_decoder_cs",
         ":color_cs",
+        ":label_map_cs",
         ":render_data_cs",
     ],
     prefix = "Util",
@@ -47,6 +48,14 @@ csharp_proto_src(
 csharp_proto_src(
     name = "color_cs",
     proto_src = "mediapipe/util/color.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/util:protos_src",
+    ],
+)
+
+csharp_proto_src(
+    name = "label_map_cs",
+    proto_src = "mediapipe/util/label_map.proto",
     deps = [
         "@com_google_mediapipe//mediapipe/util:protos_src",
     ],

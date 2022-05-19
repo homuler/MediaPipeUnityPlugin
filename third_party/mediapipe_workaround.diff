@@ -1,39 +1,11 @@
-diff --git a/mediapipe/BUILD b/mediapipe/BUILD
-index 1171ea6..5f1994d 100644
---- a/mediapipe/BUILD
-+++ b/mediapipe/BUILD
-@@ -74,6 +74,7 @@ alias(
-     name = "macos",
-     actual = select({
-         ":macos_i386": ":macos_i386",
-+        ":macos_arm64": "macos_arm64",
-         ":macos_x86_64": ":macos_x86_64",
-         "//conditions:default": ":macos_i386",  # Arbitrarily chosen from above.
-     }),
-@@ -119,6 +120,15 @@ config_setting(
-     visibility = ["//visibility:public"],
- )
- 
-+config_setting(
-+    name = "macos_arm64",
-+    values = {
-+        "apple_platform_type": "macos",
-+        "cpu": "darwin_arm64",
-+    },
-+    visibility = ["//visibility:public"],
-+)
-+
- [
-     config_setting(
-         name = arch,
 diff --git a/mediapipe/calculators/tensor/BUILD b/mediapipe/calculators/tensor/BUILD
-index 72c2f51..79929e0 100644
+index 586fb0d..c73b29a 100644
 --- a/mediapipe/calculators/tensor/BUILD
 +++ b/mediapipe/calculators/tensor/BUILD
-@@ -92,7 +92,12 @@ cc_library(
-         "@org_tensorflow//tensorflow/lite/delegates/gpu/gl:gl_buffer",
-         "@org_tensorflow//tensorflow/lite/delegates/gpu/gl:gl_program",
-         "@org_tensorflow//tensorflow/lite/delegates/gpu/gl:gl_shader",
+@@ -97,7 +97,12 @@ cc_library(
+         "@org_tensorflow//tensorflow/lite:framework_stable",
+         "@org_tensorflow//tensorflow/lite/delegates/gpu:gl_delegate",
+         "@org_tensorflow//tensorflow/lite/delegates/gpu/common:shape",
 -    ],
 +    ] + select({
 +        "//mediapipe:android": [
@@ -249,7 +221,7 @@ index cbacdb7..f40cf91 100644
    float y;  // [0.0-1.0]
    float z;  // Centered around 1.0 [current_scale = z * initial_scale]
 diff --git a/mediapipe/modules/objectron/calculators/BUILD b/mediapipe/modules/objectron/calculators/BUILD
-index fb75eb3..0eee4ff 100644
+index eeeaee5..0fb68d0 100644
 --- a/mediapipe/modules/objectron/calculators/BUILD
 +++ b/mediapipe/modules/objectron/calculators/BUILD
 @@ -199,6 +199,15 @@ cc_library(
@@ -284,19 +256,3 @@ index fb75eb3..0eee4ff 100644
      deps = [
          ":annotation_cc_proto",
          ":belief_decoder_config_cc_proto",
-diff --git a/mediapipe/util/tflite/tflite_gpu_runner.cc b/mediapipe/util/tflite/tflite_gpu_runner.cc
-index 14a12db..b01ff6d 100644
---- a/mediapipe/util/tflite/tflite_gpu_runner.cc
-+++ b/mediapipe/util/tflite/tflite_gpu_runner.cc
-@@ -252,8 +252,10 @@ absl::Status TFLiteGPURunner::InitializeOpenCL(
-   MP_RETURN_IF_ERROR(cl_environment_->NewInferenceBuilder(
-       cl_options, std::move(graph_cl), builder));
- 
--#endif  // __ANDROID__
-   return absl::OkStatus();
-+#else
-+  return mediapipe::UnimplementedError("OpenCL is currently only supported on Android");
-+#endif  // __ANDROID__
- }
- 
- #ifdef __ANDROID__

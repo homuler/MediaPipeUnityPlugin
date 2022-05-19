@@ -13,12 +13,12 @@ index ed6a509..05e3336 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/calculators/core/BUILD b/mediapipe/calculators/core/BUILD
-index 61d907d..bb2a304 100644
+index ff0a5d6..b19961c 100644
 --- a/mediapipe/calculators/core/BUILD
 +++ b/mediapipe/calculators/core/BUILD
-@@ -1255,3 +1255,9 @@ cc_test(
-         "@com_google_absl//absl/time",
+@@ -1291,3 +1291,9 @@ cc_library(
      ],
+     alwayslink = 1,
  )
 +
 +filegroup(
@@ -27,10 +27,10 @@ index 61d907d..bb2a304 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/calculators/image/BUILD b/mediapipe/calculators/image/BUILD
-index 0bbfadd..bf92f47 100644
+index 5428f98..b3795d2 100644
 --- a/mediapipe/calculators/image/BUILD
 +++ b/mediapipe/calculators/image/BUILD
-@@ -796,3 +796,9 @@ cc_test(
+@@ -799,3 +799,9 @@ cc_test(
          "@com_google_absl//absl/strings",
      ],
  )
@@ -41,10 +41,10 @@ index 0bbfadd..bf92f47 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/calculators/tensor/BUILD b/mediapipe/calculators/tensor/BUILD
-index 72c2f51..f400da5 100644
+index 586fb0d..964b5d9 100644
 --- a/mediapipe/calculators/tensor/BUILD
 +++ b/mediapipe/calculators/tensor/BUILD
-@@ -886,3 +886,9 @@ cc_library(
+@@ -893,3 +893,9 @@ cc_library(
      }),
      alwayslink = 1,
  )
@@ -55,10 +55,10 @@ index 72c2f51..f400da5 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/calculators/tflite/BUILD b/mediapipe/calculators/tflite/BUILD
-index 55616bb..29cd3d4 100644
+index b132db0..3b6cb96 100644
 --- a/mediapipe/calculators/tflite/BUILD
 +++ b/mediapipe/calculators/tflite/BUILD
-@@ -566,3 +566,9 @@ cc_test(
+@@ -567,3 +567,9 @@ cc_test(
          "@org_tensorflow//tensorflow/lite:framework",
      ],
  )
@@ -69,10 +69,10 @@ index 55616bb..29cd3d4 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/calculators/util/BUILD b/mediapipe/calculators/util/BUILD
-index 0c1a3ce..13b887a 100644
+index d00fd09..37e9aa7 100644
 --- a/mediapipe/calculators/util/BUILD
 +++ b/mediapipe/calculators/util/BUILD
-@@ -1443,3 +1443,9 @@ cc_test(
+@@ -1479,3 +1479,9 @@ cc_test(
          "@com_google_absl//absl/strings",
      ],
  )
@@ -97,10 +97,10 @@ index 806b9f1..b3ad309 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/framework/BUILD b/mediapipe/framework/BUILD
-index ef32c6c..75f56fb 100644
+index 1166c2a..fc5582b 100644
 --- a/mediapipe/framework/BUILD
 +++ b/mediapipe/framework/BUILD
-@@ -1666,5 +1666,5 @@ cc_test(
+@@ -1684,5 +1684,5 @@ cc_test(
  filegroup(
      name = "protos_src",
      srcs = glob(["*.proto"]),
@@ -108,10 +108,10 @@ index ef32c6c..75f56fb 100644
 +    visibility = ["//visibility:public"],
  )
 diff --git a/mediapipe/framework/formats/BUILD b/mediapipe/framework/formats/BUILD
-index f79e6aa..546750c 100644
+index 2362692..75f2173 100644
 --- a/mediapipe/framework/formats/BUILD
 +++ b/mediapipe/framework/formats/BUILD
-@@ -310,7 +310,7 @@ mediapipe_register_type(
+@@ -327,7 +327,7 @@ mediapipe_register_type(
  filegroup(
      name = "protos_src",
      srcs = glob(["*.proto"]),
@@ -160,10 +160,10 @@ index 39940ac..0ed3615 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/gpu/BUILD b/mediapipe/gpu/BUILD
-index 2d163b4..20c82a2 100644
+index 8c9c433..49300c5 100644
 --- a/mediapipe/gpu/BUILD
 +++ b/mediapipe/gpu/BUILD
-@@ -1015,3 +1015,9 @@ ios_unit_test(
+@@ -1081,3 +1081,9 @@ ios_unit_test(
      ],
      deps = [":gl_ios_test_lib"],
  )
@@ -216,10 +216,10 @@ index 8f80312..e33dd19 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/java/com/google/mediapipe/components/BUILD b/mediapipe/java/com/google/mediapipe/components/BUILD
-index 4471a0c..8508be9 100644
+index a1ec175..012ae98 100644
 --- a/mediapipe/java/com/google/mediapipe/components/BUILD
 +++ b/mediapipe/java/com/google/mediapipe/components/BUILD
-@@ -81,5 +81,5 @@ android_library(
+@@ -91,5 +91,5 @@ android_library(
  filegroup(
      name = "java_src",
      srcs = glob(["*.java"]),
@@ -227,10 +227,10 @@ index 4471a0c..8508be9 100644
 +    visibility = ["//visibility:public"],
  )
 diff --git a/mediapipe/java/com/google/mediapipe/framework/BUILD b/mediapipe/java/com/google/mediapipe/framework/BUILD
-index ed1a42c..1f31735 100644
+index 7b1a891..5eed664 100644
 --- a/mediapipe/java/com/google/mediapipe/framework/BUILD
 +++ b/mediapipe/java/com/google/mediapipe/framework/BUILD
-@@ -141,5 +141,5 @@ filegroup(
+@@ -142,5 +142,5 @@ filegroup(
          ["*.java"],
          exclude = ["TypeNameRegistryFull.java"],
      ),
@@ -277,10 +277,10 @@ index c3c0919..261efe6 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/modules/objectron/calculators/BUILD b/mediapipe/modules/objectron/calculators/BUILD
-index fb75eb3..92b306d 100644
+index eeeaee5..cfe1445 100644
 --- a/mediapipe/modules/objectron/calculators/BUILD
 +++ b/mediapipe/modules/objectron/calculators/BUILD
-@@ -405,3 +405,9 @@ cc_test(
+@@ -422,3 +422,9 @@ cc_test(
          "@com_google_absl//absl/container:flat_hash_set",
      ],
  )
@@ -291,10 +291,10 @@ index fb75eb3..92b306d 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
-index a1b179a..741f767 100644
+index 12a34a4..1364ab2 100644
 --- a/mediapipe/util/BUILD
 +++ b/mediapipe/util/BUILD
-@@ -343,3 +343,9 @@ cc_test(
+@@ -364,3 +364,9 @@ cc_test(
          "//mediapipe/framework/port:gtest_main",
      ],
  )

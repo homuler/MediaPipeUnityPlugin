@@ -18,8 +18,6 @@ MpReturnCode mp_GpuBuffer__PSgtb(SharedGlTextureBuffer* gl_texture_buffer, media
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }
-
-const SharedGlTextureBuffer& mp_GpuBuffer__GetGlTextureBufferSharedPtr(mediapipe::GpuBuffer* gpu_buffer) { return gpu_buffer->GetGlTextureBufferSharedPtr(); }
 #endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
 
 int mp_GpuBuffer__width(mediapipe::GpuBuffer* gpu_buffer) { return gpu_buffer->width(); }
