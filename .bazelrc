@@ -25,8 +25,19 @@ build:macos --cxxopt=-std=c++17
 build:macos --host_cxxopt=-std=c++17
 build:macos --copt=-w
 
+build:darwin_x86_64 --apple_platform_type=macos
+build:darwin_x86_64 --macos_minimum_os=10.12
+build:darwin_x86_64 --cpu=darwin_x86_64
+
+build:darwin_arm64 --apple_platform_type=macos
+build:darwin_arm64 --macos_minimum_os=10.16
+build:darwin_arm64 --cpu=darwin_arm64
+
 # Sets the default Apple platform to macOS.
 build --apple_platform_type=macos
+
+# Compile ObjC++ files with C++17
+build --per_file_copt=.*\.mm\$@-std=c++17
 
 # Android configs.
 # Note: the documentation tells us to use @androidndk//:default_crosstool, but
@@ -58,6 +69,7 @@ build:android_fat --cpu=arm64-v8a
 build:android_fat --fat_apk_cpu=armeabi-v7a,arm64-v8a
 
 build:ios --apple_platform_type=ios
+build:ios --copt=-fno-aligned-allocation
 
 build:ios_i386 --config=ios
 build:ios_i386 --cpu=ios_i386
