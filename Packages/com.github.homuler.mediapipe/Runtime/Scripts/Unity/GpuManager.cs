@@ -7,8 +7,9 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
 
-#if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID
 using System.Runtime.InteropServices;
 #endif
 
@@ -31,27 +32,38 @@ namespace Mediapipe.Unity
 
     public static bool IsInitialized { get; private set; }
 
+    /// <summary>
+    ///   Initialize GPU resources.
+    ///   If it finishes successfully, <see cref="IsInitialized" /> will be set to <c>true</c>.
+    /// </summary>
+    /// <remarks>
+    ///   If <see cref="IsInitialized" /> is <c>true</c>, it will do nothing.
+    ///   Before the application exits, don't forget to call <see cref="Shutdown" />.
+    /// </remarks>
     public static IEnumerator Initialize()
     {
       lock (_SetupLock)
       {
         if (IsInitialized)
         {
-          Logger.LogWarning(_TAG, "Already set up");
+          Logger.LogInfo(_TAG, "Already initialized");
           yield break;
         }
 
-#if UNITY_ANDROID && !UNITY_EDITOR
-        _IsContextInitialized = false;
-        PluginCallback callback = GetCurrentContext;
+#if UNITY_ANDROID
+        _IsContextInitialized = SystemInfo.graphicsDeviceType != GraphicsDeviceType.OpenGLES3;
+        if (!_IsContextInitialized)
+        {
+          PluginCallback callback = GetCurrentContext;
 
-        var fp = Marshal.GetFunctionPointerForDelegate(callback);
-        GL.IssuePluginEvent(fp, 1);
+          var fp = Marshal.GetFunctionPointerForDelegate(callback);
+          GL.IssuePluginEvent(fp, 1);
+        }
 #else
         _IsContextInitialized = true;
 #endif
 
-        var count = 1000;
+        var count = 100;
         yield return new WaitUntil(() =>
         {
           return --count < 0 || _IsContextInitialized;
@@ -59,7 +71,8 @@ namespace Mediapipe.Unity
 
         if (!_IsContextInitialized)
         {
-          throw new TimeoutException("Failed to get GlContext");
+          Logger.LogError(_TAG, "Failed to get GlContext");
+          yield break;
         }
 
 #if UNITY_ANDROID
@@ -87,10 +100,14 @@ namespace Mediapipe.Unity
 
           IsInitialized = true;
         }
+        catch (EntryPointNotFoundException e)
+        {
+          Logger.LogException(e);
+          Logger.LogError(_TAG, "Failed to create GpuResources. Did you build libraries with GPU enabled?");
+        }
         catch (Exception e)
         {
           Logger.LogException(e);
-          Logger.LogError(_TAG, "Failed to create GpuResources. If your native library is built for CPU, change 'Preferable Inference Mode' to CPU from the Inspector Window for Bootstrap");
         }
       }
     }
@@ -99,8 +116,8 @@ namespace Mediapipe.Unity
     ///   Dispose GPU resources.
     /// </summary>
     /// <remarks>
-    ///   This has to be called once GPU resources are used by CalculatorGraph.
-    ///   Otherwise, UnityEditor will freeze.
+    ///   This has to be called before the application exits.
+    ///   Otherwise, UnityEditor can freeze.
     /// </remarks>
     public static void Shutdown()
     {
@@ -115,12 +132,14 @@ namespace Mediapipe.Unity
         GlCalculatorHelper.Dispose();
         GlCalculatorHelper = null;
       }
+
+      IsInitialized = false;
     }
 
     // Currently, it works only on Android
-#if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID
     [AOT.MonoPInvokeCallback(typeof(PluginCallback))]
-    static void GetCurrentContext(int eventId) {
+    private static void GetCurrentContext(int eventId) {
       _CurrentContext = Egl.GetCurrentContext();
       _IsContextInitialized = true;
     }
