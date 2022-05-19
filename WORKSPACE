@@ -63,7 +63,7 @@ http_archive(
         "@//third_party:mediapipe_visibility.diff",
         "@//third_party:mediapipe_model_path.diff",
         "@//third_party:mediapipe_extension.diff",
-        "@//third_party:mediapipe_emscripten_patch.diff",
+        # "@//third_party:mediapipe_emscripten_patch.diff",
     ],
     sha256 = "6b43a4304ca4aa3a698906e4b4ff696d698d0b788baffd8284c03632712b1020",
     strip_prefix = "mediapipe-0.8.10",
@@ -414,7 +414,7 @@ http_archive(
         "@com_google_mediapipe//third_party:org_tensorflow_compatibility_fixes.diff",
         # Diff is generated with a script, don't update it manually.
         "@com_google_mediapipe//third_party:org_tensorflow_custom_ops.diff",
-        "@//third_party:tensorflow_xnnpack_emscripten_fixes.diff",
+        # "@//third_party:tensorflow_xnnpack_emscripten_fixes.diff",
     ],
     sha256 = _TENSORFLOW_SHA256,
     strip_prefix = "tensorflow-%s" % _TENSORFLOW_GIT_COMMIT,
