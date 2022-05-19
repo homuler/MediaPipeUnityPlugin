@@ -17,7 +17,8 @@
     "setupSampleDir": "rm -rf $(npm prefix)/Samples~ && mkdir -p $(npm prefix)/Samples~",
     "removeStartScene": "rm \"$(npm prefix)/Samples~/Solutions/Scenes/Start Scene.unity\" && rm \"$(npm prefix)/Samples~/Solutions/Scenes/Start Scene.unity.meta\"",
     "copySolutionSamples": "cp -r $(npm prefix)/../../Assets/MediaPipeUnity/Samples $(npm prefix)/Samples~/Solutions && npm run removeStartScene",
-    "prepack": "npm run setupSampleDir &&  npm run copySolutionSamples",
+    "copyTutorial": "cp -r $(npm prefix)/../../Assets/MediaPipeUnity/Tutorial $(npm prefix)/Samples~/Tutorial",
+    "prepack": "npm run setupSampleDir && npm run copySolutionSamples && npm run copyTutorial",
     "postpack": "rm -rf $(npm prefix)/Samples~"
   },
   "license": "MIT",
@@ -27,6 +28,11 @@
       "displayName": "Official Solutions",
       "description": "MediaPipe Official Solutions Sample",
       "path": "Samples~/Solutions"
+    },
+    {
+      "displayName": "Tutorial",
+      "description": "Sample Scenes for Tutorial",
+      "path": "Samples~/Tutorial"
     }
   ]
 }
