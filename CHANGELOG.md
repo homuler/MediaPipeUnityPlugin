@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.10.0](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.9.3...v0.10.0) (2022-05-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* Unity 2021 (#588)
+* **plugin:** Logger.minLogLevel -> Logger.MinLogLevel (#580)
+* callback functions return StatusArgs instead of Status (#574)
+* coordinate transform and other helper methods (#569)
+
+### Features
+
+* add scenes for tutorial ([#582](https://github.com/homuler/MediaPipeUnityPlugin/issues/582)) ([c9e0317](https://github.com/homuler/MediaPipeUnityPlugin/commit/c9e0317ab336b2f9515bc81935eef5c76d032fd9))
+* **plugin:** add missing Status factory methods ([#573](https://github.com/homuler/MediaPipeUnityPlugin/issues/573)) ([ba48f78](https://github.com/homuler/MediaPipeUnityPlugin/commit/ba48f781aafeb23c32063f57a396210cac9af72a))
+* **plugin:** implement GpuManager ([#579](https://github.com/homuler/MediaPipeUnityPlugin/issues/579)) ([1d9196a](https://github.com/homuler/MediaPipeUnityPlugin/commit/1d9196aebddd64bf8b7b0cf24ea3b746db89f435))
+* **plugin:** mediapipe v0.8.10 ([#585](https://github.com/homuler/MediaPipeUnityPlugin/issues/585)) ([738f3f7](https://github.com/homuler/MediaPipeUnityPlugin/commit/738f3f7eccc391bac943e68bbc2178c97a5db124))
+
+
+### Bug Fixes
+
+* **plugin:** OutputStream#TryGetNext throws if it's not started ([#581](https://github.com/homuler/MediaPipeUnityPlugin/issues/581)) ([9e99400](https://github.com/homuler/MediaPipeUnityPlugin/commit/9e9940046499703ecbcf6df2df5762729e4efd27))
+* some tests abort on Windows ([#572](https://github.com/homuler/MediaPipeUnityPlugin/issues/572)) ([bd2c390](https://github.com/homuler/MediaPipeUnityPlugin/commit/bd2c390057f657a4876ab264d3ce82a358405805))
+
+
+* callback functions return StatusArgs instead of Status ([#574](https://github.com/homuler/MediaPipeUnityPlugin/issues/574)) ([d334e80](https://github.com/homuler/MediaPipeUnityPlugin/commit/d334e80abb8c1d922191e19b10f5297b358553e0))
+* coordinate transform and other helper methods ([#569](https://github.com/homuler/MediaPipeUnityPlugin/issues/569)) ([527d3b1](https://github.com/homuler/MediaPipeUnityPlugin/commit/527d3b10ae593d43c74f466c5e23b2c2440c7b30))
+* **plugin:** Logger.minLogLevel -> Logger.MinLogLevel ([#580](https://github.com/homuler/MediaPipeUnityPlugin/issues/580)) ([456a822](https://github.com/homuler/MediaPipeUnityPlugin/commit/456a822e5f265ce789e071e7c73cd60e913d4657))
+
+
+### build
+
+* Unity 2021 ([#588](https://github.com/homuler/MediaPipeUnityPlugin/issues/588)) ([5d392db](https://github.com/homuler/MediaPipeUnityPlugin/commit/5d392db8f8fbd5d3d0ddc7d5015a637b3412ae26))
+
 ### [0.9.3](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.9.2...v0.9.3) (2022-05-16)
 
 ### [0.9.2](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.9.1...v0.9.2) (2022-05-16)
