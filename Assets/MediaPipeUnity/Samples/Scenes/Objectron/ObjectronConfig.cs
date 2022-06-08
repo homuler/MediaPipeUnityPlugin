@@ -16,12 +16,16 @@ namespace Mediapipe.Unity.Objectron.UI
   {
     private const string _CategoryPath = "Scroll View/Viewport/Contents/Category/Dropdown";
     private const string _MaxNumObjectsPath = "Scroll View/Viewport/Contents/Max Num Objects/InputField";
+    private const string _MinDetectionConfidencePath = "Scroll View/Viewport/Contents/Min Detection Confidence/InputField";
+    private const string _MinTrackingConfidencePath = "Scroll View/Viewport/Contents/Min Tracking Confidence/InputField";
     private const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
     private const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
 
     private ObjectronSolution _solution;
     private Dropdown _categoryInput;
     private InputField _maxNumObjectsInput;
+    private InputField _minDetectionConfidenceInput;
+    private InputField _minTrackingConfidenceInput;
     private Dropdown _runningModeInput;
     private InputField _timeoutMillisecInput;
 
@@ -53,6 +57,24 @@ namespace Mediapipe.Unity.Objectron.UI
       }
     }
 
+    public void SetMinDetectionConfidence()
+    {
+      if (float.TryParse(_minDetectionConfidenceInput.text, out var value))
+      {
+        _solution.minDetectionConfidence = value;
+        _isChanged = true;
+      }
+    }
+
+    public void SetMinTrackingConfidence()
+    {
+      if (float.TryParse(_minTrackingConfidenceInput.text, out var value))
+      {
+        _solution.minTrackingConfidence = value;
+        _isChanged = true;
+      }
+    }
+
     public void SetTimeoutMillisec()
     {
       if (int.TryParse(_timeoutMillisecInput.text, out var value))
@@ -73,6 +95,8 @@ namespace Mediapipe.Unity.Objectron.UI
       InitializeCategory();
       InitializeRunningMode();
       InitializeMaxNumObjects();
+      InitializeMinDetectionConfidence();
+      InitializeMinTrackingConfidence();
       InitializeTimeoutMillisec();
     }
 
@@ -100,6 +124,20 @@ namespace Mediapipe.Unity.Objectron.UI
       _maxNumObjectsInput = gameObject.transform.Find(_MaxNumObjectsPath).gameObject.GetComponent<InputField>();
       _maxNumObjectsInput.text = _solution.maxNumObjects.ToString();
       _maxNumObjectsInput.onEndEdit.AddListener(delegate { UpdateMaxNumObjects(); });
+    }
+
+    private void InitializeMinDetectionConfidence()
+    {
+      _minDetectionConfidenceInput = gameObject.transform.Find(_MinDetectionConfidencePath).gameObject.GetComponent<InputField>();
+      _minDetectionConfidenceInput.text = _solution.minDetectionConfidence.ToString();
+      _minDetectionConfidenceInput.onValueChanged.AddListener(delegate { SetMinDetectionConfidence(); });
+    }
+
+    private void InitializeMinTrackingConfidence()
+    {
+      _minTrackingConfidenceInput = gameObject.transform.Find(_MinTrackingConfidencePath).gameObject.GetComponent<InputField>();
+      _minTrackingConfidenceInput.text = _solution.minTrackingConfidence.ToString();
+      _minTrackingConfidenceInput.onValueChanged.AddListener(delegate { SetMinTrackingConfidence(); });
     }
 
     private void InitializeRunningMode()

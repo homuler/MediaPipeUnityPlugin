@@ -28,6 +28,18 @@ namespace Mediapipe.Unity.Objectron
       set => graphRunner.maxNumObjects = value;
     }
 
+    public float minDetectionConfidence
+    {
+      get => graphRunner.minDetectionConfidence;
+      set => graphRunner.minDetectionConfidence = value;
+    }
+
+    public float minTrackingConfidence
+    {
+      get => graphRunner.minTrackingConfidence;
+      set => graphRunner.minTrackingConfidence = value;
+    }
+
     protected override void OnStartRun()
     {
       if (!runningMode.IsSynchronous())
