@@ -162,8 +162,6 @@ namespace Mediapipe.Unity.Objectron
         var tensorsToDetectionsCalculators = cannonicalizedConfig.Node.Where((node) => node.Calculator == "TensorsToDetectionsCalculator").ToList();
         var thresholdingCalculators = cannonicalizedConfig.Node.Where((node) => node.Calculator == "ThresholdingCalculator").ToList();
 
-        Debug.Log(tensorsToDetectionsCalculators.Count);
-        Debug.Log(thresholdingCalculators.Count);
         foreach (var calculator in tensorsToDetectionsCalculators)
         {
           if (calculator.Options.HasExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext))
