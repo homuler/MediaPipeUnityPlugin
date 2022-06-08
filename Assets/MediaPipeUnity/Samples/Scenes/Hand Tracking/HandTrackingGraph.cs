@@ -143,7 +143,6 @@ namespace Mediapipe.Unity.HandTracking
     {
       return new List<WaitForResult> {
         WaitForHandLandmarkModel(),
-        WaitForAsset("hand_recrop.bytes"),
         WaitForAsset("handedness.txt"),
         WaitForPalmDetectionModel(),
       };
