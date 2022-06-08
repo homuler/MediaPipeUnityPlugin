@@ -215,6 +215,7 @@ class BuildCommand(Command):
       commands.append('--sandbox_debug')
 
     commands += self.command_args.bazel_build_opts or []
+    commands += self._build_solution_options()
 
     return commands
 
@@ -240,6 +241,12 @@ class BuildCommand(Command):
     commands = [f'--@opencv//:switch={switch}']
 
     return commands
+
+  def _build_solution_options(self):
+    if self.command_args.solutions is None:
+      return []
+
+    return [f'--//mediapipe_api:solutions={",".join(self.command_args.solutions)}']
 
   def _build_desktop_options(self):
     commands = []
@@ -415,6 +422,8 @@ class Argument:
     build_command_parser.add_argument('--analyzers', action=argparse.BooleanOptionalAction, default=False, help='Install Roslyn Analyzers')
     build_command_parser.add_argument('--compilation_mode', '-c', choices=['fastbuild', 'opt', 'dbg'], default='opt')
     build_command_parser.add_argument('--opencv', choices=['local', 'cmake', 'cmake_static', 'cmake_dynamic'], default='local', help='Decide to which OpenCV to link for Desktop native libraries')
+    build_command_parser.add_argument('--solutions', nargs='+',
+        choices=['face_detection', 'face_mesh', 'iris', 'hands', 'pose', 'holistic', 'selfie_segmentation', 'hair_segmentation', 'object_detection', 'box_tracking', 'instant_motion_tracking', 'objectron'])
     build_command_parser.add_argument('--linkopt', '-l', action='append', help='Linker options')
     build_command_parser.add_argument('--apple_bitcode', action=argparse.BooleanOptionalAction, default=True, help='Embed bitcode to iOS Framework')
     build_command_parser.add_argument('--bazel_startup_opts', action='append', help='Bazel startup options')
@@ -422,7 +431,7 @@ class Argument:
     build_command_parser.add_argument('--verbose', '-v', action='count', default=0)
 
     clean_command_parser = subparsers.add_parser('clean', help='Clean cache files')
-    clean_command_parser.add_argument('--bazel_startup_opts', '-S', action='append', help='Bazel startup options')
+    clean_command_parser.add_argument('--bazel_startup_opts', action='append', help='Bazel startup options')
     clean_command_parser.add_argument('--verbose', '-v', action='count', default=0)
 
     uninstall_command_parser = subparsers.add_parser('uninstall', help='Remove installed files')
