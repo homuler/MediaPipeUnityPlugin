@@ -363,21 +363,6 @@ load(
 
 swift_rules_dependencies()
 
-http_archive(
-    name = "build_bazel_apple_support",
-    sha256 = "741366f79d900c11e11d8efd6cc6c66a31bfb2451178b58e0b5edc6f1db17b35",
-    urls = [
-        "https://github.com/bazelbuild/apple_support/releases/download/0.10.0/apple_support.0.10.0.tar.gz",
-    ],
-)
-
-load(
-    "@build_bazel_apple_support//lib:repositories.bzl",
-    "apple_support_dependencies",
-)
-
-apple_support_dependencies()
-
 # More iOS deps.
 
 http_archive(
