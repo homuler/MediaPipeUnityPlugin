@@ -1,0 +1,13 @@
+diff --git a/3rdparty/libpng/CMakeLists.txt b/3rdparty/libpng/CMakeLists.txt
+index efa59627eb..b1c18805ff 100644
+--- a/3rdparty/libpng/CMakeLists.txt
++++ b/3rdparty/libpng/CMakeLists.txt
+@@ -38,6 +38,8 @@ if(ARM OR AARCH64)
+   else()
+     add_definitions(-DPNG_ARM_NEON_OPT=0) # NEON assembler is not supported
+   endif()
++else()
++  add_definitions(-DPNG_ARM_NEON_OPT=0) # NEON assembler is not supported
+ endif()
+ 
+ if(";${CPU_BASELINE_FINAL};" MATCHES "SSE2"
