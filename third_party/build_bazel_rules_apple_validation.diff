@@ -1,12 +1,22 @@
+diff --git a/apple/internal/entitlements_support.bzl b/apple/internal/entitlements_support.bzl
+index 83b1bad0..fe77c687 100644
+--- a/apple/internal/entitlements_support.bzl
++++ b/apple/internal/entitlements_support.bzl
+@@ -389,4 +389,5 @@ def _process_entitlements(
+ 
+ entitlements_support = struct(
+     process_entitlements = _process_entitlements,
++    validate_bundle_id = _validate_bundle_id,
+ )
 diff --git a/apple/internal/ios_rules.bzl b/apple/internal/ios_rules.bzl
-index fcf84bd0..f040baa8 100644
+index 23e00090..9428e1a6 100644
 --- a/apple/internal/ios_rules.bzl
 +++ b/apple/internal/ios_rules.bzl
-@@ -646,6 +646,7 @@ def _ios_framework_impl(ctx):
-     apple_toolchain_info = ctx.attr._toolchain[AppleSupportToolchainInfo]
+@@ -684,6 +684,7 @@ def _ios_framework_impl(ctx):
+     apple_xplat_toolchain_info = ctx.attr._xplat_toolchain[AppleXPlatToolsToolchainInfo]
      bin_root_path = ctx.bin_dir.path
      bundle_id = ctx.attr.bundle_id
-+    bundling_support.validate_bundle_id(bundle_id)
++    entitlements_support.validate_bundle_id(bundle_id)
      bundle_name, bundle_extension = bundling_support.bundle_full_name_from_rule_ctx(ctx)
      executable_name = bundling_support.executable_name(ctx)
-     entitlements = entitlements_support.entitlements(
+     features = features_support.compute_enabled_features(

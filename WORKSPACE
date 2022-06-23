@@ -345,8 +345,8 @@ http_archive(
         "@com_google_mediapipe//third_party:build_bazel_rules_apple_bypass_test_runner_check.diff",
         "@//third_party:build_bazel_rules_apple_validation.diff",
     ],
-    sha256 = "77e8bf6fda706f420a55874ae6ee4df0c9d95da6c7838228b26910fc82eea5a2",
-    url = "https://github.com/bazelbuild/rules_apple/releases/download/0.32.0/rules_apple.0.32.0.tar.gz",
+    sha256 = "36072d4f3614d309d6a703da0dfe48684ec4c65a89611aeb9590b45af7a3e592",
+    url = "https://github.com/bazelbuild/rules_apple/releases/download/1.0.1/rules_apple.1.0.1.tar.gz",
 )
 
 load(
