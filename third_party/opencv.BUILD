@@ -216,9 +216,11 @@ define_string_dict(
     name = "darwin_arch_entries",
     value = select({
         "@cpuinfo//:macos_arm64": {
+            "CMAKE_SYSTEM_ARCHITECTURES": "arm64",
             "CMAKE_OSX_ARCHITECTURES": "arm64",
         },
         "//conditions:default": {
+            "CMAKE_SYSTEM_ARCHITECTURES": "x86_64",
             "CMAKE_OSX_ARCHITECTURES": "x86_64",
         },
     })
