@@ -98,6 +98,9 @@ class Command:
   def _is_windows(self):
     return self.system == 'Windows'
 
+  def _is_macos(self):
+    return self.system == 'Darwin'
+
 
 class BuildCommand(Command):
   def __init__(self, command_args):
@@ -255,6 +258,12 @@ class BuildCommand(Command):
       commands += ['--copt', '-DMESA_EGL_NO_X11_HEADERS', '--copt', '-DEGL_NO_X11']
     else:
       commands += ['--define', 'MEDIAPIPE_DISABLE_GPU=1']
+
+    if self.command_args.macos_universal:
+      if self._is_macos():
+        commands += ['--//mediapipe_api:macos_universal']
+      else:
+        self.console.warn("Ignoring the `--macos_universal` option.")
 
     commands += self._build_opencv_switch()
 
@@ -426,6 +435,7 @@ class Argument:
         choices=['face_detection', 'face_mesh', 'iris', 'hands', 'pose', 'holistic', 'selfie_segmentation', 'hair_segmentation', 'object_detection', 'box_tracking', 'instant_motion_tracking', 'objectron'])
     build_command_parser.add_argument('--linkopt', '-l', action='append', help='Linker options')
     build_command_parser.add_argument('--apple_bitcode', action=argparse.BooleanOptionalAction, default=True, help='Embed bitcode to iOS Framework')
+    build_command_parser.add_argument('--macos_universal', action=argparse.BooleanOptionalAction, default=False, help='Build a universal library')
     build_command_parser.add_argument('--bazel_startup_opts', action='append', help='Bazel startup options')
     build_command_parser.add_argument('--bazel_build_opts', action='append', help='Bazel startup options')
     build_command_parser.add_argument('--verbose', '-v', action='count', default=0)

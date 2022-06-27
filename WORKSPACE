@@ -245,6 +245,12 @@ http_archive(
 http_archive(
     name = "opencv",
     build_file = "@//third_party:opencv.BUILD",
+    patch_args = [
+        "-p1",
+    ],
+    patches = [
+        "@//third_party:opencv_disable_neon.diff",
+    ],
     sha256 = "5e37b791b2fe42ed39b52d9955920b951ee42d5da95f79fbc9765a08ef733399",
     strip_prefix = "opencv-3.4.16",
     urls = ["https://github.com/opencv/opencv/archive/3.4.16.tar.gz"],
@@ -334,6 +340,22 @@ load("@local_config_android//:android_configure.bzl", "android_workspace")
 android_workspace()
 
 # iOS basic build deps.
+http_archive(
+    name = "build_bazel_apple_support",
+    patch_args = [
+        "-p1",
+    ],
+    patches = [
+        "@//third_party:build_bazel_apple_support_transitions.diff",
+    ],
+    sha256 = "df317473b5894dd8eb432240d209271ebc83c76bb30c55481374b36ddf1e4fd1",
+    url = "https://github.com/bazelbuild/apple_support/releases/download/1.0.0/apple_support.1.0.0.tar.gz",
+)
+
+load(
+    "@build_bazel_apple_support//lib:repositories.bzl",
+    "apple_support_dependencies",
+)
 
 http_archive(
     name = "build_bazel_rules_apple",
@@ -362,21 +384,6 @@ load(
 )
 
 swift_rules_dependencies()
-
-http_archive(
-    name = "build_bazel_apple_support",
-    sha256 = "741366f79d900c11e11d8efd6cc6c66a31bfb2451178b58e0b5edc6f1db17b35",
-    urls = [
-        "https://github.com/bazelbuild/apple_support/releases/download/0.10.0/apple_support.0.10.0.tar.gz",
-    ],
-)
-
-load(
-    "@build_bazel_apple_support//lib:repositories.bzl",
-    "apple_support_dependencies",
-)
-
-apple_support_dependencies()
 
 # More iOS deps.
 

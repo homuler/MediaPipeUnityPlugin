@@ -6,8 +6,21 @@
 
 load("//mediapipe_api:import_model.bzl", "pkg_asset")
 load("@bazel_skylib//lib:selects.bzl", "selects")
-load("@bazel_skylib//rules:common_settings.bzl", "string_list_flag")
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag", "string_list_flag")
 load("@rules_pkg//:pkg.bzl", "pkg_zip")
+load("@build_bazel_apple_support//rules:universal_binary.bzl", "universal_binary")
+
+bool_flag(
+    name = "macos_universal",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "build_universal_library",
+    flag_values = {
+        ":macos_universal": "True"
+    },
+)
 
 string_list_flag(
     name = "solutions",
@@ -213,11 +226,29 @@ cc_binary(
 )
 
 cc_binary(
-    name = "libmediapipe_c.dylib",
+    name = "libmediapipe_c_.dylib",
     linkshared = True,
     linkstatic = True,
     visibility = ["//visibility:public"],
     deps = [":mediapipe_c"],
+)
+
+universal_binary(
+    name = "libmediapipe_c_universal.dylib",
+    binary = ":libmediapipe_c_.dylib",
+)
+
+genrule(
+    name = "libmediapipe_c_dylib",
+    srcs = select({
+        ":build_universal_library": [":libmediapipe_c_universal.dylib"],
+        "//conditions:default": [":libmediapipe_c_.dylib"],
+    }),
+    outs = ["libmediapipe_c.dylib"],
+    cmd = select({
+        ":build_universal_library": "cp $< $(@D)/libmediapipe_c.dylib",
+        "//conditions:default": "cp $< $(@D)/libmediapipe_c.dylib",
+    }),
 )
 
 cc_binary(
@@ -245,7 +276,7 @@ cc_binary(
 alias(
     name = "libmediapipe_c",
     actual = select({
-        "@com_google_mediapipe//mediapipe:macos": ":libmediapipe_c.dylib",
+        "@com_google_mediapipe//mediapipe:macos": ":libmediapipe_c_dylib",
         "@com_google_mediapipe//mediapipe:windows": ":mediapipe_c.dll",
         "@com_google_mediapipe//mediapipe:emscripten": ":libmediapipe_c.bc",
         "//conditions:default": ":libmediapipe_c.so",
