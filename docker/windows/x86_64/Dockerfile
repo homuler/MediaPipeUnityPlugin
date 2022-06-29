@@ -12,25 +12,30 @@ SHELL ["cmd", "/C"]
 RUN mkdir C:\TEMP
 
 
-FROM base as builder
+FROM base as msys2
+
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+# Install MSYS2
+RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; `
+  Invoke-WebRequest -UseBasicParsing -uri "https://github.com/msys2/msys2-installer/releases/download/nightly-x86_64/msys2-base-x86_64-latest.sfx.exe" -OutFile msys2.exe; `
+  .\msys2.exe -y -oC:\; `
+  Remove-Item msys2.exe ; `
+  function msys() { C:\msys64\usr\bin\bash.exe @('-lc') + @Args; } `
+  msys ' '; `
+  msys 'pacman --noconfirm -Syuu'; `
+  msys 'pacman --noconfirm -Syuu'; `
+  msys 'pacman --needed --noconfirm -S git patch unzip zip p7zip'; `
+  msys 'pacman --noconfirm -Scc'
+
+
+FROM msys2 as builder
+
+SHELL ["cmd", "/C"]
 
 ARG NODE_VERSION
 
 RUN setx path "C:\msys64\usr\bin;%PATH%"
-
-# Install MSYS2
-# TODO: check sha256
-RUN curl -L http://repo.msys2.org/distrib/x86_64/msys2-base-x86_64-20210604.sfx.exe -o C:\TEMP\msys2-installer.exe && `
-    C:\TEMP\msys2-installer.exe -y -oC:\ && `
-    del C:\TEMP\msys2-installer.exe
-
-# This command may hang and in that case, "C:\ProgramData\Docker\tmp\hcs*\Files\$Recycle.Bin\" should be removed manually.
-# cf. https://github.com/docker/for-win/issues/8910
-RUN bash.exe -l -c "pacman -Syuu --needed --noconfirm --noprogressbar" && `
-    bash.exe -l -c "pacman -Syu --needed --noconfirm --noprogressbar" && `
-    bash.exe -l -c "pacman -Sy --needed --noconfirm --noprogressbar" && `
-    bash.exe -l -c "pacman -S --needed --noconfirm git patch unzip zip p7zip" && `
-    bash.exe -l -c "rm -r /var/cache/pacman/pkg/*"
 
 # Install Visual C++ Build Tools 2019 and WinSDK
 ARG CHANNEL_URL=https://aka.ms/vs/16/release/channel
