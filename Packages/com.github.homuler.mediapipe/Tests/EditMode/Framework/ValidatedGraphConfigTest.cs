@@ -26,32 +26,36 @@ input_stream: ""in""
 output_stream: ""out""
 ";
 
-    private const string _ObjectronConfigText = @"
+    private const string _FlowLimiterConfigText = @"
 input_stream: ""input_video""
+input_stream: ""output""
 
 node {
-  calculator: ""ObjectronGpuSubgraph""
-  input_stream: ""IMAGE_GPU:input_video""
-  input_side_packet: ""LABELS_CSV:allowed_labels""
-  input_side_packet: ""MAX_NUM_OBJECTS:max_num_objects""
-  output_stream: ""FRAME_ANNOTATION:lifted_objects""
-  output_stream: ""NORM_RECTS:multi_box_rects""
-  output_stream: ""MULTI_LANDMARKS:multi_box_landmarks""
-}  
+  calculator: ""FlowLimiterCalculator""
+  input_stream: ""input_video""
+  input_stream: ""FINISHED:output""
+  input_stream_info: {
+    tag_index: ""FINISHED""
+    back_edge: true
+  }
+  input_side_packet: ""MAX_IN_FLIGHT:max_in_flight""
+  input_side_packet: ""OPTIONS:flow_limiter_calculator_options""
+  output_stream: ""throttled_input_video""
+}
 ";
-    private const string _PoseLandmarkConfigText = @"
+
+    private const string _ImageTransformationConfigText = @"
 input_stream: ""input_video""
 
-node {
-  calculator: ""PoseLandmarkGpu""
+node: {
+  calculator: ""ImageTransformationCalculator""
   input_stream: ""IMAGE:input_video""
-  input_side_packet: ""MODEL_COMPLEXITY:model_complexity""
-  input_side_packet: ""SMOOTH_LANDMARKS:smooth_landmarks""
-  output_stream: ""LANDMARKS:pose_landmarks""
-  output_stream: ""WORLD_LANDMARKS:pose_world_landmarks""
-  output_stream: ""DETECTION:pose_detection""
-  output_stream: ""ROI_FROM_LANDMARKS:roi_from_landmarks""
-}";
+  input_side_packet: ""ROTATION_DEGREES:input_rotation""
+  input_side_packet: ""FLIP_HORIZONTALLY:input_horizontally_flipped""
+  input_side_packet: ""FLIP_VERTICALLY:input_vertically_flipped""
+  output_stream: ""IMAGE:transformed_input_video""
+}
+";
 
     private const string _ConstantSidePacketConfigText = @"
 node {
@@ -68,6 +72,18 @@ node {
       packet { string_value: ""string"" }
     }
   }
+}
+";
+
+    private const string _FaceDetectionShortRangeCommonConfigText = @"
+input_stream: ""detection_tensors""
+input_stream: ""transform_matrix""
+
+node {
+  calculator: ""FaceDetectionShortRangeCommon""
+  input_stream: ""TENSORS:detection_tensors""
+  input_stream: ""MATRIX:transform_matrix""
+  output_stream: ""DETECTIONS:detections""
 }
 ";
 
@@ -183,7 +199,7 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PoseLandmarkConfigText)).AssertOk();
+        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_FlowLimiterConfigText)).AssertOk();
         using (var sidePacket = new SidePacket())
         {
           using (var status = config.ValidateRequiredSidePackets(sidePacket))
@@ -199,7 +215,7 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ObjectronConfigText)).AssertOk();
+        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ImageTransformationConfigText)).AssertOk();
         using (var sidePacket = new SidePacket())
         {
           using (var status = config.ValidateRequiredSidePackets(sidePacket))
@@ -215,10 +231,11 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ObjectronConfigText)).AssertOk();
+        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ImageTransformationConfigText)).AssertOk();
         using (var sidePacket = new SidePacket())
         {
-          sidePacket.Emplace("max_num_objects", new IntPacket(3));
+          sidePacket.Emplace("input_horizontally_flipped", new BoolPacket(false));
+          sidePacket.Emplace("input_vertically_flipped", new BoolPacket(true));
           using (var status = config.ValidateRequiredSidePackets(sidePacket))
           {
             Assert.AreEqual(Status.StatusCode.InvalidArgument, status.Code());
@@ -232,11 +249,12 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ObjectronConfigText)).AssertOk();
+        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ImageTransformationConfigText)).AssertOk();
         using (var sidePacket = new SidePacket())
         {
-          sidePacket.Emplace("allowed_labels", new StringPacket("cup"));
-          sidePacket.Emplace("max_num_objects", new StringPacket("3"));
+          sidePacket.Emplace("input_horizontally_flipped", new BoolPacket(false));
+          sidePacket.Emplace("input_vertically_flipped", new BoolPacket(true));
+          sidePacket.Emplace("input_rotation", new StringPacket("0"));
           using (var status = config.ValidateRequiredSidePackets(sidePacket))
           {
             Assert.AreEqual(Status.StatusCode.InvalidArgument, status.Code());
@@ -250,11 +268,12 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ObjectronConfigText)).AssertOk();
+        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ImageTransformationConfigText)).AssertOk();
         using (var sidePacket = new SidePacket())
         {
-          sidePacket.Emplace("allowed_labels", new StringPacket("cup"));
-          sidePacket.Emplace("max_num_objects", new IntPacket(3));
+          sidePacket.Emplace("input_horizontally_flipped", new BoolPacket(false));
+          sidePacket.Emplace("input_vertically_flipped", new BoolPacket(true));
+          sidePacket.Emplace("input_rotation", new IntPacket(0));
           using (var status = config.ValidateRequiredSidePackets(sidePacket))
           {
             Assert.True(status.Ok());
@@ -297,16 +316,16 @@ node {
     }
 
     [Test]
-    public void Config_ShouldReturnTheCanonicalizedConfig_When_TheConfigIsPoseLandmarkConfig()
+    public void Config_ShouldReturnTheCanonicalizedConfig_When_TheConfigIsFaceDetectionShortRangeCommonConfig()
     {
       using (var config = new ValidatedGraphConfig())
       {
-        var originalConfig = CalculatorGraphConfig.Parser.ParseFromTextFormat(_PoseLandmarkConfigText);
+        var originalConfig = CalculatorGraphConfig.Parser.ParseFromTextFormat(_FaceDetectionShortRangeCommonConfigText);
         config.Initialize(originalConfig).AssertOk();
         var canonicalizedConfig = config.Config();
 
-        Assert.AreEqual(251, originalConfig.CalculateSize());
-        Assert.AreEqual(26514, canonicalizedConfig.CalculateSize());
+        Assert.AreEqual(145, originalConfig.CalculateSize());
+        Assert.AreEqual(936, canonicalizedConfig.CalculateSize());
       }
     }
     #endregion
@@ -422,20 +441,20 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PoseLandmarkConfigText)).AssertOk();
+        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_FlowLimiterConfigText)).AssertOk();
         var inputSidePacketInfos = config.InputSidePacketInfos();
 
         Assert.True(inputSidePacketInfos.Count >= 2);
 
-        var modelComplexityPacket = inputSidePacketInfos.First((edgeInfo) => edgeInfo.name == "model_complexity");
-        Assert.AreEqual(-1, modelComplexityPacket.upstream);
-        Assert.AreEqual(NodeType.Calculator, modelComplexityPacket.parentNode.type);
-        Assert.False(modelComplexityPacket.backEdge);
+        var maxInFlightPacket = inputSidePacketInfos.First((edgeInfo) => edgeInfo.name == "max_in_flight");
+        Assert.AreEqual(-1, maxInFlightPacket.upstream);
+        Assert.AreEqual(NodeType.Calculator, maxInFlightPacket.parentNode.type);
+        Assert.False(maxInFlightPacket.backEdge);
 
-        var smoothLandmarksPacket = inputSidePacketInfos.First((edgeInfo) => edgeInfo.name == "smooth_landmarks");
-        Assert.AreEqual(-1, smoothLandmarksPacket.upstream);
-        Assert.AreEqual(NodeType.Calculator, smoothLandmarksPacket.parentNode.type);
-        Assert.False(smoothLandmarksPacket.backEdge);
+        var flowLimiterCalculatorOptionsPacket = inputSidePacketInfos.First((edgeInfo) => edgeInfo.name == "flow_limiter_calculator_options");
+        Assert.AreEqual(-1, flowLimiterCalculatorOptionsPacket.upstream);
+        Assert.AreEqual(NodeType.Calculator, flowLimiterCalculatorOptionsPacket.parentNode.type);
+        Assert.False(flowLimiterCalculatorOptionsPacket.backEdge);
       }
     }
     #endregion
@@ -603,7 +622,7 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        using (var statusOrString = config.RegisteredSidePacketTypeName("model_complexity"))
+        using (var statusOrString = config.RegisteredSidePacketTypeName("max_in_flight"))
         {
           Assert.AreEqual(Status.StatusCode.InvalidArgument, statusOrString.status.Code());
         }
@@ -615,8 +634,8 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PoseLandmarkConfigText)).AssertOk();
-        using (var statusOrString = config.RegisteredSidePacketTypeName("model_complexity"))
+        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_FlowLimiterConfigText)).AssertOk();
+        using (var statusOrString = config.RegisteredSidePacketTypeName("max_in_flight"))
         {
           Assert.AreEqual(Status.StatusCode.Unknown, statusOrString.status.Code());
         }
@@ -694,7 +713,7 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        Assert.False(config.IsExternalSidePacket("model_complexity"));
+        Assert.False(config.IsExternalSidePacket("max_in_flight"));
       }
     }
 
@@ -714,8 +733,8 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PoseLandmarkConfigText)).AssertOk();
-        Assert.True(config.IsExternalSidePacket("model_complexity"));
+        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_FlowLimiterConfigText)).AssertOk();
+        Assert.True(config.IsExternalSidePacket("max_in_flight"));
       }
     }
     #endregion
