@@ -62,13 +62,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        unityVersion:
-          - 2020.3.36f1
-          - 2021.3.3f1
         os:
           - ubuntu-22.04
           - ubuntu-20.04
           - ubuntu-18.04
+        unityVersion:
+          - 2021.3.3f1
+          - 2020.3.36f1
     steps:
       - name: Install UnityEditor
         run: |
