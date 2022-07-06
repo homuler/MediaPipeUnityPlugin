@@ -129,7 +129,11 @@ namespace Mediapipe.Tests
       float[] array = { 0.01f };
       using (var packet = new FloatArrayPacket(array))
       {
+#if UNITY_EDITOR_WIN
+        Assert.AreEqual("float [0]", packet.DebugTypeName());
+#else
         Assert.AreEqual("float []", packet.DebugTypeName());
+#endif
       }
     }
     #endregion

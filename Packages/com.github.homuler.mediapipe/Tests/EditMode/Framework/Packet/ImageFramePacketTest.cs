@@ -170,7 +170,11 @@ namespace Mediapipe.Tests
     {
       using (var packet = new ImageFramePacket(new ImageFrame()))
       {
+#if UNITY_EDITOR_WIN
+        Assert.AreEqual("class mediapipe::ImageFrame", packet.DebugTypeName());
+#else
         Assert.AreEqual("mediapipe::ImageFrame", packet.DebugTypeName());
+#endif
       }
     }
     #endregion
