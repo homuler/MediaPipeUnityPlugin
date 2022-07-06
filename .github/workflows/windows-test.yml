@@ -105,7 +105,11 @@ jobs:
           $ulf_file = Get-Item Unity_*.ulf
           $process = Start-Process -NoNewWindow -Wait -PassThru "C:\Program Files\Unity\Hub\Editor\${{ matrix.unity.version }}\Editor\Unity.exe" -ArgumentList "-batchmode -nographics -logFile -quit -manualLicenseFile $ulf_file"
           $ulf_file.Delete()
-          exit $process.ExitCode
+
+          if ($process.ExitCode -ne 1)
+          {
+            exit $process.ExitCode
+          }
 
       - name: Download built artifacts
         uses: actions/download-artifact@v3
