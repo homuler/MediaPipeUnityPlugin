@@ -13,7 +13,7 @@ on:
         required: true
 jobs:
   build:
-    runs-on: macos-11
+    runs-on: macos-12
     steps:
       - uses: actions/checkout@v3
         with:
@@ -24,7 +24,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /private/var/tmp/_bazel_runner
-          key: macos-11-bazel-${{ hashFiles('WORKSPACE') }}
+          key: macos-12-bazel-v1-${{ hashFiles('WORKSPACE') }}
 
       # Setup Python
       - uses: actions/setup-python@v4
@@ -44,7 +44,7 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: package
+          name: macos-package
           path: artifacts.tar
 
   test:
@@ -89,7 +89,7 @@ jobs:
       - name: Download built artifacts
         uses: actions/download-artifact@v3
         with:
-          name: package
+          name: macos-package
 
       - name: Create a dummy project
         run: |

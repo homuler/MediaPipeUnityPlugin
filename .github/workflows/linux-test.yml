@@ -27,7 +27,7 @@ jobs:
           key: ubuntu-18.04-bazel-v1-${{ hashFiles('WORKSPACE') }}
       - name: Install GCC/G++ 8
         run: |
-          sudo apt update
+          sudo apt-get update
           sudo apt-get install -y --no-install-recommends gcc-8 g++-8
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 100 --slave /usr/bin/g++ g++ /usr/bin/g++-8
 
@@ -55,7 +55,7 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: package
+          name: linux-package
           path: artifacts.tar
 
   test:
@@ -104,7 +104,7 @@ jobs:
       - name: Download built artifacts
         uses: actions/download-artifact@v3
         with:
-          name: package
+          name: linux-package
 
       - name: Create a dummy project
         run: |
