@@ -103,8 +103,9 @@ jobs:
       - name: Activate License
         run: |
           $ulf_file = Get-Item Unity_*.ulf
-          Start-Process -NoNewWindow -Wait -PassThru "C:\Program Files\Unity\Hub\Editor\${{ matrix.unity.version }}\Editor\Unity.exe" -ArgumentList "-batchmode -nographics -logFile -quit -manualLicenseFile $ulf_file.Name"
+          $process = Start-Process -NoNewWindow -Wait -PassThru "C:\Program Files\Unity\Hub\Editor\${{ matrix.unity.version }}\Editor\Unity.exe" -ArgumentList "-batchmode -nographics -logFile -quit -manualLicenseFile $ulf_file"
           $ulf_file.Delete()
+          exit $process.ExitCode
 
       - name: Download built artifacts
         uses: actions/download-artifact@v3
@@ -137,7 +138,6 @@ jobs:
             -testPlatform EditMode `
             -testCategory !GpuOnly;!SignalAbort"
           cat DummyProject\$env:ARTIFACTS_PATH\results.xml
-          Write-Output $process.ExitCode
           exit $process.ExitCode
 
       - uses: actions/upload-artifact@v2
