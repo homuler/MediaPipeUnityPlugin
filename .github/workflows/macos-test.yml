@@ -1,21 +1,23 @@
 name: Run Tests on macOS
 on:
-  push: {}
-  pull_request_target:
-    types: [labeled]
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+    secrets:
+      UNITY_EMAIL:
+        required: true
+      UNITY_PASSWORD:
+        required: true
+      UNITY_TOTP_KEY:
+        required: true
 jobs:
   build:
     runs-on: macos-11
-    if: github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'ci:run')
     steps:
-      - uses: actions-ecosystem/action-remove-labels@v1
-        if: contains(github.event.pull_request.labels.*.name, 'ci:run')
-        with:
-          labels: ci:run
-
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ inputs.ref }}
 
       # Setup build tools
       - name: Mount bazel cache
