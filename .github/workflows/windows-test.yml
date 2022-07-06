@@ -151,3 +151,12 @@ jobs:
         with:
           name: Test results for ${{ matrix.unity.version }} on ${{ matrix.os }}
           path: DummyProject\testResults
+
+  post-test:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: geekyeggo/delete-artifact@v1
+        with:
+          name: windows-package
+          failOnError: false
