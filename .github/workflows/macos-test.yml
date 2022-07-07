@@ -13,7 +13,7 @@ on:
         required: true
 jobs:
   build:
-    runs-on: macos-12
+    runs-on: macos-11
     steps:
       - uses: actions/checkout@v3
         with:
@@ -24,7 +24,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /private/var/tmp/_bazel_runner
-          key: bazel-macos-12-v1-${{ hashFiles('WORKSPACE') }}
+          key: bazel-macos-11-v1-${{ hashFiles('WORKSPACE') }}
 
       # Setup Python
       - uses: actions/setup-python@v4
