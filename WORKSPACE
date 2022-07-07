@@ -245,12 +245,6 @@ http_archive(
 http_archive(
     name = "opencv",
     build_file = "@//third_party:opencv.BUILD",
-    patch_args = [
-        "-p1",
-    ],
-    patches = [
-        "@//third_party:opencv_disable_neon.diff",
-    ],
     sha256 = "5e37b791b2fe42ed39b52d9955920b951ee42d5da95f79fbc9765a08ef733399",
     strip_prefix = "opencv-3.4.16",
     urls = ["https://github.com/opencv/opencv/archive/3.4.16.tar.gz"],
