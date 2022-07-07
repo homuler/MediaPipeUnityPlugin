@@ -24,7 +24,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: "~/.cache/bazel"
-          key: ubuntu-18.04-bazel-v1-${{ hashFiles('WORKSPACE') }}
+          key: bazel-ubuntu-18.04-v1-${{ hashFiles('WORKSPACE') }}
       - name: Install GCC/G++ 8
         run: |
           sudo apt-get update
@@ -117,7 +117,7 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: DummyProject/Library
-          key: Library-DummyProject-v1-${{ matrix.unityVersion }}-Linux
+          key: Library-DummyProject-${{ matrix.os }}-${{ matrix.unityVersion }}-v1
 
       - name: Run tests
         env:

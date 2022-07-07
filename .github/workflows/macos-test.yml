@@ -24,7 +24,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /private/var/tmp/_bazel_runner
-          key: macos-12-bazel-v1-${{ hashFiles('WORKSPACE') }}
+          key: bazel-macos-12-v1-${{ hashFiles('WORKSPACE') }}
 
       # Setup Python
       - uses: actions/setup-python@v4
@@ -101,7 +101,7 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: DummyProject/Library
-          key: Library-DummyProject-v1-${{ matrix.unity.version }}-MacOS
+          key: Library-DummyProject-${{ matrix.os }}-${{ matrix.unity.version }}-v1
 
       - name: Run tests
         env:
