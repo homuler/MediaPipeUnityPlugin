@@ -1,0 +1,162 @@
+name: Run Tests on Windows
+on:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+    secrets:
+      UNITY_EMAIL:
+        required: true
+      UNITY_PASSWORD:
+        required: true
+      UNITY_TOTP_KEY:
+        required: true
+jobs:
+  build:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.ref }}
+
+      # Setup build tools
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: git patch unzip zip
+      - name: Mount bazelisk cache
+        uses: actions/cache@v3
+        with:
+          path: C:\Users\runneradmin\AppData\Local\bazelisk
+          key: windows-bazelisk
+      - name: Mount bazel cache
+        uses: actions/cache@v3
+        with:
+          path: C:\_bzl
+          key: bazel-windows-2019-v1-${{ hashFiles('WORKSPACE') }}
+
+      # Setup Python
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install NumPy
+        run: pip install --no-cache-dir --user numpy
+
+      - name: Build
+        run: |
+          set ANDROID_NDK_HOME=
+          python build.py build --desktop cpu --opencv cmake -vv
+          bazel --output_user_root=C:\_bzl shutdown
+        shell: cmd
+
+      - name: Package
+        run: |
+          tar cvf artifacts.tar Packages/com.github.homuler.mediapipe
+        shell: cmd
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: windows-package
+          path: artifacts.tar
+
+      - name: Prepare for cache
+        run: |
+          (Get-Item C:\_bzl\*\install).Delete()
+
+  test:
+    runs-on: ${{ matrix.os }}
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-2019
+        unity:
+          - { version: "2021.3.3f1", changeset: "af2e63e8f9bd" }
+          - { version: "2020.3.36f1", changeset: "71f96b79b9f0" }
+    steps:
+      - name: Install UnityHub
+        uses: crazy-max/ghaction-chocolatey@v2
+        with:
+          args: install unity-hub -y
+      - name: Install UnityEditor
+        run: |
+          Start-Process -NoNewWindow -Wait -PassThru "C:\Program Files\Unity Hub\Unity Hub.exe" -ArgumentList "-- --headless install --version ${{ matrix.unity.version }} --changeset ${{ matrix.unity.changeset }}"
+          exit 0
+
+      - name: Generate a license activation file
+        run: |
+          Start-Process -NoNewWindow -Wait -PassThru "C:\Program Files\Unity\Hub\Editor\${{ matrix.unity.version }}\Editor\Unity.exe" -ArgumentList "-quit -batchmode -createManualActivationFile -logfile"
+          exit 0
+      - name: Request a Unity license file
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_TOTP_KEY: ${{ secrets.UNITY_TOTP_KEY }}
+        run: |
+          npm install -g unity-verify-code
+          git clone -b ci https://github.com/homuler/unity-license-activate.git
+          cd unity-license-activate
+          npm install
+          cd ..
+          npm install -g ./unity-license-activate
+          unity-license-activate "$env:UNITY_EMAIL" "$env:UNITY_PASSWORD" Unity_v${{ matrix.unity.version }}.alf --authenticator-key "$env:UNITY_TOTP_KEY"
+      - name: Activate License
+        run: |
+          $ulf_file = Get-Item Unity_*.ulf
+          $process = Start-Process -NoNewWindow -Wait -PassThru "C:\Program Files\Unity\Hub\Editor\${{ matrix.unity.version }}\Editor\Unity.exe" -ArgumentList "-batchmode -nographics -logFile -quit -manualLicenseFile $ulf_file"
+          $ulf_file.Delete()
+
+          if ($process.ExitCode -ne 1)
+          {
+            exit $process.ExitCode
+          }
+
+      - name: Download built artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: windows-package
+
+      - name: Create a dummy project
+        run: |
+          Start-Process -NoNewWindow -Wait -PassThru "C:\Program Files\Unity\Hub\Editor\${{ matrix.unity.version }}\Editor\Unity.exe" -ArgumentList "-quit -batchmode -createProject DummyProject -logfile"
+          mv artifacts.tar DummyProject
+          cd DummyProject
+          tar xvf artifacts.tar
+
+      - uses: actions/cache@v2
+        with:
+          path: DummyProject/Library
+          key: Library-DummyProject-${{ matrix.os }}-${{ matrix.unity.version }}-v1
+
+      - name: Run tests
+        env:
+          ARTIFACTS_PATH: testResults
+        run: |
+          $process = Start-Process -NoNewWindow -Wait -PassThru "C:\Program Files\Unity\Hub\Editor\${{ matrix.unity.version }}\Editor\Unity.exe" `
+            -ArgumentList `
+            "-batchmode -nographics `
+            -logFile `
+            -projectPath DummyProject `
+            -testResults $env:ARTIFACTS_PATH/results.xml `
+            -runTests `
+            -testPlatform EditMode `
+            -testCategory !GpuOnly;!SignalAbort"
+          cat DummyProject\$env:ARTIFACTS_PATH\results.xml
+          exit $process.ExitCode
+
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Test results for ${{ matrix.unity.version }} on ${{ matrix.os }}
+          path: DummyProject\testResults
+
+  post-test:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: geekyeggo/delete-artifact@v1
+        with:
+          name: windows-package
+          failOnError: false

@@ -1,0 +1,157 @@
+name: Run Tests on Linux
+on:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+    secrets:
+      UNITY_EMAIL:
+        required: true
+      UNITY_PASSWORD:
+        required: true
+      UNITY_TOTP_KEY:
+        required: true
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.ref }}
+
+      # Setup build tools 
+      - name: Mount bazel cache
+        uses: actions/cache@v3
+        with:
+          path: "~/.cache/bazel"
+          key: bazel-ubuntu-18.04-v1-${{ hashFiles('WORKSPACE') }}
+      - name: Install GCC/G++ 8
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends gcc-8 g++-8
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 100 --slave /usr/bin/g++ g++ /usr/bin/g++-8
+
+      - name: Install NuGet
+        run: |
+          sudo curl -o /usr/local/bin/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
+          bash -c 'echo -e "#!/bin/bash\nmono /usr/local/bin/nuget.exe \$@" | sudo tee -a /usr/local/bin/nuget'
+          sudo chmod +x /usr/local/bin/nuget
+
+      # Setup Python
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install NumPy
+        run: pip install --no-cache-dir --user numpy
+
+      - name: Build
+        run: |
+          unset ANDROID_NDK_HOME
+          python build.py build --desktop cpu --opencv cmake -vv
+
+      - name: Package
+        run: |
+          tar cvf artifacts.tar Packages/com.github.homuler.mediapipe
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-package
+          path: artifacts.tar
+
+  test:
+    runs-on: ${{ matrix.os }}
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-22.04
+          - ubuntu-20.04
+          - ubuntu-18.04
+        unityVersion:
+          - 2021.3.3f1
+          - 2020.3.36f1
+    steps:
+      - name: Install UnityEditor
+        run: |
+          sudo docker cp $(docker create --rm unityci/editor:${{ matrix.unityVersion }}-base-1):/opt/unity /opt/unity
+          sudo chown -R $(id -u):$(id -g) /opt/unity
+
+          echo -e '#!/bin/bash\nxvfb-run -ae /dev/stdout /opt/unity/Editor/Unity -batchmode "$@"' | sudo tee -a /usr/bin/unity-editor
+          sudo chmod +x /usr/bin/unity-editor
+
+      - name: Generate a license activation file
+        run: |
+          unity-editor -quit -createManualActivationFile -logFile || true
+      - name: Request a Unity license file
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_TOTP_KEY: ${{ secrets.UNITY_TOTP_KEY }}
+        run: |
+          npm install -g unity-verify-code
+          git clone -b ci https://github.com/homuler/unity-license-activate.git
+          cd unity-license-activate
+          npm install
+          cd ..
+          npm install -g ./unity-license-activate
+          unity-license-activate "$UNITY_EMAIL" "$UNITY_PASSWORD" Unity_v${{ matrix.unityVersion }}.alf --authenticator-key "$UNITY_TOTP_KEY"
+      - name: Activate License
+        run: |
+          unity-editor -quit -batchmode -nographics -logFile -manualLicenseFile $(ls Unity_*.ulf) || true
+          rm Unity_*.ulf
+
+      - name: Download built artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: linux-package
+
+      - name: Create a dummy project
+        run: |
+          unity-editor -quit -nographics -createProject DummyProject -logFile
+          mv artifacts.tar DummyProject
+          cd DummyProject
+          tar xvf artifacts.tar
+          echo $(jq '.dependencies += {"com.unity.testtools.codecoverage":"1.1.1"}' Packages/manifest.json) > Packages/manifest.json
+
+      - uses: actions/cache@v2
+        with:
+          path: DummyProject/Library
+          key: Library-DummyProject-${{ matrix.os }}-${{ matrix.unityVersion }}-v1
+
+      - name: Run tests
+        env:
+          ARTIFACTS_PATH: testResults
+        run: |
+          unity-editor -nographics \
+            -logFile \
+            -projectPath DummyProject \
+            -testResults ${ARTIFACTS_PATH}/results.xml \
+            -coverageResultsPath CodeCoverage \
+            -runTests \
+            -testPlatform EditMode \
+            -testCategory !GpuOnly \
+            -enableCodeCoverage \
+            -debugCodeOptimization \
+            -coverageOptions 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+MediaPipe.Runtime;pathFilters:-*/Runtime/Scripts/Protobuf/*'
+          cat DummyProject/${ARTIFACTS_PATH}/results.xml
+
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Test results for ${{ matrix.unityVersion }} on ${{ matrix.os }}
+          path: DummyProject/testResults
+      - uses: actions/upload-artifact@v2
+        if: ${{ matrix.os == 'ubuntu-20.04' && startsWith(matrix.unityVersion, '2021') }}
+        with:
+          name: Coverage results
+          path: DummyProject/CodeCoverage
+
+  post-test:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: geekyeggo/delete-artifact@v1
+        with:
+          name: linux-package
+          failOnError: false

@@ -1,0 +1,44 @@
+name: Run Tests
+on:
+  push: {}
+  pull_request_target:
+    types: [labeled]
+jobs:
+  check-test-trigger:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'ci:run')
+    steps:
+      - uses: actions-ecosystem/action-remove-labels@v1
+        if: contains(github.event.pull_request.labels.*.name, 'ci:run')
+        with:
+          labels: ci:run
+
+  run-tests-on-linux:
+    uses: ./.github/workflows/linux-test.yml
+    needs: check-test-trigger
+    with:
+      ref: ${{ github.event.pull_request.head.sha }}
+    secrets:
+      UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      UNITY_TOTP_KEY: ${{ secrets.UNITY_TOTP_KEY }}
+
+  run-tests-on-macos:
+    uses: ./.github/workflows/macos-test.yml
+    needs: check-test-trigger
+    with:
+      ref: ${{ github.event.pull_request.head.sha }}
+    secrets:
+      UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      UNITY_TOTP_KEY: ${{ secrets.UNITY_TOTP_KEY }}
+
+  run-tests-on-windows:
+    uses: ./.github/workflows/windows-test.yml
+    needs: check-test-trigger
+    with:
+      ref: ${{ github.event.pull_request.head.sha }}
+    secrets:
+      UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      UNITY_TOTP_KEY: ${{ secrets.UNITY_TOTP_KEY }}
