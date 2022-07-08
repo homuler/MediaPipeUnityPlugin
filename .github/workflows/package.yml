@@ -20,7 +20,7 @@ jobs:
             --mount type=bind,src=$PWD/Packages,dst=/home/mediapipe/Packages \
             --mount type=bind,src=$PWD/Assets,dst=/home/mediapipe/Assets \
             mediapipe_unity:latest \
-            python build.py build --desktop gpu --opencv cmake -vv
+            python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --desktop gpu --opencv cmake -vv
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
@@ -45,7 +45,7 @@ jobs:
             --mount type=bind,src=$PWD/Packages,dst=/home/mediapipe/Packages \
             --mount type=bind,src=$PWD/Assets,dst=/home/mediapipe/Assets \
             mediapipe_unity:latest \
-            python build.py build --android fat -vv
+            python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --android fat -vv
 
       - name: Upload mediapipe_android.aar
         uses: actions/upload-artifact@v2
@@ -70,7 +70,7 @@ jobs:
       - name: Build libmediapipe_c.dylib
         run: |
           unset ANDROID_NDK_HOME
-          python build.py build --desktop cpu --opencv cmake --macos_universal -vv
+          python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --desktop cpu --opencv cmake --macos_universal -vv
 
       - name: Upload libmediapipe_c.dylib
         uses: actions/upload-artifact@v2
@@ -96,7 +96,7 @@ jobs:
         run: |
           unset ANDROID_NDK_HOME
           sed -i -e 's/PLEASE_SET_YOUR_BUNDLE_ID_HERE/com.github.homuler.mediapipe.unity/g' mediapipe_api/objc/BUILD
-          python build.py build --ios arm64 -vv
+          python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --ios arm64 -vv
 
       - name: Upload MediaPipeUnity.framework
         uses: actions/upload-artifact@v2
@@ -122,7 +122,7 @@ jobs:
             --mount type=bind,src=%CD%\Packages,dst=C:\mediapipe\Packages ^
             --mount type=bind,src=%CD%\Assets,dst=C:\mediapipe\Assets ^
             mediapipe_unity:latest ^
-            python build.py build --desktop cpu --opencv cmake -vv
+            python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --desktop cpu --opencv cmake -vv
         shell: cmd
 
       - name: Upload mediapipe_c.dll
