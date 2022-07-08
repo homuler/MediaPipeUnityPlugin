@@ -1,7 +1,11 @@
 name: Package
 on:
   workflow_dispatch: {}
-  push: {}
+  push:
+    tags:
+      - v*
+  schedule:
+    - cron: 0 12 * * 0
 jobs:
   linux-build:
     runs-on: ubuntu-latest
@@ -149,7 +153,7 @@ jobs:
         with:
           name: mediapipe_android.aar
           path: Packages/com.github.homuler.mediapipe/Plugins/Android
-      - name: Download libmediapipe_c.dylib]
+      - name: Download libmediapipe_c.dylib
         uses: actions/download-artifact@v3
         with:
           name: libmediapipe_c.dylib
