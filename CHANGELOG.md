@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.10.1](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.10.0...v0.10.1) (2022-07-09)
+
+
+### Features
+
+* **objectron:** set confidence parameters at runtime ([#605](https://github.com/homuler/MediaPipeUnityPlugin/issues/605)) ([af86a8e](https://github.com/homuler/MediaPipeUnityPlugin/commit/af86a8e4e7649d63dcb4af2505bc33610a96cbed))
+
+
+### Bug Fixes
+
+* docker freezes when building a Docker Windows image ([#631](https://github.com/homuler/MediaPipeUnityPlugin/issues/631)) ([727b7ff](https://github.com/homuler/MediaPipeUnityPlugin/commit/727b7ff6c7926a90c0b348adfa973c31b67a3a1c))
+* OpenCV paths os macOS ([#592](https://github.com/homuler/MediaPipeUnityPlugin/issues/592)) ([358f7b9](https://github.com/homuler/MediaPipeUnityPlugin/commit/358f7b9ac6f08d4e4f7b1d1fac9d5458e2d1730f))
+* some tests fail on Windows ([#644](https://github.com/homuler/MediaPipeUnityPlugin/issues/644)) ([0a90ac1](https://github.com/homuler/MediaPipeUnityPlugin/commit/0a90ac1798b0a18300ee67a97c6756edb9e98e96))
+
 ## [0.10.0](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.9.3...v0.10.0) (2022-05-20)
 
 
