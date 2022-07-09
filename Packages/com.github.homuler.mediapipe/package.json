@@ -14,13 +14,12 @@
     "MediaPipe"
   ],
   "scripts": {
-    "copyLicenseFile": "cat $(npm prefix)/../../LICENSE > LICENSE.md",
     "setupSampleDir": "rm -rf $(npm prefix)/Samples~ && mkdir -p $(npm prefix)/Samples~",
     "removeStartScene": "rm \"$(npm prefix)/Samples~/Solutions/Scenes/Start Scene.unity\" && rm \"$(npm prefix)/Samples~/Solutions/Scenes/Start Scene.unity.meta\"",
     "copySolutionSamples": "cp -r $(npm prefix)/../../Assets/MediaPipeUnity/Samples $(npm prefix)/Samples~/Solutions && npm run removeStartScene",
     "copyTutorial": "cp -r $(npm prefix)/../../Assets/MediaPipeUnity/Tutorial $(npm prefix)/Samples~/Tutorial",
-    "prepack": "npm run copyLicenseFile && npm run setupSampleDir && npm run copySolutionSamples && npm run copyTutorial",
-    "postpack": "rm -rf $(npm prefix)/Samples~ && rm $(npm prefix)/LICENSE.md"
+    "prepack": "npm run setupSampleDir && npm run copySolutionSamples && npm run copyTutorial",
+    "postpack": "rm -rf $(npm prefix)/Samples~"
   },
   "license": "MIT",
   "licenseUrl": "https://github.com/homuler/MediaPipeUnityPlugin/blob/master/LICENSE",

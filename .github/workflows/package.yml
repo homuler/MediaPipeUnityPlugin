@@ -1,0 +1,220 @@
+name: Package
+on:
+  workflow_dispatch: {}
+  push:
+    tags:
+      - v*
+  schedule:
+    - cron: 0 12 * * 0,3
+jobs:
+  linux-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.ref }}
+
+      - name: Build a Docker image
+        run: |
+          docker build --no-cache --build-arg UID=$(id -u) -t mediapipe_unity:latest . -f docker/linux/x86_64/Dockerfile.ubuntu
+
+      - name: Build
+        run: |
+          docker run \
+            --mount type=bind,src=$PWD/Packages,dst=/home/mediapipe/Packages \
+            --mount type=bind,src=$PWD/Assets,dst=/home/mediapipe/Assets \
+            mediapipe_unity:latest \
+            python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --desktop gpu --opencv cmake -vv
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: base-package
+          path: .
+
+  android-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.ref }}
+
+      - name: Build a Docker image
+        run: |
+          docker build --no-cache --build-arg UID=$(id -u) -t mediapipe_unity:latest . -f docker/linux/x86_64/Dockerfile.ubuntu
+
+      - name: Build
+        run: |
+          docker run \
+            --mount type=bind,src=$PWD/Packages,dst=/home/mediapipe/Packages \
+            --mount type=bind,src=$PWD/Assets,dst=/home/mediapipe/Assets \
+            mediapipe_unity:latest \
+            python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --android fat --android_ndk_api_level 21 -vv
+
+      - name: Upload mediapipe_android.aar
+        uses: actions/upload-artifact@v2
+        with:
+          name: mediapipe_android.aar
+          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/Android/mediapipe_android.aar
+
+  macos-build:
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.ref }}
+
+      # Setup Python
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install NumPy
+        run: pip install --no-cache-dir --user numpy
+
+      - name: Build libmediapipe_c.dylib
+        run: |
+          unset ANDROID_NDK_HOME
+          python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --desktop cpu --opencv cmake --macos_universal -vv
+
+      - name: Upload libmediapipe_c.dylib
+        uses: actions/upload-artifact@v2
+        with:
+          name: libmediapipe_c.dylib
+          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.dylib
+
+  ios-build:
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.ref }}
+
+      # Setup Python
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install NumPy
+        run: pip install --no-cache-dir --user numpy
+
+      - name: Build libmediapipe_c.dylib
+        run: |
+          unset ANDROID_NDK_HOME
+          sed -i -e 's/PLEASE_SET_YOUR_BUNDLE_ID_HERE/com.github.homuler.mediapipe.unity/g' mediapipe_api/objc/BUILD
+          python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --ios arm64 -vv
+
+      - name: Upload MediaPipeUnity.framework
+        uses: actions/upload-artifact@v2
+        with:
+          name: MediaPipeUnity.framework
+          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/iOS/MediaPipeUnity.framework
+
+  windows-build:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.ref }}
+
+      - name: Build a Docker image
+        run: |
+          docker build --no-cache -t mediapipe_unity:latest . -f docker/windows/x86_64/Dockerfile
+        shell: cmd
+
+      - name: Build
+        run: |
+          docker run --cpus=2 --memory=8g ^
+            --mount type=bind,src=%CD%\Packages,dst=C:\mediapipe\Packages ^
+            --mount type=bind,src=%CD%\Assets,dst=C:\mediapipe\Assets ^
+            mediapipe_unity:latest ^
+            python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --desktop cpu --opencv cmake -vv
+        shell: cmd
+
+      - name: Upload mediapipe_c.dll
+        uses: actions/upload-artifact@v2
+        with:
+          name: mediapipe_c.dll
+          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/mediapipe_c.dll
+
+  package:
+    runs-on: ubuntu-latest
+    needs:
+      - linux-build
+      - android-build
+      - macos-build
+      - ios-build
+      - windows-build
+    steps:
+      - name: Download the base package
+        uses: actions/download-artifact@v3
+        with:
+          name: base-package
+      - name: Download mediapipe_android.aar
+        uses: actions/download-artifact@v3
+        with:
+          name: mediapipe_android.aar
+          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/Android
+      - name: Download libmediapipe_c.dylib
+        uses: actions/download-artifact@v3
+        with:
+          name: libmediapipe_c.dylib
+          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins
+      - name: Download MediaPipeUnity.framework
+        uses: actions/download-artifact@v3
+        with:
+          name: MediaPipeUnity.framework
+          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/iOS/MediaPipeUnity.framework
+      - name: Download mediapipe_c.dll
+        uses: actions/download-artifact@v3
+        with:
+          name: mediapipe_c.dll
+          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins
+
+      - name: Remove unused meta files
+        run: |
+          cd Packages/com.github.homuler.mediapipe/Runtime/Plugins
+          rm libmediapipe_c.bc.meta
+          rm libopencv_world.*.meta
+          rm opencv_world*.dll.meta
+
+      - name: Package
+        run: |
+          cd Packages/com.github.homuler.mediapipe
+          npm pack
+          mv com.github.homuler.mediapipe-*.tgz ../..
+
+      - name: Upload the built package
+        uses: actions/upload-artifact@v2  
+        with:
+          name: package
+          path: com.github.homuler.mediapipe-*.tgz
+
+  clean:
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    needs:
+      - package
+    steps:
+      - uses: geekyeggo/delete-artifact@v1
+        with:
+          name: base-package
+          failOnError: false
+
+      - uses: geekyeggo/delete-artifact@v1
+        with:
+          name: mediapipe_android.aar
+          failOnError: false
+
+      - uses: geekyeggo/delete-artifact@v1
+        with:
+          name: libmediapipe_c.dylib
+          failOnError: false
+
+      - uses: geekyeggo/delete-artifact@v1
+        with:
+          name: MediaPipeUnity.framework
+          failOnError: false
+
+      - uses: geekyeggo/delete-artifact@v1
+        with:
+          name: mediapipe_c.dll
+          failOnError: false
