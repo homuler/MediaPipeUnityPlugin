@@ -21,7 +21,8 @@
 *.dll
 *.dylib
 *.so
-*.framework/
+**/*.framework/*
+!**/*.framework/*.meta
 
 bazel-*
 
