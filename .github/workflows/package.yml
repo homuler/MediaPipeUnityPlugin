@@ -1,9 +1,11 @@
 name: Package
 on:
   workflow_dispatch: {}
-  push: {}
+  push:
+    tags:
+      - v*
   schedule:
-    - cron: 0 12 * * 0
+    - cron: 0 12 * * 0,3
 jobs:
   linux-build:
     runs-on: ubuntu-latest
@@ -47,7 +49,7 @@ jobs:
             --mount type=bind,src=$PWD/Packages,dst=/home/mediapipe/Packages \
             --mount type=bind,src=$PWD/Assets,dst=/home/mediapipe/Assets \
             mediapipe_unity:latest \
-            python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --android fat -vv
+            python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --android fat --android_ndk_api_level 21 -vv
 
       - name: Upload mediapipe_android.aar
         uses: actions/upload-artifact@v2
@@ -166,6 +168,13 @@ jobs:
         with:
           name: mediapipe_c.dll
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins
+
+      - name: Remove unused meta files
+        run: |
+          cd Packages/com.github.homuler.mediapipe/Runtime/Plugins
+          rm libmediapipe_c.bc.meta
+          rm libopencv_world.*.meta
+          rm opencv_world*.dll.meta
 
       - name: Package
         run: |
