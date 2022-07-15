@@ -196,6 +196,7 @@ cc_library(
         "//mediapipe_api/framework/formats:image_frame",
         "//mediapipe_api/framework/formats:landmark",
         "//mediapipe_api/framework/formats:matrix_frame",
+        "//mediapipe_api/framework/formats:float_vector_frame",
         "//mediapipe_api/framework/formats:rect",
         "//mediapipe_api/framework/port:logging",
         "//mediapipe_api/graphs/object_detection_3d/calculators:model_matrix",
