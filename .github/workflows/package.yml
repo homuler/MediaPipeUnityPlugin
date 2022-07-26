@@ -20,7 +20,7 @@ jobs:
 
       - name: Build
         run: |
-          docker run \
+          docker run --rm \
             --mount type=bind,src=$PWD/Packages,dst=/home/mediapipe/Packages \
             --mount type=bind,src=$PWD/Assets,dst=/home/mediapipe/Assets \
             mediapipe_unity:latest \
@@ -45,7 +45,7 @@ jobs:
 
       - name: Build
         run: |
-          docker run \
+          docker run --rm \
             --mount type=bind,src=$PWD/Packages,dst=/home/mediapipe/Packages \
             --mount type=bind,src=$PWD/Assets,dst=/home/mediapipe/Assets \
             mediapipe_unity:latest \
@@ -122,7 +122,7 @@ jobs:
 
       - name: Build
         run: |
-          docker run --cpus=2 --memory=8g ^
+          docker run --rm --cpus=2 --memory=8g ^
             --mount type=bind,src=%CD%\Packages,dst=C:\mediapipe\Packages ^
             --mount type=bind,src=%CD%\Assets,dst=C:\mediapipe\Assets ^
             mediapipe_unity:latest ^
