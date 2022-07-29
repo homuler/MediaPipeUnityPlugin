@@ -78,7 +78,7 @@ namespace Mediapipe
       return result;
     }
 
-    public IntPtr GetArrayPtr()
+    private IntPtr GetArrayPtr()
     {
       UnsafeNativeMethods.mp_Packet__GetFloatArray(mpPtr, out var value).Assert();
       GC.KeepAlive(this);

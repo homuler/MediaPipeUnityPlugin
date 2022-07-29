@@ -60,7 +60,7 @@ namespace Mediapipe
       return result.ToList();
     }
 
-    public IntPtr GetArrayPtr()
+    private IntPtr GetArrayPtr()
     {
       UnsafeNativeMethods.mp_Packet__GetFloatVector(mpPtr, out var floatFrameVector).Assert();
       GC.KeepAlive(this);
