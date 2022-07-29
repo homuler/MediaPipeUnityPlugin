@@ -26,4 +26,3 @@ MpReturnCode mp_Packet__GetFloatVector(mediapipe::Packet* packet, const float** 
   CATCH_ALL
 }
 
-void mp_FloatVector__delete(float* vector_data) { delete[] vector_data; }
