@@ -1,10 +1,11 @@
 
 
+using Google.Protobuf;
 using System;
 
 namespace Mediapipe
 {
-  public class MatrixPacket : Packet<byte[]>
+  public class MatrixPacket : Packet<MatrixData>
   {
     private int _length = -1;
 
@@ -31,15 +32,17 @@ namespace Mediapipe
     [UnityEngine.Scripting.Preserve]
     public MatrixPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
-    public MatrixPacket(byte[] value) : base()
+    public MatrixPacket(MatrixData matrixData) : base()
     {
+      var value = matrixData.ToByteArray();
       UnsafeNativeMethods.mp__MakeMatrixPacket__PKc_i(value, value.Length, out var ptr).Assert();
       this.ptr = ptr;
       length = value.Length;
     }
 
-    public MatrixPacket(byte[] value, Timestamp timestamp) : base()
+    public MatrixPacket(MatrixData matrixData, Timestamp timestamp) : base()
     {
+      var value = matrixData.ToByteArray();
       UnsafeNativeMethods.mp__MakeMatrixPacket_At__PA_i_Rt(value, value.Length, timestamp.mpPtr, out var ptr).Assert();
       GC.KeepAlive(timestamp);
       this.ptr = ptr;
@@ -53,12 +56,12 @@ namespace Mediapipe
       return packet;
     }
 
-    public override byte[] Get()
+    public override MatrixData Get()
     {
       throw new NotImplementedException();
     }
 
-    public override StatusOr<byte[]> Consume()
+    public override StatusOr<MatrixData> Consume()
     {
       throw new NotImplementedException();
     }

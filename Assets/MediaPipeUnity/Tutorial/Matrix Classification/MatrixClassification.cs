@@ -13,7 +13,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Google.Protobuf;
 
 namespace Mediapipe.Unity
 {
@@ -111,7 +110,7 @@ namespace Mediapipe.Unity
         var matrix = CreateInputData();
 
         // feed data into graph
-        var input = new MatrixPacket(matrix.ToByteArray(), new Timestamp(i));
+        var input = new MatrixPacket(matrix, new Timestamp(i));
         graph.AddPacketToInputStream("in", input).AssertOk();
       }
       graph.CloseInputStream("in").AssertOk();
