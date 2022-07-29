@@ -7,9 +7,7 @@
 #ifndef MEDIAPIPE_API_FRAMEWORK_FORMATS_FLOAT_VECTOR_H_
 #define MEDIAPIPE_API_FRAMEWORK_FORMATS_FLOAT_VECTOR_H_
 
-#include "mediapipe_api/framework/formats/float_vector.h"
 #include "mediapipe_api/common.h"
-#include "mediapipe_api/external/protobuf.h"
 #include "mediapipe_api/framework/packet.h"
 
 
