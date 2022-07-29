@@ -10,14 +10,11 @@
 #include "mediapipe_api/common.h"
 #include "mediapipe_api/framework/packet.h"
 
-
 extern "C" {
-
-MP_CAPI(MpReturnCode) mp__MakeFloatVectorPacket__PA_i(const float* value, int size, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp__MakeFloatVectorPacket_At__PA_i_Rt(const float* value, int size, mediapipe::Timestamp* timestamp,
+    MP_CAPI(MpReturnCode) mp__MakeFloatVectorPacket__PA_i(const float* value, int size, mediapipe::Packet** packet_out);
+    MP_CAPI(MpReturnCode) mp__MakeFloatVectorPacket_At__PA_i_Rt(const float* value, int size, mediapipe::Timestamp* timestamp,
                                                                mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp_Packet__GetFloatVector(mediapipe::Packet* packet, const float** value_out);
-
+    MP_CAPI(MpReturnCode) mp_Packet__GetFloatVector(mediapipe::Packet* packet, const float** value_out);
 }  // extern "C"
 
 #endif  // MEDIAPIPE_API_FRAMEWORK_FORMATS_FLOAT_VECTOR_H_
