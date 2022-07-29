@@ -4,10 +4,10 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-#ifndef MEDIAPIPE_API_FRAMEWORK_FORMATS_MATRIX_FRAME_H_
-#define MEDIAPIPE_API_FRAMEWORK_FORMATS_MATRIX_FRAME_H_
+#ifndef MEDIAPIPE_API_FRAMEWORK_FORMATS_MATRIX_DATA_H_
+#define MEDIAPIPE_API_FRAMEWORK_FORMATS_MATRIX_DATA_H_
 
-#include "mediapipe_api/framework/formats/matrix_frame.h"
+#include "mediapipe_api/framework/formats/matrix_data.h"
 #include "mediapipe_api/common.h"
 #include "mediapipe_api/external/protobuf.h"
 #include "mediapipe_api/framework/packet.h"
@@ -24,4 +24,4 @@ MP_CAPI(MpReturnCode) mp__MakeMatrixFramePacket_At__PA_i_Rt(const char* matrix_d
 
 }  // extern "C"
 
-#endif  // MEDIAPIPE_API_FRAMEWORK_FORMATS_MATRIX_FRAME_H_
+#endif  // MEDIAPIPE_API_FRAMEWORK_FORMATS_MATRIX_DATA_H_

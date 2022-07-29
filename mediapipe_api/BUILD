@@ -195,7 +195,7 @@ cc_library(
         "//mediapipe_api/framework/formats:detection",
         "//mediapipe_api/framework/formats:image_frame",
         "//mediapipe_api/framework/formats:landmark",
-        "//mediapipe_api/framework/formats:matrix_frame",
+        "//mediapipe_api/framework/formats:matrix_data",
         "//mediapipe_api/framework/formats:float_vector",
         "//mediapipe_api/framework/formats:rect",
         "//mediapipe_api/framework/port:logging",

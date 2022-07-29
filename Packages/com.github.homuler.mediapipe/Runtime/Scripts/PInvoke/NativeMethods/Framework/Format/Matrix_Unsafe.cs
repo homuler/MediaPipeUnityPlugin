@@ -10,10 +10,10 @@ namespace Mediapipe
    
     #region Packet
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp__MakeMatrixFramePacket__PKc_i(byte[] serializedMatrixData, int size, out IntPtr packet_out);
+    public static extern MpReturnCode mp__MakeMatrixPacket__PKc_i(byte[] serializedMatrixData, int size, out IntPtr packet_out);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp__MakeMatrixFramePacket_At__PA_i_Rt(byte[] serializedMatrixData, int size, IntPtr timestamp, out IntPtr packet_out);
+    public static extern MpReturnCode mp__MakeMatrixPacket_At__PA_i_Rt(byte[] serializedMatrixData, int size, IntPtr timestamp, out IntPtr packet_out);
 
     #endregion
   }

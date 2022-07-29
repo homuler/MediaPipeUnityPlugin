@@ -111,7 +111,7 @@ namespace Mediapipe.Unity
         var matrix = CreateInputData();
 
         // feed data into graph
-        var input = new MatrixFramePacket(matrix.ToByteArray(), new Timestamp(i));
+        var input = new MatrixPacket(matrix.ToByteArray(), new Timestamp(i));
         graph.AddPacketToInputStream("in", input).AssertOk();
       }
       graph.CloseInputStream("in").AssertOk();

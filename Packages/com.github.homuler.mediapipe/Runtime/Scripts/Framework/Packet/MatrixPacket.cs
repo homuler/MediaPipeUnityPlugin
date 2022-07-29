@@ -4,7 +4,7 @@ using System;
 
 namespace Mediapipe
 {
-  public class MatrixFramePacket : Packet<byte[]>
+  public class MatrixPacket : Packet<byte[]>
   {
     private int _length = -1;
 
@@ -23,32 +23,32 @@ namespace Mediapipe
     }
 
     /// <summary>
-    ///   Creates an empty <see cref="MatrixFramePacket
+    ///   Creates an empty <see cref="MatrixPacket
     ///   " /> instance.
     /// </summary>
-    public MatrixFramePacket() : base(true) { }
+    public MatrixPacket() : base(true) { }
 
     [UnityEngine.Scripting.Preserve]
-    public MatrixFramePacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
+    public MatrixPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
-    public MatrixFramePacket(byte[] value) : base()
+    public MatrixPacket(byte[] value) : base()
     {
-      UnsafeNativeMethods.mp__MakeMatrixFramePacket__PKc_i(value, value.Length, out var ptr).Assert();
+      UnsafeNativeMethods.mp__MakeMatrixPacket__PKc_i(value, value.Length, out var ptr).Assert();
       this.ptr = ptr;
       length = value.Length;
     }
 
-    public MatrixFramePacket(byte[] value, Timestamp timestamp) : base()
+    public MatrixPacket(byte[] value, Timestamp timestamp) : base()
     {
-      UnsafeNativeMethods.mp__MakeMatrixFramePacket_At__PA_i_Rt(value, value.Length, timestamp.mpPtr, out var ptr).Assert();
+      UnsafeNativeMethods.mp__MakeMatrixPacket_At__PA_i_Rt(value, value.Length, timestamp.mpPtr, out var ptr).Assert();
       GC.KeepAlive(timestamp);
       this.ptr = ptr;
       length = value.Length;
     }
 
-    public MatrixFramePacket At(Timestamp timestamp)
+    public MatrixPacket At(Timestamp timestamp)
     {
-      var packet = At<MatrixFramePacket>(timestamp);
+      var packet = At<MatrixPacket>(timestamp);
       packet.length = length;
       return packet;
     }
