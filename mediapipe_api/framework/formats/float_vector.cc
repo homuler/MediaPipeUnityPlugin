@@ -19,10 +19,19 @@ MpReturnCode mp__MakeFloatVectorPacket_At__PA_i_Rt(const float* value, int size,
   CATCH_EXCEPTION
 }
 
-MpReturnCode mp_Packet__GetFloatVector(mediapipe::Packet* packet, const float** value_out) {
+MpReturnCode mp_Packet__GetFloatVector(mediapipe::Packet* packet, const float** data_out) {
   TRY_ALL
-    *value_out = packet->Get<std::vector<float>>().data();
+    *data_out = packet->Get<std::vector<float>>().data();
     RETURN_CODE(MpReturnCode::Success);
   CATCH_ALL
 }
+
+// TODO: Return with vector size
+//MpReturnCode mp_Packet__GetFloatVector(mediapipe::Packet* packet, const float** data_out, int* size_out) {
+//  TRY_ALL
+//    *data_out = packet->Get<std::vector<float>>().data();
+//    RETURN_CODE(MpReturnCode::Success);
+//  CATCH_ALL
+//}
+
 
