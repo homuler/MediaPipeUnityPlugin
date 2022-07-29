@@ -81,9 +81,9 @@ cc_library(
 )
 
 cc_library(
-    name = "float_vector_frame",
-    srcs = ["float_vector_frame.cc"],
-    hdrs = ["float_vector_frame.h"],
+    name = "float_vector",
+    srcs = ["float_vector.cc"],
+    hdrs = ["float_vector.h"],
     deps = [
         "//mediapipe_api:common",
         "//mediapipe_api/external/absl:status",

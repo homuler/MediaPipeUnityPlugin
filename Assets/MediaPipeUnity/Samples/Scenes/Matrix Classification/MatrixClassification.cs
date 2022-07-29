@@ -120,7 +120,7 @@ namespace Mediapipe.Unity
       // Create output container with suitable size
       //  -> size should correspond to tflite model output size
       var outputFloatArray = new float[6] { 10, 11, 12, 13, 14, 15 };
-      var output = new FloatVectorFramePacket(outputFloatArray);
+      var output = new FloatVectorPacket(outputFloatArray);
 
       while (poller.Next(output))
       {

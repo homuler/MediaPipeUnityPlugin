@@ -1,8 +1,8 @@
-#include "mediapipe_api/framework/formats/float_vector_frame.h"
+#include "mediapipe_api/framework/formats/float_vector.h"
 
 #include <vector>
 
-MpReturnCode mp__MakeFloatVectorFramePacket__PA_i(const float* value, int size, mediapipe::Packet** packet_out) {
+MpReturnCode mp__MakeFloatVectorPacket__PA_i(const float* value, int size, mediapipe::Packet** packet_out) {
   TRY
     std::vector<float> vector{};
     for (auto i = 0; i < size; ++i) {
@@ -13,7 +13,7 @@ MpReturnCode mp__MakeFloatVectorFramePacket__PA_i(const float* value, int size, 
   CATCH_EXCEPTION
 }
 
-MpReturnCode mp__MakeFloatVectorFramePacket_At__PA_i_Rt(const float* value, int size, mediapipe::Timestamp* timestamp,
+MpReturnCode mp__MakeFloatVectorPacket_At__PA_i_Rt(const float* value, int size, mediapipe::Timestamp* timestamp,
                                                       mediapipe::Packet** packet_out) {
   TRY
     std::vector<float> vector{};
@@ -25,11 +25,11 @@ MpReturnCode mp__MakeFloatVectorFramePacket_At__PA_i_Rt(const float* value, int 
   CATCH_EXCEPTION
 }
 
-MpReturnCode mp_Packet__GetFloatVectorFrame(mediapipe::Packet* packet, const float** value_out) {
+MpReturnCode mp_Packet__GetFloatVector(mediapipe::Packet* packet, const float** value_out) {
   TRY_ALL
     *value_out = packet->Get<std::vector<float>>().data();
     RETURN_CODE(MpReturnCode::Success);
   CATCH_ALL
 }
 
-void mp_FloatVectorFrame__delete(float* vector_data) { delete[] vector_data; }
+void mp_FloatVector__delete(float* vector_data) { delete[] vector_data; }

@@ -4,38 +4,38 @@ using System.Linq;
 
 namespace Mediapipe
 {
-  public class FloatVectorFramePacket : Packet<List<float>>
+  public class FloatVectorPacket : Packet<List<float>>
   {
     /// <summary>
-    ///   Creates an empty <see cref="FloatVectorFramePacket" /> instance.
+    ///   Creates an empty <see cref="FloatVectorPacket" /> instance.
     /// </summary>
     /// 
 
     private int _vectorLength;
 
 
-    public FloatVectorFramePacket() : base(true) { }
+    public FloatVectorPacket() : base(true) { }
 
     [UnityEngine.Scripting.Preserve]
-    public FloatVectorFramePacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
+    public FloatVectorPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
-    public FloatVectorFramePacket(float[] value) : base()
+    public FloatVectorPacket(float[] value) : base()
     {
-      UnsafeNativeMethods.mp__MakeFloatVectorFramePacket__PA_i(value, value.Length, out var ptr).Assert();
+      UnsafeNativeMethods.mp__MakeFloatVectorPacket__PA_i(value, value.Length, out var ptr).Assert();
       this.ptr = ptr;
       _vectorLength = value.Length;
     }
 
-    public FloatVectorFramePacket(float[] value, Timestamp timestamp) : base()
+    public FloatVectorPacket(float[] value, Timestamp timestamp) : base()
     {
-      UnsafeNativeMethods.mp__MakeFloatVectorFramePacket_At__PA_i_Rt(value, value.Length, timestamp.mpPtr, out var ptr).Assert();
+      UnsafeNativeMethods.mp__MakeFloatVectorPacket_At__PA_i_Rt(value, value.Length, timestamp.mpPtr, out var ptr).Assert();
       GC.KeepAlive(timestamp);
       this.ptr = ptr;
     }
 
-    public FloatVectorFramePacket At(Timestamp timestamp)
+    public FloatVectorPacket At(Timestamp timestamp)
     {
-      return At<FloatVectorFramePacket>(timestamp);
+      return At<FloatVectorPacket>(timestamp);
     }
 
     public override List<float> Get()
@@ -62,7 +62,7 @@ namespace Mediapipe
 
     public IntPtr GetArrayPtr()
     {
-      UnsafeNativeMethods.mp_Packet__GetFloatVectorFrame(mpPtr, out var floatFrameVector).Assert();
+      UnsafeNativeMethods.mp_Packet__GetFloatVector(mpPtr, out var floatFrameVector).Assert();
       GC.KeepAlive(this);
 
       return floatFrameVector;
