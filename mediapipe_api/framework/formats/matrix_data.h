@@ -7,18 +7,16 @@
 #ifndef MEDIAPIPE_API_FRAMEWORK_FORMATS_MATRIX_DATA_H_
 #define MEDIAPIPE_API_FRAMEWORK_FORMATS_MATRIX_DATA_H_
 
+#include "mediapipe/framework/formats/matrix.h"
 #include "mediapipe_api/common.h"
 #include "mediapipe_api/external/protobuf.h"
 #include "mediapipe_api/framework/packet.h"
-#include "mediapipe/framework/formats/matrix.h"
-
-
-
 
 extern "C" {
-    MP_CAPI(MpReturnCode) mp__MakeMatrixFramePacket__PKc_i(const char* matrix_data_serialized, int size, mediapipe::Packet** packet_out);
-    MP_CAPI(MpReturnCode) mp__MakeMatrixFramePacket_At__PA_i_Rt(const char* matrix_data_serialized, int size, mediapipe::Timestamp* timestamp,
-                                                                mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode)
+mp__MakeMatrixFramePacket__PKc_i(const char* matrix_data_serialized, int size, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode)
+mp__MakeMatrixFramePacket_At__PA_i_Rt(const char* matrix_data_serialized, int size, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
 }  // extern "C"
 
 #endif  // MEDIAPIPE_API_FRAMEWORK_FORMATS_MATRIX_DATA_H_

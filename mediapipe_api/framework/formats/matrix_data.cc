@@ -24,7 +24,7 @@ MpReturnCode mp__MakeMatrixFramePacket__PKc_i(const char* matrix_data_serialized
 }
 
 MpReturnCode mp__MakeMatrixFramePacket_At__PA_i_Rt(const char* matrix_data_serialized, int size, mediapipe::Timestamp* timestamp,
-                                                      mediapipe::Packet** packet_out) {
+                                                   mediapipe::Packet** packet_out) {
   TRY
     mediapipe::Matrix matrix;
 
@@ -40,7 +40,3 @@ MpReturnCode mp__MakeMatrixFramePacket_At__PA_i_Rt(const char* matrix_data_seria
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }
-
-
-
-
