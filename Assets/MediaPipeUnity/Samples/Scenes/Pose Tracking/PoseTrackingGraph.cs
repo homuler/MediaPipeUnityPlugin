@@ -125,6 +125,9 @@ namespace Mediapipe.Unity.PoseTracking
       var r3 = TryGetNext(_poseWorldLandmarksStream, out poseWorldLandmarks, allowBlock, currentTimestampMicrosec);
       var r4 = TryGetNext(_segmentationMaskStream, out segmentationMask, allowBlock, currentTimestampMicrosec);
       var r5 = TryGetNext(_roiFromLandmarksStream, out roiFromLandmarks, allowBlock, currentTimestampMicrosec);
+      
+      if (poseLandmarks == null && poseWorldLandmarks != null)
+        r2 = TryGetNext(_poseLandmarksStream, out poseLandmarks, allowBlock, currentTimestampMicrosec);
 
       return r1 || r2 || r3 || r4 || r5;
     }
