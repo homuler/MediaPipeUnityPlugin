@@ -164,6 +164,9 @@ namespace Mediapipe.Unity.Holistic
       var r6 = TryGetNext(_poseWorldLandmarksStream, out poseWorldLandmarks, allowBlock, currentTimestampMicrosec);
       var r7 = TryGetNext(_segmentationMaskStream, out segmentationMask, allowBlock, currentTimestampMicrosec);
       var r8 = TryGetNext(_poseRoiStream, out poseRoi, allowBlock, currentTimestampMicrosec);
+      
+      if (poseLandmarks == null && poseWorldLandmarks != null)
+        r2 = TryGetNext(_poseLandmarksStream, out poseLandmarks, allowBlock, currentTimestampMicrosec);
 
       return r1 || r2 || r3 || r4 || r5 || r6 || r7 || r8;
     }
