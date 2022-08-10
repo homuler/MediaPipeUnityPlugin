@@ -35,7 +35,7 @@ MpReturnCode mp_Packet__GetFloatVector(mediapipe::Packet* packet, const float** 
 
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsFloatVector(mediapipe::Packet* packet, absl::Status** status_out) {
   TRY
-    *status_out = new absl::Status{packet->ValidateAsType<vector<float>>()};
+    *status_out = new absl::Status{packet->ValidateAsType<std::vector<float>>()};
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }
