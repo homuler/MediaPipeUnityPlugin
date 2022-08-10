@@ -11,7 +11,7 @@ namespace Mediapipe
     /// </summary>
     /// 
 
-    private int _vectorLength;
+    private int _vectorLength = -1;
 
 
     public FloatVectorPacket() : base(true) { }
@@ -37,7 +37,9 @@ namespace Mediapipe
 
     public FloatVectorPacket At(Timestamp timestamp)
     {
-      return At<FloatVectorPacket>(timestamp);
+      var packet = At<FloatVectorPacket>(timestamp);
+      packet._vectorLength = _vectorLength;
+      return packet;
     }
 
     public override List<float> Get()
