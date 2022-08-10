@@ -43,7 +43,7 @@ namespace Mediapipe
     public MatrixPacket(MatrixData matrixData, Timestamp timestamp) : base()
     {
       var value = matrixData.ToByteArray();
-      UnsafeNativeMethods.mp__MakeMatrixPacket_At__PA_i_Rt(value, value.Length, timestamp.mpPtr, out var ptr).Assert();
+      UnsafeNativeMethods.mp__MakeMatrixPacket_At__PKc_i_Rt(value, value.Length, timestamp.mpPtr, out var ptr).Assert();
       GC.KeepAlive(timestamp);
       this.ptr = ptr;
       length = value.Length;
