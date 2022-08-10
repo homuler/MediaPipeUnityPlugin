@@ -23,8 +23,7 @@ MpReturnCode mp__MakeMatrixFramePacket__PKc_i(const char* matrix_data_serialized
   CATCH_EXCEPTION
 }
 
-MpReturnCode mp__MakeMatrixPacket_At__PKc_i_Rt(const char* matrix_data_serialized, int size, mediapipe::Timestamp* timestamp,
-                                                   mediapipe::Packet** packet_out) {
+MpReturnCode mp__MakeMatrixPacket_At__PKc_i_Rt(const char* matrix_data_serialized, int size, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
   TRY
     mediapipe::Matrix matrix;
 
@@ -37,6 +36,13 @@ MpReturnCode mp__MakeMatrixPacket_At__PKc_i_Rt(const char* matrix_data_serialize
     mediapipe::MatrixFromMatrixDataProto(matrix_data, &matrix);
 
     *packet_out = new mediapipe::Packet{mediapipe::MakePacket<mediapipe::Matrix>(matrix).At(*timestamp)};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
+MP_CAPI(MpReturnCode) mp_Packet__ValidateAsMatrix(mediapipe::Packet* packet, absl::Status** status_out) {
+  TRY
+    *status_out = new absl::Status{packet->ValidateAsType<mediapipe::Matrix>()};
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }

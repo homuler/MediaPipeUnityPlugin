@@ -107,7 +107,7 @@ namespace Mediapipe.Unity
       graph.StartRun().AssertOk();
       for (var i = 0; i < 10; i++)
       {
-        var matrix = CreateInputData();
+        var matrix = CreateMatrixInputData();
 
         // feed data into graph
         var input = new MatrixPacket(matrix, new Timestamp(i));
@@ -137,7 +137,7 @@ namespace Mediapipe.Unity
       Debug.Log("Done");
     }
 
-    private static MatrixData CreateInputData()
+    private static MatrixData CreateMatrixInputData()
     {
       var matrix = new MatrixData();
       matrix.PackedData.Add(0);
