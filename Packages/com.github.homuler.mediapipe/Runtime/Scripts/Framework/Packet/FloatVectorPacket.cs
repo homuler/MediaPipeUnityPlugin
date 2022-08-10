@@ -19,15 +19,17 @@ namespace Mediapipe
     [UnityEngine.Scripting.Preserve]
     public FloatVectorPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
-    public FloatVectorPacket(float[] value) : base()
+    public FloatVectorPacket(List<float> valuesAsList) : base()
     {
+      var value = valuesAsList.ToArray();
       UnsafeNativeMethods.mp__MakeFloatVectorPacket__PA_i(value, value.Length, out var ptr).Assert();
       this.ptr = ptr;
       _vectorLength = value.Length;
     }
 
-    public FloatVectorPacket(float[] value, Timestamp timestamp) : base()
+    public FloatVectorPacket(List<float> valuesAsList, Timestamp timestamp) : base()
     {
+      var value = valuesAsList.ToArray();
       UnsafeNativeMethods.mp__MakeFloatVectorPacket_At__PA_i_Rt(value, value.Length, timestamp.mpPtr, out var ptr).Assert();
       GC.KeepAlive(timestamp);
       this.ptr = ptr;
@@ -71,6 +73,14 @@ namespace Mediapipe
     public override StatusOr<List<float>> Consume()
     {
       throw new NotSupportedException();
+    }
+
+    public override Status ValidateAsType()
+    {
+      UnsafeNativeMethods.mp_Packet__ValidateAsFloatVector(mpPtr, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      return new Status(statusPtr);
     }
   }
 }

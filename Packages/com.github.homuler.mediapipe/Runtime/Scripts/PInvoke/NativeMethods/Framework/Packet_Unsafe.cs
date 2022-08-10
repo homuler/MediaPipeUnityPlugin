@@ -74,6 +74,9 @@ namespace Mediapipe
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__GetFloatVector(IntPtr packet, out IntPtr value);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__ValidateAsFloatVector(IntPtr packet, out IntPtr status);
     #endregion
 
     #region Int
