@@ -3,7 +3,10 @@
 // You can download it via this Google Drive link:
 // https://drive.google.com/file/d/1vVDn80eZClBDJ8dJUk3szb9rLaE9p60q/view?usp=sharing
 // You need to copy the file to 
-// Packages\com.github.homuler.mediapipe\Runtime\Resources
+//     Packages\com.github.homuler.mediapipe\Runtime\Resources
+// for running in Editor mode and to 
+//     Assets\StreamingAssets
+// for Android
 
 // Issues:
 // - Make sure TfliteConverterCalculator is compiled along with the plugin
@@ -177,6 +180,13 @@ namespace Mediapipe.Unity
 
     private IEnumerator Init()
     {
+      Logger.LogInfo(TAG, "Initializing AssetLoader...");
+#if UNITY_EDITOR
+      AssetLoader.Provide(new LocalResourceManager());
+#else
+      AssetLoader.Provide(new StreamingAssetsResourceManager());
+#endif
+
       Logger.LogInfo(TAG, "Loading dependent assets...");
       var assetRequests = RequestDependentAssets();
       yield return new WaitWhile(() => assetRequests.Any((request) => request.keepWaiting));
