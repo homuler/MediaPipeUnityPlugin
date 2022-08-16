@@ -59,6 +59,7 @@ jobs:
         with:
           name: windows-package
           path: artifacts.tar
+          retention-days: 1
 
       - name: Prepare for cache
         run: |
@@ -151,6 +152,7 @@ jobs:
         with:
           name: Test results for ${{ matrix.unity.version }} on ${{ matrix.os }}
           path: DummyProject\testResults
+          retention-days: 7
 
   post-test:
     runs-on: ubuntu-latest

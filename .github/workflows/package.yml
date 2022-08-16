@@ -187,6 +187,7 @@ jobs:
         with:
           name: package
           path: com.github.homuler.mediapipe-*.tgz
+          retention-days: 7
 
   clean:
     runs-on: ubuntu-latest
