@@ -389,7 +389,7 @@ namespace Mediapipe.Unity
         var isFound = _InstanceTable.TryGetValue(streamId, out var outputStream);
         if (!isFound)
         {
-          return Status.StatusArgs.NotFound($"OutputStream with id {streamId} is not found");
+          return Status.StatusArgs.NotFound($"OutputStream with id {streamId} is not found, maybe already GCed");
         }
         if (outputStream.calculatorGraph.mpPtr != graphPtr)
         {
