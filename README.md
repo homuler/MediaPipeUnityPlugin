@@ -65,8 +65,11 @@ For more detailed usage, see [the API Overview](https://github.com/homuler/Media
 
 ## :hammer_and_wrench: Installation
 
-This repository does not contain required libraries (e.g. `libmediapipe_c.so`, `Google.Protobuf.dll`, etc), so you **need to build them** first.\
-For step-by-step guide, please refer to the [Installation Guide](https://github.com/homuler/MediaPipeUnityPlugin/wiki/Installation-Guide) in Wiki.
+This repository **does not contain required libraries** (e.g. `libmediapipe_c.so`, `Google.Protobuf.dll`, etc).\
+You can download an all-in-one package from [the release page](https://github.com/homuler/MediaPipeUnityPlugin/releases), but if you want to customize the package or minify the package size, you need to build them by yourself.\
+
+For a step-by-step guide, please refer to the [Installation Guide](https://github.com/homuler/MediaPipeUnityPlugin/wiki/Installation-Guide) in Wiki.\
+You can also take advantage of [the Package Workflow](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/.github/workflows/package.yml) on Github Actions.
 
 > :warning: libraries that can be built differ depending on your environment.
 
@@ -85,7 +88,7 @@ For step-by-step guide, please refer to the [Installation Guide](https://github.
 [^2]: Experimental, because MediaPipe does not support M1 Mac.
 [^3]: Running MediaPipe on Windows is [experimental](https://google.github.io/mediapipe/getting_started/install.html#installing-on-windows).
 
-## :plate_with_cutlery: Try sample app
+## :plate_with_cutlery: Try the sample app
 
 ### Example Solutions
 
