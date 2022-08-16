@@ -57,6 +57,7 @@ jobs:
         with:
           name: linux-package
           path: artifacts.tar
+          retention-days: 1
 
   test:
     runs-on: ${{ matrix.os }}
@@ -141,11 +142,14 @@ jobs:
         with:
           name: Test results for ${{ matrix.unityVersion }} on ${{ matrix.os }}
           path: DummyProject/testResults
+          retention-days: 7
+
       - uses: actions/upload-artifact@v2
         if: ${{ matrix.os == 'ubuntu-20.04' && startsWith(matrix.unityVersion, '2021') }}
         with:
           name: Coverage results
           path: DummyProject/CodeCoverage
+          retention-days: 7
 
   post-test:
     runs-on: ubuntu-latest
