@@ -13,11 +13,12 @@
 #include "mediapipe_api/framework/packet.h"
 
 extern "C" {
-MP_CAPI(MpReturnCode)
-mp__MakeMatrixFramePacket__PKc_i(const char* matrix_data_serialized, int size, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode)
-mp__MakeMatrixPacket_At__PKc_i_Rt(const char* matrix_data_serialized, int size, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
+
+MP_CAPI(MpReturnCode) mp__MakeMatrixPacket__PKc_i(const char* matrix_data_serialized, int size, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeMatrixPacket_At__PKc_i_Rt(const char* matrix_data_serialized, int size, mediapipe::Timestamp* timestamp,
+                                                        mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsMatrix(mediapipe::Packet* packet, absl::Status** status_out);
+
 }  // extern "C"
 
 #endif  // MEDIAPIPE_API_FRAMEWORK_FORMATS_MATRIX_DATA_H_
