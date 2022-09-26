@@ -14,6 +14,7 @@ extern "C" {
 MP_CAPI(MpReturnCode) mp__MakeFloatVectorPacket__PA_i(const float* value, int size, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeFloatVectorPacket_At__PA_i_Rt(const float* value, int size, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetFloatVector(mediapipe::Packet* packet, const float** value_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetFloatVector(mediapipe::Packet* packet, const float** value_out, int* size_out)
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsFloatVector(mediapipe::Packet* packet, absl::Status** status_out);
 
 }  // extern "C"
