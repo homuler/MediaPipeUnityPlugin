@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Mediapipe
 {
-  public class FloatVectorPacket : Packet<List<float>>
+  public class FloatVectorPacket : Packet<float[]>
   {
     /// <summary>
     ///   Creates an empty <see cref="FloatVectorPacket" /> instance.
@@ -19,17 +19,15 @@ namespace Mediapipe
     [UnityEngine.Scripting.Preserve]
     public FloatVectorPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
-    public FloatVectorPacket(List<float> valuesAsList) : base()
+    public FloatVectorPacket(float[] value) : base()
     {
-      var value = valuesAsList.ToArray();
       UnsafeNativeMethods.mp__MakeFloatVectorPacket__PA_i(value, value.Length, out var ptr).Assert();
       this.ptr = ptr;
       _vectorLength = value.Length;
     }
 
-    public FloatVectorPacket(List<float> valuesAsList, Timestamp timestamp) : base()
+    public FloatVectorPacket(float[] value, Timestamp timestamp) : base()
     {
-      var value = valuesAsList.ToArray();
       UnsafeNativeMethods.mp__MakeFloatVectorPacket_At__PA_i_Rt(value, value.Length, timestamp.mpPtr, out var ptr).Assert();
       GC.KeepAlive(timestamp);
       this.ptr = ptr;
@@ -42,18 +40,20 @@ namespace Mediapipe
       return packet;
     }
 
-    public override List<float> Get()
+    public override float[] Get()
     {
-      if (_vectorLength < 0)
+      UnsafeNativeMethods.mp_Packet__GetFloatVector(mpPtr, out var floatFrameVector, out var size).Assert();
+      GC.KeepAlive(this);
+      if (size < 0)
       {
         throw new InvalidOperationException("The array's length is unknown, set Length first");
       }
 
-      var result = new float[_vectorLength];
+      var result = new float[size];
 
       unsafe
       {
-        var src = (float*)GetArrayPtr();
+        var src = (float*)floatFrameVector;
 
         for (var i = 0; i < result.Length; i++)
         {
@@ -61,18 +61,10 @@ namespace Mediapipe
         }
       }
 
-      return result.ToList();
+      return result;
     }
 
-    private IntPtr GetArrayPtr()
-    {
-      UnsafeNativeMethods.mp_Packet__GetFloatVector(mpPtr, out var floatFrameVector).Assert();
-      GC.KeepAlive(this);
-
-      return floatFrameVector;
-    }
-
-    public override StatusOr<List<float>> Consume()
+    public override StatusOr<float[]> Consume()
     {
       throw new NotSupportedException();
     }

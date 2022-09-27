@@ -104,7 +104,7 @@ namespace Mediapipe.Unity
       var graph = new CalculatorGraph(configText);
 
       // Specify expected output of tflite model
-      var poller = graph.AddOutputStreamPoller<List<float>>("out").Value();
+      var poller = graph.AddOutputStreamPoller<float[]>("out").Value();
 
       Debug.Log("StartRun");
       graph.StartRun().AssertOk();
@@ -121,8 +121,8 @@ namespace Mediapipe.Unity
       Debug.Log("Poll output");
       // Create output container with suitable size
       //  -> size should correspond to tflite model output size
-      var outputFloatVector = new List<float>(new float[6] { 10, 11, 12, 13, 14, 15 });
-      var output = new FloatVectorPacket(outputFloatVector);
+
+      var output = new FloatVectorPacket();
 
       while (poller.Next(output))
       {

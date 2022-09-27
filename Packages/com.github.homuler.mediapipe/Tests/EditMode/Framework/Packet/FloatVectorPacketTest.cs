@@ -29,7 +29,7 @@ namespace Mediapipe.Tests
     [Test]
     public void Ctor_ShouldInstantiatePacket_When_CalledWithValue()
     {
-      var floatVector = new List<float>(new float[6] { 10, 11, 12, 13, 14, 15 });
+      var floatVector = new float[6] { 10, 11, 12, 13, 14, 15 };
       using (var packet = new FloatVectorPacket(floatVector))
       {
         Assert.True(packet.ValidateAsType().Ok());
@@ -80,7 +80,7 @@ namespace Mediapipe.Tests
     {
       using (var timestamp = new Timestamp(1))
       {
-        var floatVector = new List<float>(new float[6] { 10, 11, 12, 13, 14, 15 });
+        var floatVector = new float[6] { 10, 11, 12, 13, 14, 15 };
         var packet = new FloatVectorPacket(floatVector).At(timestamp);
         Assert.AreEqual(floatVector, packet.Get());
         Assert.AreEqual(timestamp, packet.Timestamp());
