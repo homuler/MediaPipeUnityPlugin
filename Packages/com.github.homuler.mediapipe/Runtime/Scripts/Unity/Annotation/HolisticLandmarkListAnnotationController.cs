@@ -38,7 +38,6 @@ namespace Mediapipe.Unity
         leftHandLandmarkList?.Landmark,
         rightHandLandmarkList?.Landmark
       );
-      SyncNow();
     }
 
     public void DrawFaceLandmarkListLater(IList<NormalizedLandmark> faceLandmarkList)
