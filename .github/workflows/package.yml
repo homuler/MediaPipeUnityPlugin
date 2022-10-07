@@ -1,18 +1,50 @@
 name: Package
 on:
-  workflow_dispatch: {}
-  push:
-    tags:
-      - v*
-  schedule:
-    - cron: 0 12 * * 0,3
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: true
+      bazelBuildArgs:
+        type: string
+        default: '--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0'
+      linuxBuildArgs:
+        type: string
+        required: true
+        default: '--desktop gpu --opencv cmake'
+      androidBuildArgs:
+        type: string
+        required: true
+        default: '--android fat --android_ndk_api_level 21'
+      macosBuildArgs:
+        type: string
+        required: true
+        default: '--desktop cpu --opencv cmake --macos_universal'
+      iosBuildArgs:
+        type: string
+        required: true
+        default: '--ios arm64'
+      windowsBuildArgs:
+        type: string
+        required: true
+        default: '--desktop cpu --opencv cmake'
 jobs:
   linux-build:
     runs-on: ubuntu-latest
     steps:
+      - name: Print inputs
+        run: |
+          echo '${{ inputs.ref }}'
+          echo '${{ inputs.bazelBuildArgs }}'
+          echo '${{ inputs.linuxBuildArgs }}'
+          echo '${{ inputs.androidBuildArgs }}'
+          echo '${{ inputs.macosBuildArgs }}'
+          echo '${{ inputs.iosBuildArgs }}'
+          echo '${{ inputs.windowsBuildArgs }}'
+
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.ref }}
+          ref: ${{ inputs.ref }}
 
       - name: Build a Docker image
         run: |
@@ -24,7 +56,7 @@ jobs:
             --mount type=bind,src=$PWD/Packages,dst=/home/mediapipe/Packages \
             --mount type=bind,src=$PWD/Assets,dst=/home/mediapipe/Assets \
             mediapipe_unity:latest \
-            python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --desktop gpu --opencv cmake -vv
+            python build.py build --bazel_build_opts "${{ inputs.bazelBuildArgs }}" ${{ inputs.linuxBuildArgs }} -vv
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
@@ -37,7 +69,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.ref }}
+          ref: ${{ inputs.ref }}
 
       - name: Build a Docker image
         run: |
@@ -49,7 +81,7 @@ jobs:
             --mount type=bind,src=$PWD/Packages,dst=/home/mediapipe/Packages \
             --mount type=bind,src=$PWD/Assets,dst=/home/mediapipe/Assets \
             mediapipe_unity:latest \
-            python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --android fat --android_ndk_api_level 21 -vv
+            python build.py build --bazel_build_opts "${{ inputs.bazelBuildArgs }}" ${{ inputs.androidBuildArgs }} -vv
 
       - name: Upload mediapipe_android.aar
         uses: actions/upload-artifact@v2
@@ -74,7 +106,7 @@ jobs:
       - name: Build libmediapipe_c.dylib
         run: |
           unset ANDROID_NDK_HOME
-          python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --desktop cpu --opencv cmake --macos_universal -vv
+          python build.py build --bazel_build_opts "${{ inputs.bazelBuildArgs }}" ${{ inputs.macosBuildArgs }} -vv
 
       - name: Upload libmediapipe_c.dylib
         uses: actions/upload-artifact@v2
@@ -100,7 +132,7 @@ jobs:
         run: |
           unset ANDROID_NDK_HOME
           sed -i -e 's/PLEASE_SET_YOUR_BUNDLE_ID_HERE/com.github.homuler.mediapipe.unity/g' mediapipe_api/objc/BUILD
-          python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --ios arm64 -vv
+          python build.py build --bazel_build_opts "${{ inputs.bazelBuildArgs }}" ${{ inputs.iosBuildArgs }} -vv
 
       - name: Upload MediaPipeUnity.framework
         uses: actions/upload-artifact@v2
@@ -113,7 +145,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.ref }}
+          ref: ${{ inputs.ref }}
 
       - name: Build a Docker image
         run: |
@@ -126,7 +158,7 @@ jobs:
             --mount type=bind,src=%CD%\Packages,dst=C:\mediapipe\Packages ^
             --mount type=bind,src=%CD%\Assets,dst=C:\mediapipe\Assets ^
             mediapipe_unity:latest ^
-            python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --desktop cpu --opencv cmake -vv
+            python build.py build --bazel_build_opts "${{ inputs.bazelBuildArgs }}" ${{ inputs.windowsBuildArgs }} -vv
         shell: cmd
 
       - name: Upload mediapipe_c.dll

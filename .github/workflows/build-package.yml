@@ -1,0 +1,39 @@
+name: Build a Package
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        type: string
+        description: commit id
+      bazelBuildArgs:
+        type: string
+        description: A value for `--bazel_build_opts`
+      linuxBuildArgs:
+        type: string
+        description: Build options for Linux Build
+      androidBuildArgs:
+        type: string
+        description: Build options for Android Build
+      macosBuildArgs:
+        type: string
+        description: Build options for macOS Build
+      iosBuildArgs:
+        type: string
+        description: Build options for iOS Build
+      windowsBuildArgs:
+        type: string
+        description: Build options for Windows Build
+  push: {}
+  schedule:
+    - cron: 0 12 * * 0,3
+jobs:
+  package:
+    uses: ./.github/workflows/package.yml
+    with:
+      ref: ${{ inputs.ref || github.event.ref }}
+      bazelBuildArgs: ${{ inputs.bazelBuildArgs }}
+      linuxBuildArgs: ${{ inputs.linuxBuildArgs }}
+      androidBuildArgs: ${{ inputs.androidBuildArgs }}
+      macosBuildArgs: ${{ inputs.macosBuildArgs }}
+      iosBuildArgs: ${{ inputs.iosBuildArgs }}
+      windowsBuildArgs: ${{ inputs.windowsBuildArgs }}
