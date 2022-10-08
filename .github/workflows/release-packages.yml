@@ -23,4 +23,4 @@ jobs:
       androidBuildArgs: '--linkopt="-s" --android fat --android_ndk_api_level 21'
       macosBuildArgs: '--linkopt="-s" --desktop cpu --opencv cmake --macos_universal'
       iosBuildArgs: '--linkopt="-s" --ios arm64'
-      windowsBuildArgs: '--linkopt="-s" --desktop cpu --opencv cmake'
+      windowsBuildArgs: '--desktop cpu --opencv cmake'
