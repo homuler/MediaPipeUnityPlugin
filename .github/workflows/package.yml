@@ -5,6 +5,10 @@ on:
       ref:
         type: string
         required: true
+      packageName:
+        type: string
+        required: true
+        default: package
       bazelBuildArgs:
         type: string
         default: '--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0'
@@ -61,7 +65,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: base-package
+          name: ${{ inputs.packageName }}-base
           path: .
 
   android-build:
@@ -86,7 +90,7 @@ jobs:
       - name: Upload mediapipe_android.aar
         uses: actions/upload-artifact@v2
         with:
-          name: mediapipe_android.aar
+          name: ${{ inputs.packageName }}-mediapipe_android.aar
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/Android/mediapipe_android.aar
 
   macos-build:
@@ -111,7 +115,7 @@ jobs:
       - name: Upload libmediapipe_c.dylib
         uses: actions/upload-artifact@v2
         with:
-          name: libmediapipe_c.dylib
+          name: ${{ inputs.packageName }}-libmediapipe_c.dylib
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.dylib
 
   ios-build:
@@ -137,7 +141,7 @@ jobs:
       - name: Upload MediaPipeUnity.framework
         uses: actions/upload-artifact@v2
         with:
-          name: MediaPipeUnity.framework
+          name: ${{ inputs.packageName }}-MediaPipeUnity.framework
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/iOS/MediaPipeUnity.framework
 
   windows-build:
@@ -164,7 +168,7 @@ jobs:
       - name: Upload mediapipe_c.dll
         uses: actions/upload-artifact@v2
         with:
-          name: mediapipe_c.dll
+          name: ${{ inputs.packageName }}-mediapipe_c.dll
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/mediapipe_c.dll
 
   package:
@@ -179,26 +183,26 @@ jobs:
       - name: Download the base package
         uses: actions/download-artifact@v3
         with:
-          name: base-package
+          name: ${{ inputs.packageName }}-base
       - name: Download mediapipe_android.aar
         uses: actions/download-artifact@v3
         with:
-          name: mediapipe_android.aar
+          name: ${{ inputs.packageName }}-mediapipe_android.aar
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/Android
       - name: Download libmediapipe_c.dylib
         uses: actions/download-artifact@v3
         with:
-          name: libmediapipe_c.dylib
+          name: ${{ inputs.packageName }}-libmediapipe_c.dylib
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins
       - name: Download MediaPipeUnity.framework
         uses: actions/download-artifact@v3
         with:
-          name: MediaPipeUnity.framework
+          name: ${{ inputs.packageName }}-MediaPipeUnity.framework
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/iOS/MediaPipeUnity.framework
       - name: Download mediapipe_c.dll
         uses: actions/download-artifact@v3
         with:
-          name: mediapipe_c.dll
+          name: ${{ inputs.packageName }}-mediapipe_c.dll
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins
 
       - name: Remove unused meta files
@@ -217,7 +221,7 @@ jobs:
       - name: Upload the built package
         uses: actions/upload-artifact@v2  
         with:
-          name: package
+          name: ${{ inputs.packageName }}
           path: com.github.homuler.mediapipe-*.tgz
           retention-days: 7
 
@@ -229,25 +233,25 @@ jobs:
     steps:
       - uses: geekyeggo/delete-artifact@v1
         with:
-          name: base-package
+          name: ${{ inputs.packageName }}-base
           failOnError: false
 
       - uses: geekyeggo/delete-artifact@v1
         with:
-          name: mediapipe_android.aar
+          name: ${{ inputs.packageName }}-mediapipe_android.aar
           failOnError: false
 
       - uses: geekyeggo/delete-artifact@v1
         with:
-          name: libmediapipe_c.dylib
+          name: ${{ inputs.packageName }}-libmediapipe_c.dylib
           failOnError: false
 
       - uses: geekyeggo/delete-artifact@v1
         with:
-          name: MediaPipeUnity.framework
+          name: ${{ inputs.packageName }}-MediaPipeUnity.framework
           failOnError: false
 
       - uses: geekyeggo/delete-artifact@v1
         with:
-          name: mediapipe_c.dll
+          name: ${{ inputs.packageName }}-mediapipe_c.dll
           failOnError: false

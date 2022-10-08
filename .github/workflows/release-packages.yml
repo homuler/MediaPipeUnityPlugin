@@ -7,6 +7,7 @@ jobs:
     uses: ./.github/workflows/package.yml
     with:
       ref: ${{ github.event.ref }}
+      packageName: package-for-development
       linuxBuildArgs: '--desktop gpu --opencv cmake'
       androidBuildArgs: '--android fat --android_ndk_api_level 21'
       macosBuildArgs: '--desktop cpu --opencv cmake --macos_universal'
@@ -17,6 +18,7 @@ jobs:
     uses: ./.github/workflows/package.yml
     with:
       ref: ${{ github.event.ref }}
+      packageName: package-for-production
       linuxBuildArgs: '--linkopt="-s" --desktop gpu --opencv cmake'
       androidBuildArgs: '--linkopt="-s" --android fat --android_ndk_api_level 21'
       macosBuildArgs: '--linkopt="-s" --desktop cpu --opencv cmake --macos_universal'
