@@ -1,18 +1,48 @@
 name: Package
 on:
-  workflow_dispatch: {}
-  push:
-    tags:
-      - v*
-  schedule:
-    - cron: 0 12 * * 0,3
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: true
+      packageName:
+        type: string
+        default: package
+      bazelBuildArgs:
+        type: string
+        default: '--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0'
+      linuxBuildArgs:
+        type: string
+        default: '--desktop gpu --opencv cmake'
+      androidBuildArgs:
+        type: string
+        default: '--android fat --android_ndk_api_level 21'
+      macosBuildArgs:
+        type: string
+        default: '--desktop cpu --opencv cmake --macos_universal'
+      iosBuildArgs:
+        type: string
+        default: '--ios arm64'
+      windowsBuildArgs:
+        type: string
+        default: '--desktop cpu --opencv cmake'
 jobs:
   linux-build:
     runs-on: ubuntu-latest
     steps:
+      - name: Print inputs
+        run: |
+          echo '${{ inputs.ref }}'
+          echo '${{ inputs.bazelBuildArgs }}'
+          echo '${{ inputs.linuxBuildArgs }}'
+          echo '${{ inputs.androidBuildArgs }}'
+          echo '${{ inputs.macosBuildArgs }}'
+          echo '${{ inputs.iosBuildArgs }}'
+          echo '${{ inputs.windowsBuildArgs }}'
+
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.ref }}
+          ref: ${{ inputs.ref }}
 
       - name: Build a Docker image
         run: |
@@ -24,12 +54,12 @@ jobs:
             --mount type=bind,src=$PWD/Packages,dst=/home/mediapipe/Packages \
             --mount type=bind,src=$PWD/Assets,dst=/home/mediapipe/Assets \
             mediapipe_unity:latest \
-            python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --desktop gpu --opencv cmake -vv
+            python build.py build --bazel_build_opts "${{ inputs.bazelBuildArgs }}" ${{ inputs.linuxBuildArgs }} -vv
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: base-package
+          name: ${{ inputs.packageName }}-base
           path: .
 
   android-build:
@@ -37,7 +67,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.ref }}
+          ref: ${{ inputs.ref }}
 
       - name: Build a Docker image
         run: |
@@ -49,12 +79,12 @@ jobs:
             --mount type=bind,src=$PWD/Packages,dst=/home/mediapipe/Packages \
             --mount type=bind,src=$PWD/Assets,dst=/home/mediapipe/Assets \
             mediapipe_unity:latest \
-            python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --android fat --android_ndk_api_level 21 -vv
+            python build.py build --bazel_build_opts "${{ inputs.bazelBuildArgs }}" ${{ inputs.androidBuildArgs }} -vv
 
       - name: Upload mediapipe_android.aar
         uses: actions/upload-artifact@v2
         with:
-          name: mediapipe_android.aar
+          name: ${{ inputs.packageName }}-mediapipe_android.aar
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/Android/mediapipe_android.aar
 
   macos-build:
@@ -74,12 +104,12 @@ jobs:
       - name: Build libmediapipe_c.dylib
         run: |
           unset ANDROID_NDK_HOME
-          python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --desktop cpu --opencv cmake --macos_universal -vv
+          python build.py build --bazel_build_opts "${{ inputs.bazelBuildArgs }}" ${{ inputs.macosBuildArgs }} -vv
 
       - name: Upload libmediapipe_c.dylib
         uses: actions/upload-artifact@v2
         with:
-          name: libmediapipe_c.dylib
+          name: ${{ inputs.packageName }}-libmediapipe_c.dylib
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.dylib
 
   ios-build:
@@ -100,12 +130,12 @@ jobs:
         run: |
           unset ANDROID_NDK_HOME
           sed -i -e 's/PLEASE_SET_YOUR_BUNDLE_ID_HERE/com.github.homuler.mediapipe.unity/g' mediapipe_api/objc/BUILD
-          python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --ios arm64 -vv
+          python build.py build --bazel_build_opts "${{ inputs.bazelBuildArgs }}" ${{ inputs.iosBuildArgs }} -vv
 
       - name: Upload MediaPipeUnity.framework
         uses: actions/upload-artifact@v2
         with:
-          name: MediaPipeUnity.framework
+          name: ${{ inputs.packageName }}-MediaPipeUnity.framework
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/iOS/MediaPipeUnity.framework
 
   windows-build:
@@ -113,7 +143,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.ref }}
+          ref: ${{ inputs.ref }}
 
       - name: Build a Docker image
         run: |
@@ -126,13 +156,13 @@ jobs:
             --mount type=bind,src=%CD%\Packages,dst=C:\mediapipe\Packages ^
             --mount type=bind,src=%CD%\Assets,dst=C:\mediapipe\Assets ^
             mediapipe_unity:latest ^
-            python build.py build --bazel_build_opts "--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0" --desktop cpu --opencv cmake -vv
+            python build.py build --bazel_build_opts "${{ inputs.bazelBuildArgs }}" ${{ inputs.windowsBuildArgs }} -vv
         shell: cmd
 
       - name: Upload mediapipe_c.dll
         uses: actions/upload-artifact@v2
         with:
-          name: mediapipe_c.dll
+          name: ${{ inputs.packageName }}-mediapipe_c.dll
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/mediapipe_c.dll
 
   package:
@@ -147,26 +177,26 @@ jobs:
       - name: Download the base package
         uses: actions/download-artifact@v3
         with:
-          name: base-package
+          name: ${{ inputs.packageName }}-base
       - name: Download mediapipe_android.aar
         uses: actions/download-artifact@v3
         with:
-          name: mediapipe_android.aar
+          name: ${{ inputs.packageName }}-mediapipe_android.aar
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/Android
       - name: Download libmediapipe_c.dylib
         uses: actions/download-artifact@v3
         with:
-          name: libmediapipe_c.dylib
+          name: ${{ inputs.packageName }}-libmediapipe_c.dylib
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins
       - name: Download MediaPipeUnity.framework
         uses: actions/download-artifact@v3
         with:
-          name: MediaPipeUnity.framework
+          name: ${{ inputs.packageName }}-MediaPipeUnity.framework
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/iOS/MediaPipeUnity.framework
       - name: Download mediapipe_c.dll
         uses: actions/download-artifact@v3
         with:
-          name: mediapipe_c.dll
+          name: ${{ inputs.packageName }}-mediapipe_c.dll
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins
 
       - name: Remove unused meta files
@@ -185,7 +215,7 @@ jobs:
       - name: Upload the built package
         uses: actions/upload-artifact@v2  
         with:
-          name: package
+          name: ${{ inputs.packageName }}
           path: com.github.homuler.mediapipe-*.tgz
           retention-days: 7
 
@@ -197,25 +227,25 @@ jobs:
     steps:
       - uses: geekyeggo/delete-artifact@v1
         with:
-          name: base-package
+          name: ${{ inputs.packageName }}-base
           failOnError: false
 
       - uses: geekyeggo/delete-artifact@v1
         with:
-          name: mediapipe_android.aar
+          name: ${{ inputs.packageName }}-mediapipe_android.aar
           failOnError: false
 
       - uses: geekyeggo/delete-artifact@v1
         with:
-          name: libmediapipe_c.dylib
+          name: ${{ inputs.packageName }}-libmediapipe_c.dylib
           failOnError: false
 
       - uses: geekyeggo/delete-artifact@v1
         with:
-          name: MediaPipeUnity.framework
+          name: ${{ inputs.packageName }}-MediaPipeUnity.framework
           failOnError: false
 
       - uses: geekyeggo/delete-artifact@v1
         with:
-          name: mediapipe_c.dll
+          name: ${{ inputs.packageName }}-mediapipe_c.dll
           failOnError: false

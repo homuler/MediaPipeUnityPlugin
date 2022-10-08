@@ -1,0 +1,28 @@
+# TODO: attach built packages to the release page
+name: Release Packages
+on:
+  push:
+    tags:
+      - v*
+jobs:
+  package-for-development:
+    uses: ./.github/workflows/package.yml
+    with:
+      ref: ${{ github.event.ref }}
+      packageName: package-for-development
+      linuxBuildArgs: '--desktop gpu --opencv cmake'
+      androidBuildArgs: '--android fat --android_ndk_api_level 21'
+      macosBuildArgs: '--desktop cpu --opencv cmake --macos_universal'
+      iosBuildArgs: '--ios arm64'
+      windowsBuildArgs: '--desktop cpu --opencv cmake'
+
+  package-for-production:
+    uses: ./.github/workflows/package.yml
+    with:
+      ref: ${{ github.event.ref }}
+      packageName: package-for-production
+      linuxBuildArgs: '--linkopt="-s" --desktop gpu --opencv cmake'
+      androidBuildArgs: '--linkopt="-s" --android fat --android_ndk_api_level 21'
+      macosBuildArgs: '--linkopt="-s" --desktop cpu --opencv cmake --macos_universal'
+      iosBuildArgs: '--linkopt="-s" --ios arm64'
+      windowsBuildArgs: '--desktop cpu --opencv cmake'
