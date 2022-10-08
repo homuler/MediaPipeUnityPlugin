@@ -23,7 +23,6 @@ on:
       windowsBuildArgs:
         type: string
         description: Build options for Windows Build
-  push: {}
   schedule:
     - cron: 0 12 * * 0,3
 jobs:

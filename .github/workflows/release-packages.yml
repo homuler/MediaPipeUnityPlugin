@@ -1,7 +1,9 @@
 # TODO: attach built packages to the release page
 name: Release Packages
 on:
-  push: {}
+  push:
+    tags:
+      - v*
 jobs:
   package-for-development:
     uses: ./.github/workflows/package.yml
