@@ -2,9 +2,6 @@ name: Build a Package
 on:
   workflow_dispatch:
     inputs:
-      ref:
-        type: string
-        description: commit id
       bazelBuildArgs:
         type: string
         description: A value for `--bazel_build_opts`
@@ -29,7 +26,7 @@ jobs:
   package:
     uses: ./.github/workflows/package.yml
     with:
-      ref: ${{ inputs.ref || github.event.ref }}
+      ref: ${{ github.event.ref }}
       packageName: package
       bazelBuildArgs: ${{ inputs.bazelBuildArgs || '--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0' }}
       linuxBuildArgs: ${{ inputs.linuxBuildArgs || '--desktop gpu --opencv cmake' }}
