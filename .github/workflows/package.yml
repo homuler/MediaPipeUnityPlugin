@@ -7,30 +7,24 @@ on:
         required: true
       packageName:
         type: string
-        required: true
         default: package
       bazelBuildArgs:
         type: string
         default: '--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0'
       linuxBuildArgs:
         type: string
-        required: true
         default: '--desktop gpu --opencv cmake'
       androidBuildArgs:
         type: string
-        required: true
         default: '--android fat --android_ndk_api_level 21'
       macosBuildArgs:
         type: string
-        required: true
         default: '--desktop cpu --opencv cmake --macos_universal'
       iosBuildArgs:
         type: string
-        required: true
         default: '--ios arm64'
       windowsBuildArgs:
         type: string
-        required: true
         default: '--desktop cpu --opencv cmake'
 jobs:
   linux-build:
