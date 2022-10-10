@@ -27,19 +27,22 @@ on:
         type: string
         default: '--desktop cpu --opencv cmake'
 jobs:
+  print-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print inputs for debug
+        run: |
+          echo 'inputs.ref=${{ inputs.ref }}'
+          echo 'inputs.bazelBuildArgs=${{ inputs.bazelBuildArgs }}'
+          echo 'inputs.linuxBuildArgs=${{ inputs.linuxBuildArgs }}'
+          echo 'inputs.androidBuildArgs=${{ inputs.androidBuildArgs }}'
+          echo 'inputs.macosBuildArgs=${{ inputs.macosBuildArgs }}'
+          echo 'inputs.iosBuildArgs=${{ inputs.iosBuildArgs }}'
+          echo 'inputs.windowsBuildArgs=${{ inputs.windowsBuildArgs }}'
+
   linux-build:
     runs-on: ubuntu-latest
     steps:
-      - name: Print inputs
-        run: |
-          echo '${{ inputs.ref }}'
-          echo '${{ inputs.bazelBuildArgs }}'
-          echo '${{ inputs.linuxBuildArgs }}'
-          echo '${{ inputs.androidBuildArgs }}'
-          echo '${{ inputs.macosBuildArgs }}'
-          echo '${{ inputs.iosBuildArgs }}'
-          echo '${{ inputs.windowsBuildArgs }}'
-
       - uses: actions/checkout@v3
         with:
           ref: ${{ inputs.ref }}

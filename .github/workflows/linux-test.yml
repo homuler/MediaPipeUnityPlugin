@@ -137,6 +137,13 @@ jobs:
             -coverageOptions 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+MediaPipe.Runtime;pathFilters:-*/Runtime/Scripts/Protobuf/*'
           cat DummyProject/${ARTIFACTS_PATH}/results.xml
 
+      - name: Cat results.xml
+        env:
+          RESULT_FILE_PATH: DummyProject/testResults/results.xml
+        if: always()
+        run: |
+          [ -f $RESULT_FILE_PATH ] && cat ${RESULT_FILE_PATH}
+
       - uses: actions/upload-artifact@v2
         if: always()
         with:
@@ -153,6 +160,7 @@ jobs:
 
   post-test:
     runs-on: ubuntu-latest
+    if: ${{ always() }}
     needs: test
     steps:
       - uses: geekyeggo/delete-artifact@v1
