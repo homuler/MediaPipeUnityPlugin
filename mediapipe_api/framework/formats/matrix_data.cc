@@ -46,3 +46,20 @@ MP_CAPI(MpReturnCode) mp_Packet__ValidateAsMatrix(mediapipe::Packet* packet, abs
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }
+
+MP_CAPI(MpReturnCode) mp_Packet__GetMatrix(mediapipe::Packet* packet, mp_api::SerializedProto* value_out) {
+  TRY
+    // Get Eigen::Matrix from packet
+    mediapipe::Matrix matrix;
+    matrix = packet->Get<mediapipe::Matrix>();
+
+    // Convert to format that can be send to Unity
+    mediapipe::MatrixData matrix_data;
+    mediapipe::MatrixDataProtoFromMatrix(matrix, &matrix_data);
+    
+    // auto matrix_data_serialized = new mp_api::SerializedProto();
+    SerializeProto(matrix_data, value_out);
+
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}

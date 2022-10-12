@@ -20,6 +20,10 @@ namespace Mediapipe
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__ValidateAsMatrix(IntPtr packet, out IntPtr status);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__GetMatrix(IntPtr packet, out SerializedProto serializedProto);
+
     #endregion
   }
 }

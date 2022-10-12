@@ -18,6 +18,7 @@ MP_CAPI(MpReturnCode) mp__MakeMatrixPacket__PKc_i(const char* matrix_data_serial
 MP_CAPI(MpReturnCode) mp__MakeMatrixPacket_At__PKc_i_Rt(const char* matrix_data_serialized, int size, mediapipe::Timestamp* timestamp,
                                                         mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsMatrix(mediapipe::Packet* packet, absl::Status** status_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetMatrix(mediapipe::Packet* packet, mp_api::SerializedProto* value_out);
 
 }  // extern "C"
 

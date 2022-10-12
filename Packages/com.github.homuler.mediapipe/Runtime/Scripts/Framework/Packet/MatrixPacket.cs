@@ -62,12 +62,26 @@ namespace Mediapipe
 
     public override MatrixData Get()
     {
-      throw new NotImplementedException();
+      UnsafeNativeMethods.mp_Packet__GetMatrix(mpPtr, out var serializedMatrixData).Assert();
+      GC.KeepAlive(this);
+
+      var matrixData = serializedMatrixData.Deserialize(MatrixData.Parser);
+      serializedMatrixData.Dispose();
+
+      return matrixData;
     }
 
     public override StatusOr<MatrixData> Consume()
     {
-      throw new NotImplementedException();
+      throw new NotSupportedException();
+    }
+
+    public override Status ValidateAsType()
+    {
+      UnsafeNativeMethods.mp_Packet__ValidateAsMatrix(mpPtr, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      return new Status(statusPtr);
     }
 
   }
