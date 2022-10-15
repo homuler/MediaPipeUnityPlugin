@@ -27,14 +27,14 @@ namespace Mediapipe
 
     public FloatVectorPacket(float[] value) : base()
     {
-      UnsafeNativeMethods.mp__MakeFloatVectorPacket__PA_i(value, value.Length, out var ptr).Assert();
+      UnsafeNativeMethods.mp__MakeFloatVectorPacket__Pf_i(value, value.Length, out var ptr).Assert();
       this.ptr = ptr;
       _vectorLength = value.Length;
     }
 
     public FloatVectorPacket(float[] value, Timestamp timestamp) : base()
     {
-      UnsafeNativeMethods.mp__MakeFloatVectorPacket_At__PA_i_Rt(value, value.Length, timestamp.mpPtr, out var ptr).Assert();
+      UnsafeNativeMethods.mp__MakeFloatVectorPacket_At__Pf_i_Rt(value, value.Length, timestamp.mpPtr, out var ptr).Assert();
       GC.KeepAlive(timestamp);
       this.ptr = ptr;
     }

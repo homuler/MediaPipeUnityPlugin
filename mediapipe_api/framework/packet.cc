@@ -183,6 +183,24 @@ MpReturnCode mp_Packet__ValidateAsFloatArray(mediapipe::Packet* packet, absl::St
   CATCH_EXCEPTION
 }
 
+// FloatVectorPacket
+MpReturnCode mp__MakeFloatVectorPacket__Pf_i(float* value, int size, mediapipe::Packet** packet_out) { return mp__MakeVectorPacket(value, size, packet_out); }
+
+MpReturnCode mp__MakeFloatVectorPacket_At__Pf_i_Rt(float* value, int size, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
+  return mp__MakeVectorPacket_At(value, size, timestamp, packet_out);
+}
+
+MpReturnCode mp_Packet__GetFloatVector(mediapipe::Packet* packet, mp_api::StructArray<float>* value_out) {
+  return mp_Packet__GetStructVector(packet, value_out);
+}
+
+MpReturnCode mp_Packet__ValidateAsFloatVector(mediapipe::Packet* packet, absl::Status** status_out) {
+  TRY
+    *status_out = new absl::Status{packet->ValidateAsType<std::vector<float>>()};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
 // StringPacket
 MpReturnCode mp__MakeStringPacket__PKc(const char* str, mediapipe::Packet** packet_out) {
   TRY

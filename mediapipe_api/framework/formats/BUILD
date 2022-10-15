@@ -80,19 +80,6 @@ cc_library(
 )
 
 cc_library(
-    name = "float_vector",
-    srcs = ["float_vector.cc"],
-    hdrs = ["float_vector.h"],
-    deps = [
-        "//mediapipe_api:common",
-        "//mediapipe_api/external/absl:status",
-        "//mediapipe_api/external/absl:statusor",
-        "//mediapipe_api/framework:packet",
-    ],
-    alwayslink = True,
-)
-
-cc_library(
     name = "rect",
     srcs = ["rect.cc"],
     hdrs = ["rect.h"],
