@@ -4,54 +4,105 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using System.Collections.Generic;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace Mediapipe.Tests
 {
   public class FloatVectorPacketTest
   {
     #region Constructor
-    //    [Test, SignalAbort]
-    //    public void Ctor_ShouldInstantiatePacket_When_CalledWithNoArguments()
-    //    {
-    //      using (var packet = new FloatPacket())
-    //      {
-    //#pragma warning disable IDE0058
-    //        Assert.AreEqual(Status.StatusCode.Internal, packet.ValidateAsType().Code());
-    //        Assert.Throws<MediaPipeException>(() => { packet.Get(); });
-    //        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
-    //#pragma warning restore IDE0058
-    //      }
-    //    }
+    [Test, SignalAbort]
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithNoArguments()
+    {
+      using (var packet = new FloatVectorPacket())
+      {
+#pragma warning disable IDE0058
+        Assert.AreEqual(Status.StatusCode.Internal, packet.ValidateAsType().Code());
+        Assert.Throws<MediaPipeException>(() => { packet.Get(); });
+        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
+#pragma warning restore IDE0058
+      }
+    }
 
     [Test]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithValue()
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithEmptyArray()
     {
-      var floatVector = new float[6] { 10, 11, 12, 13, 14, 15 };
-      using (var packet = new FloatVectorPacket(floatVector))
+      float[] data = { };
+      using (var packet = new FloatVectorPacket(data))
       {
         Assert.True(packet.ValidateAsType().Ok());
-        Assert.AreEqual(floatVector, packet.Get());
+        Assert.AreEqual(data, packet.Get());
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
     }
 
-    //[Test]
-    //public void Ctor_ShouldInstantiatePacket_When_CalledWithValueAndTimestamp()
-    //{
-    //  using (var timestamp = new Timestamp(1))
-    //  {
-    //    var floatArray = new float[6] { 10, 11, 12, 13, 14, 15 };
-    //    using (var packet = new FloatPacket(floatArray, timestamp))
-    //    {
-    //      Assert.True(packet.ValidateAsType().Ok());
-    //      Assert.AreEqual(0.01f, packet.Get());
-    //      Assert.AreEqual(timestamp, packet.Timestamp());
-    //    }
-    //  }
-    //}
+    [Test]
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithArray()
+    {
+      float[] data = { 0.01f };
+      using (var packet = new FloatVectorPacket(data))
+      {
+        Assert.True(packet.ValidateAsType().Ok());
+        Assert.AreEqual(data, packet.Get());
+        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
+      }
+    }
+
+    [Test]
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithValueAndTimestamp()
+    {
+      float[] data = { 0.01f, 0.02f };
+      using (var timestamp = new Timestamp(1))
+      {
+        using (var packet = new FloatVectorPacket(data, timestamp))
+        {
+          Assert.True(packet.ValidateAsType().Ok());
+          Assert.AreEqual(data, packet.Get());
+          Assert.AreEqual(timestamp, packet.Timestamp());
+        }
+      }
+    }
+
+    [Test]
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithEmptyList()
+    {
+      var data = new List<float>();
+      using (var packet = new FloatVectorPacket(data))
+      {
+        Assert.True(packet.ValidateAsType().Ok());
+        Assert.AreEqual(data, packet.Get());
+        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
+      }
+    }
+
+    [Test]
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithList()
+    {
+      var data = new List<float>() { 0.01f };
+      using (var packet = new FloatVectorPacket(data))
+      {
+        Assert.True(packet.ValidateAsType().Ok());
+        Assert.AreEqual(data, packet.Get());
+        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
+      }
+    }
+
+    [Test]
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithListAndTimestamp()
+    {
+      var data = new List<float>() { 0.01f, 0.02f };
+      using (var timestamp = new Timestamp(1))
+      {
+        using (var packet = new FloatVectorPacket(data, timestamp))
+        {
+          Assert.True(packet.ValidateAsType().Ok());
+          Assert.AreEqual(data, packet.Get());
+          Assert.AreEqual(timestamp, packet.Timestamp());
+        }
+      }
+    }
     #endregion
 
     #region #isDisposed
@@ -80,15 +131,15 @@ namespace Mediapipe.Tests
     {
       using (var timestamp = new Timestamp(1))
       {
-        var floatVector = new float[6] { 10, 11, 12, 13, 14, 15 };
-        var packet = new FloatVectorPacket(floatVector).At(timestamp);
-        Assert.AreEqual(floatVector, packet.Get());
+        var data = new List<float>() { 0.0f };
+        var packet = new FloatVectorPacket(data).At(timestamp);
+        Assert.AreEqual(data, packet.Get());
         Assert.AreEqual(timestamp, packet.Timestamp());
 
         using (var newTimestamp = new Timestamp(2))
         {
           var newPacket = packet.At(newTimestamp);
-          Assert.AreEqual(floatVector, newPacket.Get());
+          Assert.AreEqual(data, newPacket.Get());
           Assert.AreEqual(newTimestamp, newPacket.Timestamp());
         }
 
@@ -110,15 +161,16 @@ namespace Mediapipe.Tests
     }
     #endregion
 
-    // #region #DebugTypeName
-    // [Test]
-    // public void DebugTypeName_ShouldReturnFloat_When_ValueIsSet()
-    // {
-    //   using (var packet = new FloatPacket(0.01f))
-    //   {
-    //     Assert.AreEqual("float", packet.DebugTypeName());
-    //   }
-    // }
-    // #endregion
+    #region #DebugTypeName
+    [Test]
+    public void DebugTypeName_ShouldReturnFloatVector_When_ValueIsSet()
+    {
+      float[] array = { 0.01f };
+      using (var packet = new FloatVectorPacket(array))
+      {
+        Assert.AreEqual("std::vector<float, std::allocator<float> >", packet.DebugTypeName());
+      }
+    }
+    #endregion
   }
 }

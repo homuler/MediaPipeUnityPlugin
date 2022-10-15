@@ -101,7 +101,7 @@ namespace Mediapipe
     public static extern MpReturnCode mp__MakeFloatVectorPacket_At__Pf_i_Rt(float[] value, int size, IntPtr timestamp, out IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_Packet__GetFloatVector(IntPtr packet, out IntPtr value, out int size);
+    public static extern MpReturnCode mp_Packet__GetFloatVector(IntPtr packet, out FloatVector value);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__ValidateAsFloatVector(IntPtr packet, out IntPtr status);

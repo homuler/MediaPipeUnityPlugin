@@ -8,6 +8,8 @@
 
 void delete_array__PKc(const char* str) { delete[] str; }
 
+void delete_array__Pf(float* f) { delete[] f; }
+
 void std_string__delete(std::string* str) { delete str; }
 
 MpReturnCode std_string__PKc_i(const char* src, int size, std::string** str_out) {
