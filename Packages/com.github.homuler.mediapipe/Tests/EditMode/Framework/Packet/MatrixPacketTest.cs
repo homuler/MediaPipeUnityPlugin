@@ -96,6 +96,5 @@ namespace Mediapipe.Tests
       matrix.Cols = 3;
       return matrix;
     }
-
   }
 }

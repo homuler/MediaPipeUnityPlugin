@@ -6,16 +6,11 @@
 
 #include "mediapipe_api/framework/formats/matrix_data.h"
 
-MpReturnCode mp__MakeMatrixPacket__PKc_i(const char* matrix_data_serialized, int size, mediapipe::Packet** packet_out) {
+MpReturnCode mp__MakeMatrixPacket__PKc_i(const char* serialized_matrix_data, int size, mediapipe::Packet** packet_out) {
   TRY
+    auto matrix_data = ParseFromStringAsProto<mediapipe::MatrixData>(serialized_matrix_data, size);
+
     mediapipe::Matrix matrix;
-
-    // convert matrix data from char into mediapipe::MatrixData
-    std::string content;
-    mediapipe::MatrixData matrix_data;
-    CHECK(matrix_data.ParseFromString(std::string(matrix_data_serialized, size)));
-
-    // fill matrix with data from matrix_data_serialized
     mediapipe::MatrixFromMatrixDataProto(matrix_data, &matrix);
 
     *packet_out = new mediapipe::Packet{mediapipe::MakePacket<mediapipe::Matrix>(matrix)};
@@ -23,16 +18,11 @@ MpReturnCode mp__MakeMatrixPacket__PKc_i(const char* matrix_data_serialized, int
   CATCH_EXCEPTION
 }
 
-MpReturnCode mp__MakeMatrixPacket_At__PKc_i_Rt(const char* matrix_data_serialized, int size, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
+MpReturnCode mp__MakeMatrixPacket_At__PKc_i_Rt(const char* serialized_matrix_data, int size, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
   TRY
+    auto matrix_data = ParseFromStringAsProto<mediapipe::MatrixData>(serialized_matrix_data, size);
+
     mediapipe::Matrix matrix;
-
-    // convert matrix data from char into mediapipe::MatrixData
-    std::string content;
-    mediapipe::MatrixData matrix_data;
-    CHECK(matrix_data.ParseFromString(std::string(matrix_data_serialized, size)));
-
-    // fill matrix with data from matrix_data_serialized
     mediapipe::MatrixFromMatrixDataProto(matrix_data, &matrix);
 
     *packet_out = new mediapipe::Packet{mediapipe::MakePacket<mediapipe::Matrix>(matrix).At(*timestamp)};
@@ -40,26 +30,21 @@ MpReturnCode mp__MakeMatrixPacket_At__PKc_i_Rt(const char* matrix_data_serialize
   CATCH_EXCEPTION
 }
 
-MP_CAPI(MpReturnCode) mp_Packet__ValidateAsMatrix(mediapipe::Packet* packet, absl::Status** status_out) {
+MP_CAPI(MpReturnCode) mp_Packet__GetMatrix(mediapipe::Packet* packet, mp_api::SerializedProto* value_out) {
   TRY
-    *status_out = new absl::Status{packet->ValidateAsType<mediapipe::Matrix>()};
+    mediapipe::MatrixData matrix_data;
+    auto matrix = packet->Get<mediapipe::Matrix>();
+    mediapipe::MatrixDataProtoFromMatrix(matrix, &matrix_data);
+
+    SerializeProto(matrix_data, value_out);
+
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }
 
-MP_CAPI(MpReturnCode) mp_Packet__GetMatrix(mediapipe::Packet* packet, mp_api::SerializedProto* value_out) {
+MP_CAPI(MpReturnCode) mp_Packet__ValidateAsMatrix(mediapipe::Packet* packet, absl::Status** status_out) {
   TRY
-    // Get Eigen::Matrix from packet
-    mediapipe::Matrix matrix;
-    matrix = packet->Get<mediapipe::Matrix>();
-
-    // Convert to format that can be send to Unity
-    mediapipe::MatrixData matrix_data;
-    mediapipe::MatrixDataProtoFromMatrix(matrix, &matrix_data);
-    
-    // auto matrix_data_serialized = new mp_api::SerializedProto();
-    SerializeProto(matrix_data, value_out);
-
+    *status_out = new absl::Status{packet->ValidateAsType<mediapipe::Matrix>()};
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }
