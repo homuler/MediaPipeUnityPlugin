@@ -8,13 +8,6 @@
 
 #include <utility>
 
-inline mediapipe::CalculatorGraphConfig ParseFromStringAsCalculatorGraphConfig(const char* serialized_config, int size) {
-  mediapipe::CalculatorGraphConfig config;
-  CHECK(config.ParseFromString(std::string(serialized_config, size)));
-
-  return config;
-}
-
 MpReturnCode mp_CalculatorGraph__(mediapipe::CalculatorGraph** graph_out) {
   TRY
     *graph_out = new mediapipe::CalculatorGraph();
@@ -26,7 +19,7 @@ void mp_CalculatorGraph__delete(mediapipe::CalculatorGraph* graph) { delete grap
 
 MpReturnCode mp_CalculatorGraph__PKc_i(const char* serialized_config, int size, mediapipe::CalculatorGraph** graph_out) {
   TRY_ALL
-    auto config = ParseFromStringAsCalculatorGraphConfig(serialized_config, size);
+    auto config = ParseFromStringAsProto<mediapipe::CalculatorGraphConfig>(serialized_config, size);
     *graph_out = new mediapipe::CalculatorGraph(config);
     RETURN_CODE(MpReturnCode::Success);
   CATCH_ALL
@@ -34,7 +27,7 @@ MpReturnCode mp_CalculatorGraph__PKc_i(const char* serialized_config, int size, 
 
 MpReturnCode mp_CalculatorGraph__Initialize__PKc_i(mediapipe::CalculatorGraph* graph, const char* serialized_config, int size, absl::Status** status_out) {
   TRY_ALL
-    auto config = ParseFromStringAsCalculatorGraphConfig(serialized_config, size);
+    auto config = ParseFromStringAsProto<mediapipe::CalculatorGraphConfig>(serialized_config, size);
     *status_out = new absl::Status{graph->Initialize(config)};
     RETURN_CODE(MpReturnCode::Success);
   CATCH_ALL
@@ -43,7 +36,7 @@ MpReturnCode mp_CalculatorGraph__Initialize__PKc_i(mediapipe::CalculatorGraph* g
 MpReturnCode mp_CalculatorGraph__Initialize__PKc_i_Rsp(mediapipe::CalculatorGraph* graph, const char* serialized_config, int size, SidePackets* side_packets,
                                                        absl::Status** status_out) {
   TRY_ALL
-    auto config = ParseFromStringAsCalculatorGraphConfig(serialized_config, size);
+    auto config = ParseFromStringAsProto<mediapipe::CalculatorGraphConfig>(serialized_config, size);
     *status_out = new absl::Status{graph->Initialize(config, *side_packets)};
     RETURN_CODE(MpReturnCode::Success);
   CATCH_ALL

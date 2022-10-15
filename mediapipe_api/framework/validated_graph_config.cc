@@ -12,9 +12,7 @@ void mp_ValidatedGraphConfig__delete(mediapipe::ValidatedGraphConfig* config) { 
 MpReturnCode mp_ValidatedGraphConfig__Initialize__Rcgc(mediapipe::ValidatedGraphConfig* config, const char* serialized_config, int size,
                                                        absl::Status** status_out) {
   TRY
-    mediapipe::CalculatorGraphConfig graph_config;
-    CHECK(graph_config.ParseFromString(std::string(serialized_config, size)));
-
+    auto graph_config = ParseFromStringAsProto<mediapipe::CalculatorGraphConfig>(serialized_config, size);
     auto status = config->Initialize(graph_config);
     *status_out = new absl::Status(std::move(status));
     RETURN_CODE(MpReturnCode::Success);
