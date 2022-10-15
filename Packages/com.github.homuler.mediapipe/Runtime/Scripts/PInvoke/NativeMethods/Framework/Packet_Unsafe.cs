@@ -87,7 +87,7 @@ namespace Mediapipe
     public static extern MpReturnCode mp__MakeFloatArrayPacket_At__Pf_i_Rt(float[] value, int size, IntPtr timestamp, out IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_Packet__GetFloatArray(IntPtr packet, out IntPtr value);
+    public static extern MpReturnCode mp_Packet__GetFloatArray_i(IntPtr packet, int size, out IntPtr value);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__ValidateAsFloatArray(IntPtr packet, out IntPtr status);

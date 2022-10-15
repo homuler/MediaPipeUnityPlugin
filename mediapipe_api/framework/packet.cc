@@ -169,9 +169,12 @@ MpReturnCode mp__MakeFloatArrayPacket_At__Pf_i_Rt(float* value, int size, mediap
   CATCH_EXCEPTION
 }
 
-MpReturnCode mp_Packet__GetFloatArray(mediapipe::Packet* packet, const float** value_out) {
+MpReturnCode mp_Packet__GetFloatArray_i(mediapipe::Packet* packet, int size, const float** value_out) {
   TRY_ALL
-    *value_out = packet->Get<float[]>();
+    auto src = packet->Get<float[]>();
+    auto dst = new float[size];
+    std::memcpy(dst, src, size * sizeof(float));
+    *value_out = dst;
     RETURN_CODE(MpReturnCode::Success);
   CATCH_ALL
 }
