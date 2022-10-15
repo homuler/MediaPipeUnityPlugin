@@ -4,49 +4,24 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+using System.Collections.Generic;
 using NUnit.Framework;
 using System;
 
 namespace Mediapipe.Tests
 {
-  public class FloatPacketTest
+  public class MatrixPacketTest
   {
     #region Constructor
-    [Test, SignalAbort]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithNoArguments()
-    {
-      using (var packet = new FloatPacket())
-      {
-#pragma warning disable IDE0058
-        Assert.AreEqual(Status.StatusCode.Internal, packet.ValidateAsType().Code());
-        Assert.Throws<MediaPipeException>(() => { packet.Get(); });
-        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
-#pragma warning restore IDE0058
-      }
-    }
-
     [Test]
     public void Ctor_ShouldInstantiatePacket_When_CalledWithValue()
     {
-      using (var packet = new FloatPacket(0.01f))
+      var matrix = CreateMatrixInputData();
+      using (var packet = new MatrixPacket(matrix))
       {
         Assert.True(packet.ValidateAsType().Ok());
-        Assert.AreEqual(0.01f, packet.Get());
+        Assert.AreEqual(matrix, packet.Get());
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
-      }
-    }
-
-    [Test]
-    public void Ctor_ShouldInstantiatePacket_When_CalledWithValueAndTimestamp()
-    {
-      using (var timestamp = new Timestamp(1))
-      {
-        using (var packet = new FloatPacket(0.01f, timestamp))
-        {
-          Assert.True(packet.ValidateAsType().Ok());
-          Assert.AreEqual(0.01f, packet.Get());
-          Assert.AreEqual(timestamp, packet.Timestamp());
-        }
       }
     }
     #endregion
@@ -55,7 +30,7 @@ namespace Mediapipe.Tests
     [Test]
     public void IsDisposed_ShouldReturnFalse_When_NotDisposedYet()
     {
-      using (var packet = new FloatPacket())
+      using (var packet = new MatrixPacket())
       {
         Assert.False(packet.isDisposed);
       }
@@ -64,7 +39,7 @@ namespace Mediapipe.Tests
     [Test]
     public void IsDisposed_ShouldReturnTrue_When_AlreadyDisposed()
     {
-      var packet = new FloatPacket();
+      var packet = new MatrixPacket();
       packet.Dispose();
 
       Assert.True(packet.isDisposed);
@@ -77,14 +52,15 @@ namespace Mediapipe.Tests
     {
       using (var timestamp = new Timestamp(1))
       {
-        var packet = new FloatPacket(0).At(timestamp);
-        Assert.AreEqual(0.0f, packet.Get());
+        var matrix = CreateMatrixInputData();
+        var packet = new MatrixPacket(matrix).At(timestamp);
+        Assert.AreEqual(matrix, packet.Get());
         Assert.AreEqual(timestamp, packet.Timestamp());
 
         using (var newTimestamp = new Timestamp(2))
         {
           var newPacket = packet.At(newTimestamp);
-          Assert.AreEqual(0.0f, newPacket.Get());
+          Assert.AreEqual(matrix, newPacket.Get());
           Assert.AreEqual(newTimestamp, newPacket.Timestamp());
         }
 
@@ -97,7 +73,7 @@ namespace Mediapipe.Tests
     [Test]
     public void Consume_ShouldThrowNotSupportedException()
     {
-      using (var packet = new FloatPacket())
+      using (var packet = new MatrixPacket())
       {
 #pragma warning disable IDE0058
         Assert.Throws<NotSupportedException>(() => { packet.Consume(); });
@@ -110,11 +86,26 @@ namespace Mediapipe.Tests
     [Test]
     public void ValidateAsType_ShouldReturnOk_When_ValueIsSet()
     {
-      using (var packet = new FloatPacket(0.01f))
+      using (var packet = new MatrixPacket(CreateMatrixInputData()))
       {
         Assert.True(packet.ValidateAsType().Ok());
       }
     }
     #endregion
+
+    private static MatrixData CreateMatrixInputData()
+    {
+      var matrix = new MatrixData();
+      matrix.PackedData.Add(0);
+      matrix.PackedData.Add(1);
+      matrix.PackedData.Add(2);
+      matrix.PackedData.Add(3);
+      matrix.PackedData.Add(4);
+      matrix.PackedData.Add(5);
+
+      matrix.Rows = 2;
+      matrix.Cols = 3;
+      return matrix;
+    }
   }
 }

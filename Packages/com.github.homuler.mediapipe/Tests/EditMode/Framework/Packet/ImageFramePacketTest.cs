@@ -164,17 +164,13 @@ namespace Mediapipe.Tests
     }
     #endregion
 
-    #region #DebugTypeName
+    #region #ValidateAsType
     [Test]
-    public void DebugTypeName_ShouldReturnFloat_When_ValueIsSet()
+    public void ValidateAsType_ShouldReturnOk_When_ValueIsSet()
     {
       using (var packet = new ImageFramePacket(new ImageFrame()))
       {
-#if UNITY_EDITOR_WIN
-        Assert.AreEqual("class mediapipe::ImageFrame", packet.DebugTypeName());
-#else
-        Assert.AreEqual("mediapipe::ImageFrame", packet.DebugTypeName());
-#endif
+        Assert.True(packet.ValidateAsType().Ok());
       }
     }
     #endregion

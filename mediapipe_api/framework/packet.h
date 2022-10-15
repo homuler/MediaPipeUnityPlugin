@@ -44,29 +44,35 @@ MP_CAPI(MpReturnCode) mp_Packet__DebugString(mediapipe::Packet* packet, const ch
 MP_CAPI(MpReturnCode) mp_Packet__RegisteredTypeName(mediapipe::Packet* packet, const char** str_out);
 MP_CAPI(MpReturnCode) mp_Packet__DebugTypeName(mediapipe::Packet* packet, const char** str_out);
 
-// Boolean
+// bool
 MP_CAPI(MpReturnCode) mp__MakeBoolPacket__b(bool value, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeBoolPacket_At__b_Rt(bool value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetBool(mediapipe::Packet* packet, bool* value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsBool(mediapipe::Packet* packet, absl::Status** status_out);
 
-// Float
+// float
 MP_CAPI(MpReturnCode) mp__MakeFloatPacket__f(float value, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeFloatPacket_At__f_Rt(float value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetFloat(mediapipe::Packet* packet, float* value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsFloat(mediapipe::Packet* packet, absl::Status** status_out);
 
-// Int
+// int
 MP_CAPI(MpReturnCode) mp__MakeIntPacket__i(int value, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeIntPacket_At__i_Rt(int value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetInt(mediapipe::Packet* packet, int* value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsInt(mediapipe::Packet* packet, absl::Status** status_out);
 
-// Float Array
+// float[]
 MP_CAPI(MpReturnCode) mp__MakeFloatArrayPacket__Pf_i(float* value, int size, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeFloatArrayPacket_At__Pf_i_Rt(float* value, int size, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp_Packet__GetFloatArray(mediapipe::Packet* packet, const float** value_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetFloatArray_i(mediapipe::Packet* packet, int size, const float** value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsFloatArray(mediapipe::Packet* packet, absl::Status** status_out);
+
+// std::vector<float>
+MP_CAPI(MpReturnCode) mp__MakeFloatVectorPacket__Pf_i(float* value, int size, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeFloatVectorPacket_At__Pf_i_Rt(float* value, int size, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetFloatVector(mediapipe::Packet* packet, mp_api::StructArray<float>* value_out);
+MP_CAPI(MpReturnCode) mp_Packet__ValidateAsFloatVector(mediapipe::Packet* packet, absl::Status** status_out);
 
 // String
 MP_CAPI(MpReturnCode) mp__MakeStringPacket__PKc(const char* str, mediapipe::Packet** packet_out);
@@ -118,6 +124,26 @@ inline MpReturnCode mp_Packet__Get(mediapipe::Packet* packet, const T** value_ou
   CATCH_ALL
 }
 
+// std::vector<T>
+
+template <typename T>
+inline MpReturnCode mp__MakeVectorPacket(const T* array, int size, mediapipe::Packet** packet_out) {
+  TRY
+    std::vector<T> vector(array, array + size);
+    *packet_out = new mediapipe::Packet{mediapipe::MakePacket<std::vector<T>>(vector)};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
+template <typename T>
+inline MpReturnCode mp__MakeVectorPacket_At(const T* array, int size, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
+  TRY
+    std::vector<T> vector(array, array + size);
+    *packet_out = new mediapipe::Packet{mediapipe::MakePacket<std::vector<T>>(vector).At(*timestamp)};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
 template <typename T>
 inline MpReturnCode mp_Packet__GetStructVector(mediapipe::Packet* packet, mp_api::StructArray<T>* value_out) {
   TRY_ALL
@@ -133,6 +159,8 @@ inline MpReturnCode mp_Packet__GetStructVector(mediapipe::Packet* packet, mp_api
     RETURN_CODE(MpReturnCode::Success);
   CATCH_ALL
 }
+
+// SerializedProto
 
 template <typename T>
 inline MpReturnCode mp_Packet__GetSerializedProto(mediapipe::Packet* packet, mp_api::SerializedProto* value_out) {

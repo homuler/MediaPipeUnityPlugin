@@ -64,10 +64,12 @@ namespace Mediapipe
       }
 
       var result = new float[length];
+      UnsafeNativeMethods.mp_Packet__GetFloatArray_i(mpPtr, length, out var arrayPtr).Assert();
+      GC.KeepAlive(this);
 
       unsafe
       {
-        var src = (float*)GetArrayPtr();
+        var src = (float*)arrayPtr;
 
         for (var i = 0; i < result.Length; i++)
         {
@@ -75,14 +77,8 @@ namespace Mediapipe
         }
       }
 
+      UnsafeNativeMethods.delete_array__Pf(arrayPtr);
       return result;
-    }
-
-    public IntPtr GetArrayPtr()
-    {
-      UnsafeNativeMethods.mp_Packet__GetFloatArray(mpPtr, out var value).Assert();
-      GC.KeepAlive(this);
-      return value;
     }
 
     public override StatusOr<float[]> Consume()

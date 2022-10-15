@@ -6,19 +6,19 @@
 
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace Mediapipe.Tests
 {
-  public class FloatArrayPacketTest
+  public class FloatVectorPacketTest
   {
     #region Constructor
     [Test, SignalAbort]
     public void Ctor_ShouldInstantiatePacket_When_CalledWithNoArguments()
     {
-      using (var packet = new FloatArrayPacket())
+      using (var packet = new FloatVectorPacket())
       {
 #pragma warning disable IDE0058
-        packet.length = 0;
         Assert.AreEqual(Status.StatusCode.Internal, packet.ValidateAsType().Code());
         Assert.Throws<MediaPipeException>(() => { packet.Get(); });
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
@@ -29,11 +29,11 @@ namespace Mediapipe.Tests
     [Test]
     public void Ctor_ShouldInstantiatePacket_When_CalledWithEmptyArray()
     {
-      float[] array = { };
-      using (var packet = new FloatArrayPacket(array))
+      float[] data = { };
+      using (var packet = new FloatVectorPacket(data))
       {
         Assert.True(packet.ValidateAsType().Ok());
-        Assert.AreEqual(array, packet.Get());
+        Assert.AreEqual(data, packet.Get());
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
     }
@@ -41,11 +41,11 @@ namespace Mediapipe.Tests
     [Test]
     public void Ctor_ShouldInstantiatePacket_When_CalledWithArray()
     {
-      float[] array = { 0.01f };
-      using (var packet = new FloatArrayPacket(array))
+      float[] data = { 0.01f };
+      using (var packet = new FloatVectorPacket(data))
       {
         Assert.True(packet.ValidateAsType().Ok());
-        Assert.AreEqual(array, packet.Get());
+        Assert.AreEqual(data, packet.Get());
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
     }
@@ -53,13 +53,52 @@ namespace Mediapipe.Tests
     [Test]
     public void Ctor_ShouldInstantiatePacket_When_CalledWithValueAndTimestamp()
     {
-      float[] array = { 0.01f, 0.02f };
+      float[] data = { 0.01f, 0.02f };
       using (var timestamp = new Timestamp(1))
       {
-        using (var packet = new FloatArrayPacket(array, timestamp))
+        using (var packet = new FloatVectorPacket(data, timestamp))
         {
           Assert.True(packet.ValidateAsType().Ok());
-          Assert.AreEqual(array, packet.Get());
+          Assert.AreEqual(data, packet.Get());
+          Assert.AreEqual(timestamp, packet.Timestamp());
+        }
+      }
+    }
+
+    [Test]
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithEmptyList()
+    {
+      var data = new List<float>();
+      using (var packet = new FloatVectorPacket(data))
+      {
+        Assert.True(packet.ValidateAsType().Ok());
+        Assert.AreEqual(data, packet.Get());
+        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
+      }
+    }
+
+    [Test]
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithList()
+    {
+      var data = new List<float>() { 0.01f };
+      using (var packet = new FloatVectorPacket(data))
+      {
+        Assert.True(packet.ValidateAsType().Ok());
+        Assert.AreEqual(data, packet.Get());
+        Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
+      }
+    }
+
+    [Test]
+    public void Ctor_ShouldInstantiatePacket_When_CalledWithListAndTimestamp()
+    {
+      var data = new List<float>() { 0.01f, 0.02f };
+      using (var timestamp = new Timestamp(1))
+      {
+        using (var packet = new FloatVectorPacket(data, timestamp))
+        {
+          Assert.True(packet.ValidateAsType().Ok());
+          Assert.AreEqual(data, packet.Get());
           Assert.AreEqual(timestamp, packet.Timestamp());
         }
       }
@@ -70,7 +109,7 @@ namespace Mediapipe.Tests
     [Test]
     public void IsDisposed_ShouldReturnFalse_When_NotDisposedYet()
     {
-      using (var packet = new FloatArrayPacket())
+      using (var packet = new FloatVectorPacket())
       {
         Assert.False(packet.isDisposed);
       }
@@ -79,7 +118,7 @@ namespace Mediapipe.Tests
     [Test]
     public void IsDisposed_ShouldReturnTrue_When_AlreadyDisposed()
     {
-      var packet = new FloatArrayPacket();
+      var packet = new FloatVectorPacket();
       packet.Dispose();
 
       Assert.True(packet.isDisposed);
@@ -92,15 +131,15 @@ namespace Mediapipe.Tests
     {
       using (var timestamp = new Timestamp(1))
       {
-        float[] array = { 0.0f };
-        var packet = new FloatArrayPacket(array).At(timestamp);
-        Assert.AreEqual(array, packet.Get());
+        var data = new List<float>() { 0.0f };
+        var packet = new FloatVectorPacket(data).At(timestamp);
+        Assert.AreEqual(data, packet.Get());
         Assert.AreEqual(timestamp, packet.Timestamp());
 
         using (var newTimestamp = new Timestamp(2))
         {
           var newPacket = packet.At(newTimestamp);
-          Assert.AreEqual(array, newPacket.Get());
+          Assert.AreEqual(data, newPacket.Get());
           Assert.AreEqual(newTimestamp, newPacket.Timestamp());
         }
 
@@ -113,7 +152,7 @@ namespace Mediapipe.Tests
     [Test]
     public void Consume_ShouldThrowNotSupportedException()
     {
-      using (var packet = new FloatArrayPacket())
+      using (var packet = new FloatVectorPacket())
       {
 #pragma warning disable IDE0058
         Assert.Throws<NotSupportedException>(() => { packet.Consume(); });
@@ -127,7 +166,7 @@ namespace Mediapipe.Tests
     public void ValidateAsType_ShouldReturnOk_When_ValueIsSet()
     {
       float[] array = { 0.01f };
-      using (var packet = new FloatArrayPacket(array))
+      using (var packet = new FloatVectorPacket(array))
       {
         Assert.True(packet.ValidateAsType().Ok());
       }

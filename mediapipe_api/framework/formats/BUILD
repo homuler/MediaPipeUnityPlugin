@@ -65,6 +65,21 @@ cc_library(
 )
 
 cc_library(
+    name = "matrix_data",
+    srcs = ["matrix_data.cc"],
+    hdrs = ["matrix_data.h"],
+    deps = [
+        "//mediapipe_api:common",
+        "//mediapipe_api/external/absl:status",
+        "//mediapipe_api/external/absl:statusor",
+        "//mediapipe_api/framework:packet",
+        "@com_google_mediapipe//mediapipe/framework/formats:matrix",
+        "@com_google_mediapipe//mediapipe/framework/formats:matrix_data_cc_proto",
+    ],
+    alwayslink = True,
+)
+
+cc_library(
     name = "rect",
     srcs = ["rect.cc"],
     hdrs = ["rect.h"],

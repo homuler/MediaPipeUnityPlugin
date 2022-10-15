@@ -47,6 +47,14 @@ inline void SerializeProtoVector(const std::vector<T>& proto_vec, mp_api::Struct
 }
 
 template <class T>
+inline T ParseFromStringAsProto(const char* serialized_data, int size) {
+  T proto;
+  CHECK(proto.ParseFromString(std::string(serialized_data, size)));
+
+  return proto;
+}
+
+template <class T>
 inline bool ConvertFromTextFormat(const char* str, mp_api::SerializedProto* output) {
   T proto;
   auto result = google::protobuf::TextFormat::ParseFromString(str, &proto);

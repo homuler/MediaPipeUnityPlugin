@@ -118,13 +118,13 @@ namespace Mediapipe.Tests
     }
     #endregion
 
-    #region #DebugTypeName
+    #region #ValidateAsType
     [Test]
-    public void DebugTypeName_ShouldReturnBool_When_ValueIsSet()
+    public void ValidateAsType_ShouldReturnOk_When_ValueIsSet()
     {
       using (var packet = new BoolPacket(true))
       {
-        Assert.AreEqual("bool", packet.DebugTypeName());
+        Assert.True(packet.ValidateAsType().Ok());
       }
     }
     #endregion

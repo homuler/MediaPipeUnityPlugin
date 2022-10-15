@@ -15,6 +15,7 @@
 extern "C" {
 
 MP_CAPI(void) delete_array__PKc(const char* str);
+MP_CAPI(void) delete_array__Pf(float* f);
 
 // string API
 MP_CAPI(void) std_string__delete(std::string* str);

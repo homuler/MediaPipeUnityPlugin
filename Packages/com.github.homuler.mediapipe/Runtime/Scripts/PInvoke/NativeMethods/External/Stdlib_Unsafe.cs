@@ -14,6 +14,9 @@ namespace Mediapipe
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern void delete_array__PKc(IntPtr str);
 
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern void delete_array__Pf(IntPtr str);
+
     #region String
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern void std_string__delete(IntPtr str);
