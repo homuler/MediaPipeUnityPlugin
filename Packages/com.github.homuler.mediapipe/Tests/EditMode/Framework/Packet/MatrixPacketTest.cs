@@ -82,6 +82,17 @@ namespace Mediapipe.Tests
     }
     #endregion
 
+    #region #ValidateAsType
+    [Test]
+    public void ValidateAsType_ShouldReturnOk_When_ValueIsSet()
+    {
+      using (var packet = new MatrixPacket(CreateMatrixInputData()))
+      {
+        Assert.True(packet.ValidateAsType().Ok());
+      }
+    }
+    #endregion
+
     private static MatrixData CreateMatrixInputData()
     {
       var matrix = new MatrixData();

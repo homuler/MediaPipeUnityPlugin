@@ -161,14 +161,14 @@ namespace Mediapipe.Tests
     }
     #endregion
 
-    #region #DebugTypeName
+    #region #ValidateAsType
     [Test]
-    public void DebugTypeName_ShouldReturnFloatVector_When_ValueIsSet()
+    public void ValidateAsType_ShouldReturnOk_When_ValueIsSet()
     {
       float[] array = { 0.01f };
       using (var packet = new FloatVectorPacket(array))
       {
-        Assert.AreEqual("std::vector<float, std::allocator<float> >", packet.DebugTypeName());
+        Assert.True(packet.ValidateAsType().Ok());
       }
     }
     #endregion

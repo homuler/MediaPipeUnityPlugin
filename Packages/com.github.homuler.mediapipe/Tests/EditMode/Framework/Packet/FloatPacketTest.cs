@@ -106,13 +106,13 @@ namespace Mediapipe.Tests
     }
     #endregion
 
-    #region #DebugTypeName
+    #region #ValidateAsType
     [Test]
-    public void DebugTypeName_ShouldReturnFloat_When_ValueIsSet()
+    public void ValidateAsType_ShouldReturnOk_When_ValueIsSet()
     {
       using (var packet = new FloatPacket(0.01f))
       {
-        Assert.AreEqual("float", packet.DebugTypeName());
+        Assert.True(packet.ValidateAsType().Ok());
       }
     }
     #endregion

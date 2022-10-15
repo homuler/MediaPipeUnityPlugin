@@ -122,18 +122,14 @@ namespace Mediapipe.Tests
     }
     #endregion
 
-    #region #DebugTypeName
+    #region #ValidateAsType
     [Test]
-    public void DebugTypeName_ShouldReturnFloat_When_ValueIsSet()
+    public void ValidateAsType_ShouldReturnOk_When_ValueIsSet()
     {
       float[] array = { 0.01f };
       using (var packet = new FloatArrayPacket(array))
       {
-#if UNITY_EDITOR_WIN
-        Assert.AreEqual("float [0]", packet.DebugTypeName());
-#else
-        Assert.AreEqual("float []", packet.DebugTypeName());
-#endif
+        Assert.True(packet.ValidateAsType().Ok());
       }
     }
     #endregion

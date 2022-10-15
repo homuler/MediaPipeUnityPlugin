@@ -163,15 +163,13 @@ namespace Mediapipe.Tests
     }
     #endregion
 
-    #region #DebugTypeName
+    #region #ValidateAsType
     [Test]
-    public void DebugTypeName_ShouldReturnString_When_ValueIsSet()
+    public void ValidateAsType_ShouldReturnOk_When_ValueIsSet()
     {
       using (var packet = new StringPacket("test"))
       {
-        var regex = new Regex("string");
-
-        Assert.True(regex.IsMatch(packet.DebugTypeName()));
+        Assert.True(packet.ValidateAsType().Ok());
       }
     }
     #endregion
