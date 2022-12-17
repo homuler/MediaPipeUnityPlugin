@@ -91,19 +91,12 @@ jobs:
           UNITY_TOTP_KEY: ${{ secrets.UNITY_TOTP_KEY }}
         run: |
           npm install -g unity-verify-code
-          git clone -b ci https://github.com/homuler/unity-license-activate.git
+          git clone https://github.com/homuler/unity-license-activate.git
           cd unity-license-activate
           npm install
           cd ..
           npm install -g ./unity-license-activate
           unity-license-activate "$UNITY_EMAIL" "$UNITY_PASSWORD" Unity_v${{ matrix.unityVersion }}.alf --authenticator-key "$UNITY_TOTP_KEY"
-      - name: 🩺 Upload error screenshot
-        uses: actions/upload-artifact@v2
-        if: failure()
-        with:
-          name: license_activation_error
-          path: error.png
-          retention-days: 1
       - name: Activate License
         run: |
           unity-editor -quit -batchmode -nographics -logFile -manualLicenseFile $(ls Unity_*.ulf) || true
