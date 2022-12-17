@@ -126,7 +126,7 @@ jobs:
           cd DummyProject
           tar xvf artifacts.tar
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: DummyProject/Library
           key: Library-DummyProject-${{ matrix.os }}-${{ matrix.unity.version }}-v1

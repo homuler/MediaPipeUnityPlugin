@@ -115,7 +115,7 @@ jobs:
           tar xvf artifacts.tar
           echo $(jq '.dependencies += {"com.unity.testtools.codecoverage":"1.1.1"}' Packages/manifest.json) > Packages/manifest.json
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: DummyProject/Library
           key: Library-DummyProject-${{ matrix.os }}-${{ matrix.unityVersion }}-v1
