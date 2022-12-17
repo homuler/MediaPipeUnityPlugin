@@ -163,7 +163,7 @@ jobs:
     if: ${{ always() }}
     needs: test
     steps:
-      - uses: geekyeggo/delete-artifact@v1
+      - uses: geekyeggo/delete-artifact@v2
         with:
           name: windows-package
           failOnError: false
