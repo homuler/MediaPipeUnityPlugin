@@ -60,7 +60,7 @@ jobs:
             python build.py build --bazel_build_opts "${{ inputs.bazelBuildArgs }}" ${{ inputs.linuxBuildArgs }} -vv
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.packageName }}-base
           path: .
@@ -85,7 +85,7 @@ jobs:
             python build.py build --bazel_build_opts "${{ inputs.bazelBuildArgs }}" ${{ inputs.androidBuildArgs }} -vv
 
       - name: Upload mediapipe_android.aar
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.packageName }}-mediapipe_android.aar
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/Android/mediapipe_android.aar
@@ -110,7 +110,7 @@ jobs:
           python build.py build --bazel_build_opts "${{ inputs.bazelBuildArgs }}" ${{ inputs.macosBuildArgs }} -vv
 
       - name: Upload libmediapipe_c.dylib
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.packageName }}-libmediapipe_c.dylib
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.dylib
@@ -136,7 +136,7 @@ jobs:
           python build.py build --bazel_build_opts "${{ inputs.bazelBuildArgs }}" ${{ inputs.iosBuildArgs }} -vv
 
       - name: Upload MediaPipeUnity.framework
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.packageName }}-MediaPipeUnity.framework
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/iOS/MediaPipeUnity.framework
@@ -163,7 +163,7 @@ jobs:
         shell: cmd
 
       - name: Upload mediapipe_c.dll
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.packageName }}-mediapipe_c.dll
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/mediapipe_c.dll
@@ -216,7 +216,7 @@ jobs:
           mv com.github.homuler.mediapipe-*.tgz ../..
 
       - name: Upload the built package
-        uses: actions/upload-artifact@v2  
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.packageName }}
           path: com.github.homuler.mediapipe-*.tgz

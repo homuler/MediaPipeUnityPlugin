@@ -53,7 +53,7 @@ jobs:
         run: |
           tar cvf artifacts.tar Packages/com.github.homuler.mediapipe
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: linux-package
           path: artifacts.tar
@@ -144,14 +144,14 @@ jobs:
         run: |
           [ -f $RESULT_FILE_PATH ] && cat ${RESULT_FILE_PATH}
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: Test results for ${{ matrix.unityVersion }} on ${{ matrix.os }}
           path: DummyProject/testResults
           retention-days: 7
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: ${{ matrix.os == 'ubuntu-20.04' && startsWith(matrix.unityVersion, '2021') }}
         with:
           name: Coverage results
