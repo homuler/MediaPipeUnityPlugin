@@ -179,7 +179,7 @@ jobs:
     steps:
       - name: Install UnityEditor
         run: |
-          sudo docker cp $(docker create --rm unityci/editor:${{ matrix.unityVersion }}-base-1):/opt/unity /opt/unity
+          sudo docker cp $(docker create --rm unityci/editor:2021.3.3f1-base-1):/opt/unity /opt/unity
           sudo chown -R $(id -u):$(id -g) /opt/unity
 
           echo -e '#!/bin/bash\nxvfb-run -ae /dev/stdout /opt/unity/Editor/Unity -batchmode "$@"' | sudo tee -a /usr/bin/unity-editor
@@ -200,7 +200,7 @@ jobs:
           npm install
           cd ..
           npm install -g ./unity-license-activate
-          unity-license-activate "$UNITY_EMAIL" "$UNITY_PASSWORD" Unity_v${{ matrix.unityVersion }}.alf --authenticator-key "$UNITY_TOTP_KEY"
+          unity-license-activate "$UNITY_EMAIL" "$UNITY_PASSWORD" Unity_v2021.3.3f1.alf --authenticator-key "$UNITY_TOTP_KEY"
           rm -rf unity-license-activate
       - name: Activate License
         run: |
