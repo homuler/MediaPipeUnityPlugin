@@ -18,7 +18,7 @@ namespace Mediapipe.Unity
     private static readonly string _TAG = nameof(LocalResourceManager);
 
     private static string _RelativePath;
-    private static readonly string _AssetPathRoot = "Packages/com.github.homuler.mediapipe/Runtime/Resources";
+    private static readonly string _AssetPathRoot = "Packages/com.github.homuler.mediapipe/PackageResources/MediaPipe";
     private static string _CachePathRoot;
 
     public override PathResolver pathResolver => PathToResourceAsFile;
