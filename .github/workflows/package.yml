@@ -177,6 +177,36 @@ jobs:
       - ios-build
       - windows-build
     steps:
+      - name: Install UnityEditor
+        run: |
+          sudo docker cp $(docker create --rm unityci/editor:${{ matrix.unityVersion }}-base-1):/opt/unity /opt/unity
+          sudo chown -R $(id -u):$(id -g) /opt/unity
+
+          echo -e '#!/bin/bash\nxvfb-run -ae /dev/stdout /opt/unity/Editor/Unity -batchmode "$@"' | sudo tee -a /usr/bin/unity-editor
+          sudo chmod +x /usr/bin/unity-editor
+
+      - name: Generate a license activation file
+        run: |
+          unity-editor -quit -createManualActivationFile -logFile || true
+      - name: Request a Unity license file
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_TOTP_KEY: ${{ secrets.UNITY_TOTP_KEY }}
+        run: |
+          npm install -g unity-verify-code
+          git clone https://github.com/homuler/unity-license-activate.git
+          cd unity-license-activate
+          npm install
+          cd ..
+          npm install -g ./unity-license-activate
+          unity-license-activate "$UNITY_EMAIL" "$UNITY_PASSWORD" Unity_v${{ matrix.unityVersion }}.alf --authenticator-key "$UNITY_TOTP_KEY"
+          rm -rf unity-license-activate
+      - name: Activate License
+        run: |
+          unity-editor -quit -batchmode -nographics -logFile -manualLicenseFile $(ls Unity_*.ulf) || true
+          rm Unity_*.ulf
+
       - name: Download the base package
         uses: actions/download-artifact@v3
         with:
@@ -209,17 +239,28 @@ jobs:
           rm libopencv_world.*.meta
           rm opencv_world*.dll.meta
 
-      - name: Package
+      - name: Zip all
+        run: |
+          zip -r MediaPipeUnityPlugin-all.zip .
+
+      - name: Export tarball
         run: |
           cd Packages/com.github.homuler.mediapipe
           npm pack
           mv com.github.homuler.mediapipe-*.tgz ../..
 
-      - name: Upload the built package
+      - name: Export unitypackage
+        run: |
+          unity-editor -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.packageName }}
-          path: com.github.homuler.mediapipe-*.tgz
+          path: |
+            com.github.homuler.mediapipe-*.tgz
+            *.unitypackage
+            MediaPipeUnityPlugin-all.zip
           retention-days: 7
 
   clean:
