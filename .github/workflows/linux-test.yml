@@ -19,7 +19,7 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
 
-      # Setup build tools 
+      # Setup build tools
       - name: Mount bazel cache
         uses: actions/cache@v3
         with:
@@ -97,6 +97,13 @@ jobs:
           cd ..
           npm install -g ./unity-license-activate
           unity-license-activate "$UNITY_EMAIL" "$UNITY_PASSWORD" Unity_v${{ matrix.unityVersion }}.alf --authenticator-key "$UNITY_TOTP_KEY"
+      - name: 🩺 Upload error screenshot
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: license_activation_error
+          path: error.png
+          retention-days: 1
       - name: Activate License
         run: |
           unity-editor -quit -batchmode -nographics -logFile -manualLicenseFile $(ls Unity_*.ulf) || true
