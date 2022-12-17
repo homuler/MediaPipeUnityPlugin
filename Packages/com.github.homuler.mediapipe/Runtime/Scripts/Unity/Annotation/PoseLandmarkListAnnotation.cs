@@ -121,11 +121,16 @@ namespace Mediapipe.Unity
       _connectionListAnnotation.Fill(_Connections, _landmarkListAnnotation);
     }
 
+#if UNITY_EDITOR
     private void OnValidate()
     {
-      ApplyLeftLandmarkColor(_leftLandmarkColor);
-      ApplyRightLandmarkColor(_rightLandmarkColor);
+      if (!UnityEditor.PrefabUtility.IsPartOfAnyPrefab(this))
+      {
+        ApplyLeftLandmarkColor(_leftLandmarkColor);
+        ApplyRightLandmarkColor(_rightLandmarkColor);
+      }
     }
+#endif
 
     public void SetLeftLandmarkColor(Color leftLandmarkColor)
     {

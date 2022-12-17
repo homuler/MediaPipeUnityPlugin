@@ -30,13 +30,18 @@ namespace Mediapipe.Unity
       ApplyMagnitude(_magnitude); // magnitude must be set after _capScale
     }
 
+#if UNITY_EDITOR
     private void OnValidate()
     {
-      ApplyDirection(_direction);
-      ApplyCapScale(_capScale);
-      ApplyLineWidth(_lineWidth);
-      ApplyMagnitude(_magnitude); // magnitude must be set after _capScale
+      if (!UnityEditor.PrefabUtility.IsPartOfAnyPrefab(this))
+      {
+        ApplyDirection(_direction);
+        ApplyCapScale(_capScale);
+        ApplyLineWidth(_lineWidth);
+        ApplyMagnitude(_magnitude); // magnitude must be set after _capScale
+      }
     }
+#endif
 
     private Transform _cone;
     private Transform cone

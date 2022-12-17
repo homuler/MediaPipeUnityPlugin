@@ -9,20 +9,21 @@ using UnityEngine;
 
 namespace Mediapipe.Unity
 {
-#pragma warning disable IDE0065
-  using Color = UnityEngine.Color;
-#pragma warning restore IDE0065
-
   public sealed class DetectionListAnnotation : ListAnnotation<DetectionAnnotation>
   {
     [SerializeField, Range(0, 1)] private float _lineWidth = 1.0f;
     [SerializeField] private float _keypointRadius = 15.0f;
 
+#if UNITY_EDITOR
     private void OnValidate()
     {
-      ApplyLineWidth(_lineWidth);
-      ApplyKeypointRadius(_keypointRadius);
+      if (!UnityEditor.PrefabUtility.IsPartOfAnyPrefab(this))
+      {
+        ApplyLineWidth(_lineWidth);
+        ApplyKeypointRadius(_keypointRadius);
+      }
     }
+#endif
 
     public void SetLineWidth(float lineWidth)
     {

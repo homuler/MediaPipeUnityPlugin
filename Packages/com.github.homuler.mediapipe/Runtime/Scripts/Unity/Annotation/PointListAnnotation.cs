@@ -20,11 +20,16 @@ namespace Mediapipe.Unity
     [SerializeField] private Color _color = Color.green;
     [SerializeField] private float _radius = 15.0f;
 
+#if UNITY_EDITOR
     private void OnValidate()
     {
-      ApplyColor(_color);
-      ApplyRadius(_radius);
+      if (!UnityEditor.PrefabUtility.IsPartOfAnyPrefab(this))
+      {
+        ApplyColor(_color);
+        ApplyRadius(_radius);
+      }
     }
+#endif
 
     public void SetColor(Color color)
     {

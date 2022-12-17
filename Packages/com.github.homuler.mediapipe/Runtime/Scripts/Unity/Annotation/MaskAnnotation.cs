@@ -42,11 +42,16 @@ namespace Mediapipe.Unity
       }
     }
 
+#if UNITY_EDITOR
     private void OnValidate()
     {
-      ApplyMaskTexture(_maskTexture, _color);
-      ApplyThreshold(_threshold);
+      if (!UnityEditor.PrefabUtility.IsPartOfAnyPrefab(this))
+      {
+        ApplyMaskTexture(_maskTexture, _color);
+        ApplyThreshold(_threshold);
+      }
     }
+#endif
 
     private void OnDestroy()
     {
