@@ -29,11 +29,16 @@ namespace Mediapipe.Unity
       ApplyLineWidth(0.0f);
     }
 
+#if UNITY_EDITOR
     private void OnValidate()
     {
-      ApplyColor(_color);
-      ApplyLineWidth(_lineWidth);
+      if (!UnityEditor.PrefabUtility.IsPartOfAnyPrefab(this))
+      {
+        ApplyColor(_color);
+        ApplyLineWidth(_lineWidth);
+      }
     }
+#endif
 
     public void SetColor(Color color)
     {

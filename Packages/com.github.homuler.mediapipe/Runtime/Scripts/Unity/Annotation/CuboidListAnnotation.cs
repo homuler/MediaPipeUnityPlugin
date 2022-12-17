@@ -22,15 +22,20 @@ namespace Mediapipe.Unity
     [SerializeField] private float _arrowLengthScale = 1.0f;
     [SerializeField, Range(0, 1)] private float _arrowWidth = 1.0f;
 
+#if UNITY_EDITOR
     private void OnValidate()
     {
-      ApplyPointColor(_pointColor);
-      ApplyLineColor(_lineColor);
-      ApplyLineWidth(_lineWidth);
-      ApplyArrowCapScale(_arrowCapScale);
-      ApplyArrowLengthScale(_arrowLengthScale);
-      ApplyArrowWidth(_arrowWidth);
+      if (!UnityEditor.PrefabUtility.IsPartOfAnyPrefab(this))
+      {
+        ApplyPointColor(_pointColor);
+        ApplyLineColor(_lineColor);
+        ApplyLineWidth(_lineWidth);
+        ApplyArrowCapScale(_arrowCapScale);
+        ApplyArrowLengthScale(_arrowLengthScale);
+        ApplyArrowWidth(_arrowWidth);
+      }
     }
+#endif
 
     public void SetPointColor(Color pointColor)
     {

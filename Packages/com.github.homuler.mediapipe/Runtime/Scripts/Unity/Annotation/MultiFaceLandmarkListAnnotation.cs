@@ -24,17 +24,22 @@ namespace Mediapipe.Unity
     [SerializeField, Range(0, 1)] private float _faceConnectionWidth = 1.0f;
     [SerializeField, Range(0, 1)] private float _irisCircleWidth = 1.0f;
 
+#if UNITY_EDITOR
     private void OnValidate()
     {
-      ApplyFaceLandmarkColor(_faceLandmarkColor);
-      ApplyIrisLandmarkColor(_irisLandmarkColor);
-      ApplyFaceLandmarkRadius(_faceLandmarkRadius);
-      ApplyIrisLandmarkRadius(_irisLandmarkRadius);
-      ApplyFaceConnectionColor(_faceConnectionColor);
-      ApplyIrisCircleColor(_irisCircleColor);
-      ApplyFaceConnectionWidth(_faceConnectionWidth);
-      ApplyIrisCircleWidth(_irisCircleWidth);
+      if (!UnityEditor.PrefabUtility.IsPartOfAnyPrefab(this))
+      {
+        ApplyFaceLandmarkColor(_faceLandmarkColor);
+        ApplyIrisLandmarkColor(_irisLandmarkColor);
+        ApplyFaceLandmarkRadius(_faceLandmarkRadius);
+        ApplyIrisLandmarkRadius(_irisLandmarkRadius);
+        ApplyFaceConnectionColor(_faceConnectionColor);
+        ApplyIrisCircleColor(_irisCircleColor);
+        ApplyFaceConnectionWidth(_faceConnectionWidth);
+        ApplyIrisCircleWidth(_irisCircleWidth);
+      }
     }
+#endif
 
     public void SetFaceLandmarkRadius(float radius)
     {

@@ -21,14 +21,19 @@ namespace Mediapipe.Unity
     [SerializeField] private Color _connectionColor = Color.white;
     [SerializeField, Range(0, 1)] private float _connectionWidth = 1.0f;
 
+#if UNITY_EDITOR
     private void OnValidate()
     {
-      ApplyLeftLandmarkColor(_leftLandmarkColor);
-      ApplyRightLandmarkColor(_rightLandmarkColor);
-      ApplyLandmarkRadius(_landmarkRadius);
-      ApplyConnectionColor(_connectionColor);
-      ApplyConnectionWidth(_connectionWidth);
+      if (!UnityEditor.PrefabUtility.IsPartOfAnyPrefab(this))
+      {
+        ApplyLeftLandmarkColor(_leftLandmarkColor);
+        ApplyRightLandmarkColor(_rightLandmarkColor);
+        ApplyLandmarkRadius(_landmarkRadius);
+        ApplyConnectionColor(_connectionColor);
+        ApplyConnectionWidth(_connectionWidth);
+      }
     }
+#endif
 
     public void SetLeftLandmarkColor(Color leftLandmarkColor)
     {
