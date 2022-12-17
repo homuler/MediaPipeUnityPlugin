@@ -76,7 +76,7 @@ jobs:
           UNITY_TOTP_KEY: ${{ secrets.UNITY_TOTP_KEY }}
         run: |
           npm install -g unity-verify-code
-          git clone -b ci https://github.com/homuler/unity-license-activate.git
+          git clone https://github.com/homuler/unity-license-activate.git
           cd unity-license-activate
           npm install
           cd ..
