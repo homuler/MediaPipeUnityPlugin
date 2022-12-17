@@ -30,11 +30,6 @@ jobs:
         with:
           path: C:\Users\runneradmin\AppData\Local\bazelisk
           key: windows-bazelisk
-      - name: Mount bazel cache
-        uses: actions/cache@v3
-        with:
-          path: C:\_bzl
-          key: bazel-windows-2019-v1-${{ hashFiles('WORKSPACE') }}
 
       # Setup Python
       - uses: actions/setup-python@v4
