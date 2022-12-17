@@ -99,7 +99,7 @@ jobs:
           cd DummyProject
           tar xvf artifacts.tar
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: DummyProject/Library
           key: Library-DummyProject-${{ matrix.os }}-${{ matrix.unity.version }}-v1
@@ -136,7 +136,7 @@ jobs:
     if: ${{ always() }}
     needs: test
     steps:
-      - uses: geekyeggo/delete-artifact@v1
+      - uses: geekyeggo/delete-artifact@v2
         with:
           name: macos-package
           failOnError: false
