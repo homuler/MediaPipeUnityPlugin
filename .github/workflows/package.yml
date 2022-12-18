@@ -224,6 +224,7 @@ jobs:
         if: ${{ env.BUILD_UNITYPACKAGE }}
         run: |
           unity-editor -quit -batchmode -nographics -logFile -manualLicenseFile $(ls Unity_*.ulf) || true
+          rm Unity_*.alf
           rm Unity_*.ulf
 
       - name: Download the base package
@@ -260,7 +261,7 @@ jobs:
 
       - name: Zip all
         run: |
-          zip -r MediaPipeUnityPlugin-all.zip .
+          zip -r MediaPipeUnityPlugin-all.zip . -x .git/**\*
 
       - name: Export tarball
         run: |
