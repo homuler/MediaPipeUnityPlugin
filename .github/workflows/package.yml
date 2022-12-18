@@ -194,7 +194,7 @@ jobs:
           fi
 
       - name: Install UnityEditor
-        if: ${{ env.BUILD_UNITYPACKAGE }}
+        if: ${{ env.BUILD_UNITYPACKAGE == '1' }}
         run: |
           sudo docker cp $(docker create --rm unityci/editor:2021.3.3f1-base-1):/opt/unity /opt/unity
           sudo chown -R $(id -u):$(id -g) /opt/unity
@@ -202,11 +202,11 @@ jobs:
           echo -e '#!/bin/bash\nxvfb-run -ae /dev/stdout /opt/unity/Editor/Unity -batchmode "$@"' | sudo tee -a /usr/bin/unity-editor
           sudo chmod +x /usr/bin/unity-editor
       - name: Generate a license activation file
-        if: ${{ env.BUILD_UNITYPACKAGE }}
+        if: ${{ env.BUILD_UNITYPACKAGE == '1' }}
         run: |
           unity-editor -quit -createManualActivationFile -logFile || true
       - name: Request a Unity license file
-        if: ${{ env.BUILD_UNITYPACKAGE }}
+        if: ${{ env.BUILD_UNITYPACKAGE == '1' }}
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
@@ -221,7 +221,7 @@ jobs:
           unity-license-activate "$UNITY_EMAIL" "$UNITY_PASSWORD" Unity_v2021.3.3f1.alf --authenticator-key "$UNITY_TOTP_KEY"
           rm -rf unity-license-activate
       - name: Activate License
-        if: ${{ env.BUILD_UNITYPACKAGE }}
+        if: ${{ env.BUILD_UNITYPACKAGE == '1' }}
         run: |
           unity-editor -quit -batchmode -nographics -logFile -manualLicenseFile $(ls Unity_*.ulf) || true
           rm Unity_*.alf
@@ -270,7 +270,7 @@ jobs:
           mv com.github.homuler.mediapipe-*.tgz ../..
 
       - name: Export unitypackage
-        if: ${{ env.BUILD_UNITYPACKAGE }}
+        if: ${{ env.BUILD_UNITYPACKAGE == '1' }}
         run: |
           unity-editor -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
 
