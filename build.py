@@ -16,10 +16,12 @@ except ImportError:
 _BAZEL_BIN_PATH = 'bazel-bin'
 _BAZEL_OUT_PATH = 'bazel-out'
 _BUILD_PATH = 'build'
+_BUILD_RUNTIME_PATH = os.path.join(_BUILD_PATH, 'Runtime')
+_BUILD_RESOURCES_PATH = os.path.join(_BUILD_PATH, 'PackageResources', 'MediaPipe')
 _NUGET_PATH = '.nuget'
 _ANALYZER_PATH = os.path.join('Assets', 'Analyzers')
 _STREAMING_ASSETS_PATH = os.path.join('Assets', 'StreamingAssets')
-_INSTALL_PATH = os.path.join('Packages', 'com.github.homuler.mediapipe', 'Runtime')
+_INSTALL_PATH = os.path.join('Packages', 'com.github.homuler.mediapipe')
 
 class Console:
   def __init__(self, verbose):
@@ -112,7 +114,7 @@ class BuildCommand(Command):
     self._run_command(self._build_proto_srcs_commands())
     self._unzip(
       os.path.join(_BAZEL_BIN_PATH, 'mediapipe_api', 'mediapipe_proto_srcs.zip'),
-      os.path.join(_BUILD_PATH, 'Scripts', 'Protobuf'))
+      os.path.join(_BUILD_RUNTIME_PATH, 'Scripts', 'Protobuf'))
     self.console.info('Built protobuf sources')
 
     self.console.info('Downloading dlls...')
@@ -120,7 +122,7 @@ class BuildCommand(Command):
 
     for f in glob.glob(os.path.join(_NUGET_PATH, '**', 'lib', 'netstandard2.0', '*.dll'), recursive=True):
       basename = os.path.basename(f)
-      self._copy(f, os.path.join(_BUILD_PATH, 'Plugins', 'Protobuf', basename))
+      self._copy(f, os.path.join(_BUILD_RUNTIME_PATH, 'Plugins', 'Protobuf', basename))
 
     self.console.info('Downloaded protobuf dlls')
 
@@ -129,7 +131,7 @@ class BuildCommand(Command):
       self._run_command(self._build_resources_commands())
       self._unzip(
         os.path.join(_BAZEL_BIN_PATH, 'mediapipe_api', 'mediapipe_assets.zip'),
-        os.path.join(_BUILD_PATH, 'Resources'))
+        _BUILD_RESOURCES_PATH)
       self._unzip(
         os.path.join(_BAZEL_BIN_PATH, 'mediapipe_api', 'mediapipe_assets.zip'),
         _STREAMING_ASSETS_PATH)
@@ -141,7 +143,7 @@ class BuildCommand(Command):
       self._run_command(self._build_desktop_commands())
       self._unzip(
         os.path.join(_BAZEL_BIN_PATH, 'mediapipe_api', 'mediapipe_desktop.zip'),
-        os.path.join(_BUILD_PATH, 'Plugins'))
+        os.path.join(_BUILD_RUNTIME_PATH, 'Plugins'))
 
       self.console.info('Built native libraries for Desktop')
 
@@ -150,14 +152,14 @@ class BuildCommand(Command):
       self._run_command(self._build_android_commands())
       self._copy(
         os.path.join(_BAZEL_BIN_PATH, 'mediapipe_api', 'java', 'com', 'github', 'homuler', 'mediapipe', 'mediapipe_android.aar'),
-        os.path.join(_BUILD_PATH, 'Plugins', 'Android', 'mediapipe_android.aar'))
+        os.path.join(_BUILD_RUNTIME_PATH, 'Plugins', 'Android', 'mediapipe_android.aar'))
 
       self.console.info('Built native libraries for Android')
 
     if self.command_args.ios:
       self.console.info('Building native libaries for iOS...')
       self._run_command(self._build_ios_commands())
-      self._unzip(self._find_latest_built_framework(), os.path.join(_BUILD_PATH, 'Plugins', 'iOS'))
+      self._unzip(self._find_latest_built_framework(), os.path.join(_BUILD_RUNTIME_PATH, 'Plugins', 'iOS'))
 
       self.console.info('Built native libraries for iOS')
 
@@ -360,14 +362,14 @@ class UninstallCommand(Command):
 
     if self.command_args.desktop:
       self.console.info('Uninstalling native libraries for Desktop...')
-      for f in glob.glob(os.path.join(_INSTALL_PATH, 'Plugins', '*'), recursive=True):
+      for f in glob.glob(os.path.join(_INSTALL_PATH, 'Runtime', 'Plugins', '*'), recursive=True):
         if f.endswith('.dll') or f.endswith('.dylib') or f.endswith('.so'):
           self._remove(f)
 
     if self.command_args.android:
       self.console.info('Uninstalling native libraries for Android...')
 
-      aar_path = os.path.join(_INSTALL_PATH, 'Plugins', 'Android', 'mediapipe_android.aar')
+      aar_path = os.path.join(_INSTALL_PATH, 'Runtime', 'Plugins', 'Android', 'mediapipe_android.aar')
 
       if os.path.exists(aar_path):
         self._remove(aar_path)
@@ -375,7 +377,7 @@ class UninstallCommand(Command):
     if self.command_args.ios:
       self.console.info('Uninstalling native libraries for iOS...')
 
-      ios_framework_path = os.path.join(_INSTALL_PATH, 'Plugins', 'iOS', 'MediaPipeUnity.framework')
+      ios_framework_path = os.path.join(_INSTALL_PATH, 'Runtime', 'Plugins', 'iOS', 'MediaPipeUnity.framework')
 
       if os.path.exists(ios_framework_path):
         self._rmtree(ios_framework_path)
@@ -383,7 +385,7 @@ class UninstallCommand(Command):
     if self.command_args.resources:
       self.console.info('Uninstalling resource files...')
 
-      for f in glob.glob(os.path.join(_INSTALL_PATH, 'Resources', '*'), recursive=True):
+      for f in glob.glob(os.path.join(_INSTALL_PATH, 'PackageResources', 'MediaPipe', '*'), recursive=True):
         if not f.endswith('.meta'):
           self._remove(f)
 
@@ -393,10 +395,10 @@ class UninstallCommand(Command):
     if self.command_args.protobuf:
       self.console.info('Uninstalling protobuf sources and dlls...')
 
-      for f in glob.glob(os.path.join(_INSTALL_PATH, 'Plugins', 'Protobuf', '*.dll'), recursive=True):
+      for f in glob.glob(os.path.join(_INSTALL_PATH, 'Runtime', 'Plugins', 'Protobuf', '*.dll'), recursive=True):
         self._remove(f)
 
-      for f in glob.glob(os.path.join(_INSTALL_PATH, 'Scripts', 'Protobuf', '**', '*.cs'), recursive=True):
+      for f in glob.glob(os.path.join(_INSTALL_PATH, 'Runtime', 'Scripts', 'Protobuf', '**', '*.cs'), recursive=True):
         self._remove(f)
 
     if self.command_args.analyzers:
