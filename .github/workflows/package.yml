@@ -26,6 +26,14 @@ on:
       windowsBuildArgs:
         type: string
         default: '--desktop cpu --opencv cmake'
+    secrets:
+      UNITY_EMAIL:
+        required: false
+      UNITY_PASSWORD:
+        required: false
+      UNITY_TOTP_KEY:
+        required: false
+
 jobs:
   print-inputs:
     runs-on: ubuntu-latest
@@ -177,18 +185,28 @@ jobs:
       - ios-build
       - windows-build
     steps:
+      - name: Check options
+        run: |
+          if [[ -z '${{ secrets.UNITY_EMAIL }}' ]]; then
+            echo "BUILD_UNITYPACKAGE=0" >> $GITHUB_ENV
+          else
+            echo "BUILD_UNITYPACKAGE=1" >> $GITHUB_ENV
+          fi
+
       - name: Install UnityEditor
+        if: ${{ env.BUILD_UNITYPACKAGE == '1' }}
         run: |
           sudo docker cp $(docker create --rm unityci/editor:2021.3.3f1-base-1):/opt/unity /opt/unity
           sudo chown -R $(id -u):$(id -g) /opt/unity
 
           echo -e '#!/bin/bash\nxvfb-run -ae /dev/stdout /opt/unity/Editor/Unity -batchmode "$@"' | sudo tee -a /usr/bin/unity-editor
           sudo chmod +x /usr/bin/unity-editor
-
       - name: Generate a license activation file
+        if: ${{ env.BUILD_UNITYPACKAGE == '1' }}
         run: |
           unity-editor -quit -createManualActivationFile -logFile || true
       - name: Request a Unity license file
+        if: ${{ env.BUILD_UNITYPACKAGE == '1' }}
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
@@ -203,8 +221,10 @@ jobs:
           unity-license-activate "$UNITY_EMAIL" "$UNITY_PASSWORD" Unity_v2021.3.3f1.alf --authenticator-key "$UNITY_TOTP_KEY"
           rm -rf unity-license-activate
       - name: Activate License
+        if: ${{ env.BUILD_UNITYPACKAGE == '1' }}
         run: |
           unity-editor -quit -batchmode -nographics -logFile -manualLicenseFile $(ls Unity_*.ulf) || true
+          rm Unity_*.alf
           rm Unity_*.ulf
 
       - name: Download the base package
@@ -241,7 +261,7 @@ jobs:
 
       - name: Zip all
         run: |
-          zip -r MediaPipeUnityPlugin-all.zip .
+          zip -r MediaPipeUnityPlugin-all.zip . -x .git/**\*
 
       - name: Export tarball
         run: |
@@ -250,6 +270,7 @@ jobs:
           mv com.github.homuler.mediapipe-*.tgz ../..
 
       - name: Export unitypackage
+        if: ${{ env.BUILD_UNITYPACKAGE == '1' }}
         run: |
           unity-editor -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
 

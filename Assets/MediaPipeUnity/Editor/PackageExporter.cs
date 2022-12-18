@@ -41,7 +41,8 @@ public static class PackageExporter
     var exportPath = "./" + fileName;
 
     var pluginAssets = EnumerateAssets(Path.Combine("Packages", "com.github.homuler.mediapipe")); // export all the files
-    var sampleAssets = EnumerateAssets(Path.Combine("Assets", "MediaPipeUnity", "Samples"), new string[] { ".cs", ".unity" });
+    var sampleAssets = EnumerateAssets(Path.Combine("Assets", "MediaPipeUnity", "Samples"), new string[] { ".cs", ".unity" })
+      .Where(x => Path.GetFileName(x) != "Start Scene.unity"); // exclude the 'Start Scene'
     var tutorialAssets = EnumerateAssets(Path.Combine("Assets", "MediaPipeUnity", "Tutorial")); // export all the files
     var assets = pluginAssets.Concat(sampleAssets).Concat(tutorialAssets).ToArray();
 

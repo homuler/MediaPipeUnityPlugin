@@ -15,6 +15,7 @@ jobs:
       macosBuildArgs: '--desktop cpu --opencv cmake --macos_universal'
       iosBuildArgs: '--ios arm64'
       windowsBuildArgs: '--desktop cpu --opencv cmake'
+    secrets: inherit
 
   package-for-production:
     uses: ./.github/workflows/package.yml
@@ -26,3 +27,4 @@ jobs:
       macosBuildArgs: '--linkopt="-s" --desktop cpu --opencv cmake --macos_universal'
       iosBuildArgs: '--linkopt="-s" --ios arm64'
       windowsBuildArgs: '--desktop cpu --opencv cmake'
+    secrets: inherit

@@ -3,7 +3,7 @@
   "version": "0.10.1",
   "displayName": "MediaPipe Unity Plugin",
   "description": "A Unity Plugin to run MediaPipe CalculatorGraph",
-  "unity": "2019.4",
+  "unity": "2020.4",
   "author": {
     "name": "homuler"
   },
@@ -15,7 +15,8 @@
   ],
   "scripts": {
     "setupSampleDir": "rm -rf $(npm prefix)/Samples~ && mkdir -p $(npm prefix)/Samples~",
-    "copySolutionSamples": "cp -r $(npm prefix)/../../Assets/MediaPipeUnity/Samples $(npm prefix)/Samples~/Solutions",
+    "removeStartScene": "rm \"$(npm prefix)/Samples~/Solutions/Scenes/Start Scene.unity\" && rm \"$(npm prefix)/Samples~/Solutions/Scenes/Start Scene.unity.meta\"",
+    "copySolutionSamples": "cp -r $(npm prefix)/../../Assets/MediaPipeUnity/Samples $(npm prefix)/Samples~/Solutions && npm run removeStartScene",
     "copyTutorial": "cp -r $(npm prefix)/../../Assets/MediaPipeUnity/Tutorial $(npm prefix)/Samples~/Tutorial",
     "prepack": "npm run setupSampleDir && npm run copySolutionSamples && npm run copyTutorial",
     "postpack": "rm -rf $(npm prefix)/Samples~"
