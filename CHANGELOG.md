@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.10.3](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.10.1...v0.10.3) (2022-12-28)
+
+
+### Features
+
+* add FloatVectorPacket and MatrixPacket ([#767](https://github.com/homuler/MediaPipeUnityPlugin/issues/767)) ([391d7d9](https://github.com/homuler/MediaPipeUnityPlugin/commit/391d7d98b127ce41ceac85ec47f6126664f1bc4e)), closes [#656](https://github.com/homuler/MediaPipeUnityPlugin/issues/656)
+* make mask color transparent ([#733](https://github.com/homuler/MediaPipeUnityPlugin/issues/733)) ([f196f46](https://github.com/homuler/MediaPipeUnityPlugin/commit/f196f4631f81afb2f897116c5adbfead3768aab9))
+
+
+### Bug Fixes
+
+* avoid drawing holistic landmarks twice ([#755](https://github.com/homuler/MediaPipeUnityPlugin/issues/755)) ([30cd149](https://github.com/homuler/MediaPipeUnityPlugin/commit/30cd149d191b3ec2c672d420557a879fe528c459))
+* ignore core.autocrlf ([#807](https://github.com/homuler/MediaPipeUnityPlugin/issues/807)) ([f2bc51b](https://github.com/homuler/MediaPipeUnityPlugin/commit/f2bc51b9f728ed1cbc390cca0e061518e9251e95))
+* stop running OnValidate on immutable prefabs ([#810](https://github.com/homuler/MediaPipeUnityPlugin/issues/810)) ([f545346](https://github.com/homuler/MediaPipeUnityPlugin/commit/f5453467be5f8b0c15da8816f0ebb0ae92abf260))
+
 ### [0.10.1](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.10.0...v0.10.1) (2022-07-09)
 
 
