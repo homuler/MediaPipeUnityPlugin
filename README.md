@@ -66,10 +66,17 @@ For more detailed usage, see [the API Overview](https://github.com/homuler/Media
 ## :hammer_and_wrench: Installation
 
 This repository **does not contain required libraries** (e.g. `libmediapipe_c.so`, `Google.Protobuf.dll`, etc).\
-You can download an all-in-one package from [the release page](https://github.com/homuler/MediaPipeUnityPlugin/releases), but if you want to customize the package or minify the package size, you need to build them by yourself.\
+You can download them from [the release page](https://github.com/homuler/MediaPipeUnityPlugin/releases) instead.
 
-For a step-by-step guide, please refer to the [Installation Guide](https://github.com/homuler/MediaPipeUnityPlugin/wiki/Installation-Guide) in Wiki.\
-You can also take advantage of [the Package Workflow](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/.github/workflows/package.yml) on Github Actions.
+|                 file                  |                                                      contents                                                      |
+| :-----------------------------------: | :----------------------------------------------------------------------------------------------------------------: |
+|    `MediaPipeUnityPlugin-all.zip`     | All the source code with required libraries. If you need to run sample scenes on your mobile devices, prefer this. |
+| `com.github.homuler.mediapipe-*.tgz`  |                      [A tarball package](https://docs.unity3d.com/Manual/upm-ui-tarball.html)                      |
+| `MediaPipeUnityPlugin.*.unitypackage` |                                               A `.unitypackage` file                                               |
+
+If you want to customize the package or minify the package size, you need to build them by yourself.\
+For a step-by-step guide, please refer to the [Installation Guide](https://github.com/homuler/MediaPipeUnityPlugin/wiki/Installation-Guide) on Wiki.\
+You can also make use of [the Package Workflow](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/.github/workflows/package.yml) on Github Actions after forking this repository.
 
 > :warning: libraries that can be built differ depending on your environment.
 
@@ -81,12 +88,11 @@ You can also take advantage of [the Package Workflow](https://github.com/homuler
 | :------------------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :---: |
 |     Linux (AMD64) [^1]     | :heavy_check_mark: | :heavy_check_mark: |                    |                    |                    | :heavy_check_mark: |                    |       |
 |         Intel Mac          | :heavy_check_mark: |                    | :heavy_check_mark: |                    |                    | :heavy_check_mark: | :heavy_check_mark: |       |
-|        M1 Mac [^2]         | :heavy_check_mark: |                    |                    | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |       |
-| Windows 10/11 (AMD64) [^3] | :heavy_check_mark: |                    |                    |                    | :heavy_check_mark: | :heavy_check_mark: |                    |       |
+|           M1 Mac           | :heavy_check_mark: |                    |                    | :heavy_check_mark: |                    | :heavy_check_mark: | :heavy_check_mark: |       |
+| Windows 10/11 (AMD64) [^2] | :heavy_check_mark: |                    |                    |                    | :heavy_check_mark: | :heavy_check_mark: |                    |       |
 
 [^1]: Tested on Arch Linux.
-[^2]: Experimental, because MediaPipe does not support M1 Mac.
-[^3]: Running MediaPipe on Windows is [experimental](https://google.github.io/mediapipe/getting_started/install.html#installing-on-windows).
+[^2]: Running MediaPipe on Windows is [experimental](https://google.github.io/mediapipe/getting_started/install.html#installing-on-windows).
 
 ## :plate_with_cutlery: Try the sample app
 
@@ -137,8 +143,8 @@ Note that some files are distributed under other licenses.
 
 - MediaPipe ([Apache Licence 2.0](https://github.com/google/mediapipe/blob/e6c19885c6d3c6f410c730952aeed2852790d306/LICENSE))
 - emscripten ([MIT](https://github.com/emscripten-core/emscripten/blob/7c873832e933e86855f5ef5f7c6438f0e457c94e/LICENSE))
-   - `third_party/mediapipe_emscripten_patch.diff` contains code copied from emscripten
+  - `third_party/mediapipe_emscripten_patch.diff` contains code copied from emscripten
 - FontAwesome ([LICENSE](https://github.com/FortAwesome/Font-Awesome/blob/7cbd7f9951be31f9d06b6ac97739a700320b9130/LICENSE.txt))
-   - Sample scenes use Font Awesome fonts
+  - Sample scenes use Font Awesome fonts
 
 See also [Third Party Notices.md](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/Third%20Party%20Notices.md).
