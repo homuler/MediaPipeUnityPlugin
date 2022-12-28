@@ -160,6 +160,7 @@ jobs:
         run: |
           docker build --no-cache -t mediapipe_unity:latest . -f docker/windows/x86_64/Dockerfile
         shell: cmd
+        timeout-minutes: 60
 
       - name: Build
         run: |
