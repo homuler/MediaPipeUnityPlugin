@@ -126,10 +126,13 @@ namespace Mediapipe.Unity
     {
       yield return GetPermission();
 
-      if (!_IsPermitted)
+      lock (_PermissionLock)
       {
-        _isInitialized = true;
-        yield break;
+        if (!_IsPermitted)
+        {
+          _isInitialized = true;
+          yield break;
+        }
       }
 
       availableSources = WebCamTexture.devices;
@@ -155,7 +158,7 @@ namespace Mediapipe.Unity
         if (!Permission.HasUserAuthorizedPermission(Permission.Camera))
         {
           Permission.RequestUserPermission(Permission.Camera);
-          yield return new WaitForSeconds(0.1f);
+          yield return null;
         }
 #elif UNITY_IOS
         if (!Application.HasUserAuthorization(UserAuthorization.WebCam)) {
@@ -194,9 +197,12 @@ namespace Mediapipe.Unity
     public override IEnumerator Play()
     {
       yield return new WaitUntil(() => _isInitialized);
-      if (!_IsPermitted)
+      lock (_PermissionLock)
       {
-        throw new InvalidOperationException("Not permitted to access cameras");
+        if (!_IsPermitted)
+        {
+          throw new InvalidOperationException("Not permitted to access cameras");
+        }
       }
 
       InitializeWebCamTexture();
