@@ -19,24 +19,27 @@ namespace Mediapipe
   public abstract class ResourceManager
   {
     public delegate string PathResolver(string path);
-    public abstract PathResolver pathResolver { get; }
-    public delegate bool ResourceProvider(string path, IntPtr output);
-    public abstract ResourceProvider resourceProvider { get; }
+    internal delegate bool NativeResourceProvider(string path, IntPtr dest);
+    public delegate byte[] ResourceProvider(string path);
 
     private static readonly object _InitLock = new object();
-    private static bool _IsInitialized = false;
+    private static ResourceManager _Instance;
+    private readonly PathResolver _pathResolver;
+    private readonly ResourceProvider _resourceProvider;
 
-    public ResourceManager()
+    public ResourceManager(PathResolver pathResolver, ResourceProvider resourceProvider)
     {
       lock (_InitLock)
       {
-        if (_IsInitialized)
+        if (_Instance != null)
         {
           throw new InvalidOperationException("ResourceManager can be initialized only once");
         }
-        SafeNativeMethods.mp__SetCustomGlobalPathResolver__P(pathResolver);
-        SafeNativeMethods.mp__SetCustomGlobalResourceProvider__P(resourceProvider);
-        _IsInitialized = true;
+        _pathResolver = pathResolver;
+        _resourceProvider = resourceProvider;
+        SafeNativeMethods.mp__SetCustomGlobalPathResolver__P(PathToResourceAsFile);
+        SafeNativeMethods.mp__SetCustomGlobalResourceProvider__P(GetResourceContents);
+        _Instance = this;
       }
     }
 
@@ -57,6 +60,39 @@ namespace Mediapipe
     public IEnumerator PrepareAssetAsync(string name, bool overwrite = true)
     {
       return PrepareAssetAsync(name, name, overwrite);
+    }
+
+    [AOT.MonoPInvokeCallback(typeof(PathResolver))]
+    private static string PathToResourceAsFile(string assetPath)
+    {
+      try
+      {
+        return _Instance._pathResolver(assetPath);
+      }
+      catch (Exception e)
+      {
+        UnityEngine.Debug.LogException(e);
+        return "";
+      }
+    }
+
+    [AOT.MonoPInvokeCallback(typeof(ResourceProvider))]
+    private static bool GetResourceContents(string path, IntPtr dst)
+    {
+      try
+      {
+        var asset = _Instance._resourceProvider(path);
+        using (var srcStr = new StdString(asset))
+        {
+          srcStr.Swap(new StdString(dst, false));
+        }
+        return true;
+      }
+      catch (Exception e)
+      {
+        UnityEngine.Debug.LogException(e);
+        return false;
+      }
     }
 
     protected static string GetAssetNameFromPath(string assetPath)
