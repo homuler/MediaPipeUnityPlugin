@@ -4,7 +4,6 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using System;
 using System.Collections;
 using System.IO;
 using UnityEngine;
@@ -20,11 +19,7 @@ namespace Mediapipe.Unity
     private static string _AssetPathRoot;
     private static string _CachePathRoot;
 
-    public override PathResolver pathResolver => PathToResourceAsFile;
-
-    public override ResourceProvider resourceProvider => GetResourceContents;
-
-    public StreamingAssetsResourceManager(string path) : base()
+    public StreamingAssetsResourceManager(string path) : base(PathToResourceAsFile, GetResourceContents)
     {
       // It's safe to update static members because at most one RsourceManager can be initialized.
       _RelativePath = path;
@@ -67,41 +62,19 @@ namespace Mediapipe.Unity
       Logger.LogVerbose(_TAG, $"{sourceFilePath} is copied to {destFilePath}");
     }
 
-    [AOT.MonoPInvokeCallback(typeof(PathResolver))]
     protected static string PathToResourceAsFile(string assetPath)
     {
       var assetName = GetAssetNameFromPath(assetPath);
       return GetCachePathFor(assetName);
     }
 
-    [AOT.MonoPInvokeCallback(typeof(ResourceProvider))]
-    protected static bool GetResourceContents(string path, IntPtr dst)
+    protected static byte[] GetResourceContents(string path)
     {
       // TODO: try AsyncReadManager
-      try
-      {
-        Logger.LogDebug($"{path} is requested");
+      Logger.LogDebug($"{path} is requested");
 
-        var cachePath = PathToResourceAsFile(path);
-        if (!File.Exists(cachePath))
-        {
-          Logger.LogError(_TAG, $"{cachePath} is not found");
-          return false;
-        }
-
-        var asset = File.ReadAllBytes(cachePath);
-        using (var srcStr = new StdString(asset))
-        {
-          srcStr.Swap(new StdString(dst, false));
-        }
-
-        return true;
-      }
-      catch (Exception e)
-      {
-        Logger.LogException(e);
-        return false;
-      }
+      var cachePath = PathToResourceAsFile(path);
+      return File.ReadAllBytes(cachePath);
     }
 
     private IEnumerator CreateCacheFile(string assetName)

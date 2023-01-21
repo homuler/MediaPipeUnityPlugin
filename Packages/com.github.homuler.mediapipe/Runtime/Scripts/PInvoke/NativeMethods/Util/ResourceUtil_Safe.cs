@@ -12,7 +12,7 @@ namespace Mediapipe
   {
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern void mp__SetCustomGlobalResourceProvider__P(
-        [MarshalAs(UnmanagedType.FunctionPtr)] ResourceManager.ResourceProvider provider);
+        [MarshalAs(UnmanagedType.FunctionPtr)] ResourceManager.NativeResourceProvider provider);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern void mp__SetCustomGlobalPathResolver__P(
