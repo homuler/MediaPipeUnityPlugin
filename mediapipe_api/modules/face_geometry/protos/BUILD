@@ -30,7 +30,7 @@ pkg_files(
         ":geometry_pipeline_metadata_cs",
         ":mesh_3d_cs",
     ],
-    prefix = "Modules/FaceGeometry",
+    prefix = "Modules/FaceGeometry/Protos",
 )
 
 csharp_proto_src(

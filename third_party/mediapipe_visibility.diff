@@ -248,6 +248,34 @@ index b1c89240..cd104754 100644
 -    visibility = ["//mediapipe:__subpackages__"],
 +    visibility = ["//visibility:public"],
  )
+diff --git a/mediapipe/modules/face_detection/BUILD b/mediapipe/modules/face_detection/BUILD
+index 12abfbb3..20ae41d0 100644
+--- a/mediapipe/modules/face_detection/BUILD
++++ b/mediapipe/modules/face_detection/BUILD
+@@ -177,3 +177,9 @@ mediapipe_files(
+         "face_detection_short_range.tflite",
+     ],
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
+diff --git a/mediapipe/modules/face_geometry/BUILD b/mediapipe/modules/face_geometry/BUILD
+index c1f99675..f5836d03 100644
+--- a/mediapipe/modules/face_geometry/BUILD
++++ b/mediapipe/modules/face_geometry/BUILD
+@@ -135,3 +135,9 @@ cc_library(
+     ],
+     alwayslink = 1,
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
 diff --git a/mediapipe/modules/face_geometry/protos/BUILD b/mediapipe/modules/face_geometry/protos/BUILD
 index 48b7b66c..2d53a28d 100644
 --- a/mediapipe/modules/face_geometry/protos/BUILD

@@ -674,6 +674,8 @@ pkg_zip(
         "//mediapipe_api/gpu:proto_srcs",
         "//mediapipe_api/graphs/instant_motion_tracking/calculators:proto_srcs",
         "//mediapipe_api/graphs/object_detection_3d/calculators:proto_srcs",
+        "//mediapipe_api/modules/face_detection:proto_srcs",
+        "//mediapipe_api/modules/face_geometry:proto_srcs",
         "//mediapipe_api/modules/face_geometry/protos:proto_srcs",
         "//mediapipe_api/modules/holistic_landmark/calculators:proto_srcs",
         "//mediapipe_api/modules/objectron/calculators:proto_srcs",
