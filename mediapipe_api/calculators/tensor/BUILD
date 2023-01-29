@@ -14,14 +14,14 @@ package(
 pkg_files(
     name = "proto_srcs",
     srcs = [
-        ":inference_calculator_cs",
-        ":tensor_converter_calculator_cs",
-        ":tensors_to_detections_calculator_cs",
-        ":tensors_to_landmarks_calculator_cs",
-        ":landmarks_to_tensor_calculator_cs",
-        ":tensors_to_floats_calculator_cs",
-        ":tensors_to_classification_calculator_cs",
         ":image_to_tensor_calculator_cs",
+        ":inference_calculator_cs",
+        ":landmarks_to_tensor_calculator_cs",
+        ":tensor_converter_calculator_cs",
+        ":tensors_to_classification_calculator_cs",
+        ":tensors_to_detections_calculator_cs",
+        ":tensors_to_floats_calculator_cs",
+        ":tensors_to_landmarks_calculator_cs",
         ":tensors_to_segmentation_calculator_cs",
     ],
     prefix = "Calculators/Tensor",
@@ -87,6 +87,7 @@ csharp_proto_src(
     deps = [
         "@com_google_mediapipe//mediapipe/calculators/tensor:protos_src",
         "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@com_google_mediapipe//mediapipe/util:protos_src",
     ],
 )
 

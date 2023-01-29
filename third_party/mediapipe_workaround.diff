@@ -1,23 +1,62 @@
-diff --git a/mediapipe/calculators/tensor/BUILD b/mediapipe/calculators/tensor/BUILD
-index 586fb0d..c73b29a 100644
---- a/mediapipe/calculators/tensor/BUILD
-+++ b/mediapipe/calculators/tensor/BUILD
-@@ -97,7 +97,12 @@ cc_library(
-         "@org_tensorflow//tensorflow/lite:framework_stable",
-         "@org_tensorflow//tensorflow/lite/delegates/gpu:gl_delegate",
-         "@org_tensorflow//tensorflow/lite/delegates/gpu/common:shape",
--    ],
-+    ] + select({
-+        "//mediapipe:android": [
-+            "//mediapipe/util/android/file/base",
-+        ],
-+        "//conditions:default": [],
-+    }),
-     alwayslink = 1,
+diff --git a/mediapipe/framework/formats/tensor.h b/mediapipe/framework/formats/tensor.h
+index b9a7b9fc..55967365 100644
+--- a/mediapipe/framework/formats/tensor.h
++++ b/mediapipe/framework/formats/tensor.h
+@@ -37,10 +37,9 @@
+         // defined(__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__)
+ 
+ #ifdef MEDIAPIPE_TENSOR_USE_AHWB
++#include <EGL/egl.h>
++#include <EGL/eglext.h>
+ #include <android/hardware_buffer.h>
+-
+-#include "third_party/GL/gl/include/EGL/egl.h"
+-#include "third_party/GL/gl/include/EGL/eglext.h"
+ #endif  // MEDIAPIPE_TENSOR_USE_AHWB
+ 
+ #if MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_30
+diff --git a/mediapipe/framework/formats/tensor_ahwb.cc b/mediapipe/framework/formats/tensor_ahwb.cc
+index c839cf5a..c301878e 100644
+--- a/mediapipe/framework/formats/tensor_ahwb.cc
++++ b/mediapipe/framework/formats/tensor_ahwb.cc
+@@ -4,12 +4,13 @@
+ #include "mediapipe/framework/formats/tensor.h"
+ 
+ #ifdef MEDIAPIPE_TENSOR_USE_AHWB
++#include <EGL/egl.h>
++#include <EGL/eglext.h>
++
+ #include "absl/synchronization/mutex.h"
+ #include "mediapipe/framework/port.h"
+ #include "mediapipe/framework/port/logging.h"
+ #include "mediapipe/gpu/gl_base.h"
+-#include "third_party/GL/gl/include/EGL/egl.h"
+-#include "third_party/GL/gl/include/EGL/eglext.h"
+ #endif  // MEDIAPIPE_TENSOR_USE_AHWB
+ 
+ namespace mediapipe {
+diff --git a/mediapipe/gpu/BUILD b/mediapipe/gpu/BUILD
+index a6dd9898..0753b824 100644
+--- a/mediapipe/gpu/BUILD
++++ b/mediapipe/gpu/BUILD
+@@ -897,6 +897,15 @@ mediapipe_cc_proto_library(
+     deps = [":gl_surface_sink_calculator_proto"],
  )
  
++mediapipe_proto_library(
++    name = "gl_animation_overlay_calculator_proto",
++    srcs = ["gl_animation_overlay_calculator.proto"],
++    visibility = ["//visibility:public"],
++    deps = [
++        "//mediapipe/framework:calculator_proto",
++    ],
++)
++
+ ### Metal calculators
+ 
+ metal_library(
 diff --git a/mediapipe/graphs/instant_motion_tracking/calculators/matrices_manager_calculator.cc b/mediapipe/graphs/instant_motion_tracking/calculators/matrices_manager_calculator.cc
-index c003135..edcd239 100644
+index c003135b..edcd239f 100644
 --- a/mediapipe/graphs/instant_motion_tracking/calculators/matrices_manager_calculator.cc
 +++ b/mediapipe/graphs/instant_motion_tracking/calculators/matrices_manager_calculator.cc
 @@ -58,7 +58,7 @@ constexpr float kInitialZ = -10.0f;
@@ -77,7 +116,7 @@ index c003135..edcd239 100644
    // to mimic scaling by distance.
    const float z = kInitialZ * tracked_anchor.z;
 diff --git a/mediapipe/graphs/instant_motion_tracking/calculators/sticker_manager_calculator.cc b/mediapipe/graphs/instant_motion_tracking/calculators/sticker_manager_calculator.cc
-index 40210c2..c25842b 100644
+index 40210c27..c25842bd 100644
 --- a/mediapipe/graphs/instant_motion_tracking/calculators/sticker_manager_calculator.cc
 +++ b/mediapipe/graphs/instant_motion_tracking/calculators/sticker_manager_calculator.cc
 @@ -61,7 +61,7 @@ class StickerManagerCalculator : public CalculatorBase {
@@ -117,7 +156,7 @@ index 40210c2..c25842b 100644
      }
      if (cc->Outputs().HasTag(kUserRotationsTag)) {
 diff --git a/mediapipe/graphs/instant_motion_tracking/calculators/tracked_anchor_manager_calculator.cc b/mediapipe/graphs/instant_motion_tracking/calculators/tracked_anchor_manager_calculator.cc
-index 446aee7..3f3ebd9 100644
+index 446aee78..3f3ebd94 100644
 --- a/mediapipe/graphs/instant_motion_tracking/calculators/tracked_anchor_manager_calculator.cc
 +++ b/mediapipe/graphs/instant_motion_tracking/calculators/tracked_anchor_manager_calculator.cc
 @@ -68,7 +68,7 @@ constexpr float kUsToMs =
@@ -208,7 +247,7 @@ index 446aee7..3f3ebd9 100644
    cc->Outputs()
        .Tag(kBoxesOutputTag)
 diff --git a/mediapipe/graphs/instant_motion_tracking/calculators/transformations.h b/mediapipe/graphs/instant_motion_tracking/calculators/transformations.h
-index cbacdb7..f40cf91 100644
+index cbacdb71..f40cf912 100644
 --- a/mediapipe/graphs/instant_motion_tracking/calculators/transformations.h
 +++ b/mediapipe/graphs/instant_motion_tracking/calculators/transformations.h
 @@ -30,7 +30,7 @@ struct UserScaling {
@@ -221,7 +260,7 @@ index cbacdb7..f40cf91 100644
    float y;  // [0.0-1.0]
    float z;  // Centered around 1.0 [current_scale = z * initial_scale]
 diff --git a/mediapipe/modules/objectron/calculators/BUILD b/mediapipe/modules/objectron/calculators/BUILD
-index eeeaee5..0fb68d0 100644
+index eeeaee5f..0fb68d0e 100644
 --- a/mediapipe/modules/objectron/calculators/BUILD
 +++ b/mediapipe/modules/objectron/calculators/BUILD
 @@ -199,6 +199,15 @@ cc_library(

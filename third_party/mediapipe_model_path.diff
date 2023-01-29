@@ -1,10 +1,10 @@
 diff --git a/mediapipe/calculators/tensor/tensors_to_classification_calculator.cc b/mediapipe/calculators/tensor/tensors_to_classification_calculator.cc
-index 87216f4..309a91c 100644
+index 5bfc00ed..d0c0ef9b 100644
 --- a/mediapipe/calculators/tensor/tensors_to_classification_calculator.cc
 +++ b/mediapipe/calculators/tensor/tensors_to_classification_calculator.cc
 @@ -26,7 +26,7 @@
- #include "mediapipe/framework/formats/tensor.h"
  #include "mediapipe/framework/port/ret_check.h"
+ #include "mediapipe/util/label_map.pb.h"
  #include "mediapipe/util/resource_util.h"
 -#if defined(MEDIAPIPE_MOBILE)
 +#if defined(MEDIAPIPE_ANDROID)
@@ -12,7 +12,7 @@ index 87216f4..309a91c 100644
  #include "mediapipe/util/android/file/base/helpers.h"
  #else
 diff --git a/mediapipe/calculators/tensorflow/tensorflow_session_from_frozen_graph_calculator.cc b/mediapipe/calculators/tensorflow/tensorflow_session_from_frozen_graph_calculator.cc
-index 1d6b941..1f54494 100644
+index 1d6b9417..1f544944 100644
 --- a/mediapipe/calculators/tensorflow/tensorflow_session_from_frozen_graph_calculator.cc
 +++ b/mediapipe/calculators/tensorflow/tensorflow_session_from_frozen_graph_calculator.cc
 @@ -36,7 +36,7 @@
@@ -25,7 +25,7 @@ index 1d6b941..1f54494 100644
  #else
  #include "mediapipe/framework/port/file_helpers.h"
 diff --git a/mediapipe/calculators/tflite/tflite_tensors_to_classification_calculator.cc b/mediapipe/calculators/tflite/tflite_tensors_to_classification_calculator.cc
-index 4d28b91..b3bfb57 100644
+index 4d28b91e..b3bfb573 100644
 --- a/mediapipe/calculators/tflite/tflite_tensors_to_classification_calculator.cc
 +++ b/mediapipe/calculators/tflite/tflite_tensors_to_classification_calculator.cc
 @@ -25,7 +25,7 @@
@@ -38,10 +38,10 @@ index 4d28b91..b3bfb57 100644
  #include "mediapipe/util/android/file/base/helpers.h"
  #else
 diff --git a/mediapipe/calculators/util/detection_label_id_to_text_calculator.cc b/mediapipe/calculators/util/detection_label_id_to_text_calculator.cc
-index 20d1c1c..4c69696 100644
+index 0b8dde20..0b2e8aaf 100644
 --- a/mediapipe/calculators/util/detection_label_id_to_text_calculator.cc
 +++ b/mediapipe/calculators/util/detection_label_id_to_text_calculator.cc
-@@ -20,7 +20,7 @@
+@@ -22,7 +22,7 @@
  #include "mediapipe/util/label_map.pb.h"
  #include "mediapipe/util/resource_util.h"
  
@@ -51,7 +51,7 @@ index 20d1c1c..4c69696 100644
  #include "mediapipe/util/android/file/base/helpers.h"
  #else
 diff --git a/mediapipe/calculators/util/timed_box_list_id_to_label_calculator.cc b/mediapipe/calculators/util/timed_box_list_id_to_label_calculator.cc
-index 790b426..35504b5 100644
+index 790b426d..35504b56 100644
 --- a/mediapipe/calculators/util/timed_box_list_id_to_label_calculator.cc
 +++ b/mediapipe/calculators/util/timed_box_list_id_to_label_calculator.cc
 @@ -20,7 +20,7 @@
@@ -64,7 +64,7 @@ index 790b426..35504b5 100644
  #include "mediapipe/util/android/file/base/helpers.h"
  #else
 diff --git a/mediapipe/calculators/util/top_k_scores_calculator.cc b/mediapipe/calculators/util/top_k_scores_calculator.cc
-index b6bdf2f..8c2e573 100644
+index b6bdf2f8..8c2e5738 100644
 --- a/mediapipe/calculators/util/top_k_scores_calculator.cc
 +++ b/mediapipe/calculators/util/top_k_scores_calculator.cc
 @@ -30,7 +30,7 @@
@@ -77,7 +77,7 @@ index b6bdf2f..8c2e573 100644
  #include "mediapipe/util/android/file/base/helpers.h"
  #else
 diff --git a/mediapipe/calculators/video/box_detector_calculator.cc b/mediapipe/calculators/video/box_detector_calculator.cc
-index 14ac12e..1f3fc0f 100644
+index 14ac12e5..1f3fc0f9 100644
 --- a/mediapipe/calculators/video/box_detector_calculator.cc
 +++ b/mediapipe/calculators/video/box_detector_calculator.cc
 @@ -38,7 +38,7 @@
@@ -90,7 +90,7 @@ index 14ac12e..1f3fc0f 100644
  #include "mediapipe/util/android/file/base/helpers.h"
  #else
 diff --git a/mediapipe/framework/encode_binary_proto.bzl b/mediapipe/framework/encode_binary_proto.bzl
-index 3af435f..5a4a4a1 100644
+index 6807a94f..b921a769 100644
 --- a/mediapipe/framework/encode_binary_proto.bzl
 +++ b/mediapipe/framework/encode_binary_proto.bzl
 @@ -104,6 +104,7 @@ def _encode_binary_proto_impl(ctx):
@@ -102,10 +102,10 @@ index 3af435f..5a4a4a1 100644
              ] + path_list + file_list +
              ["<", textpb.path, ">", binarypb.path],
 diff --git a/mediapipe/graphs/object_detection_3d/calculators/BUILD b/mediapipe/graphs/object_detection_3d/calculators/BUILD
-index 8f80312..45b8c53 100644
+index 783fff18..7114e518 100644
 --- a/mediapipe/graphs/object_detection_3d/calculators/BUILD
 +++ b/mediapipe/graphs/object_detection_3d/calculators/BUILD
-@@ -68,7 +68,7 @@ cc_library(
+@@ -72,7 +72,7 @@ cc_library(
          "//mediapipe/gpu:gl_calculator_helper",
          "//mediapipe/gpu:shader_util",
          "//mediapipe/modules/objectron/calculators:camera_parameters_cc_proto",
@@ -115,7 +115,7 @@ index 8f80312..45b8c53 100644
      alwayslink = 1,
  )
 diff --git a/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc b/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
-index 3a77e98..946bc73 100644
+index 3a77e983..946bc739 100644
 --- a/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
 +++ b/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
 @@ -12,12 +12,8 @@
@@ -336,10 +336,10 @@ index 3a77e98..946bc73 100644
      LOG(ERROR) << "Failed to load animation asset.";
      return absl::UnknownError("Failed to load animation asset.");
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
-index 12a34a4..36d922f 100644
+index ab3390e0..b7fb586e 100644
 --- a/mediapipe/util/BUILD
 +++ b/mediapipe/util/BUILD
-@@ -174,13 +174,8 @@ cc_library(
+@@ -176,13 +176,8 @@ cc_library(
      srcs = [
          "resource_util.cc",
          "resource_util_internal.h",
@@ -355,7 +355,7 @@ index 12a34a4..36d922f 100644
      hdrs = [
          "resource_util.h",
      ],
-@@ -204,20 +199,7 @@ cc_library(
+@@ -206,20 +201,7 @@ cc_library(
          "//mediapipe/framework/port:statusor",
          "//mediapipe/framework/port:file_helpers",
          "@com_google_absl//absl/strings",
@@ -378,7 +378,7 @@ index 12a34a4..36d922f 100644
  
  cc_library(
 diff --git a/mediapipe/util/resource_util.cc b/mediapipe/util/resource_util.cc
-index 8f40154..dfebafd 100644
+index 8f40154a..dfebafdb 100644
 --- a/mediapipe/util/resource_util.cc
 +++ b/mediapipe/util/resource_util.cc
 @@ -27,6 +27,7 @@ namespace mediapipe {
@@ -410,7 +410,7 @@ index 8f40154..dfebafd 100644
 +
  }  // namespace mediapipe
 diff --git a/mediapipe/util/resource_util_custom.h b/mediapipe/util/resource_util_custom.h
-index 6bc1513..e328d9a 100644
+index 6bc1513c..e328d9a5 100644
 --- a/mediapipe/util/resource_util_custom.h
 +++ b/mediapipe/util/resource_util_custom.h
 @@ -4,15 +4,22 @@
@@ -437,7 +437,7 @@ index 6bc1513..e328d9a 100644
  
  #endif  // MEDIAPIPE_UTIL_RESOURCE_UTIL_CUSTOM_H_
 diff --git a/mediapipe/util/resource_util_internal.h b/mediapipe/util/resource_util_internal.h
-index 8ae127a..91ffc9a 100644
+index 8ae127a2..91ffc9a5 100644
 --- a/mediapipe/util/resource_util_internal.h
 +++ b/mediapipe/util/resource_util_internal.h
 @@ -14,6 +14,8 @@ absl::Status DefaultGetResourceContents(const std::string& path,
@@ -451,7 +451,7 @@ index 8ae127a..91ffc9a 100644
  #endif  // MEDIAPIPE_UTIL_RESOURCE_UTIL_INTERNAL_H_
 diff --git a/mediapipe/util/resource_util_unity.cc b/mediapipe/util/resource_util_unity.cc
 new file mode 100644
-index 0000000..946be0d
+index 00000000..946be0d4
 --- /dev/null
 +++ b/mediapipe/util/resource_util_unity.cc
 @@ -0,0 +1,21 @@

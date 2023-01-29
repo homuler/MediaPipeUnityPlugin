@@ -46,7 +46,7 @@ output_stream: "right_hand_landmarks"
 node {
   calculator: "FlowLimiterCalculator"
   input_stream: "input_video"
-  input_stream: "FINISHED:face_landmarks"
+  input_stream: "FINISHED:pose_landmarks"
   input_stream_info: {
     tag_index: "FINISHED"
     back_edge: true
@@ -55,7 +55,7 @@ node {
   node_options: {
     [type.googleapis.com/mediapipe.FlowLimiterCalculatorOptions] {
       max_in_flight: 1
-      max_in_queue: 0
+      max_in_queue: 1
       # Timeout is disabled (set to 0) as first frame processing can take more
       # than 1 second.
       in_flight_timeout: 0

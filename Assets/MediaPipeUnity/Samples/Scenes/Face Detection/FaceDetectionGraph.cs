@@ -85,26 +85,22 @@ namespace Mediapipe.Unity.FaceDetection
         _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _FaceDetectionsStreamName, true, timeoutMicrosec);
       }
 
+      var faceDetectionCalculators = config.Node.Where((node) => node.Calculator.StartsWith("FaceDetection")).ToList();
+      foreach (var calculator in faceDetectionCalculators)
+      {
+        var calculatorOptions = new CalculatorOptions();
+        calculatorOptions.SetExtension(FaceDetectionOptions.Extensions.Ext, new FaceDetectionOptions { MinScoreThresh = minDetectionConfidence });
+        calculator.Options = calculatorOptions;
+        Logger.LogInfo(TAG, $"Min Detection Confidence ({calculator.Calculator}) = {minDetectionConfidence}");
+      }
+
       using (var validatedGraphConfig = new ValidatedGraphConfig())
       {
         var status = validatedGraphConfig.Initialize(config);
 
         if (!status.Ok()) { return status; }
 
-        var extensionRegistry = new ExtensionRegistry() { TensorsToDetectionsCalculatorOptions.Extensions.Ext };
-        var cannonicalizedConfig = validatedGraphConfig.Config(extensionRegistry);
-        var tensorsToDetectionsCalculators = cannonicalizedConfig.Node.Where((node) => node.Calculator == "TensorsToDetectionsCalculator").ToList();
-
-        foreach (var calculator in tensorsToDetectionsCalculators)
-        {
-          if (calculator.Options.HasExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext))
-          {
-            var options = calculator.Options.GetExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext);
-            options.MinScoreThresh = minDetectionConfidence;
-            Logger.LogInfo(TAG, $"Min Detection Confidence = {minDetectionConfidence}");
-          }
-        }
-        return calculatorGraph.Initialize(cannonicalizedConfig);
+        return calculatorGraph.Initialize(config);
       }
     }
 
