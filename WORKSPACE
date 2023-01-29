@@ -89,9 +89,8 @@ http_archive(
 
 http_archive(
     name = "rules_cc",
-    strip_prefix = "rules_cc-2f8c04c04462ab83c545ab14c0da68c3b4c96191",
-    # The commit can be updated if the build passes. Last updated 6/23/22.
-    urls = ["https://github.com/bazelbuild/rules_cc/archive/2f8c04c04462ab83c545ab14c0da68c3b4c96191.zip"],
+    strip_prefix = "rules_cc-main",
+    urls = ["https://github.com/bazelbuild/rules_cc/archive/main.zip"],
 )
 
 http_archive(
@@ -229,8 +228,8 @@ http_archive(
     name = "org_tensorflow_text",
     patch_args = ["-p1"],
     patches = [
-        "//third_party:tensorflow_text_remove_tf_deps.diff",
-        "//third_party:tensorflow_text_a0f49e63.diff",
+        "@com_google_mediapipe//third_party:tensorflow_text_remove_tf_deps.diff",
+        "@com_google_mediapipe//third_party:tensorflow_text_a0f49e63.diff",
     ],
     repo_mapping = {"@com_google_re2": "@com_googlesource_code_re2"},
     sha256 = "f64647276f7288d1b1fe4c89581d51404d0ce4ae97f2bcc4c19bd667549adca8",
