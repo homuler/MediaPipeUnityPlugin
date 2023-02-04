@@ -26,10 +26,6 @@ MP_CAPI(MpReturnCode) mp_GpuResources_Create(absl::StatusOr<SharedGpuResources>*
 MP_CAPI(MpReturnCode) mp_GpuResources_Create__Pv(mediapipe::PlatformGlContext external_context,
                                                  absl::StatusOr<SharedGpuResources>** status_or_gpu_resources_out);
 
-#if __APPLE__
-MP_CAPI(MPPGraphGPUData*) mp_GpuResources__ios_gpu_data(mediapipe::GpuResources* gpu_resources);
-#endif  // __APPLE__
-
 MP_CAPI(void) mp_StatusOrGpuResources__delete(absl::StatusOr<SharedGpuResources>* status_or_gpu_resources);
 MP_CAPI(bool) mp_StatusOrGpuResources__ok(absl::StatusOr<SharedGpuResources>* status_or_gpu_resources);
 MP_CAPI(MpReturnCode) mp_StatusOrGpuResources__status(absl::StatusOr<SharedGpuResources>* status_or_gpu_resources, absl::Status** status_out);

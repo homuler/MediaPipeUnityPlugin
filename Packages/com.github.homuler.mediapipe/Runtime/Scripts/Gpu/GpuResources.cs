@@ -50,12 +50,6 @@ namespace Mediapipe
       return new StatusOrGpuResources(statusOrGpuResourcesPtr);
     }
 
-#if UNITY_IOS
-    public IntPtr iosGpuData {
-      get { return SafeNativeMethods.mp_GpuResources__ios_gpu_data(mpPtr); }
-    }
-#endif
-
     private class SharedPtr : SharedPtrHandle
     {
       public SharedPtr(IntPtr ptr) : base(ptr) { }
