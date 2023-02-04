@@ -1,6 +1,6 @@
 # MediaPipe Unity Plugin
 
-This is a Unity (2021.3.3f1) [Native Plugin](https://docs.unity3d.com/Manual/NativePlugins.html) to use [MediaPipe](https://github.com/google/mediapipe) (0.9.1).
+This is a Unity (2021.3.18f1) [Native Plugin](https://docs.unity3d.com/Manual/NativePlugins.html) to use [MediaPipe](https://github.com/google/mediapipe) (0.9.1).
 
 The goal of this project is to port the MediaPipe API (C++) _one by one_ to C# so that it can be called from Unity.\
 This approach may sacrifice performance when you need to call multiple APIs in a loop, but it gives you the flexibility to use MediaPipe instead.
