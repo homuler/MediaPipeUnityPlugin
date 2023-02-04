@@ -19,6 +19,7 @@ pkg_files(
     ":bilateral_filter_calculator_cs",
     ":recolor_calculator_cs",
     ":segmentation_smoothing_calculator_cs",
+    ":rotation_mode_cs",
     ":image_transformation_calculator_cs",
     ":image_clone_calculator_cs",
     ":mask_overlay_calculator_cs",
@@ -91,6 +92,14 @@ csharp_proto_src(
     deps = [
         "@com_google_mediapipe//mediapipe/calculators/image:protos_src",
         "@com_google_mediapipe//mediapipe/framework:protos_src",
+    ],
+)
+
+csharp_proto_src(
+    name = "rotation_mode_cs",
+    proto_src = "mediapipe/calculators/image/rotation_mode.proto",
+    deps = [
+        "@com_google_mediapipe//mediapipe/calculators/image:protos_src",
     ],
 )
 

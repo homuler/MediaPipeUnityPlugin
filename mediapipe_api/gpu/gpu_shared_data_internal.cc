@@ -27,10 +27,6 @@ MP_CAPI(MpReturnCode) mp_GpuResources_Create__Pv(mediapipe::PlatformGlContext ex
   CATCH_EXCEPTION
 }
 
-#if __APPLE__
-MPPGraphGPUData* mp_GpuResources__ios_gpu_data(mediapipe::GpuResources* gpu_resources) { return gpu_resources->ios_gpu_data(); }
-#endif  // __APPLE__
-
 void mp_StatusOrGpuResources__delete(absl::StatusOr<SharedGpuResources>* status_or_gpu_resources) { delete status_or_gpu_resources; }
 
 bool mp_StatusOrGpuResources__ok(absl::StatusOr<SharedGpuResources>* status_or_gpu_resources) { return absl_StatusOr__ok(status_or_gpu_resources); }

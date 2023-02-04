@@ -30,27 +30,6 @@ load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
 
 rules_pkg_dependencies()
 
-http_archive(
-    name = "emsdk",
-    patch_args = [
-        "-p1",
-    ],
-    patches = [
-        "@//third_party:emsdk_bitcode_support.diff",
-    ],
-    sha256 = "8978a12172028542c1c4007745e5421cb018842ebf77dfc0f8555d1ae9b09234",
-    strip_prefix = "emsdk-8e7b714a0b2137caca4a212c003f4eb9b9ba9667/bazel",
-    url = "https://github.com/emscripten-core/emsdk/archive/8e7b714a0b2137caca4a212c003f4eb9b9ba9667.tar.gz",
-)
-
-load("@emsdk//:deps.bzl", emsdk_deps = "deps")
-
-emsdk_deps()
-
-load("@emsdk//:emscripten_deps.bzl", emsdk_emscripten_deps = "emscripten_deps")
-
-emsdk_emscripten_deps(emscripten_version = "2.0.22")
-
 # mediapipe
 http_archive(
     name = "com_google_mediapipe",
@@ -65,9 +44,9 @@ http_archive(
         "@//third_party:mediapipe_extension.diff",
         # "@//third_party:mediapipe_emscripten_patch.diff",
     ],
-    sha256 = "5b331a46b459900d0789967f9e26e4a64d1466bc1e74dd0712eb3077358c5473",
-    strip_prefix = "mediapipe-0.8.11",
-    urls = ["https://github.com/google/mediapipe/archive/v0.8.11.tar.gz"],
+    sha256 = "437de7632f37b95424106d689f9722c280a571fa452675a22c708cb851395ea7",
+    strip_prefix = "mediapipe-0.9.1",
+    urls = ["https://github.com/google/mediapipe/archive/v0.9.1.tar.gz"],
 )
 
 # ABSL cpp library lts_2021_03_24, patch 2.
@@ -80,10 +59,10 @@ http_archive(
     patches = [
         "@com_google_mediapipe//third_party:com_google_absl_f863b622fe13612433fdf43f76547d5edda0c93001.diff",
     ],
-    sha256 = "59b862f50e710277f8ede96f083a5bb8d7c9595376146838b9580be90374ee1f",
-    strip_prefix = "abseil-cpp-20210324.2",
+    sha256 = "91ac87d30cc6d79f9ab974c51874a704de9c2647c40f6932597329a282217ba8",
+    strip_prefix = "abseil-cpp-20220623.1",
     urls = [
-        "https://github.com/abseil/abseil-cpp/archive/refs/tags/20210324.2.tar.gz",
+        "https://github.com/abseil/abseil-cpp/archive/refs/tags/20220623.1.tar.gz",
     ],
 )
 
@@ -209,14 +188,26 @@ flatbuffers()
 
 http_archive(
     name = "com_google_audio_tools",
+    repo_mapping = {"@com_github_glog_glog": "@com_github_glog_glog_no_gflags"},
     strip_prefix = "multichannel-audio-tools-master",
     urls = ["https://github.com/google/multichannel-audio-tools/archive/master.zip"],
+)
+
+http_archive(
+    name = "pffft",
+    build_file = "@com_google_mediapipe//third_party:pffft.BUILD",
+    strip_prefix = "jpommier-pffft-7c3b5a7dc510",
+    urls = ["https://bitbucket.org/jpommier/pffft/get/7c3b5a7dc510.zip"],
 )
 
 # sentencepiece
 http_archive(
     name = "com_google_sentencepiece",
-    repo_mapping = {"@com_google_glog": "@com_github_glog_glog"},
+    patch_args = ["-p1"],
+    patches = [
+        "@com_google_mediapipe//third_party:com_google_sentencepiece_no_gflag_no_gtest.diff",
+    ],
+    repo_mapping = {"@com_google_glog": "@com_github_glog_glog_no_gflags"},
     sha256 = "c05901f30a1d0ed64cbcf40eba08e48894e1b0e985777217b7c9036cac631346",
     strip_prefix = "sentencepiece-1.0.0",
     urls = [
@@ -355,22 +346,38 @@ load("@local_config_android//:android_configure.bzl", "android_workspace")
 
 android_workspace()
 
-# iOS basic build deps.
+# Load Zlib before initializing TensorFlow and the iOS build rules to guarantee
+# that the target @zlib//:mini_zlib is available
 http_archive(
-    name = "build_bazel_apple_support",
+    name = "zlib",
+    build_file = "@com_google_mediapipe//third_party:zlib.BUILD",
     patch_args = [
         "-p1",
     ],
     patches = [
-        "@//third_party:build_bazel_apple_support_transitions.diff",
+        "@com_google_mediapipe//third_party:zlib.diff",
     ],
-    sha256 = "df317473b5894dd8eb432240d209271ebc83c76bb30c55481374b36ddf1e4fd1",
-    url = "https://github.com/bazelbuild/apple_support/releases/download/1.0.0/apple_support.1.0.0.tar.gz",
+    sha256 = "c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1",
+    strip_prefix = "zlib-1.2.11",
+    urls = [
+        "http://mirror.bazel.build/zlib.net/fossils/zlib-1.2.11.tar.gz",
+        "http://zlib.net/fossils/zlib-1.2.11.tar.gz",  # 2017-01-15
+    ],
 )
 
-load(
-    "@build_bazel_apple_support//lib:repositories.bzl",
-    "apple_support_dependencies",
+# iOS basic build deps.
+http_archive(
+    name = "build_bazel_apple_support",
+    sha256 = "f4fdf5c9b42b92ea12f229b265d74bb8cedb8208ca7a445b383c9f866cf53392",
+    patch_args = [
+        "-p1",
+    ],
+    patches = [
+        "@//third_party:build_bazel_apple_support_transitions.diff"
+    ],
+    urls = [
+        "https://github.com/bazelbuild/apple_support/releases/download/1.3.1/apple_support.1.3.1.tar.gz",
+    ],
 )
 
 http_archive(
@@ -383,8 +390,8 @@ http_archive(
         "@com_google_mediapipe//third_party:build_bazel_rules_apple_bypass_test_runner_check.diff",
         "@//third_party:build_bazel_rules_apple_validation.diff",
     ],
-    sha256 = "36072d4f3614d309d6a703da0dfe48684ec4c65a89611aeb9590b45af7a3e592",
-    url = "https://github.com/bazelbuild/rules_apple/releases/download/1.0.1/rules_apple.1.0.1.tar.gz",
+    sha256 = "f94e6dddf74739ef5cb30f000e13a2a613f6ebfa5e63588305a71fce8a8a9911",
+    url = "https://github.com/bazelbuild/rules_apple/releases/download/1.1.3/rules_apple.1.1.3.tar.gz",
 )
 
 load(
@@ -400,6 +407,20 @@ load(
 )
 
 swift_rules_dependencies()
+
+load(
+    "@build_bazel_rules_swift//swift:extras.bzl",
+    "swift_rules_extra_dependencies",
+)
+
+swift_rules_extra_dependencies()
+
+load(
+    "@build_bazel_apple_support//lib:repositories.bzl",
+    "apple_support_dependencies",
+)
+
+apple_support_dependencies()
 
 # More iOS deps.
 
@@ -419,25 +440,6 @@ http_archive(
     urls = [
         "http://mirror.tensorflow.org/github.com/bazelbuild/rules_closure/archive/cf1e44edb908e9616030cc83d085989b8e6cd6df.tar.gz",
         "https://github.com/bazelbuild/rules_closure/archive/cf1e44edb908e9616030cc83d085989b8e6cd6df.tar.gz",  # 2019-04-04
-    ],
-)
-
-# Load Zlib before initializing TensorFlow to guarantee that the target
-# @zlib//:mini_zlib is available
-http_archive(
-    name = "zlib",
-    build_file = "@com_google_mediapipe//third_party:zlib.BUILD",
-    patch_args = [
-        "-p1",
-    ],
-    patches = [
-        "@com_google_mediapipe//third_party:zlib.diff",
-    ],
-    sha256 = "c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1",
-    strip_prefix = "zlib-1.2.11",
-    urls = [
-        "http://mirror.bazel.build/zlib.net/fossils/zlib-1.2.11.tar.gz",
-        "http://zlib.net/fossils/zlib-1.2.11.tar.gz",  # 2017-01-15
     ],
 )
 
@@ -491,6 +493,80 @@ load("@coral_crosstool//:configure.bzl", "cc_crosstool")
 
 cc_crosstool(name = "crosstool")
 
+# Node dependencies
+http_archive(
+    name = "build_bazel_rules_nodejs",
+    sha256 = "5aae76dced38f784b58d9776e4ab12278bc156a9ed2b1d9fcd3e39921dc88fda",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.7.1/rules_nodejs-5.7.1.tar.gz"],
+)
+
+load("@build_bazel_rules_nodejs//:repositories.bzl", "build_bazel_rules_nodejs_dependencies")
+
+build_bazel_rules_nodejs_dependencies()
+
+# fetches nodejs, npm, and yarn
+load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "yarn_install")
+
+node_repositories()
+
+yarn_install(
+    name = "npm",
+    package_json = "@com_google_mediapipe//:package.json",
+    yarn_lock = "@com_google_mediapipe//:yarn.lock",
+)
+
+# Protobuf for Node dependencies
+http_archive(
+    name = "rules_proto_grpc",
+    sha256 = "bbe4db93499f5c9414926e46f9e35016999a4e9f6e3522482d3760dc61011070",
+    strip_prefix = "rules_proto_grpc-4.2.0",
+    urls = ["https://github.com/rules-proto-grpc/rules_proto_grpc/archive/4.2.0.tar.gz"],
+)
+
+http_archive(
+    name = "com_google_protobuf_javascript",
+    sha256 = "35bca1729532b0a77280bf28ab5937438e3dcccd6b31a282d9ae84c896b6f6e3",
+    strip_prefix = "protobuf-javascript-3.21.2",
+    urls = ["https://github.com/protocolbuffers/protobuf-javascript/archive/refs/tags/v3.21.2.tar.gz"],
+)
+
+load("@rules_proto_grpc//:repositories.bzl", "rules_proto_grpc_repos", "rules_proto_grpc_toolchains")
+
+rules_proto_grpc_toolchains()
+
+rules_proto_grpc_repos()
+
+load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
+
+rules_proto_dependencies()
+
+rules_proto_toolchains()
+
 load("@com_google_mediapipe//third_party:external_files.bzl", "external_files")
 
 external_files()
+
+load("@com_google_mediapipe//third_party:wasm_files.bzl", "wasm_files")
+
+wasm_files()
+
+http_archive(
+    name = "emsdk",
+    patch_args = [
+        "-p1",
+    ],
+    patches = [
+        "@//third_party:emsdk_bitcode_support.diff",
+    ],
+    sha256 = "8978a12172028542c1c4007745e5421cb018842ebf77dfc0f8555d1ae9b09234",
+    strip_prefix = "emsdk-8e7b714a0b2137caca4a212c003f4eb9b9ba9667/bazel",
+    url = "https://github.com/emscripten-core/emsdk/archive/8e7b714a0b2137caca4a212c003f4eb9b9ba9667.tar.gz",
+)
+
+load("@emsdk//:deps.bzl", emsdk_deps = "deps")
+
+emsdk_deps()
+
+load("@emsdk//:emscripten_deps.bzl", emsdk_emscripten_deps = "emscripten_deps")
+
+emsdk_emscripten_deps(emscripten_version = "2.0.22")

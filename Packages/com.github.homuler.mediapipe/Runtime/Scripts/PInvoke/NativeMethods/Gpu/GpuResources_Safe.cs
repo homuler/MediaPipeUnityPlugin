@@ -12,11 +12,6 @@ namespace Mediapipe
 {
   internal static partial class SafeNativeMethods
   {
-#if UNITY_IOS
-    [Pure, DllImport (MediaPipeLibrary, ExactSpelling = true)]
-    public static extern IntPtr mp_GpuResources__ios_gpu_data(IntPtr gpuResources);
-#endif
-
     [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern IntPtr mp_SharedGpuResources__get(IntPtr gpuResources);
 

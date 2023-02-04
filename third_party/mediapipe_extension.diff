@@ -1,5 +1,5 @@
 diff --git a/mediapipe/BUILD b/mediapipe/BUILD
-index 3187c0c..5056a26 100644
+index 3187c0cf..5056a26d 100644
 --- a/mediapipe/BUILD
 +++ b/mediapipe/BUILD
 @@ -149,6 +149,31 @@ config_setting(
@@ -35,10 +35,10 @@ index 3187c0c..5056a26 100644
      ["provisioning_profile.mobileprovision"],
      visibility = ["//visibility:public"],
 diff --git a/mediapipe/calculators/tensor/BUILD b/mediapipe/calculators/tensor/BUILD
-index 586fb0d..ba8629d 100644
+index 69d66609..a0d9d1c1 100644
 --- a/mediapipe/calculators/tensor/BUILD
 +++ b/mediapipe/calculators/tensor/BUILD
-@@ -37,6 +37,7 @@ selects.config_setting_group(
+@@ -38,6 +38,7 @@ selects.config_setting_group(
      name = "compute_shader_unavailable",
      match_any = [
          "//mediapipe/gpu:disable_gpu",
@@ -46,7 +46,7 @@ index 586fb0d..ba8629d 100644
      ],
  )
  
-@@ -579,6 +580,11 @@ cc_library(
+@@ -968,6 +969,11 @@ cc_library(
              "//mediapipe/gpu:MPPMetalHelper",
              "//mediapipe/gpu:gpu_buffer",
          ],
@@ -59,10 +59,10 @@ index 586fb0d..ba8629d 100644
              ":image_to_tensor_converter_gl_buffer",
              "//mediapipe/gpu:gl_calculator_helper",
 diff --git a/mediapipe/gpu/BUILD b/mediapipe/gpu/BUILD
-index 8c9c433..f6bb250 100644
+index 55e9c98c..d096f5bb 100644
 --- a/mediapipe/gpu/BUILD
 +++ b/mediapipe/gpu/BUILD
-@@ -161,6 +161,9 @@ cc_library(
+@@ -167,6 +167,9 @@ cc_library(
          "//mediapipe:macos": [
              "gl_context_nsgl.cc",
          ],
@@ -73,25 +73,34 @@ index 8c9c433..f6bb250 100644
      hdrs = ["gl_context.h"],
      copts = select({
 diff --git a/mediapipe/gpu/gl_calculator_helper.cc b/mediapipe/gpu/gl_calculator_helper.cc
-index ba14239..69de4ff 100644
+index 9b217ddf..d22998df 100644
 --- a/mediapipe/gpu/gl_calculator_helper.cc
 +++ b/mediapipe/gpu/gl_calculator_helper.cc
-@@ -142,6 +142,10 @@ GlTexture GlCalculatorHelper::CreateDestinationTexture(int output_width,
-   return impl_->CreateDestinationTexture(output_width, output_height, format);
- }
+@@ -202,12 +202,17 @@ void GlCalculatorHelper::GetGpuBufferDimensions(const GpuBuffer& pixel_buffer,
  
-+GlTexture GlCalculatorHelper::CreateDestinationTexture(GpuBuffer& pixel_buffer) {
-+  return impl_->CreateDestinationTexture(pixel_buffer);
+ GlTexture GlCalculatorHelper::CreateDestinationTexture(int width, int height,
+                                                        GpuBufferFormat format) {
++  GpuBuffer buffer =
++      gpu_resources_->gpu_buffer_pool().GetBuffer(width, height, format);
++
++  return CreateDestinationTexture(buffer);
 +}
 +
- GlContext& GlCalculatorHelper::GetGlContext() const {
-   return impl_->GetGlContext();
++GlTexture GlCalculatorHelper::CreateDestinationTexture(GpuBuffer& gpu_buffer) {
+   if (!framebuffer_) {
+     CreateFramebuffer();
+   }
+ 
+-  GpuBuffer gpu_buffer =
+-      gpu_resources_->gpu_buffer_pool().GetBuffer(width, height, format);
+   return MapGpuBuffer(gpu_buffer, gpu_buffer.GetWriteView<GlTextureView>(0));
  }
+ 
 diff --git a/mediapipe/gpu/gl_calculator_helper.h b/mediapipe/gpu/gl_calculator_helper.h
-index e445232..fe3f481 100644
+index af897bbe..5e1c6f57 100644
 --- a/mediapipe/gpu/gl_calculator_helper.h
 +++ b/mediapipe/gpu/gl_calculator_helper.h
-@@ -154,6 +154,8 @@ class GlCalculatorHelper {
+@@ -156,6 +156,8 @@ class GlCalculatorHelper {
        int output_width, int output_height,
        GpuBufferFormat format = GpuBufferFormat::kBGRA32);
  
@@ -100,44 +109,8 @@ index e445232..fe3f481 100644
    // The OpenGL name of the output framebuffer.
    GLuint framebuffer() const;
  
-diff --git a/mediapipe/gpu/gl_calculator_helper_impl.h b/mediapipe/gpu/gl_calculator_helper_impl.h
-index 72b3265..16a7998 100644
---- a/mediapipe/gpu/gl_calculator_helper_impl.h
-+++ b/mediapipe/gpu/gl_calculator_helper_impl.h
-@@ -49,6 +49,7 @@ class GlCalculatorHelperImpl {
-   // Creates a framebuffer and returns the texture that it is bound to.
-   GlTexture CreateDestinationTexture(int output_width, int output_height,
-                                      GpuBufferFormat format);
-+  GlTexture CreateDestinationTexture(GpuBuffer& gpu_buffer);
- 
-   GpuBuffer GpuBufferWithImageFrame(std::shared_ptr<ImageFrame> image_frame);
-   GpuBuffer GpuBufferCopyingImageFrame(const ImageFrame& image_frame);
-diff --git a/mediapipe/gpu/gl_calculator_helper_impl_common.cc b/mediapipe/gpu/gl_calculator_helper_impl_common.cc
-index 8dd03bf..7d0ec70 100644
---- a/mediapipe/gpu/gl_calculator_helper_impl_common.cc
-+++ b/mediapipe/gpu/gl_calculator_helper_impl_common.cc
-@@ -169,12 +169,17 @@ std::unique_ptr<GpuBuffer> GlTexture::GetFrame<GpuBuffer>() const {
- 
- GlTexture GlCalculatorHelperImpl::CreateDestinationTexture(
-     int width, int height, GpuBufferFormat format) {
-+  GpuBuffer buffer =
-+      gpu_resources_.gpu_buffer_pool().GetBuffer(width, height, format);
-+
-+  return CreateDestinationTexture(buffer);
-+}
-+
-+GlTexture GlCalculatorHelperImpl::CreateDestinationTexture(GpuBuffer& gpu_buffer) {
-   if (!framebuffer_) {
-     CreateFramebuffer();
-   }
- 
--  GpuBuffer gpu_buffer =
--      gpu_resources_.gpu_buffer_pool().GetBuffer(width, height, format);
-   return MapGpuBuffer(gpu_buffer, gpu_buffer.GetWriteView<GlTextureView>(0));
- }
- 
 diff --git a/mediapipe/gpu/gl_context_webgl.cc b/mediapipe/gpu/gl_context_webgl.cc
-index b1f5295..57892ab 100644
+index b1f5295c..57892aba 100644
 --- a/mediapipe/gpu/gl_context_webgl.cc
 +++ b/mediapipe/gpu/gl_context_webgl.cc
 @@ -50,6 +50,10 @@ absl::Status GlContext::CreateContextInternal(
@@ -205,7 +178,7 @@ index b1f5295..57892ab 100644
    );
    // clang-format on
 diff --git a/mediapipe/gpu/gl_scaler_calculator.cc b/mediapipe/gpu/gl_scaler_calculator.cc
-index fa06c88..8641788 100644
+index fa06c885..8641788e 100644
 --- a/mediapipe/gpu/gl_scaler_calculator.cc
 +++ b/mediapipe/gpu/gl_scaler_calculator.cc
 @@ -12,6 +12,8 @@
@@ -287,7 +260,7 @@ index fa06c88..8641788 100644
      glActiveTexture(GL_TEXTURE1);
      glBindTexture(src1.target(), src1.name());
 diff --git a/mediapipe/modules/objectron/objectron_gpu.pbtxt b/mediapipe/modules/objectron/objectron_gpu.pbtxt
-index 7ef2b67..83856d5 100644
+index 7ef2b671..83856d54 100644
 --- a/mediapipe/modules/objectron/objectron_gpu.pbtxt
 +++ b/mediapipe/modules/objectron/objectron_gpu.pbtxt
 @@ -14,6 +14,10 @@ input_side_packet: "USE_PREV_LANDMARKS:use_prev_landmarks"

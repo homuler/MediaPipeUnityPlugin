@@ -90,7 +90,7 @@ index 14ac12e5..1f3fc0f9 100644
  #include "mediapipe/util/android/file/base/helpers.h"
  #else
 diff --git a/mediapipe/framework/encode_binary_proto.bzl b/mediapipe/framework/encode_binary_proto.bzl
-index 6807a94f..b921a769 100644
+index e849d971..4e7824fb 100644
 --- a/mediapipe/framework/encode_binary_proto.bzl
 +++ b/mediapipe/framework/encode_binary_proto.bzl
 @@ -104,6 +104,7 @@ def _encode_binary_proto_impl(ctx):
@@ -102,10 +102,10 @@ index 6807a94f..b921a769 100644
              ] + path_list + file_list +
              ["<", textpb.path, ">", binarypb.path],
 diff --git a/mediapipe/graphs/object_detection_3d/calculators/BUILD b/mediapipe/graphs/object_detection_3d/calculators/BUILD
-index 783fff18..7114e518 100644
+index d4c5c496..aa4de6e6 100644
 --- a/mediapipe/graphs/object_detection_3d/calculators/BUILD
 +++ b/mediapipe/graphs/object_detection_3d/calculators/BUILD
-@@ -72,7 +72,7 @@ cc_library(
+@@ -73,7 +73,7 @@ cc_library(
          "//mediapipe/gpu:gl_calculator_helper",
          "//mediapipe/gpu:shader_util",
          "//mediapipe/modules/objectron/calculators:camera_parameters_cc_proto",
@@ -336,7 +336,7 @@ index 3a77e983..946bc739 100644
      LOG(ERROR) << "Failed to load animation asset.";
      return absl::UnknownError("Failed to load animation asset.");
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
-index ab3390e0..b7fb586e 100644
+index 55556955..966cf56e 100644
 --- a/mediapipe/util/BUILD
 +++ b/mediapipe/util/BUILD
 @@ -176,13 +176,8 @@ cc_library(
@@ -355,7 +355,7 @@ index ab3390e0..b7fb586e 100644
      hdrs = [
          "resource_util.h",
      ],
-@@ -206,20 +201,7 @@ cc_library(
+@@ -207,20 +202,7 @@ cc_library(
          "//mediapipe/framework/port:statusor",
          "//mediapipe/framework/port:file_helpers",
          "@com_google_absl//absl/strings",
@@ -378,7 +378,7 @@ index ab3390e0..b7fb586e 100644
  
  cc_library(
 diff --git a/mediapipe/util/resource_util.cc b/mediapipe/util/resource_util.cc
-index 8f40154a..dfebafdb 100644
+index 38636f32..55d62a2f 100644
 --- a/mediapipe/util/resource_util.cc
 +++ b/mediapipe/util/resource_util.cc
 @@ -27,6 +27,7 @@ namespace mediapipe {
@@ -389,7 +389,7 @@ index 8f40154a..dfebafdb 100644
  }  // namespace
  
  absl::Status GetResourceContents(const std::string& path, std::string* output,
-@@ -37,8 +38,19 @@ absl::Status GetResourceContents(const std::string& path, std::string* output,
+@@ -37,10 +38,21 @@ absl::Status GetResourceContents(const std::string& path, std::string* output,
    return internal::DefaultGetResourceContents(path, output, read_as_binary);
  }
  
@@ -400,6 +400,8 @@ index 8f40154a..dfebafdb 100644
 +  return path_resolver_(path);
 +}
 +
+ bool HasCustomGlobalResourceProvider() { return resource_provider_ != nullptr; }
+ 
  void SetCustomGlobalResourceProvider(ResourceProviderFn fn) {
    resource_provider_ = std::move(fn);
  }
@@ -410,10 +412,10 @@ index 8f40154a..dfebafdb 100644
 +
  }  // namespace mediapipe
 diff --git a/mediapipe/util/resource_util_custom.h b/mediapipe/util/resource_util_custom.h
-index 6bc1513c..e328d9a5 100644
+index e74af8b2..6ba61715 100644
 --- a/mediapipe/util/resource_util_custom.h
 +++ b/mediapipe/util/resource_util_custom.h
-@@ -4,15 +4,22 @@
+@@ -4,18 +4,25 @@
  #include <string>
  
  #include "mediapipe/framework/port/status.h"
@@ -427,6 +429,9 @@ index 6bc1513c..e328d9a5 100644
 +typedef std::function<absl::StatusOr<std::string>(const std::string&)>
 +    PathResolverFn;
 +
+ // Returns true if files are provided via a custom resource provider.
+ bool HasCustomGlobalResourceProvider();
+ 
  // Overrides the behavior of GetResourceContents.
  void SetCustomGlobalResourceProvider(ResourceProviderFn fn);
  
