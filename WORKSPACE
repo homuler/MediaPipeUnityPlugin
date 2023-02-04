@@ -367,6 +367,20 @@ http_archive(
 
 # iOS basic build deps.
 http_archive(
+    name = "build_bazel_apple_support",
+    sha256 = "f4fdf5c9b42b92ea12f229b265d74bb8cedb8208ca7a445b383c9f866cf53392",
+    patch_args = [
+        "-p1",
+    ],
+    patches = [
+        "@//third_party:build_bazel_apple_support_transitions.diff"
+    ],
+    urls = [
+        "https://github.com/bazelbuild/apple_support/releases/download/1.3.1/apple_support.1.3.1.tar.gz",
+    ],
+)
+
+http_archive(
     name = "build_bazel_rules_apple",
     patch_args = [
         "-p1",
