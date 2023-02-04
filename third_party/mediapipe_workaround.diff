@@ -1,60 +1,3 @@
-diff --git a/mediapipe/framework/formats/tensor.h b/mediapipe/framework/formats/tensor.h
-index b9a7b9fc..55967365 100644
---- a/mediapipe/framework/formats/tensor.h
-+++ b/mediapipe/framework/formats/tensor.h
-@@ -37,10 +37,9 @@
-         // defined(__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__)
- 
- #ifdef MEDIAPIPE_TENSOR_USE_AHWB
-+#include <EGL/egl.h>
-+#include <EGL/eglext.h>
- #include <android/hardware_buffer.h>
--
--#include "third_party/GL/gl/include/EGL/egl.h"
--#include "third_party/GL/gl/include/EGL/eglext.h"
- #endif  // MEDIAPIPE_TENSOR_USE_AHWB
- 
- #if MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_30
-diff --git a/mediapipe/framework/formats/tensor_ahwb.cc b/mediapipe/framework/formats/tensor_ahwb.cc
-index c839cf5a..c301878e 100644
---- a/mediapipe/framework/formats/tensor_ahwb.cc
-+++ b/mediapipe/framework/formats/tensor_ahwb.cc
-@@ -4,12 +4,13 @@
- #include "mediapipe/framework/formats/tensor.h"
- 
- #ifdef MEDIAPIPE_TENSOR_USE_AHWB
-+#include <EGL/egl.h>
-+#include <EGL/eglext.h>
-+
- #include "absl/synchronization/mutex.h"
- #include "mediapipe/framework/port.h"
- #include "mediapipe/framework/port/logging.h"
- #include "mediapipe/gpu/gl_base.h"
--#include "third_party/GL/gl/include/EGL/egl.h"
--#include "third_party/GL/gl/include/EGL/eglext.h"
- #endif  // MEDIAPIPE_TENSOR_USE_AHWB
- 
- namespace mediapipe {
-diff --git a/mediapipe/gpu/BUILD b/mediapipe/gpu/BUILD
-index a6dd9898..0753b824 100644
---- a/mediapipe/gpu/BUILD
-+++ b/mediapipe/gpu/BUILD
-@@ -897,6 +897,15 @@ mediapipe_cc_proto_library(
-     deps = [":gl_surface_sink_calculator_proto"],
- )
- 
-+mediapipe_proto_library(
-+    name = "gl_animation_overlay_calculator_proto",
-+    srcs = ["gl_animation_overlay_calculator.proto"],
-+    visibility = ["//visibility:public"],
-+    deps = [
-+        "//mediapipe/framework:calculator_proto",
-+    ],
-+)
-+
- ### Metal calculators
- 
- metal_library(
 diff --git a/mediapipe/graphs/instant_motion_tracking/calculators/matrices_manager_calculator.cc b/mediapipe/graphs/instant_motion_tracking/calculators/matrices_manager_calculator.cc
 index c003135b..edcd239f 100644
 --- a/mediapipe/graphs/instant_motion_tracking/calculators/matrices_manager_calculator.cc
@@ -260,7 +203,7 @@ index cbacdb71..f40cf912 100644
    float y;  // [0.0-1.0]
    float z;  // Centered around 1.0 [current_scale = z * initial_scale]
 diff --git a/mediapipe/modules/objectron/calculators/BUILD b/mediapipe/modules/objectron/calculators/BUILD
-index eeeaee5f..0fb68d0e 100644
+index 14cea526..64bf8d27 100644
 --- a/mediapipe/modules/objectron/calculators/BUILD
 +++ b/mediapipe/modules/objectron/calculators/BUILD
 @@ -199,6 +199,15 @@ cc_library(
@@ -279,7 +222,7 @@ index eeeaee5f..0fb68d0e 100644
      deps = [
          "//mediapipe/framework/formats:tensor",
          "//mediapipe/framework/port:logging",
-@@ -314,6 +323,15 @@ cc_library(
+@@ -312,6 +321,15 @@ cc_library(
      name = "lift_2d_frame_annotation_to_3d_calculator",
      srcs = ["lift_2d_frame_annotation_to_3d_calculator.cc"],
      visibility = ["//visibility:public"],
@@ -294,4 +237,4 @@ index eeeaee5f..0fb68d0e 100644
 +    }),
      deps = [
          ":annotation_cc_proto",
-         ":belief_decoder_config_cc_proto",
+         ":decoder",
