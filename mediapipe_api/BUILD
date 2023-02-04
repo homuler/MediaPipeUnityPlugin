@@ -448,6 +448,7 @@ cc_library(
         ],
         "//conditions:default": [
             "@com_google_mediapipe//mediapipe/graphs/hair_segmentation:mobile_calculators",
+            "@com_google_mediapipe//mediapipe/calculators/image:color_convert_calculator",
         ],
     }),
 )
