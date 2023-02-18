@@ -139,7 +139,6 @@ jobs:
             -runTests `
             -testPlatform EditMode `
             -testCategory !GpuOnly;!SignalAbort"
-          cat DummyProject\$env:ARTIFACTS_PATH\results.xml
           exit $process.ExitCode
 
       - name: Cat results.xml

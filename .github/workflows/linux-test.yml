@@ -135,7 +135,6 @@ jobs:
             -enableCodeCoverage \
             -debugCodeOptimization \
             -coverageOptions 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+MediaPipe.Runtime;pathFilters:-*/Runtime/Scripts/Protobuf/*'
-          cat DummyProject/${ARTIFACTS_PATH}/results.xml
 
       - name: Cat results.xml
         env:
