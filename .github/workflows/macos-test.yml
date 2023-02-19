@@ -58,8 +58,8 @@ jobs:
           - macos-11
           - macos-12
         unity:
-          - { version: "2021.3.3f1", changeset: "af2e63e8f9bd" }
-          - { version: "2020.3.36f1", changeset: "71f96b79b9f0" }
+          - { version: "2021.3.18f1", changeset: "3129e69bc0c7" }
+          - { version: "2020.3.44f1", changeset: "7f159b6136da" }
     steps:
       - name: Install UnityEditor
         run: |
