@@ -69,7 +69,7 @@ jobs:
         os:
           - windows-2019
         unity:
-          - { version: "2021.3.3f1", changeset: "3129e69bc0c7" }
+          - { version: "2021.3.18f1", changeset: "3129e69bc0c7" }
           - { version: "2020.3.44f1", changeset: "7f159b6136da" }
     steps:
       - name: Install UnityHub
