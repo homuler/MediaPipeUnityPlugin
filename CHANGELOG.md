@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.11.0](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.10.3...v0.11.0) (2023-03-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* hide StdString from developers (#834)
+
+* hide StdString from developers ([#834](https://github.com/homuler/MediaPipeUnityPlugin/issues/834)) ([1eac8b1](https://github.com/homuler/MediaPipeUnityPlugin/commit/1eac8b197727aac44379be9a90834c92d04399d9))
+
 ### [0.10.3](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.10.1...v0.10.3) (2022-12-28)
 
 

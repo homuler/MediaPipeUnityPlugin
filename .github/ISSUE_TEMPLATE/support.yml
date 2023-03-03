@@ -17,7 +17,7 @@ body:
     id: plugin_version
     attributes:
       label: Plugin Version or Commit ID
-      placeholder: v0.10.3
+      placeholder: v0.11.0
     validations:
       required: true
 
