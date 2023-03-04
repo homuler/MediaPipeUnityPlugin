@@ -84,6 +84,10 @@ jobs:
         run: |
           docker build --no-cache --build-arg UID=$(id -u) -t mediapipe_unity:latest . -f docker/linux/x86_64/Dockerfile.ubuntu
 
+      - name: Remove unused files to free up space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android
+
       - name: Build
         run: |
           docker run --rm \
