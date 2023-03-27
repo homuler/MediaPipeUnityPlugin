@@ -40,7 +40,8 @@ public static class PackageExporter
     var fileName = string.IsNullOrEmpty(version) ? "MediaPipeUnity.unitypackage" : $"MediaPipeUnity.{version}.unitypackage";
     var exportPath = "./" + fileName;
 
-    var pluginAssets = EnumerateAssets(Path.Combine("Packages", "com.github.homuler.mediapipe")); // export all the files
+    var pluginAssets = EnumerateAssets(Path.Combine("Packages", "com.github.homuler.mediapipe"))
+      .Append(Path.Combine("Packages", "com.github.homuler.mediapipe", "Runtime", "Plugins", "iOS", "MediaPipeUnity.framework"));
     var sampleAssets = EnumerateAssets(Path.Combine("Assets", "MediaPipeUnity", "Samples"), new string[] { ".cs", ".unity" })
       .Where(x => Path.GetFileName(x) != "Start Scene.unity"); // exclude the 'Start Scene'
     var tutorialAssets = EnumerateAssets(Path.Combine("Assets", "MediaPipeUnity", "Tutorial")); // export all the files
