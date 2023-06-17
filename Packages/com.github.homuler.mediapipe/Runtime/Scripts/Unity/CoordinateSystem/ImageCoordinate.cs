@@ -492,34 +492,6 @@ namespace Mediapipe.Unity.CoordinateSystem
     }
 
     /// <summary>
-    ///   Get the coordinates represented by <paramref name="point2d" /> in the local coordinate system.
-    /// </summary>
-    /// <param name="rectangle">Rectangle to get a point inside</param>
-    /// <param name="imageRotation">
-    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
-    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
-    /// </param>
-    /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector3 GetPoint(this UnityEngine.Rect rectangle, NormalizedPoint2D point2d, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
-    {
-      return ImageNormalizedToPoint(rectangle, point2d.X, point2d.Y, imageRotation, isMirrored);
-    }
-
-    /// <summary>
-    ///   Get the coordinates represented by <paramref name="anchor3d" /> in the local coordinate system.
-    /// </summary>
-    /// <param name="rectangle">Rectangle to get a point inside</param>
-    /// <param name="imageRotation">
-    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
-    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
-    /// </param>
-    /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
-    public static Vector2 GetPoint(this UnityEngine.Rect rectangle, Anchor3d anchor3d, RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
-    {
-      return ImageNormalizedToPoint(rectangle, anchor3d.x, anchor3d.y, imageRotation, isMirrored);
-    }
-
-    /// <summary>
     ///   Get a Vector3 array which represents <paramref name="boundingBox" />'s vertex coordinates in the local coordinate system.
     ///   They are ordered clockwise from bottom-left point.
     /// </summary>

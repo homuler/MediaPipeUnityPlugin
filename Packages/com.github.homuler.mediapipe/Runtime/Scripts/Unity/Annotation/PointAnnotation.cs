@@ -75,40 +75,6 @@ namespace Mediapipe.Unity
       }
     }
 
-    public void Draw(NormalizedPoint2D target)
-    {
-      if (ActivateFor(target))
-      {
-        var position = GetScreenRect().GetPoint(target, rotationAngle, isMirrored);
-        transform.localPosition = position;
-      }
-    }
-
-    public void Draw(Point3D target, Vector2 focalLength, Vector2 principalPoint, float zScale, bool visualizeZ = true)
-    {
-      if (ActivateFor(target))
-      {
-        var position = GetScreenRect().GetPoint(target, focalLength, principalPoint, zScale, rotationAngle, isMirrored);
-        if (!visualizeZ)
-        {
-          position.z = 0.0f;
-        }
-        transform.localPosition = position;
-      }
-    }
-
-    public void Draw(AnnotatedKeyPoint target, Vector2 focalLength, Vector2 principalPoint, float zScale, bool visualizeZ = true)
-    {
-      if (visualizeZ)
-      {
-        Draw(target?.Point3D, focalLength, principalPoint, zScale, true);
-      }
-      else
-      {
-        Draw(target?.Point2D);
-      }
-    }
-
     public void Draw(mplt.RelativeKeypoint target, float threshold = 0.0f)
     {
       if (ActivateFor(target))
