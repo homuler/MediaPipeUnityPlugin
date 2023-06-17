@@ -1,8 +1,8 @@
 diff --git a/mediapipe/BUILD b/mediapipe/BUILD
-index 3187c0cf..5056a26d 100644
+index fd0cbab3..992dc323 100644
 --- a/mediapipe/BUILD
 +++ b/mediapipe/BUILD
-@@ -149,6 +149,31 @@ config_setting(
+@@ -150,6 +150,31 @@ config_setting(
      values = {"cpu": "x64_windows"},
  )
  
@@ -35,10 +35,10 @@ index 3187c0cf..5056a26d 100644
      ["provisioning_profile.mobileprovision"],
      visibility = ["//visibility:public"],
 diff --git a/mediapipe/calculators/tensor/BUILD b/mediapipe/calculators/tensor/BUILD
-index 69d66609..a0d9d1c1 100644
+index 2ad98f28..fbe57934 100644
 --- a/mediapipe/calculators/tensor/BUILD
 +++ b/mediapipe/calculators/tensor/BUILD
-@@ -38,6 +38,7 @@ selects.config_setting_group(
+@@ -61,6 +61,7 @@ selects.config_setting_group(
      name = "compute_shader_unavailable",
      match_any = [
          "//mediapipe/gpu:disable_gpu",
@@ -46,9 +46,9 @@ index 69d66609..a0d9d1c1 100644
      ],
  )
  
-@@ -968,6 +969,11 @@ cc_library(
-             "//mediapipe/gpu:MPPMetalHelper",
+@@ -1019,6 +1020,11 @@ cc_library(
              "//mediapipe/gpu:gpu_buffer",
+             "//mediapipe/gpu:gpu_service",
          ],
 +        "//mediapipe:emscripten": [
 +            ":image_to_tensor_converter_gl_texture",
@@ -59,10 +59,10 @@ index 69d66609..a0d9d1c1 100644
              ":image_to_tensor_converter_gl_buffer",
              "//mediapipe/gpu:gl_calculator_helper",
 diff --git a/mediapipe/gpu/BUILD b/mediapipe/gpu/BUILD
-index 55e9c98c..d096f5bb 100644
+index ee32b91e..d32b8efd 100644
 --- a/mediapipe/gpu/BUILD
 +++ b/mediapipe/gpu/BUILD
-@@ -167,6 +167,9 @@ cc_library(
+@@ -169,6 +169,9 @@ cc_library(
          "//mediapipe:macos": [
              "gl_context_nsgl.cc",
          ],
@@ -73,7 +73,7 @@ index 55e9c98c..d096f5bb 100644
      hdrs = ["gl_context.h"],
      copts = select({
 diff --git a/mediapipe/gpu/gl_calculator_helper.cc b/mediapipe/gpu/gl_calculator_helper.cc
-index 9b217ddf..d22998df 100644
+index 974525a9..83b5e037 100644
 --- a/mediapipe/gpu/gl_calculator_helper.cc
 +++ b/mediapipe/gpu/gl_calculator_helper.cc
 @@ -202,12 +202,17 @@ void GlCalculatorHelper::GetGpuBufferDimensions(const GpuBuffer& pixel_buffer,
@@ -97,12 +97,12 @@ index 9b217ddf..d22998df 100644
  }
  
 diff --git a/mediapipe/gpu/gl_calculator_helper.h b/mediapipe/gpu/gl_calculator_helper.h
-index af897bbe..5e1c6f57 100644
+index c1b94fa8..052de740 100644
 --- a/mediapipe/gpu/gl_calculator_helper.h
 +++ b/mediapipe/gpu/gl_calculator_helper.h
-@@ -156,6 +156,8 @@ class GlCalculatorHelper {
-       int output_width, int output_height,
-       GpuBufferFormat format = GpuBufferFormat::kBGRA32);
+@@ -170,6 +170,8 @@ class GlCalculatorHelper {
+   // ImageFrame.
+   GlTexture CreateDestinationTexture(const ImageFrame& image_frame);
  
 +  GlTexture CreateDestinationTexture(GpuBuffer& pixel_buffer);
 +
@@ -110,7 +110,7 @@ index af897bbe..5e1c6f57 100644
    GLuint framebuffer() const;
  
 diff --git a/mediapipe/gpu/gl_context_webgl.cc b/mediapipe/gpu/gl_context_webgl.cc
-index b1f5295c..57892aba 100644
+index 25cbed83..5cd6eb92 100644
 --- a/mediapipe/gpu/gl_context_webgl.cc
 +++ b/mediapipe/gpu/gl_context_webgl.cc
 @@ -50,6 +50,10 @@ absl::Status GlContext::CreateContextInternal(
@@ -124,59 +124,6 @@ index b1f5295c..57892aba 100644
    EmscriptenWebGLContextAttributes attrs;
    emscripten_webgl_init_context_attributes(&attrs);
    attrs.explicitSwapControl = 0;
-@@ -77,37 +81,33 @@ absl::Status GlContext::CreateContextInternal(
-   //   and OFFSCREEN_FRAMEBUFFER)
-   // clang-format off
-   EM_ASM(
--    let init_once = true;
--    if (init_once) {
--      const cachedFindCanvasEventTarget = findCanvasEventTarget;
-+    let canvas = null;
- 
--      if (typeof cachedFindCanvasEventTarget !== 'function') {
--        if (typeof console !== 'undefined') {
--          console.error('Expected Emscripten global function '
--              + '"findCanvasEventTarget" not found. WebGL context creation '
--              + 'may fail.');
--        }
--        return;
-+    if (typeof findCanvasEventTarget != 'function') {
-+      if (typeof console !== 'undefined') {
-+        console.error('Expected Emscripten global function '
-+            + '"findCanvasEventTarget" not found. WebGL context creation '
-+            + 'may fail.');
-       }
-+      return;
-+    }
-+
-+    if (typeof findCanvasEventTarget.cached != 'function') {
-+      const cachedFindCanvasEventTarget = findCanvasEventTarget;
- 
-       findCanvasEventTarget = function(target) {
-         if (target == 0) {
--          if (Module && Module.canvas) {
--            return Module.canvas;
--          } else if (Module && Module.canvasCssSelector) {
--            return cachedFindCanvasEventTarget(Module.canvasCssSelector);
--          }
--          if (typeof console !== 'undefined') {
--            console.warn('Module properties canvas and canvasCssSelector not ' +
--                         'found during WebGL context creation.');
-+          if (canvas === null) {
-+            canvas = document.createElement('canvas');
-           }
-+          return canvas;
-         }
-         // We still go through with the find attempt, although for most use
-         // cases it will not succeed, just in case the user does want to fall-
-         // back.
-         return cachedFindCanvasEventTarget(target);
-       };  // NOLINT: Necessary semicolon.
--      init_once = false;
-+      findCanvasEventTarget.cached = cachedFindCanvasEventTarget;
-     }
-   );
-   // clang-format on
 diff --git a/mediapipe/gpu/gl_scaler_calculator.cc b/mediapipe/gpu/gl_scaler_calculator.cc
 index fa06c885..8641788e 100644
 --- a/mediapipe/gpu/gl_scaler_calculator.cc

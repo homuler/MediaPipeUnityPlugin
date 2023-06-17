@@ -7,7 +7,6 @@
 load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 load("@bazel_skylib//lib:selects.bzl", "selects")
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
-load("@bazel_rules_dict//:dict.bzl", "define_string_dict", "merge_dict")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -58,13 +57,23 @@ config_setting(
 )
 
 selects.config_setting_group(
+    name = "cmake_dynamic_win",
+    match_all = ["@bazel_tools//src/conditions:windows", ":cmake_dynamic"],
+)
+
+selects.config_setting_group(
+    name = "cmake_static_win",
+    match_all = ["@bazel_tools//src/conditions:windows", ":cmake_static"],
+)
+
+selects.config_setting_group(
     name = "dbg_cmake_dynamic_win",
-    match_all = ["@bazel_tools//src/conditions:windows", ":cmake_dynamic", ":dbg_build"],
+    match_all = [":cmake_dynamic_win", ":dbg_build"],
 )
 
 selects.config_setting_group(
     name = "dbg_cmake_static_win",
-    match_all = ["@bazel_tools//src/conditions:windows", ":cmake_static", ":dbg_build"],
+    match_all = [":cmake_static_win", ":dbg_build"],
 )
 
 selects.config_setting_group(
@@ -129,116 +138,77 @@ OPENCV_3RDPARTY_LIBS = [
 # ENABLE_NEON=ON
 OPENCV_3RDPARTY_LIBS_M1 = OPENCV_3RDPARTY_LIBS + ["tegra_hal"]
 
-define_string_dict(
-    name = "common_cache_entries",
-    value = {
-        # The module list is always sorted alphabetically so that we do not
-        # cause a rebuild when changing the link order.
-        "BUILD_LIST": ",".join(sorted(OPENCV_MODULES)),
-        "BUILD_opencv_apps": "OFF",
-        "BUILD_opencv_python": "OFF",
-        "BUILD_opencv_world": "ON",
-        "BUILD_EXAMPLES": "OFF",
-        "BUILD_PERF_TESTS": "OFF",
-        "BUILD_TESTS": "OFF",
-        "BUILD_JPEG": "ON",
-        "BUILD_OPENEXR": "ON",
-        "BUILD_PNG": "ON",
-        "BUILD_TIFF": "ON",
-        "BUILD_ZLIB": "ON",
-        "WITH_1394": "OFF",
-        "WITH_FFMPEG": "OFF",
-        "WITH_GSTREAMER": "OFF",
-        "WITH_GTK": "OFF",
-        # Some symbols in ippicv and ippiw cannot be resolved, and they are excluded currently in the first place.
-        # https://github.com/opencv/opencv/pull/16505
-        "WITH_IPP": "OFF",
-        "WITH_ITT": "OFF",
-        "WITH_JASPER": "OFF",
-        "WITH_V4L": "OFF",
-        "WITH_WEBP": "OFF",
-        "CV_ENABLE_INTRINSICS": "ON",
-        "WITH_EIGEN": "ON",
-        "ENABLE_CCACHE": "OFF",
-        # flags for static build
-        "BUILD_SHARED_LIBS": "OFF",
-        "OPENCV_SKIP_PYTHON_LOADER": "ON",
-        "OPENCV_SKIP_VISIBILITY_HIDDEN": "ON",
+COMMON_CACHE_ENTRIES = {
+    # The module list is always sorted alphabetically so that we do not
+    # cause a rebuild when changing the link order.
+    "BUILD_LIST": ",".join(sorted(OPENCV_MODULES)),
+    "BUILD_opencv_apps": "OFF",
+    "BUILD_opencv_python": "OFF",
+    "BUILD_opencv_world": "ON",
+    "BUILD_EXAMPLES": "OFF",
+    "BUILD_PERF_TESTS": "OFF",
+    "BUILD_TESTS": "OFF",
+    "BUILD_JPEG": "ON",
+    "BUILD_OPENEXR": "ON",
+    "BUILD_PNG": "ON",
+    "BUILD_TIFF": "ON",
+    "BUILD_ZLIB": "ON",
+    "WITH_1394": "OFF",
+    "WITH_FFMPEG": "OFF",
+    "WITH_GSTREAMER": "OFF",
+    "WITH_GTK": "OFF",
+    # Some symbols in ippicv and ippiw cannot be resolved, and they are excluded currently in the first place.
+    # https://github.com/opencv/opencv/pull/16505
+    "WITH_IPP": "OFF",
+    "WITH_ITT": "OFF",
+    "WITH_JASPER": "OFF",
+    "WITH_V4L": "OFF",
+    "WITH_WEBP": "OFF",
+    "CV_ENABLE_INTRINSICS": "ON",
+    "WITH_EIGEN": "ON",
+    "ENABLE_CCACHE": "OFF",
+    # flags for static build
+    "BUILD_SHARED_LIBS": "OFF",
+    "OPENCV_SKIP_PYTHON_LOADER": "ON",
+    "OPENCV_SKIP_VISIBILITY_HIDDEN": "ON",
+}
+
+CACHE_ENTRIES = COMMON_CACHE_ENTRIES | select({
+    ":cmake_dynamic": { "BUILD_SHARED_LIBS": "ON" },
+    ":cmake_static": { "BUILD_SHARED_LIBS": "OFF" },
+}) | select({
+    ":cmake_dynamic_win": {
+        "CMAKE_CXX_FLAGS": "/std:c++14",
+        "WITH_LAPACK": "ON",
     },
-)
-
-define_string_dict(
-    name = "build_shared_libs",
-    value = select({
-        ":cmake_dynamic": { "BUILD_SHARED_LIBS": "ON" },
-        ":cmake_static": { "BUILD_SHARED_LIBS": "OFF" },
-    }),
-)
-
-define_string_dict(
-    name = "windows_cache_entries",
-    value = select({
-        ":cmake_dynamic": {
-            "CMAKE_CXX_FLAGS": "/std:c++14",
-            "WITH_LAPACK": "ON",
-        },
-        ":cmake_static": {
-            "CMAKE_CXX_FLAGS": "/std:c++14",
-            # required to link to .dll statically
-            "BUILD_WITH_STATIC_CRT": "OFF",
-            "WITH_LAPACK": "ON",
-        },
-    }),
-)
-
-define_string_dict(
-    name = "*nix_build_entries",
-    value = {
+    ":cmake_static_win": {
+        "CMAKE_CXX_FLAGS": "/std:c++14",
+        # required to link to .dll statically
+        "BUILD_WITH_STATIC_CRT": "OFF",
+        "WITH_LAPACK": "ON",
+    },
+    "@com_google_mediapipe//mediapipe:macos_arm64": {
+        "CMAKE_SYSTEM_NAME": "Darwin",
+        "CMAKE_SYSTEM_PROCESSOR": "arm64",
+        "CMAKE_SYSTEM_ARCHITECTURES": "arm64",
+        "CMAKE_OSX_ARCHITECTURES": "arm64",
+    },
+    "@com_google_mediapipe//mediapipe:macos_x86_64": {
+        "CMAKE_SYSTEM_NAME": "Darwin",
+        "CMAKE_SYSTEM_PROCESSOR": "x86_64",
+        "CMAKE_SYSTEM_ARCHITECTURES": "x86_64",
+        "CMAKE_OSX_ARCHITECTURES": "x86_64",
+    },
+    "//conditions:default": {},
+}) | select ({
+    "@bazel_tools//src/conditions:windows" : {},
+    "//conditions:default": {
         # https://github.com/opencv/opencv/issues/19846
         "WITH_LAPACK": "OFF",
         "WITH_PTHREADS": "ON",
         "WITH_PTHREADS_PF": "ON",
     },
-)
-
-define_string_dict(
-    name = "darwin_arch_entries",
-    value = select({
-        "@cpuinfo//:macos_arm64": {
-            "CMAKE_SYSTEM_NAME": "Darwin",
-            "CMAKE_SYSTEM_PROCESSOR": "arm64",
-            "CMAKE_SYSTEM_ARCHITECTURES": "arm64",
-            "CMAKE_OSX_ARCHITECTURES": "arm64",
-        },
-        "//conditions:default": {
-            "CMAKE_SYSTEM_NAME": "Darwin",
-            "CMAKE_SYSTEM_PROCESSOR": "x86_64",
-            "CMAKE_SYSTEM_ARCHITECTURES": "x86_64",
-            "CMAKE_OSX_ARCHITECTURES": "x86_64",
-        },
-    })
-)
-
-merge_dict(
-    name = "*nix_cache_entries",
-    deps = [
-        ":*nix_build_entries",
-    ] + select({
-        "@bazel_tools//src/conditions:darwin": [":darwin_arch_entries"],
-        "//conditions:default": [],
-    }),
-)
-
-merge_dict(
-    name = "cache_entries",
-    deps = [
-        ":common_cache_entries",
-        ":build_shared_libs",
-    ] + select({
-        "@bazel_tools//src/conditions:windows": [":windows_cache_entries"],
-        "//conditions:default": ["*nix_cache_entries"],
-    }),
-)
+})
 
 cmake(
     name = "opencv_cmake",
@@ -251,7 +221,7 @@ cmake(
     }),
     # Values to be passed as -Dkey=value on the CMake command line;
     # here are serving to provide some CMake script configuration options
-    cache_entries_target = ":cache_entries",
+    cache_entries = CACHE_ENTRIES,
     generate_args = select({
         "@bazel_tools//src/conditions:windows": [
             "-G \"Visual Studio 16 2019\"",

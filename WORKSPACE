@@ -4,11 +4,10 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "bazel_skylib",
-    sha256 = "1c531376ac7e5a180e0237938a2536de0c54d93f5c278634818e0efc952dd56c",
-    type = "tar.gz",
+    sha256 = "74d544d96f4a5bb630d465ca8bbcfe231e3594e5aae57e1edbf17a6eb3ca2506",
     urls = [
-        "https://github.com/bazelbuild/bazel-skylib/releases/download/1.0.3/bazel-skylib-1.0.3.tar.gz",
-        "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/1.0.3/bazel-skylib-1.0.3.tar.gz",
+        "https://storage.googleapis.com/mirror.tensorflow.org/github.com/bazelbuild/bazel-skylib/releases/download/1.3.0/bazel-skylib-1.3.0.tar.gz",
+        "https://github.com/bazelbuild/bazel-skylib/releases/download/1.3.0/bazel-skylib-1.3.0.tar.gz",
     ],
 )
 
@@ -18,7 +17,7 @@ bazel_skylib_workspace()
 
 load("@bazel_skylib//lib:versions.bzl", "versions")
 
-versions.check(minimum_bazel_version = "5.2.0")
+versions.check(minimum_bazel_version = "6.1.1")
 
 http_archive(
     name = "rules_pkg",
@@ -42,55 +41,128 @@ http_archive(
         "@//third_party:mediapipe_visibility.diff",
         "@//third_party:mediapipe_model_path.diff",
         "@//third_party:mediapipe_extension.diff",
-        # "@//third_party:mediapipe_emscripten_patch.diff",
     ],
-    sha256 = "437de7632f37b95424106d689f9722c280a571fa452675a22c708cb851395ea7",
-    strip_prefix = "mediapipe-0.9.1",
-    urls = ["https://github.com/google/mediapipe/archive/v0.9.1.tar.gz"],
+    sha256 = "4433c986671fea71288f8e573e2395a8e877bf782278997974a01cb4c9d6e362",
+    strip_prefix = "mediapipe-0.10.1",
+    urls = ["https://github.com/google/mediapipe/archive/v0.10.1.tar.gz"],
 )
 
-# ABSL cpp library lts_2021_03_24, patch 2.
+# ABSL cpp library lts_2023_01_25.
 http_archive(
     name = "com_google_absl",
     patch_args = [
         "-p1",
     ],
-    # Remove after https://github.com/abseil/abseil-cpp/issues/326 is solved.
     patches = [
-        "@com_google_mediapipe//third_party:com_google_absl_f863b622fe13612433fdf43f76547d5edda0c93001.diff",
+        "@com_google_mediapipe//third_party:com_google_absl_windows_patch.diff",
     ],
-    sha256 = "91ac87d30cc6d79f9ab974c51874a704de9c2647c40f6932597329a282217ba8",
-    strip_prefix = "abseil-cpp-20220623.1",
+    sha256 = "3ea49a7d97421b88a8c48a0de16c16048e17725c7ec0f1d3ea2683a2a75adc21",
+    strip_prefix = "abseil-cpp-20230125.0",
     urls = [
-        "https://github.com/abseil/abseil-cpp/archive/refs/tags/20220623.1.tar.gz",
+        "https://github.com/abseil/abseil-cpp/archive/refs/tags/20230125.0.tar.gz",
     ],
 )
 
 http_archive(
     name = "rules_cc",
-    strip_prefix = "rules_cc-main",
-    urls = ["https://github.com/bazelbuild/rules_cc/archive/main.zip"],
-)
-
-http_archive(
-    name = "bazel_rules_dict",
-    sha256 = "00adce0dc43d7ef39dcb7f59f8cc5644cde02766bb193f342ecff13d70f60b07",
-    strip_prefix = "bazel_rules_dict-0.1.1",
-    urls = [
-        "https://github.com/homuler/bazel_rules_dict/archive/refs/tags/v0.1.1.tar.gz",
-    ],
+    strip_prefix = "rules_cc-2f8c04c04462ab83c545ab14c0da68c3b4c96191",
+    # The commit can be updated if the build passes. Last updated 6/23/22.
+    urls = ["https://github.com/bazelbuild/rules_cc/archive/2f8c04c04462ab83c545ab14c0da68c3b4c96191.zip"],
 )
 
 http_archive(
     name = "rules_foreign_cc",
-    sha256 = "47f94195f144952c5a47245363d4a27b0e7ef3037a58ecf13aca8b5dbe3c2609",
-    strip_prefix = "rules_foreign_cc-feat-cache_entries_target",
-    url = "https://github.com/homuler/rules_foreign_cc/archive/feat/cache_entries_target.zip",
+    sha256 = "2a4d07cd64b0719b39a7c12218a3e507672b82a97b98c6a89d38565894cf7c51",
+    strip_prefix = "rules_foreign_cc-0.9.0",
+    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.9.0.tar.gz",
 )
 
 load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
 
 rules_foreign_cc_dependencies()
+
+http_archive(
+    name = "com_google_protobuf",
+    patch_args = [
+        "-p1",
+    ],
+    patches = [
+        "@com_google_mediapipe//third_party:com_google_protobuf_fixes.diff",
+    ],
+    sha256 = "87407cd28e7a9c95d9f61a098a53cf031109d451a7763e7dd1253abf8b4df422",
+    strip_prefix = "protobuf-3.19.1",
+    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.19.1.tar.gz"],
+)
+
+load("//third_party:android_configure.bzl", "android_configure")
+
+android_configure(name = "local_config_android")
+
+load("@local_config_android//:android_configure.bzl", "android_workspace")
+
+android_workspace()
+
+# Load Zlib before initializing TensorFlow and the iOS build rules to guarantee
+# that the target @zlib//:mini_zlib is available
+http_archive(
+    name = "zlib",
+    build_file = "@com_google_mediapipe//third_party:zlib.BUILD",
+    patch_args = [
+        "-p1",
+    ],
+    patches = [
+        "@com_google_mediapipe//third_party:zlib.diff",
+    ],
+    sha256 = "c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1",
+    strip_prefix = "zlib-1.2.11",
+    urls = [
+        "http://mirror.bazel.build/zlib.net/fossils/zlib-1.2.11.tar.gz",
+        "http://zlib.net/fossils/zlib-1.2.11.tar.gz",  # 2017-01-15
+    ],
+)
+
+# iOS basic build deps.
+http_archive(
+    name = "build_bazel_rules_apple",
+    patch_args = [
+        "-p1",
+    ],
+    patches = [
+        # Bypass checking ios unit test runner when building MP ios applications.
+        "@com_google_mediapipe//third_party:build_bazel_rules_apple_bypass_test_runner_check.diff",
+        "@//third_party:build_bazel_rules_apple_validation.diff",
+    ],
+    sha256 = "3e2c7ae0ddd181c4053b6491dad1d01ae29011bc322ca87eea45957c76d3a0c3",
+    url = "https://github.com/bazelbuild/rules_apple/releases/download/2.1.0/rules_apple.2.1.0.tar.gz",
+)
+
+load(
+    "@build_bazel_rules_apple//apple:repositories.bzl",
+    "apple_rules_dependencies",
+)
+
+apple_rules_dependencies()
+
+load(
+    "@build_bazel_rules_swift//swift:repositories.bzl",
+    "swift_rules_dependencies",
+)
+
+swift_rules_dependencies()
+
+load(
+    "@build_bazel_rules_swift//swift:extras.bzl",
+    "swift_rules_extra_dependencies",
+)
+
+swift_rules_extra_dependencies()
+
+load(
+    "@build_bazel_apple_support//lib:repositories.bzl",
+    "apple_support_dependencies",
+)
+
+apple_support_dependencies()
 
 # GoogleTest/GoogleMock framework. Used by most unit-tests.
 # Last updated 2021-07-02.
@@ -135,7 +207,7 @@ http_archive(
         "-p1",
     ],
     patches = [
-        "@//third_party:com_github_glog_glog_no_gflags_fixes.diff",
+        "@com_google_mediapipe//third_party:com_github_glog_glog_9779e5ea6ef59562b030248947f787d1256132ae.diff",
     ],
     sha256 = "58c9b3b6aaa4dd8b836c0fd8f65d0f941441fb95e27212c5eeb9979cfd3592ab",
     strip_prefix = "glog-0a2e5931bd5ff22fd3bf8999eb8ce776f159cda6",
@@ -169,28 +241,19 @@ http_archive(
     urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.19.1.tar.gz"],
 )
 
-http_archive(
-    name = "com_google_protobuf",
-    patch_args = [
-        "-p1",
-    ],
-    patches = [
-        "@com_google_mediapipe//third_party:com_google_protobuf_fixes.diff",
-    ],
-    sha256 = "87407cd28e7a9c95d9f61a098a53cf031109d451a7763e7dd1253abf8b4df422",
-    strip_prefix = "protobuf-3.19.1",
-    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.19.1.tar.gz"],
-)
-
 load("@com_google_mediapipe//third_party/flatbuffers:workspace.bzl", flatbuffers = "repo")
 
 flatbuffers()
 
 http_archive(
     name = "com_google_audio_tools",
+    patch_args = ["-p1"],
+    # TODO: Fix this in AudioTools directly
+    patches = ["@com_google_mediapipe//third_party:com_google_audio_tools_fixes.diff"],
     repo_mapping = {"@com_github_glog_glog": "@com_github_glog_glog_no_gflags"},
-    strip_prefix = "multichannel-audio-tools-master",
-    urls = ["https://github.com/google/multichannel-audio-tools/archive/master.zip"],
+    sha256 = "fe346e1aee4f5069c4cbccb88706a9a2b2b4cf98aeb91ec1319be77e07dd7435",
+    strip_prefix = "multichannel-audio-tools-1f6b1319f13282eda6ff1317be13de67f4723860",
+    urls = ["https://github.com/google/multichannel-audio-tools/archive/1f6b1319f13282eda6ff1317be13de67f4723860.zip"],
 )
 
 http_archive(
@@ -216,6 +279,16 @@ http_archive(
 )
 
 http_archive(
+    name = "darts_clone",
+    build_file = "@com_google_mediapipe//third_party:darts_clone.BUILD",
+    sha256 = "c97f55d05c98da6fcaf7f9ecc6a6dc6bc5b18b8564465f77abff8879d446491c",
+    strip_prefix = "darts-clone-e40ce4627526985a7767444b6ed6893ab6ff8983",
+    urls = [
+        "https://github.com/s-yata/darts-clone/archive/e40ce4627526985a7767444b6ed6893ab6ff8983.zip",
+    ],
+)
+
+http_archive(
     name = "org_tensorflow_text",
     patch_args = ["-p1"],
     patches = [
@@ -232,10 +305,10 @@ http_archive(
 
 http_archive(
     name = "com_googlesource_code_re2",
-    sha256 = "e06b718c129f4019d6e7aa8b7631bee38d3d450dd980246bfaf493eb7db67868",
-    strip_prefix = "re2-fe4a310131c37f9a7e7f7816fa6ce2a8b27d65a8",
+    sha256 = "ef516fb84824a597c4d5d0d6d330daedb18363b5a99eda87d027e6bdd9cba299",
+    strip_prefix = "re2-03da4fc0857c285e3a26782f6bc8931c4c950df4",
     urls = [
-        "https://github.com/google/re2/archive/fe4a310131c37f9a7e7f7816fa6ce2a8b27d65a8.tar.gz",
+        "https://github.com/google/re2/archive/03da4fc0857c285e3a26782f6bc8931c4c950df4.tar.gz",
     ],
 )
 
@@ -338,90 +411,6 @@ http_archive(
     urls = ["https://github.com/nothings/stb/archive/b42009b3b9d4ca35bc703f5310eedc74f584be58.tar.gz"],
 )
 
-load("//third_party:android_configure.bzl", "android_configure")
-
-android_configure(name = "local_config_android")
-
-load("@local_config_android//:android_configure.bzl", "android_workspace")
-
-android_workspace()
-
-# Load Zlib before initializing TensorFlow and the iOS build rules to guarantee
-# that the target @zlib//:mini_zlib is available
-http_archive(
-    name = "zlib",
-    build_file = "@com_google_mediapipe//third_party:zlib.BUILD",
-    patch_args = [
-        "-p1",
-    ],
-    patches = [
-        "@com_google_mediapipe//third_party:zlib.diff",
-    ],
-    sha256 = "c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1",
-    strip_prefix = "zlib-1.2.11",
-    urls = [
-        "http://mirror.bazel.build/zlib.net/fossils/zlib-1.2.11.tar.gz",
-        "http://zlib.net/fossils/zlib-1.2.11.tar.gz",  # 2017-01-15
-    ],
-)
-
-# iOS basic build deps.
-http_archive(
-    name = "build_bazel_apple_support",
-    sha256 = "f4fdf5c9b42b92ea12f229b265d74bb8cedb8208ca7a445b383c9f866cf53392",
-    patch_args = [
-        "-p1",
-    ],
-    patches = [
-        "@//third_party:build_bazel_apple_support_transitions.diff"
-    ],
-    urls = [
-        "https://github.com/bazelbuild/apple_support/releases/download/1.3.1/apple_support.1.3.1.tar.gz",
-    ],
-)
-
-http_archive(
-    name = "build_bazel_rules_apple",
-    patch_args = [
-        "-p1",
-    ],
-    patches = [
-        # Bypass checking ios unit test runner when building MP ios applications.
-        "@com_google_mediapipe//third_party:build_bazel_rules_apple_bypass_test_runner_check.diff",
-        "@//third_party:build_bazel_rules_apple_validation.diff",
-    ],
-    sha256 = "f94e6dddf74739ef5cb30f000e13a2a613f6ebfa5e63588305a71fce8a8a9911",
-    url = "https://github.com/bazelbuild/rules_apple/releases/download/1.1.3/rules_apple.1.1.3.tar.gz",
-)
-
-load(
-    "@build_bazel_rules_apple//apple:repositories.bzl",
-    "apple_rules_dependencies",
-)
-
-apple_rules_dependencies()
-
-load(
-    "@build_bazel_rules_swift//swift:repositories.bzl",
-    "swift_rules_dependencies",
-)
-
-swift_rules_dependencies()
-
-load(
-    "@build_bazel_rules_swift//swift:extras.bzl",
-    "swift_rules_extra_dependencies",
-)
-
-swift_rules_extra_dependencies()
-
-load(
-    "@build_bazel_apple_support//lib:repositories.bzl",
-    "apple_support_dependencies",
-)
-
-apple_support_dependencies()
-
 # More iOS deps.
 
 http_archive(
@@ -444,10 +433,11 @@ http_archive(
 )
 
 # TensorFlow repo should always go after the other external dependencies.
-# TF on 2022-08-10.
-_TENSORFLOW_GIT_COMMIT = "af1d5bc4fbb66d9e6cc1cf89503014a99233583b"
+# TF on 2023-06-13.
+_TENSORFLOW_GIT_COMMIT = "491681a5620e41bf079a582ac39c585cc86878b9"
 
-_TENSORFLOW_SHA256 = "f85a5443264fc58a12d136ca6a30774b5bc25ceaf7d114d97f252351b3c3a2cb"
+# curl -L https://github.com/tensorflow/tensorflow/archive/<TENSORFLOW_GIT_COMMIT>.tar.gz | shasum -a 256
+_TENSORFLOW_SHA256 = "9f76389af7a2835e68413322c1eaabfadc912f02a76d71dc16be507f9ca3d3ac"
 
 http_archive(
     name = "org_tensorflow",
@@ -458,7 +448,6 @@ http_archive(
         "@com_google_mediapipe//third_party:org_tensorflow_compatibility_fixes.diff",
         # Diff is generated with a script, don't update it manually.
         "@com_google_mediapipe//third_party:org_tensorflow_custom_ops.diff",
-        # "@//third_party:tensorflow_xnnpack_emscripten_fixes.diff",
     ],
     sha256 = _TENSORFLOW_SHA256,
     strip_prefix = "tensorflow-%s" % _TENSORFLOW_GIT_COMMIT,
@@ -496,8 +485,8 @@ cc_crosstool(name = "crosstool")
 # Node dependencies
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "5aae76dced38f784b58d9776e4ab12278bc156a9ed2b1d9fcd3e39921dc88fda",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.7.1/rules_nodejs-5.7.1.tar.gz"],
+    sha256 = "94070eff79305be05b7699207fbac5d2608054dd53e6109f7d00d923919ff45a",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.8.2/rules_nodejs-5.8.2.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:repositories.bzl", "build_bazel_rules_nodejs_dependencies")
@@ -550,23 +539,42 @@ load("@com_google_mediapipe//third_party:wasm_files.bzl", "wasm_files")
 
 wasm_files()
 
-http_archive(
-    name = "emsdk",
-    patch_args = [
-        "-p1",
-    ],
-    patches = [
-        "@//third_party:emsdk_bitcode_support.diff",
-    ],
-    sha256 = "8978a12172028542c1c4007745e5421cb018842ebf77dfc0f8555d1ae9b09234",
-    strip_prefix = "emsdk-8e7b714a0b2137caca4a212c003f4eb9b9ba9667/bazel",
-    url = "https://github.com/emscripten-core/emsdk/archive/8e7b714a0b2137caca4a212c003f4eb9b9ba9667.tar.gz",
+# Halide
+
+new_local_repository(
+    name = "halide",
+    build_file = "@com_google_mediapipe//third_party/halide:BUILD.bazel",
+    path = "third_party/halide",
 )
 
-load("@emsdk//:deps.bzl", emsdk_deps = "deps")
+http_archive(
+    name = "linux_halide",
+    build_file = "@com_google_mediapipe//third_party:halide.BUILD",
+    sha256 = "d290fadf3f358c94aacf43c883de6468bb98883e26116920afd491ec0e440cd2",
+    strip_prefix = "Halide-15.0.1-x86-64-linux",
+    urls = ["https://github.com/halide/Halide/releases/download/v15.0.1/Halide-15.0.1-x86-64-linux-4c63f1befa1063184c5982b11b6a2cc17d4e5815.tar.gz"],
+)
 
-emsdk_deps()
+http_archive(
+    name = "macos_x86_64_halide",
+    build_file = "@com_google_mediapipe//third_party:halide.BUILD",
+    sha256 = "48ff073ac1aee5c4aca941a4f043cac64b38ba236cdca12567e09d803594a61c",
+    strip_prefix = "Halide-15.0.1-x86-64-osx",
+    urls = ["https://github.com/halide/Halide/releases/download/v15.0.1/Halide-15.0.1-x86-64-osx-4c63f1befa1063184c5982b11b6a2cc17d4e5815.tar.gz"],
+)
 
-load("@emsdk//:emscripten_deps.bzl", emsdk_emscripten_deps = "emscripten_deps")
+http_archive(
+    name = "macos_arm_64_halide",
+    build_file = "@com_google_mediapipe//third_party:halide.BUILD",
+    sha256 = "db5d20d75fa7463490fcbc79c89f0abec9c23991f787c8e3e831fff411d5395c",
+    strip_prefix = "Halide-15.0.1-arm-64-osx",
+    urls = ["https://github.com/halide/Halide/releases/download/v15.0.1/Halide-15.0.1-arm-64-osx-4c63f1befa1063184c5982b11b6a2cc17d4e5815.tar.gz"],
+)
 
-emsdk_emscripten_deps(emscripten_version = "2.0.22")
+http_archive(
+    name = "windows_halide",
+    build_file = "@com_google_mediapipe//third_party:halide.BUILD",
+    sha256 = "61fd049bd75ee918ac6c30d0693aac6048f63f8d1fc4db31001573e58eae8dae",
+    strip_prefix = "Halide-15.0.1-x86-64-windows",
+    urls = ["https://github.com/halide/Halide/releases/download/v15.0.1/Halide-15.0.1-x86-64-windows-4c63f1befa1063184c5982b11b6a2cc17d4e5815.zip"],
+)
