@@ -1,88 +1,115 @@
 ARG UID=1000
+ARG ANDROID_SDK_BUILD_TOOLS_VERSION=30.0.3
 ARG ANDROID_SDK_VERSION=30
 ARG ANDROID_NDK_VERSION=21.4.7075529
 
-FROM archlinux:latest AS base
+FROM ubuntu:20.04 AS base
 
-ARG RANKMIRROS
-ARG MIRROR_COUNTRY=JP,US
-ARG MIRROR_COUNT=10
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Update mirrorlist
-RUN if [[ "${RANKMIRROS}" ]]; then \
-        pacman -Syu pacman-contrib --needed --noconfirm && \
-        { \
-            readarray -td, a <<< "${MIRROR_COUNTRY},"; \
-            declare -p a; unset 'a[-1]'; \
-            curl -s "https://archlinux.org/mirrorlist/?protocol=https$(printf "&country=%s" "${a[@]}")&use_mirror_status=on" | \
-            sed -e 's/^#Server/Server/' -e '/^#/d' | \
-            rankmirrors -n ${MIRROR_COUNT} - > /etc/pacman.d/mirrorlist; \
-        } && \
-        tee -a /etc/pacman.d/mirrorlist <<< 'Server = http://mirrors.evowise.com/archlinux/$repo/os/$arch' && \
-        tee -a /etc/pacman.d/mirrorlist <<< 'Server = http://mirror.rackspace.com/archlinux/$repo/os/$arch' && \
-        tee -a /etc/pacman.d/mirrorlist <<< 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch'; \
-    fi
-
-ARG UID
-
-# Create a privileged user
-RUN pacman -Sy archlinux-keyring --noconfirm && pacman -Syuu sudo --needed --noconfirm
-RUN echo -e "%wheel ALL=(ALL) NOPASSWD: ALL\n" > /etc/sudoers.d/01_wheel
-
-# Support systemd-homed
-RUN sed -r -i 's/^UID_MAX\s*[0-9]+/UID_MAX\t\t\t60513/' /etc/login.defs && \
-    sed -r -i 's/^GID_MAX\s*[0-9]+/GID_MAX\t\t\t60513/' /etc/login.defs
-
-RUN useradd -u ${UID} -m mediapipe && usermod -aG wheel mediapipe
-
-USER mediapipe
-WORKDIR /home/mediapipe
-
-# install yay
-RUN sudo pacman -Sy base-devel git glibc jdk11-openjdk unzip zip --needed --noconfirm
-RUN git clone https://aur.archlinux.org/yay.git
-RUN cd yay && makepkg -si --noconfirm
-RUN rm -rf yay
-
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        apt-transport-https \
+        build-essential \
+        ca-certificates \
+        clang \
+        curl \
+        dirmngr \
+        git \
+        gnupg \
+        libegl1-mesa-dev \
+        libgles2-mesa-dev \
+        mesa-common-dev \
+        nasm \
+        npm \
+        openjdk-11-jdk \
+        pkg-config \
+        software-properties-common \
+        sudo \
+        unzip \
+        zip
 
 FROM base AS android
 
-USER root
 WORKDIR /tmp
 
+ARG ANDROID_SDK_BUILD_TOOLS_VERSION
 ARG ANDROID_SDK_VERSION
 ARG ANDROID_NDK_VERSION
 
 ENV COMMANDLINETOOLS_ZIP commandlinetools.zip
-ENV COMMANDLINETOOLS_SHA256 87f6dcf41d4e642e37ba03cb2e387a542aa0bd73cb689a9e7152aad40a6e7a08
+ENV COMMANDLINETOOLS_SHA256 124f2d5115eee365df6cf3228ffbca6fc3911d16f8025bebd5b1c6e2fcfa7faf
 
-RUN curl -L https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip -o ${COMMANDLINETOOLS_ZIP} && \
-    (test "$(sha256sum ${COMMANDLINETOOLS_ZIP})" = "${COMMANDLINETOOLS_SHA256}  ${COMMANDLINETOOLS_ZIP}" || { echo 'Checksum Failed'; exit 1; })
-RUN sudo unzip ${COMMANDLINETOOLS_ZIP} -d /opt/android
-RUN yes | /opt/android/cmdline-tools/bin/sdkmanager --sdk_root=/opt/android --licenses
+
+RUN curl -L https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip -o ${COMMANDLINETOOLS_ZIP} && \
+    (test "$(sha256sum ${COMMANDLINETOOLS_ZIP})" = "${COMMANDLINETOOLS_SHA256}  ${COMMANDLINETOOLS_ZIP}" || { echo 'Checksum Failed'; exit 1; }) && \
+    unzip ${COMMANDLINETOOLS_ZIP} -d /opt/android
+
+RUN  yes | /opt/android/cmdline-tools/bin/sdkmanager --sdk_root=/opt/android --licenses
 RUN /opt/android/cmdline-tools/bin/sdkmanager --sdk_root=/opt/android --install \
-    "platforms;android-${ANDROID_SDK_VERSION}" \
-    "build-tools;30.0.3" \
-    "ndk;${ANDROID_NDK_VERSION}"
-RUN rm ${COMMANDLINETOOLS_ZIP}
+        "platforms;android-${ANDROID_SDK_VERSION}" \
+        "build-tools;${ANDROID_SDK_BUILD_TOOLS_VERSION}" \
+        "ndk;${ANDROID_NDK_VERSION}" && \
+    rm ${COMMANDLINETOOLS_ZIP}
 
 
 FROM base AS builder
 
+ARG UID
+WORKDIR /tmp
+
 # install Android SDK and NDK
 COPY --from=android /opt/android /opt/android
+
+# Setup Python
+RUN apt-get install -y --no-install-recommends python3.9 python3.9-dev python3.9-distutils && \
+    curl -L https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python3.9 get-pip.py && \
+    update-alternatives --install /usr/local/bin/python python /usr/bin/python3.9 10 && \
+    update-alternatives --install /usr/local/bin/pip pip /usr/local/bin/pip3.9 10
+
+# Install NuGet
+RUN gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
+    echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list && \
+    apt update
+
+####
+# NOTE
+#   At the moment (2021.12), the next step is very unstable in some country (https://github.com/mono/mono/issues/21273).
+#
+#   If you encounter 504 Timeout errors, insert RUN commands as follows and install those *.deb files forcefully (note `; exit 0` at the end).
+#
+#   # if failing to download libmono-system-reactive-providers2.2-cil_6.12.0.122-0xamarin1+ubuntu1804b1_all.deb...
+#   RUN curl -X GET https://download.mono-project.com/repo/ubuntu/pool/main/m/mono/libmono-system-reactive-providers2.2-cil_6.12.0.122-0xamarin1+ubuntu1804b1_all.deb -o libmono-system-reactive-providers2.2-cil_6.12.0.122-0xamarin1+ubuntu1804b1_all.deb && \
+#       dpkg -i libmono-system-reactive-providers2.2-cil_6.12.0.122-0xamarin1+ubuntu1804b1_all.deb ; exit 0
+#
+#   # Repeat if failing to download other files
+#   # RUN curl -X GET ... -o ... ; exit 0
+#
+#   RUN apt --fix-broken install -y
+
+RUN apt-get install -y --no-install-recommends mono-complete && \
+    curl -o /usr/local/bin/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe && \
+    bash -c 'echo -e "#!/bin/bash\nmono /usr/local/bin/nuget.exe \$@" | tee -a /usr/local/bin/nuget' && \
+    chmod +x /usr/local/bin/nuget
+
+# install Bazelisk
+RUN apt-get install -y --no-install-recommends npm && \
+    npm install -g @bazel/bazelisk
+
+# Create user
+RUN bash -c 'echo -e "%wheel ALL=(ALL) NOPASSWD: ALL\n" > /etc/sudoers.d/01_wheel'
+RUN addgroup wheel && useradd -u ${UID} -m mediapipe && usermod -aG wheel mediapipe
+
+USER mediapipe
+WORKDIR /home/mediapipe
 
 ENV NPM_PREFIX /home/mediapipe/.npm-packages
 ENV PATH ${NPM_PREFIX}/bin:/home/mediapipe/.local/bin:${PATH}
 
-# install Bazelisk
-RUN yay -Sy npm --needed --noconfirm && \
-    echo -e "prefix = ${NPM_PREFIX}\n" > /home/mediapipe/.npmrc && \
-    npm install -g @bazel/bazelisk
+# install numpy
+RUN pip install --no-cache-dir --user numpy
 
-# install other dependencies
-RUN yay -Sy mesa nuget python-pip --needed --noconfirm && \
-    pip install --user numpy
 
 FROM builder
 
@@ -90,6 +117,7 @@ ARG ANDROID_NDK_VERSION
 
 ENV ANDROID_HOME /opt/android
 ENV ANDROID_NDK_HOME /opt/android/ndk/${ANDROID_NDK_VERSION}
+ENV PYTHON_BIN_PATH /usr/bin/python3.9
 
 COPY packages.config .
 COPY .bazelrc .
