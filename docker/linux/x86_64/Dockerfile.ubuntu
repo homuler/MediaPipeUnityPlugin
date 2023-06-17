@@ -7,7 +7,7 @@ ARG ANDROID_SDK_BUILD_TOOLS_VERSION=30.0.3
 ARG ANDROID_SDK_VERSION=30
 ARG ANDROID_NDK_VERSION=21.4.7075529
 
-FROM ubuntu:18.04 AS base
+FROM ubuntu:20.04 AS base
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -19,8 +19,6 @@ RUN apt-get update && \
         clang \
         curl \
         dirmngr \
-        gcc-8 \
-        g++-8 \
         git \
         gnupg \
         libegl1-mesa-dev \
@@ -30,12 +28,11 @@ RUN apt-get update && \
         npm \
         openjdk-11-jdk \
         pkg-config \
+        python3.9 \
         software-properties-common \
         sudo \
         unzip \
-        zip && \
-    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 100 --slave /usr/bin/g++ g++ /usr/bin/g++-8
-
+        zip
 
 FROM base AS android
 
@@ -70,15 +67,15 @@ WORKDIR /tmp
 COPY --from=android /opt/android /opt/android
 
 # Setup Python
-RUN add-apt-repository -y ppa:deadsnakes/ppa && \
-    apt-get install -y --no-install-recommends python3.9-dev python3.9-distutils && \
-    curl -L https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+RUN curl -L https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
     python3.9 get-pip.py && \
-    ln -s /usr/bin/python3.9 /usr/local/bin/python
+    update-alternatives --install /usr/local/bin/python python /usr/bin/python3.9 10 && \
+    update-alternatives --install /usr/local/bin/pip pip /usr/bin/pip3.9 10
 
 # Install NuGet
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
-    apt-add-repository -y 'deb https://download.mono-project.com/repo/ubuntu stable-bionic main'
+RUN gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
+    echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list && \
+    apt update
 
 ####
 # NOTE
