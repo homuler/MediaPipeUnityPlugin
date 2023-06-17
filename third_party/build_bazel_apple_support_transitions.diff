@@ -1,0 +1,13 @@
+diff --git a/lib/transitions.bzl b/lib/transitions.bzl
+index f07e628..1e48a26 100644
+--- a/lib/transitions.bzl
++++ b/lib/transitions.bzl
+@@ -18,7 +18,7 @@ def _macos_universal_transition_impl(settings, _attr):
+     # Create a split transition from any macOS cpu to a list of all macOS cpus
+     if settings["//command_line_option:cpu"].startswith("darwin"):
+         return [
+-            {"//command_line_option:cpu": "darwin_x86_64"},
++            {"//command_line_option:cpu": "darwin"},
+             {"//command_line_option:cpu": "darwin_arm64"},
+         ]
+     else:
