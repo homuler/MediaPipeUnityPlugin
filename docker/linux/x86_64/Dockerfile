@@ -24,7 +24,6 @@ RUN apt-get update && \
         npm \
         openjdk-11-jdk \
         pkg-config \
-        python3.9 \
         software-properties-common \
         sudo \
         unzip \
@@ -63,10 +62,11 @@ WORKDIR /tmp
 COPY --from=android /opt/android /opt/android
 
 # Setup Python
-RUN curl -L https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+RUN apt-get install -y --no-install-recommends python3.9 python3.9-dev python3.9-distutils && \
+    curl -L https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
     python3.9 get-pip.py && \
     update-alternatives --install /usr/local/bin/python python /usr/bin/python3.9 10 && \
-    update-alternatives --install /usr/local/bin/pip pip /usr/bin/pip3.9 10
+    update-alternatives --install /usr/local/bin/pip pip /usr/local/bin/pip3.9 10
 
 # Install NuGet
 RUN gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
