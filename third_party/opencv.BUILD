@@ -51,11 +51,6 @@ selects.config_setting_group(
     match_any = [":cmake_static", ":cmake_dynamic"],
 )
 
-config_setting(
-    name = "dbg_build",
-    values = {"compilation_mode": "dbg"},
-)
-
 selects.config_setting_group(
     name = "cmake_dynamic_win",
     match_all = ["@bazel_tools//src/conditions:windows", ":cmake_dynamic"],
@@ -64,6 +59,16 @@ selects.config_setting_group(
 selects.config_setting_group(
     name = "cmake_static_win",
     match_all = ["@bazel_tools//src/conditions:windows", ":cmake_static"],
+)
+
+selects.config_setting_group(
+    name = "cmake_dynamic_darwin",
+    match_all = ["@bazel_tools//src/conditions:darwin", ":cmake_dynamic"],
+)
+
+config_setting(
+    name = "dbg_build",
+    values = {"compilation_mode": "dbg"},
 )
 
 selects.config_setting_group(
@@ -237,25 +242,25 @@ cmake(
     out_static_libs = select({
         ":cmake_dynamic": [],
         ":dbg_cmake_static_win": ["staticlib/opencv_world3416d.lib"],
-        "@bazel_tools//src/conditions:windows": ["staticlib/opencv_world3416.lib"],
+        ":cmake_static_win": ["staticlib/opencv_world3416.lib"],
         "//conditions:default": ["lib/libopencv_world.a"],
     }) + select({
         ":cmake_dynamic": [],
         ":dbg_cmake_static_win": ["staticlib/%sd.lib" % lib for lib in OPENCV_3RDPARTY_LIBS],
-        "@bazel_tools//src/conditions:windows": ["staticlib/%s.lib" % lib for lib in OPENCV_3RDPARTY_LIBS],
+        ":cmake_static_win": ["staticlib/%s.lib" % lib for lib in OPENCV_3RDPARTY_LIBS],
         "@cpuinfo//:macos_arm64": ["share/OpenCV/3rdparty/lib/lib%s.a" % lib for lib in OPENCV_3RDPARTY_LIBS_M1],
         "//conditions:default": ["share/OpenCV/3rdparty/lib/lib%s.a" % lib for lib in OPENCV_3RDPARTY_LIBS],
     }) + select({
         ":cmake_static": [],
         ":dbg_cmake_dynamic_win": ["lib/opencv_world3416d.lib"],
-        "@bazel_tools//src/conditions:windows": ["lib/opencv_world3416.lib"],
+        ":cmake_dynamic_win": ["lib/opencv_world3416.lib"],
         "//conditions:default": [],
     }),
     out_shared_libs =  select({
         ":cmake_static": [],
         ":dbg_cmake_dynamic_win": ["bin/opencv_world3416d.dll"],
-        "@bazel_tools//src/conditions:windows": ["bin/opencv_world3416.dll"],
-        "@bazel_tools//src/conditions:darwin": ["lib/libopencv_world.3.4.dylib"],
+        ":cmake_dynamic_win": ["bin/opencv_world3416.dll"],
+        ":cmake_dynamic_darwin": ["lib/libopencv_world.3.4.dylib"],
         "//conditions:default": ["lib/libopencv_world.so"],
     }),
     linkopts = select({
@@ -276,8 +281,8 @@ filegroup(
     name = "opencv_world_dll_from_source",
     srcs = select({
         ":cmake_static": [],
-        "@bazel_tools//src/conditions:windows": [":opencv_world_windows"],
-        "@bazel_tools//src/conditions:darwin": [":opencv_world_darwin"],
+        ":cmake_dynamic_win": [":opencv_world_windows"],
+        ":cmake_dynamic_darwin": [":opencv_world_darwin"],
         "//conditions:default": [":opencv_world_linux"],
     }),
 )
