@@ -65,7 +65,7 @@ jobs:
             --mount type=bind,src=$PWD/Packages,dst=/home/mediapipe/Packages \
             --mount type=bind,src=$PWD/Assets,dst=/home/mediapipe/Assets \
             mediapipe_unity:latest \
-            python build.py build --bazel_build_opts "${{ inputs.bazelBuildArgs }}" ${{ inputs.linuxBuildArgs }} -vv
+            python build.py build --bazel_build_opts="${{ inputs.bazelBuildArgs }}" ${{ inputs.linuxBuildArgs }} -vv
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
@@ -94,7 +94,7 @@ jobs:
             --mount type=bind,src=$PWD/Packages,dst=/home/mediapipe/Packages \
             --mount type=bind,src=$PWD/Assets,dst=/home/mediapipe/Assets \
             mediapipe_unity:latest \
-            python build.py build --bazel_build_opts "${{ inputs.bazelBuildArgs }}" ${{ inputs.androidBuildArgs }} -vv
+            python build.py build --bazel_build_opts="${{ inputs.bazelBuildArgs }}" ${{ inputs.androidBuildArgs }} -vv
 
       - name: Upload mediapipe_android.aar
         uses: actions/upload-artifact@v3
@@ -119,7 +119,7 @@ jobs:
       - name: Build libmediapipe_c.dylib
         run: |
           unset ANDROID_NDK_HOME
-          python build.py build --bazel_build_opts "${{ inputs.bazelBuildArgs }}" ${{ inputs.macosBuildArgs }} -vv
+          python build.py build --bazel_build_opts="${{ inputs.bazelBuildArgs }}" ${{ inputs.macosBuildArgs }} -vv
 
       - name: Upload libmediapipe_c.dylib
         uses: actions/upload-artifact@v3
@@ -141,11 +141,11 @@ jobs:
       - name: Install NumPy
         run: pip install --no-cache-dir --user numpy
 
-      - name: Build libmediapipe_c.dylib
+      - name: Build MediaPipeUnity.framework
         run: |
           unset ANDROID_NDK_HOME
           sed -i -e 's/PLEASE_SET_YOUR_BUNDLE_ID_HERE/com.github.homuler.mediapipe.unity/g' mediapipe_api/objc/BUILD
-          python build.py build --bazel_build_opts "${{ inputs.bazelBuildArgs }}" ${{ inputs.iosBuildArgs }} -vv
+          python build.py build --bazel_build_opts="${{ inputs.bazelBuildArgs }}" ${{ inputs.iosBuildArgs }} -vv
 
       - name: Upload MediaPipeUnity.framework
         uses: actions/upload-artifact@v3
@@ -172,7 +172,7 @@ jobs:
             --mount type=bind,src=%CD%\Packages,dst=C:\mediapipe\Packages ^
             --mount type=bind,src=%CD%\Assets,dst=C:\mediapipe\Assets ^
             mediapipe_unity:latest ^
-            python build.py build --bazel_build_opts "${{ inputs.bazelBuildArgs }}" ${{ inputs.windowsBuildArgs }} -vv
+            python build.py build --bazel_build_opts="${{ inputs.bazelBuildArgs }}" ${{ inputs.windowsBuildArgs }} -vv
         shell: cmd
 
       - name: Upload mediapipe_c.dll
