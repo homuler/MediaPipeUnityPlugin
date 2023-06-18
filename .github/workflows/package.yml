@@ -273,7 +273,6 @@ jobs:
       - name: Remove unused meta files
         run: |
           cd Packages/com.github.homuler.mediapipe/Runtime/Plugins
-          rm libmediapipe_c.bc.meta
           rm libopencv_world.*.meta
           rm opencv_world*.dll.meta
 
