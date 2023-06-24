@@ -20,22 +20,14 @@ string_flag(
     build_setting_default = "local",
     values = [
         "local",
-        "cmake_static",
-        "cmake_dynamic",
+        "cmake",
     ],
 )
 
 config_setting(
     name = "cmake_static",
     flag_values = {
-        ":switch": "cmake_static",
-    },
-)
-
-config_setting(
-    name = "cmake_dynamic",
-    flag_values = {
-        ":switch": "cmake_dynamic",
+        ":switch": "cmake",
     },
 )
 
@@ -47,33 +39,13 @@ config_setting(
 )
 
 selects.config_setting_group(
-    name = "source_build",
-    match_any = [":cmake_static", ":cmake_dynamic"],
-)
-
-selects.config_setting_group(
-    name = "cmake_dynamic_win",
-    match_all = ["@bazel_tools//src/conditions:windows", ":cmake_dynamic"],
-)
-
-selects.config_setting_group(
     name = "cmake_static_win",
     match_all = ["@bazel_tools//src/conditions:windows", ":cmake_static"],
-)
-
-selects.config_setting_group(
-    name = "cmake_dynamic_darwin",
-    match_all = ["@bazel_tools//src/conditions:darwin", ":cmake_dynamic"],
 )
 
 config_setting(
     name = "dbg_build",
     values = {"compilation_mode": "dbg"},
-)
-
-selects.config_setting_group(
-    name = "dbg_cmake_dynamic_win",
-    match_all = [":cmake_dynamic_win", ":dbg_build"],
 )
 
 selects.config_setting_group(
@@ -89,7 +61,7 @@ selects.config_setting_group(
 alias(
     name = "opencv",
     actual = select({
-        ":source_build": ":opencv_cmake",
+        ":cmake_static": ":opencv_cmake",
         "//conditions:default": ":opencv_binary",
     }),
 )
@@ -109,15 +81,6 @@ alias(
         "@com_google_mediapipe//mediapipe:windows": "@windows_opencv//:opencv",
         "@com_google_mediapipe//mediapipe:emscripten": "@wasm_opencv//:opencv",
         "//conditions:default": "@linux_opencv//:opencv",
-    }),
-)
-
-filegroup(
-    name = "opencv_world_dll",
-    srcs = select({
-        ":source_build": [":opencv_world_dll_from_source"],
-        ":local_build_win": ["@windows_opencv//:opencv_world_dll"],
-        "//conditions:default": [],
     }),
 )
 
@@ -179,13 +142,6 @@ COMMON_CACHE_ENTRIES = {
 }
 
 CACHE_ENTRIES = COMMON_CACHE_ENTRIES | select({
-    ":cmake_dynamic": { "BUILD_SHARED_LIBS": "ON" },
-    ":cmake_static": { "BUILD_SHARED_LIBS": "OFF" },
-}) | select({
-    ":cmake_dynamic_win": {
-        "CMAKE_CXX_FLAGS": "/std:c++14",
-        "WITH_LAPACK": "ON",
-    },
     ":cmake_static_win": {
         "CMAKE_CXX_FLAGS": "/std:c++14",
         # required to link to .dll statically
@@ -240,29 +196,16 @@ cmake(
         "//conditions:default": ".", # need to include lib/ and share/OpenCV/3rdparty/lib when building static libs
     }),
     out_static_libs = select({
-        ":cmake_dynamic": [],
         ":dbg_cmake_static_win": ["staticlib/opencv_world3416d.lib"],
         ":cmake_static_win": ["staticlib/opencv_world3416.lib"],
         "//conditions:default": ["lib/libopencv_world.a"],
     }) + select({
-        ":cmake_dynamic": [],
         ":dbg_cmake_static_win": ["staticlib/%sd.lib" % lib for lib in OPENCV_3RDPARTY_LIBS],
         ":cmake_static_win": ["staticlib/%s.lib" % lib for lib in OPENCV_3RDPARTY_LIBS],
         "@cpuinfo//:macos_arm64": ["share/OpenCV/3rdparty/lib/lib%s.a" % lib for lib in OPENCV_3RDPARTY_LIBS_M1],
         "//conditions:default": ["share/OpenCV/3rdparty/lib/lib%s.a" % lib for lib in OPENCV_3RDPARTY_LIBS],
-    }) + select({
-        ":cmake_static": [],
-        ":dbg_cmake_dynamic_win": ["lib/opencv_world3416d.lib"],
-        ":cmake_dynamic_win": ["lib/opencv_world3416.lib"],
-        "//conditions:default": [],
     }),
-    out_shared_libs =  select({
-        ":cmake_static": [],
-        ":dbg_cmake_dynamic_win": ["bin/opencv_world3416d.dll"],
-        ":cmake_dynamic_win": ["bin/opencv_world3416.dll"],
-        ":cmake_dynamic_darwin": ["lib/libopencv_world.3.4.dylib"],
-        "//conditions:default": ["lib/libopencv_world.so"],
-    }),
+    out_shared_libs =  [],
     linkopts = select({
         "@bazel_tools//src/conditions:windows": [],
         "//conditions:default": [
@@ -275,56 +218,4 @@ cmake(
         "@bazel_tools//src/conditions:darwin": [],
         "//conditions:default": ["-lrt"],
     }),
-)
-
-filegroup(
-    name = "opencv_world_dll_from_source",
-    srcs = select({
-        ":cmake_static": [],
-        ":cmake_dynamic_win": [":opencv_world_windows"],
-        ":cmake_dynamic_darwin": [":opencv_world_darwin"],
-        "//conditions:default": [":opencv_world_linux"],
-    }),
-)
-
-filegroup(
-    name = "opencv_gen_dir",
-    srcs = [":opencv_cmake"],
-    output_group = "gen_dir",
-)
-
-genrule(
-    name = "opencv_world_linux",
-    srcs = [":opencv_gen_dir"],
-    outs = ["libopencv_world.so"],
-    cmd = "cp $</lib/libopencv_world.so $(@D)",
-)
-
-genrule(
-    name = "opencv_world_darwin",
-    srcs = [":opencv_gen_dir"],
-    outs = ["libopencv_world.3.4.dylib"],
-    cmd = "cp $</lib/libopencv_world.3.4.dylib $(@D)",
-)
-
-filegroup(
-    name = "opencv_world_windows",
-    srcs = select({
-        ":dbg_build": [":opencv_world3416d_dll"],
-        "//conditions:default": [":opencv_world3416_dll"],
-    }),
-)
-
-genrule(
-    name = "opencv_world3416_dll",
-    srcs = [":opencv_gen_dir"],
-    outs = ["opencv_world3416.dll"],
-    cmd = "cp -f $</x64/vc16/bin/opencv_world3416.dll $(@D)",
-)
-
-genrule(
-    name = "opencv_world3416d_dll",
-    srcs = [":opencv_gen_dir"],
-    outs = ["opencv_world3416d.dll"],
-    cmd = "cp -f $</x64/vc16/bin/opencv_world3416d.dll $(@D)",
 )
