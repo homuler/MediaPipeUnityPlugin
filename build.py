@@ -242,8 +242,7 @@ class BuildCommand(Command):
     return ['--linkopt={}'.format(l) for l in self.command_args.linkopt]
 
   def _build_opencv_switch(self):
-    switch = 'cmake_static' if self.command_args.opencv == 'cmake' else self.command_args.opencv
-    commands = [f'--@opencv//:switch={switch}']
+    commands = [f'--@opencv//:switch={self.command_args.opencv}']
 
     return commands
 
@@ -432,7 +431,7 @@ class Argument:
     build_command_parser.add_argument('--resources', action=argparse.BooleanOptionalAction, default=True)
     build_command_parser.add_argument('--analyzers', action=argparse.BooleanOptionalAction, default=False, help='Install Roslyn Analyzers')
     build_command_parser.add_argument('--compilation_mode', '-c', choices=['fastbuild', 'opt', 'dbg'], default='opt')
-    build_command_parser.add_argument('--opencv', choices=['local', 'cmake', 'cmake_static', 'cmake_dynamic'], default='local', help='Decide to which OpenCV to link for Desktop native libraries')
+    build_command_parser.add_argument('--opencv', choices=['local', 'cmake'], default='local', help='Decide to which OpenCV to link for Desktop native libraries')
     build_command_parser.add_argument('--solutions', nargs='+',
         choices=['face_detection', 'face_mesh', 'iris', 'hands', 'pose', 'holistic', 'selfie_segmentation', 'hair_segmentation', 'object_detection'])
     build_command_parser.add_argument('--linkopt', '-l', action='append', help='Linker options')

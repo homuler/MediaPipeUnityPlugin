@@ -421,7 +421,6 @@ pkg_zip(
     name = "mediapipe_desktop",
     srcs = [
         ":libmediapipe_c",
-        "@opencv//:opencv_world_dll",
     ],
 )
 
