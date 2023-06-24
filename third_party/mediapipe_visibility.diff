@@ -13,10 +13,10 @@ index 4a8f0f59..2a911906 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/calculators/core/BUILD b/mediapipe/calculators/core/BUILD
-index df54c580..18cfe311 100644
+index d773bef3..bcfea2c9 100644
 --- a/mediapipe/calculators/core/BUILD
 +++ b/mediapipe/calculators/core/BUILD
-@@ -1377,3 +1377,9 @@ cc_test(
+@@ -1388,3 +1388,9 @@ cc_test(
          "@com_google_absl//absl/types:optional",
      ],
  )
@@ -27,10 +27,10 @@ index df54c580..18cfe311 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/calculators/image/BUILD b/mediapipe/calculators/image/BUILD
-index 9aae8cfb..c83714e6 100644
+index 20e5ebda..798391ad 100644
 --- a/mediapipe/calculators/image/BUILD
 +++ b/mediapipe/calculators/image/BUILD
-@@ -792,3 +792,9 @@ cc_library(
+@@ -824,3 +824,9 @@ cc_library(
      ],
      alwayslink = 1,
  )
@@ -41,10 +41,10 @@ index 9aae8cfb..c83714e6 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/calculators/tensor/BUILD b/mediapipe/calculators/tensor/BUILD
-index 69d66609..20fe1c60 100644
+index 2ad98f28..8066acec 100644
 --- a/mediapipe/calculators/tensor/BUILD
 +++ b/mediapipe/calculators/tensor/BUILD
-@@ -1359,3 +1359,9 @@ cc_test(
+@@ -1437,3 +1437,9 @@ cc_test(
          "@com_google_absl//absl/status",
      ],
  )
@@ -55,10 +55,10 @@ index 69d66609..20fe1c60 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/calculators/tflite/BUILD b/mediapipe/calculators/tflite/BUILD
-index db2a2763..6dd0cc79 100644
+index 333de206..cf0927a1 100644
 --- a/mediapipe/calculators/tflite/BUILD
 +++ b/mediapipe/calculators/tflite/BUILD
-@@ -551,3 +551,9 @@ cc_test(
+@@ -542,3 +542,9 @@ cc_test(
          "@org_tensorflow//tensorflow/lite:framework",
      ],
  )
@@ -69,11 +69,11 @@ index db2a2763..6dd0cc79 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/calculators/util/BUILD b/mediapipe/calculators/util/BUILD
-index a679a80f..14cab7d3 100644
+index 4c92e949..dd577b08 100644
 --- a/mediapipe/calculators/util/BUILD
 +++ b/mediapipe/calculators/util/BUILD
-@@ -1414,3 +1414,9 @@ cc_test(
-         "@com_google_absl//absl/strings",
+@@ -1565,3 +1565,9 @@ cc_test(
+         "@com_google_absl//absl/status",
      ],
  )
 +
@@ -83,10 +83,10 @@ index a679a80f..14cab7d3 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/calculators/video/BUILD b/mediapipe/calculators/video/BUILD
-index f2b8135f..25c503d1 100644
+index 7245b13c..c8d76930 100644
 --- a/mediapipe/calculators/video/BUILD
 +++ b/mediapipe/calculators/video/BUILD
-@@ -529,3 +529,9 @@ cc_test(
+@@ -468,3 +468,9 @@ cc_test(
          "//mediapipe/framework/port:status",
      ],
  )
@@ -97,10 +97,10 @@ index f2b8135f..25c503d1 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/framework/BUILD b/mediapipe/framework/BUILD
-index da8ef3b3..689257a8 100644
+index a7d9e0a6..2fd709f8 100644
 --- a/mediapipe/framework/BUILD
 +++ b/mediapipe/framework/BUILD
-@@ -1684,3 +1684,10 @@ cc_test(
+@@ -1697,3 +1697,10 @@ cc_test(
          "@com_google_absl//absl/strings:str_format",
      ],
  )
@@ -112,10 +112,10 @@ index da8ef3b3..689257a8 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/framework/formats/BUILD b/mediapipe/framework/formats/BUILD
-index 10aa3fca..68022af7 100644
+index b23209f7..eab9efcf 100644
 --- a/mediapipe/framework/formats/BUILD
 +++ b/mediapipe/framework/formats/BUILD
-@@ -312,6 +312,13 @@ mediapipe_register_type(
+@@ -320,6 +320,13 @@ mediapipe_register_type(
      deps = [":landmark_cc_proto"],
  )
  
@@ -130,10 +130,10 @@ index 10aa3fca..68022af7 100644
      name = "image",
      srcs = ["image.cc"],
 diff --git a/mediapipe/framework/formats/annotation/BUILD b/mediapipe/framework/formats/annotation/BUILD
-index 9bcb7bcc..ec795bd0 100644
+index cbbb2842..5431f28e 100644
 --- a/mediapipe/framework/formats/annotation/BUILD
 +++ b/mediapipe/framework/formats/annotation/BUILD
-@@ -30,4 +30,12 @@ mediapipe_proto_library(
+@@ -31,4 +31,12 @@ mediapipe_proto_library(
  mediapipe_proto_library(
      name = "rasterization_proto",
      srcs = ["rasterization.proto"],
@@ -147,10 +147,10 @@ index 9bcb7bcc..ec795bd0 100644
 +    visibility = ["//visibility:public"],
  )
 diff --git a/mediapipe/framework/formats/motion/BUILD b/mediapipe/framework/formats/motion/BUILD
-index c9bb8b4f..d359e394 100644
+index 919b8240..a9cd1c9a 100644
 --- a/mediapipe/framework/formats/motion/BUILD
 +++ b/mediapipe/framework/formats/motion/BUILD
-@@ -72,3 +72,9 @@ cc_test(
+@@ -66,3 +66,9 @@ cc_test(
          "@org_tensorflow//tensorflow/core:framework",
      ],
  )
@@ -161,12 +161,12 @@ index c9bb8b4f..d359e394 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/framework/formats/object_detection/BUILD b/mediapipe/framework/formats/object_detection/BUILD
-index 35292e1c..3071c516 100644
+index 703d5d77..a73795f1 100644
 --- a/mediapipe/framework/formats/object_detection/BUILD
 +++ b/mediapipe/framework/formats/object_detection/BUILD
-@@ -31,3 +31,9 @@ mediapipe_cc_proto_library(
+@@ -25,3 +25,9 @@ mediapipe_proto_library(
+     name = "anchor_proto",
      srcs = ["anchor.proto"],
-     deps = [":anchor_proto"],
  )
 +
 +filegroup(
@@ -175,11 +175,11 @@ index 35292e1c..3071c516 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/gpu/BUILD b/mediapipe/gpu/BUILD
-index 55e9c98c..1ea5f3c6 100644
+index ee32b91e..200434be 100644
 --- a/mediapipe/gpu/BUILD
 +++ b/mediapipe/gpu/BUILD
-@@ -1187,3 +1187,9 @@ mediapipe_cc_test(
-         "//mediapipe/framework/port:gtest_main",
+@@ -1210,3 +1210,9 @@ mediapipe_cc_test(
+         "//third_party/libyuv",
      ],
  )
 +
@@ -203,10 +203,10 @@ index 93af68c2..2ef17aff 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/graphs/iris_tracking/calculators/BUILD b/mediapipe/graphs/iris_tracking/calculators/BUILD
-index f5124b46..a11ef3ba 100644
+index 9ddce7f3..a9197a9f 100644
 --- a/mediapipe/graphs/iris_tracking/calculators/BUILD
 +++ b/mediapipe/graphs/iris_tracking/calculators/BUILD
-@@ -104,3 +104,9 @@ cc_library(
+@@ -84,3 +84,9 @@ cc_library(
      ],
      alwayslink = 1,
  )
@@ -231,10 +231,10 @@ index d4c5c496..2e0b92f8 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/java/com/google/mediapipe/components/BUILD b/mediapipe/java/com/google/mediapipe/components/BUILD
-index a1ec1754..012ae985 100644
+index 630bc94c..9fc0c487 100644
 --- a/mediapipe/java/com/google/mediapipe/components/BUILD
 +++ b/mediapipe/java/com/google/mediapipe/components/BUILD
-@@ -91,5 +91,5 @@ android_library(
+@@ -94,5 +94,5 @@ android_library(
  filegroup(
      name = "java_src",
      srcs = glob(["*.java"]),
@@ -320,10 +320,10 @@ index bc00b697..374b437e 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/modules/objectron/calculators/BUILD b/mediapipe/modules/objectron/calculators/BUILD
-index 14cea526..bd5a2807 100644
+index 2e33ebf6..76ed790e 100644
 --- a/mediapipe/modules/objectron/calculators/BUILD
 +++ b/mediapipe/modules/objectron/calculators/BUILD
-@@ -418,3 +418,9 @@ cc_test(
+@@ -419,3 +419,9 @@ cc_test(
          "@com_google_absl//absl/container:flat_hash_set",
      ],
  )
@@ -334,11 +334,11 @@ index 14cea526..bd5a2807 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
-index 55556955..ccb1d87b 100644
+index b9fe8b0c..695987ad 100644
 --- a/mediapipe/util/BUILD
 +++ b/mediapipe/util/BUILD
-@@ -387,3 +387,9 @@ cc_library(
-         "//mediapipe/framework/port:opencv_imgproc",
+@@ -427,3 +427,9 @@ cc_test(
+         "//mediapipe/framework/port:gtest_main",
      ],
  )
 +
@@ -348,10 +348,10 @@ index 55556955..ccb1d87b 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/util/tracking/BUILD b/mediapipe/util/tracking/BUILD
-index 816af253..6b9f583d 100644
+index 5a271ffa..70147493 100644
 --- a/mediapipe/util/tracking/BUILD
 +++ b/mediapipe/util/tracking/BUILD
-@@ -783,3 +783,9 @@ cc_library(
+@@ -654,3 +654,9 @@ cc_library(
          "@com_google_absl//absl/container:node_hash_map",
      ],
  )

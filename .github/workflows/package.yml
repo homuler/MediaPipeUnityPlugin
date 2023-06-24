@@ -141,6 +141,17 @@ jobs:
       - name: Install NumPy
         run: pip install --no-cache-dir --user numpy
 
+      - name: Build bazel to circumvent a compile error
+        run: |
+          mkdir bin
+          git clone https://github.com/bazelbuild/bazel.git --depth 1 --single-branch --branch  6.1.1
+          cd bazel
+          git apply ../third_party/bazel_ios_workaround.diff
+          bazel build --java_runtime_version=remotejdk_11 //src:bazel
+          cp bazel-bin/src/bazel ../bin
+          cd ..
+          echo "bin" >> $GITHUB_PATH
+
       - name: Build MediaPipeUnity.framework
         run: |
           unset ANDROID_NDK_HOME
@@ -260,7 +271,6 @@ jobs:
       - name: Remove unused meta files
         run: |
           cd Packages/com.github.homuler.mediapipe/Runtime/Plugins
-          rm libmediapipe_c.bc.meta
           rm libopencv_world.*.meta
           rm opencv_world*.dll.meta
 

@@ -1,5 +1,5 @@
 diff --git a/mediapipe/calculators/tensor/tensors_to_classification_calculator.cc b/mediapipe/calculators/tensor/tensors_to_classification_calculator.cc
-index 5bfc00ed..d0c0ef9b 100644
+index 7041c02e..b002c962 100644
 --- a/mediapipe/calculators/tensor/tensors_to_classification_calculator.cc
 +++ b/mediapipe/calculators/tensor/tensors_to_classification_calculator.cc
 @@ -26,7 +26,7 @@
@@ -12,7 +12,7 @@ index 5bfc00ed..d0c0ef9b 100644
  #include "mediapipe/util/android/file/base/helpers.h"
  #else
 diff --git a/mediapipe/calculators/tensorflow/tensorflow_session_from_frozen_graph_calculator.cc b/mediapipe/calculators/tensorflow/tensorflow_session_from_frozen_graph_calculator.cc
-index 1d6b9417..1f544944 100644
+index 1bb2c41f..a9b70a04 100644
 --- a/mediapipe/calculators/tensorflow/tensorflow_session_from_frozen_graph_calculator.cc
 +++ b/mediapipe/calculators/tensorflow/tensorflow_session_from_frozen_graph_calculator.cc
 @@ -36,7 +36,7 @@
@@ -38,7 +38,7 @@ index 4d28b91e..b3bfb573 100644
  #include "mediapipe/util/android/file/base/helpers.h"
  #else
 diff --git a/mediapipe/calculators/util/detection_label_id_to_text_calculator.cc b/mediapipe/calculators/util/detection_label_id_to_text_calculator.cc
-index 0b8dde20..0b2e8aaf 100644
+index 0c1d6892..eeef4e83 100644
 --- a/mediapipe/calculators/util/detection_label_id_to_text_calculator.cc
 +++ b/mediapipe/calculators/util/detection_label_id_to_text_calculator.cc
 @@ -22,7 +22,7 @@
@@ -115,7 +115,7 @@ index d4c5c496..aa4de6e6 100644
      alwayslink = 1,
  )
 diff --git a/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc b/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
-index 3a77e983..946bc739 100644
+index a92020ff..29c39a95 100644
 --- a/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
 +++ b/mediapipe/graphs/object_detection_3d/calculators/gl_animation_overlay_calculator.cc
 @@ -12,12 +12,8 @@
@@ -336,10 +336,10 @@ index 3a77e983..946bc739 100644
      LOG(ERROR) << "Failed to load animation asset.";
      return absl::UnknownError("Failed to load animation asset.");
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
-index 55556955..966cf56e 100644
+index b9fe8b0c..b591e06f 100644
 --- a/mediapipe/util/BUILD
 +++ b/mediapipe/util/BUILD
-@@ -176,13 +176,8 @@ cc_library(
+@@ -188,14 +188,8 @@ cc_library(
      srcs = [
          "resource_util.cc",
          "resource_util_internal.h",
@@ -349,16 +349,18 @@ index 55556955..966cf56e 100644
 -        "//mediapipe/framework:android_no_jni": ["resource_util_loonix.cc"],
 -        "//mediapipe:ios": ["resource_util_apple.cc"],
 -        "//mediapipe:macos": ["resource_util_default.cc"],
+-        "//mediapipe:windows": ["resource_util_windows.cc"],
 -    }),
 +        "resource_util_unity.cc",
 +    ],
      hdrs = [
          "resource_util.h",
      ],
-@@ -207,20 +202,7 @@ cc_library(
+@@ -219,25 +213,7 @@ cc_library(
+         "//mediapipe/framework/port:status",
          "//mediapipe/framework/port:statusor",
-         "//mediapipe/framework/port:file_helpers",
          "@com_google_absl//absl/strings",
+-        "@com_google_absl//absl/strings:str_format",
 -    ] + select({
 -        "//conditions:default": [
 -            "@com_google_absl//absl/flags:flag",
@@ -370,6 +372,10 @@ index 55556955..966cf56e 100644
 -        "//mediapipe/framework:android_no_jni": [],
 -        "//mediapipe:ios": [],
 -        "//mediapipe:macos": [
+-            "@com_google_absl//absl/flags:flag",
+-        ],
+-        "//mediapipe:windows": [
+-            "@bazel_tools//tools/cpp/runfiles",
 -            "@com_google_absl//absl/flags:flag",
 -        ],
 -    }),

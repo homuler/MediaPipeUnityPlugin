@@ -1,0 +1,13 @@
+diff --git a/src/main/java/com/google/devtools/build/lib/analysis/config/ExecutionTransitionFactory.java b/src/main/java/com/google/devtools/build/lib/analysis/config/ExecutionTransitionFactory.java
+index a4559c333d..ca8c15148f 100644
+--- a/src/main/java/com/google/devtools/build/lib/analysis/config/ExecutionTransitionFactory.java
++++ b/src/main/java/com/google/devtools/build/lib/analysis/config/ExecutionTransitionFactory.java
+@@ -126,7 +126,7 @@ public class ExecutionTransitionFactory
+ 
+       // Then unset isHost.
+       CoreOptions coreOptions = checkNotNull(execOptions.get(CoreOptions.class));
+-      coreOptions.isHost = false;
++      coreOptions.isHost = true;
+       coreOptions.isExec = true;
+       // Disable extra actions
+       coreOptions.actionListeners = ImmutableList.of();

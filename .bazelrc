@@ -102,3 +102,9 @@ build:wasm --cpu=wasm
 build:wasm --host_crosstool_top=@bazel_tools//tools/cpp:toolchain
 build:wasm --copt=-emit-llvm
 build:wasm --cxxopt=-emit-llvm
+
+# This bazelrc file is meant to be written by a setup script.
+try-import %workspace%/.configure.bazelrc
+
+# This bazelrc file can be used for user-specific custom build settings.
+try-import %workspace%/.user.bazelrc

@@ -97,27 +97,6 @@ config_setting(
     },
 )
 
-config_setting(
-    name = "box_tracking_switch",
-    flag_values = {
-        ":solutions": "box_tracking",
-    },
-)
-
-config_setting(
-    name = "instant_motion_tracking_switch",
-    flag_values = {
-        ":solutions": "instant_motion_tracking",
-    },
-)
-
-config_setting(
-    name = "objectron_switch",
-    flag_values = {
-        ":solutions": "objectron",
-    },
-)
-
 selects.config_setting_group(
     name = "enable_face_detection",
     match_any = [":all_solutions_switch", ":face_detection_switch"],
@@ -163,21 +142,6 @@ selects.config_setting_group(
     match_any = [":all_solutions_switch", ":object_detection_switch"],
 )
 
-selects.config_setting_group(
-    name = "enable_box_tracking",
-    match_any = [":all_solutions_switch", ":box_tracking_switch"],
-)
-
-selects.config_setting_group(
-    name = "enable_instant_motion_tracking",
-    match_any = [":all_solutions_switch", ":instant_motion_tracking_switch"],
-)
-
-selects.config_setting_group(
-    name = "enable_objectron",
-    match_any = [":all_solutions_switch", ":objectron_switch"],
-)
-
 cc_library(
     name = "mediapipe_c",
     visibility = ["//visibility:public"],
@@ -198,10 +162,7 @@ cc_library(
         "//mediapipe_api/framework/formats:matrix_data",
         "//mediapipe_api/framework/formats:rect",
         "//mediapipe_api/framework/port:logging",
-        "//mediapipe_api/graphs/object_detection_3d/calculators:model_matrix",
-        "//mediapipe_api/graphs/instant_motion_tracking/calculators:transformations",
         "//mediapipe_api/modules/face_geometry/protos:face_geometry",
-        "//mediapipe_api/modules/objectron/calculators:annotation",
         "//mediapipe_api/util:resource_util",
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [],
@@ -338,15 +299,6 @@ cc_library(
     }) + select({
         ":enable_object_detection": [":object_detection_calculators"],
         "//conditions:default": [],
-    }) + select({
-        ":enable_box_tracking": [":box_tracking_calculators"],
-        "//conditions:default": [],
-    }) + select({
-        ":enable_instant_motion_tracking": [":instant_motion_tracking_calculators"],
-        "//conditions:default": [],
-    }) + select({
-        ":enable_objectron": [":objectron_calculators"],
-        "//conditions:default": [],
     }),
 )
 
@@ -465,42 +417,6 @@ cc_library(
     }),
 )
 
-cc_library(
-    name = "box_tracking_calculators",
-    deps = select({
-        "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [
-            "@com_google_mediapipe//mediapipe/graphs/tracking:desktop_calculators",
-        ],
-        "//conditions:default": [
-            "@com_google_mediapipe//mediapipe/graphs/tracking:mobile_calculators",
-        ],
-    }),
-)
-
-cc_library(
-    name = "instant_motion_tracking_calculators",
-    deps = select({
-        "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [
-            "//mediapipe_api/graphs/instant_motion_tracking/subgraphs:region_tracking_cpu",
-        ],
-        "//conditions:default": [
-            "@com_google_mediapipe//mediapipe/graphs/instant_motion_tracking:instant_motion_tracking_deps",
-        ],
-    }),
-)
-
-cc_library(
-    name = "objectron_calculators",
-    deps = select({
-        "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [
-            "@com_google_mediapipe//mediapipe/graphs/object_detection_3d:desktop_cpu_calculators",
-        ],
-        "//conditions:default": [
-            "@com_google_mediapipe//mediapipe/graphs/object_detection_3d:mobile_calculators",
-        ],
-    }),
-)
-
 pkg_zip(
     name = "mediapipe_desktop",
     srcs = [
@@ -541,15 +457,6 @@ pkg_asset(
         "//conditions:default": [],
     }) + select({
         ":enable_object_detection": [":object_detection_assets"],
-        "//conditions:default": [],
-    }) + select({
-        ":enable_box_tracking": [":box_tracking_assets"],
-        "//conditions:default": [],
-    }) + select({
-        ":enable_instant_motion_tracking": [":instant_motion_tracking_assets"],
-        "//conditions:default": [],
-    }) + select({
-        ":enable_objectron": [":objectron_assets"],
         "//conditions:default": [],
     }),
 )
@@ -628,35 +535,6 @@ filegroup(
     ],
 )
 
-filegroup(
-    name = "box_tracking_assets",
-    srcs = [
-        "@com_google_mediapipe//mediapipe/models:ssdlite_object_detection.tflite",
-        "@com_google_mediapipe//mediapipe/models:ssdlite_object_detection_labelmap.txt",
-    ],
-)
-
-filegroup(
-    name = "instant_motion_tracking_assets",
-    srcs = [
-        "@com_google_mediapipe//mediapipe/models:ssdlite_object_detection.tflite",
-    ],
-)
-
-filegroup(
-    name = "objectron_assets",
-    srcs = [
-        "@com_google_mediapipe//mediapipe/modules/objectron:object_detection_3d_camera.tflite",
-        "@com_google_mediapipe//mediapipe/modules/objectron:object_detection_3d_chair.tflite",
-        "@com_google_mediapipe//mediapipe/modules/objectron:object_detection_3d_chair_1stage.tflite",
-        "@com_google_mediapipe//mediapipe/modules/objectron:object_detection_3d_cup.tflite",
-        "@com_google_mediapipe//mediapipe/modules/objectron:object_detection_3d_sneakers.tflite",
-        "@com_google_mediapipe//mediapipe/modules/objectron:object_detection_3d_sneakers_1stage.tflite",
-        "@com_google_mediapipe//mediapipe/modules/objectron:object_detection_oidv4_labelmap.txt",
-        "@com_google_mediapipe//mediapipe/modules/objectron:object_detection_ssd_mobilenetv2_oidv4_fp16.tflite",
-    ],
-)
-
 pkg_zip(
     name = "mediapipe_proto_srcs",
     srcs = [
@@ -673,13 +551,10 @@ pkg_zip(
         "//mediapipe_api/framework/formats/motion:proto_srcs",
         "//mediapipe_api/framework/formats/object_detection:proto_srcs",
         "//mediapipe_api/gpu:proto_srcs",
-        "//mediapipe_api/graphs/instant_motion_tracking/calculators:proto_srcs",
-        "//mediapipe_api/graphs/object_detection_3d/calculators:proto_srcs",
         "//mediapipe_api/modules/face_detection:proto_srcs",
         "//mediapipe_api/modules/face_geometry:proto_srcs",
         "//mediapipe_api/modules/face_geometry/protos:proto_srcs",
         "//mediapipe_api/modules/holistic_landmark/calculators:proto_srcs",
-        "//mediapipe_api/modules/objectron/calculators:proto_srcs",
         "//mediapipe_api/util:proto_srcs",
         "//mediapipe_api/util/tracking:proto_srcs",
     ],
