@@ -144,9 +144,8 @@ jobs:
       - name: Build bazel to circumvent a compile error
         run: |
           mkdir bin
-          git clone https://github.com/bazelbuild/bazel.git
+          git clone https://github.com/bazelbuild/bazel.git --depth 1 --single-branch --branch  6.1.1
           cd bazel
-          git checkout 6.1.1
           git apply ../third_party/bazel_ios_workaround.diff
           bazel build --java_runtime_version=remotejdk_11 //src:bazel
           cp bazel-bin/src/bazel ../bin
