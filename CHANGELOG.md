@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.12.0](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.11.0...v0.12.0) (2023-06-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* MediaPipe 0.10.1 (#924)
+* use Ubuntu 20.04 as the base image (#921)
+
+### Bug Fixes
+
+* include MediaPipeUnity.framework in unitypackage ([#882](https://github.com/homuler/MediaPipeUnityPlugin/issues/882)) ([7c43b75](https://github.com/homuler/MediaPipeUnityPlugin/commit/7c43b75f693d5f3a63056848f0a66e861d908809))
+
+
+### build
+
+* MediaPipe 0.10.1 ([#924](https://github.com/homuler/MediaPipeUnityPlugin/issues/924)) ([9d5c618](https://github.com/homuler/MediaPipeUnityPlugin/commit/9d5c61805ef4dabfe06f876643acab9900cc9f46))
+* use Ubuntu 20.04 as the base image ([#921](https://github.com/homuler/MediaPipeUnityPlugin/issues/921)) ([f08fd92](https://github.com/homuler/MediaPipeUnityPlugin/commit/f08fd926a962e1b04f2bd30be84f79bdab224db9))
+
 ## [0.11.0](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.10.3...v0.11.0) (2023-03-03)
 
 
