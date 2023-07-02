@@ -137,7 +137,7 @@ namespace Mediapipe.Unity
 
     public abstract void StartRun(ImageSource imageSource);
 
-    protected void StartRun(SidePacket sidePacket)
+    protected void StartRun(PacketMap sidePacket)
     {
       calculatorGraph.StartRun(sidePacket).AssertOk();
       _isRunning = true;
@@ -262,7 +262,7 @@ namespace Mediapipe.Unity
       return calculatorGraph.Initialize(config);
     }
 
-    protected void SetImageTransformationOptions(SidePacket sidePacket, ImageSource imageSource, bool expectedToBeMirrored = false)
+    protected void SetImageTransformationOptions(PacketMap sidePacket, ImageSource imageSource, bool expectedToBeMirrored = false)
     {
       // NOTE: The origin is left-bottom corner in Unity, and right-top corner in MediaPipe.
       rotation = imageSource.rotation.Reverse();

@@ -229,9 +229,9 @@ namespace Mediapipe.Unity.HandTracking
       }
     }
 
-    private SidePacket BuildSidePacket(ImageSource imageSource)
+    private PacketMap BuildSidePacket(ImageSource imageSource)
     {
-      var sidePacket = new SidePacket();
+      var sidePacket = new PacketMap();
 
       SetImageTransformationOptions(sidePacket, imageSource, true);
       sidePacket.Emplace("model_complexity", new IntPacket((int)modelComplexity));

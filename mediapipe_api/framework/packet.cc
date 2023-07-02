@@ -273,26 +273,26 @@ MpReturnCode mp_Packet__ValidateAsString(mediapipe::Packet* packet, absl::Status
   CATCH_EXCEPTION
 }
 
-/** SidePacket */
-MpReturnCode mp_SidePacket__(SidePacket** side_packet_out) {
+/** PacketMap */
+MpReturnCode mp_PacketMap__(PacketMap** packet_map_out) {
   TRY
-    *side_packet_out = new SidePacket();
+    *packet_map_out = new PacketMap();
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }
 
-void mp_SidePacket__delete(SidePacket* side_packet) { delete side_packet; }
+void mp_PacketMap__delete(PacketMap* packet_map) { delete packet_map; }
 
-MpReturnCode mp_SidePacket__emplace__PKc_Rp(SidePacket* side_packet, const char* key, mediapipe::Packet* packet) {
+MpReturnCode mp_PacketMap__emplace__PKc_Rp(PacketMap* packet_map, const char* key, mediapipe::Packet* packet) {
   TRY
-    side_packet->emplace(std::string(key), std::move(*packet));
+    packet_map->emplace(std::string(key), std::move(*packet));
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }
 
-MpReturnCode mp_SidePacket__at__PKc(SidePacket* side_packet, const char* key, mediapipe::Packet** packet_out) {
+MpReturnCode mp_PacketMap__at__PKc(PacketMap* packet_map, const char* key, mediapipe::Packet** packet_out) {
   TRY
-    auto packet = side_packet->at(std::string(key));
+    auto packet = packet_map->at(std::string(key));
     // copy
     *packet_out = new mediapipe::Packet{packet};
     RETURN_CODE(MpReturnCode::Success);
@@ -304,13 +304,13 @@ MpReturnCode mp_SidePacket__at__PKc(SidePacket* side_packet, const char* key, me
   CATCH_EXCEPTION
 }
 
-MpReturnCode mp_SidePacket__erase__PKc(SidePacket* side_packet, const char* key, int* count_out) {
+MpReturnCode mp_PacketMap__erase__PKc(PacketMap* packet_map, const char* key, int* count_out) {
   TRY
-    *count_out = side_packet->erase(std::string(key));
+    *count_out = packet_map->erase(std::string(key));
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }
 
-void mp_SidePacket__clear(SidePacket* side_packet) { side_packet->clear(); }
+void mp_PacketMap__clear(PacketMap* packet_map) { packet_map->clear(); }
 
-int mp_SidePacket__size(SidePacket* side_packet) { return side_packet->size(); }
+int mp_PacketMap__size(PacketMap* packet_map) { return packet_map->size(); }

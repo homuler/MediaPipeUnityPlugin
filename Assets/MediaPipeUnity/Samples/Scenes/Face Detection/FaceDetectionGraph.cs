@@ -104,9 +104,9 @@ namespace Mediapipe.Unity.FaceDetection
       }
     }
 
-    private SidePacket BuildSidePacket(ImageSource imageSource)
+    private PacketMap BuildSidePacket(ImageSource imageSource)
     {
-      var sidePacket = new SidePacket();
+      var sidePacket = new PacketMap();
 
       SetImageTransformationOptions(sidePacket, imageSource);
       sidePacket.Emplace("model_type", new IntPacket((int)modelType));

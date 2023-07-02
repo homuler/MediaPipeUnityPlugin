@@ -99,7 +99,7 @@ output_stream: ""out""
     [Test]
     public void Initialize_ShouldReturnOk_When_CalledWithConfigAndSidePacket_And_ConfigIsNotSet()
     {
-      using (var sidePacket = new SidePacket())
+      using (var sidePacket = new PacketMap())
       {
         sidePacket.Emplace("flag", new BoolPacket(true));
 
@@ -118,7 +118,7 @@ output_stream: ""out""
     [Test]
     public void Initialize_ShouldReturnInternalError_When_CalledWithConfigAndSidePacket_And_ConfigIsSet()
     {
-      using (var sidePacket = new SidePacket())
+      using (var sidePacket = new PacketMap())
       {
         sidePacket.Emplace("flag", new BoolPacket(true));
 

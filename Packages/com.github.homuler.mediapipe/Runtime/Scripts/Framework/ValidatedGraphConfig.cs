@@ -126,7 +126,7 @@ namespace Mediapipe
       return SafeNativeMethods.mp_ValidatedGraphConfig__Initialized(mpPtr);
     }
 
-    public Status ValidateRequiredSidePackets(SidePacket sidePacket)
+    public Status ValidateRequiredSidePackets(PacketMap sidePacket)
     {
       UnsafeNativeMethods.mp_ValidatedGraphConfig__ValidateRequiredSidePackets__Rsp(mpPtr, sidePacket.mpPtr, out var statusPtr).Assert();
 

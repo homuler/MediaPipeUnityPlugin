@@ -133,21 +133,21 @@ namespace Mediapipe
     public static extern MpReturnCode mp_Packet__ValidateAsString(IntPtr packet, out IntPtr status);
     #endregion
 
-    #region SidePacket
+    #region PacketMap
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_SidePacket__(out IntPtr sidePacket);
+    public static extern MpReturnCode mp_PacketMap__(out IntPtr packetMap);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern void mp_SidePacket__delete(IntPtr sidePacket);
+    public static extern void mp_PacketMap__delete(IntPtr packetMap);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_SidePacket__emplace__PKc_Rp(IntPtr sidePacket, string key, IntPtr packet);
+    public static extern MpReturnCode mp_PacketMap__emplace__PKc_Rp(IntPtr packetMap, string key, IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_SidePacket__at__PKc(IntPtr sidePacket, string key, out IntPtr packet);
+    public static extern MpReturnCode mp_PacketMap__at__PKc(IntPtr packetMap, string key, out IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_SidePacket__erase__PKc(IntPtr sidePacket, string key, out int count);
+    public static extern MpReturnCode mp_PacketMap__erase__PKc(IntPtr packetMap, string key, out int count);
     #endregion
   }
 }
