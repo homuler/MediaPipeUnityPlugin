@@ -16,6 +16,9 @@ namespace Mediapipe
       this.ptr = ptr;
     }
 
+    // TODO: make this constructor internal
+    public PacketMap(IntPtr ptr, bool isOwner) : base(ptr, isOwner) { }
+
     protected override void DeleteMpPtr()
     {
       UnsafeNativeMethods.mp_PacketMap__delete(ptr);

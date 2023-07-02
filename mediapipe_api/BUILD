@@ -163,6 +163,7 @@ cc_library(
         "//mediapipe_api/framework/formats:rect",
         "//mediapipe_api/framework/port:logging",
         "//mediapipe_api/modules/face_geometry/protos:face_geometry",
+        "//mediapipe_api/tasks/cc/core:task_runner",
         "//mediapipe_api/util:resource_util",
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [],
