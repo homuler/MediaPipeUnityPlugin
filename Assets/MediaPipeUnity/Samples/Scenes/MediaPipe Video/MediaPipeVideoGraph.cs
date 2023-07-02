@@ -109,9 +109,9 @@ namespace Mediapipe.Unity.MediaPipeVideo
       };
     }
 
-    private SidePacket BuildSidePacket(ImageSource imageSource)
+    private PacketMap BuildSidePacket(ImageSource imageSource)
     {
-      var sidePacket = new SidePacket();
+      var sidePacket = new PacketMap();
 
       SetImageTransformationOptions(sidePacket, imageSource, true);
       sidePacket.Emplace("output_rotation", new IntPacket((int)imageSource.rotation));

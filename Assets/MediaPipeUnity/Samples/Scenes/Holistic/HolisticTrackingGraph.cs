@@ -265,9 +265,9 @@ namespace Mediapipe.Unity.Holistic
       }
     }
 
-    private SidePacket BuildSidePacket(ImageSource imageSource)
+    private PacketMap BuildSidePacket(ImageSource imageSource)
     {
-      var sidePacket = new SidePacket();
+      var sidePacket = new PacketMap();
 
       SetImageTransformationOptions(sidePacket, imageSource);
 

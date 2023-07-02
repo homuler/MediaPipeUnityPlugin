@@ -180,9 +180,9 @@ namespace Mediapipe.Unity.FaceMesh
       };
     }
 
-    private SidePacket BuildSidePacket(ImageSource imageSource)
+    private PacketMap BuildSidePacket(ImageSource imageSource)
     {
-      var sidePacket = new SidePacket();
+      var sidePacket = new PacketMap();
 
       SetImageTransformationOptions(sidePacket, imageSource);
       sidePacket.Emplace("num_faces", new IntPacket(maxNumFaces));

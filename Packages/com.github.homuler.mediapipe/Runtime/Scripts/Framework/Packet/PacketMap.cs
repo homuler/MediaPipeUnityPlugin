@@ -8,20 +8,23 @@ using System;
 
 namespace Mediapipe
 {
-  public class SidePacket : MpResourceHandle
+  public class PacketMap : MpResourceHandle
   {
-    public SidePacket() : base()
+    public PacketMap() : base()
     {
-      UnsafeNativeMethods.mp_SidePacket__(out var ptr).Assert();
+      UnsafeNativeMethods.mp_PacketMap__(out var ptr).Assert();
       this.ptr = ptr;
     }
 
+    // TODO: make this constructor internal
+    public PacketMap(IntPtr ptr, bool isOwner) : base(ptr, isOwner) { }
+
     protected override void DeleteMpPtr()
     {
-      UnsafeNativeMethods.mp_SidePacket__delete(ptr);
+      UnsafeNativeMethods.mp_PacketMap__delete(ptr);
     }
 
-    public int size => SafeNativeMethods.mp_SidePacket__size(mpPtr);
+    public int size => SafeNativeMethods.mp_PacketMap__size(mpPtr);
 
     /// <remarks>
     ///   This method cannot verify that the packet type corresponding to the <paramref name="key" /> is indeed a <typeparamref name="TPacket" />,
@@ -29,7 +32,7 @@ namespace Mediapipe
     /// </remarks>
     public TPacket At<TPacket, TValue>(string key) where TPacket : Packet<TValue>, new()
     {
-      UnsafeNativeMethods.mp_SidePacket__at__PKc(mpPtr, key, out var packetPtr).Assert();
+      UnsafeNativeMethods.mp_PacketMap__at__PKc(mpPtr, key, out var packetPtr).Assert();
 
       if (packetPtr == IntPtr.Zero)
       {
@@ -41,14 +44,14 @@ namespace Mediapipe
 
     public void Emplace<T>(string key, Packet<T> packet)
     {
-      UnsafeNativeMethods.mp_SidePacket__emplace__PKc_Rp(mpPtr, key, packet.mpPtr).Assert();
+      UnsafeNativeMethods.mp_PacketMap__emplace__PKc_Rp(mpPtr, key, packet.mpPtr).Assert();
       packet.Dispose(); // respect move semantics
       GC.KeepAlive(this);
     }
 
     public int Erase(string key)
     {
-      UnsafeNativeMethods.mp_SidePacket__erase__PKc(mpPtr, key, out var count).Assert();
+      UnsafeNativeMethods.mp_PacketMap__erase__PKc(mpPtr, key, out var count).Assert();
 
       GC.KeepAlive(this);
       return count;
@@ -56,7 +59,7 @@ namespace Mediapipe
 
     public void Clear()
     {
-      SafeNativeMethods.mp_SidePacket__clear(mpPtr);
+      SafeNativeMethods.mp_PacketMap__clear(mpPtr);
     }
   }
 }
