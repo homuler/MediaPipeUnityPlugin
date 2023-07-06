@@ -8,6 +8,11 @@ using NUnit.Framework;
 
 namespace Mediapipe.Tests
 {
+
+#if UNITY_EDITOR_OSX || UNITY_EDITOR_WIN
+  [Ignore("This test class requires enviroment to support GPU. Currently no GPU support in OSX or Windows.")]
+#endif
+
   public class GlTextureTest
   {
     #region Constructor
