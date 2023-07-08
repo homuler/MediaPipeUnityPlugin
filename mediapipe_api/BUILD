@@ -555,6 +555,7 @@ pkg_zip(
         "//mediapipe_api/modules/face_geometry:proto_srcs",
         "//mediapipe_api/modules/face_geometry/protos:proto_srcs",
         "//mediapipe_api/modules/holistic_landmark/calculators:proto_srcs",
+        "//mediapipe_api/tasks/cc/core/proto:proto_srcs",
         "//mediapipe_api/util:proto_srcs",
         "//mediapipe_api/util/tracking:proto_srcs",
     ],

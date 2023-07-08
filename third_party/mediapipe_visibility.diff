@@ -346,6 +346,20 @@ index dad9cdf1..aeaed482 100644
  
  licenses(["notice"])
  
+diff --git a/mediapipe/tasks/cc/core/proto/BUILD b/mediapipe/tasks/cc/core/proto/BUILD
+index 72de1be8..bd6e9781 100644
+--- a/mediapipe/tasks/cc/core/proto/BUILD
++++ b/mediapipe/tasks/cc/core/proto/BUILD
+@@ -68,3 +68,9 @@ mediapipe_proto_library(
+         "//mediapipe/framework:calculator_proto",
+     ],
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
 index b9fe8b0c..695987ad 100644
 --- a/mediapipe/util/BUILD
