@@ -1,5 +1,5 @@
 {
-    "name": "Mediapipe.Runtime.Tests",
+    "name": "Mediapipe.Tests.EditMode",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
