@@ -264,6 +264,8 @@ cc_library(
         "@com_google_mediapipe//mediapipe/calculators/core:packet_presence_calculator",
         "@com_google_mediapipe//mediapipe/calculators/core:flow_limiter_calculator",
         "@com_google_mediapipe//mediapipe/calculators/image:image_transformation_calculator",
+        "@com_google_mediapipe//mediapipe/calculators/tensor:landmarks_to_tensor_calculator",
+        "@com_google_mediapipe//mediapipe/calculators/tensor:tensors_to_classification_calculator",
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [],
         "//conditions:default": [

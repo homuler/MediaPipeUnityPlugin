@@ -17,6 +17,7 @@ namespace Mediapipe.Unity.FaceMesh
   {
     public int maxNumFaces = 1;
     public bool refineLandmarks = true;
+    public bool blenshapes = false;
 
     private float _minDetectionConfidence = 0.5f;
     public float minDetectionConfidence
@@ -56,17 +57,26 @@ namespace Mediapipe.Unity.FaceMesh
       remove => _faceRectsFromDetectionsStream.RemoveListener(value);
     }
 
+    public event EventHandler<OutputEventArgs<ClassificationList>> OnFaceClassificationsFromBlendShapesOutput
+    {
+      add => _faceBlendShapesStream?.AddListener(value);
+      remove => _faceBlendShapesStream?.RemoveListener(value);
+    }
+
     private const string _InputStreamName = "input_video";
 
     private const string _FaceDetectionsStreamName = "face_detections";
     private const string _MultiFaceLandmarksStreamName = "multi_face_landmarks";
     private const string _FaceRectsFromLandmarksStreamName = "face_rects_from_landmarks";
     private const string _FaceRectsFromDetectionsStreamName = "face_rects_from_detections";
+    private const string _FaceBlendShapesStreamName = "blendshapes";
 
     private OutputStream<DetectionVectorPacket, List<Detection>> _faceDetectionsStream;
     private OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>> _multiFaceLandmarksStream;
     private OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>> _faceRectsFromLandmarksStream;
     private OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>> _faceRectsFromDetectionsStream;
+    private OutputStream<ClassificationListPacket, ClassificationList> _faceBlendShapesStream;
+  
 
     public override void StartRun(ImageSource imageSource)
     {
@@ -76,6 +86,8 @@ namespace Mediapipe.Unity.FaceMesh
         _multiFaceLandmarksStream.StartPolling().AssertOk();
         _faceRectsFromLandmarksStream.StartPolling().AssertOk();
         _faceRectsFromDetectionsStream.StartPolling().AssertOk();
+        if (blenshapes)
+          _faceBlendShapesStream.StartPolling().AssertOk();
       }
       StartRun(BuildSidePacket(imageSource));
     }
@@ -90,6 +102,8 @@ namespace Mediapipe.Unity.FaceMesh
       _faceRectsFromLandmarksStream = null;
       _faceRectsFromDetectionsStream?.Close();
       _faceRectsFromDetectionsStream = null;
+      _faceBlendShapesStream?.Close();
+      _faceBlendShapesStream = null;
       base.Stop();
     }
 
@@ -99,15 +113,23 @@ namespace Mediapipe.Unity.FaceMesh
     }
 
     public bool TryGetNext(out List<Detection> faceDetections, out List<NormalizedLandmarkList> multiFaceLandmarks,
-                           out List<NormalizedRect> faceRectsFromLandmarks, out List<NormalizedRect> faceRectsFromDetections, bool allowBlock = true)
+                           out List<NormalizedRect> faceRectsFromLandmarks, out List<NormalizedRect> faceRectsFromDetections, out ClassificationList faceBlendShapes, bool allowBlock = true)
     {
       var currentTimestampMicrosec = GetCurrentTimestampMicrosec();
       var r1 = TryGetNext(_faceDetectionsStream, out faceDetections, allowBlock, currentTimestampMicrosec);
       var r2 = TryGetNext(_multiFaceLandmarksStream, out multiFaceLandmarks, allowBlock, currentTimestampMicrosec);
       var r3 = TryGetNext(_faceRectsFromLandmarksStream, out faceRectsFromLandmarks, allowBlock, currentTimestampMicrosec);
       var r4 = TryGetNext(_faceRectsFromDetectionsStream, out faceRectsFromDetections, allowBlock, currentTimestampMicrosec);
-
-      return r1 || r2 || r3 || r4;
+      if (blenshapes)
+      {
+        var r5 = TryGetNext(_faceBlendShapesStream, out faceBlendShapes, allowBlock, currentTimestampMicrosec);
+        return r1 || r2 || r3 || r4 || r5;
+      }
+      else
+      {
+        faceBlendShapes = null;
+        return r1 || r2 || r3 || r4;
+      }
     }
 
     protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
@@ -122,6 +144,9 @@ namespace Mediapipe.Unity.FaceMesh
             calculatorGraph, _FaceRectsFromLandmarksStreamName, config.AddPacketPresenceCalculator(_FaceRectsFromLandmarksStreamName), timeoutMicrosec);
         _faceRectsFromDetectionsStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(
             calculatorGraph, _FaceRectsFromDetectionsStreamName, config.AddPacketPresenceCalculator(_FaceDetectionsStreamName), timeoutMicrosec);
+        if (blenshapes)
+          _faceBlendShapesStream = new OutputStream<ClassificationListPacket, ClassificationList>(
+            calculatorGraph, _FaceBlendShapesStreamName, config.AddPacketPresenceCalculator(_FaceBlendShapesStreamName), timeoutMicrosec);
       }
       else
       {
@@ -129,6 +154,8 @@ namespace Mediapipe.Unity.FaceMesh
         _multiFaceLandmarksStream = new OutputStream<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(calculatorGraph, _MultiFaceLandmarksStreamName, true, timeoutMicrosec);
         _faceRectsFromLandmarksStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _FaceRectsFromLandmarksStreamName, true, timeoutMicrosec);
         _faceRectsFromDetectionsStream = new OutputStream<NormalizedRectVectorPacket, List<NormalizedRect>>(calculatorGraph, _FaceRectsFromDetectionsStreamName, true, timeoutMicrosec);
+        if (blenshapes)
+          _faceBlendShapesStream = new OutputStream<ClassificationListPacket, ClassificationList>(calculatorGraph, _FaceBlendShapesStreamName, true, timeoutMicrosec);
       }
 
       using (var validatedGraphConfig = new ValidatedGraphConfig())
@@ -174,10 +201,13 @@ namespace Mediapipe.Unity.FaceMesh
 
     protected override IList<WaitForResult> RequestDependentAssets()
     {
-      return new List<WaitForResult> {
+      var ret = new List<WaitForResult> {
         WaitForAsset("face_detection_short_range.bytes"),
         WaitForAsset(refineLandmarks ? "face_landmark_with_attention.bytes" : "face_landmark.bytes"),
       };
+      if (blenshapes)
+        ret.Add(WaitForAsset("face_blendshapes.bytes"));
+      return ret;
     }
 
     private PacketMap BuildSidePacket(ImageSource imageSource)

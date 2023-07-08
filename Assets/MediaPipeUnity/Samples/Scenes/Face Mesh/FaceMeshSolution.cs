@@ -49,6 +49,7 @@ namespace Mediapipe.Unity.FaceMesh
         graphRunner.OnMultiFaceLandmarksOutput += OnMultiFaceLandmarksOutput;
         graphRunner.OnFaceRectsFromLandmarksOutput += OnFaceRectsFromLandmarksOutput;
         graphRunner.OnFaceRectsFromDetectionsOutput += OnFaceRectsFromDetectionsOutput;
+        graphRunner.OnFaceClassificationsFromBlendShapesOutput += OnFaceClassificationsFromBlendShapesOutput;
       }
 
       var imageSource = ImageSourceProvider.ImageSource;
@@ -69,20 +70,23 @@ namespace Mediapipe.Unity.FaceMesh
       List<NormalizedLandmarkList> multiFaceLandmarks = null;
       List<NormalizedRect> faceRectsFromLandmarks = null;
       List<NormalizedRect> faceRectsFromDetections = null;
+      ClassificationList faceBlendShapes = null;
 
       if (runningMode == RunningMode.Sync)
       {
-        var _ = graphRunner.TryGetNext(out faceDetections, out multiFaceLandmarks, out faceRectsFromLandmarks, out faceRectsFromDetections, true);
+        var _ = graphRunner.TryGetNext(out faceDetections, out multiFaceLandmarks, out faceRectsFromLandmarks, out faceRectsFromDetections, out faceBlendShapes, true);
       }
       else if (runningMode == RunningMode.NonBlockingSync)
       {
-        yield return new WaitUntil(() => graphRunner.TryGetNext(out faceDetections, out multiFaceLandmarks, out faceRectsFromLandmarks, out faceRectsFromDetections, false));
+        yield return new WaitUntil(() => graphRunner.TryGetNext(out faceDetections, out multiFaceLandmarks, out faceRectsFromLandmarks, out faceRectsFromDetections, out faceBlendShapes, false));
       }
 
       _faceDetectionsAnnotationController.DrawNow(faceDetections);
       _multiFaceLandmarksAnnotationController.DrawNow(multiFaceLandmarks);
       _faceRectsFromLandmarksAnnotationController.DrawNow(faceRectsFromLandmarks);
       _faceRectsFromDetectionsAnnotationController.DrawNow(faceRectsFromDetections);
+      if (faceBlendShapes != null)
+        Debug.Log($"Blendshapes count {faceBlendShapes.Classification.Count}");
     }
 
     private void OnFaceDetectionsOutput(object stream, OutputEventArgs<List<Detection>> eventArgs)
@@ -103,6 +107,11 @@ namespace Mediapipe.Unity.FaceMesh
     private void OnFaceRectsFromDetectionsOutput(object stream, OutputEventArgs<List<NormalizedRect>> eventArgs)
     {
       _faceRectsFromDetectionsAnnotationController.DrawLater(eventArgs.value);
+    }
+
+    private void OnFaceClassificationsFromBlendShapesOutput(object stream, OutputEventArgs<ClassificationList> eventArgs)
+    {
+      Debug.Log($"Blendshapes count {eventArgs.value?.Classification?.Count}");
     }
   }
 }
