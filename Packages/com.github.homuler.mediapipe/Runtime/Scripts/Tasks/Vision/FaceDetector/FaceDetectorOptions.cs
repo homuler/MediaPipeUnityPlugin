@@ -8,23 +8,39 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
 {
   public sealed class FaceDetectorOptions : Tasks.Core.ITaskOptions
   {
-    public delegate void ResultCallback();
+    /// <param name="detectionResult">
+    ///   face detection result object that contains a list of face detections,
+    ///   each detection has a bounding box that is expressed in the unrotated
+    ///   input frame of reference coordinates system,
+    ///   i.e. in `[0,image_width) x [0,image_height)`, which are the dimensions
+    ///   of the underlying image data.
+    /// </param>
+    /// <param name="image">
+    ///   The input image that the face detector runs on.
+    /// </param>
+    /// <param name="timestampMs">
+    ///   The input timestamp in milliseconds.
+    /// </param>
+    public delegate void ResultCallback(Components.Containers.DetectionResult detectionResult, Image image, int timestampMs);
 
     public Tasks.Core.BaseOptions baseOptions { get; }
     public Core.RunningMode runningMode { get; }
     public float minDetectionConfidence { get; } = 0.5f;
     public float minSuppressionThreshold { get; } = 0.3f;
+    public ResultCallback resultCallback { get; }
 
     public FaceDetectorOptions(
       Tasks.Core.BaseOptions baseOptions,
       Core.RunningMode runningMode = Core.RunningMode.IMAGE,
       float minDetectionConfidence = 0.5f,
-      float minSuppressionThreshold = 0.3f)
+      float minSuppressionThreshold = 0.3f,
+      ResultCallback resultCallback = null)
     {
       this.baseOptions = baseOptions;
       this.runningMode = runningMode;
       this.minDetectionConfidence = minDetectionConfidence;
       this.minSuppressionThreshold = minSuppressionThreshold;
+      this.resultCallback = resultCallback;
     }
 
     internal Proto.FaceDetectorGraphOptions ToProto()
