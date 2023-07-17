@@ -111,31 +111,18 @@ namespace Mediapipe.Unity
       this.presenceStreamName = presenceStreamName;
     }
 
-    public Status StartPolling()
+    public void StartPolling()
     {
       _outputPacket = new TPacket();
-
-      var statusOrPoller = calculatorGraph.AddOutputStreamPoller<TValue>(streamName, observeTimestampBounds);
-      var status = statusOrPoller.status;
-      if (status.Ok())
-      {
-        _poller = statusOrPoller.Value();
-      }
+      _poller = calculatorGraph.AddOutputStreamPoller<TValue>(streamName, observeTimestampBounds);
 
       if (presenceStreamName == null)
       {
-        return status;
+        return;
       }
 
       _presencePacket = new BoolPacket();
-
-      var statusOrPresencePoller = calculatorGraph.AddOutputStreamPoller<bool>(presenceStreamName, false);
-      status = statusOrPresencePoller.status;
-      if (status.Ok())
-      {
-        _presencePoller = statusOrPresencePoller.Value();
-      }
-      return status;
+      _presencePoller = calculatorGraph.AddOutputStreamPoller<bool>(presenceStreamName, false);
     }
 
     public void AddListener(EventHandler<OutputEventArgs<TValue>> callback)

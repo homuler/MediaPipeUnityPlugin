@@ -72,10 +72,10 @@ namespace Mediapipe.Unity.FaceMesh
     {
       if (runningMode.IsSynchronous())
       {
-        _faceDetectionsStream.StartPolling().AssertOk();
-        _multiFaceLandmarksStream.StartPolling().AssertOk();
-        _faceRectsFromLandmarksStream.StartPolling().AssertOk();
-        _faceRectsFromDetectionsStream.StartPolling().AssertOk();
+        _faceDetectionsStream.StartPolling();
+        _multiFaceLandmarksStream.StartPolling();
+        _faceRectsFromLandmarksStream.StartPolling();
+        _faceRectsFromDetectionsStream.StartPolling();
       }
       StartRun(BuildSidePacket(imageSource));
     }

@@ -34,7 +34,7 @@ namespace Mediapipe.Unity.MediaPipeVideo
     {
       if (configType != ConfigType.OpenGLES)
       {
-        _outputVideoStream.StartPolling().AssertOk();
+        _outputVideoStream.StartPolling();
       }
       StartRun(BuildSidePacket(imageSource));
     }

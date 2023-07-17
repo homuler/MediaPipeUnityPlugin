@@ -25,7 +25,7 @@ namespace Mediapipe.Unity.SelfieSegmentation
     {
       if (runningMode.IsSynchronous())
       {
-        _segmentationMaskStream.StartPolling().AssertOk();
+        _segmentationMaskStream.StartPolling();
       }
       StartRun(BuildSidePacket(imageSource));
     }

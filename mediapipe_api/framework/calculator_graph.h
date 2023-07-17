@@ -14,7 +14,6 @@
 #include "mediapipe/framework/calculator_graph.h"
 #include "mediapipe_api/common.h"
 #include "mediapipe_api/external/absl/status.h"
-#include "mediapipe_api/external/absl/statusor.h"
 #include "mediapipe_api/external/protobuf.h"
 #include "mediapipe_api/framework/packet.h"
 
@@ -43,8 +42,8 @@ MP_CAPI(MpReturnCode) mp_CalculatorGraph__ObserveOutputStream__PKc_PF_b(mediapip
                                                                         NativePacketCallback* packet_callback, bool observe_timestamp_bounds,
                                                                         absl::Status** status_out);
 
-MP_CAPI(MpReturnCode) mp_CalculatorGraph__AddOutputStreamPoller__PKc_b(mediapipe::CalculatorGraph* graph, const char* stream_name,
-                                                                       bool observe_timestamp_bounds, mediapipe::StatusOrPoller** status_or_poller_out);
+MP_CAPI(MpReturnCode) mp_CalculatorGraph__AddOutputStreamPoller__PKc_b(mediapipe::CalculatorGraph* graph, const char* stream_name, bool observe_timestamp_bounds,
+                                                                       absl::Status** status_out, mediapipe::OutputStreamPoller** poller_out);
 
 MP_CAPI(MpReturnCode) mp_CalculatorGraph__Run__Rsp(mediapipe::CalculatorGraph* graph, SidePackets* side_packets, absl::Status** status_out);
 

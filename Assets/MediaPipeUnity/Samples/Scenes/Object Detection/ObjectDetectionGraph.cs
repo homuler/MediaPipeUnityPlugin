@@ -26,7 +26,7 @@ namespace Mediapipe.Unity.ObjectDetection
     {
       if (runningMode.IsSynchronous())
       {
-        _outputDetectionsStream.StartPolling().AssertOk();
+        _outputDetectionsStream.StartPolling();
       }
       StartRun(BuildSidePacket(imageSource));
     }

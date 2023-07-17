@@ -43,7 +43,7 @@ namespace Mediapipe.Unity.FaceDetection
     {
       if (runningMode.IsSynchronous())
       {
-        _faceDetectionsStream.StartPolling().AssertOk();
+        _faceDetectionsStream.StartPolling();
       }
       StartRun(BuildSidePacket(imageSource));
     }

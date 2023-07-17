@@ -35,7 +35,8 @@ namespace Mediapipe
         [MarshalAs(UnmanagedType.FunctionPtr)] CalculatorGraph.NativePacketCallback packetCallback, [MarshalAs(UnmanagedType.I1)] bool observeTimestampBounds, out IntPtr status);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_CalculatorGraph__AddOutputStreamPoller__PKc_b(IntPtr graph, string streamName, [MarshalAs(UnmanagedType.I1)] bool observeTimestampBounds, out IntPtr statusOrPoller);
+    public static extern MpReturnCode mp_CalculatorGraph__AddOutputStreamPoller__PKc_b(IntPtr graph, string streamName, [MarshalAs(UnmanagedType.I1)] bool observeTimestampBounds,
+        out IntPtr status, out IntPtr poller);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_CalculatorGraph__Run__Rsp(IntPtr graph, IntPtr sidePackets, out IntPtr status);
