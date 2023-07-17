@@ -84,6 +84,7 @@ cc_library(
     deps = [
         "//mediapipe_api:common",
         "//mediapipe_api/external:protobuf",
+        "//mediapipe_api/external/absl:statusor",
         "@com_google_mediapipe//mediapipe/framework:validated_graph_config",
     ],
     alwayslink = True,

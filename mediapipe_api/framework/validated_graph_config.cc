@@ -1,4 +1,5 @@
 #include "mediapipe_api/framework/validated_graph_config.h"
+#include "mediapipe_api/external/absl/statusor.h"
 
 MpReturnCode mp_ValidatedGraphConfig__(mediapipe::ValidatedGraphConfig** config_out) {
   TRY
@@ -82,19 +83,19 @@ int mp_ValidatedGraphConfig__OutputSidePacketIndex__PKc(mediapipe::ValidatedGrap
 int mp_ValidatedGraphConfig__OutputStreamToNode__PKc(mediapipe::ValidatedGraphConfig* config, const char* name) { return config->OutputStreamToNode(name); }
 
 MpReturnCode mp_ValidatedGraphConfig__RegisteredSidePacketTypeName(mediapipe::ValidatedGraphConfig* config, const char* name,
-                                                                   absl::StatusOr<std::string>** status_or_string_out) {
+                                                                   absl::Status** status_out, const char** string_out) {
   TRY
     auto status_or_string = config->RegisteredSidePacketTypeName(name);
-    *status_or_string_out = new absl::StatusOr<std::string>{std::move(status_or_string)};
+    copy_absl_StatusOrString(std::move(status_or_string), status_out, string_out);
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }
 
 MpReturnCode mp_ValidatedGraphConfig__RegisteredStreamTypeName(mediapipe::ValidatedGraphConfig* config, const char* name,
-                                                               absl::StatusOr<std::string>** status_or_string_out) {
+                                                               absl::Status** status_out, const char** string_out) {
   TRY
     auto status_or_string = config->RegisteredStreamTypeName(name);
-    *status_or_string_out = new absl::StatusOr<std::string>{std::move(status_or_string)};
+    copy_absl_StatusOrString(std::move(status_or_string), status_out, string_out);
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }

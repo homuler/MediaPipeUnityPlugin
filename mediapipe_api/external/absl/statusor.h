@@ -41,4 +41,25 @@ inline MpReturnCode absl_StatusOr__value(absl::StatusOr<T>* status_or, T** value
   CATCH_ALL
 }
 
+inline void copy_absl_StatusOrString(absl::StatusOr<std::string>&& status_or_string, absl::Status** status_out, const char** string_out) {
+  *status_out = new absl::Status{status_or_string.status()};
+  if (status_or_string.ok()) {
+    *string_out = strcpy_to_heap(status_or_string.value());
+  }
+}
+
+inline void copy_absl_StatusOrString(absl::StatusOr<std::string>&& status_or_string, absl::Status** status_out, const char** string_out, int* size_out) {
+  *status_out = new absl::Status{status_or_string.status()};
+  if (status_or_string.ok()) {
+    auto& str = status_or_string.value();
+    auto length = str.size();
+    auto bytes = new char[length];
+    memcpy(bytes, str.c_str(), length);
+
+    *string_out = bytes;
+    *size_out = length;
+  }
+}
+
+
 #endif  // MEDIAPIPE_API_EXTERNAL_ABSL_STATUSOR_H_

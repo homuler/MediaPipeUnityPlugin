@@ -105,10 +105,7 @@ namespace Mediapipe
       UnsafeNativeMethods.mp_CalculatorGraph__AddOutputStreamPoller__PKc_b(mpPtr, streamName, observeTimestampBounds, out var statusPtr, out var pollerPtr).Assert();
 
       GC.KeepAlive(this);
-      using (var status = new Status(statusPtr, true))
-      {
-        status.AssertOk();
-      }
+      AssertStatusOk(statusPtr);
       return new OutputStreamPoller<T>(pollerPtr);
     }
 

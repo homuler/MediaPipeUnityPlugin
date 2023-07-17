@@ -58,10 +58,7 @@ namespace Mediapipe
       UnsafeNativeMethods.mp_Packet__ConsumeGpuBuffer(mpPtr, out var statusPtr, out var gpuBufferPtr).Assert();
 
       GC.KeepAlive(this);
-      using (var status = new Status(statusPtr))
-      {
-        status.AssertOk();
-      }
+      AssertStatusOk(statusPtr);
       return new GpuBuffer(gpuBufferPtr, true);
     }
 

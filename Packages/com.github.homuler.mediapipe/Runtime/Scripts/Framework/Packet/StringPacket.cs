@@ -69,10 +69,30 @@ namespace Mediapipe
 
     public override StatusOr<string> Consume()
     {
-      UnsafeNativeMethods.mp_Packet__ConsumeString(mpPtr, out var statusOrStringPtr).Assert();
+      throw new NotImplementedException();
+    }
+
+    public string Consume_()
+    {
+      UnsafeNativeMethods.mp_Packet__ConsumeString(mpPtr, out var statusPtr, out var strPtr).Assert();
 
       GC.KeepAlive(this);
-      return new StatusOrString(statusOrStringPtr);
+      AssertStatusOk(statusPtr);
+      return MarshalStringFromNative(strPtr);
+    }
+
+    public byte[] ConsumeByteArray()
+    {
+      UnsafeNativeMethods.mp_Packet__ConsumeByteString(mpPtr, out var statusPtr, out var strPtr, out var size).Assert();
+
+      GC.KeepAlive(this);
+      AssertStatusOk(statusPtr);
+
+      var bytes = new byte[size];
+      Marshal.Copy(strPtr, bytes, 0, size);
+      UnsafeNativeMethods.delete_array__PKc(strPtr);
+
+      return bytes;
     }
 
     public override Status ValidateAsType()
