@@ -74,7 +74,6 @@ cc_library(
         ":gl_texture_buffer",
         "//mediapipe_api:common",
         "//mediapipe_api/external/absl:status",
-        "//mediapipe_api/external/absl:statusor",
         "//mediapipe_api/framework:packet",
         "@com_google_mediapipe//mediapipe/gpu:gpu_buffer",
     ],

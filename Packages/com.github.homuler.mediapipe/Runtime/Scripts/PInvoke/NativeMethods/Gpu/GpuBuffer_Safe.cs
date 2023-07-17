@@ -20,11 +20,5 @@ namespace Mediapipe
 
     [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern GpuBufferFormat mp_GpuBuffer__format(IntPtr gpuBuffer);
-
-    #region StatusOr
-    [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    [return: MarshalAs(UnmanagedType.I1)]
-    public static extern bool mp_StatusOrGpuBuffer__ok(IntPtr statusOrGpuBuffer);
-    #endregion
   }
 }

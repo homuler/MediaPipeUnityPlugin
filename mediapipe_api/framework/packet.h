@@ -110,6 +110,19 @@ inline MpReturnCode mp_Packet__Consume(mediapipe::Packet* packet, absl::StatusOr
 }
 
 template <typename T>
+inline MpReturnCode mp_Packet__Consume(mediapipe::Packet* packet, absl::Status** status_out, T** value_out) {
+  TRY_ALL
+    auto status_or_unique_ptr = packet->Consume<T>();
+
+    *status_out = new absl::Status{status_or_unique_ptr.status()};
+    if (status_or_unique_ptr.ok()) {
+      *value_out = new T{std::move(*status_or_unique_ptr.value().release())};
+    }
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_ALL
+}
+
+template <typename T>
 inline MpReturnCode mp_Packet__Get(mediapipe::Packet* packet, const T** value_out) {
   TRY_ALL
     auto holder = packet->IsEmpty() ? nullptr : mediapipe::packet_internal::GetHolder(*packet)->As<T>();

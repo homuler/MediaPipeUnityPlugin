@@ -50,10 +50,19 @@ namespace Mediapipe
 
     public override StatusOr<GpuBuffer> Consume()
     {
-      UnsafeNativeMethods.mp_Packet__ConsumeGpuBuffer(mpPtr, out var statusOrGpuBufferPtr).Assert();
+      throw new NotImplementedException();
+    }
+
+    public GpuBuffer Consume_()
+    {
+      UnsafeNativeMethods.mp_Packet__ConsumeGpuBuffer(mpPtr, out var statusPtr, out var gpuBufferPtr).Assert();
 
       GC.KeepAlive(this);
-      return new StatusOrGpuBuffer(statusOrGpuBufferPtr);
+      using (var status = new Status(statusPtr))
+      {
+        status.AssertOk();
+      }
+      return new GpuBuffer(gpuBufferPtr, true);
     }
 
     public override Status ValidateAsType()
