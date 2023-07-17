@@ -157,6 +157,7 @@ cc_library(
         "//mediapipe_api/framework:validated_graph_config",
         "//mediapipe_api/framework/formats:classification",
         "//mediapipe_api/framework/formats:detection",
+        "//mediapipe_api/framework/formats:image",
         "//mediapipe_api/framework/formats:image_frame",
         "//mediapipe_api/framework/formats:landmark",
         "//mediapipe_api/framework/formats:matrix_data",

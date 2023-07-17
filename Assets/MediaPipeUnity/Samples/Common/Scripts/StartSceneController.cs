@@ -6,7 +6,6 @@
 
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 namespace Mediapipe.Unity
@@ -15,7 +14,7 @@ namespace Mediapipe.Unity
   {
     private const string _TAG = nameof(Bootstrap);
 
-    [SerializeField] private Image _screen;
+    [SerializeField] private UnityEngine.UI.Image _screen;
     [SerializeField] private GameObject _consolePrefab;
 
     private IEnumerator Start()

@@ -71,7 +71,7 @@ namespace Mediapipe
     }
 
     [AOT.MonoPInvokeCallback(typeof(Deleter))]
-    private static void VoidDeleter(IntPtr _) { }
+    internal static void VoidDeleter(IntPtr _) { }
 
     /// <returns>
     ///   The number of channels for a <paramref name="format" />.

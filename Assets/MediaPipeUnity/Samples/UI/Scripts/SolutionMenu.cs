@@ -70,7 +70,7 @@ namespace Mediapipe.Unity.UI
 
     private void HideButton(Button button)
     {
-      var image = button.gameObject.GetComponent<Image>();
+      var image = button.gameObject.GetComponent<UnityEngine.UI.Image>();
       image.color = new Color(0, 0, 0, 0);
       button.transform.GetComponentInChildren<Text>().text = null;
     }

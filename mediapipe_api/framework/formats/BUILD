@@ -38,6 +38,19 @@ cc_library(
 )
 
 cc_library(
+    name = "image",
+    srcs = ["image.cc"],
+    hdrs = ["image.h"],
+    deps = [
+        "//mediapipe_api:common",
+        "//mediapipe_api/framework:packet",
+        "@com_google_absl//absl/status",
+        "@com_google_mediapipe//mediapipe/framework/formats:image",
+    ],
+    alwayslink = True,
+)
+
+cc_library(
     name = "image_frame",
     srcs = ["image_frame.cc"],
     hdrs = ["image_frame.h"],
