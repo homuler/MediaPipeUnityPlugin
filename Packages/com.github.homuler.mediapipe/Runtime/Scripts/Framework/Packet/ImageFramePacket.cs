@@ -50,10 +50,16 @@ namespace Mediapipe
 
     public override StatusOr<ImageFrame> Consume()
     {
-      UnsafeNativeMethods.mp_Packet__ConsumeImageFrame(mpPtr, out var statusOrImageFramePtr).Assert();
+      throw new NotImplementedException();
+    }
+
+    public ImageFrame Consume_()
+    {
+      UnsafeNativeMethods.mp_Packet__ConsumeImageFrame(mpPtr, out var statusPtr, out var imageFramePtr).Assert();
 
       GC.KeepAlive(this);
-      return new StatusOrImageFrame(statusOrImageFramePtr);
+      AssertStatusOk(statusPtr);
+      return new ImageFrame(imageFramePtr, true);
     }
 
     public override Status ValidateAsType()
