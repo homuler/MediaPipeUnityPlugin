@@ -17,7 +17,7 @@ namespace Mediapipe.Tests
       using (var packet = new StringPacket())
       {
         var exception = Assert.Throws<BadStatusException>(packet.ValidateAsType);
-        Assert.AreEqual(Status.StatusCode.Internal, exception.statusCode);
+        Assert.AreEqual(StatusCode.Internal, exception.statusCode);
         _ = Assert.Throws<MediaPipeException>(() => { _ = packet.Get(); });
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
@@ -139,7 +139,7 @@ namespace Mediapipe.Tests
       using (var packet = new StringPacket())
       {
         var exception = Assert.Throws<BadStatusException>(() => { _ = packet.Consume(); });
-        Assert.AreEqual(Status.StatusCode.Internal, exception.statusCode);
+        Assert.AreEqual(StatusCode.Internal, exception.statusCode);
       }
     }
 

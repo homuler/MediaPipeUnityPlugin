@@ -11,7 +11,7 @@ namespace Mediapipe
 
   public class GlCalculatorHelper : MpResourceHandle
   {
-    public delegate Status.StatusArgs NativeGlStatusFunction();
+    public delegate StatusArgs NativeGlStatusFunction();
     public delegate void GlFunction();
 
     public GlCalculatorHelper() : base()
@@ -52,11 +52,11 @@ namespace Mediapipe
         try
         {
           glFunction();
-          return Status.StatusArgs.Ok();
+          return StatusArgs.Ok();
         }
         catch (Exception e)
         {
-          return Status.StatusArgs.Internal(e.ToString());
+          return StatusArgs.Internal(e.ToString());
         }
       });
     }

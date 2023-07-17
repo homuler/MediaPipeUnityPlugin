@@ -90,7 +90,7 @@ output_stream: ""out""
         {
           graph.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ValidConfigText));
         });
-        Assert.AreEqual(Status.StatusCode.Internal, exception.statusCode);
+        Assert.AreEqual(StatusCode.Internal, exception.statusCode);
       }
     }
 
@@ -122,7 +122,7 @@ output_stream: ""out""
           var config = CalculatorGraphConfig.Parser.ParseFromTextFormat(_ValidConfigText);
 
           var exception = Assert.Throws<BadStatusException>(() => graph.Initialize(config, sidePacket));
-          Assert.AreEqual(Status.StatusCode.Internal, exception.statusCode);
+          Assert.AreEqual(StatusCode.Internal, exception.statusCode);
         }
       }
     }
@@ -153,7 +153,7 @@ output_stream: ""out""
         graph.StartRun();
         graph.Cancel();
         var exception = Assert.Throws<BadStatusException>(() => graph.WaitUntilDone());
-        Assert.AreEqual(Status.StatusCode.Cancelled, exception.statusCode);
+        Assert.AreEqual(StatusCode.Cancelled, exception.statusCode);
       }
     }
     #endregion

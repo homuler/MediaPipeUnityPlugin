@@ -78,7 +78,7 @@ namespace Mediapipe.Tests
         {
           glCalculatorHelper.RunInGlContext((GlCalculatorHelper.GlFunction)(() => { throw new Exception("Function Throws"); }));
         });
-        Assert.AreEqual(Status.StatusCode.Internal, exception.statusCode);
+        Assert.AreEqual(StatusCode.Internal, exception.statusCode);
       }
     }
     #endregion
@@ -129,7 +129,7 @@ namespace Mediapipe.Tests
               }
             });
           });
-          Assert.AreEqual(Status.StatusCode.FailedPrecondition, exception.statusCode);
+          Assert.AreEqual(StatusCode.FailedPrecondition, exception.statusCode);
         }
       }
     }

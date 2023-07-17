@@ -9,127 +9,127 @@ using System.Runtime.InteropServices;
 
 namespace Mediapipe
 {
-  public class Status : MpResourceHandle
+  public enum StatusCode : int
   {
-    public enum StatusCode : int
+    Ok = 0,
+    Cancelled = 1,
+    Unknown = 2,
+    InvalidArgument = 3,
+    DeadlineExceeded = 4,
+    NotFound = 5,
+    AlreadyExists = 6,
+    PermissionDenied = 7,
+    ResourceExhausted = 8,
+    FailedPrecondition = 9,
+    Aborted = 10,
+    OutOfRange = 11,
+    Unimplemented = 12,
+    Internal = 13,
+    Unavailable = 14,
+    DataLoss = 15,
+    Unauthenticated = 16,
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  public readonly struct StatusArgs
+  {
+    private readonly StatusCode _code;
+    private readonly IntPtr _message;
+
+    private StatusArgs(StatusCode code, string message = null)
     {
-      Ok = 0,
-      Cancelled = 1,
-      Unknown = 2,
-      InvalidArgument = 3,
-      DeadlineExceeded = 4,
-      NotFound = 5,
-      AlreadyExists = 6,
-      PermissionDenied = 7,
-      ResourceExhausted = 8,
-      FailedPrecondition = 9,
-      Aborted = 10,
-      OutOfRange = 11,
-      Unimplemented = 12,
-      Internal = 13,
-      Unavailable = 14,
-      DataLoss = 15,
-      Unauthenticated = 16,
+      _code = code;
+      _message = Marshal.StringToHGlobalAnsi(message);
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    public readonly struct StatusArgs
+    public static StatusArgs Ok()
     {
-      private readonly StatusCode _code;
-      private readonly IntPtr _message;
-
-      private StatusArgs(StatusCode code, string message = null)
-      {
-        _code = code;
-        _message = Marshal.StringToHGlobalAnsi(message);
-      }
-
-      public static StatusArgs Ok()
-      {
-        return new StatusArgs(StatusCode.Ok);
-      }
-
-      public static StatusArgs Cancelled(string message = null)
-      {
-        return new StatusArgs(StatusCode.Cancelled, message);
-      }
-
-      public static StatusArgs Unknown(string message = null)
-      {
-        return new StatusArgs(StatusCode.Unknown, message);
-      }
-
-      public static StatusArgs InvalidArgument(string message = null)
-      {
-        return new StatusArgs(StatusCode.InvalidArgument, message);
-      }
-
-      public static StatusArgs DeadlineExceeded(string message = null)
-      {
-        return new StatusArgs(StatusCode.DeadlineExceeded, message);
-      }
-
-      public static StatusArgs NotFound(string message = null)
-      {
-        return new StatusArgs(StatusCode.NotFound, message);
-      }
-
-      public static StatusArgs AlreadyExists(string message = null)
-      {
-        return new StatusArgs(StatusCode.AlreadyExists, message);
-      }
-
-      public static StatusArgs PermissionDenied(string message = null)
-      {
-        return new StatusArgs(StatusCode.PermissionDenied, message);
-      }
-
-      public static StatusArgs ResourceExhausted(string message = null)
-      {
-        return new StatusArgs(StatusCode.ResourceExhausted, message);
-      }
-
-      public static StatusArgs FailedPrecondition(string message = null)
-      {
-        return new StatusArgs(StatusCode.FailedPrecondition, message);
-      }
-
-      public static StatusArgs Aborted(string message = null)
-      {
-        return new StatusArgs(StatusCode.Aborted, message);
-      }
-
-      public static StatusArgs OutOfRange(string message = null)
-      {
-        return new StatusArgs(StatusCode.OutOfRange, message);
-      }
-
-      public static StatusArgs Unimplemented(string message = null)
-      {
-        return new StatusArgs(StatusCode.Unimplemented, message);
-      }
-
-      public static StatusArgs Internal(string message = null)
-      {
-        return new StatusArgs(StatusCode.Internal, message);
-      }
-
-      public static StatusArgs Unavailable(string message = null)
-      {
-        return new StatusArgs(StatusCode.Unavailable, message);
-      }
-
-      public static StatusArgs DataLoss(string message = null)
-      {
-        return new StatusArgs(StatusCode.DataLoss, message);
-      }
-
-      public static StatusArgs Unauthenticated(string message = null)
-      {
-        return new StatusArgs(StatusCode.Unauthenticated, message);
-      }
+      return new StatusArgs(StatusCode.Ok);
     }
 
+    public static StatusArgs Cancelled(string message = null)
+    {
+      return new StatusArgs(StatusCode.Cancelled, message);
+    }
+
+    public static StatusArgs Unknown(string message = null)
+    {
+      return new StatusArgs(StatusCode.Unknown, message);
+    }
+
+    public static StatusArgs InvalidArgument(string message = null)
+    {
+      return new StatusArgs(StatusCode.InvalidArgument, message);
+    }
+
+    public static StatusArgs DeadlineExceeded(string message = null)
+    {
+      return new StatusArgs(StatusCode.DeadlineExceeded, message);
+    }
+
+    public static StatusArgs NotFound(string message = null)
+    {
+      return new StatusArgs(StatusCode.NotFound, message);
+    }
+
+    public static StatusArgs AlreadyExists(string message = null)
+    {
+      return new StatusArgs(StatusCode.AlreadyExists, message);
+    }
+
+    public static StatusArgs PermissionDenied(string message = null)
+    {
+      return new StatusArgs(StatusCode.PermissionDenied, message);
+    }
+
+    public static StatusArgs ResourceExhausted(string message = null)
+    {
+      return new StatusArgs(StatusCode.ResourceExhausted, message);
+    }
+
+    public static StatusArgs FailedPrecondition(string message = null)
+    {
+      return new StatusArgs(StatusCode.FailedPrecondition, message);
+    }
+
+    public static StatusArgs Aborted(string message = null)
+    {
+      return new StatusArgs(StatusCode.Aborted, message);
+    }
+
+    public static StatusArgs OutOfRange(string message = null)
+    {
+      return new StatusArgs(StatusCode.OutOfRange, message);
+    }
+
+    public static StatusArgs Unimplemented(string message = null)
+    {
+      return new StatusArgs(StatusCode.Unimplemented, message);
+    }
+
+    public static StatusArgs Internal(string message = null)
+    {
+      return new StatusArgs(StatusCode.Internal, message);
+    }
+
+    public static StatusArgs Unavailable(string message = null)
+    {
+      return new StatusArgs(StatusCode.Unavailable, message);
+    }
+
+    public static StatusArgs DataLoss(string message = null)
+    {
+      return new StatusArgs(StatusCode.DataLoss, message);
+    }
+
+    public static StatusArgs Unauthenticated(string message = null)
+    {
+      return new StatusArgs(StatusCode.Unauthenticated, message);
+    }
+  }
+
+  internal class Status : MpResourceHandle
+  {
     public Status(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
     protected override void DeleteMpPtr()

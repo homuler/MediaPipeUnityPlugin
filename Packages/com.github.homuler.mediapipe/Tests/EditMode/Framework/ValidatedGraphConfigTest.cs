@@ -146,7 +146,7 @@ node {
       using (var config = new ValidatedGraphConfig())
       {
         var exception = Assert.Throws<BadStatusException>(() => config.Initialize("InvalidSubgraph"));
-        Assert.AreEqual(Status.StatusCode.NotFound, exception.statusCode);
+        Assert.AreEqual(StatusCode.NotFound, exception.statusCode);
         Assert.False(config.Initialized());
       }
     }
@@ -202,7 +202,7 @@ node {
         using (var sidePacket = new PacketMap())
         {
           var exception = Assert.Throws<BadStatusException>(() => config.ValidateRequiredSidePackets(sidePacket));
-          Assert.AreEqual(Status.StatusCode.InvalidArgument, exception.statusCode);
+          Assert.AreEqual(StatusCode.InvalidArgument, exception.statusCode);
         }
       }
     }
@@ -218,7 +218,7 @@ node {
           sidePacket.Emplace("input_horizontally_flipped", new BoolPacket(false));
           sidePacket.Emplace("input_vertically_flipped", new BoolPacket(true));
           var exception = Assert.Throws<BadStatusException>(() => config.ValidateRequiredSidePackets(sidePacket));
-          Assert.AreEqual(Status.StatusCode.InvalidArgument, exception.statusCode);
+          Assert.AreEqual(StatusCode.InvalidArgument, exception.statusCode);
         }
       }
     }
@@ -235,7 +235,7 @@ node {
           sidePacket.Emplace("input_vertically_flipped", new BoolPacket(true));
           sidePacket.Emplace("input_rotation", new StringPacket("0"));
           var exception = Assert.Throws<BadStatusException>(() => config.ValidateRequiredSidePackets(sidePacket));
-          Assert.AreEqual(Status.StatusCode.InvalidArgument, exception.statusCode);
+          Assert.AreEqual(StatusCode.InvalidArgument, exception.statusCode);
         }
       }
     }
@@ -598,7 +598,7 @@ node {
       using (var config = new ValidatedGraphConfig())
       {
         var exception = Assert.Throws<BadStatusException>(() => { _ = config.RegisteredSidePacketTypeName("max_in_flight"); });
-        Assert.AreEqual(Status.StatusCode.InvalidArgument, exception.statusCode);
+        Assert.AreEqual(StatusCode.InvalidArgument, exception.statusCode);
       }
     }
 
@@ -609,7 +609,7 @@ node {
       {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_FlowLimiterConfigText));
         var exception = Assert.Throws<BadStatusException>(() => { _ = config.RegisteredSidePacketTypeName("max_in_flight"); });
-        Assert.AreEqual(Status.StatusCode.Unknown, exception.statusCode);
+        Assert.AreEqual(StatusCode.Unknown, exception.statusCode);
       }
     }
     #endregion
@@ -621,7 +621,7 @@ node {
       using (var config = new ValidatedGraphConfig())
       {
         var exception = Assert.Throws<BadStatusException>(() => { _ = config.RegisteredStreamTypeName("in"); });
-        Assert.AreEqual(Status.StatusCode.InvalidArgument, exception.statusCode);
+        Assert.AreEqual(StatusCode.InvalidArgument, exception.statusCode);
       }
     }
 
@@ -632,7 +632,7 @@ node {
       {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PassThroughConfigText));
         var exception = Assert.Throws<BadStatusException>(() => { _ = config.RegisteredStreamTypeName("in"); });
-        Assert.AreEqual(Status.StatusCode.Unknown, exception.statusCode);
+        Assert.AreEqual(StatusCode.Unknown, exception.statusCode);
       }
     }
     #endregion

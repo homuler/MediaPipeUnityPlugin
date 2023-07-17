@@ -17,9 +17,9 @@ namespace Mediapipe.Tests
       using (var packet = new ImageFramePacket())
       {
         var exception = Assert.Throws<BadStatusException>(packet.ValidateAsType);
-        Assert.AreEqual(Status.StatusCode.Internal, exception.statusCode);
+        Assert.AreEqual(StatusCode.Internal, exception.statusCode);
         exception = Assert.Throws<BadStatusException>(() => { _ = packet.Consume(); });
-        Assert.AreEqual(Status.StatusCode.Internal, exception.statusCode);
+        Assert.AreEqual(StatusCode.Internal, exception.statusCode);
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
     }

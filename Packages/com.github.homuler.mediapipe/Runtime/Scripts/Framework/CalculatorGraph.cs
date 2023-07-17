@@ -13,7 +13,7 @@ namespace Mediapipe
 {
   public class CalculatorGraph : MpResourceHandle
   {
-    public delegate Status.StatusArgs NativePacketCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr);
+    public delegate StatusArgs NativePacketCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr);
     public delegate void PacketCallback<TPacket, TValue>(TPacket packet) where TPacket : Packet<TValue>;
 
     public CalculatorGraph() : base()
@@ -83,11 +83,11 @@ namespace Mediapipe
         {
           var packet = Packet<TValue>.Create<TPacket>(packetPtr, false);
           packetCallback(packet);
-          return Status.StatusArgs.Ok();
+          return StatusArgs.Ok();
         }
         catch (Exception e)
         {
-          return Status.StatusArgs.Internal(e.ToString());
+          return StatusArgs.Internal(e.ToString());
         }
       };
       callbackHandle = GCHandle.Alloc(nativePacketCallback, GCHandleType.Pinned);
