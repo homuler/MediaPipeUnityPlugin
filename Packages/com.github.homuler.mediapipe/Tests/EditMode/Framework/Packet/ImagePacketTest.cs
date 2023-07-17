@@ -1,20 +1,21 @@
-// Copyright (c) 2021 homuler
+// Copyright (c) 2023 homuler
 //
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
 using NUnit.Framework;
+using Unity.Collections;
 
 namespace Mediapipe.Tests
 {
-  public class ImageFramePacketTest
+  public class ImagePacketTest
   {
     #region Constructor
     [Test]
     public void Ctor_ShouldInstantiatePacket_When_CalledWithNoArguments()
     {
-      using (var packet = new ImageFramePacket())
+      using (var packet = new ImagePacket())
       {
         Assert.AreEqual(Status.StatusCode.Internal, packet.ValidateAsType().Code());
         var exception = Assert.Throws<BadStatusException>(() => { _ = packet.Consume(); });
@@ -26,33 +27,33 @@ namespace Mediapipe.Tests
     [Test]
     public void Ctor_ShouldInstantiatePacket_When_CalledWithValue()
     {
-      var srcImageFrame = new ImageFrame();
+      var srcImage = BuildSRGBAImage();
 
-      using (var packet = new ImageFramePacket(srcImageFrame))
+      using (var packet = new ImagePacket(srcImage))
       {
-        Assert.True(srcImageFrame.isDisposed);
+        Assert.True(srcImage.isDisposed);
         Assert.True(packet.ValidateAsType().Ok());
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
 
-        var imageFrame = packet.Consume();
-        Assert.AreEqual(ImageFormat.Types.Format.Unknown, imageFrame.Format());
+        var image = packet.Consume();
+        Assert.AreEqual(ImageFormat.Types.Format.Srgba, image.ImageFormat());
       }
     }
 
     [Test]
     public void Ctor_ShouldInstantiatePacket_When_CalledWithValueAndTimestamp()
     {
-      var srcImageFrame = new ImageFrame();
+      var srcImage = BuildSRGBAImage();
 
       using (var timestamp = new Timestamp(1))
       {
-        using (var packet = new ImageFramePacket(srcImageFrame, timestamp))
+        using (var packet = new ImagePacket(srcImage, timestamp))
         {
-          Assert.True(srcImageFrame.isDisposed);
+          Assert.True(srcImage.isDisposed);
           Assert.True(packet.ValidateAsType().Ok());
 
-          var imageFrame = packet.Consume();
-          Assert.AreEqual(ImageFormat.Types.Format.Unknown, imageFrame.Format());
+          var image = packet.Consume();
+          Assert.AreEqual(ImageFormat.Types.Format.Srgba, image.ImageFormat());
           Assert.AreEqual(timestamp, packet.Timestamp());
         }
       }
@@ -63,7 +64,7 @@ namespace Mediapipe.Tests
     [Test]
     public void IsDisposed_ShouldReturnFalse_When_NotDisposedYet()
     {
-      using (var packet = new ImageFramePacket())
+      using (var packet = new ImagePacket())
       {
         Assert.False(packet.isDisposed);
       }
@@ -72,7 +73,7 @@ namespace Mediapipe.Tests
     [Test]
     public void IsDisposed_ShouldReturnTrue_When_AlreadyDisposed()
     {
-      var packet = new ImageFramePacket();
+      var packet = new ImagePacket();
       packet.Dispose();
 
       Assert.True(packet.isDisposed);
@@ -85,14 +86,12 @@ namespace Mediapipe.Tests
     {
       using (var timestamp = new Timestamp(1))
       {
-        var packet = new ImageFramePacket(new ImageFrame(ImageFormat.Types.Format.Srgba, 10, 10)).At(timestamp);
-        Assert.AreEqual(10, packet.Get().Width());
+        var packet = new ImagePacket(BuildSRGBAImage()).At(timestamp);
         Assert.AreEqual(timestamp, packet.Timestamp());
 
         using (var newTimestamp = new Timestamp(2))
         {
           var newPacket = packet.At(newTimestamp);
-          Assert.AreEqual(10, newPacket.Get().Width());
           Assert.AreEqual(newTimestamp, newPacket.Timestamp());
         }
 
@@ -105,7 +104,7 @@ namespace Mediapipe.Tests
     [Test, SignalAbort]
     public void Get_ShouldThrowMediaPipeException_When_DataIsEmpty()
     {
-      using (var packet = new ImageFramePacket())
+      using (var packet = new ImagePacket())
       {
 #pragma warning disable IDE0058
         Assert.Throws<MediaPipeException>(() => { packet.Get(); });
@@ -114,30 +113,32 @@ namespace Mediapipe.Tests
     }
 
     [Test]
-    public void Get_ShouldReturnImageFrame_When_DataIsNotEmpty()
+    public void Get_ShouldReturnImage_When_DataIsNotEmpty()
     {
-      using (var packet = new ImageFramePacket(new ImageFrame(ImageFormat.Types.Format.Sbgra, 10, 10)))
+      using (var packet = new ImagePacket(BuildSRGBAImage()))
       {
-        using (var imageFrame = packet.Get())
+        Assert.False(packet.IsEmpty());
+        using (var image = packet.Get())
         {
-          Assert.AreEqual(ImageFormat.Types.Format.Sbgra, imageFrame.Format());
-          Assert.AreEqual(10, imageFrame.Width());
-          Assert.AreEqual(10, imageFrame.Height());
+          Assert.AreEqual(ImageFormat.Types.Format.Srgba, image.ImageFormat());
         }
+        Assert.False(packet.IsEmpty());
       }
     }
     #endregion
 
     #region #Consume
     [Test]
-    public void Consume_ShouldReturnImageFrame()
+    public void Consume_ShouldReturnImage()
     {
-      using (var packet = new ImageFramePacket(new ImageFrame(ImageFormat.Types.Format.Sbgra, 10, 10)))
+      using (var packet = new ImagePacket(BuildSRGBAImage()))
       {
-        var imageFrame = packet.Consume();
-        Assert.AreEqual(ImageFormat.Types.Format.Sbgra, imageFrame.Format());
-        Assert.AreEqual(10, imageFrame.Width());
-        Assert.AreEqual(10, imageFrame.Height());
+        Assert.False(packet.IsEmpty());
+        using (var image = packet.Consume())
+        {
+          Assert.AreEqual(ImageFormat.Types.Format.Srgba, image.ImageFormat());
+        }
+        Assert.True(packet.IsEmpty());
       }
     }
     #endregion
@@ -146,11 +147,20 @@ namespace Mediapipe.Tests
     [Test]
     public void ValidateAsType_ShouldReturnOk_When_ValueIsSet()
     {
-      using (var packet = new ImageFramePacket(new ImageFrame()))
+      using (var packet = new ImagePacket(BuildSRGBAImage()))
       {
         Assert.True(packet.ValidateAsType().Ok());
       }
     }
     #endregion
+
+    private Image BuildSRGBAImage()
+    {
+      var bytes = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+      var pixelData = new NativeArray<byte>(bytes.Length, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
+      pixelData.CopyFrom(bytes);
+
+      return new Image(ImageFormat.Types.Format.Srgba, 4, 2, 16, pixelData);
+    }
   }
 }
