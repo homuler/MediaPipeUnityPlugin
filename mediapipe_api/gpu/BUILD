@@ -42,7 +42,6 @@ cc_library(
     hdrs = ["gl_context.h"],
     deps = [
         "//mediapipe_api:common",
-        "//mediapipe_api/external/absl:statusor",
         "@com_google_mediapipe//mediapipe/gpu:gl_context",
     ],
     alwayslink = True,
@@ -99,7 +98,6 @@ cc_library(
         ":gl_context",
         "//mediapipe_api:common",
         "//mediapipe_api/external/absl:status",
-        "//mediapipe_api/external/absl:statusor",
         "@com_google_mediapipe//mediapipe/gpu:gpu_shared_data_internal",
     ],
     alwayslink = True,

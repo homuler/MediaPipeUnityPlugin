@@ -97,20 +97,6 @@ MP_CAPI(int) mp_PacketMap__size(PacketMap* packet_map);
 }  // extern "C"
 
 template <typename T>
-inline MpReturnCode mp_Packet__Consume(mediapipe::Packet* packet, absl::StatusOr<T>** status_or_value_out) {
-  TRY_ALL
-    auto status_or_unique_ptr = packet->Consume<T>();
-
-    if (status_or_unique_ptr.ok()) {
-      *status_or_value_out = new absl::StatusOr<T>{std::move(*status_or_unique_ptr.value().release())};
-    } else {
-      *status_or_value_out = new absl::StatusOr<T>{status_or_unique_ptr.status()};
-    }
-    RETURN_CODE(MpReturnCode::Success);
-  CATCH_ALL
-}
-
-template <typename T>
 inline MpReturnCode mp_Packet__Consume(mediapipe::Packet* packet, absl::Status** status_out, T** value_out) {
   TRY_ALL
     auto status_or_unique_ptr = packet->Consume<T>();

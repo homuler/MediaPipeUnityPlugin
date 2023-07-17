@@ -41,17 +41,6 @@ namespace Mediapipe
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_ImageFrame__CopyToBuffer__Pf_i(IntPtr imageFrame, IntPtr buffer, int bufferSize);
 
-    #region StatusOr
-    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern void mp_StatusOrImageFrame__delete(IntPtr statusOrImageFrame);
-
-    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_StatusOrImageFrame__status(IntPtr statusOrImageFrame, out IntPtr status);
-
-    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_StatusOrImageFrame__value(IntPtr statusOrImageFrame, out IntPtr imageFrame);
-    #endregion
-
     #region Packet
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp__MakeImageFramePacket__Pif(IntPtr imageFrame, out IntPtr packet);

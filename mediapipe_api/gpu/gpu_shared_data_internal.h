@@ -12,7 +12,6 @@
 
 #include "mediapipe/gpu/gpu_shared_data_internal.h"
 #include "mediapipe_api/common.h"
-#include "mediapipe_api/external/absl/statusor.h"
 
 extern "C" {
 

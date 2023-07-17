@@ -48,7 +48,6 @@ cc_library(
     hdrs = ["output_stream_poller.h"],
     deps = [
         "//mediapipe_api:common",
-        "//mediapipe_api/external/absl:statusor",
         "@com_google_mediapipe//mediapipe/framework:calculator_framework",
     ],
     alwayslink = True,

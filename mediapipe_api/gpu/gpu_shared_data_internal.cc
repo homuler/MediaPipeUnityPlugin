@@ -34,15 +34,3 @@ MP_CAPI(MpReturnCode) mp_GpuResources_Create__Pv(mediapipe::PlatformGlContext ex
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }
-
-void mp_StatusOrGpuResources__delete(absl::StatusOr<SharedGpuResources>* status_or_gpu_resources) { delete status_or_gpu_resources; }
-
-bool mp_StatusOrGpuResources__ok(absl::StatusOr<SharedGpuResources>* status_or_gpu_resources) { return absl_StatusOr__ok(status_or_gpu_resources); }
-
-MpReturnCode mp_StatusOrGpuResources__status(absl::StatusOr<SharedGpuResources>* status_or_gpu_resources, absl::Status** status_out) {
-  return absl_StatusOr__status(status_or_gpu_resources, status_out);
-}
-
-MpReturnCode mp_StatusOrGpuResources__value(absl::StatusOr<SharedGpuResources>* status_or_gpu_resources, SharedGpuResources** value_out) {
-  return absl_StatusOr__value(status_or_gpu_resources, value_out);
-}
