@@ -48,12 +48,7 @@ namespace Mediapipe
       return new GpuBuffer(gpuBufferPtr, false);
     }
 
-    public override StatusOr<GpuBuffer> Consume()
-    {
-      throw new NotImplementedException();
-    }
-
-    public GpuBuffer Consume_()
+    public override GpuBuffer Consume()
     {
       UnsafeNativeMethods.mp_Packet__ConsumeGpuBuffer(mpPtr, out var statusPtr, out var gpuBufferPtr).Assert();
 

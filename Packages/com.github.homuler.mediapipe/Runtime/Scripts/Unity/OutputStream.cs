@@ -5,7 +5,6 @@
 // https://opensource.org/licenses/MIT.
 
 using System;
-using System.Collections.Generic;
 
 namespace Mediapipe.Unity
 {
@@ -246,9 +245,15 @@ namespace Mediapipe.Unity
       }
 
       _lastTimestampMicrosec = timestampMicrosec;
-      var statusOrValue = _outputPacket.Consume();
 
-      value = statusOrValue.ValueOr();
+      try
+      {
+        value = _outputPacket.Consume();
+      }
+      catch
+      {
+        value = default;
+      }
       return true;
     }
 
@@ -351,9 +356,15 @@ namespace Mediapipe.Unity
         if (!packet.IsEmpty())
         {
           _lastTimestampMicrosec = currentMicrosec;
-          var statusOrValue = packet.Consume();
 
-          value = statusOrValue.ValueOr();
+          try
+          {
+            value = packet.Consume();
+          }
+          catch
+          {
+            value = default;
+          }
           return true;
         }
 

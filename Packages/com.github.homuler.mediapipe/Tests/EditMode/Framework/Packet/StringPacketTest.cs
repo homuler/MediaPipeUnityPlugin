@@ -5,7 +5,6 @@
 // https://opensource.org/licenses/MIT.
 
 using NUnit.Framework;
-using System.Text.RegularExpressions;
 
 namespace Mediapipe.Tests
 {
@@ -136,28 +135,22 @@ namespace Mediapipe.Tests
 
     #region #Consume
     [Test]
-    public void Consume_ShouldReturnStatusOrString_When_PacketIsEmpty()
+    public void Consume_ShouldThrowBadStatusException_When_PacketIsEmpty()
     {
       using (var packet = new StringPacket())
       {
-        using (var statusOrString = packet.Consume())
-        {
-          Assert.False(statusOrString.Ok());
-          Assert.AreEqual(Status.StatusCode.Internal, statusOrString.status.Code());
-        }
+        var exception = Assert.Throws<BadStatusException>(() => { _ = packet.Consume(); });
+        Assert.AreEqual(Status.StatusCode.Internal, exception.statusCode);
       }
     }
 
     [Test]
-    public void Consume_ShouldReturnStatusOrString_When_PacketIsNotEmpty()
+    public void Consume_ShouldReturnString_When_PacketIsNotEmpty()
     {
       using (var packet = new StringPacket("abc"))
       {
-        using (var statusOrString = packet.Consume())
-        {
-          Assert.True(statusOrString.Ok());
-          Assert.AreEqual("abc", statusOrString.Value());
-        }
+        var str = packet.Consume();
+        Assert.AreEqual("abc", str);
         Assert.True(packet.IsEmpty());
       }
     }

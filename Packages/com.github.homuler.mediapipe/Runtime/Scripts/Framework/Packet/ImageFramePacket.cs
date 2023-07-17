@@ -48,12 +48,7 @@ namespace Mediapipe
       return new ImageFrame(imageFramePtr, false);
     }
 
-    public override StatusOr<ImageFrame> Consume()
-    {
-      throw new NotImplementedException();
-    }
-
-    public ImageFrame Consume_()
+    public override ImageFrame Consume()
     {
       UnsafeNativeMethods.mp_Packet__ConsumeImageFrame(mpPtr, out var statusPtr, out var imageFramePtr).Assert();
 

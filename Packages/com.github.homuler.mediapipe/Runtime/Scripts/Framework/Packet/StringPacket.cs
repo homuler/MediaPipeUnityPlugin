@@ -67,12 +67,7 @@ namespace Mediapipe
       return bytes;
     }
 
-    public override StatusOr<string> Consume()
-    {
-      throw new NotImplementedException();
-    }
-
-    public string Consume_()
+    public override string Consume()
     {
       UnsafeNativeMethods.mp_Packet__ConsumeString(mpPtr, out var statusPtr, out var strPtr).Assert();
 

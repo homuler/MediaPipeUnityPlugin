@@ -44,7 +44,7 @@ namespace Mediapipe
       return value;
     }
 
-    public override StatusOr<bool> Consume()
+    public override bool Consume()
     {
       throw new NotSupportedException();
     }

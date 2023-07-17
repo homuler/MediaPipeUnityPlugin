@@ -35,7 +35,7 @@ namespace Mediapipe
       return normalizedRects;
     }
 
-    public override StatusOr<List<NormalizedRect>> Consume()
+    public override List<NormalizedRect> Consume()
     {
       throw new NotSupportedException();
     }

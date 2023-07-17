@@ -34,7 +34,7 @@ namespace Mediapipe
       return landmarkList;
     }
 
-    public override StatusOr<LandmarkList> Consume()
+    public override LandmarkList Consume()
     {
       throw new NotSupportedException();
     }
