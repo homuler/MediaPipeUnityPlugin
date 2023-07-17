@@ -144,7 +144,7 @@ namespace Mediapipe
     {
       if (!Ok())
       {
-        throw new MediaPipeException(ToString());
+        throw new BadStatusException(Code(), ToString());
       }
     }
 

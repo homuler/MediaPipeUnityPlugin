@@ -105,9 +105,8 @@ namespace Mediapipe.Tests
     {
       using (var status = Status.FailedPrecondition())
       {
-#pragma warning disable IDE0058
-        Assert.Throws<MediaPipeException>(() => { status.AssertOk(); });
-#pragma warning restore IDE0058
+        var exception = Assert.Throws<BadStatusException>(() => { status.AssertOk(); });
+        Assert.AreEqual(Status.StatusCode.FailedPrecondition, exception.statusCode);
       }
     }
     #endregion
