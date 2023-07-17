@@ -202,20 +202,22 @@ namespace Mediapipe
       return SafeNativeMethods.mp_ValidatedGraphConfig__OutputStreamToNode__PKc(mpPtr, name);
     }
 
-    public StatusOrString RegisteredSidePacketTypeName(string name)
+    public string RegisteredSidePacketTypeName(string name)
     {
-      UnsafeNativeMethods.mp_ValidatedGraphConfig__RegisteredSidePacketTypeName(mpPtr, name, out var statusOrStringPtr).Assert();
+      UnsafeNativeMethods.mp_ValidatedGraphConfig__RegisteredSidePacketTypeName(mpPtr, name, out var statusPtr, out var strPtr).Assert();
 
       GC.KeepAlive(this);
-      return new StatusOrString(statusOrStringPtr);
+      AssertStatusOk(statusPtr);
+      return MarshalStringFromNative(strPtr);
     }
 
-    public StatusOrString RegisteredStreamTypeName(string name)
+    public string RegisteredStreamTypeName(string name)
     {
-      UnsafeNativeMethods.mp_ValidatedGraphConfig__RegisteredStreamTypeName(mpPtr, name, out var statusOrStringPtr).Assert();
+      UnsafeNativeMethods.mp_ValidatedGraphConfig__RegisteredStreamTypeName(mpPtr, name, out var statusPtr, out var strPtr).Assert();
 
       GC.KeepAlive(this);
-      return new StatusOrString(statusOrStringPtr);
+      AssertStatusOk(statusPtr);
+      return MarshalStringFromNative(strPtr);
     }
 
     public string Package()

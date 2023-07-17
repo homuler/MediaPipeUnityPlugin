@@ -27,19 +27,5 @@ namespace Mediapipe
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern void std_string__swap__Rstr(IntPtr src, IntPtr dst);
     #endregion
-
-    #region StatusOrString
-    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern void mp_StatusOrString__delete(IntPtr statusOrString);
-
-    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_StatusOrString__status(IntPtr statusOrString, out IntPtr status);
-
-    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_StatusOrString__value(IntPtr statusOrString, out IntPtr value);
-
-    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_StatusOrString__bytearray(IntPtr statusOrString, out IntPtr value, out int size);
-    #endregion
   }
 }

@@ -253,14 +253,32 @@ MpReturnCode mp_Packet__GetByteString(mediapipe::Packet* packet, const char** va
   CATCH_ALL
 }
 
-MpReturnCode mp_Packet__ConsumeString(mediapipe::Packet* packet, absl::StatusOr<std::string>** status_or_value_out) {
+MpReturnCode mp_Packet__ConsumeString(mediapipe::Packet* packet, absl::Status** status_out, const char** value_out) {
   TRY_ALL
     auto status_or_string = packet->Consume<std::string>();
 
+    *status_out = new absl::Status{status_or_string.status()};
     if (status_or_string.ok()) {
-      *status_or_value_out = new absl::StatusOr<std::string>{std::move(*status_or_string.value().release())};
-    } else {
-      *status_or_value_out = new absl::StatusOr<std::string>{status_or_string.status()};
+      auto& str = status_or_string.value();
+      *value_out = strcpy_to_heap(std::move(*str));
+    }
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_ALL
+}
+
+MpReturnCode mp_Packet__ConsumeByteString(mediapipe::Packet* packet, absl::Status** status_out, const char** value_out, int* size_out) {
+  TRY_ALL
+    auto status_or_string = packet->Consume<std::string>();
+
+    *status_out = new absl::Status{status_or_string.status()};
+    if (status_or_string.ok()) {
+      auto& str = status_or_string.value();
+      auto length = str->size();
+      auto bytes = new char[length];
+      memcpy(bytes, str->c_str(), length);
+
+      *value_out = bytes;
+      *size_out = length;
     }
     RETURN_CODE(MpReturnCode::Success);
   CATCH_ALL

@@ -35,7 +35,7 @@ namespace Mediapipe
       return classificationLists;
     }
 
-    public override StatusOr<List<ClassificationList>> Consume()
+    public override List<ClassificationList> Consume()
     {
       throw new NotSupportedException();
     }

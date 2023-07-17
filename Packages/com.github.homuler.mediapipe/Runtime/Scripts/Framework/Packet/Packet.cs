@@ -53,7 +53,7 @@ namespace Mediapipe
     /// <exception cref="MediaPipeException">Thrown when the value is not set</exception>
     public abstract TValue Get();
 
-    public abstract StatusOr<TValue> Consume();
+    public abstract TValue Consume();
 
     public bool IsEmpty()
     {

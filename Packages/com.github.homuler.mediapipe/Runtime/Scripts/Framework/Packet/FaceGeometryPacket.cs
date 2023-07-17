@@ -34,7 +34,7 @@ namespace Mediapipe
       return geometry;
     }
 
-    public override StatusOr<FaceGeometry.FaceGeometry> Consume()
+    public override FaceGeometry.FaceGeometry Consume()
     {
       throw new NotSupportedException();
     }

@@ -88,10 +88,23 @@ namespace Mediapipe
       f(mpPtr, out var strPtr).Assert();
       GC.KeepAlive(this);
 
+      return MarshalStringFromNative(strPtr);
+    }
+
+    protected static string MarshalStringFromNative(IntPtr strPtr)
+    {
       var str = Marshal.PtrToStringAnsi(strPtr);
       UnsafeNativeMethods.delete_array__PKc(strPtr);
 
       return str;
+    }
+
+    protected static void AssertStatusOk(IntPtr statusPtr)
+    {
+      using (var status = new Status(statusPtr, true))
+      {
+        status.AssertOk();
+      }
     }
 
     protected bool IsResourcePresent()

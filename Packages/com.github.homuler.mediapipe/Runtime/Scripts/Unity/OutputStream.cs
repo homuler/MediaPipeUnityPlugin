@@ -5,7 +5,6 @@
 // https://opensource.org/licenses/MIT.
 
 using System;
-using System.Collections.Generic;
 
 namespace Mediapipe.Unity
 {
@@ -111,31 +110,18 @@ namespace Mediapipe.Unity
       this.presenceStreamName = presenceStreamName;
     }
 
-    public Status StartPolling()
+    public void StartPolling()
     {
       _outputPacket = new TPacket();
-
-      var statusOrPoller = calculatorGraph.AddOutputStreamPoller<TValue>(streamName, observeTimestampBounds);
-      var status = statusOrPoller.status;
-      if (status.Ok())
-      {
-        _poller = statusOrPoller.Value();
-      }
+      _poller = calculatorGraph.AddOutputStreamPoller<TValue>(streamName, observeTimestampBounds);
 
       if (presenceStreamName == null)
       {
-        return status;
+        return;
       }
 
       _presencePacket = new BoolPacket();
-
-      var statusOrPresencePoller = calculatorGraph.AddOutputStreamPoller<bool>(presenceStreamName, false);
-      status = statusOrPresencePoller.status;
-      if (status.Ok())
-      {
-        _presencePoller = statusOrPresencePoller.Value();
-      }
-      return status;
+      _presencePoller = calculatorGraph.AddOutputStreamPoller<bool>(presenceStreamName, false);
     }
 
     public void AddListener(EventHandler<OutputEventArgs<TValue>> callback)
@@ -259,9 +245,15 @@ namespace Mediapipe.Unity
       }
 
       _lastTimestampMicrosec = timestampMicrosec;
-      var statusOrValue = _outputPacket.Consume();
 
-      value = statusOrValue.ValueOr();
+      try
+      {
+        value = _outputPacket.Consume();
+      }
+      catch
+      {
+        value = default;
+      }
       return true;
     }
 
@@ -364,9 +356,15 @@ namespace Mediapipe.Unity
         if (!packet.IsEmpty())
         {
           _lastTimestampMicrosec = currentMicrosec;
-          var statusOrValue = packet.Consume();
 
-          value = statusOrValue.ValueOr();
+          try
+          {
+            value = packet.Consume();
+          }
+          catch
+          {
+            value = default;
+          }
           return true;
         }
 

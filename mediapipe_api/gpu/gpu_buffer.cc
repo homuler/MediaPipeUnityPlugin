@@ -26,18 +26,6 @@ int mp_GpuBuffer__height(mediapipe::GpuBuffer* gpu_buffer) { return gpu_buffer->
 
 mediapipe::GpuBufferFormat mp_GpuBuffer__format(mediapipe::GpuBuffer* gpu_buffer) { return gpu_buffer->format(); }
 
-void mp_StatusOrGpuBuffer__delete(StatusOrGpuBuffer* status_or_gpu_buffer) { delete status_or_gpu_buffer; }
-
-bool mp_StatusOrGpuBuffer__ok(StatusOrGpuBuffer* status_or_gpu_buffer) { return absl_StatusOr__ok(status_or_gpu_buffer); }
-
-MpReturnCode mp_StatusOrGpuBuffer__status(StatusOrGpuBuffer* status_or_gpu_buffer, absl::Status** status_out) {
-  return absl_StatusOr__status(status_or_gpu_buffer, status_out);
-}
-
-MpReturnCode mp_StatusOrGpuBuffer__value(StatusOrGpuBuffer* status_or_gpu_buffer, mediapipe::GpuBuffer** value_out) {
-  return absl_StatusOr__value(status_or_gpu_buffer, value_out);
-}
-
 MpReturnCode mp__MakeGpuBufferPacket__Rgb(mediapipe::GpuBuffer* gpu_buffer, mediapipe::Packet** packet_out) {
   TRY
     *packet_out = new mediapipe::Packet{mediapipe::MakePacket<mediapipe::GpuBuffer>(std::move(*gpu_buffer))};
@@ -52,8 +40,8 @@ MpReturnCode mp__MakeGpuBufferPacket_At__Rgb_Rts(mediapipe::GpuBuffer* gpu_buffe
   CATCH_EXCEPTION
 }
 
-MpReturnCode mp_Packet__ConsumeGpuBuffer(mediapipe::Packet* packet, StatusOrGpuBuffer** status_or_value_out) {
-  return mp_Packet__Consume(packet, status_or_value_out);
+MpReturnCode mp_Packet__ConsumeGpuBuffer(mediapipe::Packet* packet, absl::Status** status_out, mediapipe::GpuBuffer** value_out) {
+  return mp_Packet__Consume(packet, status_out, value_out);
 }
 
 MpReturnCode mp_Packet__GetGpuBuffer(mediapipe::Packet* packet, const mediapipe::GpuBuffer** value_out) { return mp_Packet__Get(packet, value_out); }

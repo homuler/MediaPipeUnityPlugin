@@ -623,10 +623,8 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        using (var statusOrString = config.RegisteredSidePacketTypeName("max_in_flight"))
-        {
-          Assert.AreEqual(Status.StatusCode.InvalidArgument, statusOrString.status.Code());
-        }
+        var exception = Assert.Throws<BadStatusException>(() => { _ = config.RegisteredSidePacketTypeName("max_in_flight"); });
+        Assert.AreEqual(Status.StatusCode.InvalidArgument, exception.statusCode);
       }
     }
 
@@ -636,10 +634,8 @@ node {
       using (var config = new ValidatedGraphConfig())
       {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_FlowLimiterConfigText)).AssertOk();
-        using (var statusOrString = config.RegisteredSidePacketTypeName("max_in_flight"))
-        {
-          Assert.AreEqual(Status.StatusCode.Unknown, statusOrString.status.Code());
-        }
+        var exception = Assert.Throws<BadStatusException>(() => { _ = config.RegisteredSidePacketTypeName("max_in_flight"); });
+        Assert.AreEqual(Status.StatusCode.Unknown, exception.statusCode);
       }
     }
     #endregion
@@ -650,10 +646,8 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        using (var statusOrString = config.RegisteredStreamTypeName("in"))
-        {
-          Assert.AreEqual(Status.StatusCode.InvalidArgument, statusOrString.status.Code());
-        }
+        var exception = Assert.Throws<BadStatusException>(() => { _ = config.RegisteredStreamTypeName("in"); });
+        Assert.AreEqual(Status.StatusCode.InvalidArgument, exception.statusCode);
       }
     }
 
@@ -663,10 +657,8 @@ node {
       using (var config = new ValidatedGraphConfig())
       {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PassThroughConfigText)).AssertOk();
-        using (var statusOrString = config.RegisteredStreamTypeName("in"))
-        {
-          Assert.AreEqual(Status.StatusCode.Unknown, statusOrString.status.Code());
-        }
+        var exception = Assert.Throws<BadStatusException>(() => { _ = config.RegisteredStreamTypeName("in"); });
+        Assert.AreEqual(Status.StatusCode.Unknown, exception.statusCode);
       }
     }
     #endregion

@@ -31,7 +31,6 @@ cc_library(
         ":packet",
         "//mediapipe_api:common",
         "//mediapipe_api/external/absl:status",
-        "//mediapipe_api/external/absl:statusor",
         "@com_google_mediapipe//mediapipe/framework:calculator_framework",
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [],
@@ -49,7 +48,6 @@ cc_library(
     hdrs = ["output_stream_poller.h"],
     deps = [
         "//mediapipe_api:common",
-        "//mediapipe_api/external/absl:statusor",
         "@com_google_mediapipe//mediapipe/framework:calculator_framework",
     ],
     alwayslink = True,
@@ -85,6 +83,7 @@ cc_library(
     deps = [
         "//mediapipe_api:common",
         "//mediapipe_api/external:protobuf",
+        "//mediapipe_api/external/absl:statusor",
         "@com_google_mediapipe//mediapipe/framework:validated_graph_config",
     ],
     alwayslink = True,

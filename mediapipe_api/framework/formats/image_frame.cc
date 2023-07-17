@@ -87,19 +87,6 @@ MpReturnCode mp_ImageFrame__CopyToBuffer__Pf_i(mediapipe::ImageFrame* image_fram
   CATCH_ALL
 }
 
-// StatusOr API
-void mp_StatusOrImageFrame__delete(StatusOrImageFrame* status_or_image_frame) { delete status_or_image_frame; }
-
-bool mp_StatusOrImageFrame__ok(StatusOrImageFrame* status_or_image_frame) { return absl_StatusOr__ok(status_or_image_frame); }
-
-MpReturnCode mp_StatusOrImageFrame__status(StatusOrImageFrame* status_or_image_frame, absl::Status** status_out) {
-  return absl_StatusOr__status(status_or_image_frame, status_out);
-}
-
-MpReturnCode mp_StatusOrImageFrame__value(StatusOrImageFrame* status_or_image_frame, mediapipe::ImageFrame** value_out) {
-  return absl_StatusOr__value(status_or_image_frame, value_out);
-}
-
 // Packet API
 MpReturnCode mp__MakeImageFramePacket__Pif(mediapipe::ImageFrame* image_frame, mediapipe::Packet** packet_out) {
   TRY
@@ -115,8 +102,8 @@ MpReturnCode mp__MakeImageFramePacket_At__Pif_Rt(mediapipe::ImageFrame* image_fr
   CATCH_EXCEPTION
 }
 
-MpReturnCode mp_Packet__ConsumeImageFrame(mediapipe::Packet* packet, StatusOrImageFrame** status_or_value_out) {
-  return mp_Packet__Consume(packet, status_or_value_out);
+MpReturnCode mp_Packet__ConsumeImageFrame(mediapipe::Packet* packet, absl::Status** status_out, mediapipe::ImageFrame** value_out) {
+  return mp_Packet__Consume(packet, status_out, value_out);
 }
 
 MpReturnCode mp_Packet__GetImageFrame(mediapipe::Packet* packet, const mediapipe::ImageFrame** value_out) { return mp_Packet__Get(packet, value_out); }

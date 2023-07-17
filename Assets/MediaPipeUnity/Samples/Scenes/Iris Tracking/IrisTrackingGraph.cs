@@ -43,9 +43,9 @@ namespace Mediapipe.Unity.IrisTracking
     {
       if (runningMode.IsSynchronous())
       {
-        _faceDetectionsStream.StartPolling().AssertOk();
-        _faceRectStream.StartPolling().AssertOk();
-        _faceLandmarksWithIrisStream.StartPolling().AssertOk();
+        _faceDetectionsStream.StartPolling();
+        _faceRectStream.StartPolling();
+        _faceLandmarksWithIrisStream.StartPolling();
       }
       StartRun(BuildSidePacket(imageSource));
     }

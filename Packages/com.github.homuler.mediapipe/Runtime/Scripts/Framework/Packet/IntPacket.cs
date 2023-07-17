@@ -44,7 +44,7 @@ namespace Mediapipe
       return value;
     }
 
-    public override StatusOr<int> Consume()
+    public override int Consume()
     {
       throw new NotSupportedException();
     }

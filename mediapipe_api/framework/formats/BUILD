@@ -44,7 +44,6 @@ cc_library(
     deps = [
         "//mediapipe_api:common",
         "//mediapipe_api/external/absl:status",
-        "//mediapipe_api/external/absl:statusor",
         "//mediapipe_api/framework:packet",
         "@com_google_mediapipe//mediapipe/framework/formats:image_frame",
     ],
@@ -71,7 +70,6 @@ cc_library(
     deps = [
         "//mediapipe_api:common",
         "//mediapipe_api/external/absl:status",
-        "//mediapipe_api/external/absl:statusor",
         "//mediapipe_api/framework:packet",
         "@com_google_mediapipe//mediapipe/framework/formats:matrix",
         "@com_google_mediapipe//mediapipe/framework/formats:matrix_data_cc_proto",

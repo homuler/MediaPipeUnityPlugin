@@ -12,26 +12,16 @@
 
 #include "mediapipe/gpu/gl_context.h"
 #include "mediapipe_api/common.h"
-#include "mediapipe_api/external/absl/statusor.h"
 
 extern "C" {
 
 typedef std::shared_ptr<mediapipe::GlContext> SharedGlContext;
-typedef absl::StatusOr<SharedGlContext> StatusOrSharedGlContext;
 
 MP_CAPI(void) mp_SharedGlContext__delete(SharedGlContext* shared_gl_context);
 MP_CAPI(mediapipe::GlContext*) mp_SharedGlContext__get(SharedGlContext* shared_gl_context);
 MP_CAPI(void) mp_SharedGlContext__reset(SharedGlContext* shared_gl_context);
 
 MP_CAPI(MpReturnCode) mp_GlContext_GetCurrent(SharedGlContext** shared_gl_context_out);
-MP_CAPI(MpReturnCode) mp_GlContext_Create__P_b(bool create_thread, StatusOrSharedGlContext** status_or_shared_gl_context_out);
-MP_CAPI(MpReturnCode) mp_GlContext_Create__Rgc_b(mediapipe::GlContext* share_context, bool create_thread,
-                                                 StatusOrSharedGlContext** status_or_shared_gl_context_out);
-MP_CAPI(MpReturnCode) mp_GlContext_Create__ui_b(mediapipe::PlatformGlContext share_context, bool create_thread,
-                                                StatusOrSharedGlContext** status_or_shared_gl_context_out);
-#if HAS_EAGL
-MP_CAPI(MpReturnCode) mp_GlContext_Create__Pes_b(EAGLSharegroup* sharegroup, bool create_thread, StatusOrSharedGlContext** status_or_shared_gl_context_out);
-#endif  // HAS_EAGL
 
 #if defined(__EMSCRIPTEN__)
 #elif HAS_EGL

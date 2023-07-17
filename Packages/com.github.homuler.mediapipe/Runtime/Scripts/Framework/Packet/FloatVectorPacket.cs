@@ -92,7 +92,7 @@ namespace Mediapipe
       return result;
     }
 
-    public override StatusOr<List<float>> Consume()
+    public override List<float> Consume()
     {
       throw new NotSupportedException();
     }

@@ -25,37 +25,6 @@ MpReturnCode mp_GlContext_GetCurrent(SharedGlContext** shared_gl_context_out) {
   CATCH_EXCEPTION
 }
 
-MpReturnCode mp_GlContext_Create__P_b(bool create_thread, StatusOrSharedGlContext** status_or_shared_gl_context_out) {
-  TRY
-    *status_or_shared_gl_context_out = new StatusOrSharedGlContext{mediapipe::GlContext::Create(nullptr, create_thread)};
-    RETURN_CODE(MpReturnCode::Success);
-  CATCH_EXCEPTION
-}
-
-MpReturnCode mp_GlContext_Create__Rgc_b(mediapipe::GlContext* share_context, bool create_thread, StatusOrSharedGlContext** status_or_shared_gl_context_out) {
-  TRY
-    *status_or_shared_gl_context_out = new StatusOrSharedGlContext{mediapipe::GlContext::Create(*share_context, create_thread)};
-    RETURN_CODE(MpReturnCode::Success);
-  CATCH_EXCEPTION
-}
-
-MpReturnCode mp_GlContext_Create__ui_b(mediapipe::PlatformGlContext share_context, bool create_thread,
-                                       StatusOrSharedGlContext** status_or_shared_gl_context_out) {
-  TRY
-    *status_or_shared_gl_context_out = new StatusOrSharedGlContext{mediapipe::GlContext::Create(share_context, create_thread)};
-    RETURN_CODE(MpReturnCode::Success);
-  CATCH_EXCEPTION
-}
-
-#if HAS_EAGL
-MpReturnCode mp_GlContext_Create__Pes_b(EAGLSharegroup* sharegroup, bool create_thread, StatusOrSharedGlContext** status_or_shared_gl_context_out) {
-  TRY
-    *status_or_shared_gl_context_out = new StatusOrSharedGlContext{mediapipe::GlContext::Create(sharegroup, create_thread)};
-    RETURN_CODE(MpReturnCode::Success);
-  CATCH_EXCEPTION
-}
-#endif  // HAS_EAGL
-
 #if defined(__EMSCRIPTEN__)
 #elif HAS_EGL
 EGLDisplay mp_GlContext__egl_display(mediapipe::GlContext* gl_context) { return gl_context->egl_display(); }

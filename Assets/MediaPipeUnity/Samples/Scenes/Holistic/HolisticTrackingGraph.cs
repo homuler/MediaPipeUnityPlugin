@@ -114,14 +114,14 @@ namespace Mediapipe.Unity.Holistic
     {
       if (runningMode.IsSynchronous())
       {
-        _poseDetectionStream.StartPolling().AssertOk();
-        _poseLandmarksStream.StartPolling().AssertOk();
-        _faceLandmarksStream.StartPolling().AssertOk();
-        _leftHandLandmarksStream.StartPolling().AssertOk();
-        _rightHandLandmarksStream.StartPolling().AssertOk();
-        _poseWorldLandmarksStream.StartPolling().AssertOk();
-        _segmentationMaskStream.StartPolling().AssertOk();
-        _poseRoiStream.StartPolling().AssertOk();
+        _poseDetectionStream.StartPolling();
+        _poseLandmarksStream.StartPolling();
+        _faceLandmarksStream.StartPolling();
+        _leftHandLandmarksStream.StartPolling();
+        _rightHandLandmarksStream.StartPolling();
+        _poseWorldLandmarksStream.StartPolling();
+        _segmentationMaskStream.StartPolling();
+        _poseRoiStream.StartPolling();
       }
       StartRun(BuildSidePacket(imageSource));
     }

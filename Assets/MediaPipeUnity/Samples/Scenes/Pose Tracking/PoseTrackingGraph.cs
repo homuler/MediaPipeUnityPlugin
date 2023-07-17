@@ -88,11 +88,11 @@ namespace Mediapipe.Unity.PoseTracking
     {
       if (runningMode.IsSynchronous())
       {
-        _poseDetectionStream.StartPolling().AssertOk();
-        _poseLandmarksStream.StartPolling().AssertOk();
-        _poseWorldLandmarksStream.StartPolling().AssertOk();
-        _segmentationMaskStream.StartPolling().AssertOk();
-        _roiFromLandmarksStream.StartPolling().AssertOk();
+        _poseDetectionStream.StartPolling();
+        _poseLandmarksStream.StartPolling();
+        _poseWorldLandmarksStream.StartPolling();
+        _segmentationMaskStream.StartPolling();
+        _roiFromLandmarksStream.StartPolling();
       }
       StartRun(BuildSidePacket(imageSource));
     }

@@ -74,9 +74,9 @@ MP_CAPI(int) mp_ValidatedGraphConfig__OutputSidePacketIndex__PKc(mediapipe::Vali
 MP_CAPI(int) mp_ValidatedGraphConfig__OutputStreamToNode__PKc(mediapipe::ValidatedGraphConfig* config, const char* name);
 
 MP_CAPI(MpReturnCode) mp_ValidatedGraphConfig__RegisteredSidePacketTypeName(mediapipe::ValidatedGraphConfig* config, const char* name,
-                                                                            absl::StatusOr<std::string>** status_or_string_out);
+                                                                            absl::Status** status_out, const char** string_out);
 MP_CAPI(MpReturnCode) mp_ValidatedGraphConfig__RegisteredStreamTypeName(mediapipe::ValidatedGraphConfig* config, const char* name,
-                                                                        absl::StatusOr<std::string>** status_or_string_out);
+                                                                        absl::Status** status_out, const char** string_out);
 
 MP_CAPI(MpReturnCode) mp_ValidatedGraphConfig__Package(mediapipe::ValidatedGraphConfig* config, const char** str_out);
 

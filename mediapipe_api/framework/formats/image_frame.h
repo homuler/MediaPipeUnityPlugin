@@ -13,12 +13,10 @@
 #include "mediapipe/framework/formats/image_frame.h"
 #include "mediapipe_api/common.h"
 #include "mediapipe_api/external/absl/status.h"
-#include "mediapipe_api/external/absl/statusor.h"
 #include "mediapipe_api/framework/packet.h"
 
 extern "C" {
 
-typedef absl::StatusOr<mediapipe::ImageFrame> StatusOrImageFrame;
 typedef void(Deleter)(uint8*);
 
 MP_CAPI(MpReturnCode) mp_ImageFrame__(mediapipe::ImageFrame** image_frame_out);
@@ -41,16 +39,10 @@ MP_CAPI(MpReturnCode) mp_ImageFrame__CopyToBuffer__Pui8_i(mediapipe::ImageFrame*
 MP_CAPI(MpReturnCode) mp_ImageFrame__CopyToBuffer__Pui16_i(mediapipe::ImageFrame* image_frame, uint16* buffer, int buffer_size);
 MP_CAPI(MpReturnCode) mp_ImageFrame__CopyToBuffer__Pf_i(mediapipe::ImageFrame* image_frame, float* buffer, int buffer_size);
 
-// StatusOr API
-MP_CAPI(void) mp_StatusOrImageFrame__delete(StatusOrImageFrame* status_or_image_frame);
-MP_CAPI(bool) mp_StatusOrImageFrame__ok(StatusOrImageFrame* status_or_image_frame);
-MP_CAPI(MpReturnCode) mp_StatusOrImageFrame__status(StatusOrImageFrame* status_or_image_frame, absl::Status** status_out);
-MP_CAPI(MpReturnCode) mp_StatusOrImageFrame__value(StatusOrImageFrame* status_or_image_frame, mediapipe::ImageFrame** value_out);
-
 // Packet API
 MP_CAPI(MpReturnCode) mp__MakeImageFramePacket__Pif(mediapipe::ImageFrame* image_frame, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeImageFramePacket_At__Pif_Rt(mediapipe::ImageFrame* image_frame, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp_Packet__ConsumeImageFrame(mediapipe::Packet* packet, StatusOrImageFrame** value_out);
+MP_CAPI(MpReturnCode) mp_Packet__ConsumeImageFrame(mediapipe::Packet* packet, absl::Status** status_out, mediapipe::ImageFrame** value_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetImageFrame(mediapipe::Packet* packet, const mediapipe::ImageFrame** value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsImageFrame(mediapipe::Packet* packet, absl::Status** status_out);
 

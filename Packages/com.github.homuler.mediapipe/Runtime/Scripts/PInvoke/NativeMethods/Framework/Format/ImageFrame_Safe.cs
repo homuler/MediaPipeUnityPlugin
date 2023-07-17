@@ -38,11 +38,5 @@ namespace Mediapipe
 
     [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern IntPtr mp_ImageFrame__MutablePixelData(IntPtr imageFrame);
-
-    #region StatusOr
-    [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    [return: MarshalAs(UnmanagedType.I1)]
-    public static extern bool mp_StatusOrImageFrame__ok(IntPtr statusOrImageFrame);
-    #endregion
   }
 }

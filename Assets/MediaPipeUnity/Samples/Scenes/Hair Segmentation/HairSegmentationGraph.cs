@@ -29,7 +29,7 @@ namespace Mediapipe.Unity.HairSegmentation
     {
       if (runningMode.IsSynchronous())
       {
-        _hairMaskStream.StartPolling().AssertOk();
+        _hairMaskStream.StartPolling();
       }
       StartRun(BuildSidePacket(imageSource));
     }

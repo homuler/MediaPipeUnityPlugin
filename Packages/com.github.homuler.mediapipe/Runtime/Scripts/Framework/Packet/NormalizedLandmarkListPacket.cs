@@ -34,7 +34,7 @@ namespace Mediapipe
       return normalizedLandmarkList;
     }
 
-    public override StatusOr<NormalizedLandmarkList> Consume()
+    public override NormalizedLandmarkList Consume()
     {
       throw new NotSupportedException();
     }

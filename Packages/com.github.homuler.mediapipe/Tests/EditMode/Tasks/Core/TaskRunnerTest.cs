@@ -32,9 +32,8 @@ output_stream: ""out""
     [Test]
     public void Create_ShouldThrowException_When_CalledWithInvalidConfig()
     {
-#pragma warning disable IDE0058
-      Assert.Throws<MediaPipeException>(() => TaskRunner.Create(new CalculatorGraphConfig()));
-#pragma warning restore IDE0058
+      var exception = Assert.Throws<BadStatusException>(() => TaskRunner.Create(new CalculatorGraphConfig()));
+      Assert.AreEqual(Status.StatusCode.InvalidArgument, exception.statusCode);
     }
 
     [Test]
@@ -76,9 +75,8 @@ output_stream: ""out""
       {
         using (var packetMap = new PacketMap())
         {
-#pragma warning disable IDE0058
-          Assert.Throws<MediaPipeException>(() => taskRunner.Process(packetMap));
-#pragma warning restore IDE0058
+          var exception = Assert.Throws<BadStatusException>(() => taskRunner.Process(packetMap));
+          Assert.AreEqual(Status.StatusCode.InvalidArgument, exception.statusCode);
         }
       }
     }
@@ -107,9 +105,8 @@ output_stream: ""out""
         using (var packetMap = new PacketMap())
         {
           packetMap.Emplace("in", new IntPacket(1, new Timestamp(1)));
-#pragma warning disable IDE0058
-          Assert.Throws<MediaPipeException>(() => taskRunner.Send(packetMap));
-#pragma warning restore IDE0058
+          var exception = Assert.Throws<BadStatusException>(() => taskRunner.Send(packetMap));
+          Assert.AreEqual(Status.StatusCode.InvalidArgument, exception.statusCode);
         }
       }
     }
@@ -121,9 +118,8 @@ output_stream: ""out""
       {
         using (var packetMap = new PacketMap())
         {
-#pragma warning disable IDE0058
-          Assert.Throws<MediaPipeException>(() => taskRunner.Send(packetMap));
-#pragma warning restore IDE0058
+          var exception = Assert.Throws<BadStatusException>(() => taskRunner.Send(packetMap));
+          Assert.AreEqual(Status.StatusCode.InvalidArgument, exception.statusCode);
         }
       }
     }
@@ -158,9 +154,8 @@ output_stream: ""out""
       using (var taskRunner = TaskRunner.Create(passThroughConfig))
       {
         taskRunner.Close();
-#pragma warning disable IDE0058
-        Assert.Throws<MediaPipeException>(() => taskRunner.Close());
-#pragma warning restore IDE0058
+        var exception = Assert.Throws<BadStatusException>(() => taskRunner.Close());
+        Assert.AreEqual(Status.StatusCode.InvalidArgument, exception.statusCode);
       }
     }
     #endregion
@@ -181,9 +176,8 @@ output_stream: ""out""
       using (var taskRunner = TaskRunner.Create(passThroughConfig))
       {
         taskRunner.Close();
-#pragma warning disable IDE0058
-        Assert.Throws<MediaPipeException>(() => taskRunner.Restart());
-#pragma warning restore IDE0058
+        var exception = Assert.Throws<BadStatusException>(() => taskRunner.Restart());
+        Assert.AreEqual(Status.StatusCode.InvalidArgument, exception.statusCode);
       }
     }
     #endregion

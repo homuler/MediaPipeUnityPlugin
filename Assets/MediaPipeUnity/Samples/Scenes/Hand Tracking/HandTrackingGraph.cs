@@ -93,12 +93,12 @@ namespace Mediapipe.Unity.HandTracking
     {
       if (runningMode.IsSynchronous())
       {
-        _palmDetectionsStream.StartPolling().AssertOk();
-        _handRectsFromPalmDetectionsStream.StartPolling().AssertOk();
-        _handLandmarksStream.StartPolling().AssertOk();
-        _handWorldLandmarksStream.StartPolling().AssertOk();
-        _handRectsFromLandmarksStream.StartPolling().AssertOk();
-        _handednessStream.StartPolling().AssertOk();
+        _palmDetectionsStream.StartPolling();
+        _handRectsFromPalmDetectionsStream.StartPolling();
+        _handLandmarksStream.StartPolling();
+        _handWorldLandmarksStream.StartPolling();
+        _handRectsFromLandmarksStream.StartPolling();
+        _handednessStream.StartPolling();
       }
       StartRun(BuildSidePacket(imageSource));
     }

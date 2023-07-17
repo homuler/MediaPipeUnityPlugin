@@ -50,7 +50,7 @@ namespace Mediapipe
       return matrixData;
     }
 
-    public override StatusOr<MatrixData> Consume()
+    public override MatrixData Consume()
     {
       throw new NotSupportedException();
     }

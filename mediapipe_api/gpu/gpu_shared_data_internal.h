@@ -12,7 +12,6 @@
 
 #include "mediapipe/gpu/gpu_shared_data_internal.h"
 #include "mediapipe_api/common.h"
-#include "mediapipe_api/external/absl/statusor.h"
 
 extern "C" {
 
@@ -22,14 +21,9 @@ MP_CAPI(void) mp_SharedGpuResources__delete(SharedGpuResources* gpu_resources);
 MP_CAPI(mediapipe::GpuResources*) mp_SharedGpuResources__get(SharedGpuResources* gpu_resources);
 MP_CAPI(void) mp_SharedGpuResources__reset(SharedGpuResources* gpu_resources);
 
-MP_CAPI(MpReturnCode) mp_GpuResources_Create(absl::StatusOr<SharedGpuResources>** status_or_gpu_resources_out);
+MP_CAPI(MpReturnCode) mp_GpuResources_Create(absl::Status** status_out, SharedGpuResources** gpu_resources_out);
 MP_CAPI(MpReturnCode) mp_GpuResources_Create__Pv(mediapipe::PlatformGlContext external_context,
-                                                 absl::StatusOr<SharedGpuResources>** status_or_gpu_resources_out);
-
-MP_CAPI(void) mp_StatusOrGpuResources__delete(absl::StatusOr<SharedGpuResources>* status_or_gpu_resources);
-MP_CAPI(bool) mp_StatusOrGpuResources__ok(absl::StatusOr<SharedGpuResources>* status_or_gpu_resources);
-MP_CAPI(MpReturnCode) mp_StatusOrGpuResources__status(absl::StatusOr<SharedGpuResources>* status_or_gpu_resources, absl::Status** status_out);
-MP_CAPI(MpReturnCode) mp_StatusOrGpuResources__value(absl::StatusOr<SharedGpuResources>* status_or_gpu_resources, SharedGpuResources** value_out);
+                                                 absl::Status** status_out, SharedGpuResources** gpu_resources_out);
 
 }  // extern "C"
 
