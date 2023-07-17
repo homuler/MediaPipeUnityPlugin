@@ -49,7 +49,7 @@ namespace Mediapipe.Tests
       using (var glCalculatorHelper = new GlCalculatorHelper())
       {
         Assert.False(glCalculatorHelper.Initialized());
-        glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
+        glCalculatorHelper.InitializeForTest(GpuResources.Create());
         Assert.True(glCalculatorHelper.Initialized());
       }
     }
@@ -61,7 +61,7 @@ namespace Mediapipe.Tests
     {
       using (var glCalculatorHelper = new GlCalculatorHelper())
       {
-        glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
+        glCalculatorHelper.InitializeForTest(GpuResources.Create());
 
         var status = glCalculatorHelper.RunInGlContext(() => { });
         Assert.True(status.Ok());
@@ -73,7 +73,7 @@ namespace Mediapipe.Tests
     {
       using (var glCalculatorHelper = new GlCalculatorHelper())
       {
-        glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
+        glCalculatorHelper.InitializeForTest(GpuResources.Create());
 
         var status = glCalculatorHelper.RunInGlContext((GlCalculatorHelper.GlFunction)(() => { throw new Exception("Function Throws"); }));
         Assert.AreEqual(Status.StatusCode.Internal, status.Code());
@@ -87,7 +87,7 @@ namespace Mediapipe.Tests
     {
       using (var glCalculatorHelper = new GlCalculatorHelper())
       {
-        glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
+        glCalculatorHelper.InitializeForTest(GpuResources.Create());
 
         using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Srgba, 32, 24))
         {
@@ -113,7 +113,7 @@ namespace Mediapipe.Tests
     {
       using (var glCalculatorHelper = new GlCalculatorHelper())
       {
-        glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
+        glCalculatorHelper.InitializeForTest(GpuResources.Create());
 
         using (var imageFrame = new ImageFrame(ImageFormat.Types.Format.Sbgra, 32, 24))
         {
@@ -138,7 +138,7 @@ namespace Mediapipe.Tests
     {
       using (var glCalculatorHelper = new GlCalculatorHelper())
       {
-        glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
+        glCalculatorHelper.InitializeForTest(GpuResources.Create());
 
         var status = glCalculatorHelper.RunInGlContext(() =>
         {
@@ -159,7 +159,7 @@ namespace Mediapipe.Tests
     {
       using (var glCalculatorHelper = new GlCalculatorHelper())
       {
-        glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
+        glCalculatorHelper.InitializeForTest(GpuResources.Create());
 
         // default frame buffer
         Assert.AreEqual(0, glCalculatorHelper.framebuffer);
@@ -173,7 +173,7 @@ namespace Mediapipe.Tests
     {
       using (var glCalculatorHelper = new GlCalculatorHelper())
       {
-        glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
+        glCalculatorHelper.InitializeForTest(GpuResources.Create());
 
         using (var glContext = glCalculatorHelper.GetGlContext())
         {

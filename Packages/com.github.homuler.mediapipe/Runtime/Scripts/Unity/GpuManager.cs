@@ -89,10 +89,7 @@ namespace Mediapipe.Unity
         try
         {
           Logger.LogInfo(_TAG, "Initializing GpuResources...");
-          var statusOrGpuResources = GpuResources.Create(_CurrentContext);
-
-          statusOrGpuResources.status.AssertOk();
-          GpuResources = statusOrGpuResources.Value();
+          GpuResources = GpuResources.Create(_CurrentContext);
 
           Logger.LogInfo(_TAG, "Initializing GlCalculatorHelper...");
           GlCalculatorHelper = new GlCalculatorHelper();

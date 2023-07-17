@@ -25,7 +25,7 @@ namespace Mediapipe.Tests
     {
       using (var glCalculatorHelper = new GlCalculatorHelper())
       {
-        glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
+        glCalculatorHelper.InitializeForTest(GpuResources.Create());
 
         glCalculatorHelper.RunInGlContext(() =>
         {
@@ -74,7 +74,7 @@ namespace Mediapipe.Tests
     {
       using (var glCalculatorHelper = new GlCalculatorHelper())
       {
-        glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
+        glCalculatorHelper.InitializeForTest(GpuResources.Create());
 
         return glCalculatorHelper.GetGlContext();
       }
