@@ -104,21 +104,21 @@ namespace Mediapipe
       UnsafeNativeMethods.mp_ValidatedGraphConfig__delete(ptr);
     }
 
-    public Status Initialize(CalculatorGraphConfig config)
+    public void Initialize(CalculatorGraphConfig config)
     {
       var bytes = config.ToByteArray();
       UnsafeNativeMethods.mp_ValidatedGraphConfig__Initialize__Rcgc(mpPtr, bytes, bytes.Length, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
-      return new Status(statusPtr);
+      AssertStatusOk(statusPtr);
     }
 
-    public Status Initialize(string graphType)
+    public void Initialize(string graphType)
     {
       UnsafeNativeMethods.mp_ValidatedGraphConfig__Initialize__PKc(mpPtr, graphType, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
-      return new Status(statusPtr);
+      AssertStatusOk(statusPtr);
     }
 
     public bool Initialized()
@@ -126,13 +126,13 @@ namespace Mediapipe
       return SafeNativeMethods.mp_ValidatedGraphConfig__Initialized(mpPtr);
     }
 
-    public Status ValidateRequiredSidePackets(PacketMap sidePacket)
+    public void ValidateRequiredSidePackets(PacketMap sidePacket)
     {
       UnsafeNativeMethods.mp_ValidatedGraphConfig__ValidateRequiredSidePackets__Rsp(mpPtr, sidePacket.mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(sidePacket);
       GC.KeepAlive(this);
-      return new Status(statusPtr);
+      AssertStatusOk(statusPtr);
     }
 
     public CalculatorGraphConfig Config(ExtensionRegistry extensionRegistry = null)

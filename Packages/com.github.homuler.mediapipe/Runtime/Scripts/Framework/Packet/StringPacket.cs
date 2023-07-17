@@ -90,12 +90,12 @@ namespace Mediapipe
       return bytes;
     }
 
-    public override Status ValidateAsType()
+    public override void ValidateAsType()
     {
       UnsafeNativeMethods.mp_Packet__ValidateAsString(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
-      return new Status(statusPtr);
+      AssertStatusOk(statusPtr);
     }
   }
 }

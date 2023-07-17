@@ -59,7 +59,7 @@ namespace Mediapipe.Unity.HairSegmentation
       };
     }
 
-    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
+    protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
       if (runningMode == RunningMode.NonBlockingSync)
       {
@@ -69,7 +69,7 @@ namespace Mediapipe.Unity.HairSegmentation
       {
         _hairMaskStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _HairMaskStreamName, true, timeoutMicrosec);
       }
-      return calculatorGraph.Initialize(config);
+      calculatorGraph.Initialize(config);
     }
 
     private PacketMap BuildSidePacket(ImageSource imageSource)

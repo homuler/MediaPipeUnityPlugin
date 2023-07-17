@@ -19,7 +19,7 @@ namespace Mediapipe.Tests
       var matrix = CreateMatrixInputData();
       using (var packet = new MatrixPacket(matrix))
       {
-        Assert.True(packet.ValidateAsType().Ok());
+        Assert.DoesNotThrow(packet.ValidateAsType);
         Assert.AreEqual(matrix, packet.Get());
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
@@ -84,11 +84,11 @@ namespace Mediapipe.Tests
 
     #region #ValidateAsType
     [Test]
-    public void ValidateAsType_ShouldReturnOk_When_ValueIsSet()
+    public void ValidateAsType_ShouldNotThrow_When_ValueIsSet()
     {
       using (var packet = new MatrixPacket(CreateMatrixInputData()))
       {
-        Assert.True(packet.ValidateAsType().Ok());
+        Assert.DoesNotThrow(packet.ValidateAsType);
       }
     }
     #endregion

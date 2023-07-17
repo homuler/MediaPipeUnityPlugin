@@ -76,7 +76,7 @@ namespace Mediapipe.Unity.MediaPipeVideo
       return TryGetNext(_outputVideoStream, out outputVideo, allowBlock, GetCurrentTimestampMicrosec());
     }
 
-    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
+    protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
       if (configType == ConfigType.OpenGLES)
       {
@@ -96,7 +96,7 @@ namespace Mediapipe.Unity.MediaPipeVideo
         _outputVideoStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _OutputVideoStreamName, true, timeoutMicrosec);
       }
 
-      return calculatorGraph.Initialize(config);
+      calculatorGraph.Initialize(config);
     }
 
     protected override IList<WaitForResult> RequestDependentAssets()

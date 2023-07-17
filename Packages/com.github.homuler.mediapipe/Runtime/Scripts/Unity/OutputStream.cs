@@ -128,7 +128,7 @@ namespace Mediapipe.Unity
     {
       if (OnReceived == null)
       {
-        calculatorGraph.ObserveOutputStream(streamName, _id, InvokeIfOutputStreamFound, observeTimestampBounds).AssertOk();
+        calculatorGraph.ObserveOutputStream(streamName, _id, InvokeIfOutputStreamFound, observeTimestampBounds);
       }
       OnReceived += callback;
     }

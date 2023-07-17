@@ -116,7 +116,7 @@ namespace Mediapipe.Unity
       Logger.LogInfo(TAG, $"Config Type = {configType}");
       Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
 
-      InitializeCalculatorGraph().AssertOk();
+      InitializeCalculatorGraph();
       _stopwatch = new Stopwatch();
       _stopwatch.Start();
 
@@ -139,7 +139,7 @@ namespace Mediapipe.Unity
 
     protected void StartRun(PacketMap sidePacket)
     {
-      calculatorGraph.StartRun(sidePacket).AssertOk();
+      calculatorGraph.StartRun(sidePacket);
       _isRunning = true;
     }
 
@@ -149,20 +149,22 @@ namespace Mediapipe.Unity
       {
         if (_isRunning)
         {
-          using (var status = calculatorGraph.CloseAllPacketSources())
+          try
           {
-            if (!status.Ok())
-            {
-              Logger.LogError(TAG, status.ToString());
-            }
+            calculatorGraph.CloseAllPacketSources();
+          }
+          catch (BadStatusException exception)
+          {
+            Logger.LogError(TAG, exception.Message);
           }
 
-          using (var status = calculatorGraph.WaitUntilDone())
+          try
           {
-            if (!status.Ok())
-            {
-              Logger.LogError(TAG, status.ToString());
-            }
+            calculatorGraph.WaitUntilDone();
+          }
+          catch (BadStatusException exception)
+          {
+            Logger.LogError(TAG, exception.Message);
           }
         }
 
@@ -180,7 +182,7 @@ namespace Mediapipe.Unity
 
     protected void AddPacketToInputStream<T>(string streamName, Packet<T> packet)
     {
-      calculatorGraph.AddPacketToInputStream(streamName, packet).AssertOk();
+      calculatorGraph.AddPacketToInputStream(streamName, packet);
     }
 
     protected void AddTextureFrameToInputStream(string streamName, TextureFrame textureFrame)
@@ -217,7 +219,7 @@ namespace Mediapipe.Unity
       return microsec < 0 ? Timestamp.Unset() : new Timestamp(microsec);
     }
 
-    protected Status InitializeCalculatorGraph()
+    protected void InitializeCalculatorGraph()
     {
       calculatorGraph = new CalculatorGraph();
       _NameTable.Add(calculatorGraph.mpPtr, GetInstanceID());
@@ -229,19 +231,16 @@ namespace Mediapipe.Unity
       //   However, if the config format is invalid, this code does not initialize CalculatorGraph and does not throw exceptions either.
       //   The problem is that if you call ObserveStreamOutput in this state, the program will crash.
       //   The following code is not very efficient, but it will return Non-OK status when an invalid configuration is given.
-      try
+      var baseConfig = textConfig == null ? null : CalculatorGraphConfig.Parser.ParseFromTextFormat(textConfig.text);
+      if (baseConfig == null)
       {
-        var baseConfig = textConfig == null ? null : CalculatorGraphConfig.Parser.ParseFromTextFormat(textConfig.text);
-        if (baseConfig == null)
-        {
-          throw new InvalidOperationException("Failed to get the text config. Check if the config is set to GraphRunner");
-        }
-        var status = ConfigureCalculatorGraph(baseConfig);
-        return !status.Ok() || inferenceMode == InferenceMode.CPU ? status : calculatorGraph.SetGpuResources(GpuManager.GpuResources);
+        throw new InvalidOperationException("Failed to get the text config. Check if the config is set to GraphRunner");
       }
-      catch (Exception e)
+      ConfigureCalculatorGraph(baseConfig);
+
+      if (inferenceMode != InferenceMode.CPU)
       {
-        return Status.FailedPrecondition(e.ToString());
+        calculatorGraph.SetGpuResources(GpuManager.GpuResources);
       }
     }
 
@@ -257,9 +256,9 @@ namespace Mediapipe.Unity
     ///   A <see cref="CalculatorGraphConfig" /> instance corresponding to <see cref="textConfig" />.<br />
     ///   It can be dynamically modified here.
     /// </param>
-    protected virtual Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
+    protected virtual void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      return calculatorGraph.Initialize(config);
+      calculatorGraph.Initialize(config);
     }
 
     protected void SetImageTransformationOptions(PacketMap sidePacket, ImageSource imageSource, bool expectedToBeMirrored = false)

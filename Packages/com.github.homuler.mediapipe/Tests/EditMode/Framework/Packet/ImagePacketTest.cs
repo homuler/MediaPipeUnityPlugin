@@ -17,8 +17,9 @@ namespace Mediapipe.Tests
     {
       using (var packet = new ImagePacket())
       {
-        Assert.AreEqual(Status.StatusCode.Internal, packet.ValidateAsType().Code());
-        var exception = Assert.Throws<BadStatusException>(() => { _ = packet.Consume(); });
+        var exception = Assert.Throws<BadStatusException>(packet.ValidateAsType);
+        Assert.AreEqual(Status.StatusCode.Internal, exception.statusCode);
+        exception = Assert.Throws<BadStatusException>(() => { _ = packet.Consume(); });
         Assert.AreEqual(Status.StatusCode.Internal, exception.statusCode);
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
@@ -32,7 +33,7 @@ namespace Mediapipe.Tests
       using (var packet = new ImagePacket(srcImage))
       {
         Assert.True(srcImage.isDisposed);
-        Assert.True(packet.ValidateAsType().Ok());
+        Assert.DoesNotThrow(packet.ValidateAsType);
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
 
         var image = packet.Consume();
@@ -50,7 +51,7 @@ namespace Mediapipe.Tests
         using (var packet = new ImagePacket(srcImage, timestamp))
         {
           Assert.True(srcImage.isDisposed);
-          Assert.True(packet.ValidateAsType().Ok());
+          Assert.DoesNotThrow(packet.ValidateAsType);
 
           var image = packet.Consume();
           Assert.AreEqual(ImageFormat.Types.Format.Srgba, image.ImageFormat());
@@ -145,11 +146,11 @@ namespace Mediapipe.Tests
 
     #region #ValidateAsType
     [Test]
-    public void ValidateAsType_ShouldReturnOk_When_ValueIsSet()
+    public void ValidateAsType_ShouldNotThrow_When_ValueIsSet()
     {
       using (var packet = new ImagePacket(BuildSRGBAImage()))
       {
-        Assert.True(packet.ValidateAsType().Ok());
+        Assert.DoesNotThrow(packet.ValidateAsType);
       }
     }
     #endregion
