@@ -47,6 +47,12 @@ dotnet_style_qualification_for_field = false:suggestion
 dotnet_style_qualification_for_method = false:suggestion
 dotnet_style_qualification_for_property = false:suggestion
 
+# Use expression body for methods (IDE0022)
+csharp_style_expression_bodied_methods = when_on_single_line:suggestion
+
+# Use expression body for operators (IDE0023 and IDE0024)
+csharp_style_expression_bodied_operators = when_on_single_line:suggestion
+
 # Use language keywords instead of framework type names for type references (IDE0049)
 dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
 
