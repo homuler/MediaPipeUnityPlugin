@@ -86,12 +86,12 @@ namespace Mediapipe
       throw new NotSupportedException();
     }
 
-    public override Status ValidateAsType()
+    public override void ValidateAsType()
     {
       UnsafeNativeMethods.mp_Packet__ValidateAsFloatArray(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
-      return new Status(statusPtr);
+      AssertStatusOk(statusPtr);
     }
   }
 }

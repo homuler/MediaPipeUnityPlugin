@@ -11,7 +11,7 @@ namespace Mediapipe
 
   public class GlCalculatorHelper : MpResourceHandle
   {
-    public delegate Status.StatusArgs NativeGlStatusFunction();
+    public delegate StatusArgs NativeGlStatusFunction();
     public delegate void GlFunction();
 
     public GlCalculatorHelper() : base()
@@ -37,26 +37,26 @@ namespace Mediapipe
     ///   Function that is run in Gl Context.
     ///   Make sure that this function doesn't throw exceptions and won't be GCed.
     /// </param>
-    public Status RunInGlContext(NativeGlStatusFunction nativeGlStatusFunction)
+    public void RunInGlContext(NativeGlStatusFunction nativeGlStatusFunction)
     {
       UnsafeNativeMethods.mp_GlCalculatorHelper__RunInGlContext__PF(mpPtr, nativeGlStatusFunction, out var statusPtr).Assert();
       GC.KeepAlive(this);
 
-      return new Status(statusPtr);
+      AssertStatusOk(statusPtr);
     }
 
-    public Status RunInGlContext(GlFunction glFunction)
+    public void RunInGlContext(GlFunction glFunction)
     {
-      return RunInGlContext(() =>
+      RunInGlContext(() =>
       {
         try
         {
           glFunction();
-          return Status.StatusArgs.Ok();
+          return StatusArgs.Ok();
         }
         catch (Exception e)
         {
-          return Status.StatusArgs.Internal(e.ToString());
+          return StatusArgs.Internal(e.ToString());
         }
       });
     }

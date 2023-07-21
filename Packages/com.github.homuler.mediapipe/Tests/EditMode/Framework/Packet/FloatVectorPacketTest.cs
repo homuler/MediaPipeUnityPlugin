@@ -18,11 +18,10 @@ namespace Mediapipe.Tests
     {
       using (var packet = new FloatVectorPacket())
       {
-#pragma warning disable IDE0058
-        Assert.AreEqual(Status.StatusCode.Internal, packet.ValidateAsType().Code());
-        Assert.Throws<MediaPipeException>(() => { packet.Get(); });
+        var exception = Assert.Throws<BadStatusException>(packet.ValidateAsType);
+        Assert.AreEqual(StatusCode.Internal, exception.statusCode);
+        _ = Assert.Throws<MediaPipeException>(() => { _ = packet.Get(); });
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
-#pragma warning restore IDE0058
       }
     }
 
@@ -32,7 +31,7 @@ namespace Mediapipe.Tests
       float[] data = { };
       using (var packet = new FloatVectorPacket(data))
       {
-        Assert.True(packet.ValidateAsType().Ok());
+        Assert.DoesNotThrow(packet.ValidateAsType);
         Assert.AreEqual(data, packet.Get());
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
@@ -44,7 +43,7 @@ namespace Mediapipe.Tests
       float[] data = { 0.01f };
       using (var packet = new FloatVectorPacket(data))
       {
-        Assert.True(packet.ValidateAsType().Ok());
+        Assert.DoesNotThrow(packet.ValidateAsType);
         Assert.AreEqual(data, packet.Get());
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
@@ -58,7 +57,7 @@ namespace Mediapipe.Tests
       {
         using (var packet = new FloatVectorPacket(data, timestamp))
         {
-          Assert.True(packet.ValidateAsType().Ok());
+          Assert.DoesNotThrow(packet.ValidateAsType);
           Assert.AreEqual(data, packet.Get());
           Assert.AreEqual(timestamp, packet.Timestamp());
         }
@@ -71,7 +70,7 @@ namespace Mediapipe.Tests
       var data = new List<float>();
       using (var packet = new FloatVectorPacket(data))
       {
-        Assert.True(packet.ValidateAsType().Ok());
+        Assert.DoesNotThrow(packet.ValidateAsType);
         Assert.AreEqual(data, packet.Get());
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
@@ -83,7 +82,7 @@ namespace Mediapipe.Tests
       var data = new List<float>() { 0.01f };
       using (var packet = new FloatVectorPacket(data))
       {
-        Assert.True(packet.ValidateAsType().Ok());
+        Assert.DoesNotThrow(packet.ValidateAsType);
         Assert.AreEqual(data, packet.Get());
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
@@ -97,7 +96,7 @@ namespace Mediapipe.Tests
       {
         using (var packet = new FloatVectorPacket(data, timestamp))
         {
-          Assert.True(packet.ValidateAsType().Ok());
+          Assert.DoesNotThrow(packet.ValidateAsType);
           Assert.AreEqual(data, packet.Get());
           Assert.AreEqual(timestamp, packet.Timestamp());
         }
@@ -163,12 +162,12 @@ namespace Mediapipe.Tests
 
     #region #ValidateAsType
     [Test]
-    public void ValidateAsType_ShouldReturnOk_When_ValueIsSet()
+    public void ValidateAsType_ShouldNotThrow_When_ValueIsSet()
     {
       float[] array = { 0.01f };
       using (var packet = new FloatVectorPacket(array))
       {
-        Assert.True(packet.ValidateAsType().Ok());
+        Assert.DoesNotThrow(packet.ValidateAsType);
       }
     }
     #endregion

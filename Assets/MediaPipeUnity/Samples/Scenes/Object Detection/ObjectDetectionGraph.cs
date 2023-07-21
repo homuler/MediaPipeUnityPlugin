@@ -56,7 +56,7 @@ namespace Mediapipe.Unity.ObjectDetection
       };
     }
 
-    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
+    protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
       if (runningMode == RunningMode.NonBlockingSync)
       {
@@ -67,7 +67,7 @@ namespace Mediapipe.Unity.ObjectDetection
       {
         _outputDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _OutputDetectionsStreamName, true, timeoutMicrosec);
       }
-      return calculatorGraph.Initialize(config);
+      calculatorGraph.Initialize(config);
     }
 
     private PacketMap BuildSidePacket(ImageSource imageSource)

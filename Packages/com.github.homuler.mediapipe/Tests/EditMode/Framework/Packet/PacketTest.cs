@@ -49,7 +49,8 @@ namespace Mediapipe.Tests
     {
       using (var packet = new BoolPacket(true))
       {
-        Assert.AreEqual(Status.StatusCode.InvalidArgument, packet.ValidateAsProtoMessageLite().Code());
+        var exception = Assert.Throws<BadStatusException>(packet.ValidateAsProtoMessageLite);
+        Assert.AreEqual(StatusCode.InvalidArgument, exception.statusCode);
       }
     }
     #endregion

@@ -17,11 +17,10 @@ namespace Mediapipe.Tests
     {
       using (var packet = new BoolPacket())
       {
-#pragma warning disable IDE0058
-        Assert.AreEqual(Status.StatusCode.Internal, packet.ValidateAsType().Code());
-        Assert.Throws<MediaPipeException>(() => { packet.Get(); });
+        var exception = Assert.Throws<BadStatusException>(packet.ValidateAsType);
+        Assert.AreEqual(StatusCode.Internal, exception.statusCode);
+        _ = Assert.Throws<MediaPipeException>(() => { _ = packet.Get(); });
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
-#pragma warning restore IDE0058
       }
 
     }
@@ -31,7 +30,7 @@ namespace Mediapipe.Tests
     {
       using (var packet = new BoolPacket(true))
       {
-        Assert.True(packet.ValidateAsType().Ok());
+        Assert.DoesNotThrow(packet.ValidateAsType);
         Assert.True(packet.Get());
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
@@ -42,7 +41,7 @@ namespace Mediapipe.Tests
     {
       using (var packet = new BoolPacket(false))
       {
-        Assert.True(packet.ValidateAsType().Ok());
+        Assert.DoesNotThrow(packet.ValidateAsType);
         Assert.False(packet.Get());
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
@@ -55,7 +54,7 @@ namespace Mediapipe.Tests
       {
         using (var packet = new BoolPacket(true, timestamp))
         {
-          Assert.True(packet.ValidateAsType().Ok());
+          Assert.DoesNotThrow(packet.ValidateAsType);
           Assert.True(packet.Get());
           Assert.AreEqual(timestamp, packet.Timestamp());
         }
@@ -120,11 +119,11 @@ namespace Mediapipe.Tests
 
     #region #ValidateAsType
     [Test]
-    public void ValidateAsType_ShouldReturnOk_When_ValueIsSet()
+    public void ValidateAsType_ShouldNotThrow_When_ValueIsSet()
     {
       using (var packet = new BoolPacket(true))
       {
-        Assert.True(packet.ValidateAsType().Ok());
+        Assert.DoesNotThrow(packet.ValidateAsType);
       }
     }
     #endregion

@@ -34,7 +34,7 @@ namespace Mediapipe.Tests
             Assert.NotNull(glContext);
             Assert.True(glContext.IsCurrent());
           }
-        }).AssertOk();
+        });
       }
     }
     #endregion

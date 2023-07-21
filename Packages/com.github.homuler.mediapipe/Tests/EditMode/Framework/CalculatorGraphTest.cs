@@ -69,16 +69,13 @@ output_stream: ""out""
 
     #region #Initialize
     [Test]
-    public void Initialize_ShouldReturnOk_When_CalledWithConfig_And_ConfigIsNotSet()
+    public void Initialize_ShouldNotThrow_When_CalledWithConfig_And_ConfigIsNotSet()
     {
       using (var graph = new CalculatorGraph())
       {
-        using (var status = graph.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ValidConfigText)))
-        {
-          Assert.True(status.Ok());
-        }
-
+        graph.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ValidConfigText));
         var config = graph.Config();
+
         Assert.AreEqual("in", config.InputStream[0]);
         Assert.AreEqual("out", config.OutputStream[0]);
       }
@@ -89,15 +86,16 @@ output_stream: ""out""
     {
       using (var graph = new CalculatorGraph(_ValidConfigText))
       {
-        using (var status = graph.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ValidConfigText)))
+        var exception = Assert.Throws<BadStatusException>(() =>
         {
-          Assert.AreEqual(Status.StatusCode.Internal, status.Code());
-        }
+          graph.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ValidConfigText));
+        });
+        Assert.AreEqual(StatusCode.Internal, exception.statusCode);
       }
     }
 
     [Test]
-    public void Initialize_ShouldReturnOk_When_CalledWithConfigAndSidePacket_And_ConfigIsNotSet()
+    public void Initialize_ShouldNotThrow_When_CalledWithConfigAndSidePacket_And_ConfigIsNotSet()
     {
       using (var sidePacket = new PacketMap())
       {
@@ -107,10 +105,7 @@ output_stream: ""out""
         {
           var config = CalculatorGraphConfig.Parser.ParseFromTextFormat(_ValidConfigText);
 
-          using (var status = graph.Initialize(config, sidePacket))
-          {
-            Assert.True(status.Ok());
-          }
+          Assert.DoesNotThrow(() => graph.Initialize(config, sidePacket));
         }
       }
     }
@@ -126,10 +121,8 @@ output_stream: ""out""
         {
           var config = CalculatorGraphConfig.Parser.ParseFromTextFormat(_ValidConfigText);
 
-          using (var status = graph.Initialize(config, sidePacket))
-          {
-            Assert.AreEqual(Status.StatusCode.Internal, status.Code());
-          }
+          var exception = Assert.Throws<BadStatusException>(() => graph.Initialize(config, sidePacket));
+          Assert.AreEqual(StatusCode.Internal, exception.statusCode);
         }
       }
     }
@@ -141,13 +134,13 @@ output_stream: ""out""
     {
       using (var graph = new CalculatorGraph(_ValidConfigText))
       {
-        Assert.True(graph.StartRun().Ok());
+        graph.StartRun();
         Assert.False(graph.GraphInputStreamsClosed());
 
-        Assert.True(graph.WaitUntilIdle().Ok());
-        Assert.True(graph.CloseAllPacketSources().Ok());
+        graph.WaitUntilIdle();
+        graph.CloseAllPacketSources();
         Assert.True(graph.GraphInputStreamsClosed());
-        Assert.True(graph.WaitUntilDone().Ok());
+        graph.WaitUntilDone();
         Assert.False(graph.HasError());
       }
     }
@@ -157,9 +150,10 @@ output_stream: ""out""
     {
       using (var graph = new CalculatorGraph(_ValidConfigText))
       {
-        Assert.True(graph.StartRun().Ok());
+        graph.StartRun();
         graph.Cancel();
-        Assert.AreEqual(Status.StatusCode.Cancelled, graph.WaitUntilDone().Code());
+        var exception = Assert.Throws<BadStatusException>(() => graph.WaitUntilDone());
+        Assert.AreEqual(StatusCode.Cancelled, exception.statusCode);
       }
     }
     #endregion

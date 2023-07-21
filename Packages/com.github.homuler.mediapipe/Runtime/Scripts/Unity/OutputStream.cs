@@ -128,7 +128,7 @@ namespace Mediapipe.Unity
     {
       if (OnReceived == null)
       {
-        calculatorGraph.ObserveOutputStream(streamName, _id, InvokeIfOutputStreamFound, observeTimestampBounds).AssertOk();
+        calculatorGraph.ObserveOutputStream(streamName, _id, InvokeIfOutputStreamFound, observeTimestampBounds);
       }
       OnReceived += callback;
     }
@@ -380,18 +380,18 @@ namespace Mediapipe.Unity
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    protected static Status.StatusArgs InvokeIfOutputStreamFound(IntPtr graphPtr, int streamId, IntPtr packetPtr)
+    protected static StatusArgs InvokeIfOutputStreamFound(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       try
       {
         var isFound = _InstanceTable.TryGetValue(streamId, out var outputStream);
         if (!isFound)
         {
-          return Status.StatusArgs.NotFound($"OutputStream with id {streamId} is not found, maybe already GCed");
+          return StatusArgs.NotFound($"OutputStream with id {streamId} is not found, maybe already GCed");
         }
         if (outputStream.calculatorGraph.mpPtr != graphPtr)
         {
-          return Status.StatusArgs.InvalidArgument($"OutputStream is found, but is not linked to the specified CalclatorGraph");
+          return StatusArgs.InvalidArgument($"OutputStream is found, but is not linked to the specified CalclatorGraph");
         }
 
         outputStream.referencePacket.SwitchNativePtr(packetPtr);
@@ -401,11 +401,11 @@ namespace Mediapipe.Unity
         }
         outputStream.referencePacket.ReleaseMpResource();
 
-        return Status.StatusArgs.Ok();
+        return StatusArgs.Ok();
       }
       catch (Exception e)
       {
-        return Status.StatusArgs.Internal(e.ToString());
+        return StatusArgs.Internal(e.ToString());
       }
     }
   }

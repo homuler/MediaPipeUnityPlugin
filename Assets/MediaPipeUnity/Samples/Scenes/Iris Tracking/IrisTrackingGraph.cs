@@ -85,7 +85,7 @@ namespace Mediapipe.Unity.IrisTracking
       };
     }
 
-    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
+    protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
       if (runningMode == RunningMode.NonBlockingSync)
       {
@@ -102,7 +102,7 @@ namespace Mediapipe.Unity.IrisTracking
         _faceRectStream = new OutputStream<NormalizedRectPacket, NormalizedRect>(calculatorGraph, _FaceRectStreamName, true, timeoutMicrosec);
         _faceLandmarksWithIrisStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _FaceLandmarksWithIrisStreamName, true, timeoutMicrosec);
       }
-      return calculatorGraph.Initialize(config);
+      calculatorGraph.Initialize(config);
     }
 
     private PacketMap BuildSidePacket(ImageSource imageSource)

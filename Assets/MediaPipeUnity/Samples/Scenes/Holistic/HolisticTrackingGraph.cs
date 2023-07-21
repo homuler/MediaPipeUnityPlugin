@@ -194,7 +194,7 @@ namespace Mediapipe.Unity.Holistic
       }
     }
 
-    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
+    protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
       if (runningMode == RunningMode.NonBlockingSync)
       {
@@ -229,9 +229,7 @@ namespace Mediapipe.Unity.Holistic
 
       using (var validatedGraphConfig = new ValidatedGraphConfig())
       {
-        var status = validatedGraphConfig.Initialize(config);
-
-        if (!status.Ok()) { return status; }
+        validatedGraphConfig.Initialize(config);
 
         var extensionRegistry = new ExtensionRegistry() { TensorsToDetectionsCalculatorOptions.Extensions.Ext, ThresholdingCalculatorOptions.Extensions.Ext };
         var cannonicalizedConfig = validatedGraphConfig.Config(extensionRegistry);
@@ -261,7 +259,7 @@ namespace Mediapipe.Unity.Holistic
             Logger.LogInfo(TAG, $"Min Tracking Confidence = {minTrackingConfidence}");
           }
         }
-        return calculatorGraph.Initialize(cannonicalizedConfig);
+        calculatorGraph.Initialize(cannonicalizedConfig);
       }
     }
 

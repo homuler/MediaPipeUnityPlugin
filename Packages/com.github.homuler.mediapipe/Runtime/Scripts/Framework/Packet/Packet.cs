@@ -60,16 +60,16 @@ namespace Mediapipe
       return SafeNativeMethods.mp_Packet__IsEmpty(mpPtr);
     }
 
-    public Status ValidateAsProtoMessageLite()
+    public void ValidateAsProtoMessageLite()
     {
       UnsafeNativeMethods.mp_Packet__ValidateAsProtoMessageLite(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
-      return new Status(statusPtr);
+      AssertStatusOk(statusPtr);
     }
 
     // TODO: declare as abstract
-    public virtual Status ValidateAsType()
+    public virtual void ValidateAsType()
     {
       throw new NotImplementedException();
     }

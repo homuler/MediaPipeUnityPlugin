@@ -97,10 +97,11 @@ namespace Mediapipe.Tests
     public void ConvertToGpu_ShouldReturnTrue_When_ImageIsOnGpu()
     {
       var texture = new Texture2D(4, 2, TextureFormat.RGBA32, false);
+      var name = (uint)texture.GetNativeTexturePtr();
       RunInGlContext(() =>
       {
         var glContext = GlContext.GetCurrent();
-        using (var image = new Image((uint)texture.GetNativeTexturePtr(), 4, 2, GpuBufferFormat.kBGRA32, OnRelease, glContext))
+        using (var image = new Image(name, 4, 2, GpuBufferFormat.kBGRA32, OnRelease, glContext))
         {
           Assert.True(image.UsesGpu());
           Assert.True(image.ConvertToGpu());
@@ -204,12 +205,10 @@ namespace Mediapipe.Tests
       using (var glCalculatorHelper = new GlCalculatorHelper())
       {
         glCalculatorHelper.InitializeForTest(GpuResources.Create());
-
-        var status = glCalculatorHelper.RunInGlContext(() =>
+        glCalculatorHelper.RunInGlContext(() =>
         {
           action();
         });
-        status.Dispose();
       }
     }
 

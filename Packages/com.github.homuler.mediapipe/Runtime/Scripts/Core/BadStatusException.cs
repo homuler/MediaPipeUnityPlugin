@@ -9,11 +9,11 @@ namespace Mediapipe
 {
   public class BadStatusException : Exception
   {
-    public Status.StatusCode statusCode { get; private set; }
+    public StatusCode statusCode { get; private set; }
 
     public BadStatusException(string message) : base(message) { }
 
-    public BadStatusException(Status.StatusCode statusCode, string message) : base(message)
+    public BadStatusException(StatusCode statusCode, string message) : base(message)
     {
       this.statusCode = statusCode;
     }

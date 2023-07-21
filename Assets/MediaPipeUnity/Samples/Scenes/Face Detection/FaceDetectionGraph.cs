@@ -73,7 +73,7 @@ namespace Mediapipe.Unity.FaceDetection
       };
     }
 
-    protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config)
+    protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
       if (runningMode == RunningMode.NonBlockingSync)
       {
@@ -96,11 +96,8 @@ namespace Mediapipe.Unity.FaceDetection
 
       using (var validatedGraphConfig = new ValidatedGraphConfig())
       {
-        var status = validatedGraphConfig.Initialize(config);
-
-        if (!status.Ok()) { return status; }
-
-        return calculatorGraph.Initialize(config);
+        validatedGraphConfig.Initialize(config);
+        calculatorGraph.Initialize(config);
       }
     }
 

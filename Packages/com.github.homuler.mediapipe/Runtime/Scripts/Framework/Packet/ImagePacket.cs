@@ -57,12 +57,12 @@ namespace Mediapipe
       return new Image(imagePtr, true);
     }
 
-    public override Status ValidateAsType()
+    public override void ValidateAsType()
     {
       UnsafeNativeMethods.mp_Packet__ValidateAsImage(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
-      return new Status(statusPtr);
+      AssertStatusOk(statusPtr);
     }
   }
 }

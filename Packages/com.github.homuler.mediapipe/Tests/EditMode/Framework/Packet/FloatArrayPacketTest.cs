@@ -17,12 +17,11 @@ namespace Mediapipe.Tests
     {
       using (var packet = new FloatArrayPacket())
       {
-#pragma warning disable IDE0058
         packet.length = 0;
-        Assert.AreEqual(Status.StatusCode.Internal, packet.ValidateAsType().Code());
-        Assert.Throws<MediaPipeException>(() => { packet.Get(); });
+        var exception = Assert.Throws<BadStatusException>(packet.ValidateAsType);
+        Assert.AreEqual(StatusCode.Internal, exception.statusCode);
+        _ = Assert.Throws<MediaPipeException>(() => { _ = packet.Get(); });
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
-#pragma warning restore IDE0058
       }
     }
 
@@ -32,7 +31,7 @@ namespace Mediapipe.Tests
       float[] array = { };
       using (var packet = new FloatArrayPacket(array))
       {
-        Assert.True(packet.ValidateAsType().Ok());
+        Assert.DoesNotThrow(packet.ValidateAsType);
         Assert.AreEqual(array, packet.Get());
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
@@ -44,7 +43,7 @@ namespace Mediapipe.Tests
       float[] array = { 0.01f };
       using (var packet = new FloatArrayPacket(array))
       {
-        Assert.True(packet.ValidateAsType().Ok());
+        Assert.DoesNotThrow(packet.ValidateAsType);
         Assert.AreEqual(array, packet.Get());
         Assert.AreEqual(Timestamp.Unset(), packet.Timestamp());
       }
@@ -58,7 +57,7 @@ namespace Mediapipe.Tests
       {
         using (var packet = new FloatArrayPacket(array, timestamp))
         {
-          Assert.True(packet.ValidateAsType().Ok());
+          Assert.DoesNotThrow(packet.ValidateAsType);
           Assert.AreEqual(array, packet.Get());
           Assert.AreEqual(timestamp, packet.Timestamp());
         }
@@ -124,12 +123,12 @@ namespace Mediapipe.Tests
 
     #region #ValidateAsType
     [Test]
-    public void ValidateAsType_ShouldReturnOk_When_ValueIsSet()
+    public void ValidateAsType_ShouldNotThrow_When_ValueIsSet()
     {
       float[] array = { 0.01f };
       using (var packet = new FloatArrayPacket(array))
       {
-        Assert.True(packet.ValidateAsType().Ok());
+        Assert.DoesNotThrow(packet.ValidateAsType);
       }
     }
     #endregion
