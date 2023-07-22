@@ -33,8 +33,9 @@ namespace Mediapipe.Tasks.Core
     public PacketMap Process(PacketMap inputs)
     {
       UnsafeNativeMethods.mp_tasks_core_TaskRunner__Process__Ppm(mpPtr, inputs.mpPtr, out var statusPtr, out var packetMapPtr).Assert();
-      GC.KeepAlive(this);
+      inputs.Dispose(); // respect move semantics
 
+      GC.KeepAlive(this);
       AssertStatusOk(statusPtr);
       return new PacketMap(packetMapPtr, true);
     }
@@ -42,8 +43,9 @@ namespace Mediapipe.Tasks.Core
     public void Send(PacketMap inputs)
     {
       UnsafeNativeMethods.mp_tasks_core_TaskRunner__Send__Ppm(mpPtr, inputs.mpPtr, out var statusPtr).Assert();
-      GC.KeepAlive(this);
+      inputs.Dispose(); // respect move semantics
 
+      GC.KeepAlive(this);
       AssertStatusOk(statusPtr);
     }
 

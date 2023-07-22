@@ -42,7 +42,7 @@ void mp_tasks_core_TaskRunner__delete(TaskRunner* task_runner) {
 
 MpReturnCode mp_tasks_core_TaskRunner__Process__Ppm(TaskRunner* task_runner, PacketMap* inputs, absl::Status** status_out, PacketMap** value_out) {
   TRY
-    auto status_or_packet_map = task_runner->Process(*inputs);
+    auto status_or_packet_map = task_runner->Process(std::move(*inputs));
     *status_out = new absl::Status{status_or_packet_map.status()};
     if (status_or_packet_map.ok()) {
       *value_out = new PacketMap{status_or_packet_map.value()};
@@ -55,7 +55,7 @@ MpReturnCode mp_tasks_core_TaskRunner__Process__Ppm(TaskRunner* task_runner, Pac
 
 MpReturnCode mp_tasks_core_TaskRunner__Send__Ppm(TaskRunner* task_runner, PacketMap* inputs, absl::Status** status_out) {
   TRY
-    *status_out = new absl::Status{task_runner->Send(*inputs)};
+    *status_out = new absl::Status{task_runner->Send(std::move(*inputs))};
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }
