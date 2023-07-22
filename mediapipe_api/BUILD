@@ -308,6 +308,7 @@ cc_library(
     name = "face_detection_calculators",
     deps = [
         "@com_google_mediapipe//mediapipe/framework/tool:switch_mux_calculator",
+        "@com_google_mediapipe//mediapipe/tasks/cc/vision/face_detector:face_detector",
     ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [
             "@com_google_mediapipe//mediapipe/graphs/face_detection:desktop_live_calculators",
