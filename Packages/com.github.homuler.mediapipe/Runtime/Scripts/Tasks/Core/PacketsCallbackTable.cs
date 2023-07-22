@@ -18,6 +18,11 @@ namespace Mediapipe.Tasks.Core
 
     public static (int, TaskRunner.NativePacketsCallback) Add(TaskRunner.PacketsCallback callback)
     {
+      if (callback == null)
+      {
+        return (-1, null);
+      }
+
       var callbackId = _Counter++;
       _Table.Add(callbackId, callback);
       return (callbackId, InvokeCallbackIfFound);
