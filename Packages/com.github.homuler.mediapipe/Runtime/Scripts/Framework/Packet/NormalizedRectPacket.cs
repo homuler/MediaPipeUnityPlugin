@@ -1,10 +1,11 @@
-// Copyright (c) 2021 homuler
+// Copyright (c) 2023 homuler
 //
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
 using System;
+using Google.Protobuf;
 
 namespace Mediapipe
 {
@@ -18,10 +19,21 @@ namespace Mediapipe
     [UnityEngine.Scripting.Preserve]
     public NormalizedRectPacket(IntPtr ptr, bool isOwner = true) : base(ptr, isOwner) { }
 
-    public NormalizedRectPacket At(Timestamp timestamp)
+    public NormalizedRectPacket(NormalizedRect value) : base()
     {
-      return At<NormalizedRectPacket>(timestamp);
+      var bytes = value.ToByteArray();
+      UnsafeNativeMethods.mp__MakeNormalizedRectPacket__PKc_i(bytes, bytes.Length, out var ptr).Assert();
+      this.ptr = ptr;
     }
+
+    public NormalizedRectPacket(NormalizedRect value, Timestamp timestamp) : base()
+    {
+      var bytes = value.ToByteArray();
+      UnsafeNativeMethods.mp__MakeNormalizedRectPacket_At__PKc_i_Rt(bytes, bytes.Length, timestamp.mpPtr, out var ptr).Assert();
+      this.ptr = ptr;
+    }
+
+    public NormalizedRectPacket At(Timestamp timestamp) => At<NormalizedRectPacket>(timestamp);
 
     public override NormalizedRect Get()
     {
@@ -34,9 +46,6 @@ namespace Mediapipe
       return normalizedRect;
     }
 
-    public override NormalizedRect Consume()
-    {
-      throw new NotSupportedException();
-    }
+    public override NormalizedRect Consume() => throw new NotSupportedException();
   }
 }
