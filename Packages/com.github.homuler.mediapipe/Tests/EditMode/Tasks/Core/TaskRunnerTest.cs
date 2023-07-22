@@ -114,7 +114,7 @@ output_stream: ""out""
     [Test]
     public void Send_ShouldThrowException_When_InputIsInvalid()
     {
-      using (var taskRunner = TaskRunner.Create(passThroughConfig, HandlePassThroughResult))
+      using (var taskRunner = TaskRunner.Create(passThroughConfig, 0, HandlePassThroughResult))
       {
         using (var packetMap = new PacketMap())
         {
@@ -127,7 +127,7 @@ output_stream: ""out""
     [Test]
     public void Send_ShouldNotThrowException_When_InputIsValid()
     {
-      using (var taskRunner = TaskRunner.Create(passThroughConfig, HandlePassThroughResult))
+      using (var taskRunner = TaskRunner.Create(passThroughConfig, 0, HandlePassThroughResult))
       {
         using (var packetMap = new PacketMap())
         {
@@ -195,7 +195,7 @@ output_stream: ""out""
     #endregion
 
     [AOT.MonoPInvokeCallback(typeof(TaskRunner.NativePacketsCallback))]
-    private static void HandlePassThroughResult(IntPtr statusPtr, IntPtr packetMapPtr)
+    private static void HandlePassThroughResult(int callbackId, IntPtr statusPtr, IntPtr packetMapPtr)
     {
       // Do nothing
     }

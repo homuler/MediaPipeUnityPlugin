@@ -11,16 +11,15 @@ namespace Mediapipe.Tasks.Core
 {
   public class TaskRunner : MpResourceHandle
   {
-    public delegate void NativePacketsCallback(IntPtr status, IntPtr packetMap);
+    public delegate void NativePacketsCallback(int name, IntPtr status, IntPtr packetMap);
+    public delegate void PacketsCallback(PacketMap packetMap);
 
-    public static TaskRunner Create(CalculatorGraphConfig config, NativePacketsCallback packetsCallback = null)
+    public static TaskRunner Create(CalculatorGraphConfig config, int callbackId = -1, NativePacketsCallback packetsCallback = null)
     {
       var bytes = config.ToByteArray();
-      UnsafeNativeMethods.mp_tasks_core_TaskRunner_Create__PKc_i_PF(bytes, bytes.Length, packetsCallback, out var statusPtr, out var taskRunnerPtr).Assert();
+      UnsafeNativeMethods.mp_tasks_core_TaskRunner_Create__PKc_i_PF(bytes, bytes.Length, callbackId, packetsCallback, out var statusPtr, out var taskRunnerPtr).Assert();
 
-      var status = new Status(statusPtr);
-      status.AssertOk();
-
+      AssertStatusOk(statusPtr);
       return new TaskRunner(taskRunnerPtr);
     }
 
@@ -36,9 +35,7 @@ namespace Mediapipe.Tasks.Core
       UnsafeNativeMethods.mp_tasks_core_TaskRunner__Process__Ppm(mpPtr, inputs.mpPtr, out var statusPtr, out var packetMapPtr).Assert();
       GC.KeepAlive(this);
 
-      var status = new Status(statusPtr);
-      status.AssertOk();
-
+      AssertStatusOk(statusPtr);
       return new PacketMap(packetMapPtr, true);
     }
 
@@ -47,8 +44,7 @@ namespace Mediapipe.Tasks.Core
       UnsafeNativeMethods.mp_tasks_core_TaskRunner__Send__Ppm(mpPtr, inputs.mpPtr, out var statusPtr).Assert();
       GC.KeepAlive(this);
 
-      var status = new Status(statusPtr);
-      status.AssertOk();
+      AssertStatusOk(statusPtr);
     }
 
     public void Close()
@@ -56,8 +52,7 @@ namespace Mediapipe.Tasks.Core
       UnsafeNativeMethods.mp_tasks_core_TaskRunner__Close(mpPtr, out var statusPtr).Assert();
       GC.KeepAlive(this);
 
-      var status = new Status(statusPtr);
-      status.AssertOk();
+      AssertStatusOk(statusPtr);
     }
 
     public void Restart()
@@ -65,8 +60,7 @@ namespace Mediapipe.Tasks.Core
       UnsafeNativeMethods.mp_tasks_core_TaskRunner__Restart(mpPtr, out var statusPtr).Assert();
       GC.KeepAlive(this);
 
-      var status = new Status(statusPtr);
-      status.AssertOk();
+      AssertStatusOk(statusPtr);
     }
 
     public CalculatorGraphConfig GetGraphConfig(ExtensionRegistry extensionRegistry = null)

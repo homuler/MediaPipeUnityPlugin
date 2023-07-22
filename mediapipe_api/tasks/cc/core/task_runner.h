@@ -19,9 +19,10 @@ using TaskRunner = mediapipe::tasks::core::TaskRunner;
 extern "C" {
 
 typedef std::map<std::string, mediapipe::Packet> PacketMap;
-typedef void NativePacketsCallback(absl::Status*, PacketMap*);
+typedef void NativePacketsCallback(int, absl::Status*, PacketMap*);
 
-MP_CAPI(MpReturnCode) mp_tasks_core_TaskRunner_Create__PKc_i_PF(const char* serialized_config, int size, NativePacketsCallback* packets_callback,
+MP_CAPI(MpReturnCode) mp_tasks_core_TaskRunner_Create__PKc_i_PF(const char* serialized_config, int size,
+                                                                int callback_id, NativePacketsCallback* packets_callback,
                                                                 absl::Status** status_out, TaskRunner** task_runner_out);
 MP_CAPI(void) mp_tasks_core_TaskRunner__delete(TaskRunner* task_runner);
 
