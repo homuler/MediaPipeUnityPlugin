@@ -10,7 +10,9 @@ namespace Mediapipe.Unity.UI
 {
   public class Modal : MonoBehaviour
   {
-    [SerializeField] private Solution _solution;
+    [SerializeField] private Solution _solution; // TODO: remove this field
+    [SerializeField] private Sample.TaskApiRunner _taskApiRunner;
+
     private GameObject _contents;
 
     public void Open(GameObject contents)
@@ -26,6 +28,10 @@ namespace Mediapipe.Unity.UI
       if (_solution != null)
       {
         _solution.Pause();
+      }
+      if (_taskApiRunner != null)
+      {
+        _taskApiRunner.Pause();
       }
     }
 
@@ -43,18 +49,32 @@ namespace Mediapipe.Unity.UI
     {
       Close();
 
-      if (_solution == null)
+      if (_solution == null && _taskApiRunner == null)
       {
         return;
       }
 
       if (forceRestart)
       {
-        _solution.Play();
+        if (_solution != null)
+        {
+          _solution.Play();
+        }
+        if (_taskApiRunner != null)
+        {
+          _taskApiRunner.Play();
+        }
       }
       else
       {
-        _solution.Resume();
+        if (_solution != null)
+        {
+          _solution.Resume();
+        }
+        if (_taskApiRunner != null)
+        {
+          _taskApiRunner.Resume();
+        }
       }
     }
   }

@@ -4,7 +4,10 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Mediapipe.Unity.UI
 {
@@ -18,6 +21,21 @@ namespace Mediapipe.Unity.UI
     public virtual void Exit()
     {
       GetModal().Close();
+    }
+
+    protected void InitializeDropdown<T>(Dropdown dropdown, string defaultValue)
+    {
+      dropdown.ClearOptions();
+
+      var options = new List<string>(Enum.GetNames(typeof(T)));
+      dropdown.AddOptions(options);
+
+      var defaultValueIndex = options.FindIndex(option => option == defaultValue);
+
+      if (defaultValueIndex >= 0)
+      {
+        dropdown.value = defaultValueIndex;
+      }
     }
   }
 }

@@ -215,6 +215,8 @@ namespace Mediapipe.Unity.Experimental
 
     public ImageFrame BuildImageFrame() => new ImageFrame(imageFormat, width, height, 4 * width, GetRawTextureData<byte>());
 
+    public Image BuildCPUImage() => new Image(imageFormat, width, height, 4 * width, GetRawTextureData<byte>());
+
     public GpuBuffer BuildGpuBuffer(GlContext glContext)
     {
 #if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_ANDROID
