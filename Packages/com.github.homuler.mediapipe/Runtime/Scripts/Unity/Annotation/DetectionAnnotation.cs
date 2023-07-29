@@ -6,6 +6,9 @@
 
 using Mediapipe.Unity.CoordinateSystem;
 using UnityEngine;
+using UnityEngine.Serialization;
+
+using mptcc = Mediapipe.Tasks.Components.Containers;
 
 namespace Mediapipe.Unity
 {
@@ -15,16 +18,18 @@ namespace Mediapipe.Unity
 
   public sealed class DetectionAnnotation : HierarchicalAnnotation
   {
-    [SerializeField] private RectangleAnnotation _locationDataAnnotation;
-    [SerializeField] private PointListAnnotation _relativeKeypointsAnnotation;
+    [FormerlySerializedAs("_locationDataAnnotation")]
+    [SerializeField] private RectangleAnnotation _boundingBoxAnnotation;
+    [FormerlySerializedAs("_relativeKeypointsAnnotation")]
+    [SerializeField] private PointListAnnotation _keypointsAnnotation;
     [SerializeField] private LabelAnnotation _labelAnnotation;
 
     public override bool isMirrored
     {
       set
       {
-        _locationDataAnnotation.isMirrored = value;
-        _relativeKeypointsAnnotation.isMirrored = value;
+        _boundingBoxAnnotation.isMirrored = value;
+        _keypointsAnnotation.isMirrored = value;
         _labelAnnotation.isMirrored = value;
         base.isMirrored = value;
       }
@@ -34,8 +39,8 @@ namespace Mediapipe.Unity
     {
       set
       {
-        _locationDataAnnotation.rotationAngle = value;
-        _relativeKeypointsAnnotation.rotationAngle = value;
+        _boundingBoxAnnotation.rotationAngle = value;
+        _keypointsAnnotation.rotationAngle = value;
         _labelAnnotation.rotationAngle = value;
         base.rotationAngle = value;
       }
@@ -43,12 +48,12 @@ namespace Mediapipe.Unity
 
     public void SetLineWidth(float lineWidth)
     {
-      _locationDataAnnotation.SetLineWidth(lineWidth);
+      _boundingBoxAnnotation.SetLineWidth(lineWidth);
     }
 
     public void SetKeypointRadius(float radius)
     {
-      _relativeKeypointsAnnotation.SetRadius(radius);
+      _keypointsAnnotation.SetRadius(radius);
     }
 
     /// <param name="threshold">
@@ -66,8 +71,8 @@ namespace Mediapipe.Unity
         // Assume that location data's format is always RelativeBoundingBox
         // TODO: fix if there are cases where this assumption is not correct.
         var rectVertices = GetScreenRect().GetRectVertices(target.LocationData.RelativeBoundingBox, rotationAngle, isMirrored);
-        _locationDataAnnotation.SetColor(GetColor(score, Mathf.Clamp(threshold, 0.0f, 1.0f)));
-        _locationDataAnnotation.Draw(rectVertices);
+        _boundingBoxAnnotation.SetColor(GetColor(score, Mathf.Clamp(threshold, 0.0f, 1.0f)));
+        _boundingBoxAnnotation.Draw(rectVertices);
 
         var width = rectVertices[2].x - rectVertices[0].x;
         var height = rectVertices[2].y - rectVertices[0].y;
@@ -77,7 +82,36 @@ namespace Mediapipe.Unity
         var (maxWidth, maxHeight) = isInverted ? (height, width) : (width, height);
         _labelAnnotation.Draw(labelText, rectVertices[vertexId], color, maxWidth, maxHeight);
 
-        _relativeKeypointsAnnotation.Draw(target.LocationData.RelativeKeypoints);
+        _keypointsAnnotation.Draw(target.LocationData.RelativeKeypoints);
+      }
+    }
+
+    /// <param name="threshold">
+    ///   Score threshold. This value must be between 0 and 1.
+    ///   This will affect the rectangle's color. For example, if the score is below the threshold, the rectangle will be transparent.
+    ///   The default value is 0.
+    /// </param>
+    public void Draw(mptcc.Detection target, Vector2Int imageSize, float threshold = 0.0f)
+    {
+      if (ActivateFor(target))
+      {
+        var category = target.categories?.Count > 0 ? (mptcc.Category?)target.categories[0] : null;
+        var score = category != null ? category.Value.score : 1.0f;
+        var color = GetColor(score, Mathf.Clamp(threshold, 0.0f, 1.0f));
+
+        var rectVertices = GetScreenRect().GetRectVertices(target.boundingBox, imageSize, rotationAngle, isMirrored);
+        _boundingBoxAnnotation.SetColor(GetColor(score, Mathf.Clamp(threshold, 0.0f, 1.0f)));
+        _boundingBoxAnnotation.Draw(rectVertices);
+
+        var width = rectVertices[2].x - rectVertices[0].x;
+        var height = rectVertices[2].y - rectVertices[0].y;
+        var labelText = category?.categoryName;
+        var vertexId = (((int)rotationAngle / 90) + 1) % 4;
+        var isInverted = ImageCoordinate.IsInverted(rotationAngle);
+        var (maxWidth, maxHeight) = isInverted ? (height, width) : (width, height);
+        _labelAnnotation.Draw(labelText, rectVertices[vertexId], color, maxWidth, maxHeight);
+
+        _keypointsAnnotation.Draw(target.keypoints);
       }
     }
 

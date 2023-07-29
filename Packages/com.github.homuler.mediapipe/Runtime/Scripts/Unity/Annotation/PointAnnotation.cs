@@ -8,6 +8,7 @@ using Mediapipe.Unity.CoordinateSystem;
 using UnityEngine;
 
 using mplt = Mediapipe.LocationData.Types;
+using mptcc = Mediapipe.Tasks.Components.Containers;
 
 namespace Mediapipe.Unity
 {
@@ -81,6 +82,15 @@ namespace Mediapipe.Unity
       {
         Draw(GetScreenRect().GetPoint(target, rotationAngle, isMirrored));
         SetColor(GetColor(target.Score, threshold));
+      }
+    }
+
+    public void Draw(mptcc.NormalizedKeypoint target, float threshold = 0.0f)
+    {
+      if (ActivateFor(target))
+      {
+        Draw(GetScreenRect().GetPoint(target, rotationAngle, isMirrored));
+        SetColor(GetColor(target.score ?? 1.0f, threshold));
       }
     }
 
