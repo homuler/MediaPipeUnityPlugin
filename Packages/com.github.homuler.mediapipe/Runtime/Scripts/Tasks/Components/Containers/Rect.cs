@@ -1,4 +1,4 @@
-// Copyright (c) 2021 homuler
+// Copyright (c) 2023 homuler
 //
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file or at
@@ -11,6 +11,27 @@ using Mathf = UnityEngine.Mathf;
 
 namespace Mediapipe.Tasks.Components.Containers
 {
+  /// <summary>
+  ///   Defines a rectangle, used e.g. as part of detection results or as input region-of-interest.
+  /// </summary>
+  public readonly struct Rect
+  {
+    public readonly int left;
+    public readonly int top;
+    public readonly int right;
+    public readonly int bottom;
+
+    internal Rect(int left, int top, int right, int bottom)
+    {
+      this.left = left;
+      this.top = top;
+      this.right = right;
+      this.bottom = bottom;
+    }
+
+    public override string ToString() => $"{{ \"left\": {left}, \"top\": {top}, \"right\": {right}, \"bottom\": {bottom} }}";
+  }
+
   /// <summary>
   ///   A rectangle, used as part of detection results or as input region-of-interest.
   ///
@@ -43,5 +64,7 @@ namespace Mediapipe.Tasks.Components.Containers
     public override int GetHashCode() => Tuple.Create(left, top, right, bottom).GetHashCode();
     public static bool operator ==(RectF lhs, RectF rhs) => lhs.Equals(rhs);
     public static bool operator !=(RectF lhs, RectF rhs) => !(lhs == rhs);
+
+    public override string ToString() => $"{{ \"left\": {left}, \"top\": {top}, \"right\": {right}, \"bottom\": {bottom} }}";
   }
 }
