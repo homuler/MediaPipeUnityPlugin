@@ -31,6 +31,13 @@ MpReturnCode mp_Packet__GetRectVector(mediapipe::Packet* packet, mp_api::StructA
   return mp_Packet__GetSerializedProtoVector<mediapipe::Rect>(packet, value_out);
 }
 
+MpReturnCode mp_Packet__ValidateAsRect(mediapipe::Packet* packet, absl::Status** status_out) {
+  TRY
+    *status_out = new absl::Status{packet->ValidateAsType<mediapipe::Rect>()};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
 MpReturnCode mp__MakeNormalizedRectPacket__PKc_i(const char* serialized_data, int size, mediapipe::Packet** packet_out) {
   TRY_ALL
     auto rect = ParseFromStringAsProto<mediapipe::NormalizedRect>(serialized_data, size);
@@ -54,4 +61,11 @@ MpReturnCode mp_Packet__GetNormalizedRect(mediapipe::Packet* packet, mp_api::Ser
 
 MpReturnCode mp_Packet__GetNormalizedRectVector(mediapipe::Packet* packet, mp_api::StructArray<mp_api::SerializedProto>* value_out) {
   return mp_Packet__GetSerializedProtoVector<mediapipe::NormalizedRect>(packet, value_out);
+}
+
+MpReturnCode mp_Packet__ValidateAsNormalizedRect(mediapipe::Packet* packet, absl::Status** status_out) {
+  TRY
+    *status_out = new absl::Status{packet->ValidateAsType<mediapipe::NormalizedRect>()};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
 }

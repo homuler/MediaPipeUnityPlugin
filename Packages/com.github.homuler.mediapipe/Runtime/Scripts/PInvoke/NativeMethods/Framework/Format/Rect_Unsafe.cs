@@ -24,6 +24,9 @@ namespace Mediapipe
     public static extern MpReturnCode mp_Packet__GetRectVector(IntPtr packet, out SerializedProtoVector serializedProtoVector);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__ValidateAsRect(IntPtr packet, out IntPtr status);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp__MakeNormalizedRectPacket__PKc_i(byte[] serializedData, int size, out IntPtr packet_out);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
@@ -34,5 +37,8 @@ namespace Mediapipe
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__GetNormalizedRectVector(IntPtr packet, out SerializedProtoVector serializedProtoVector);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__ValidateAsNormalizedRect(IntPtr packet, out IntPtr status);
   }
 }

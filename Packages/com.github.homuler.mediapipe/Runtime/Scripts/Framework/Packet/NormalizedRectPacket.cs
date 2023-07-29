@@ -47,5 +47,13 @@ namespace Mediapipe
     }
 
     public override NormalizedRect Consume() => throw new NotSupportedException();
+
+    public override void ValidateAsType()
+    {
+      UnsafeNativeMethods.mp_Packet__ValidateAsNormalizedRect(mpPtr, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      AssertStatusOk(statusPtr);
+    }
   }
 }
