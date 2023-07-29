@@ -487,3 +487,20 @@ index 00000000..946be0d4
 +
 +}  // namespace internal
 +}  // namespace mediapipe
+diff --git a/third_party/external_files.bzl b/third_party/external_files.bzl
+index 652a2947..c8e1a1ea 100644
+--- a/third_party/external_files.bzl
++++ b/third_party/external_files.bzl
+@@ -370,6 +370,12 @@ def external_files():
+         urls = ["https://storage.googleapis.com/mediapipe-assets/face_detection_short_range.tflite?generation=1677044301978921"],
+     )
+ 
++    http_file(
++        name = "com_google_mediapipe_blaze_face_short_range_tflite",
++        sha256 = "b4578f35940bf5a1a655214a1cce5cab13eba73c1297cd78e1a04c2380b0152f",
++        urls = ["https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite?generation=1682480001338381"],
++    )
++
+     http_file(
+         name = "com_google_mediapipe_face_geometry_expected_out_pbtxt",
+         sha256 = "4a4ed08055a5bc9281472dd60180d11f0cdc9a15fa1788d87a58af3d06b2c6e4",

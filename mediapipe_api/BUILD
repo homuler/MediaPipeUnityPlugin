@@ -9,6 +9,7 @@ load("@bazel_skylib//lib:selects.bzl", "selects")
 load("@bazel_skylib//rules:common_settings.bzl", "bool_flag", "string_list_flag")
 load("@rules_pkg//:pkg.bzl", "pkg_zip")
 load("@build_bazel_apple_support//rules:universal_binary.bzl", "universal_binary")
+load("@com_google_mediapipe//mediapipe/framework/tool:mediapipe_files.bzl", "mediapipe_files")
 
 bool_flag(
     name = "macos_universal",
@@ -427,6 +428,10 @@ pkg_zip(
     ],
 )
 
+mediapipe_files(srcs = [
+    "blaze_face_short_range.tflite",
+])
+
 pkg_asset(
     name = "mediapipe_assets",
     srcs = select({
@@ -466,6 +471,7 @@ pkg_asset(
 filegroup(
     name = "face_detection_assets",
     srcs = [
+        ":blaze_face_short_range.tflite",
         "@com_google_mediapipe//mediapipe/modules/face_detection:face_detection_full_range_sparse.tflite",
         "@com_google_mediapipe//mediapipe/modules/face_detection:face_detection_full_range.tflite",
         "@com_google_mediapipe//mediapipe/modules/face_detection:face_detection_short_range.tflite",
