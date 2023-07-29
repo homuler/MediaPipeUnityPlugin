@@ -360,6 +360,20 @@ index 72de1be8..bd6e9781 100644
 +    srcs = glob(["*.proto"]),
 +    visibility = ["//visibility:public"],
 +)
+diff --git a/mediapipe/tasks/cc/vision/face_detector/proto/BUILD b/mediapipe/tasks/cc/vision/face_detector/proto/BUILD
+index bdfe65ee..c795ee7e 100644
+--- a/mediapipe/tasks/cc/vision/face_detector/proto/BUILD
++++ b/mediapipe/tasks/cc/vision/face_detector/proto/BUILD
+@@ -30,3 +30,9 @@ mediapipe_proto_library(
+         "//mediapipe/tasks/cc/core/proto:base_options_proto",
+     ],
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
 index b9fe8b0c..695987ad 100644
 --- a/mediapipe/util/BUILD
