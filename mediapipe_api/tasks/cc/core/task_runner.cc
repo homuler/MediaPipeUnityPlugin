@@ -2,20 +2,21 @@
 
 #include "mediapipe/tasks/cc/core/mediapipe_builtin_op_resolver.h"
 
-MpReturnCode mp_tasks_core_TaskRunner_Create__PKc_i_PF(const char* serialized_config, int size, NativePacketsCallback* packets_callback,
+MpReturnCode mp_tasks_core_TaskRunner_Create__PKc_i_PF(const char* serialized_config, int size,
+                                                       int callback_id, NativePacketsCallback* packets_callback,
                                                        absl::Status** status_out, TaskRunner** task_runner_out) {
   TRY
     auto config = ParseFromStringAsProto<mediapipe::CalculatorGraphConfig>(serialized_config, size);
     mediapipe::tasks::core::PacketsCallback callback = nullptr;
     if (packets_callback) {
-      callback = [packets_callback](absl::StatusOr<PacketMap> status_or_packet_map) -> void {
+      callback = [callback_id, packets_callback](absl::StatusOr<PacketMap> status_or_packet_map) -> void {
         auto status = status_or_packet_map.status();
         if (!status.ok()) {
-          packets_callback(&status, nullptr);
+          packets_callback(callback_id, &status, nullptr);
           return;
         }
         auto value = status_or_packet_map.value();
-        packets_callback(&status, &value);
+        packets_callback(callback_id, &status, &value);
       };
     }
 
@@ -41,7 +42,7 @@ void mp_tasks_core_TaskRunner__delete(TaskRunner* task_runner) {
 
 MpReturnCode mp_tasks_core_TaskRunner__Process__Ppm(TaskRunner* task_runner, PacketMap* inputs, absl::Status** status_out, PacketMap** value_out) {
   TRY
-    auto status_or_packet_map = task_runner->Process(*inputs);
+    auto status_or_packet_map = task_runner->Process(std::move(*inputs));
     *status_out = new absl::Status{status_or_packet_map.status()};
     if (status_or_packet_map.ok()) {
       *value_out = new PacketMap{status_or_packet_map.value()};
@@ -54,7 +55,7 @@ MpReturnCode mp_tasks_core_TaskRunner__Process__Ppm(TaskRunner* task_runner, Pac
 
 MpReturnCode mp_tasks_core_TaskRunner__Send__Ppm(TaskRunner* task_runner, PacketMap* inputs, absl::Status** status_out) {
   TRY
-    *status_out = new absl::Status{task_runner->Send(*inputs)};
+    *status_out = new absl::Status{task_runner->Send(std::move(*inputs))};
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }

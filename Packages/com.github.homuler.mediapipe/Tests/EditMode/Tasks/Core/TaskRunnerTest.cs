@@ -73,11 +73,10 @@ output_stream: ""out""
     {
       using (var taskRunner = TaskRunner.Create(passThroughConfig))
       {
-        using (var packetMap = new PacketMap())
-        {
-          var exception = Assert.Throws<BadStatusException>(() => taskRunner.Process(packetMap));
-          Assert.AreEqual(StatusCode.InvalidArgument, exception.statusCode);
-        }
+        var packetMap = new PacketMap();
+        var exception = Assert.Throws<BadStatusException>(() => taskRunner.Process(packetMap));
+        Assert.AreEqual(StatusCode.InvalidArgument, exception.statusCode);
+        Assert.True(packetMap.isDisposed);
       }
     }
 
@@ -86,12 +85,12 @@ output_stream: ""out""
     {
       using (var taskRunner = TaskRunner.Create(passThroughConfig))
       {
-        using (var packetMap = new PacketMap())
-        {
-          packetMap.Emplace("in", new IntPacket(1));
-          var outputMap = taskRunner.Process(packetMap);
-          Assert.AreEqual(1, outputMap.At<IntPacket, int>("out").Get());
-        }
+        var packetMap = new PacketMap();
+        packetMap.Emplace("in", new IntPacket(1));
+
+        var outputMap = taskRunner.Process(packetMap);
+        Assert.AreEqual(1, outputMap.At<IntPacket, int>("out").Get());
+        Assert.True(packetMap.isDisposed);
       }
     }
     #endregion
@@ -102,38 +101,36 @@ output_stream: ""out""
     {
       using (var taskRunner = TaskRunner.Create(passThroughConfig))
       {
-        using (var packetMap = new PacketMap())
-        {
-          packetMap.Emplace("in", new IntPacket(1, new Timestamp(1)));
-          var exception = Assert.Throws<BadStatusException>(() => taskRunner.Send(packetMap));
-          Assert.AreEqual(StatusCode.InvalidArgument, exception.statusCode);
-        }
+        var packetMap = new PacketMap();
+        packetMap.Emplace("in", new IntPacket(1, new Timestamp(1)));
+
+        var exception = Assert.Throws<BadStatusException>(() => taskRunner.Send(packetMap));
+        Assert.AreEqual(StatusCode.InvalidArgument, exception.statusCode);
+        Assert.True(packetMap.isDisposed);
       }
     }
 
     [Test]
     public void Send_ShouldThrowException_When_InputIsInvalid()
     {
-      using (var taskRunner = TaskRunner.Create(passThroughConfig, HandlePassThroughResult))
+      using (var taskRunner = TaskRunner.Create(passThroughConfig, 0, HandlePassThroughResult))
       {
-        using (var packetMap = new PacketMap())
-        {
-          var exception = Assert.Throws<BadStatusException>(() => taskRunner.Send(packetMap));
-          Assert.AreEqual(StatusCode.InvalidArgument, exception.statusCode);
-        }
+        var packetMap = new PacketMap();
+        var exception = Assert.Throws<BadStatusException>(() => taskRunner.Send(packetMap));
+        Assert.AreEqual(StatusCode.InvalidArgument, exception.statusCode);
+        Assert.True(packetMap.isDisposed);
       }
     }
 
     [Test]
     public void Send_ShouldNotThrowException_When_InputIsValid()
     {
-      using (var taskRunner = TaskRunner.Create(passThroughConfig, HandlePassThroughResult))
+      using (var taskRunner = TaskRunner.Create(passThroughConfig, 0, HandlePassThroughResult))
       {
-        using (var packetMap = new PacketMap())
-        {
-          packetMap.Emplace("in", new IntPacket(1, new Timestamp(1)));
-          Assert.DoesNotThrow(() => taskRunner.Send(packetMap));
-        }
+        var packetMap = new PacketMap();
+        packetMap.Emplace("in", new IntPacket(1, new Timestamp(1)));
+        Assert.DoesNotThrow(() => taskRunner.Send(packetMap));
+        Assert.True(packetMap.isDisposed);
       }
     }
     #endregion
@@ -195,7 +192,7 @@ output_stream: ""out""
     #endregion
 
     [AOT.MonoPInvokeCallback(typeof(TaskRunner.NativePacketsCallback))]
-    private static void HandlePassThroughResult(IntPtr statusPtr, IntPtr packetMapPtr)
+    private static void HandlePassThroughResult(int callbackId, IntPtr statusPtr, IntPtr packetMapPtr)
     {
       // Do nothing
     }

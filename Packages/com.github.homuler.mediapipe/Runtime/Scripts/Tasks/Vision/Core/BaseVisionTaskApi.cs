@@ -26,21 +26,22 @@ namespace Mediapipe.Tasks.Vision.Core
     protected BaseVisionTaskApi(
       CalculatorGraphConfig graphConfig,
       RunningMode runningMode,
-      Tasks.Core.TaskRunner.NativePacketsCallback packetCallback)
+      Tasks.Core.TaskRunner.PacketsCallback packetsCallback)
     {
       if (runningMode == RunningMode.LIVE_STREAM)
       {
-        if (packetCallback == null)
+        if (packetsCallback == null)
         {
           throw new ArgumentException("The vision task is in live stream mode, a user-defined result callback must be provided.");
         }
       }
-      else if (packetCallback != null)
+      else if (packetsCallback != null)
       {
         throw new ArgumentException("The vision task is in image or video mode, a user-defined result callback should not be provided.");
       }
 
-      _taskRunner = Tasks.Core.TaskRunner.Create(graphConfig, packetCallback);
+      var (callbackId, nativePacketsCallback) = Tasks.Core.PacketsCallbackTable.Add(packetsCallback);
+      _taskRunner = Tasks.Core.TaskRunner.Create(graphConfig, callbackId, nativePacketsCallback);
       _runningMode = runningMode;
     }
 
@@ -175,10 +176,7 @@ namespace Mediapipe.Tasks.Vision.Core
     /// <summary>
     ///   Returns the canonicalized CalculatorGraphConfig of the underlying graph.
     /// </summary>
-    public CalculatorGraphConfig GetGraphConfig()
-    {
-      return _taskRunner.GetGraphConfig();
-    }
+    public CalculatorGraphConfig GetGraphConfig() => _taskRunner.GetGraphConfig();
 
     void IDisposable.Dispose()
     {
