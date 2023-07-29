@@ -66,5 +66,7 @@ namespace Mediapipe.Unity
       var l2 = CalcRelativeLuminance(darker);
       return (l1 + 0.05f) / (l2 + 0.05f);
     }
+
+    private bool ActivateFor(string text) => base.ActivateFor(string.IsNullOrEmpty(text) ? null : text);
   }
 }
