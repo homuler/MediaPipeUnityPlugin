@@ -1,0 +1,16 @@
+{
+    "name": "Mediapipe.Unity.Sample",
+    "rootNamespace": "",
+    "references": [
+        "GUID:04c4d86a70aa56c55a78c61f1ab1a56d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
