@@ -14,7 +14,7 @@ namespace Mediapipe.Tasks.Vision.Core
   public class BaseVisionTaskApi : IDisposable
   {
     private readonly Tasks.Core.TaskRunner _taskRunner;
-    private readonly RunningMode _runningMode;
+    public RunningMode runningMode { get; }
     private bool _isClosed = false;
 
     /// <summary>
@@ -42,7 +42,7 @@ namespace Mediapipe.Tasks.Vision.Core
 
       var (callbackId, nativePacketsCallback) = Tasks.Core.PacketsCallbackTable.Add(packetsCallback);
       _taskRunner = Tasks.Core.TaskRunner.Create(graphConfig, callbackId, nativePacketsCallback);
-      _runningMode = runningMode;
+      this.runningMode = runningMode;
     }
 
     /// <summary>
@@ -54,9 +54,9 @@ namespace Mediapipe.Tasks.Vision.Core
     /// </exception>
     protected PacketMap ProcessImageData(PacketMap inputs)
     {
-      if (_runningMode != RunningMode.IMAGE)
+      if (runningMode != RunningMode.IMAGE)
       {
-        throw new InvalidOperationException($"Task is not initialized with the image mode. Current running mode: {_runningMode}");
+        throw new InvalidOperationException($"Task is not initialized with the image mode. Current running mode: {runningMode}");
       }
       return _taskRunner.Process(inputs);
     }
@@ -70,9 +70,9 @@ namespace Mediapipe.Tasks.Vision.Core
     /// </exception>
     protected PacketMap ProcessVideoData(PacketMap inputs)
     {
-      if (_runningMode != RunningMode.VIDEO)
+      if (runningMode != RunningMode.VIDEO)
       {
-        throw new InvalidOperationException($"Task is not initialized with the video mode. Current running mode: {_runningMode}");
+        throw new InvalidOperationException($"Task is not initialized with the video mode. Current running mode: {runningMode}");
       }
       return _taskRunner.Process(inputs);
     }
@@ -86,9 +86,9 @@ namespace Mediapipe.Tasks.Vision.Core
     /// </exception>
     protected void SendLiveStreamData(PacketMap inputs)
     {
-      if (_runningMode != RunningMode.LIVE_STREAM)
+      if (runningMode != RunningMode.LIVE_STREAM)
       {
-        throw new InvalidOperationException($"Task is not initialized with the live stream mode. Current running mode: {_runningMode}");
+        throw new InvalidOperationException($"Task is not initialized with the live stream mode. Current running mode: {runningMode}");
       }
       _taskRunner.Send(inputs);
     }
