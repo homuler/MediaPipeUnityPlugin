@@ -53,8 +53,7 @@ namespace Mediapipe.Unity.Sample
 
     protected static void SetupAnnotationController<T>(AnnotationController<T> annotationController, ImageSource imageSource, bool expectedToBeMirrored = false) where T : HierarchicalAnnotation
     {
-      annotationController.isMirrored = expectedToBeMirrored ^ imageSource.isHorizontallyFlipped ^ imageSource.isFrontFacing;
-      annotationController.rotationAngle = imageSource.rotation.Reverse();
+      annotationController.isMirrored = expectedToBeMirrored;
       annotationController.imageSize = new Vector2Int(imageSource.textureWidth, imageSource.textureHeight);
     }
   }

@@ -66,6 +66,11 @@ namespace Mediapipe.Unity.Sample.FaceDetection
 
       SetupAnnotationController(_detectionResultAnnotationController, imageSource);
 
+      var transformationOptions = imageSource.GetTransformationOptions();
+      var flipHorizontally = transformationOptions.flipHorizontally;
+      var flipVertically = transformationOptions.flipVertically;
+      var imageProcessingOptions = new Tasks.Vision.Core.ImageProcessingOptions(rotationDegrees: (int)transformationOptions.rotationAngle);
+
       while (true)
       {
         if (isPaused)
@@ -80,7 +85,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection
         }
 
         // Copy current image to TextureFrame
-        var req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture(), true, false);
+        var req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
         yield return new WaitUntil(() => req.done);
 
         if (req.hasError)
@@ -93,17 +98,15 @@ namespace Mediapipe.Unity.Sample.FaceDetection
         switch (_faceDetector.runningMode)
         {
           case Tasks.Vision.Core.RunningMode.IMAGE:
-            var result = _faceDetector.Detect(image);
-            screen.texture = textureFrame.texture;
+            var result = _faceDetector.Detect(image, imageProcessingOptions);
             _detectionResultAnnotationController.DrawNow(result);
             break;
           case Tasks.Vision.Core.RunningMode.VIDEO:
-            result = _faceDetector.DetectForVideo(image, (int)GetCurrentTimestampMillisec());
-            screen.texture = textureFrame.texture;
+            result = _faceDetector.DetectForVideo(image, (int)GetCurrentTimestampMillisec(), imageProcessingOptions);
             _detectionResultAnnotationController.DrawNow(result);
             break;
           case Tasks.Vision.Core.RunningMode.LIVE_STREAM:
-            _faceDetector.DetectAsync(image, (int)GetCurrentTimestampMillisec());
+            _faceDetector.DetectAsync(image, (int)GetCurrentTimestampMillisec(), imageProcessingOptions);
             break;
         }
 
