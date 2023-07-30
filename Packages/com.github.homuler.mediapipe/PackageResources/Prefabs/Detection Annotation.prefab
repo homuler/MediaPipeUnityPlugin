@@ -47,8 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a82b9904ff34cc4fb66157217fe48a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _locationDataAnnotation: {fileID: 8241125562864823516}
-  _relativeKeypointsAnnotation: {fileID: 6447834089412636778}
+  _boundingBoxAnnotation: {fileID: 8241125562864823516}
+  _keypointsAnnotation: {fileID: 6447834089412636778}
   _labelAnnotation: {fileID: 7310817467319291998}
 --- !u!1001 &2782677811817078429
 PrefabInstance:
@@ -60,7 +60,7 @@ PrefabInstance:
     - target: {fileID: 9215842904284588297, guid: e260d2f5fb90a790385fcb2d815b23a6,
         type: 3}
       propertyPath: m_Name
-      value: RelativeKeypoints
+      value: Keypoints
       objectReference: {fileID: 0}
     - target: {fileID: 9215842904284589814, guid: e260d2f5fb90a790385fcb2d815b23a6,
         type: 3}
@@ -202,7 +202,7 @@ PrefabInstance:
     - target: {fileID: 4965192403804369243, guid: 3b696480602fe21de85315216956bd42,
         type: 3}
       propertyPath: m_Name
-      value: LocationData
+      value: BoundingBox
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3b696480602fe21de85315216956bd42, type: 3}
