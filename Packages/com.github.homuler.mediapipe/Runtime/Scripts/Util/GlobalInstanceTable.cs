@@ -118,6 +118,19 @@ namespace Mediapipe
       }
     }
 
+    public bool Remove(TKey key)
+    {
+      _tableLock.EnterWriteLock();
+      try
+      {
+        return _table.Remove(key);
+      }
+      finally
+      {
+        _tableLock.ExitWriteLock();
+      }
+    }
+
     /// <remarks>
     ///   Aquire the write lock before calling this method.
     /// </remarks>
