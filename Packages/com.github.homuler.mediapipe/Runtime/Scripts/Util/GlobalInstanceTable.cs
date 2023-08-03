@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Linq;
 
 namespace Mediapipe
 {
@@ -136,12 +137,11 @@ namespace Mediapipe
     /// </remarks>
     private void ClearUnusedKeys()
     {
-      foreach (var pair in _table)
+      var deadKeys = _table.Where(x => !x.Value.TryGetTarget(out var target)).Select(x => x.Key).ToArray();
+
+      foreach (var key in deadKeys)
       {
-        if (!pair.Value.TryGetTarget(out var _))
-        {
-          var _ = _table.Remove(pair.Key);
-        }
+        var _ = _table.Remove(key);
       }
     }
   }
