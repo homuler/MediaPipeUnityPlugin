@@ -14,13 +14,13 @@ namespace Mediapipe.Unity
     [SerializeField] private bool _visualizeZ = false;
     [SerializeField] private int _circleVertices = 128;
 
-    private IList<NormalizedLandmark> _currentFaceLandmarkList;
-    private IList<NormalizedLandmark> _currentPoseLandmarkList;
-    private IList<NormalizedLandmark> _currentLeftHandLandmarkList;
-    private IList<NormalizedLandmark> _currentRightHandLandmarkList;
+    private IReadOnlyList<NormalizedLandmark> _currentFaceLandmarkList;
+    private IReadOnlyList<NormalizedLandmark> _currentPoseLandmarkList;
+    private IReadOnlyList<NormalizedLandmark> _currentLeftHandLandmarkList;
+    private IReadOnlyList<NormalizedLandmark> _currentRightHandLandmarkList;
 
-    public void DrawNow(IList<NormalizedLandmark> faceLandmarkList, IList<NormalizedLandmark> poseLandmarkList,
-                        IList<NormalizedLandmark> leftHandLandmarkList, IList<NormalizedLandmark> rightHandLandmarkList)
+    public void DrawNow(IReadOnlyList<NormalizedLandmark> faceLandmarkList, IReadOnlyList<NormalizedLandmark> poseLandmarkList,
+                        IReadOnlyList<NormalizedLandmark> leftHandLandmarkList, IReadOnlyList<NormalizedLandmark> rightHandLandmarkList)
     {
       _currentFaceLandmarkList = faceLandmarkList;
       _currentPoseLandmarkList = poseLandmarkList;
@@ -40,7 +40,7 @@ namespace Mediapipe.Unity
       );
     }
 
-    public void DrawFaceLandmarkListLater(IList<NormalizedLandmark> faceLandmarkList)
+    public void DrawFaceLandmarkListLater(IReadOnlyList<NormalizedLandmark> faceLandmarkList)
     {
       UpdateCurrentTarget(faceLandmarkList, ref _currentFaceLandmarkList);
     }
@@ -50,7 +50,7 @@ namespace Mediapipe.Unity
       DrawFaceLandmarkListLater(faceLandmarkList?.Landmark);
     }
 
-    public void DrawPoseLandmarkListLater(IList<NormalizedLandmark> poseLandmarkList)
+    public void DrawPoseLandmarkListLater(IReadOnlyList<NormalizedLandmark> poseLandmarkList)
     {
       UpdateCurrentTarget(poseLandmarkList, ref _currentPoseLandmarkList);
     }
@@ -60,7 +60,7 @@ namespace Mediapipe.Unity
       DrawPoseLandmarkListLater(poseLandmarkList?.Landmark);
     }
 
-    public void DrawLeftHandLandmarkListLater(IList<NormalizedLandmark> leftHandLandmarkList)
+    public void DrawLeftHandLandmarkListLater(IReadOnlyList<NormalizedLandmark> leftHandLandmarkList)
     {
       UpdateCurrentTarget(leftHandLandmarkList, ref _currentLeftHandLandmarkList);
     }
@@ -70,7 +70,7 @@ namespace Mediapipe.Unity
       DrawLeftHandLandmarkListLater(leftHandLandmarkList?.Landmark);
     }
 
-    public void DrawRightHandLandmarkListLater(IList<NormalizedLandmark> rightHandLandmarkList)
+    public void DrawRightHandLandmarkListLater(IReadOnlyList<NormalizedLandmark> rightHandLandmarkList)
     {
       UpdateCurrentTarget(rightHandLandmarkList, ref _currentRightHandLandmarkList);
     }

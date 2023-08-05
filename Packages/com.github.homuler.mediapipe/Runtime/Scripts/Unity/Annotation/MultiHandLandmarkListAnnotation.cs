@@ -65,7 +65,7 @@ namespace Mediapipe.Unity
       ApplyConnectionWidth(_connectionWidth);
     }
 
-    public void SetHandedness(IList<ClassificationList> handedness)
+    public void SetHandedness(IReadOnlyList<ClassificationList> handedness)
     {
       var count = handedness == null ? 0 : handedness.Count;
       for (var i = 0; i < Mathf.Min(count, children.Count); i++)
@@ -74,11 +74,11 @@ namespace Mediapipe.Unity
       }
       for (var i = count; i < children.Count; i++)
       {
-        children[i].SetHandedness((IList<Classification>)null);
+        children[i].SetHandedness((IReadOnlyList<Classification>)null);
       }
     }
 
-    public void Draw(IList<NormalizedLandmarkList> targets, bool visualizeZ = false)
+    public void Draw(IReadOnlyList<NormalizedLandmarkList> targets, bool visualizeZ = false)
     {
       if (ActivateFor(targets))
       {

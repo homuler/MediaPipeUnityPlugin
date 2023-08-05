@@ -89,7 +89,7 @@ namespace Mediapipe.Unity
       ApplyIrisCircleColor(_irisCircleColor);
     }
 
-    public void Draw(IList<NormalizedLandmarkList> targets, bool visualizeZ = false)
+    public void Draw(IReadOnlyList<NormalizedLandmarkList> targets, bool visualizeZ = false)
     {
       if (ActivateFor(targets))
       {

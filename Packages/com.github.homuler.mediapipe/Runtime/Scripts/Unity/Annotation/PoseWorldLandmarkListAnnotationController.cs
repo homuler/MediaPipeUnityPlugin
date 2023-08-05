@@ -15,7 +15,7 @@ namespace Mediapipe.Unity
     [SerializeField] private Vector3 _scale = new Vector3(100, 100, 100);
     [SerializeField] private bool _visualizeZ = true;
 
-    private IList<Landmark> _currentTarget;
+    private IReadOnlyList<Landmark> _currentTarget;
 
     protected override void Start()
     {
@@ -23,7 +23,7 @@ namespace Mediapipe.Unity
       transform.localPosition = new Vector3(0, _hipHeightMeter * _scale.y, 0);
     }
 
-    public void DrawNow(IList<Landmark> target)
+    public void DrawNow(IReadOnlyList<Landmark> target)
     {
       _currentTarget = target;
       SyncNow();
@@ -34,7 +34,7 @@ namespace Mediapipe.Unity
       DrawNow(target?.Landmark);
     }
 
-    public void DrawLater(IList<Landmark> target)
+    public void DrawLater(IReadOnlyList<Landmark> target)
     {
       UpdateCurrentTarget(target, ref _currentTarget);
     }

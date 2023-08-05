@@ -13,15 +13,15 @@ namespace Mediapipe.Unity
   {
     [SerializeField] private bool _visualizeZ = false;
 
-    private IList<NormalizedLandmarkList> _currentTarget;
+    private IReadOnlyList<NormalizedLandmarkList> _currentTarget;
 
-    public void DrawNow(IList<NormalizedLandmarkList> target)
+    public void DrawNow(IReadOnlyList<NormalizedLandmarkList> target)
     {
       _currentTarget = target;
       SyncNow();
     }
 
-    public void DrawLater(IList<NormalizedLandmarkList> target)
+    public void DrawLater(IReadOnlyList<NormalizedLandmarkList> target)
     {
       UpdateCurrentTarget(target, ref _currentTarget);
     }

@@ -93,7 +93,7 @@ namespace Mediapipe.Unity
     ///   The 1st argument is <typeparamref name="T" />, that is an ith element in <see cref="children" />.
     ///   The 2nd argument is <typeparamref name="TArg" />, that is also an ith element in <paramref name="argumentList" />.
     /// </param>
-    protected void CallActionForAll<TArg>(IList<TArg> argumentList, Action<T, TArg> action)
+    protected void CallActionForAll<TArg>(IReadOnlyList<TArg> argumentList, Action<T, TArg> action)
     {
       for (var i = 0; i < Mathf.Max(children.Count, argumentList.Count); i++)
       {

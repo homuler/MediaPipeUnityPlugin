@@ -88,7 +88,7 @@ namespace Mediapipe.Unity
       _rightIrisLandmarkListAnnotation.SetCircleWidth(width);
     }
 
-    public void Draw(IList<NormalizedLandmark> target, bool visualizeZ = false, int circleVertices = 128)
+    public void Draw(IReadOnlyList<NormalizedLandmark> target, bool visualizeZ = false, int circleVertices = 128)
     {
       var (faceLandmarks, leftLandmarks, rightLandmarks) = PartitionLandmarkList(target);
       DrawFaceLandmarkList(faceLandmarks, visualizeZ);
@@ -101,24 +101,24 @@ namespace Mediapipe.Unity
       Draw(target.Landmark, visualizeZ, circleVertices);
     }
 
-    public void DrawFaceLandmarkList(IList<NormalizedLandmark> target, bool visualizeZ = false)
+    public void DrawFaceLandmarkList(IReadOnlyList<NormalizedLandmark> target, bool visualizeZ = false)
     {
       _faceLandmarkListAnnotation.Draw(target, visualizeZ);
     }
 
-    public void DrawLeftIrisLandmarkList(IList<NormalizedLandmark> target, bool visualizeZ = false, int circleVertices = 128)
+    public void DrawLeftIrisLandmarkList(IReadOnlyList<NormalizedLandmark> target, bool visualizeZ = false, int circleVertices = 128)
     {
       // does not deactivate if the target is null as long as face landmarks are present.
       _leftIrisLandmarkListAnnotation.Draw(target, visualizeZ, circleVertices);
     }
 
-    public void DrawRightIrisLandmarkList(IList<NormalizedLandmark> target, bool visualizeZ = false, int circleVertices = 128)
+    public void DrawRightIrisLandmarkList(IReadOnlyList<NormalizedLandmark> target, bool visualizeZ = false, int circleVertices = 128)
     {
       // does not deactivate if the target is null as long as face landmarks are present.
       _rightIrisLandmarkListAnnotation.Draw(target, visualizeZ, circleVertices);
     }
 
-    private static (IList<NormalizedLandmark>, IList<NormalizedLandmark>, IList<NormalizedLandmark>) PartitionLandmarkList(IList<NormalizedLandmark> landmarks)
+    private static (IReadOnlyList<NormalizedLandmark>, IReadOnlyList<NormalizedLandmark>, IReadOnlyList<NormalizedLandmark>) PartitionLandmarkList(IReadOnlyList<NormalizedLandmark> landmarks)
     {
       if (landmarks == null)
       {
