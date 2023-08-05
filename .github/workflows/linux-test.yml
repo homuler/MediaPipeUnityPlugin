@@ -116,7 +116,7 @@ jobs:
           mv artifacts.tar DummyProject
           cd DummyProject
           tar xvf artifacts.tar
-          echo $(jq '.dependencies += {"com.unity.testtools.codecoverage":"1.1.1"}' Packages/manifest.json) > Packages/manifest.json
+          echo $(jq '.dependencies += {"com.unity.testtools.codecoverage":"1.2.4"}' Packages/manifest.json) > Packages/manifest.json
 
       - uses: actions/cache@v3
         with:
@@ -137,7 +137,7 @@ jobs:
             -testCategory !GpuOnly \
             -enableCodeCoverage \
             -debugCodeOptimization \
-            -coverageOptions 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+MediaPipe.Runtime;pathFilters:-*/Runtime/Scripts/Protobuf/*'
+            -coverageOptions 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+Mediapipe.Runtime;pathFilters:-*/Runtime/Scripts/Protobuf/*'
 
       - name: Cat results.xml
         env:
