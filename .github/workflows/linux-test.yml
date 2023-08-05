@@ -69,8 +69,12 @@ jobs:
           - ubuntu-22.04
           - ubuntu-20.04
         unityVersion:
-          - 2021.3.18f1
+          - 2022.3.6f1
+          - 2021.3.29f1
           - 2020.3.44f1
+        exclude:
+          - os: ubuntu-22.04
+            unityVersion: 2020.3.44f1
     steps:
       - name: Install UnityEditor
         run: |
@@ -112,7 +116,7 @@ jobs:
           mv artifacts.tar DummyProject
           cd DummyProject
           tar xvf artifacts.tar
-          echo $(jq '.dependencies += {"com.unity.testtools.codecoverage":"1.1.1"}' Packages/manifest.json) > Packages/manifest.json
+          echo $(jq '.dependencies += {"com.unity.testtools.codecoverage":"1.2.4"}' Packages/manifest.json) > Packages/manifest.json
 
       - uses: actions/cache@v3
         with:
@@ -133,7 +137,7 @@ jobs:
             -testCategory !GpuOnly \
             -enableCodeCoverage \
             -debugCodeOptimization \
-            -coverageOptions 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+MediaPipe.Runtime;pathFilters:-*/Runtime/Scripts/Protobuf/*'
+            -coverageOptions 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+Mediapipe.Runtime;pathFilters:-*/Runtime/Scripts/Protobuf/*'
 
       - name: Cat results.xml
         env:
@@ -158,7 +162,6 @@ jobs:
 
   post-test:
     runs-on: ubuntu-latest
-    if: ${{ always() }}
     needs: test
     steps:
       - uses: geekyeggo/delete-artifact@v2
