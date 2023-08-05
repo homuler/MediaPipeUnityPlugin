@@ -69,7 +69,8 @@ jobs:
           - ubuntu-22.04
           - ubuntu-20.04
         unityVersion:
-          - 2021.3.18f1
+          - 2022.3.6f1
+          - 2021.3.29f1
           - 2020.3.44f1
     steps:
       - name: Install UnityEditor
