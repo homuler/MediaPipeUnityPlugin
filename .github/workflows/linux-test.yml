@@ -159,7 +159,6 @@ jobs:
 
   post-test:
     runs-on: ubuntu-latest
-    if: ${{ always() }}
     needs: test
     steps:
       - uses: geekyeggo/delete-artifact@v2
