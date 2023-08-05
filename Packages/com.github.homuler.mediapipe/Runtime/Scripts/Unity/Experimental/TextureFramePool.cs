@@ -50,12 +50,17 @@ namespace Mediapipe.Unity.Experimental
       _textureFramesInUse = new Dictionary<Guid, TextureFrame>(poolSize);
     }
 
-    void IDisposable.Dispose()
+    public void Dispose()
     {
       _textureFramesLock.EnterWriteLock();
       try
       {
+        foreach (var textureFrame in _availableTextureFrames)
+        {
+          textureFrame.Dispose();
+        }
         _availableTextureFrames.Clear();
+
         foreach (var textureFrame in _textureFramesInUse.Values)
         {
           textureFrame.Dispose();

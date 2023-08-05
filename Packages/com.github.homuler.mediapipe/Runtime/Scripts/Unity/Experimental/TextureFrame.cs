@@ -85,10 +85,11 @@ namespace Mediapipe.Unity.Experimental
         var name = (uint)_nativeTexturePtr;
         lock (((ICollection)_NameTable).SyncRoot)
         {
-          var _ = _NameTable.Remove(name);
+          _ = _NameTable.Remove(name);
         }
       }
       _glSyncToken?.Dispose();
+      _ = _InstanceTable.Remove(_instanceId);
     }
 
     public void CopyTexture(Texture dst) => Graphics.CopyTexture(_texture, dst);

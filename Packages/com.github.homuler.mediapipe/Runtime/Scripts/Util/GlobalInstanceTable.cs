@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Linq;
 
 namespace Mediapipe
 {
@@ -14,7 +15,7 @@ namespace Mediapipe
   public class GlobalInstanceTable<TKey, TValue> where TValue : class
   {
     private readonly ReaderWriterLockSlim _tableLock = new ReaderWriterLockSlim();
-    private readonly Dictionary<TKey, WeakReference<TValue>> _table = new Dictionary<TKey, WeakReference<TValue>>();
+    private readonly Dictionary<TKey, WeakReference<TValue>> _table;
 
     private int _maxSize;
     /// <summary>
@@ -35,9 +36,26 @@ namespace Mediapipe
       }
     }
 
+    public int count
+    {
+      get
+      {
+        _tableLock.EnterReadLock();
+        try
+        {
+          return _table.Count;
+        }
+        finally
+        {
+          _tableLock.ExitReadLock();
+        }
+      }
+    }
+
     public GlobalInstanceTable(int maxSize = 0)
     {
       this.maxSize = maxSize;
+      _table = new Dictionary<TKey, WeakReference<TValue>>(maxSize);
     }
 
     public void Add(TKey key, TValue value)
@@ -118,17 +136,29 @@ namespace Mediapipe
       }
     }
 
+    public bool Remove(TKey key)
+    {
+      _tableLock.EnterWriteLock();
+      try
+      {
+        return _table.Remove(key);
+      }
+      finally
+      {
+        _tableLock.ExitWriteLock();
+      }
+    }
+
     /// <remarks>
     ///   Aquire the write lock before calling this method.
     /// </remarks>
     private void ClearUnusedKeys()
     {
-      foreach (var pair in _table)
+      var deadKeys = _table.Where(x => !x.Value.TryGetTarget(out var target)).Select(x => x.Key).ToArray();
+
+      foreach (var key in deadKeys)
       {
-        if (!pair.Value.TryGetTarget(out var _))
-        {
-          var _ = _table.Remove(pair.Key);
-        }
+        var _ = _table.Remove(key);
       }
     }
   }
