@@ -15,7 +15,7 @@ namespace Mediapipe
   public class GlobalInstanceTable<TKey, TValue> where TValue : class
   {
     private readonly ReaderWriterLockSlim _tableLock = new ReaderWriterLockSlim();
-    private readonly Dictionary<TKey, WeakReference<TValue>> _table = new Dictionary<TKey, WeakReference<TValue>>();
+    private readonly Dictionary<TKey, WeakReference<TValue>> _table;
 
     private int _maxSize;
     /// <summary>
@@ -36,9 +36,26 @@ namespace Mediapipe
       }
     }
 
+    public int count
+    {
+      get
+      {
+        _tableLock.EnterReadLock();
+        try
+        {
+          return _table.Count;
+        }
+        finally
+        {
+          _tableLock.ExitReadLock();
+        }
+      }
+    }
+
     public GlobalInstanceTable(int maxSize = 0)
     {
       this.maxSize = maxSize;
+      _table = new Dictionary<TKey, WeakReference<TValue>>(maxSize);
     }
 
     public void Add(TKey key, TValue value)
