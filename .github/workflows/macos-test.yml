@@ -61,6 +61,9 @@ jobs:
           - { version: "2022.3.6f1", changeset: "b9e6e7e9fa2d" }
           - { version: "2021.3.29f1", changeset: "204d6dc9ae1c" }
           - { version: "2020.3.44f1", changeset: "7f159b6136da" }
+        exclude:
+          - os: macos-12
+            unity: { version: "2020.3.44f1", changeset: "7f159b6136da" }
     steps:
       - name: Install UnityEditor
         run: |
