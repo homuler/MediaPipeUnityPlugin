@@ -30,6 +30,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection
 
     protected override IEnumerator Run()
     {
+      Debug.Log($"Delegate = {config.Delegate}");
       Debug.Log($"Model = {config.ModelName}");
       Debug.Log($"Running Mode = {config.RunningMode}");
       Debug.Log($"MinDetectionConfidence = {config.MinDetectionConfidence}");
@@ -38,14 +39,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection
 
       yield return AssetLoader.PrepareAssetAsync(config.ModelPath);
 
-      var options = new Tasks.Vision.FaceDetector.FaceDetectorOptions(
-        new Tasks.Core.BaseOptions(Tasks.Core.BaseOptions.Delegate.GPU, modelAssetPath: config.ModelPath),
-        runningMode: config.RunningMode,
-        minDetectionConfidence: config.MinDetectionConfidence,
-        minSuppressionThreshold: config.MinSuppressionThreshold,
-        numFaces: config.NumFaces,
-        resultCallback: config.RunningMode == Tasks.Vision.Core.RunningMode.LIVE_STREAM ? OnFaceDetectionsOutput : null
-      );
+      var options = config.GetFaceDetectorOptions(config.RunningMode == Tasks.Vision.Core.RunningMode.LIVE_STREAM ? OnFaceDetectionsOutput : null);
       _faceDetector = Tasks.Vision.FaceDetector.FaceDetector.CreateFromOptions(options);
       var imageSource = ImageSourceProvider.ImageSource;
 

@@ -16,6 +16,13 @@ namespace Mediapipe.Unity.Sample.FaceDetection
 
   public class FaceDetectionConfig
   {
+    public Tasks.Core.BaseOptions.Delegate Delegate { get; set; } =
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+      Tasks.Core.BaseOptions.Delegate.CPU;
+#else
+    Tasks.Core.BaseOptions.Delegate.GPU;
+#endif
+
     public ModelType Model { get; set; } = ModelType.BlazeFaceShortRange;
 
     public Tasks.Vision.Core.RunningMode RunningMode { get; set; } = Tasks.Vision.Core.RunningMode.LIVE_STREAM;
@@ -39,6 +46,18 @@ namespace Mediapipe.Unity.Sample.FaceDetection
             return null;
         }
       }
+    }
+
+    public Tasks.Vision.FaceDetector.FaceDetectorOptions GetFaceDetectorOptions(Tasks.Vision.FaceDetector.FaceDetectorOptions.ResultCallback resultCallback = null)
+    {
+      return new Tasks.Vision.FaceDetector.FaceDetectorOptions(
+        new Tasks.Core.BaseOptions(Delegate, modelAssetPath: ModelPath),
+        runningMode: RunningMode,
+        minDetectionConfidence: MinDetectionConfidence,
+        minSuppressionThreshold: MinSuppressionThreshold,
+        numFaces: NumFaces,
+        resultCallback: resultCallback
+      );
     }
   }
 }

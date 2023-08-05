@@ -12,6 +12,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection.UI
 {
   public class FaceDetectionConfigWindow : ModalContents
   {
+    [SerializeField] private Dropdown _delegateInput;
     [SerializeField] private Dropdown _modelSelectionInput;
     [SerializeField] private Dropdown _runningModeInput;
     [SerializeField] private InputField _minDetectionConfidenceInput;
@@ -30,6 +31,12 @@ namespace Mediapipe.Unity.Sample.FaceDetection.UI
     public override void Exit()
     {
       GetModal().CloseAndResume(_isChanged);
+    }
+
+    private void SwitchDelegate()
+    {
+      _config.Delegate = (Tasks.Core.BaseOptions.Delegate)_delegateInput.value;
+      _isChanged = true;
     }
 
     private void SwitchModelType()
@@ -73,11 +80,18 @@ namespace Mediapipe.Unity.Sample.FaceDetection.UI
 
     private void InitializeContents()
     {
+      InitializeDelegate();
       InitializeModelSelection();
       InitializeRunningMode();
       InitializeMinDetectionConfidence();
       InitializeMinSuppressionThreshold();
       InitializeNumFaces();
+    }
+
+    private void InitializeDelegate()
+    {
+      InitializeDropdown<Tasks.Core.BaseOptions.Delegate>(_delegateInput, _config.Delegate.ToString());
+      _delegateInput.onValueChanged.AddListener(delegate { SwitchDelegate(); });
     }
 
     private void InitializeModelSelection()
