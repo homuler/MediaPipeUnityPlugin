@@ -14,9 +14,9 @@ namespace Mediapipe.Unity
   {
     [SerializeField] private bool _visualizeZ = false;
 
-    private IList<NormalizedLandmark> _currentTarget;
+    private IReadOnlyList<NormalizedLandmark> _currentTarget;
 
-    public void DrawNow(IList<NormalizedLandmark> target)
+    public void DrawNow(IReadOnlyList<NormalizedLandmark> target)
     {
       _currentTarget = target;
       SyncNow();
@@ -27,12 +27,12 @@ namespace Mediapipe.Unity
       DrawNow(target?.Landmark);
     }
 
-    public void DrawNow(IList<NormalizedLandmarkList> landmarkLists)
+    public void DrawNow(IReadOnlyList<NormalizedLandmarkList> landmarkLists)
     {
       DrawNow(FlattenNormalizedLandmarkLists(landmarkLists));
     }
 
-    public void DrawLater(IList<NormalizedLandmark> target)
+    public void DrawLater(IReadOnlyList<NormalizedLandmark> target)
     {
       UpdateCurrentTarget(target, ref _currentTarget);
     }
@@ -42,7 +42,7 @@ namespace Mediapipe.Unity
       UpdateCurrentTarget(target?.Landmark, ref _currentTarget);
     }
 
-    public void DrawLater(IList<NormalizedLandmarkList> landmarkLists)
+    public void DrawLater(IReadOnlyList<NormalizedLandmarkList> landmarkLists)
     {
       UpdateCurrentTarget(FlattenNormalizedLandmarkLists(landmarkLists), ref _currentTarget);
     }
@@ -53,7 +53,7 @@ namespace Mediapipe.Unity
       annotation.Draw(_currentTarget, _visualizeZ);
     }
 
-    private IList<NormalizedLandmark> FlattenNormalizedLandmarkLists(IList<NormalizedLandmarkList> landmarkLists)
+    private IReadOnlyList<NormalizedLandmark> FlattenNormalizedLandmarkLists(IReadOnlyList<NormalizedLandmarkList> landmarkLists)
     {
       return landmarkLists?.Select((x) => x.Landmark).SelectMany(x => x).ToList();
     }

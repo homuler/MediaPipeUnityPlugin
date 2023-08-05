@@ -50,8 +50,8 @@ namespace Mediapipe.Unity
       _connectionListAnnotation.Fill(2); // left/right wrist joint
     }
 
-    public void Draw(IList<NormalizedLandmark> faceLandmarks, IList<NormalizedLandmark> poseLandmarks,
-                     IList<NormalizedLandmark> leftHandLandmarks, IList<NormalizedLandmark> rightHandLandmarks, bool visualizeZ = false, int circleVertices = 128)
+    public void Draw(IReadOnlyList<NormalizedLandmark> faceLandmarks, IReadOnlyList<NormalizedLandmark> poseLandmarks,
+                     IReadOnlyList<NormalizedLandmark> leftHandLandmarks, IReadOnlyList<NormalizedLandmark> rightHandLandmarks, bool visualizeZ = false, int circleVertices = 128)
     {
       var mask = PoseLandmarkListAnnotation.BodyParts.All;
       if (faceLandmarks != null)

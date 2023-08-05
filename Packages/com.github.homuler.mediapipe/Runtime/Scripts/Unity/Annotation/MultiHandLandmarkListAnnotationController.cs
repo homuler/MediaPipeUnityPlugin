@@ -13,22 +13,22 @@ namespace Mediapipe.Unity
   {
     [SerializeField] private bool _visualizeZ = false;
 
-    private IList<NormalizedLandmarkList> _currentHandLandmarkLists;
-    private IList<ClassificationList> _currentHandedness;
+    private IReadOnlyList<NormalizedLandmarkList> _currentHandLandmarkLists;
+    private IReadOnlyList<ClassificationList> _currentHandedness;
 
-    public void DrawNow(IList<NormalizedLandmarkList> handLandmarkLists, IList<ClassificationList> handedness = null)
+    public void DrawNow(IReadOnlyList<NormalizedLandmarkList> handLandmarkLists, IReadOnlyList<ClassificationList> handedness = null)
     {
       _currentHandLandmarkLists = handLandmarkLists;
       _currentHandedness = handedness;
       SyncNow();
     }
 
-    public void DrawLater(IList<NormalizedLandmarkList> handLandmarkLists)
+    public void DrawLater(IReadOnlyList<NormalizedLandmarkList> handLandmarkLists)
     {
       UpdateCurrentTarget(handLandmarkLists, ref _currentHandLandmarkLists);
     }
 
-    public void DrawLater(IList<ClassificationList> handedness)
+    public void DrawLater(IReadOnlyList<ClassificationList> handedness)
     {
       UpdateCurrentTarget(handedness, ref _currentHandedness);
     }

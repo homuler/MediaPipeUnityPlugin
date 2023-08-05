@@ -159,7 +159,7 @@ namespace Mediapipe.Unity
       _connectionListAnnotation.SetLineWidth(connectionWidth);
     }
 
-    public void Draw(IList<Landmark> target, Vector3 scale, bool visualizeZ = false)
+    public void Draw(IReadOnlyList<Landmark> target, Vector3 scale, bool visualizeZ = false)
     {
       if (ActivateFor(target))
       {
@@ -174,7 +174,7 @@ namespace Mediapipe.Unity
       Draw(target?.Landmark, scale, visualizeZ);
     }
 
-    public void Draw(IList<NormalizedLandmark> target, BodyParts mask, bool visualizeZ = false)
+    public void Draw(IReadOnlyList<NormalizedLandmark> target, BodyParts mask, bool visualizeZ = false)
     {
       if (ActivateFor(target))
       {
@@ -190,7 +190,7 @@ namespace Mediapipe.Unity
       Draw(target?.Landmark, mask, visualizeZ);
     }
 
-    public void Draw(IList<NormalizedLandmark> target, bool visualizeZ = false)
+    public void Draw(IReadOnlyList<NormalizedLandmark> target, bool visualizeZ = false)
     {
       Draw(target, BodyParts.All, visualizeZ);
     }

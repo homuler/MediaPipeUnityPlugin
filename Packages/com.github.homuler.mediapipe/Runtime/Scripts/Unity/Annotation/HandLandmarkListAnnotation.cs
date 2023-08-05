@@ -116,7 +116,7 @@ namespace Mediapipe.Unity
       }
     }
 
-    public void SetHandedness(IList<Classification> handedness)
+    public void SetHandedness(IReadOnlyList<Classification> handedness)
     {
       if (handedness == null || handedness.Count == 0 || handedness[0].Label == "Left")
       {
@@ -134,7 +134,7 @@ namespace Mediapipe.Unity
       SetHandedness(handedness.Classification);
     }
 
-    public void Draw(IList<NormalizedLandmark> target, bool visualizeZ = false)
+    public void Draw(IReadOnlyList<NormalizedLandmark> target, bool visualizeZ = false)
     {
       if (ActivateFor(target))
       {

@@ -42,7 +42,7 @@ namespace Mediapipe.Unity
     ///   This will affect the rectangle's color. For example, if the score is below the threshold, the rectangle will be transparent.
     ///   The default value is 0.
     /// </param>
-    public void Draw(IList<Detection> targets, float threshold = 0.0f)
+    public void Draw(IReadOnlyList<Detection> targets, float threshold = 0.0f)
     {
       if (ActivateFor(targets))
       {

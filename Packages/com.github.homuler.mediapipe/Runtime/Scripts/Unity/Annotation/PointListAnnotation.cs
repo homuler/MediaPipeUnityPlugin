@@ -43,7 +43,7 @@ namespace Mediapipe.Unity
       ApplyRadius(_radius);
     }
 
-    public void Draw(IList<Vector3> targets)
+    public void Draw(IReadOnlyList<Vector3> targets)
     {
       if (ActivateFor(targets))
       {
@@ -54,7 +54,7 @@ namespace Mediapipe.Unity
       }
     }
 
-    public void Draw(IList<Landmark> targets, Vector3 scale, bool visualizeZ = true)
+    public void Draw(IReadOnlyList<Landmark> targets, Vector3 scale, bool visualizeZ = true)
     {
       if (ActivateFor(targets))
       {
@@ -70,7 +70,7 @@ namespace Mediapipe.Unity
       Draw(targets.Landmark, scale, visualizeZ);
     }
 
-    public void Draw(IList<NormalizedLandmark> targets, bool visualizeZ = true)
+    public void Draw(IReadOnlyList<NormalizedLandmark> targets, bool visualizeZ = true)
     {
       if (ActivateFor(targets))
       {
@@ -86,7 +86,7 @@ namespace Mediapipe.Unity
       Draw(targets.Landmark, visualizeZ);
     }
 
-    public void Draw(IList<mplt.RelativeKeypoint> targets, float threshold = 0.0f)
+    public void Draw(IReadOnlyList<mplt.RelativeKeypoint> targets, float threshold = 0.0f)
     {
       if (ActivateFor(targets))
       {

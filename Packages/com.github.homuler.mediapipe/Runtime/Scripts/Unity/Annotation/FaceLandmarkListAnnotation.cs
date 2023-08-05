@@ -199,7 +199,7 @@ namespace Mediapipe.Unity
       _connectionListAnnotation.SetLineWidth(connectionWidth);
     }
 
-    public void Draw(IList<NormalizedLandmark> target, bool visualizeZ = false)
+    public void Draw(IReadOnlyList<NormalizedLandmark> target, bool visualizeZ = false)
     {
       if (ActivateFor(target))
       {

@@ -59,7 +59,7 @@ namespace Mediapipe.Unity
       _circleAnnotation.SetLineWidth(circleWidth);
     }
 
-    public void Draw(IList<NormalizedLandmark> target, bool visualizeZ = false, int vertices = 128)
+    public void Draw(IReadOnlyList<NormalizedLandmark> target, bool visualizeZ = false, int vertices = 128)
     {
       if (ActivateFor(target))
       {
@@ -81,7 +81,7 @@ namespace Mediapipe.Unity
       Draw(target?.Landmark, visualizeZ, vertices);
     }
 
-    private float CalculateRadius(UnityEngine.Rect rect, IList<NormalizedLandmark> target)
+    private float CalculateRadius(UnityEngine.Rect rect, IReadOnlyList<NormalizedLandmark> target)
     {
       var r1 = CalculateDistance(rect, target[1], target[3]);
       var r2 = CalculateDistance(rect, target[2], target[4]);
