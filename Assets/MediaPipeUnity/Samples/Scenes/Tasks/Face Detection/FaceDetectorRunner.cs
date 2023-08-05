@@ -11,7 +11,7 @@ using FaceDetectionResult = Mediapipe.Tasks.Components.Containers.DetectionResul
 
 namespace Mediapipe.Unity.Sample.FaceDetection
 {
-  public class FaceDetectorSample : VisionTaskApiRunner<Tasks.Vision.FaceDetector.FaceDetector>
+  public class FaceDetectorRunner : VisionTaskApiRunner<Tasks.Vision.FaceDetector.FaceDetector>
   {
     [SerializeField] private DetectionResultAnnotationController _detectionResultAnnotationController;
 

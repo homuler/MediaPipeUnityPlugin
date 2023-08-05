@@ -24,7 +24,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection.UI
 
     private void Start()
     {
-      _config = GameObject.Find("Solution").GetComponent<FaceDetectorSample>().config;
+      _config = GameObject.Find("Solution").GetComponent<FaceDetectorRunner>().config;
       InitializeContents();
     }
 
