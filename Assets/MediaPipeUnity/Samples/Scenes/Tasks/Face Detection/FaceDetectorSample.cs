@@ -11,11 +11,10 @@ using FaceDetectionResult = Mediapipe.Tasks.Components.Containers.DetectionResul
 
 namespace Mediapipe.Unity.Sample.FaceDetection
 {
-  public class FaceDetectorSample : VisionTaskApiRunner
+  public class FaceDetectorSample : VisionTaskApiRunner<Tasks.Vision.FaceDetector.FaceDetector>
   {
     [SerializeField] private DetectionResultAnnotationController _detectionResultAnnotationController;
 
-    private Tasks.Vision.FaceDetector.FaceDetector _faceDetector;
     private Experimental.TextureFramePool _textureFramePool;
 
     public readonly FaceDetectionConfig config = new FaceDetectionConfig();
@@ -23,7 +22,6 @@ namespace Mediapipe.Unity.Sample.FaceDetection
     public override void Stop()
     {
       base.Stop();
-      _faceDetector.Close();
       _textureFramePool?.Dispose();
       _textureFramePool = null;
     }
@@ -40,7 +38,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection
       yield return AssetLoader.PrepareAssetAsync(config.ModelPath);
 
       var options = config.GetFaceDetectorOptions(config.RunningMode == Tasks.Vision.Core.RunningMode.LIVE_STREAM ? OnFaceDetectionsOutput : null);
-      _faceDetector = Tasks.Vision.FaceDetector.FaceDetector.CreateFromOptions(options);
+      taskApi = Tasks.Vision.FaceDetector.FaceDetector.CreateFromOptions(options);
       var imageSource = ImageSourceProvider.ImageSource;
 
       yield return imageSource.Play();
@@ -89,18 +87,18 @@ namespace Mediapipe.Unity.Sample.FaceDetection
         }
 
         var image = textureFrame.BuildCPUImage();
-        switch (_faceDetector.runningMode)
+        switch (taskApi.runningMode)
         {
           case Tasks.Vision.Core.RunningMode.IMAGE:
-            var result = _faceDetector.Detect(image, imageProcessingOptions);
+            var result = taskApi.Detect(image, imageProcessingOptions);
             _detectionResultAnnotationController.DrawNow(result);
             break;
           case Tasks.Vision.Core.RunningMode.VIDEO:
-            result = _faceDetector.DetectForVideo(image, (int)GetCurrentTimestampMillisec(), imageProcessingOptions);
+            result = taskApi.DetectForVideo(image, (int)GetCurrentTimestampMillisec(), imageProcessingOptions);
             _detectionResultAnnotationController.DrawNow(result);
             break;
           case Tasks.Vision.Core.RunningMode.LIVE_STREAM:
-            _faceDetector.DetectAsync(image, (int)GetCurrentTimestampMillisec(), imageProcessingOptions);
+            taskApi.DetectAsync(image, (int)GetCurrentTimestampMillisec(), imageProcessingOptions);
             break;
         }
 

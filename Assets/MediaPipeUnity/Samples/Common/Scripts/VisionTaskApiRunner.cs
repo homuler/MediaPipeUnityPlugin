@@ -9,12 +9,12 @@ using UnityEngine;
 
 namespace Mediapipe.Unity.Sample
 {
-  public abstract class VisionTaskApiRunner : TaskApiRunner
+  public abstract class VisionTaskApiRunner<TTask> : TaskApiRunner where TTask : Tasks.Vision.Core.BaseVisionTaskApi
   {
     [SerializeField] protected Screen screen;
 
     private Coroutine _coroutine;
-    protected Tasks.Vision.Core.BaseVisionTaskApi _taskApi;
+    protected TTask taskApi;
 
     public RunningMode runningMode;
 
@@ -45,8 +45,8 @@ namespace Mediapipe.Unity.Sample
       base.Stop();
       StopCoroutine(_coroutine);
       ImageSourceProvider.ImageSource.Stop();
-      _taskApi?.Close();
-      _taskApi = null;
+      taskApi?.Close();
+      taskApi = null;
     }
 
     protected abstract IEnumerator Run();
