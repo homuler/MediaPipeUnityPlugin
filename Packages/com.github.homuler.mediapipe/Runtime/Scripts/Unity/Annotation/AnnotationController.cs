@@ -50,6 +50,8 @@ namespace Mediapipe.Unity
       }
     }
 
+    public Vector2Int imageSize { get; set; }
+
     protected virtual void Start()
     {
       if (!TryGetComponent<RectTransform>(out var _))

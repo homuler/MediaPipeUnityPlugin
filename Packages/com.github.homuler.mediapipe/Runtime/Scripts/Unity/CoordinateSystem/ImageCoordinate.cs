@@ -7,6 +7,7 @@
 using UnityEngine;
 
 using mplt = Mediapipe.LocationData.Types;
+using mptcc = Mediapipe.Tasks.Components.Containers;
 
 namespace Mediapipe.Unity.CoordinateSystem
 {
@@ -477,6 +478,21 @@ namespace Mediapipe.Unity.CoordinateSystem
     }
 
     /// <summary>
+    ///   Get the coordinates represented by <paramref name="normalizedKeypoint" /> in the local coordinate system.
+    /// </summary>
+    /// <param name="rectangle">Rectangle to get a point inside</param>
+    /// <param name="imageRotation">
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
+    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
+    /// </param>
+    /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
+    public static Vector2 GetPoint(this UnityEngine.Rect rectangle, mptcc.NormalizedKeypoint normalizedKeypoint,
+                                   RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
+      return ImageNormalizedToPoint(rectangle, normalizedKeypoint.x, normalizedKeypoint.y, imageRotation, isMirrored);
+    }
+
+    /// <summary>
     ///   Get the coordinates represented by <paramref name="normalizedLandmark" /> in the local coordinate system.
     /// </summary>
     /// <param name="rectangle">Rectangle to get a point inside</param>
@@ -540,6 +556,41 @@ namespace Mediapipe.Unity.CoordinateSystem
                                             RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
     {
       return ImageNormalizedToRectVertices(rectangle, boundingBox.Xmin, boundingBox.Ymin, boundingBox.Width, boundingBox.Height, imageRotation, isMirrored);
+    }
+
+    /// <summary>
+    ///   Get a Vector3 array which represents <paramref name="rect" />'s vertex coordinates in the local coordinate system.
+    ///   They are ordered clockwise from bottom-left point.
+    /// </summary>
+    /// <param name="rectangle">Rectangle to get a point inside</param>
+    /// <param name="imageWidth">Image width in pixels</param>
+    /// <param name="imageHeight">Image width in pixels</param>
+    /// <param name="imageRotation">
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
+    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
+    /// </param>
+    /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
+    public static Vector3[] GetRectVertices(this UnityEngine.Rect rectangle, mptcc.Rect rect, int imageWidth, int imageHeight,
+                                            RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
+      return ImageToRectVertices(rectangle, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, imageWidth, imageHeight, imageRotation, isMirrored);
+    }
+
+    /// <summary>
+    ///   Get a Vector3 array which represents <paramref name="rect" />'s vertex coordinates in the local coordinate system.
+    ///   They are ordered clockwise from bottom-left point.
+    /// </summary>
+    /// <param name="rectangle">Rectangle to get a point inside</param>
+    /// <param name="imageSize">Image size in pixels</param>
+    /// <param name="imageRotation">
+    ///   Counterclockwise rotation angle of the input image in the image coordinate system.
+    ///   In the local coordinate system, this value will often represent a clockwise rotation angle.
+    /// </param>
+    /// <param name="isMirrored">Set to true if the original coordinates is mirrored</param>
+    public static Vector3[] GetRectVertices(this UnityEngine.Rect rectangle, mptcc.Rect rect, Vector2Int imageSize,
+                                            RotationAngle imageRotation = RotationAngle.Rotation0, bool isMirrored = false)
+    {
+      return ImageToRectVertices(rectangle, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, imageSize, imageRotation, isMirrored);
     }
 
     /// <summary>

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using mplt = Mediapipe.LocationData.Types;
+using mptcc = Mediapipe.Tasks.Components.Containers;
 
 namespace Mediapipe.Unity
 {
@@ -87,6 +88,17 @@ namespace Mediapipe.Unity
     }
 
     public void Draw(IReadOnlyList<mplt.RelativeKeypoint> targets, float threshold = 0.0f)
+    {
+      if (ActivateFor(targets))
+      {
+        CallActionForAll(targets, (annotation, target) =>
+        {
+          if (annotation != null) { annotation.Draw(target, threshold); }
+        });
+      }
+    }
+
+    public void Draw(IReadOnlyList<mptcc.NormalizedKeypoint> targets, float threshold = 0.0f)
     {
       if (ActivateFor(targets))
       {
