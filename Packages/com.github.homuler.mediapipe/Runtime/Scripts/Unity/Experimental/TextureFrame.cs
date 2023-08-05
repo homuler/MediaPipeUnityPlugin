@@ -123,13 +123,21 @@ namespace Mediapipe.Unity.Experimental
         throw new InvalidOperationException("Failed to read texture on GPU");
       }
 
-      return AsyncGPUReadback.Request(_texture, 0);
+      return AsyncGPUReadback.Request(_texture, 0, (req) =>
+      {
+        if (_texture == null)
+        {
+          return;
+        }
+        _texture.LoadRawTextureData(req.GetData<byte>());
+        _texture.Apply();
+      });
     }
 
     public AsyncGPUReadbackRequest ReadTextureAsync(Texture src, bool flipVertically, bool flipHorizontally)
     {
-      // TODO: determine the format at runtime
-      var tmpRenderTexture = RenderTexture.GetTemporary(src.width, src.height, 32, GraphicsFormat.R8G8B8A8_UNorm);
+      var graphicsFormat = GraphicsFormatUtility.GetGraphicsFormat(format, true);
+      var tmpRenderTexture = RenderTexture.GetTemporary(src.width, src.height, 32, graphicsFormat);
       var currentRenderTexture = RenderTexture.active;
       RenderTexture.active = tmpRenderTexture;
 
@@ -151,6 +159,10 @@ namespace Mediapipe.Unity.Experimental
 
       return AsyncGPUReadback.Request(tmpRenderTexture, 0, (req) =>
       {
+        if (_texture == null)
+        {
+          return;
+        }
         _texture.LoadRawTextureData(req.GetData<byte>());
         _texture.Apply();
         _ = RevokeNativeTexturePtr();
