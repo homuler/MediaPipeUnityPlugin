@@ -25,8 +25,9 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
 
     public Tasks.Core.BaseOptions baseOptions { get; }
     public Core.RunningMode runningMode { get; }
-    public float minDetectionConfidence { get; } = 0.5f;
-    public float minSuppressionThreshold { get; } = 0.3f;
+    public float minDetectionConfidence { get; }
+    public float minSuppressionThreshold { get; }
+    public int numFaces { get; }
     public ResultCallback resultCallback { get; }
 
     public FaceDetectorOptions(
@@ -34,12 +35,14 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       Core.RunningMode runningMode = Core.RunningMode.IMAGE,
       float minDetectionConfidence = 0.5f,
       float minSuppressionThreshold = 0.3f,
+      int numFaces = 3,
       ResultCallback resultCallback = null)
     {
       this.baseOptions = baseOptions;
       this.runningMode = runningMode;
       this.minDetectionConfidence = minDetectionConfidence;
       this.minSuppressionThreshold = minSuppressionThreshold;
+      this.numFaces = numFaces;
       this.resultCallback = resultCallback;
     }
 
@@ -53,6 +56,7 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
         BaseOptions = baseOptionsProto,
         MinDetectionConfidence = minDetectionConfidence,
         MinSuppressionThreshold = minSuppressionThreshold,
+        NumFaces = numFaces,
       };
     }
 
