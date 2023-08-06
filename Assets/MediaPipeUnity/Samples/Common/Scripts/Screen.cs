@@ -17,7 +17,7 @@ namespace Mediapipe.Unity
 
     public Texture texture
     {
-      private get => _screen.texture;
+      get => _screen.texture;
       set => _screen.texture = value;
     }
 

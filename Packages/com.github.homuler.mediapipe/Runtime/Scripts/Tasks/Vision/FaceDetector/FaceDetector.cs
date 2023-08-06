@@ -111,11 +111,14 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     {
       var normalizedRect = ConvertToNormalizedRect(imageProcessingOptions, image, roiAllowed: false);
 
-      var packetMap = new PacketMap();
-      var timestamp = new Timestamp(timestampMs * _MICRO_SECONDS_PER_MILLISECOND);
-      packetMap.Emplace(_IMAGE_IN_STREAM_NAME, new ImagePacket(image, timestamp));
-      packetMap.Emplace(_NORM_RECT_STREAM_NAME, new NormalizedRectPacket(normalizedRect).At(timestamp));
-      var outputPackets = ProcessVideoData(packetMap);
+      PacketMap outputPackets = null;
+      using (var timestamp = new Timestamp(timestampMs * _MICRO_SECONDS_PER_MILLISECOND))
+      {
+        var packetMap = new PacketMap();
+        packetMap.Emplace(_IMAGE_IN_STREAM_NAME, new ImagePacket(image, timestamp));
+        packetMap.Emplace(_NORM_RECT_STREAM_NAME, new NormalizedRectPacket(normalizedRect).At(timestamp));
+        outputPackets = ProcessVideoData(packetMap);
+      }
 
       var outDetectionsPacket = outputPackets.At<DetectionVectorPacket, List<Detection>>(_DETECTIONS_OUT_STREAM_NAME);
       if (outDetectionsPacket.IsEmpty())
@@ -141,12 +144,14 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     {
       var normalizedRect = ConvertToNormalizedRect(imageProcessingOptions, image, roiAllowed: false);
 
-      var packetMap = new PacketMap();
-      var timestamp = new Timestamp(timestampMs * _MICRO_SECONDS_PER_MILLISECOND);
-      packetMap.Emplace(_IMAGE_IN_STREAM_NAME, new ImagePacket(image, timestamp));
-      packetMap.Emplace(_NORM_RECT_STREAM_NAME, new NormalizedRectPacket(normalizedRect).At(timestamp));
+      using (var timestamp = new Timestamp(timestampMs * _MICRO_SECONDS_PER_MILLISECOND))
+      {
+        var packetMap = new PacketMap();
+        packetMap.Emplace(_IMAGE_IN_STREAM_NAME, new ImagePacket(image, timestamp));
+        packetMap.Emplace(_NORM_RECT_STREAM_NAME, new NormalizedRectPacket(normalizedRect).At(timestamp));
 
-      SendLiveStreamData(packetMap);
+        SendLiveStreamData(packetMap);
+      }
     }
 
     private static Tasks.Core.TaskRunner.PacketsCallback BuildPacketsCallback(FaceDetectorOptions.ResultCallback resultCallback)

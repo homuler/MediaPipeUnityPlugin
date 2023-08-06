@@ -4,8 +4,7 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Mediapipe.Runtime",
-        "Unity.PerformanceTesting"
+        "Mediapipe.Runtime"
     ],
     "includePlatforms": [
         "Editor"

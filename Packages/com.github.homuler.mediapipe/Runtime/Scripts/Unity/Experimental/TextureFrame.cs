@@ -135,7 +135,7 @@ namespace Mediapipe.Unity.Experimental
       });
     }
 
-    public AsyncGPUReadbackRequest ReadTextureAsync(Texture src, bool flipVertically, bool flipHorizontally)
+    public AsyncGPUReadbackRequest ReadTextureAsync(Texture src, bool flipHorizontally, bool flipVertically)
     {
       var graphicsFormat = GraphicsFormatUtility.GetGraphicsFormat(format, true);
       var tmpRenderTexture = RenderTexture.GetTemporary(src.width, src.height, 32, graphicsFormat);
@@ -144,15 +144,15 @@ namespace Mediapipe.Unity.Experimental
 
       var scale = new Vector2(1.0f, 1.0f);
       var offset = new Vector2(0.0f, 0.0f);
-      if (flipVertically)
-      {
-        scale.y = -1.0f;
-        offset.y = 1.0f;
-      }
       if (flipHorizontally)
       {
         scale.x = -1.0f;
         offset.x = 1.0f;
+      }
+      if (flipVertically)
+      {
+        scale.y = -1.0f;
+        offset.y = 1.0f;
       }
       Graphics.Blit(src, tmpRenderTexture, scale, offset);
 
@@ -214,6 +214,8 @@ namespace Mediapipe.Unity.Experimental
     public Guid GetInstanceID() => _instanceId;
 
     public ImageFrame BuildImageFrame() => new ImageFrame(imageFormat, width, height, 4 * width, GetRawTextureData<byte>());
+
+    public Image BuildCPUImage() => new Image(imageFormat, width, height, 4 * width, GetRawTextureData<byte>());
 
     public GpuBuffer BuildGpuBuffer(GlContext glContext)
     {

@@ -17,5 +17,11 @@ namespace Mediapipe.Tasks.Vision.Core
   {
     public readonly Components.Containers.RectF? regionOfInterest;
     public readonly int rotationDegrees;
+
+    public ImageProcessingOptions(Components.Containers.RectF? regionOfInterest = null, int rotationDegrees = 0)
+    {
+      this.regionOfInterest = regionOfInterest;
+      this.rotationDegrees = rotationDegrees;
+    }
   }
 }
