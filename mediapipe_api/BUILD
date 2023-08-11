@@ -324,7 +324,9 @@ cc_library(
 
 cc_library(
     name = "face_mesh_calculators",
-    deps = select({
+    deps = [
+        "@com_google_mediapipe//mediapipe/tasks/cc/vision/face_landmarker:face_landmarker",
+    ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [
             "@com_google_mediapipe//mediapipe/graphs/face_mesh:desktop_live_calculators",
         ],
