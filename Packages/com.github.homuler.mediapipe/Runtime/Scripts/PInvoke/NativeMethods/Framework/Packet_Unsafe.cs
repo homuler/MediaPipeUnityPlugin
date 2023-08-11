@@ -147,7 +147,7 @@ namespace Mediapipe
     public static extern MpReturnCode mp_PacketMap__emplace__PKc_Rp(IntPtr packetMap, string key, IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_PacketMap__at__PKc(IntPtr packetMap, string key, out IntPtr packet);
+    public static extern MpReturnCode mp_PacketMap__find__PKc(IntPtr packetMap, string key, out IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_PacketMap__erase__PKc(IntPtr packetMap, string key, out int count);

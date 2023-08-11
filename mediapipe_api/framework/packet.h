@@ -89,7 +89,7 @@ MP_CAPI(MpReturnCode) mp_Packet__ValidateAsString(mediapipe::Packet* packet, abs
 MP_CAPI(MpReturnCode) mp_PacketMap__(PacketMap** packet_map_out);
 MP_CAPI(void) mp_PacketMap__delete(PacketMap* packet_map);
 MP_CAPI(MpReturnCode) mp_PacketMap__emplace__PKc_Rp(PacketMap* packet_map, const char* key, mediapipe::Packet* packet);
-MP_CAPI(MpReturnCode) mp_PacketMap__at__PKc(PacketMap* packet_map, const char* key, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp_PacketMap__find__PKc(PacketMap* packet_map, const char* key, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_PacketMap__erase__PKc(PacketMap* packet_map, const char* key, int* count_out);
 MP_CAPI(void) mp_PacketMap__clear(PacketMap* packet_map);
 MP_CAPI(int) mp_PacketMap__size(PacketMap* packet_map);

@@ -32,7 +32,7 @@ namespace Mediapipe
     /// </remarks>
     public TPacket At<TPacket, TValue>(string key) where TPacket : Packet<TValue>, new()
     {
-      UnsafeNativeMethods.mp_PacketMap__at__PKc(mpPtr, key, out var packetPtr).Assert();
+      UnsafeNativeMethods.mp_PacketMap__find__PKc(mpPtr, key, out var packetPtr).Assert();
 
       if (packetPtr == IntPtr.Zero)
       {
