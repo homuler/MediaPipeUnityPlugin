@@ -374,6 +374,34 @@ index bdfe65ee..c795ee7e 100644
 +    srcs = glob(["*.proto"]),
 +    visibility = ["//visibility:public"],
 +)
+diff --git a/mediapipe/tasks/cc/vision/face_geometry/calculators/BUILD b/mediapipe/tasks/cc/vision/face_geometry/calculators/BUILD
+index 3f2833f3..1ede1db5 100644
+--- a/mediapipe/tasks/cc/vision/face_geometry/calculators/BUILD
++++ b/mediapipe/tasks/cc/vision/face_geometry/calculators/BUILD
+@@ -74,3 +74,9 @@ cc_library(
+     ],
+     alwayslink = 1,
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
+diff --git a/mediapipe/tasks/cc/vision/face_geometry/proto/BUILD b/mediapipe/tasks/cc/vision/face_geometry/proto/BUILD
+index e337a345..a8f0ed52 100644
+--- a/mediapipe/tasks/cc/vision/face_geometry/proto/BUILD
++++ b/mediapipe/tasks/cc/vision/face_geometry/proto/BUILD
+@@ -64,3 +64,9 @@ mediapipe_proto_library(
+         "//mediapipe/tasks/cc/vision/face_geometry/calculators:geometry_pipeline_calculator_proto",
+     ],
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
 index b9fe8b0c..695987ad 100644
 --- a/mediapipe/util/BUILD
