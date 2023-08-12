@@ -416,6 +416,20 @@ index e337a345..a8f0ed52 100644
 +    srcs = glob(["*.proto"]),
 +    visibility = ["//visibility:public"],
 +)
+diff --git a/mediapipe/tasks/cc/vision/face_landmarker/proto/BUILD b/mediapipe/tasks/cc/vision/face_landmarker/proto/BUILD
+index aa839d91..8efc28e1 100644
+--- a/mediapipe/tasks/cc/vision/face_landmarker/proto/BUILD
++++ b/mediapipe/tasks/cc/vision/face_landmarker/proto/BUILD
+@@ -64,3 +64,9 @@ mediapipe_proto_library(
+         "//mediapipe/tasks/cc/vision/face_geometry/proto:face_geometry_graph_options_proto",
+     ],
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
 index b9fe8b0c..695987ad 100644
 --- a/mediapipe/util/BUILD
