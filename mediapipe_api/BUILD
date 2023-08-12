@@ -562,6 +562,7 @@ pkg_zip(
         "//mediapipe_api/modules/face_detection:proto_srcs",
         "//mediapipe_api/modules/holistic_landmark/calculators:proto_srcs",
         "//mediapipe_api/tasks/cc/core/proto:proto_srcs",
+        "//mediapipe_api/tasks/cc/components/containers/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/face_detector/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/face_geometry/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/face_geometry/calculators:proto_srcs",

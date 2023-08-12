@@ -333,6 +333,20 @@ index 2e33ebf6..76ed790e 100644
 +    srcs = glob(["*.proto"]),
 +    visibility = ["//visibility:public"],
 +)
+diff --git a/mediapipe/tasks/cc/components/containers/proto/BUILD b/mediapipe/tasks/cc/components/containers/proto/BUILD
+index 66255aed..8dab4bbc 100644
+--- a/mediapipe/tasks/cc/components/containers/proto/BUILD
++++ b/mediapipe/tasks/cc/components/containers/proto/BUILD
+@@ -42,3 +42,9 @@ mediapipe_proto_library(
+         "//mediapipe/framework/formats:rect_proto",
+     ],
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
 diff --git a/mediapipe/tasks/cc/core/BUILD b/mediapipe/tasks/cc/core/BUILD
 index dad9cdf1..aeaed482 100644
 --- a/mediapipe/tasks/cc/core/BUILD

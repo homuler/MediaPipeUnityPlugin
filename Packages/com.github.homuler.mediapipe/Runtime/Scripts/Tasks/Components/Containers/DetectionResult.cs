@@ -5,7 +5,6 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Mediapipe.Tasks.Components.Containers
 {
@@ -81,11 +80,7 @@ namespace Mediapipe.Tasks.Components.Containers
     }
 
     public override string ToString()
-    {
-      var categoriesStr = $"[{string.Join(", ", categories.Select(category => category.ToString()))}]";
-      var keypointsStr = keypoints == null ? "null" : $"[{string.Join(", ", keypoints.Select(keypoint => keypoint.ToString()))}]";
-      return $"{{\"categories\": {categoriesStr}, \"boundingBox\": {boundingBox}, \"keypoints\": {keypointsStr}}}";
-    }
+      => $"{{ \"categories\": {Util.Format(categories)}, \"boundingBox\": {boundingBox}, \"keypoints\": {Util.Format(keypoints)} }}";
   }
 
   /// <summary>
@@ -113,10 +108,6 @@ namespace Mediapipe.Tasks.Components.Containers
       return new DetectionResult(detections);
     }
 
-    public override string ToString()
-    {
-      var detectionsStr = string.Join(", ", detections.Select(detection => detection.ToString()));
-      return $"{{ \"detections\": [{detectionsStr}] }}";
-    }
+    public override string ToString() => $"{{ \"detections\": {Util.Format(detections)} }}";
   }
 }

@@ -36,10 +36,6 @@ namespace Mediapipe.Tasks.Components.Containers
       this.score = score;
     }
 
-    public override string ToString()
-    {
-      var scoreStr = score == null ? "null" : $"{score}";
-      return $"{{ \"x\": {x}, \"y\": {y}, \"label\": \"{label}\", \"score\": {scoreStr} }}";
-    }
+    public override string ToString() => $"{{ \"x\": {x}, \"y\": {y}, \"label\": \"{label}\", \"score\": {Util.Format(score)} }}";
   }
 }
