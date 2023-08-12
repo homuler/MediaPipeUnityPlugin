@@ -308,17 +308,18 @@ MpReturnCode mp_PacketMap__emplace__PKc_Rp(PacketMap* packet_map, const char* ke
   CATCH_EXCEPTION
 }
 
-MpReturnCode mp_PacketMap__at__PKc(PacketMap* packet_map, const char* key, mediapipe::Packet** packet_out) {
+MpReturnCode mp_PacketMap__find__PKc(PacketMap* packet_map, const char* key, mediapipe::Packet** packet_out) {
   TRY
-    auto packet = packet_map->at(std::string(key));
-    // copy
-    *packet_out = new mediapipe::Packet{packet};
+    auto iter = packet_map->find(std::string(key));
+
+    if (iter == packet_map->end()) {
+      *packet_out = nullptr;
+    } else {
+      // copy
+      auto packet = iter->second;
+      *packet_out = new mediapipe::Packet{packet};
+    }
     RETURN_CODE(MpReturnCode::Success);
-#ifndef MEDIAPIPE_IGNORE_EXCEPTION
-  } catch (std::out_of_range&) {
-    *packet_out = nullptr;
-    RETURN_CODE(MpReturnCode::Success);
-#endif
   CATCH_EXCEPTION
 }
 
