@@ -96,7 +96,9 @@ namespace Mediapipe.Tasks.Components.Containers
       {
         classifications.Add(Classifications.CreateFrom(classification));
       }
-      return new ClassificationResult(classifications, proto.HasTimestampMs ? proto.TimestampMs : null);
+#pragma warning disable IDE0004 // for Unity 2020.3.x
+      return new ClassificationResult(classifications, proto.HasTimestampMs ? (long?)proto.TimestampMs : null);
+#pragma warning restore IDE0004 // for Unity 2020.3.x
     }
 
     public override string ToString() => $"{{ \"classifications\": {Util.Format(classifications)}, \"timestampMs\": {Util.Format(timestampMs)} }}";

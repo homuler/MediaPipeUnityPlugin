@@ -79,8 +79,11 @@ namespace Mediapipe.Tasks.Components.Containers
     {
       return new Landmark(
         proto.X, proto.Y, proto.Z,
-        proto.HasVisibility ? proto.Visibility : null,
-        proto.HasPresence ? proto.Presence : null);
+#pragma warning disable IDE0004 // for Unity 2020.3.x
+        proto.HasVisibility ? (float?)proto.Visibility : null,
+        proto.HasPresence ? (float?)proto.Presence : null
+#pragma warning restore IDE0004 // for Unity 2020.3.x
+      );
     }
 
     public override string ToString()
@@ -136,8 +139,11 @@ namespace Mediapipe.Tasks.Components.Containers
     {
       return new NormalizedLandmark(
         proto.X, proto.Y, proto.Z,
-        proto.HasVisibility ? proto.Visibility : null,
-        proto.HasPresence ? proto.Presence : null);
+#pragma warning disable IDE0004 // for Unity 2020.3.x
+        proto.HasVisibility ? (float?)proto.Visibility : null,
+        proto.HasPresence ? (float?)proto.Presence : null
+#pragma warning restore IDE0004 // for Unity 2020.3.x
+      );
     }
 
     public override string ToString()
