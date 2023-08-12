@@ -87,6 +87,19 @@ namespace Mediapipe.Unity
       Draw(targets.Landmark, visualizeZ);
     }
 
+    public void Draw(IReadOnlyList<mptcc.NormalizedLandmark> targets, bool visualizeZ = true)
+    {
+      if (ActivateFor(targets))
+      {
+        CallActionForAll(targets, (annotation, target) =>
+        {
+          if (annotation != null) { annotation.Draw(in target, visualizeZ); }
+        });
+      }
+    }
+
+    public void Draw(mptcc.NormalizedLandmarks targets, bool visualizeZ = true) => Draw(targets.landmarks, visualizeZ);
+
     public void Draw(IReadOnlyList<mplt.RelativeKeypoint> targets, float threshold = 0.0f)
     {
       if (ActivateFor(targets))
