@@ -34,15 +34,18 @@ jobs:
       # Cache built libraries
       - name: Concat native library source files
         run: |
-          find WORKSPACE build.py mediapipe_api/ third_party/ -type f | sort | xargs cat > cache_key.txt
+          find WORKSPACE packages.config build.py mediapipe_api/ third_party/ -type f | sort | xargs cat > cache_key.txt
         shell: bash
 
-      - name: Cache native libraries
-        id: cache-native-libs
+      - name: Cache libraries
+        id: cache-libs
         uses: actions/cache@v3
         with:
-          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.dll
-          key: native-libs-windows-2019-v1-${{ hashFiles('cache_key.txt') }}
+          path: |
+            Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.dll
+            Packages/com.github.homuler.mediapipe/Runtime/Plugins/Protobuf/*.dll
+            Packages/com.github.homuler.mediapipe/Runtime/Scripts/Protobuf/**/*.cs
+          key: libs-windows-2019-v1-${{ hashFiles('cache_key.txt') }}
 
       - name: Remove cache_key.txt
         run: |
