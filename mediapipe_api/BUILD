@@ -352,7 +352,9 @@ cc_library(
 
 cc_library(
     name = "hands_calculators",
-    deps = select({
+    deps = [
+        "@com_google_mediapipe//mediapipe/tasks/cc/vision/hand_landmarker:hand_landmarker",
+    ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [
             "@com_google_mediapipe//mediapipe/graphs/hand_tracking:desktop_tflite_calculators",
         ],
@@ -434,6 +436,7 @@ mediapipe_files(srcs = [
     "blaze_face_short_range.tflite",
     "face_landmarker_v2.task",
     "face_landmarker_v2_with_blendshapes.task",
+    "hand_landmarker.task",
 ])
 
 pkg_asset(
@@ -505,6 +508,7 @@ filegroup(
 filegroup(
     name = "hands_assets",
     srcs = [
+        ":hand_landmarker.task",
         "@com_google_mediapipe//mediapipe/modules/hand_landmark:hand_landmark_full.tflite",
         "@com_google_mediapipe//mediapipe/modules/hand_landmark:hand_landmark_lite.tflite",
         "@com_google_mediapipe//mediapipe/modules/hand_landmark:handedness.txt",

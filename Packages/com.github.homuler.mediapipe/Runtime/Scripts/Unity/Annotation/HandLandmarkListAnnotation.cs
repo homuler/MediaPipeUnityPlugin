@@ -7,6 +7,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using mptcc = Mediapipe.Tasks.Components.Containers;
+
 namespace Mediapipe.Unity
 {
 #pragma warning disable IDE0065
@@ -134,6 +136,24 @@ namespace Mediapipe.Unity
       SetHandedness(handedness.Classification);
     }
 
+    public void SetHandedness(IReadOnlyList<mptcc.Category> handedness)
+    {
+      if (handedness == null || handedness.Count == 0 || handedness[0].categoryName == "Left")
+      {
+        SetHandedness(Hand.Left);
+      }
+      else if (handedness[0].categoryName == "Right")
+      {
+        SetHandedness(Hand.Right);
+      }
+      // ignore unknown label
+    }
+
+    public void SetHandedness(mptcc.Classifications handedness)
+    {
+      SetHandedness(handedness.categories);
+    }
+
     public void Draw(IReadOnlyList<NormalizedLandmark> target, bool visualizeZ = false)
     {
       if (ActivateFor(target))
@@ -147,6 +167,21 @@ namespace Mediapipe.Unity
     public void Draw(NormalizedLandmarkList target, bool visualizeZ = false)
     {
       Draw(target?.Landmark, visualizeZ);
+    }
+
+    public void Draw(IReadOnlyList<mptcc.NormalizedLandmark> target, bool visualizeZ = false)
+    {
+      if (ActivateFor(target))
+      {
+        _landmarkListAnnotation.Draw(target, visualizeZ);
+        // Draw explicitly because connection annotation's targets remain the same.
+        _connectionListAnnotation.Redraw();
+      }
+    }
+
+    public void Draw(mptcc.NormalizedLandmarks target, bool visualizeZ = false)
+    {
+      Draw(target.landmarks, visualizeZ);
     }
   }
 }
