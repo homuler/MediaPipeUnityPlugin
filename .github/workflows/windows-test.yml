@@ -31,14 +31,29 @@ jobs:
           path: C:\Users\runneradmin\AppData\Local\bazelisk
           key: windows-bazelisk
 
+      # Cache built libraries
+      - name: Concat native library source files
+        run: |
+          find WORKSPACE build.py mediapipe_api/ third_party/ | sort | xargs cat > /c/tmp/cache_key.txt
+
+      - name: Cache native libraries
+        id: cache-native-libs
+        uses: actions/cache@v3
+        with:
+          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.dll
+          key: native-libs-${{ runner.os }}-v1-${{ hashFiles('tmp/cache_key.txt') }}
+
       # Setup Python
       - uses: actions/setup-python@v4
+        if: steps.cache-native-libs.outputs.cache-hit != 'true'
         with:
           python-version: '3.10'
       - name: Install NumPy
+        if: steps.cache-native-libs.outputs.cache-hit != 'true'
         run: pip install --no-cache-dir --user numpy
 
       - name: Build
+        if: steps.cache-native-libs.outputs.cache-hit != 'true'
         run: |
           set ANDROID_NDK_HOME=
           python build.py build --desktop cpu --opencv cmake -vv
