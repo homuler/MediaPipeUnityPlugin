@@ -137,6 +137,7 @@ jobs:
           mv artifacts.tar DummyProject
           cd DummyProject
           tar xvf artifacts.tar
+        timeout-minutes: 8
 
       - uses: actions/cache@v3
         with:
@@ -157,6 +158,7 @@ jobs:
             -testPlatform EditMode `
             -testCategory !GpuOnly;!SignalAbort"
           exit $process.ExitCode
+        timeout-minutes: 3
 
       - name: Cat results.xml
         env:
