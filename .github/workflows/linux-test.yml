@@ -24,27 +24,44 @@ jobs:
         uses: actions/cache@v3
         with:
           path: "~/.cache/bazel"
-          key: bazel-ubuntu-20.04-v1-${{ hashFiles('WORKSPACE') }}
-      - name: Install GCC/G++ 8
+          key: bazel-${{ runner.os }}-v1-${{ hashFiles('WORKSPACE') }}
+
+      # Cache native libraries
+      - name: Concat native library source files
         run: |
+          find WORKSPACE build.py mediapipe_api/ third_party/ | sort | xargs cat > tmp/cache_key.txt
+
+      - name: Cache native libraries
+        id: cache-native-libs
+        uses: actions/cache@v3
+        with:
+          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.so
+          key: native-libs-${{ runner.os }}-v1-${{ hashFiles('tmp/cache_key.txt') }}
+
+      # Setup Python
+      - uses: actions/setup-python@v4
+        if: steps.cache-native-libs.outputs.cache-hit != 'true'
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        if: steps.cache-native-libs.outputs.cache-hit != 'true'
+        run: |
+          # install GCC/G++ 8
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends gcc-8 g++-8
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 100 --slave /usr/bin/g++ g++ /usr/bin/g++-8
 
-      - name: Install NuGet
-        run: |
+          # install NuGet
           sudo curl -o /usr/local/bin/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
           bash -c 'echo -e "#!/bin/bash\nmono /usr/local/bin/nuget.exe \$@" | sudo tee -a /usr/local/bin/nuget'
           sudo chmod +x /usr/local/bin/nuget
 
-      # Setup Python
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Install NumPy
-        run: pip install --no-cache-dir --user numpy
+          # install NumPy
+          pip install --no-cache-dir --user numpy
 
       - name: Build
+        if: steps.cache-native-libs.outputs.cache-hit != 'true'
         run: |
           unset ANDROID_NDK_HOME
           python build.py build --desktop cpu --opencv cmake -vv
