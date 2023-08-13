@@ -29,14 +29,18 @@ jobs:
       # Cache native libraries
       - name: Concat native library source files
         run: |
-          find WORKSPACE build.py mediapipe_api/ third_party/ | sort | xargs cat > tmp/cache_key.txt
+          find WORKSPACE build.py mediapipe_api/ third_party/ | sort | xargs cat > /tmp/cache_key.txt
 
       - name: Cache native libraries
         id: cache-native-libs
         uses: actions/cache@v3
         with:
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.dylib
-          key: native-libs-${{ runner.os }}-v1-${{ hashFiles('tmp/cache_key.txt') }}
+          key: native-libs-${{ runner.os }}-v1-${{ hashFiles('cache_key.txt') }}
+
+      - name: Remove cache_key.txt
+        run: |
+          rm cache_key.txt
 
       # Setup Python
       - uses: actions/setup-python@v4
