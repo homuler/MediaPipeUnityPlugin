@@ -34,17 +34,20 @@ jobs:
             Packages/com.github.homuler.mediapipe/Runtime/Scripts/Protobuf/**/*.cs
           key: libs-macos-11-v1-${{ hashFiles('cache_key.txt') }}
 
-      - name: Remove cache_key.txt
-        run: |
-          rm cache_key.txt
-
       # Setup build tools
       - name: Mount bazel cache
         if: steps.cache-libs.outputs.cache-hit != 'true'
         uses: actions/cache@v3
         with:
           path: /private/var/tmp/_bazel_runner
-          key: bazel-macos-11-v1-${{ hashFiles('WORKSPACE') }}
+          key: bazel-macos-11-v1-${{ hashFiles('WORKSPACE') }}-${{ hashFiles('cache_key.txt') }}
+          restore-keys: |
+            bazel-macos-11-v1-${{ hashFiles('WORKSPACE') }}-
+            bazel-macos-11-v1-
+
+      - name: Remove cache_key.txt
+        run: |
+          rm cache_key.txt
 
       # Setup Python
       - uses: actions/setup-python@v4
