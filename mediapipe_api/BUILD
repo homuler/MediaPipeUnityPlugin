@@ -432,6 +432,8 @@ pkg_zip(
 
 mediapipe_files(srcs = [
     "blaze_face_short_range.tflite",
+    "face_landmarker_v2.task",
+    "face_landmarker_v2_with_blendshapes.task",
 ])
 
 pkg_asset(
@@ -483,6 +485,8 @@ filegroup(
 filegroup(
     name = "face_mesh_assets",
     srcs = [
+        ":face_landmarker_v2.task",
+        ":face_landmarker_v2_with_blendshapes.task",
         "@com_google_mediapipe//mediapipe/modules/face_detection:face_detection_short_range.tflite",
         "@com_google_mediapipe//mediapipe/modules/face_landmark:face_landmark.tflite",
         "@com_google_mediapipe//mediapipe/modules/face_landmark:face_landmark_with_attention.tflite",

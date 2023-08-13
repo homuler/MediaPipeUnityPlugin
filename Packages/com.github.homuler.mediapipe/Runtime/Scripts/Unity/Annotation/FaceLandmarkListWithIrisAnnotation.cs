@@ -7,6 +7,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using mptcc = Mediapipe.Tasks.Components.Containers;
+
 namespace Mediapipe.Unity
 {
 #pragma warning disable IDE0065
@@ -101,24 +103,54 @@ namespace Mediapipe.Unity
       Draw(target.Landmark, visualizeZ, circleVertices);
     }
 
-    public void DrawFaceLandmarkList(IReadOnlyList<NormalizedLandmark> target, bool visualizeZ = false)
+    public void Draw(IReadOnlyList<mptcc.NormalizedLandmark> target, bool visualizeZ = false, int circleVertices = 128)
+    {
+      var (faceLandmarks, leftLandmarks, rightLandmarks) = PartitionLandmarkList(target);
+      DrawFaceLandmarkList(faceLandmarks, visualizeZ);
+      DrawLeftIrisLandmarkList(leftLandmarks, visualizeZ, circleVertices);
+      DrawRightIrisLandmarkList(rightLandmarks, visualizeZ, circleVertices);
+    }
+
+    public void Draw(mptcc.NormalizedLandmarks target, bool visualizeZ = false, int circleVertices = 128)
+    {
+      Draw(target.landmarks, visualizeZ, circleVertices);
+    }
+
+    private void DrawFaceLandmarkList(IReadOnlyList<NormalizedLandmark> target, bool visualizeZ = false)
     {
       _faceLandmarkListAnnotation.Draw(target, visualizeZ);
     }
 
-    public void DrawLeftIrisLandmarkList(IReadOnlyList<NormalizedLandmark> target, bool visualizeZ = false, int circleVertices = 128)
+    private void DrawFaceLandmarkList(IReadOnlyList<mptcc.NormalizedLandmark> target, bool visualizeZ = false)
+    {
+      _faceLandmarkListAnnotation.Draw(target, visualizeZ);
+    }
+
+    private void DrawLeftIrisLandmarkList(IReadOnlyList<NormalizedLandmark> target, bool visualizeZ = false, int circleVertices = 128)
     {
       // does not deactivate if the target is null as long as face landmarks are present.
       _leftIrisLandmarkListAnnotation.Draw(target, visualizeZ, circleVertices);
     }
 
-    public void DrawRightIrisLandmarkList(IReadOnlyList<NormalizedLandmark> target, bool visualizeZ = false, int circleVertices = 128)
+    private void DrawLeftIrisLandmarkList(IReadOnlyList<mptcc.NormalizedLandmark> target, bool visualizeZ = false, int circleVertices = 128)
+    {
+      // does not deactivate if the target is null as long as face landmarks are present.
+      _leftIrisLandmarkListAnnotation.Draw(target, visualizeZ, circleVertices);
+    }
+
+    private void DrawRightIrisLandmarkList(IReadOnlyList<NormalizedLandmark> target, bool visualizeZ = false, int circleVertices = 128)
     {
       // does not deactivate if the target is null as long as face landmarks are present.
       _rightIrisLandmarkListAnnotation.Draw(target, visualizeZ, circleVertices);
     }
 
-    private static (IReadOnlyList<NormalizedLandmark>, IReadOnlyList<NormalizedLandmark>, IReadOnlyList<NormalizedLandmark>) PartitionLandmarkList(IReadOnlyList<NormalizedLandmark> landmarks)
+    private void DrawRightIrisLandmarkList(IReadOnlyList<mptcc.NormalizedLandmark> target, bool visualizeZ = false, int circleVertices = 128)
+    {
+      // does not deactivate if the target is null as long as face landmarks are present.
+      _rightIrisLandmarkListAnnotation.Draw(target, visualizeZ, circleVertices);
+    }
+
+    private static (IReadOnlyList<T>, IReadOnlyList<T>, IReadOnlyList<T>) PartitionLandmarkList<T>(IReadOnlyList<T> landmarks)
     {
       if (landmarks == null)
       {
@@ -126,7 +158,7 @@ namespace Mediapipe.Unity
       }
 
       var enumerator = landmarks.GetEnumerator();
-      var faceLandmarks = new List<NormalizedLandmark>(_FaceLandmarkCount);
+      var faceLandmarks = new List<T>(_FaceLandmarkCount);
       for (var i = 0; i < _FaceLandmarkCount; i++)
       {
         if (enumerator.MoveNext())
@@ -139,7 +171,7 @@ namespace Mediapipe.Unity
         return (null, null, null);
       }
 
-      var leftIrisLandmarks = new List<NormalizedLandmark>(_IrisLandmarkCount);
+      var leftIrisLandmarks = new List<T>(_IrisLandmarkCount);
       for (var i = 0; i < _IrisLandmarkCount; i++)
       {
         if (enumerator.MoveNext())
@@ -152,7 +184,7 @@ namespace Mediapipe.Unity
         return (faceLandmarks, null, null);
       }
 
-      var rightIrisLandmarks = new List<NormalizedLandmark>(_IrisLandmarkCount);
+      var rightIrisLandmarks = new List<T>(_IrisLandmarkCount);
       for (var i = 0; i < _IrisLandmarkCount; i++)
       {
         if (enumerator.MoveNext())

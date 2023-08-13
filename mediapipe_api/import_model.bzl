@@ -66,7 +66,7 @@ _normalize_exts = rule(
     implementation = _normalize_exts_impl,
     attrs = {
         "srcs": attr.label_list(allow_files = True),
-        "bytes_exts": attr.string_list(default = ["binarypb", "jpg", "png", "tflite", "uuu"]),
+        "bytes_exts": attr.string_list(default = ["binarypb", "jpg", "png", "task", "tflite", "uuu"]),
         "txt_exts": attr.string_list(default = ["pbtxt"]),
     },
 )
