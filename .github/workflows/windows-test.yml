@@ -19,18 +19,6 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
 
-      # Setup build tools
-      - uses: msys2/setup-msys2@v2
-        with:
-          msystem: MINGW64
-          update: true
-          install: git patch unzip zip
-      - name: Mount bazelisk cache
-        uses: actions/cache@v3
-        with:
-          path: C:\Users\runneradmin\AppData\Local\bazelisk
-          key: windows-bazelisk
-
       # Cache built libraries
       - name: Concat native library source files
         run: |
@@ -51,6 +39,14 @@ jobs:
         run: |
           rm cache_key.txt
         shell: cmd
+
+      # Setup build tools
+      - uses: msys2/setup-msys2@v2
+        if: steps.cache-libs.outputs.cache-hit != 'true'
+        with:
+          msystem: MINGW64
+          update: true
+          install: git patch unzip zip
 
       # Setup Python
       - uses: actions/setup-python@v4
@@ -79,10 +75,6 @@ jobs:
           name: windows-package
           path: artifacts.tar
           retention-days: 1
-
-      - name: Prepare for cache
-        run: |
-          (Get-Item C:\_bzl\*\install).Delete()
 
   test:
     runs-on: ${{ matrix.os }}
