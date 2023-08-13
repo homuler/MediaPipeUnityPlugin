@@ -24,7 +24,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /private/var/tmp/_bazel_runner
-          key: bazel-${{ runner.os }}-v1-${{ hashFiles('WORKSPACE') }}
+          key: bazel-macos-11-v1-${{ hashFiles('WORKSPACE') }}
 
       # Cache native libraries
       - name: Concat native library source files
@@ -36,7 +36,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.dylib
-          key: native-libs-${{ runner.os }}-v1-${{ hashFiles('cache_key.txt') }}
+          key: native-libs-macos-11-v1-${{ hashFiles('cache_key.txt') }}
 
       - name: Remove cache_key.txt
         run: |

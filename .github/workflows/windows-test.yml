@@ -42,7 +42,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.dll
-          key: native-libs-${{ runner.os }}-v1-${{ hashFiles('cache_key.txt') }}
+          key: native-libs-windows-2019-v1-${{ hashFiles('cache_key.txt') }}
 
       - name: Remove cache_key.txt
         run: |
