@@ -102,6 +102,7 @@ jobs:
         run: |
           Start-Process -NoNewWindow -Wait -PassThru "C:\Program Files\Unity\Hub\Editor\${{ matrix.unity.version }}\Editor\Unity.exe" -ArgumentList "-quit -batchmode -createManualActivationFile -logfile"
           exit 0
+        timeout-minutes: 1
       - name: Request a Unity license file
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
