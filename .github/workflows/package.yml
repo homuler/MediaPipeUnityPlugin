@@ -147,7 +147,7 @@ jobs:
           git clone https://github.com/bazelbuild/bazel.git --depth 1 --single-branch --branch  6.1.1
           cd bazel
           git apply ../third_party/bazel_ios_workaround.diff
-          bazel build --java_runtime_version=remotejdk_11 //src:bazel
+          USE_BAZEL_VERSION=6.2.1 bazel build --java_runtime_version=remotejdk_11 //src:bazel
           cp bazel-bin/src/bazel ../bin
           cd ..
           echo "bin" >> $GITHUB_PATH
