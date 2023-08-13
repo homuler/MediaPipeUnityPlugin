@@ -34,7 +34,7 @@ jobs:
       # Cache built libraries
       - name: Concat native library source files
         run: |
-          find WORKSPACE build.py mediapipe_api/ third_party/ | sort | xargs cat > cache_key.txt
+          find WORKSPACE build.py mediapipe_api/ third_party/ -type f | sort | xargs cat > cache_key.txt
         shell: cmd
 
       - name: Cache native libraries
