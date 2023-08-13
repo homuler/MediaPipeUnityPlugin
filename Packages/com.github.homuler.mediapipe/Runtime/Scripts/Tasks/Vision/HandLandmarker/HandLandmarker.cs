@@ -6,22 +6,22 @@
 
 using System.Collections.Generic;
 
-namespace Mediapipe.Tasks.Vision.FaceLandmarker
+namespace Mediapipe.Tasks.Vision.HandLandmarker
 {
-  public sealed class FaceLandmarker : Core.BaseVisionTaskApi
+  public sealed class HandLandmarker : Core.BaseVisionTaskApi
   {
     private const string _IMAGE_IN_STREAM_NAME = "image_in";
     private const string _IMAGE_OUT_STREAM_NAME = "image_out";
     private const string _IMAGE_TAG = "IMAGE";
     private const string _NORM_RECT_STREAM_NAME = "norm_rect_in";
     private const string _NORM_RECT_TAG = "NORM_RECT";
-    private const string _NORM_LANDMARKS_STREAM_NAME = "norm_landmarks";
-    private const string _NORM_LANDMARKS_TAG = "NORM_LANDMARKS";
-    private const string _BLENDSHAPES_STREAM_NAME = "blendshapes";
-    private const string _BLENDSHAPES_TAG = "BLENDSHAPES";
-    private const string _FACE_GEOMETRY_STREAM_NAME = "face_geometry";
-    private const string _FACE_GEOMETRY_TAG = "FACE_GEOMETRY";
-    private const string _TASK_GRAPH_NAME = "mediapipe.tasks.vision.face_landmarker.FaceLandmarkerGraph";
+    private const string _HANDEDNESS_STREAM_NAME = "handedness";
+    private const string _HANDEDNESS_TAG = "HANDEDNESS";
+    private const string _HAND_LANDMARKS_STREAM_NAME = "landmarks";
+    private const string _HAND_LANDMARKS_TAG = "LANDMARKS";
+    private const string _HAND_WORLD_LANDMARKS_STREAM_NAME = "world_landmarks";
+    private const string _HAND_WORLD_LANDMARKS_TAG = "WORLD_LANDMARKS";
+    private const string _TASK_GRAPH_NAME = "mediapipe.tasks.vision.hand_landmarker.HandLandmarkerGraph";
 
     private const int _MICRO_SECONDS_PER_MILLISECOND = 1000;
 
@@ -32,7 +32,7 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
     private readonly Tasks.Core.TaskRunner.PacketsCallback _packetCallback;
 #pragma warning restore IDE0052
 
-    private FaceLandmarker(
+    private HandLandmarker(
       CalculatorGraphConfig graphConfig,
       Core.RunningMode runningMode,
       Tasks.Core.TaskRunner.PacketsCallback packetCallback) : base(graphConfig, runningMode, packetCallback)
@@ -41,70 +41,63 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
     }
 
     /// <summary>
-    ///   Creates an <see cref="FaceLandmarker" /> object from a TensorFlow Lite model and the default <see cref="FaceLandmarkerOptions" />.
+    ///   Creates an <see cref="HandLandmarker" /> object from a TensorFlow Lite model and the default <see cref="HandLandmarkerOptions" />.
     ///
-    ///   Note that the created <see cref="FaceLandmarker" /> instance is in image mode,
-    ///   for detecting face landmarks on single image inputs.
+    ///   Note that the created <see cref="HandLandmarker" /> instance is in image mode,
+    ///   for detecting hand landmarks on single image inputs.
     /// </summary>
     /// <param name="modelPath">Path to the model.</param>
     /// <returns>
-    ///   <see cref="FaceLandmarker" /> object that's created from the model and the default <see cref="FaceLandmarkerOptions" />.
+    ///   <see cref="HandLandmarker" /> object that's created from the model and the default <see cref="HandLandmarkerOptions" />.
     /// </returns>
-    public static FaceLandmarker CreateFromModelPath(string modelPath)
+    public static HandLandmarker CreateFromModelPath(string modelPath)
     {
       var baseOptions = new Tasks.Core.BaseOptions(modelAssetPath: modelPath);
-      var options = new FaceLandmarkerOptions(baseOptions, runningMode: Core.RunningMode.IMAGE);
+      var options = new HandLandmarkerOptions(baseOptions, runningMode: Core.RunningMode.IMAGE);
       return CreateFromOptions(options);
     }
 
     /// <summary>
-    ///   Creates the <see cref="FaceLandmarker" /> object from <paramref name="FaceLandmarkerOptions" />.
+    ///   Creates the <see cref="HandLandmarker" /> object from <paramref name="HandLandmarkerOptions" />.
     /// </summary>
     /// <param name="options">Options for the face landmarker task.</param>
     /// <returns>
-    ///   <see cref="FaceLandmarker" /> object that's created from <paramref name="options" />.
+    ///   <see cref="HandLandmarker" /> object that's created from <paramref name="options" />.
     /// </returns>
-    public static FaceLandmarker CreateFromOptions(FaceLandmarkerOptions options)
+    public static HandLandmarker CreateFromOptions(HandLandmarkerOptions options)
     {
-      var outputStreams = new List<string> {
-        string.Join(":", _NORM_LANDMARKS_TAG, _NORM_LANDMARKS_STREAM_NAME),
-        string.Join(":", _IMAGE_TAG, _IMAGE_OUT_STREAM_NAME),
-      };
-      if (options.outputFaceBlendshapes)
-      {
-        outputStreams.Add(string.Join(":", _BLENDSHAPES_TAG, _BLENDSHAPES_STREAM_NAME));
-      }
-      if (options.outputFaceTransformationMatrixes)
-      {
-        outputStreams.Add(string.Join(":", _FACE_GEOMETRY_TAG, _FACE_GEOMETRY_STREAM_NAME));
-      }
-      var taskInfo = new Tasks.Core.TaskInfo<FaceLandmarkerOptions>(
+      var taskInfo = new Tasks.Core.TaskInfo<HandLandmarkerOptions>(
         taskGraph: _TASK_GRAPH_NAME,
         inputStreams: new List<string> {
           string.Join(":", _IMAGE_TAG, _IMAGE_IN_STREAM_NAME),
           string.Join(":", _NORM_RECT_TAG, _NORM_RECT_STREAM_NAME),
         },
-        outputStreams: outputStreams,
+        outputStreams: new List<string> {
+          string.Join(":", _HANDEDNESS_TAG, _HANDEDNESS_STREAM_NAME),
+          string.Join(":", _HAND_LANDMARKS_TAG, _HAND_LANDMARKS_STREAM_NAME),
+          string.Join(":", _HAND_WORLD_LANDMARKS_TAG, _HAND_WORLD_LANDMARKS_STREAM_NAME),
+          string.Join(":", _IMAGE_TAG, _IMAGE_OUT_STREAM_NAME),
+        },
         taskOptions: options);
 
-      return new FaceLandmarker(
+      return new HandLandmarker(
         taskInfo.GenerateGraphConfig(options.runningMode == Core.RunningMode.LIVE_STREAM),
         options.runningMode,
         BuildPacketsCallback(options.resultCallback));
     }
 
     /// <summary>
-    ///   Performs face landmarks detection on the provided MediaPipe Image.
+    ///   Performs hand landmarks detection on the provided MediaPipe Image.
     ///
-    ///   Only use this method when the <see cref="FaceLandmarker" /> is created with the image running mode.
+    ///   Only use this method when the <see cref="HandLandmarker" /> is created with the image running mode.
     ///   The image can be of any size with format RGB or RGBA.
     /// </summary>
     /// <param name="image">MediaPipe Image.</param>
     /// <param name="imageProcessingOptions">Options for image processing.</param>
     /// <returns>
-    ///   The face landmarks detection results.
+    ///   The hand landmarks detection results.
     /// </returns>
-    public FaceLandmarkerResult Detect(Image image, Core.ImageProcessingOptions? imageProcessingOptions = null)
+    public HandLandmarkerResult Detect(Image image, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
       var normalizedRect = ConvertToNormalizedRect(imageProcessingOptions, image, roiAllowed: false);
 
@@ -113,21 +106,21 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
       packetMap.Emplace(_NORM_RECT_STREAM_NAME, new NormalizedRectPacket(normalizedRect));
       var outputPackets = ProcessImageData(packetMap);
 
-      return BuildFaceLandmarkerResult(outputPackets);
+      return BuildHandLandmarkerResult(outputPackets);
     }
 
     /// <summary>
-    ///   Performs face landmarks detection on the provided video frames.
+    ///   Performs hand landmarks detection on the provided video frames.
     ///
-    ///   Only use this method when the FaceLandmarker is created with the video
+    ///   Only use this method when the HandLandmarker is created with the video
     ///   running mode. It's required to provide the video frame's timestamp (in
     ///   milliseconds) along with the video frame. The input timestamps should be
     ///   monotonically increasing for adjacent calls of this method.
     /// </summary>
     /// <returns>
-    ///   The face landmarks detection results.
+    ///   The hand landmarks detection results.
     /// </returns>
-    public FaceLandmarkerResult DetectForVideo(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions = null)
+    public HandLandmarkerResult DetectForVideo(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
       var normalizedRect = ConvertToNormalizedRect(imageProcessingOptions, image, roiAllowed: false);
 
@@ -140,19 +133,19 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
         outputPackets = ProcessVideoData(packetMap);
       }
 
-      return BuildFaceLandmarkerResult(outputPackets);
+      return BuildHandLandmarkerResult(outputPackets);
     }
 
     /// <summary>
-    ///   Sends live image data to perform face landmarks detection.
+    ///   Sends live image data to perform hand landmarks detection.
     ///
-    ///   Only use this method when the FaceLandmarker is created with the live stream
+    ///   Only use this method when the HandLandmarker is created with the live stream
     ///   running mode. The input timestamps should be monotonically increasing for
     ///   adjacent calls of this method. This method will return immediately after the
     ///   input image is accepted. The results will be available via the
-    ///   <see cref="FaceLandmarkerOptions.ResultCallback" /> provided in the <see cref="FaceLandmarkerOptions" />.
+    ///   <see cref="HandLandmarkerOptions.ResultCallback" /> provided in the <see cref="HandLandmarkerOptions" />.
     ///   The <see cref="DetectAsync" /> method is designed to process live stream data such as camera
-    ///   input. To lower the overall latency, face landmarker may drop the input
+    ///   input. To lower the overall latency, hand landmarker may drop the input
     ///   images if needed. In other words, it's not guaranteed to have output per
     ///   input image.
     public void DetectAsync(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions = null)
@@ -169,7 +162,7 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
       }
     }
 
-    private static Tasks.Core.TaskRunner.PacketsCallback BuildPacketsCallback(FaceLandmarkerOptions.ResultCallback resultCallback)
+    private static Tasks.Core.TaskRunner.PacketsCallback BuildPacketsCallback(HandLandmarkerOptions.ResultCallback resultCallback)
     {
       if (resultCallback == null)
       {
@@ -185,31 +178,27 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
         }
 
         var image = outImagePacket.Get();
-        var faceLandmarkerResult = BuildFaceLandmarkerResult(outputPackets);
+        var handLandmarkerResult = BuildHandLandmarkerResult(outputPackets);
         var timestamp = outImagePacket.Timestamp().Microseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
-        resultCallback(faceLandmarkerResult, image, (int)timestamp);
+        resultCallback(handLandmarkerResult, image, (int)timestamp);
       };
     }
 
-    private static FaceLandmarkerResult BuildFaceLandmarkerResult(PacketMap outputPackets)
+    private static HandLandmarkerResult BuildHandLandmarkerResult(PacketMap outputPackets)
     {
-      var faceLandmarksProtoListPacket =
-        outputPackets.At<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(_NORM_LANDMARKS_STREAM_NAME);
-      if (faceLandmarksProtoListPacket.IsEmpty())
+      var handLandmarksProtoPacket =
+        outputPackets.At<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(_HAND_LANDMARKS_STREAM_NAME);
+      if (handLandmarksProtoPacket.IsEmpty())
       {
-        return FaceLandmarkerResult.Empty();
+        return HandLandmarkerResult.Empty();
       }
 
-      var faceLandmarksProtoList = faceLandmarksProtoListPacket.Get();
+      var handLandmarksProto = handLandmarksProtoPacket.Get();
+      var handednessProto = outputPackets.At<ClassificationListVectorPacket, List<ClassificationList>>(_HANDEDNESS_STREAM_NAME).Get();
+      var handWorldLandmarksProto = outputPackets.At<LandmarkListVectorPacket, List<LandmarkList>>(_HAND_WORLD_LANDMARKS_STREAM_NAME).Get();
 
-      var faceBlendshapesProtoList =
-        outputPackets.At<ClassificationListVectorPacket, List<ClassificationList>>(_BLENDSHAPES_STREAM_NAME)?.Get();
-
-      var faceTransformationMatrixesProtoList =
-        outputPackets.At<FaceGeometry.FaceGeometryVectorPacket, List<FaceGeometry.Proto.FaceGeometry>>(_FACE_GEOMETRY_STREAM_NAME)?.Get();
-
-      return FaceLandmarkerResult.CreateFrom(faceLandmarksProtoList, faceBlendshapesProtoList, faceTransformationMatrixesProtoList);
+      return HandLandmarkerResult.CreateFrom(handednessProto, handLandmarksProto, handWorldLandmarksProto);
     }
   }
 }

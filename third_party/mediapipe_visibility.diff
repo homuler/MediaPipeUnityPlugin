@@ -430,6 +430,34 @@ index aa839d91..8efc28e1 100644
 +    srcs = glob(["*.proto"]),
 +    visibility = ["//visibility:public"],
 +)
+diff --git a/mediapipe/tasks/cc/vision/hand_detector/proto/BUILD b/mediapipe/tasks/cc/vision/hand_detector/proto/BUILD
+index c1453f42..2339661a 100644
+--- a/mediapipe/tasks/cc/vision/hand_detector/proto/BUILD
++++ b/mediapipe/tasks/cc/vision/hand_detector/proto/BUILD
+@@ -38,3 +38,9 @@ mediapipe_proto_library(
+         "//mediapipe/framework/formats:rect_proto",
+     ],
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
+diff --git a/mediapipe/tasks/cc/vision/hand_landmarker/proto/BUILD b/mediapipe/tasks/cc/vision/hand_landmarker/proto/BUILD
+index d13f0afd..c2fd2c49 100644
+--- a/mediapipe/tasks/cc/vision/hand_landmarker/proto/BUILD
++++ b/mediapipe/tasks/cc/vision/hand_landmarker/proto/BUILD
+@@ -41,3 +41,9 @@ mediapipe_proto_library(
+         "//mediapipe/tasks/cc/vision/hand_detector/proto:hand_detector_graph_options_proto",
+     ],
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
 index b9fe8b0c..695987ad 100644
 --- a/mediapipe/util/BUILD
