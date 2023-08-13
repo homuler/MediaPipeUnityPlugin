@@ -30,7 +30,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.dll
+            Packages/com.github.homuler.mediapipe/Runtime/Plugins/mediapipe_c.dll
             Packages/com.github.homuler.mediapipe/Runtime/Plugins/Protobuf/*.dll
             Packages/com.github.homuler.mediapipe/Runtime/Scripts/Protobuf/**/*.cs
           key: libs-windows-2019-v1-${{ hashFiles('cache_key.txt') }}
