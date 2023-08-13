@@ -19,32 +19,62 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
 
+
+
+      # Cache built libraries
+      - name: Concat native library source files
+        run: |
+          find WORKSPACE packages.config build.py mediapipe_api/ third_party/ -type f | sort | xargs cat > cache_key.txt
+
+      - name: Cache libraries
+        id: cache-libs
+        uses: actions/cache@v3
+        with:
+          path: |
+            Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.so
+            Packages/com.github.homuler.mediapipe/Runtime/Plugins/Protobuf/*.dll
+            Packages/com.github.homuler.mediapipe/Runtime/Scripts/Protobuf/**/*.cs
+          key: libs-ubuntu-20.04-v1-${{ hashFiles('cache_key.txt') }}
+
       # Setup build tools
       - name: Mount bazel cache
+        if: steps.cache-libs.outputs.cache-hit != 'true'
         uses: actions/cache@v3
         with:
           path: "~/.cache/bazel"
-          key: bazel-ubuntu-20.04-v1-${{ hashFiles('WORKSPACE') }}
-      - name: Install GCC/G++ 8
+          key: bazel-ubuntu-20.04-v1-${{ hashFiles('WORKSPACE') }}-${{ hashFiles('cache_key.txt') }}
+          restore-keys: |
+            bazel-ubuntu-20.04-v1-${{ hashFiles('WORKSPACE') }}-
+            bazel-ubuntu-20.04-v1-
+
+      - name: Remove cache_key.txt
         run: |
+          rm cache_key.txt
+
+      # Setup Python
+      - uses: actions/setup-python@v4
+        if: steps.cache-libs.outputs.cache-hit != 'true'
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        if: steps.cache-libs.outputs.cache-hit != 'true'
+        run: |
+          # install GCC/G++ 8
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends gcc-8 g++-8
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 100 --slave /usr/bin/g++ g++ /usr/bin/g++-8
 
-      - name: Install NuGet
-        run: |
+          # install NuGet
           sudo curl -o /usr/local/bin/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
           bash -c 'echo -e "#!/bin/bash\nmono /usr/local/bin/nuget.exe \$@" | sudo tee -a /usr/local/bin/nuget'
           sudo chmod +x /usr/local/bin/nuget
 
-      # Setup Python
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Install NumPy
-        run: pip install --no-cache-dir --user numpy
+          # install NumPy
+          pip install --no-cache-dir --user numpy
 
       - name: Build
+        if: steps.cache-libs.outputs.cache-hit != 'true'
         run: |
           unset ANDROID_NDK_HOME
           python build.py build --desktop cpu --opencv cmake -vv

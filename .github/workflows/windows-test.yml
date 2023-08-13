@@ -19,26 +19,46 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
 
+      # Cache built libraries
+      - name: Concat native library source files
+        run: |
+          find WORKSPACE packages.config build.py mediapipe_api/ third_party/ -type f | sort | xargs cat > cache_key.txt
+        shell: bash
+
+      - name: Cache libraries
+        id: cache-libs
+        uses: actions/cache@v3
+        with:
+          path: |
+            Packages/com.github.homuler.mediapipe/Runtime/Plugins/mediapipe_c.dll
+            Packages/com.github.homuler.mediapipe/Runtime/Plugins/Protobuf/*.dll
+            Packages/com.github.homuler.mediapipe/Runtime/Scripts/Protobuf/**/*.cs
+          key: libs-windows-2019-v1-${{ hashFiles('cache_key.txt') }}
+
+      - name: Remove cache_key.txt
+        run: |
+          rm cache_key.txt
+        shell: cmd
+
       # Setup build tools
       - uses: msys2/setup-msys2@v2
+        if: steps.cache-libs.outputs.cache-hit != 'true'
         with:
           msystem: MINGW64
           update: true
           install: git patch unzip zip
-      - name: Mount bazelisk cache
-        uses: actions/cache@v3
-        with:
-          path: C:\Users\runneradmin\AppData\Local\bazelisk
-          key: windows-bazelisk
 
       # Setup Python
       - uses: actions/setup-python@v4
+        if: steps.cache-libs.outputs.cache-hit != 'true'
         with:
           python-version: '3.10'
       - name: Install NumPy
+        if: steps.cache-libs.outputs.cache-hit != 'true'
         run: pip install --no-cache-dir --user numpy
 
       - name: Build
+        if: steps.cache-libs.outputs.cache-hit != 'true'
         run: |
           set ANDROID_NDK_HOME=
           python build.py build --desktop cpu --opencv cmake -vv
@@ -55,10 +75,6 @@ jobs:
           name: windows-package
           path: artifacts.tar
           retention-days: 1
-
-      - name: Prepare for cache
-        run: |
-          (Get-Item C:\_bzl\*\install).Delete()
 
   test:
     runs-on: ${{ matrix.os }}
@@ -86,6 +102,7 @@ jobs:
         run: |
           Start-Process -NoNewWindow -Wait -PassThru "C:\Program Files\Unity\Hub\Editor\${{ matrix.unity.version }}\Editor\Unity.exe" -ArgumentList "-quit -batchmode -createManualActivationFile -logfile"
           exit 0
+        timeout-minutes: 1
       - name: Request a Unity license file
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -122,6 +139,7 @@ jobs:
           mv artifacts.tar DummyProject
           cd DummyProject
           tar xvf artifacts.tar
+        timeout-minutes: 8
 
       - uses: actions/cache@v3
         with:
@@ -142,6 +160,7 @@ jobs:
             -testPlatform EditMode `
             -testCategory !GpuOnly;!SignalAbort"
           exit $process.ExitCode
+        timeout-minutes: 3
 
       - name: Cat results.xml
         env:

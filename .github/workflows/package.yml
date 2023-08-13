@@ -295,7 +295,6 @@ jobs:
 
   clean:
     runs-on: ubuntu-latest
-    if: ${{ always() }}
     needs:
       - package
     steps:
