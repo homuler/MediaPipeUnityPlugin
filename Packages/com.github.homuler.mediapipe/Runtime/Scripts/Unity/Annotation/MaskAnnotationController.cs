@@ -12,13 +12,11 @@ namespace Mediapipe.Unity
     private int _maskHeight;
 
     private ImageFrame _currentTarget;
-    private float[] _maskArray;
 
     public void InitScreen(int maskWidth, int maskHeight)
     {
       _maskWidth = maskWidth;
       _maskHeight = maskHeight;
-      _maskArray = new float[_maskWidth * _maskHeight];
       annotation.Init(_maskWidth, _maskHeight);
     }
 
@@ -39,15 +37,21 @@ namespace Mediapipe.Unity
     {
       if (imageFrame != null)
       {
-        // NOTE: assume that the image is transformed properly by calculators.
-        var _ = imageFrame.TryReadChannelNormalized(0, _maskArray);
+        annotation.Read(imageFrame);
       }
     }
 
     protected override void SyncNow()
     {
       isStale = false;
-      annotation.Draw(_currentTarget == null ? null : _maskArray, _maskWidth, _maskHeight);
+      if (_currentTarget == null)
+      {
+        annotation.Clear();
+      }
+      else
+      {
+        annotation.Draw();
+      }
     }
   }
 }
