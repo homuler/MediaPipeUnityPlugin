@@ -458,6 +458,34 @@ index d13f0afd..c2fd2c49 100644
 +    srcs = glob(["*.proto"]),
 +    visibility = ["//visibility:public"],
 +)
+diff --git a/mediapipe/tasks/cc/vision/pose_detector/proto/BUILD b/mediapipe/tasks/cc/vision/pose_detector/proto/BUILD
+index 53e7d5a5..3882cb6a 100644
+--- a/mediapipe/tasks/cc/vision/pose_detector/proto/BUILD
++++ b/mediapipe/tasks/cc/vision/pose_detector/proto/BUILD
+@@ -29,3 +29,9 @@ mediapipe_proto_library(
+         "//mediapipe/tasks/cc/core/proto:base_options_proto",
+     ],
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
+diff --git a/mediapipe/tasks/cc/vision/pose_landmarker/proto/BUILD b/mediapipe/tasks/cc/vision/pose_landmarker/proto/BUILD
+index 869a1ea6..3cd6bc5a 100644
+--- a/mediapipe/tasks/cc/vision/pose_landmarker/proto/BUILD
++++ b/mediapipe/tasks/cc/vision/pose_landmarker/proto/BUILD
+@@ -41,3 +41,9 @@ mediapipe_proto_library(
+         "//mediapipe/tasks/cc/vision/pose_detector/proto:pose_detector_graph_options_proto",
+     ],
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
 index b9fe8b0c..695987ad 100644
 --- a/mediapipe/util/BUILD
