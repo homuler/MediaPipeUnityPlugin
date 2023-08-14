@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+using mptcc = Mediapipe.Tasks.Components.Containers;
+
 namespace Mediapipe.Unity
 {
 #pragma warning disable IDE0065
@@ -190,6 +192,22 @@ namespace Mediapipe.Unity
       Draw(target?.Landmark, mask, visualizeZ);
     }
 
+    public void Draw(IReadOnlyList<mptcc.NormalizedLandmark> target, BodyParts mask, bool visualizeZ = false)
+    {
+      if (ActivateFor(target))
+      {
+        _landmarkListAnnotation.Draw(target, visualizeZ);
+        ApplyMask(mask);
+        // Draw explicitly because connection annotation's targets remain the same.
+        _connectionListAnnotation.Redraw();
+      }
+    }
+
+    public void Draw(mptcc.NormalizedLandmarks target, BodyParts mask, bool visualizeZ = false)
+    {
+      Draw(target.landmarks, mask, visualizeZ);
+    }
+
     public void Draw(IReadOnlyList<NormalizedLandmark> target, bool visualizeZ = false)
     {
       Draw(target, BodyParts.All, visualizeZ);
@@ -198,6 +216,16 @@ namespace Mediapipe.Unity
     public void Draw(NormalizedLandmarkList target, bool visualizeZ = false)
     {
       Draw(target?.Landmark, BodyParts.All, visualizeZ);
+    }
+
+    public void Draw(IReadOnlyList<mptcc.NormalizedLandmark> target, bool visualizeZ = false)
+    {
+      Draw(target, BodyParts.All, visualizeZ);
+    }
+
+    public void Draw(mptcc.NormalizedLandmarks target, bool visualizeZ = false)
+    {
+      Draw(target.landmarks, BodyParts.All, visualizeZ);
     }
 
     private void ApplyLeftLandmarkColor(Color color)
