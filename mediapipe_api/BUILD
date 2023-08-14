@@ -437,6 +437,9 @@ mediapipe_files(srcs = [
     "face_landmarker_v2.task",
     "face_landmarker_v2_with_blendshapes.task",
     "hand_landmarker.task",
+    "pose_landmarker_full.task",
+    "pose_landmarker_heavy.task",
+    "pose_landmarker_lite.task",
 ])
 
 pkg_asset(
@@ -520,6 +523,9 @@ filegroup(
 filegroup(
     name = "pose_assets",
     srcs = [
+        ":pose_landmarker_full.task",
+        ":pose_landmarker_heavy.task",
+        ":pose_landmarker_lite.task",
         "@com_google_mediapipe//mediapipe/modules/pose_detection:pose_detection.tflite",
         "@com_google_mediapipe//mediapipe/modules/pose_landmark:pose_landmark_full.tflite",
         "@com_google_mediapipe//mediapipe/modules/pose_landmark:pose_landmark_heavy.tflite",
