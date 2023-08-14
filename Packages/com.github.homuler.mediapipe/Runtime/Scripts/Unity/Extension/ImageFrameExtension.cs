@@ -4,6 +4,7 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+using System;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 namespace Mediapipe.Unity
@@ -32,7 +33,43 @@ namespace Mediapipe.Unity
     /// </param>
     public static bool TryReadChannel(this ImageFrame imageFrame, int channelNumber, byte[] channelData, bool isHorizontallyFlipped = false, bool isVerticallyFlipped = false)
     {
-      var format = imageFrame.Format();
+      return TryReadChannel(imageFrame.Format(), imageFrame.Width(), imageFrame.Height(), imageFrame.WidthStep(), imageFrame.ByteDepth(),
+        channelNumber, imageFrame.MutablePixelData(), channelData, isHorizontallyFlipped, isVerticallyFlipped);
+    }
+
+    /// <summary>
+    ///   Read the specific channel data only.
+    ///   It's useful when only one channel is used (e.g. Hair Segmentation mask).
+    /// </summary>
+    /// <returns>
+    ///   <c>true</c> if the channel data is read successfully; otherwise <c>false</c>.
+    /// </returns>
+    /// <param name="channelNumber">
+    ///   Specify from which channel (0-indexed) the data will be retrieved.
+    ///   For example, if the format is RGB, 0 means R channel, 1 means G channel, and 2 means B channel.
+    /// </param>
+    /// <param name="channelData" >
+    ///   The array to which the output data will be written.
+    /// </param>
+    /// <param name="isHorizontallyFlipped">
+    ///   Set <c>true</c> if the <paramref name="image" /> is flipped horizontally.
+    /// </param>
+    /// <param name="isVerticallyFlipped">
+    ///   Set <c>true</c> if the <paramref name="image" /> is flipped vertically.
+    /// </param>
+    public static bool TryReadChannel(this Image image, int channelNumber, byte[] channelData, bool isHorizontallyFlipped = false, bool isVerticallyFlipped = false)
+    {
+      var format = image.ImageFormat();
+      using (var pixelWriteLock = new PixelWriteLock(image))
+      {
+        return TryReadChannel(format, image.Width(), image.Height(), image.Step(), ImageFrame.ByteDepthForFormat(format),
+          channelNumber, pixelWriteLock.Pixels(), channelData, isHorizontallyFlipped, isVerticallyFlipped);
+      }
+    }
+
+    private static bool TryReadChannel(ImageFormat.Types.Format format, int width, int height, int widthStep, int byteDepth,
+      int channelNumber, IntPtr pixelData, byte[] channelData, bool isHorizontallyFlipped, bool isVerticallyFlipped)
+    {
       var channelCount = ImageFrame.NumberOfChannelsForFormat(format);
       if (!IsChannelNumberValid(channelCount, channelNumber))
       {
@@ -47,7 +84,7 @@ namespace Mediapipe.Unity
         case ImageFormat.Types.Format.Sbgra:
         case ImageFormat.Types.Format.Gray8:
         case ImageFormat.Types.Format.Lab8:
-          return TryReadChannel(imageFrame, channelCount, channelNumber, channelData, isHorizontallyFlipped, isVerticallyFlipped);
+          return TryReadChannel(width, height, widthStep, byteDepth, channelCount, channelNumber, pixelData, channelData, isHorizontallyFlipped, isVerticallyFlipped);
         default:
           Logger.LogWarning("The channel data is not stored in bytes");
           return false;
@@ -77,7 +114,43 @@ namespace Mediapipe.Unity
     /// </param>
     public static bool TryReadChannel(this ImageFrame imageFrame, int channelNumber, ushort[] channelData, bool isHorizontallyFlipped = false, bool isVerticallyFlipped = false)
     {
-      var format = imageFrame.Format();
+      return TryReadChannel(imageFrame.Format(), imageFrame.Width(), imageFrame.Height(), imageFrame.WidthStep(), imageFrame.ByteDepth(),
+        channelNumber, imageFrame.MutablePixelData(), channelData, isHorizontallyFlipped, isVerticallyFlipped);
+    }
+
+    /// <summary>
+    ///   Read the specific channel data only.
+    ///   It's useful when only one channel is used (e.g. Hair Segmentation mask).
+    /// </summary>
+    /// <returns>
+    ///   <c>true</c> if the channel data is read successfully; otherwise <c>false</c>.
+    /// </returns>
+    /// <param name="channelNumber">
+    ///   Specify from which channel (0-indexed) the data will be retrieved.
+    ///   For example, if the format is RGB, 0 means R channel, 1 means G channel, and 2 means B channel.
+    /// </param>
+    /// <param name="channelData" >
+    ///   The array to which the output data will be written.
+    /// </param>
+    /// <param name="isHorizontallyFlipped">
+    ///   Set <c>true</c> if the <paramref name="image" /> is flipped horizontally.
+    /// </param>
+    /// <param name="isVerticallyFlipped">
+    ///   Set <c>true</c> if the <paramref name="image" /> is flipped vertically.
+    /// </param>
+    public static bool TryReadChannel(this Image image, int channelNumber, ushort[] channelData, bool isHorizontallyFlipped = false, bool isVerticallyFlipped = false)
+    {
+      var format = image.ImageFormat();
+      using (var pixelWriteLock = new PixelWriteLock(image))
+      {
+        return TryReadChannel(format, image.Width(), image.Height(), image.Step(), ImageFrame.ByteDepthForFormat(format),
+          channelNumber, pixelWriteLock.Pixels(), channelData, isHorizontallyFlipped, isVerticallyFlipped);
+      }
+    }
+
+    private static bool TryReadChannel(ImageFormat.Types.Format format, int width, int height, int widthStep, int byteDepth,
+      int channelNumber, IntPtr pixelData, ushort[] channelData, bool isHorizontallyFlipped, bool isVerticallyFlipped)
+    {
       var channelCount = ImageFrame.NumberOfChannelsForFormat(format);
       if (!IsChannelNumberValid(channelCount, channelNumber))
       {
@@ -90,7 +163,7 @@ namespace Mediapipe.Unity
         case ImageFormat.Types.Format.Srgb48:
         case ImageFormat.Types.Format.Srgba64:
         case ImageFormat.Types.Format.Gray16:
-          return TryReadChannel(imageFrame, channelCount, channelNumber, channelData, isHorizontallyFlipped, isVerticallyFlipped);
+          return TryReadChannel(width, height, widthStep, byteDepth, channelCount, channelNumber, pixelData, channelData, isHorizontallyFlipped, isVerticallyFlipped);
         default:
           Logger.LogWarning("The channel data is not stored in ushorts");
           return false;
@@ -119,7 +192,42 @@ namespace Mediapipe.Unity
     /// </param>
     public static bool TryReadChannel(this ImageFrame imageFrame, int channelNumber, float[] channelData, bool isHorizontallyFlipped = false, bool isVerticallyFlipped = false)
     {
-      var format = imageFrame.Format();
+      return TryReadChannel(imageFrame.Format(), imageFrame.Width(), imageFrame.Height(), imageFrame.WidthStep(), imageFrame.ByteDepth(),
+        channelNumber, imageFrame.MutablePixelData(), channelData, isHorizontallyFlipped, isVerticallyFlipped);
+    }
+
+    /// <summary>
+    ///   Read the specific channel data only.
+    ///   It's useful when only one channel is used (e.g. Selfie Segmentation mask).
+    /// </summary>
+    /// <returns>
+    ///   <c>true</c> if the channel data is read successfully; otherwise <c>false</c>.
+    /// </returns>
+    /// <param name="channelNumber">
+    ///   Specify from which channel (0-indexed) the data will be retrieved.
+    /// </param>
+    /// <param name="channelData" >
+    ///   The array to which the output data will be written.
+    /// </param>
+    /// <param name="isHorizontallyFlipped">
+    ///   Set <c>true</c> if the <paramref name="image" /> is flipped horizontally.
+    /// </param>
+    /// <param name="isVerticallyFlipped">
+    ///   Set <c>true</c> if the <paramref name="image" /> is flipped vertically.
+    /// </param>
+    public static bool TryReadChannel(this Image image, int channelNumber, float[] channelData, bool isHorizontallyFlipped = false, bool isVerticallyFlipped = false)
+    {
+      var format = image.ImageFormat();
+      using (var pixelWriteLock = new PixelWriteLock(image))
+      {
+        return TryReadChannel(format, image.Width(), image.Height(), image.Step(), ImageFrame.ByteDepthForFormat(format),
+          channelNumber, pixelWriteLock.Pixels(), channelData, isHorizontallyFlipped, isVerticallyFlipped);
+      }
+    }
+
+    private static bool TryReadChannel(ImageFormat.Types.Format format, int width, int height, int widthStep, int byteDepth,
+      int channelNumber, IntPtr pixelData, float[] channelData, bool isHorizontallyFlipped, bool isVerticallyFlipped)
+    {
       var channelCount = ImageFrame.NumberOfChannelsForFormat(format);
       if (!IsChannelNumberValid(channelCount, channelNumber))
       {
@@ -131,7 +239,7 @@ namespace Mediapipe.Unity
       {
         case ImageFormat.Types.Format.Vec32F1:
         case ImageFormat.Types.Format.Vec32F2:
-          return TryReadChannel(imageFrame, channelCount, channelNumber, channelData, isHorizontallyFlipped, isVerticallyFlipped);
+          return TryReadChannel(width, height, widthStep, byteDepth, channelCount, channelNumber, pixelData, channelData, isHorizontallyFlipped, isVerticallyFlipped);
         default:
           Logger.LogWarning("The channel data is not stored in floats");
           return false;
@@ -160,7 +268,42 @@ namespace Mediapipe.Unity
     /// </param>
     public static bool TryReadChannelNormalized(this ImageFrame imageFrame, int channelNumber, float[] normalizedChannelData, bool isHorizontallyFlipped = false, bool isVerticallyFlipped = false)
     {
-      var format = imageFrame.Format();
+      return TryReadChannelNormalized(imageFrame.Format(), imageFrame.Width(), imageFrame.Height(), imageFrame.WidthStep(), imageFrame.ByteDepth(),
+        channelNumber, imageFrame.MutablePixelData(), normalizedChannelData, isHorizontallyFlipped, isVerticallyFlipped);
+    }
+
+    /// <summary>
+    ///   Read the specific channel data only.
+    ///   Each value in <paramref name="normalizedChannelData" /> will be normalized to [0.0, 1.0].
+    /// </summary>
+    /// <returns>
+    ///   <c>true</c> if the channel data is read successfully; otherwise <c>false</c>.
+    /// </returns>
+    /// <param name="channelNumber">
+    ///   Specify from which channel (0-indexed) the data will be retrieved.
+    /// </param>
+    /// <param name="channelData" >
+    ///   The array to which the output data will be written.
+    /// </param>
+    /// <param name="isHorizontallyFlipped">
+    ///   Set <c>true</c> if the <paramref name="image" /> is flipped horizontally.
+    /// </param>
+    /// <param name="isVerticallyFlipped">
+    ///   Set <c>true</c> if the <paramref name="image" /> is flipped vertically.
+    /// </param>
+    public static bool TryReadChannelNormalized(this Image image, int channelNumber, float[] normalizedChannelData, bool isHorizontallyFlipped = false, bool isVerticallyFlipped = false)
+    {
+      var format = image.ImageFormat();
+      using (var pixelWriteLock = new PixelWriteLock(image))
+      {
+        return TryReadChannelNormalized(format, image.Width(), image.Height(), image.Step(), ImageFrame.ByteDepthForFormat(format),
+          channelNumber, pixelWriteLock.Pixels(), normalizedChannelData, isHorizontallyFlipped, isVerticallyFlipped);
+      }
+    }
+
+    private static bool TryReadChannelNormalized(ImageFormat.Types.Format format, int width, int height, int widthStep, int byteDepth,
+      int channelNumber, IntPtr pixelData, float[] normalizedChannelData, bool isHorizontallyFlipped, bool isVerticallyFlipped)
+    {
       var channelCount = ImageFrame.NumberOfChannelsForFormat(format);
       if (!IsChannelNumberValid(channelCount, channelNumber))
       {
@@ -175,14 +318,14 @@ namespace Mediapipe.Unity
         case ImageFormat.Types.Format.Sbgra:
         case ImageFormat.Types.Format.Gray8:
         case ImageFormat.Types.Format.Lab8:
-          return TryReadChannel<byte, float>(imageFrame, channelCount, channelNumber, ByteNormalizer, normalizedChannelData, isHorizontallyFlipped, isVerticallyFlipped);
+          return TryReadChannel<byte, float>(width, height, widthStep, byteDepth, channelCount, channelNumber, ByteNormalizer, pixelData, normalizedChannelData, isHorizontallyFlipped, isVerticallyFlipped);
         case ImageFormat.Types.Format.Srgb48:
         case ImageFormat.Types.Format.Srgba64:
         case ImageFormat.Types.Format.Gray16:
-          return TryReadChannel<ushort, float>(imageFrame, channelCount, channelNumber, UshortNormalizer, normalizedChannelData, isHorizontallyFlipped, isVerticallyFlipped);
+          return TryReadChannel<ushort, float>(width, height, widthStep, byteDepth, channelCount, channelNumber, UshortNormalizer, pixelData, normalizedChannelData, isHorizontallyFlipped, isVerticallyFlipped);
         case ImageFormat.Types.Format.Vec32F1:
         case ImageFormat.Types.Format.Vec32F2:
-          return TryReadChannel(imageFrame, channelCount, channelNumber, normalizedChannelData, isHorizontallyFlipped, isVerticallyFlipped);
+          return TryReadChannel(width, height, widthStep, byteDepth, channelCount, channelNumber, pixelData, normalizedChannelData, isHorizontallyFlipped, isVerticallyFlipped);
         default:
           Logger.LogWarning("Channels don't make sense in the current context");
           return false;
@@ -191,32 +334,44 @@ namespace Mediapipe.Unity
     }
 
     public static bool TryReadPixelData(this ImageFrame imageFrame, Color32[] colors)
+      => TryReadPixelData(imageFrame.Format(), imageFrame.Width(), imageFrame.Height(), imageFrame.WidthStep(), imageFrame.ByteDepth(), imageFrame.MutablePixelData(), colors);
+
+    public static bool TryReadPixelData(this Image image, Color32[] colors)
+    {
+      var format = image.ImageFormat();
+      using (var pixelWriteLock = new PixelWriteLock(image))
+      {
+        return TryReadPixelData(format, image.Width(), image.Height(), image.Step(), ImageFrame.ByteDepthForFormat(format), pixelWriteLock.Pixels(), colors);
+      }
+    }
+
+    public static bool TryReadPixelData(ImageFormat.Types.Format format, int width, int height, int widthStep, int byteDepth, IntPtr pixelData, Color32[] colors)
     {
       unsafe
       {
 #pragma warning disable IDE0010
-        switch (imageFrame.Format())
+        switch (format)
         {
           case ImageFormat.Types.Format.Srgb:
-            return TryReadSrgb(imageFrame, colors);
+            return TryReadSrgb(width, height, widthStep, byteDepth, pixelData, colors);
           case ImageFormat.Types.Format.Srgba:
-            return TryReadSrgba(imageFrame, colors);
+            return TryReadSrgba(width, height, widthStep, byteDepth, pixelData, colors);
           case ImageFormat.Types.Format.Sbgra:
-            return TryReadSbgra(imageFrame, colors);
+            return TryReadSbgra(width, height, widthStep, byteDepth, pixelData, colors);
           case ImageFormat.Types.Format.Gray8:
-            return TryReadGray8(imageFrame, colors);
+            return TryReadGray8(width, height, widthStep, byteDepth, pixelData, colors);
           case ImageFormat.Types.Format.Lab8:
-            return TryReadLab8(imageFrame, colors);
+            return TryReadLab8(width, height, widthStep, byteDepth, pixelData, colors);
           case ImageFormat.Types.Format.Srgb48:
-            return TryReadSrgb48(imageFrame, colors);
+            return TryReadSrgb48(width, height, widthStep, byteDepth, pixelData, colors);
           case ImageFormat.Types.Format.Srgba64:
-            return TryReadSrgba64(imageFrame, colors);
+            return TryReadSrgba64(width, height, widthStep, byteDepth, pixelData, colors);
           case ImageFormat.Types.Format.Gray16:
-            return TryReadGray16(imageFrame, colors);
+            return TryReadGray16(width, height, widthStep, byteDepth, pixelData, colors);
           case ImageFormat.Types.Format.Vec32F1:
-            return TryReadVec32f1(imageFrame, colors);
+            return TryReadVec32f1(width, height, widthStep, byteDepth, pixelData, colors);
           case ImageFormat.Types.Format.Vec32F2:
-            return TryReadVec32f2(imageFrame, colors);
+            return TryReadVec32f2(width, height, widthStep, byteDepth, pixelData, colors);
           default:
             Logger.LogWarning("Channels don't make sense in the current context");
             return false;
@@ -225,27 +380,22 @@ namespace Mediapipe.Unity
       }
     }
 
-    private static bool TryReadChannel<T>(ImageFrame imageFrame, int channelCount, int channelNumber, T[] channelData, bool isHorizontallyFlipped, bool isVerticallyFlipped) where T : unmanaged
+    private static bool TryReadChannel<T>(int width, int height, int widthStep, int byteDepth, int channelCount, int channelNumber,
+      IntPtr pixelData, T[] channelData, bool isHorizontallyFlipped, bool isVerticallyFlipped) where T : unmanaged
     {
-      var width = imageFrame.Width();
-      var height = imageFrame.Height();
       var length = width * height;
-
       if (channelData.Length != length)
       {
         Logger.LogWarning($"The length of channelData ({channelData.Length}) does not equal {width} * {height} = {length}");
         return false;
       }
 
-      var widthStep = imageFrame.WidthStep();
-      var byteDepth = imageFrame.ByteDepth();
-
       unsafe
       {
         fixed (T* dest = channelData)
         {
           // NOTE: We cannot assume that the pixel data is aligned properly.
-          var pLine = (byte*)imageFrame.MutablePixelData();
+          var pLine = (byte*)pixelData;
           pLine += byteDepth * channelNumber;
 
           if (isVerticallyFlipped)
@@ -330,28 +480,24 @@ namespace Mediapipe.Unity
     private delegate TDst ChannelTransformer<TSrc, TDst>(TSrc channel);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool TryReadChannel<TSrc, TDst>(ImageFrame imageFrame, int channelCount, int channelNumber, ChannelTransformer<TSrc, TDst> transformer,
-        TDst[] channelData, bool isHorizontallyFlipped, bool isVerticallyFlipped) where TSrc : unmanaged where TDst : unmanaged
-    {
-      var width = imageFrame.Width();
-      var height = imageFrame.Height();
-      var length = width * height;
 
+    private static bool TryReadChannel<TSrc, TDst>(
+      int width, int height, int widthStep, int byteDepth, int channelCount, int channelNumber, ChannelTransformer<TSrc, TDst> transformer,
+      IntPtr pixelData, TDst[] channelData, bool isHorizontallyFlipped, bool isVerticallyFlipped) where TSrc : unmanaged where TDst : unmanaged
+    {
+      var length = width * height;
       if (channelData.Length != length)
       {
         Logger.LogWarning($"The length of channelData ({channelData.Length}) does not equal {width} * {height} = {length}");
         return false;
       }
 
-      var widthStep = imageFrame.WidthStep();
-      var byteDepth = imageFrame.ByteDepth();
-
       unsafe
       {
         fixed (TDst* dest = channelData)
         {
           // NOTE: We cannot assume that the pixel data is aligned properly.
-          var pLine = (byte*)imageFrame.MutablePixelData();
+          var pLine = (byte*)pixelData;
           pLine += byteDepth * channelNumber;
 
           if (isVerticallyFlipped)
@@ -433,20 +579,11 @@ namespace Mediapipe.Unity
       return true;
     }
 
-    private static T Identity<T>(T x)
-    {
-      return x;
-    }
+    private static T Identity<T>(T x) => x;
 
-    private static float ByteNormalizer(byte x)
-    {
-      return (float)x / ((1 << 8) - 1);
-    }
+    private static float ByteNormalizer(byte x) => (float)x / ((1 << 8) - 1);
 
-    private static float UshortNormalizer(ushort x)
-    {
-      return (float)x / ((1 << 16) - 1);
-    }
+    private static float UshortNormalizer(ushort x) => (float)x / ((1 << 16) - 1);
 
     private static bool IsChannelNumberValid(int channelCount, int channelNumber)
     {
@@ -470,27 +607,21 @@ namespace Mediapipe.Unity
       return true;
     }
 
-    private static bool TryReadSrgb(ImageFrame imageFrame, Color32[] colors)
+    private static bool TryReadSrgb(int width, int height, int widthStep, int byteStep, IntPtr pixelData, Color32[] colors)
     {
-      var width = imageFrame.Width();
-      var height = imageFrame.Height();
       var length = width * height;
-
       if (colors.Length != length)
       {
         Logger.LogWarning($"The length of colors ({colors.Length}) does not equal {width} * {height} = {length}");
         return false;
       }
 
-      var widthStep = imageFrame.WidthStep();
-      var byteDepth = imageFrame.ByteDepth();
-
       unsafe
       {
         fixed (Color32* dest = colors)
         {
           // NOTE: We cannot assume that the pixel data is aligned properly.
-          var pLine = (byte*)imageFrame.MutablePixelData();
+          var pLine = (byte*)pixelData;
           // The first element is at top-left (the image is not flipped at all).
           var pDest = dest + (width * (height - 1));
 
@@ -513,27 +644,21 @@ namespace Mediapipe.Unity
       return true;
     }
 
-    private static bool TryReadSrgba(ImageFrame imageFrame, Color32[] colors)
+    private static bool TryReadSrgba(int width, int height, int widthStep, int byteStep, IntPtr pixelData, Color32[] colors)
     {
-      var width = imageFrame.Width();
-      var height = imageFrame.Height();
       var length = width * height;
-
       if (colors.Length != length)
       {
         Logger.LogWarning($"The length of colors ({colors.Length}) does not equal {width} * {height} = {length}");
         return false;
       }
 
-      var widthStep = imageFrame.WidthStep();
-      var byteDepth = imageFrame.ByteDepth();
-
       unsafe
       {
         fixed (Color32* dest = colors)
         {
           // NOTE: We cannot assume that the pixel data is aligned properly.
-          var pLine = (byte*)imageFrame.MutablePixelData();
+          var pLine = (byte*)pixelData;
           // The first element is at top-left (the image is not flipped at all).
           var pDest = dest + (width * (height - 1));
 
@@ -557,27 +682,21 @@ namespace Mediapipe.Unity
       return true;
     }
 
-    private static bool TryReadSbgra(ImageFrame imageFrame, Color32[] colors)
+    private static bool TryReadSbgra(int width, int height, int widthStep, int byteStep, IntPtr pixelData, Color32[] colors)
     {
-      var width = imageFrame.Width();
-      var height = imageFrame.Height();
       var length = width * height;
-
       if (colors.Length != length)
       {
         Logger.LogWarning($"The length of colors ({colors.Length}) does not equal {width} * {height} = {length}");
         return false;
       }
 
-      var widthStep = imageFrame.WidthStep();
-      var byteDepth = imageFrame.ByteDepth();
-
       unsafe
       {
         fixed (Color32* dest = colors)
         {
           // NOTE: We cannot assume that the pixel data is aligned properly.
-          var pLine = (byte*)imageFrame.MutablePixelData();
+          var pLine = (byte*)pixelData;
           // The first element is at top-left (the image is not flipped at all).
           var pDest = dest + (width * (height - 1));
 
@@ -601,27 +720,21 @@ namespace Mediapipe.Unity
       return true;
     }
 
-    private static bool TryReadGray8(ImageFrame imageFrame, Color32[] colors)
+    private static bool TryReadGray8(int width, int height, int widthStep, int byteStep, IntPtr pixelData, Color32[] colors)
     {
-      var width = imageFrame.Width();
-      var height = imageFrame.Height();
       var length = width * height;
-
       if (colors.Length != length)
       {
         Logger.LogWarning($"The length of colors ({colors.Length}) does not equal {width} * {height} = {length}");
         return false;
       }
 
-      var widthStep = imageFrame.WidthStep();
-      var byteDepth = imageFrame.ByteDepth();
-
       unsafe
       {
         fixed (Color32* dest = colors)
         {
           // NOTE: We cannot assume that the pixel data is aligned properly.
-          var pLine = (byte*)imageFrame.MutablePixelData();
+          var pLine = (byte*)pixelData;
           // The first element is at top-left (the image is not flipped at all).
           var pDest = dest + (width * (height - 1));
 
@@ -642,27 +755,21 @@ namespace Mediapipe.Unity
       return true;
     }
 
-    private static bool TryReadLab8(ImageFrame imageFrame, Color32[] colors)
+    private static bool TryReadLab8(int width, int height, int widthStep, int byteStep, IntPtr pixelData, Color32[] colors)
     {
-      var width = imageFrame.Width();
-      var height = imageFrame.Height();
       var length = width * height;
-
       if (colors.Length != length)
       {
         Logger.LogWarning($"The length of colors ({colors.Length}) does not equal {width} * {height} = {length}");
         return false;
       }
 
-      var widthStep = imageFrame.WidthStep();
-      var byteDepth = imageFrame.ByteDepth();
-
       unsafe
       {
         fixed (Color32* dest = colors)
         {
           // NOTE: We cannot assume that the pixel data is aligned properly.
-          var pLine = (byte*)imageFrame.MutablePixelData();
+          var pLine = (byte*)pixelData;
           // The first element is at top-left (the image is not flipped at all).
           var pDest = dest + (width * (height - 1));
 
@@ -685,27 +792,21 @@ namespace Mediapipe.Unity
       return true;
     }
 
-    private static bool TryReadSrgb48(ImageFrame imageFrame, Color32[] colors)
+    private static bool TryReadSrgb48(int width, int height, int widthStep, int byteStep, IntPtr pixelData, Color32[] colors)
     {
-      var width = imageFrame.Width();
-      var height = imageFrame.Height();
       var length = width * height;
-
       if (colors.Length != length)
       {
         Logger.LogWarning($"The length of colors ({colors.Length}) does not equal {width} * {height} = {length}");
         return false;
       }
 
-      var widthStep = imageFrame.WidthStep();
-      var byteDepth = imageFrame.ByteDepth();
-
       unsafe
       {
         fixed (Color32* dest = colors)
         {
           // NOTE: We cannot assume that the pixel data is aligned properly.
-          var pLine = (byte*)imageFrame.MutablePixelData();
+          var pLine = (byte*)pixelData;
           // The first element is at top-left (the image is not flipped at all).
           var pDest = dest + (width * (height - 1));
 
@@ -728,27 +829,21 @@ namespace Mediapipe.Unity
       return true;
     }
 
-    private static bool TryReadSrgba64(ImageFrame imageFrame, Color32[] colors)
+    private static bool TryReadSrgba64(int width, int height, int widthStep, int byteStep, IntPtr pixelData, Color32[] colors)
     {
-      var width = imageFrame.Width();
-      var height = imageFrame.Height();
       var length = width * height;
-
       if (colors.Length != length)
       {
         Logger.LogWarning($"The length of colors ({colors.Length}) does not equal {width} * {height} = {length}");
         return false;
       }
 
-      var widthStep = imageFrame.WidthStep();
-      var byteDepth = imageFrame.ByteDepth();
-
       unsafe
       {
         fixed (Color32* dest = colors)
         {
           // NOTE: We cannot assume that the pixel data is aligned properly.
-          var pLine = (byte*)imageFrame.MutablePixelData();
+          var pLine = (byte*)pixelData;
           // The first element is at top-left (the image is not flipped at all).
           var pDest = dest + (width * (height - 1));
 
@@ -772,27 +867,21 @@ namespace Mediapipe.Unity
       return true;
     }
 
-    private static bool TryReadGray16(ImageFrame imageFrame, Color32[] colors)
+    private static bool TryReadGray16(int width, int height, int widthStep, int byteStep, IntPtr pixelData, Color32[] colors)
     {
-      var width = imageFrame.Width();
-      var height = imageFrame.Height();
       var length = width * height;
-
       if (colors.Length != length)
       {
         Logger.LogWarning($"The length of colors ({colors.Length}) does not equal {width} * {height} = {length}");
         return false;
       }
 
-      var widthStep = imageFrame.WidthStep();
-      var byteDepth = imageFrame.ByteDepth();
-
       unsafe
       {
         fixed (Color32* dest = colors)
         {
           // NOTE: We cannot assume that the pixel data is aligned properly.
-          var pLine = (byte*)imageFrame.MutablePixelData();
+          var pLine = (byte*)pixelData;
           // The first element is at top-left (the image is not flipped at all).
           var pDest = dest + (width * (height - 1));
 
@@ -813,27 +902,21 @@ namespace Mediapipe.Unity
       return true;
     }
 
-    private static bool TryReadVec32f1(ImageFrame imageFrame, Color32[] colors)
+    private static bool TryReadVec32f1(int width, int height, int widthStep, int byteStep, IntPtr pixelData, Color32[] colors)
     {
-      var width = imageFrame.Width();
-      var height = imageFrame.Height();
       var length = width * height;
-
       if (colors.Length != length)
       {
         Logger.LogWarning($"The length of colors ({colors.Length}) does not equal {width} * {height} = {length}");
         return false;
       }
 
-      var widthStep = imageFrame.WidthStep();
-      var byteDepth = imageFrame.ByteDepth();
-
       unsafe
       {
         fixed (Color32* dest = colors)
         {
           // NOTE: We cannot assume that the pixel data is aligned properly.
-          var pLine = (byte*)imageFrame.MutablePixelData();
+          var pLine = (byte*)pixelData;
           // The first element is at top-left (the image is not flipped at all).
           var pDest = dest + (width * (height - 1));
 
@@ -854,27 +937,21 @@ namespace Mediapipe.Unity
       return true;
     }
 
-    private static bool TryReadVec32f2(ImageFrame imageFrame, Color32[] colors)
+    private static bool TryReadVec32f2(int width, int height, int widthStep, int byteStep, IntPtr pixelData, Color32[] colors)
     {
-      var width = imageFrame.Width();
-      var height = imageFrame.Height();
       var length = width * height;
-
       if (colors.Length != length)
       {
         Logger.LogWarning($"The length of colors ({colors.Length}) does not equal {width} * {height} = {length}");
         return false;
       }
 
-      var widthStep = imageFrame.WidthStep();
-      var byteDepth = imageFrame.ByteDepth();
-
       unsafe
       {
         fixed (Color32* dest = colors)
         {
           // NOTE: We cannot assume that the pixel data is aligned properly.
-          var pLine = (byte*)imageFrame.MutablePixelData();
+          var pLine = (byte*)pixelData;
           // The first element is at top-left (the image is not flipped at all).
           var pDest = dest + (width * (height - 1));
 
