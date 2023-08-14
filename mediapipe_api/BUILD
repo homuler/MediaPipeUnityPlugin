@@ -366,7 +366,9 @@ cc_library(
 
 cc_library(
     name = "pose_calculators",
-    deps = select({
+    deps = [
+        "@com_google_mediapipe//mediapipe/tasks/cc/vision/pose_landmarker:pose_landmarker",
+    ] + select({
         "@com_google_mediapipe//mediapipe/gpu:disable_gpu": [
             "@com_google_mediapipe//mediapipe/graphs/pose_tracking:pose_tracking_cpu_deps",
         ],
