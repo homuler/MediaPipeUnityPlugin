@@ -119,9 +119,28 @@ MpReturnCode mp_Packet__GetImage(mediapipe::Packet* packet, const mediapipe::Ima
   return mp_Packet__Get(packet, value_out);
 }
 
+MpReturnCode mp_Packet__GetImageVector(mediapipe::Packet* packet, mp_api::StructArray<mediapipe::Image*>* value_out) {
+  TRY_ALL
+    auto vec = packet->Get<std::vector<mediapipe::Image>>();
+    auto size = vec.size();
+    auto data = new mediapipe::Image*[size];
+
+    for (auto i = 0; i < size; ++i) {
+      data[i] = new mediapipe::Image(std::move(vec[i]));
+    }
+    value_out->data = data;
+    value_out->size = static_cast<int>(size);
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_ALL
+}
+
 MpReturnCode mp_Packet__ValidateAsImage(mediapipe::Packet* packet, absl::Status** status_out) {
   TRY
     *status_out = new absl::Status{packet->ValidateAsType<mediapipe::Image>()};
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
+}
+
+void mp_api_ImageArray__delete(mediapipe::Image** image_array) {
+  delete[] image_array;
 }

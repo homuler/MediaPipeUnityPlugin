@@ -55,7 +55,13 @@ namespace Mediapipe
     public static extern MpReturnCode mp_Packet__GetImage(IntPtr packet, out IntPtr image);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__GetImageVector(IntPtr packet, out ImageVectorPacket.ImageVector imageVector);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__ValidateAsImage(IntPtr packet, out IntPtr status);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_api_ImageArray__delete(IntPtr array);
     #endregion
   }
 }
