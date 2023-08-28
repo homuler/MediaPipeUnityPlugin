@@ -149,4 +149,8 @@ COPY WORKSPACE .
 COPY mediapipe_api mediapipe_api
 COPY third_party third_party
 
+# cache bazel
+COPY docker/windows/x86_64/cache_bazel.bat cache_bazel.bat
+RUN cache_bazel.bat && del cache_bazel.bat
+
 CMD ["cmd"]
