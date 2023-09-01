@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Mediapipe.Unity.Sample.SelfieSegmentation
 {
@@ -92,7 +93,7 @@ namespace Mediapipe.Unity.Sample.SelfieSegmentation
       sidePacket.Emplace("output_horizontally_flipped", new BoolPacket(outputHorizontallyFlipped));
       sidePacket.Emplace("output_vertically_flipped", new BoolPacket(outputVerticallyFlipped));
 
-      Logger.LogDebug($"output_rotation = {outputRotation}, output_horizontally_flipped = {outputHorizontallyFlipped}, output_vertically_flipped = {outputVerticallyFlipped}");
+      Debug.Log($"output_rotation = {outputRotation}, output_horizontally_flipped = {outputHorizontallyFlipped}, output_vertically_flipped = {outputVerticallyFlipped}");
       return sidePacket;
     }
   }

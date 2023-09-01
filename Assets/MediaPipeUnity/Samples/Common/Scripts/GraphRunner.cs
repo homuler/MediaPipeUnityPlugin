@@ -13,7 +13,7 @@ using UnityEngine.Rendering;
 
 using Stopwatch = System.Diagnostics.Stopwatch;
 
-namespace Mediapipe.Unity
+namespace Mediapipe.Unity.Sample
 {
   public abstract class GraphRunner : MonoBehaviour
   {
@@ -113,14 +113,14 @@ namespace Mediapipe.Unity
     {
       this.runningMode = runningMode;
 
-      Logger.LogInfo(TAG, $"Config Type = {configType}");
-      Logger.LogInfo(TAG, $"Running Mode = {runningMode}");
+      Debug.Log($"Config Type = {configType}");
+      Debug.Log($"Running Mode = {runningMode}");
 
       InitializeCalculatorGraph();
       _stopwatch = new Stopwatch();
       _stopwatch.Start();
 
-      Logger.LogInfo(TAG, "Loading dependent assets...");
+      Debug.Log("Loading dependent assets...");
       var assetRequests = RequestDependentAssets();
       yield return new WaitWhile(() => assetRequests.Any((request) => request.keepWaiting));
 
@@ -129,7 +129,7 @@ namespace Mediapipe.Unity
       {
         foreach (var error in errors)
         {
-          Logger.LogError(TAG, error);
+          Debug.LogError(error);
         }
         throw new InternalException("Failed to prepare dependent assets");
       }
@@ -155,7 +155,7 @@ namespace Mediapipe.Unity
           }
           catch (BadStatusException exception)
           {
-            Logger.LogError(TAG, exception.Message);
+            Debug.LogError(exception);
           }
 
           try
@@ -164,7 +164,7 @@ namespace Mediapipe.Unity
           }
           catch (BadStatusException exception)
           {
-            Logger.LogError(TAG, exception.Message);
+            Debug.LogError(exception);
           }
         }
 
@@ -278,7 +278,7 @@ namespace Mediapipe.Unity
         inputVerticallyFlipped = !inputVerticallyFlipped;
       }
 
-      Logger.LogDebug($"input_rotation = {inputRotation}, input_horizontally_flipped = {inputHorizontallyFlipped}, input_vertically_flipped = {inputVerticallyFlipped}");
+      Debug.Log($"input_rotation = {inputRotation}, input_horizontally_flipped = {inputHorizontallyFlipped}, input_vertically_flipped = {inputVerticallyFlipped}");
 
       sidePacket.Emplace("input_rotation", new IntPacket((int)inputRotation));
       sidePacket.Emplace("input_horizontally_flipped", new BoolPacket(inputHorizontallyFlipped));

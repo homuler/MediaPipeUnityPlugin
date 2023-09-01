@@ -89,7 +89,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection
         var calculatorOptions = new CalculatorOptions();
         calculatorOptions.SetExtension(FaceDetectionOptions.Extensions.Ext, new FaceDetectionOptions { MinScoreThresh = minDetectionConfidence });
         calculator.Options = calculatorOptions;
-        Logger.LogInfo(TAG, $"Min Detection Confidence ({calculator.Calculator}) = {minDetectionConfidence}");
+        Debug.Log($"Min Detection Confidence ({calculator.Calculator}) = {minDetectionConfidence}");
       }
 
       using (var validatedGraphConfig = new ValidatedGraphConfig())
@@ -106,7 +106,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection
       SetImageTransformationOptions(sidePacket, imageSource);
       sidePacket.Emplace("model_type", new IntPacket((int)modelType));
 
-      Logger.LogInfo(TAG, $"Model Selection = {modelType}");
+      Debug.Log($"Model Selection = {modelType}");
 
       return sidePacket;
     }
