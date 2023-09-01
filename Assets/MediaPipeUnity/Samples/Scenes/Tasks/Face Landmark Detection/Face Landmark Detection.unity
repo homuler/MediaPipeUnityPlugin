@@ -470,7 +470,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1064799461}
-  - component: {fileID: 1064799467}
   - component: {fileID: 1064799469}
   m_Layer: 0
   m_Name: Solution
@@ -494,19 +493,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1064799467
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1064799459}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4d846393f8d9f20fa64b924b0d95e68, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _appSettings: {fileID: 0}
 --- !u!114 &1064799469
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -519,7 +505,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78fe4f7b7ad763b02aa042ef4c50ff6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bootstrap: {fileID: 0}
+  _bootstrapPrefab: {fileID: 968918444066301895, guid: 1146a9de09159a948b683e94fb3d3c95,
+    type: 3}
+  bootstrap: {fileID: 1399753306286750402, guid: 1146a9de09159a948b683e94fb3d3c95,
+    type: 3}
   screen: {fileID: 1006057043}
   runningMode: 0
   _faceLandmarkerResultAnnotationController: {fileID: 1006057044}

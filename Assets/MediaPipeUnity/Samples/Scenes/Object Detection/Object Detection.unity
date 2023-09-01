@@ -469,7 +469,6 @@ GameObject:
   - component: {fileID: 1064799462}
   - component: {fileID: 1064799460}
   - component: {fileID: 1064799463}
-  - component: {fileID: 1064799467}
   m_Layer: 0
   m_Name: Solution
   m_TagString: Untagged
@@ -520,7 +519,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eac875cb755d0fc0d86718559f9674d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bootstrap: {fileID: 0}
+  _bootstrapPrefab: {fileID: 968918444066301895, guid: 1146a9de09159a948b683e94fb3d3c95,
+    type: 3}
   screen: {fileID: 544675422}
   graphRunner: {fileID: 1064799460}
   textureFramePool: {fileID: 1064799463}
@@ -539,19 +539,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _poolSize: 10
---- !u!114 &1064799467
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1064799459}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4d846393f8d9f20fa64b924b0d95e68, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _appSettings: {fileID: 0}
 --- !u!1 &1806680259
 GameObject:
   m_ObjectHideFlags: 0
