@@ -80,33 +80,11 @@ namespace Mediapipe.Unity.Sample
       }
 
       Debug.Log("Preparing ImageSource...");
-      ImageSourceProvider.ImageSource = GetImageSource(_appSettings.defaultImageSource);
+      ImageSourceProvider.Initialize(
+        _appSettings.BuildWebCamSource(), _appSettings.BuildStaticImageSource(), _appSettings.BuildVideoSource());
+      ImageSourceProvider.Switch(_appSettings.defaultImageSource);
 
       isFinished = true;
-    }
-
-    public ImageSource GetImageSource(ImageSourceType imageSourceType)
-    {
-      switch (imageSourceType)
-      {
-        case ImageSourceType.WebCamera:
-          {
-            return GetComponent<WebCamSource>();
-          }
-        case ImageSourceType.Image:
-          {
-            return GetComponent<StaticImageSource>();
-          }
-        case ImageSourceType.Video:
-          {
-            return GetComponent<VideoSource>();
-          }
-        case ImageSourceType.Unknown:
-        default:
-          {
-            throw new System.ArgumentException($"Unsupported source type: {imageSourceType}");
-          }
-      }
     }
 
     private void DecideInferenceMode()

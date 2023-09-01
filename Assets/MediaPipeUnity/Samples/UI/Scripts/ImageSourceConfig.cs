@@ -65,7 +65,7 @@ namespace Mediapipe.Unity.Sample.UI
 
       _sourceTypeInput.onValueChanged.AddListener(delegate
       {
-        ImageSourceProvider.ImageSource = _solution.bootstrap.GetImageSource((ImageSourceType)_sourceTypeInput.value);
+        ImageSourceProvider.Switch((ImageSourceType)_sourceTypeInput.value);
         _isChanged = true;
         InitializeContents();
       });

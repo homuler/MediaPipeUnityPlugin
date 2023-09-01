@@ -14,7 +14,16 @@ namespace Mediapipe.Unity
 {
   public class VideoSource : ImageSource
   {
-    [SerializeField] private VideoClip[] _availableSources;
+    private readonly VideoClip[] _availableSources;
+
+    // gameObject is used to add VideoPlayer component
+    private readonly GameObject _gameObject;
+
+    public VideoSource(VideoClip[] availableSources)
+    {
+      _availableSources = availableSources;
+      _gameObject = new GameObject("Video Player");
+    }
 
     private VideoClip _video;
     private VideoClip video
@@ -65,7 +74,7 @@ namespace Mediapipe.Unity
       {
         throw new InvalidOperationException("Video is not selected");
       }
-      _videoPlayer = gameObject.AddComponent<VideoPlayer>();
+      _videoPlayer = _gameObject.AddComponent<VideoPlayer>();
       _videoPlayer.renderMode = VideoRenderMode.APIOnly;
       _videoPlayer.isLooping = true;
       _videoPlayer.clip = video;
@@ -104,13 +113,10 @@ namespace Mediapipe.Unity
         return;
       }
       _videoPlayer.Stop();
-      Destroy(gameObject.GetComponent<VideoPlayer>());
+      UnityEngine.Object.Destroy(_videoPlayer);
       _videoPlayer = null;
     }
 
-    public override Texture GetCurrentTexture()
-    {
-      return _videoPlayer != null ? _videoPlayer.texture : null;
-    }
+    public override Texture GetCurrentTexture() => _videoPlayer != null ? _videoPlayer.texture : null;
   }
 }
