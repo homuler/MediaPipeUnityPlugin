@@ -8,7 +8,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Mediapipe.Unity
+namespace Mediapipe.Unity.Sample
 {
   public class StartSceneController : MonoBehaviour
   {

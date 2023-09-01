@@ -7,7 +7,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Mediapipe.Unity.PoseTracking
+namespace Mediapipe.Unity.Sample.PoseTracking
 {
   public class PoseTrackingSolution : ImageSourceSolution<PoseTrackingGraph>
   {

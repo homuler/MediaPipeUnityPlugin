@@ -7,7 +7,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Mediapipe.Unity.SelfieSegmentation
+namespace Mediapipe.Unity.Sample.SelfieSegmentation
 {
   public class SelfieSegmentationSolution : ImageSourceSolution<SelfieSegmentationGraph>
   {

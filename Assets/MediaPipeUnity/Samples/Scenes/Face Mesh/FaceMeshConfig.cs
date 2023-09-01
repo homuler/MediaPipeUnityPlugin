@@ -8,9 +8,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Mediapipe.Unity.UI;
+using Mediapipe.Unity.Sample.UI;
 
-namespace Mediapipe.Unity.FaceMesh.UI
+namespace Mediapipe.Unity.Sample.FaceMesh.UI
 {
   public class FaceMeshConfig : ModalContents
   {

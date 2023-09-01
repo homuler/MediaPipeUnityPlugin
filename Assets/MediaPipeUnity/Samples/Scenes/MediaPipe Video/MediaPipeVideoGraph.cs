@@ -9,7 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Mediapipe.Unity.MediaPipeVideo
+namespace Mediapipe.Unity.Sample.MediaPipeVideo
 {
   public class MediaPipeVideoGraph : GraphRunner
   {

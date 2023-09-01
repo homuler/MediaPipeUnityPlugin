@@ -6,12 +6,12 @@
 
 using UnityEngine;
 
-namespace Mediapipe.Unity.UI
+namespace Mediapipe.Unity.Sample.UI
 {
   public class Modal : MonoBehaviour
   {
     [SerializeField] private Solution _solution; // TODO: remove this field
-    [SerializeField] private Sample.TaskApiRunner _taskApiRunner;
+    [SerializeField] private TaskApiRunner _taskApiRunner;
 
     private GameObject _contents;
 

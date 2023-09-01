@@ -6,7 +6,7 @@
 
 using UnityEngine.UI;
 
-namespace Mediapipe.Unity.UI
+namespace Mediapipe.Unity.Sample.UI
 {
   public class GlobalConfig : ModalContents
   {

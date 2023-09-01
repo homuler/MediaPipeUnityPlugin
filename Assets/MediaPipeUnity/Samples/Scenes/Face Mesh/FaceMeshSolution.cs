@@ -8,7 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Mediapipe.Unity.FaceMesh
+namespace Mediapipe.Unity.Sample.FaceMesh
 {
   public class FaceMeshSolution : ImageSourceSolution<FaceMeshGraph>
   {

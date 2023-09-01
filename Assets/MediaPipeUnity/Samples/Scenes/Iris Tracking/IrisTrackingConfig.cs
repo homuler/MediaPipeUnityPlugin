@@ -8,9 +8,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Mediapipe.Unity.UI;
+using Mediapipe.Unity.Sample.UI;
 
-namespace Mediapipe.Unity.IrisTracking.UI
+namespace Mediapipe.Unity.Sample.IrisTracking.UI
 {
   public class IrisTrackingConfig : ModalContents
   {

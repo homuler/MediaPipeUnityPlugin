@@ -12,7 +12,7 @@ using UnityEngine;
 
 using Google.Protobuf;
 
-namespace Mediapipe.Unity.Holistic
+namespace Mediapipe.Unity.Sample.Holistic
 {
   public class HolisticTrackingGraph : GraphRunner
   {

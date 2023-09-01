@@ -7,7 +7,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Mediapipe.Unity.MediaPipeVideo
+namespace Mediapipe.Unity.Sample.MediaPipeVideo
 {
   public class MediaPipeVideoSolution : ImageSourceSolution<MediaPipeVideoGraph>
   {

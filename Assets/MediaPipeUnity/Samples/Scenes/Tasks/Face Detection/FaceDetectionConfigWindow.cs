@@ -6,7 +6,7 @@
 
 using UnityEngine;
 using UnityEngine.UI;
-using Mediapipe.Unity.UI;
+using Mediapipe.Unity.Sample.UI;
 
 namespace Mediapipe.Unity.Sample.FaceDetection.UI
 {
@@ -19,7 +19,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection.UI
     [SerializeField] private InputField _minSuppressionThresholdInput;
     [SerializeField] private InputField _numFacesInput;
 
-    private FaceDetectionConfig _config;
+    private FaceDetection.FaceDetectionConfig _config;
     private bool _isChanged;
 
     private void Start()

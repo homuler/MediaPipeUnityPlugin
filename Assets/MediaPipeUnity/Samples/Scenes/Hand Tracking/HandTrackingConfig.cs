@@ -8,9 +8,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Mediapipe.Unity.UI;
+using Mediapipe.Unity.Sample.UI;
 
-namespace Mediapipe.Unity.HandTracking.UI
+namespace Mediapipe.Unity.Sample.HandTracking.UI
 {
   public class HandTrackingConfig : ModalContents
   {

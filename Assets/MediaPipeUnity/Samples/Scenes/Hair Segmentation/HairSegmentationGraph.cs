@@ -7,7 +7,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Mediapipe.Unity.HairSegmentation
+namespace Mediapipe.Unity.Sample.HairSegmentation
 {
   public class HairSegmentationGraph : GraphRunner
   {

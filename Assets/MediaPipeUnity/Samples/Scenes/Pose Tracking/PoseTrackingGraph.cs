@@ -11,7 +11,7 @@ using UnityEngine;
 
 using Google.Protobuf;
 
-namespace Mediapipe.Unity.PoseTracking
+namespace Mediapipe.Unity.Sample.PoseTracking
 {
   public class PoseTrackingGraph : GraphRunner
   {

@@ -7,7 +7,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Mediapipe.Unity.IrisTracking
+namespace Mediapipe.Unity.Sample.IrisTracking
 {
   public class IrisTrackingGraph : GraphRunner
   {

@@ -10,7 +10,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mediapipe.Unity.UI
+namespace Mediapipe.Unity.Sample.UI
 {
   public class ImageSourceConfig : ModalContents
   {

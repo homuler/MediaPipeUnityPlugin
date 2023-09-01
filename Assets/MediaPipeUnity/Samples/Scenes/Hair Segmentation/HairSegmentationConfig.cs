@@ -8,9 +8,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Mediapipe.Unity.UI;
+using Mediapipe.Unity.Sample.UI;
 
-namespace Mediapipe.Unity.HairSegmentation.UI
+namespace Mediapipe.Unity.Sample.HairSegmentation.UI
 {
   public class HairSegmentationConfig : ModalContents
   {

@@ -7,7 +7,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Mediapipe.Unity
+namespace Mediapipe.Unity.Sample
 {
   public abstract class ImageSourceSolution<T> : Solution where T : GraphRunner
   {

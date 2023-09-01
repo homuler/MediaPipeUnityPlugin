@@ -7,7 +7,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Mediapipe.Unity.HairSegmentation
+namespace Mediapipe.Unity.Sample.HairSegmentation
 {
   public class HairSegmentationSolution : ImageSourceSolution<HairSegmentationGraph>
   {
