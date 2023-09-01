@@ -5,27 +5,13 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections;
-using System.IO;
 using UnityEngine;
 
 namespace Mediapipe.Unity.Sample
 {
   public class Bootstrap : MonoBehaviour
   {
-    [System.Serializable]
-    public enum AssetLoaderType
-    {
-      StreamingAssets,
-      AssetBundle,
-      Local,
-    }
-
-    private const string _TAG = nameof(Bootstrap);
-
-    [SerializeField] private ImageSourceType _defaultImageSource;
-    [SerializeField] private InferenceMode _preferableInferenceMode;
-    [SerializeField] private AssetLoaderType _assetLoaderType;
-    [SerializeField] private bool _enableGlog = true;
+    [SerializeField] private AppSettings _appSettings;
 
     public InferenceMode inferenceMode { get; private set; }
     public bool isFinished { get; private set; }
@@ -38,54 +24,45 @@ namespace Mediapipe.Unity.Sample
 
     private IEnumerator Init()
     {
-      Logger.SetLogger(new MemoizedLogger(100));
-      Logger.MinLogLevel = Logger.LogLevel.Debug;
+#if !DEBUG && !DEVELOPMENT_BUILD
+      Debug.LogWarning("Logging for the MediaPipeUnityPlugin will be suppressed. To enable logging, please check the 'Development Build' option and build.");
+#endif
+
+      Logger.MinLogLevel = _appSettings.logLevel;
 
       Protobuf.SetLogHandler(Protobuf.DefaultLogHandler);
 
-      Logger.LogInfo(_TAG, "Setting global flags...");
-      GlobalConfigManager.SetFlags();
+      Debug.Log("Setting global flags...");
+      _appSettings.ResetGlogFlags();
+      Glog.Initialize("MediaPipeUnityPlugin");
+      _isGlogInitialized = true;
 
-      if (_enableGlog)
+      Debug.Log("Initializing AssetLoader...");
+      switch (_appSettings.assetLoaderType)
       {
-        if (Glog.LogDir != null)
-        {
-          if (!Directory.Exists(Glog.LogDir))
-          {
-            Directory.CreateDirectory(Glog.LogDir);
-          }
-          Logger.LogVerbose(_TAG, $"Glog will output files under {Glog.LogDir}");
-        }
-        Glog.Initialize("MediaPipeUnityPlugin");
-        _isGlogInitialized = true;
-      }
-
-      Logger.LogInfo(_TAG, "Initializing AssetLoader...");
-      switch (_assetLoaderType)
-      {
-        case AssetLoaderType.AssetBundle:
+        case AppSettings.AssetLoaderType.AssetBundle:
           {
             AssetLoader.Provide(new AssetBundleResourceManager("mediapipe"));
             break;
           }
-        case AssetLoaderType.StreamingAssets:
+        case AppSettings.AssetLoaderType.StreamingAssets:
           {
             AssetLoader.Provide(new StreamingAssetsResourceManager());
             break;
           }
-        case AssetLoaderType.Local:
+        case AppSettings.AssetLoaderType.Local:
           {
 #if UNITY_EDITOR
             AssetLoader.Provide(new LocalResourceManager());
             break;
 #else
-            Logger.LogError("LocalResourceManager is only supported on UnityEditor");
+            Debug.LogError("LocalResourceManager is only supported on UnityEditor");
             yield break;
 #endif
           }
         default:
           {
-            Logger.LogError($"AssetLoaderType is unknown: {_assetLoaderType}");
+            Debug.LogError($"AssetLoaderType is unknown: {_appSettings.assetLoaderType}");
             yield break;
           }
       }
@@ -93,17 +70,17 @@ namespace Mediapipe.Unity.Sample
       DecideInferenceMode();
       if (inferenceMode == InferenceMode.GPU)
       {
-        Logger.LogInfo(_TAG, "Initializing GPU resources...");
+        Debug.Log("Initializing GPU resources...");
         yield return GpuManager.Initialize();
 
         if (!GpuManager.IsInitialized)
         {
-          Logger.LogWarning("If your native library is built for CPU, change 'Preferable Inference Mode' to CPU from the Inspector Window for Bootstrap");
+          Debug.LogWarning("If your native library is built for CPU, change 'Preferable Inference Mode' to CPU from the Inspector Window for AppSettings");
         }
       }
 
-      Logger.LogInfo(_TAG, "Preparing ImageSource...");
-      ImageSourceProvider.ImageSource = GetImageSource(_defaultImageSource);
+      Debug.Log("Preparing ImageSource...");
+      ImageSourceProvider.ImageSource = GetImageSource(_appSettings.defaultImageSource);
 
       isFinished = true;
     }
@@ -135,12 +112,12 @@ namespace Mediapipe.Unity.Sample
     private void DecideInferenceMode()
     {
 #if UNITY_EDITOR_OSX || UNITY_EDITOR_WIN
-      if (_preferableInferenceMode == InferenceMode.GPU) {
-        Logger.LogWarning(_TAG, "Current platform does not support GPU inference mode, so falling back to CPU mode");
+      if (_appSettings.preferableInferenceMode == InferenceMode.GPU) {
+        Debug.LogWarning("Current platform does not support GPU inference mode, so falling back to CPU mode");
       }
       inferenceMode = InferenceMode.CPU;
 #else
-      inferenceMode = _preferableInferenceMode;
+      inferenceMode = _appSettings.preferableInferenceMode;
 #endif
     }
 
@@ -154,7 +131,6 @@ namespace Mediapipe.Unity.Sample
       }
 
       Protobuf.ResetLogHandler();
-      Logger.SetLogger(null);
     }
   }
 }
