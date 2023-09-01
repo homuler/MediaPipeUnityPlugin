@@ -7,7 +7,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Mediapipe.Unity.ObjectDetection
+namespace Mediapipe.Unity.Sample.ObjectDetection
 {
   public class ObjectDetectionGraph : GraphRunner
   {

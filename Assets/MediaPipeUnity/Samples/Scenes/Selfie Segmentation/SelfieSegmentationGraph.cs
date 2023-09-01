@@ -7,7 +7,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Mediapipe.Unity.SelfieSegmentation
+namespace Mediapipe.Unity.Sample.SelfieSegmentation
 {
   public class SelfieSegmentationGraph : GraphRunner
   {

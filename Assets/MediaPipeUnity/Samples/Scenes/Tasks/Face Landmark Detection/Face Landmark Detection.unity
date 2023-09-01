@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4465791, g: 0.4964133, b: 0.57481784, a: 1}
+  m_IndirectSpecularColor: {r: 0.44402248, g: 0.49316555, b: 0.5722324, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -470,10 +470,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1064799461}
-  - component: {fileID: 1064799467}
-  - component: {fileID: 1064799466}
-  - component: {fileID: 1064799465}
-  - component: {fileID: 1064799464}
   - component: {fileID: 1064799469}
   m_Layer: 0
   m_Name: Solution
@@ -497,102 +493,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1064799464
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1064799459}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04085488e5fac35599866a2a6fceeda3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _availableSources: []
---- !u!114 &1064799465
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1064799459}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd7955705ab46c72b9124bb116a2dca9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _availableSources: []
-  _defaultAvailableResolutions:
-  - width: 512
-    height: 512
-    frameRate: 0
-  - width: 640
-    height: 480
-    frameRate: 0
-  - width: 1280
-    height: 720
-    frameRate: 0
---- !u!114 &1064799466
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1064799459}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 498146e99d4934673bd948c8be11227e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _preferableDefaultWidth: 1280
-  _defaultAvailableResolutions:
-  - width: 176
-    height: 144
-    frameRate: 30
-  - width: 320
-    height: 240
-    frameRate: 30
-  - width: 424
-    height: 240
-    frameRate: 30
-  - width: 640
-    height: 360
-    frameRate: 30
-  - width: 640
-    height: 480
-    frameRate: 30
-  - width: 848
-    height: 480
-    frameRate: 30
-  - width: 960
-    height: 540
-    frameRate: 30
-  - width: 1280
-    height: 720
-    frameRate: 30
-  - width: 1600
-    height: 896
-    frameRate: 30
-  - width: 1920
-    height: 1080
-    frameRate: 30
---- !u!114 &1064799467
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1064799459}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4d846393f8d9f20fa64b924b0d95e68, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _defaultImageSource: 0
-  _preferableInferenceMode: 0
-  _assetLoaderType: 2
-  _enableGlog: 1
 --- !u!114 &1064799469
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -605,7 +505,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78fe4f7b7ad763b02aa042ef4c50ff6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bootstrap: {fileID: 0}
+  _bootstrapPrefab: {fileID: 968918444066301895, guid: 1146a9de09159a948b683e94fb3d3c95,
+    type: 3}
+  bootstrap: {fileID: 1399753306286750402, guid: 1146a9de09159a948b683e94fb3d3c95,
+    type: 3}
   screen: {fileID: 1006057043}
   runningMode: 0
   _faceLandmarkerResultAnnotationController: {fileID: 1006057044}

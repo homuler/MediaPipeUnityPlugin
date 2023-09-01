@@ -10,7 +10,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mediapipe.Unity.UI
+namespace Mediapipe.Unity.Sample.UI
 {
   public class ImageSourceConfig : ModalContents
   {
@@ -65,7 +65,7 @@ namespace Mediapipe.Unity.UI
 
       _sourceTypeInput.onValueChanged.AddListener(delegate
       {
-        ImageSourceProvider.ImageSource = _solution.bootstrap.GetImageSource((ImageSourceType)_sourceTypeInput.value);
+        ImageSourceProvider.Switch((ImageSourceType)_sourceTypeInput.value);
         _isChanged = true;
         InitializeContents();
       });

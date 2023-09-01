@@ -11,7 +11,7 @@ using UnityEngine;
 
 using Google.Protobuf;
 
-namespace Mediapipe.Unity.FaceMesh
+namespace Mediapipe.Unity.Sample.FaceMesh
 {
   public class FaceMeshGraph : GraphRunner
   {

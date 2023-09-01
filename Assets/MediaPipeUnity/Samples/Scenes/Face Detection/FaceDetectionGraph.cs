@@ -9,9 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-using Google.Protobuf;
-
-namespace Mediapipe.Unity.FaceDetection
+namespace Mediapipe.Unity.Sample.FaceDetection
 {
   public class FaceDetectionGraph : GraphRunner
   {

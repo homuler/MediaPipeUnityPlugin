@@ -8,7 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Mediapipe.Unity.ObjectDetection
+namespace Mediapipe.Unity.Sample.ObjectDetection
 {
   public class ObjectDetectionSolution : ImageSourceSolution<ObjectDetectionGraph>
   {

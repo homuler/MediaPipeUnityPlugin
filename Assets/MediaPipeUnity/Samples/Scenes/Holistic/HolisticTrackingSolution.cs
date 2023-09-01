@@ -7,7 +7,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Mediapipe.Unity.Holistic
+namespace Mediapipe.Unity.Sample.Holistic
 {
   public class HolisticTrackingSolution : ImageSourceSolution<HolisticTrackingGraph>
   {

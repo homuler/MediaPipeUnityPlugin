@@ -14,6 +14,10 @@ namespace Mediapipe.Unity.Sample
 {
   public abstract class TaskApiRunner : MonoBehaviour
   {
+    private static readonly string _BootstrapName = nameof(Bootstrap);
+
+    [SerializeField] private GameObject _bootstrapPrefab;
+
 #pragma warning disable IDE1006
     // TODO: make it static
     protected virtual string TAG => GetType().Name;
@@ -73,26 +77,15 @@ namespace Mediapipe.Unity.Sample
     {
       var bootstrapObj = GameObject.Find("Bootstrap");
 
-      if (bootstrapObj != null)
+      if (bootstrapObj == null)
       {
-        return bootstrapObj.GetComponent<Bootstrap>();
+        Debug.Log("Initializing the Bootstrap GameObject");
+        bootstrapObj = Instantiate(_bootstrapPrefab);
+        bootstrapObj.name = _BootstrapName;
+        DontDestroyOnLoad(bootstrapObj);
       }
 
-      Logger.LogWarning(TAG, "Global Bootstrap instance is not found (maybe running a sample scene directly), "
-                            + "so activating a fallback Bootstrap instance attached to each Solution object");
-
-      var bootstrap = GetComponent<Bootstrap>();
-      bootstrap.enabled = true;
-
-      // hide menu button when trying a single scene.
-      DisableMenuButton();
-      return bootstrap;
-    }
-
-    private void DisableMenuButton()
-    {
-      var menuButton = GameObject.Find("MenuButton");
-      menuButton.SetActive(false);
+      return bootstrapObj.GetComponent<Bootstrap>();
     }
   }
 }

@@ -8,9 +8,9 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using Mediapipe.Unity.UI;
+using Mediapipe.Unity.Sample.UI;
 
-namespace Mediapipe.Unity.MediaPipeVideo.UI
+namespace Mediapipe.Unity.Sample.MediaPipeVideo.UI
 {
   public class MediaPipeVideoConfig : ModalContents
   {

@@ -6,7 +6,7 @@
 
 using UnityEngine;
 
-namespace Mediapipe.Unity.UI
+namespace Mediapipe.Unity.Sample.UI
 {
   public class ModalButton : MonoBehaviour
   {

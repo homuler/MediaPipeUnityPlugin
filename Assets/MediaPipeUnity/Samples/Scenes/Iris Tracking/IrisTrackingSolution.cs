@@ -8,7 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Mediapipe.Unity.IrisTracking
+namespace Mediapipe.Unity.Sample.IrisTracking
 {
   public class IrisTrackingSolution : ImageSourceSolution<IrisTrackingGraph>
   {

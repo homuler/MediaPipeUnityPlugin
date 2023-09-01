@@ -11,7 +11,7 @@ using UnityEngine;
 
 using Google.Protobuf;
 
-namespace Mediapipe.Unity.HandTracking
+namespace Mediapipe.Unity.Sample.HandTracking
 {
   public class HandTrackingGraph : GraphRunner
   {

@@ -8,7 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Mediapipe.Unity.HandTracking
+namespace Mediapipe.Unity.Sample.HandTracking
 {
   public class HandTrackingSolution : ImageSourceSolution<HandTrackingGraph>
   {

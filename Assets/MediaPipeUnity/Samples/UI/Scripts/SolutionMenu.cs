@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-namespace Mediapipe.Unity.UI
+namespace Mediapipe.Unity.Sample.UI
 {
 #pragma warning disable IDE0065
   using Color = UnityEngine.Color;
@@ -31,22 +31,22 @@ namespace Mediapipe.Unity.UI
       var solutionCount = SceneManager.sceneCountInBuildSettings;
       Transform currentRow = null;
 
-      for (var i = 1; i < solutionCount; i++)
-      { // skip the first scene (i.e. Start Scene)
-        if (i % 2 == 1)
+      for (var i = 0; i < solutionCount; i++)
+      {
+        if (i % 2 == 0)
         {
           // 2 buttons in a row
           currentRow = InitializeRow();
         }
-        var button = GetButtonInRow(currentRow, (i - 1) % 2);
+        var button = GetButtonInRow(currentRow, i % 2);
 
         var buildIndex = i;
         button.transform.GetComponentInChildren<Text>().text = GetSceneNameByBuildIndex(buildIndex);
         button.onClick.AddListener(() => { var _ = StartCoroutine(LoadSceneAsync(buildIndex)); });
       }
 
-      if (solutionCount % 2 == 0)
-      { // (solutionCount - 1) % 2 == 1
+      if (solutionCount % 2 == 1)
+      {
         var unusedButton = GetButtonInRow(currentRow, 1);
         HideButton(unusedButton);
       }
