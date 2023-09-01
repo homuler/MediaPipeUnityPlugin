@@ -115,7 +115,7 @@ Here is a list of [solutions](https://google.github.io/mediapipe/solutions/solut
 |    Object Detection     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
 ### UnityEditor
 
-Select `Mediapipe/Samples/Scenes/Start Scene` and play.
+Select any scenes under `Mediapipe/Samples/Scenes` and play.
 
 ### Desktop
 

@@ -6,9 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/MediaPipeUnity/Samples/Scenes/Start Scene.unity
-    guid: f7b359c19e6ae2d208e5ca4608b7c0b8
-  - enabled: 1
     path: Assets/MediaPipeUnity/Samples/Scenes/Face Detection/Face Detection.unity
     guid: 17a223a9abd188eb6b6656cf37880d62
   - enabled: 1
