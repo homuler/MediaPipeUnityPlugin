@@ -12,15 +12,15 @@ package(default_visibility = ["//visibility:public"])
 pkg_files(
     name = "proto_srcs",
     srcs = [
-        ":face_blendshapes_graph_options",
-        ":face_landmarker_graph_options",
-        ":face_landmarks_detector_graph_options",
+        ":face_blendshapes_graph_options_cs",
+        ":face_landmarker_graph_options_cs",
+        ":face_landmarks_detector_graph_options_cs",
     ],
     prefix = "Tasks/Vision/FaceLandmarker/Proto",
 )
 
 csharp_proto_src(
-    name = "face_blendshapes_graph_options",
+    name = "face_blendshapes_graph_options_cs",
     proto_src = "mediapipe/tasks/cc/vision/face_landmarker/proto/face_blendshapes_graph_options.proto",
     deps = [
         "@com_google_mediapipe//mediapipe/tasks/cc/core/proto:protos_src",
@@ -31,7 +31,7 @@ csharp_proto_src(
 )
 
 csharp_proto_src(
-    name = "face_landmarker_graph_options",
+    name = "face_landmarker_graph_options_cs",
     proto_src = "mediapipe/tasks/cc/vision/face_landmarker/proto/face_landmarker_graph_options.proto",
     deps = [
         "@com_google_mediapipe//mediapipe/tasks/cc/core/proto:protos_src",
@@ -45,7 +45,7 @@ csharp_proto_src(
 )
 
 csharp_proto_src(
-    name = "face_landmarks_detector_graph_options",
+    name = "face_landmarks_detector_graph_options_cs",
     proto_src = "mediapipe/tasks/cc/vision/face_landmarker/proto/face_landmarks_detector_graph_options.proto",
     deps = [
         "@com_google_mediapipe//mediapipe/tasks/cc/core/proto:protos_src",
