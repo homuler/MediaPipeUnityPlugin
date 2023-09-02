@@ -63,7 +63,10 @@ MP_CAPI(MpReturnCode) mp__MakeImagePacket__Pif(mediapipe::Image* image, mediapip
 MP_CAPI(MpReturnCode) mp__MakeImagePacket_At__Pif_Rt(mediapipe::Image* image, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__ConsumeImage(mediapipe::Packet* packet, absl::Status **status_out, mediapipe::Image** value_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetImage(mediapipe::Packet* packet, const mediapipe::Image** value_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetImageVector(mediapipe::Packet* packet, mp_api::StructArray<mediapipe::Image*>* value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsImage(mediapipe::Packet* packet, absl::Status** status_out);
+
+MP_CAPI(void) mp_api_ImageArray__delete(mediapipe::Image** image_array);
 
 }  // extern "C"
 
