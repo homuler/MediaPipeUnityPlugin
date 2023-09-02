@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _defaultImageSource: 0
   _preferableInferenceMode: 0
-  _assetLoaderType: 0
+  _assetLoaderType: 2
   _logLevel: 5
   _glogMinloglevel: 0
   _glogStderrthreshold: 2

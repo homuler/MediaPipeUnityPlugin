@@ -117,14 +117,25 @@ Here is a list of [solutions](https://google.github.io/mediapipe/solutions/solut
 
 Select any scenes under `Mediapipe/Samples/Scenes` and play.
 
-### Desktop
+### Desktop, Android, iOS
 
-If you've built native libraries for CPU (i.e. `--desktop cpu`), select `CPU` for inference mode from the Inspector Window.
+Select proper Inference Mode and Asset Loader Type from the Inspector Window.
+
+#### Preferable Inference Mode
+
+If you've built native libraries for CPU (i.e. `--desktop cpu`), select `CPU` for inference mode.\
+When building for Android/iOS, make sure that you select `GPU` for inference mode, because `CPU` inference mode is not supported currently.
+
 ![preferable-inference-mode](https://github.com/homuler/MediaPipeUnityPlugin/assets/4690128/129d18be-8184-43f7-8ac8-56db4df9f9a7)
 
-### Android, iOS
+#### Asset Loader Type
 
-Make sure that you select `GPU` for inference mode before building the app, because `CPU` inference mode is not supported currently.
+The default Asset Loader Type is set to `Local`, which only works on UnityEditor.\
+To run it on your devices, switch it to `StreamingAssets` and copy the required resources under [`StreamingAssets`](https://docs.unity3d.com/2022.3/Documentation/Manual/StreamingAssets.html) (if you're using `MediaPipeUnityPlugin-all.zip`, the `StreamingAssets` directory already contains them).
+
+![asset-loader-type](https://github.com/homuler/MediaPipeUnityPlugin/assets/4690128/f7059140-4da9-4201-a232-83ff07cd63df)
+
+See [the tutorial](https://github.com/homuler/MediaPipeUnityPlugin/wiki/Getting-Started#load-model-files) for more details.
 
 ## :book: Wiki
 
