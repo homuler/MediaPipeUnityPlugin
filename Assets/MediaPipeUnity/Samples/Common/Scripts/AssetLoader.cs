@@ -5,7 +5,6 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections;
-using UnityEngine;
 
 namespace Mediapipe.Unity.Sample
 {
@@ -19,12 +18,7 @@ namespace Mediapipe.Unity.Sample
     {
       if (_ResourceManager == null)
       {
-#if UNITY_EDITOR
-        Debug.LogWarning("ResourceManager is not provided, so default LocalResourceManager will be used");
-        _ResourceManager = new LocalResourceManager();
-#else
         throw new System.InvalidOperationException("ResourceManager is not provided");
-#endif
       }
       return _ResourceManager.PrepareAssetAsync(name, uniqueKey, overwrite);
     }
