@@ -62,5 +62,4 @@ MonoBehaviour:
   - width: 1280
     height: 720
     frameRate: 0
-  _availableVideoSources:
-  - {fileID: 32900000, guid: 56e0345cf6a6fcda3a013db92f9d6c01, type: 3}
+  _availableVideoSources: []

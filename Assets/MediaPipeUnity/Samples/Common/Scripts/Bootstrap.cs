@@ -24,6 +24,7 @@ namespace Mediapipe.Unity.Sample
 
     private IEnumerator Init()
     {
+      Debug.Log("The configuration for the sample app can be modified using AppSettings.asset.");
 #if !DEBUG && !DEVELOPMENT_BUILD
       Debug.LogWarning("Logging for the MediaPipeUnityPlugin will be suppressed. To enable logging, please check the 'Development Build' option and build.");
 #endif
