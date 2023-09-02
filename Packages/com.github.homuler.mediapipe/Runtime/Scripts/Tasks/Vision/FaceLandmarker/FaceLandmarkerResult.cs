@@ -11,10 +11,22 @@ using UnityEngine;
 
 namespace Mediapipe.Tasks.Vision.FaceLandmarker
 {
+  /// <summary>
+  ///   The face landmarks result from FaceLandmarker, where each vector element represents a single face detected in the image.
+  /// </summary>
   public readonly struct FaceLandmarkerResult
   {
+    /// <summary>
+    ///   Detected face landmarks in normalized image coordinates.
+    /// </summary>
     public readonly IReadOnlyList<NormalizedLandmarks> faceLandmarks;
+    /// <summary>
+    ///   Optional face blendshapes results.
+    /// </summary>
     public readonly IReadOnlyList<Classifications> faceBlendshapes;
+    /// <summary>
+    ///   Optional facial transformation matrix.
+    /// </summary>
     public readonly IReadOnlyList<Matrix4x4> facialTransformationMatrixes;
 
     internal FaceLandmarkerResult(IReadOnlyList<NormalizedLandmarks> faceLandmarks,

@@ -38,6 +38,16 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       _packetCallback = packetCallback;
     }
 
+    /// <summary>
+    ///   Creates an <see cref="FaceDetector" /> object from a TensorFlow Lite model and the default <see cref="FaceDetectorOptions" />.
+    ///
+    ///   Note that the created <see cref="FaceDetector" /> instance is in image mode,
+    ///   for detecting faces on single image inputs.
+    /// </summary>
+    /// <param name="modelPath">Path to the model.</param>
+    /// <returns>
+    ///   <see cref="FaceDetector" /> object that's created from the model and the default <see cref="FaceDetectorOptions" />.
+    /// </returns>
     public static FaceDetector CreateFromModelPath(string modelPath)
     {
       var baseOptions = new Tasks.Core.BaseOptions(modelAssetPath: modelPath);
@@ -45,6 +55,13 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       return CreateFromOptions(options);
     }
 
+    /// <summary>
+    ///   Creates the <see cref="FaceDetector" /> object from <paramref name="FaceDetectorOptions" />.
+    /// </summary>
+    /// <param name="options">Options for the face detector task.</param>
+    /// <returns>
+    ///   <see cref="FaceDetector" /> object that's created from <paramref name="options" />.
+    /// </returns>
     public static FaceDetector CreateFromOptions(FaceDetectorOptions options)
     {
       var taskInfo = new Tasks.Core.TaskInfo<FaceDetectorOptions>(

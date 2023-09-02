@@ -60,7 +60,7 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
     /// <summary>
     ///   Creates the <see cref="HandLandmarker" /> object from <paramref name="HandLandmarkerOptions" />.
     /// </summary>
-    /// <param name="options">Options for the face landmarker task.</param>
+    /// <param name="options">Options for the hand landmarker task.</param>
     /// <returns>
     ///   <see cref="HandLandmarker" /> object that's created from <paramref name="options" />.
     /// </returns>
