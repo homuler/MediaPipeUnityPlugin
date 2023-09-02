@@ -190,7 +190,7 @@ namespace Mediapipe.Unity.Sample.HandTracking
           {
             var options = calculator.Options.GetExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext);
             options.MinScoreThresh = minDetectionConfidence;
-            Logger.LogInfo(TAG, $"Min Detection Confidence = {minDetectionConfidence}");
+            Debug.Log($"Min Detection Confidence = {minDetectionConfidence}");
           }
         }
 
@@ -200,7 +200,7 @@ namespace Mediapipe.Unity.Sample.HandTracking
           {
             var options = calculator.Options.GetExtension(ThresholdingCalculatorOptions.Extensions.Ext);
             options.Threshold = minTrackingConfidence;
-            Logger.LogInfo(TAG, $"Min Tracking Confidence = {minTrackingConfidence}");
+            Debug.Log($"Min Tracking Confidence = {minTrackingConfidence}");
           }
         }
         calculatorGraph.Initialize(cannonicalizedConfig);
@@ -235,8 +235,8 @@ namespace Mediapipe.Unity.Sample.HandTracking
       sidePacket.Emplace("model_complexity", new IntPacket((int)modelComplexity));
       sidePacket.Emplace("num_hands", new IntPacket(maxNumHands));
 
-      Logger.LogInfo(TAG, $"Model Complexity = {modelComplexity}");
-      Logger.LogInfo(TAG, $"Max Num Hands = {maxNumHands}");
+      Debug.Log($"Model Complexity = {modelComplexity}");
+      Debug.Log($"Max Num Hands = {maxNumHands}");
 
       return sidePacket;
     }

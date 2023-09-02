@@ -155,12 +155,12 @@ namespace Mediapipe.Unity
 #if UNITY_ANDROID
         if (!Permission.HasUserAuthorizedPermission(Permission.Camera))
         {
-          Logger.LogWarning(_TAG, "Not permitted to use Camera");
+          Debug.LogWarning("Not permitted to use Camera");
           yield break;
         }
 #elif UNITY_IOS
         if (!Application.HasUserAuthorization(UserAuthorization.WebCam)) {
-          Logger.LogWarning(_TAG, "Not permitted to use WebCam");
+          Debug.LogWarning("Not permitted to use WebCam");
           yield break;
         }
 #endif
@@ -246,7 +246,7 @@ namespace Mediapipe.Unity
     {
       const int timeoutFrame = 2000;
       var count = 0;
-      Logger.LogVerbose("Waiting for WebCamTexture to start");
+      Debug.Log("Waiting for WebCamTexture to start");
       yield return new WaitUntil(() => count++ > timeoutFrame || webCamTexture.width > 16);
 
       if (webCamTexture.width <= 16)

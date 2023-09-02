@@ -151,7 +151,7 @@ namespace Mediapipe.Unity.Sample.FaceMesh
               var calculatorOptions = new CalculatorOptions();
               calculatorOptions.SetExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext, opt);
               calculator.Options = calculatorOptions;
-              Logger.LogInfo(TAG, $"Min Detection Confidence = {minDetectionConfidence}");
+              Debug.Log($"Min Detection Confidence = {minDetectionConfidence}");
               break;
             }
           }
@@ -163,7 +163,7 @@ namespace Mediapipe.Unity.Sample.FaceMesh
           {
             var options = calculator.Options.GetExtension(ThresholdingCalculatorOptions.Extensions.Ext);
             options.Threshold = minTrackingConfidence;
-            Logger.LogInfo(TAG, $"Min Tracking Confidence = {minTrackingConfidence}");
+            Debug.Log($"Min Tracking Confidence = {minTrackingConfidence}");
           }
         }
         calculatorGraph.Initialize(cannonicalizedConfig);
@@ -186,8 +186,8 @@ namespace Mediapipe.Unity.Sample.FaceMesh
       sidePacket.Emplace("num_faces", new IntPacket(maxNumFaces));
       sidePacket.Emplace("with_attention", new BoolPacket(refineLandmarks));
 
-      Logger.LogInfo(TAG, $"Max Num Faces = {maxNumFaces}");
-      Logger.LogInfo(TAG, $"Refine Landmarks = {refineLandmarks}");
+      Debug.Log($"Max Num Faces = {maxNumFaces}");
+      Debug.Log($"Refine Landmarks = {refineLandmarks}");
 
       return sidePacket;
     }

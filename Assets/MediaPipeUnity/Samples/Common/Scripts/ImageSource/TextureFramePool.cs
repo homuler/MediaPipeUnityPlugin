@@ -130,7 +130,7 @@ namespace Mediapipe.Unity
         if (!_textureFramesInUse.Remove(textureFrame.GetInstanceID()))
         {
           // won't be run
-          Logger.LogWarning(_TAG, "The released texture does not belong to the pool");
+          Debug.LogWarning("The released texture does not belong to the pool");
           return;
         }
 

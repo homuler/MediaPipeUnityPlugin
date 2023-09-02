@@ -49,7 +49,7 @@ namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
 
       if (!imageSource.isPrepared)
       {
-        Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
+        Debug.LogError("Failed to start ImageSource, exiting...");
         yield break;
       }
 
