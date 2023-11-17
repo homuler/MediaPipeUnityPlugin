@@ -35,3 +35,4 @@ jobs:
       iosBuildArgs: ${{ inputs.iosBuildArgs || '--ios arm64' }}
       windowsBuildArgs: ${{ inputs.windowsBuildArgs || '--desktop cpu --opencv cmake' }}
     secrets: inherit
+#66
