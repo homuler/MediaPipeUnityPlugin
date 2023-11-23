@@ -101,7 +101,7 @@ namespace Mediapipe.Unity
     {
       get
       {
-#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+#if (UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
         if (webCamDevice is WebCamDevice valueOfWebCamDevice) {
           return valueOfWebCamDevice.availableResolutions.Select(resolution => new ResolutionStruct(resolution)).ToArray();
         }
@@ -146,19 +146,17 @@ namespace Mediapipe.Unity
           Permission.RequestUserPermission(Permission.Camera);
           yield return new WaitForSeconds(0.1f);
         }
-#elif UNITY_IOS
-        if (!Application.HasUserAuthorization(UserAuthorization.WebCam)) {
-          yield return Application.RequestUserAuthorization(UserAuthorization.WebCam);
-        }
-#endif
-
-#if UNITY_ANDROID
+        
         if (!Permission.HasUserAuthorizedPermission(Permission.Camera))
         {
           Debug.LogWarning("Not permitted to use Camera");
           yield break;
         }
-#elif UNITY_IOS
+#elif UNITY_IOS || UNITY_STANDALONE_OSX
+        if (!Application.HasUserAuthorization(UserAuthorization.WebCam)) {
+          yield return Application.RequestUserAuthorization(UserAuthorization.WebCam);
+        }
+        
         if (!Application.HasUserAuthorization(UserAuthorization.WebCam)) {
           Debug.LogWarning("Not permitted to use WebCam");
           yield break;
