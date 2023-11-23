@@ -102,7 +102,7 @@ namespace Mediapipe.Unity
       get
       {
 #if (UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
-        if (webCamDevice is WebCamDevice valueOfWebCamDevice) {
+        if (webCamDevice is WebCamDevice valueOfWebCamDevice && valueOfWebCamDevice.availableResolutions != null) {
           return valueOfWebCamDevice.availableResolutions.Select(resolution => new ResolutionStruct(resolution)).ToArray();
         }
 #endif
