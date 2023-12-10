@@ -78,7 +78,7 @@ namespace Mediapipe.Unity
     {
       // copy the target screen to overlay mask.
       _screenObject = new GameObject("Mask Screen");
-      _screenObject.transform.SetParent(screen.transform.parent, false);
+      _screenObject.transform.SetParent(screen.transform, false);
       _screen = _screenObject.AddComponent<RawImage>();
       _screen.rectTransform.sizeDelta = screen.rectTransform.sizeDelta;
       _screen.color = new Color(1, 1, 1, 1);

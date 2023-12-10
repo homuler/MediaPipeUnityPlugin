@@ -772,6 +772,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: MaskOverlayAnnotation
       objectReference: {fileID: 0}
+    - target: {fileID: 7638402932946289837, guid: 205c1b13c4f71acf5b968f461c41b2a0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
