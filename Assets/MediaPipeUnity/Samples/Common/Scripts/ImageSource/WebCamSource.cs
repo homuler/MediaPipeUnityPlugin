@@ -123,6 +123,11 @@ namespace Mediapipe.Unity
         yield break;
       }
 
+      if (webCamDevice != null)
+      {
+        yield break;
+      }
+
       availableSources = WebCamTexture.devices;
 
       if (availableSources != null && availableSources.Length > 0)
