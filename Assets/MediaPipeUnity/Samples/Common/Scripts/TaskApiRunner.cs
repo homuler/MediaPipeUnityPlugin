@@ -23,7 +23,7 @@ namespace Mediapipe.Unity.Sample
     protected virtual string TAG => GetType().Name;
 #pragma warning restore IDE1006
 
-    public Bootstrap bootstrap;
+    protected Bootstrap bootstrap;
     protected bool isPaused;
 
     private readonly Stopwatch _stopwatch = new();
