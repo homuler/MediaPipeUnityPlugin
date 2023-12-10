@@ -36,7 +36,6 @@ namespace Mediapipe
 
     #region PixelWriteLock
     [Pure, DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    [return: MarshalAs(UnmanagedType.I1)]
     public static extern IntPtr mp_PixelWriteLock__Pixels(IntPtr pixelWriteLock);
     #endregion
   }
