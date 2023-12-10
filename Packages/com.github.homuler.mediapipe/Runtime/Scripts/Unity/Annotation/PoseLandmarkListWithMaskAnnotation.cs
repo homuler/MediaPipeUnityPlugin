@@ -56,7 +56,7 @@ namespace Mediapipe.Unity
 
     public void SetMaskThreshold(float threshold) => _maskOverlayAnnotation.SetThreshold(threshold);
 
-    public void ReadMask(Image segmentationMask) => _maskOverlayAnnotation.Read(segmentationMask);
+    public void ReadMask(Image segmentationMask, bool isMirrored = false) => _maskOverlayAnnotation.Read(segmentationMask, isMirrored);
 
     public void Draw(mptcc.NormalizedLandmarks poseLandmarks, bool visualizeZ = false)
     {

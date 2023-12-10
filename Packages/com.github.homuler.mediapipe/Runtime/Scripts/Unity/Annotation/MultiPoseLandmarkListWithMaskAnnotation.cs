@@ -94,11 +94,11 @@ namespace Mediapipe.Unity
       ApplyMaskThreshold(_maskThreshold);
     }
 
-    public void ReadMask(IReadOnlyList<Image> targets)
+    public void ReadMask(IReadOnlyList<Image> targets, bool isMirrored = false)
     {
       CallActionForAll(targets, (annotation, target) =>
       {
-        if (annotation != null) { annotation.ReadMask(target); }
+        if (annotation != null) { annotation.ReadMask(target, isMirrored); }
       });
     }
 

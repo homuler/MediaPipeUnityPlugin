@@ -27,7 +27,7 @@ namespace Mediapipe.Unity
 
     public void DrawLater(PoseLandmarkerResult target) => UpdateCurrentTarget(target, ref _currentTarget);
 
-    private void ReadMask(IReadOnlyList<Image> segmentationMasks) => annotation.ReadMask(segmentationMasks);
+    private void ReadMask(IReadOnlyList<Image> segmentationMasks) => annotation.ReadMask(segmentationMasks, isMirrored);
 
     protected override void SyncNow()
     {

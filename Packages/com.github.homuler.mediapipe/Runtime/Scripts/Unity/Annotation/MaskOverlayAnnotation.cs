@@ -109,35 +109,35 @@ namespace Mediapipe.Unity
       ApplyThreshold(_threshold);
     }
 
-    public void Read(ImageFrame imageFrame)
+    public void Read(ImageFrame imageFrame, bool isMirrored = false)
     {
       if (imageFrame != null)
       {
         // NOTE: assume that the image is transformed properly by calculators.
-        var _ = imageFrame.TryReadChannelNormalized(0, _maskArray);
+        var _ = imageFrame.TryReadChannelNormalized(0, _maskArray, isMirrored);
       }
     }
 
-    public void Read(Image image)
+    public void Read(Image image, bool isMirrored = false)
     {
       if (image != null)
       {
         // NOTE: assume that the image is transformed properly by calculators.
-        var _ = image.TryReadChannelNormalized(0, _maskArray);
+        var _ = image.TryReadChannelNormalized(0, _maskArray, isMirrored);
       }
     }
 
     public void Clear() => ApplyMaterial(_prevMaterial);
 
-    public void Draw(ImageFrame imageFrame)
+    public void Draw(ImageFrame imageFrame, bool isMirrored = false)
     {
-      Read(imageFrame);
+      Read(imageFrame, isMirrored);
       Draw();
     }
 
-    public void Draw(Image image)
+    public void Draw(Image image, bool isMirrored = false)
     {
-      Read(image);
+      Read(image, isMirrored);
       Draw();
     }
 
