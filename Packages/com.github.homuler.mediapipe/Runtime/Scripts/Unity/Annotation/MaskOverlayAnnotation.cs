@@ -15,14 +15,15 @@ namespace Mediapipe.Unity
   using Color = UnityEngine.Color;
 #pragma warning restore IDE0065
 
-  public class MaskAnnotation : HierarchicalAnnotation
+  public class MaskOverlayAnnotation : HierarchicalAnnotation
   {
-    [SerializeField] private RawImage _screen;
     [SerializeField] private Shader _maskShader;
     [SerializeField] private Texture2D _maskTexture;
     [SerializeField] private Color _color = Color.blue;
     [SerializeField, Range(0, 1)] private float _threshold = 0.9f;
 
+    private GameObject _screenObject;
+    private RawImage _screen;
     private Material _prevMaterial;
     private Material _material;
     private GraphicsBuffer _maskBuffer;
@@ -32,6 +33,10 @@ namespace Mediapipe.Unity
     {
       ApplyMaskTexture(_maskTexture, _color);
       ApplyThreshold(_threshold);
+      if (_screenObject != null)
+      {
+        _screenObject.SetActive(true);
+      }
     }
 
     private void OnDisable()
@@ -39,6 +44,10 @@ namespace Mediapipe.Unity
       if (_prevMaterial != null)
       {
         ApplyMaterial(_prevMaterial);
+      }
+      if (_screenObject != null)
+      {
+        _screenObject.SetActive(false);
       }
     }
 
@@ -60,10 +69,20 @@ namespace Mediapipe.Unity
         _maskBuffer.Release();
       }
       _maskArray = null;
+      _prevMaterial = null;
+      _material = null;
+      Destroy(_screenObject);
     }
 
-    public void Init(int width, int height)
+    public void Init(RawImage screen, int width, int height)
     {
+      // copy the target screen to overlay mask.
+      _screenObject = new GameObject("Mask Screen");
+      _screenObject.transform.SetParent(screen.transform, false);
+      _screen = _screenObject.AddComponent<RawImage>();
+      _screen.rectTransform.sizeDelta = screen.rectTransform.sizeDelta;
+      _screen.color = new Color(1, 1, 1, 1);
+
       _material = new Material(_maskShader)
       {
         renderQueue = (int)RenderQueue.Transparent
@@ -77,20 +96,48 @@ namespace Mediapipe.Unity
       InitMaskBuffer(width, height);
     }
 
-    public void Read(ImageFrame imageFrame)
+    public void SetMaskTexture(Texture2D maskTexture, Color color)
+    {
+      _maskTexture = maskTexture;
+      _color = color;
+      ApplyMaskTexture(_maskTexture, _color);
+    }
+
+    public void SetThreshold(float threshold)
+    {
+      _threshold = threshold;
+      ApplyThreshold(_threshold);
+    }
+
+    public void Read(ImageFrame imageFrame, bool isMirrored = false)
     {
       if (imageFrame != null)
       {
         // NOTE: assume that the image is transformed properly by calculators.
-        var _ = imageFrame.TryReadChannelNormalized(0, _maskArray);
+        var _ = imageFrame.TryReadChannelNormalized(0, _maskArray, isMirrored);
+      }
+    }
+
+    public void Read(Image image, bool isMirrored = false)
+    {
+      if (image != null)
+      {
+        // NOTE: assume that the image is transformed properly by calculators.
+        var _ = image.TryReadChannelNormalized(0, _maskArray, isMirrored);
       }
     }
 
     public void Clear() => ApplyMaterial(_prevMaterial);
 
-    public void Draw(ImageFrame imageFrame)
+    public void Draw(ImageFrame imageFrame, bool isMirrored = false)
     {
-      Read(imageFrame);
+      Read(imageFrame, isMirrored);
+      Draw();
+    }
+
+    public void Draw(Image image, bool isMirrored = false)
+    {
+      Read(image, isMirrored);
       Draw();
     }
 

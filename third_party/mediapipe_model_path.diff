@@ -488,7 +488,7 @@ index 00000000..946be0d4
 +}  // namespace internal
 +}  // namespace mediapipe
 diff --git a/third_party/external_files.bzl b/third_party/external_files.bzl
-index 652a2947..c8e1a1ea 100644
+index 652a2947..c29f2f29 100644
 --- a/third_party/external_files.bzl
 +++ b/third_party/external_files.bzl
 @@ -370,6 +370,12 @@ def external_files():
@@ -504,3 +504,28 @@ index 652a2947..c8e1a1ea 100644
      http_file(
          name = "com_google_mediapipe_face_geometry_expected_out_pbtxt",
          sha256 = "4a4ed08055a5bc9281472dd60180d11f0cdc9a15fa1788d87a58af3d06b2c6e4",
+@@ -1012,6 +1018,24 @@ def external_files():
+         urls = ["https://storage.googleapis.com/mediapipe-assets/pose_landmarker.task?generation=1681244249587900"],
+     )
+ 
++    http_file(
++        name = "com_google_mediapipe_pose_landmarker_full_task",
++        # sha256 = "b4578f35940bf5a1a655214a1cce5cab13eba73c1297cd78e1a04c2380b0152f",
++        urls = ["https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_full/float16/1/pose_landmarker_full.task?generation=1682642785209422"],
++    )
++
++    http_file(
++        name = "com_google_mediapipe_pose_landmarker_heavy_task",
++        # sha256 = "b4578f35940bf5a1a655214a1cce5cab13eba73c1297cd78e1a04c2380b0152f",
++        urls = ["https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_heavy/float16/1/pose_landmarker_heavy.task?generation=1682642785425305"],
++    )
++
++    http_file(
++        name = "com_google_mediapipe_pose_landmarker_lite_task",
++        # sha256 = "b4578f35940bf5a1a655214a1cce5cab13eba73c1297cd78e1a04c2380b0152f",
++        urls = ["https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task?generation=1682624736756847"],
++    )
++
+     http_file(
+         name = "com_google_mediapipe_pose_landmark_full_tflite",
+         sha256 = "e9a5c5cb17f736fafd4c2ec1da3b3d331d6edbe8a0d32395855aeb2cdfd64b9f",
