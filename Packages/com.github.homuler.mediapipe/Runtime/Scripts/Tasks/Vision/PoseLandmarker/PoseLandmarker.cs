@@ -200,7 +200,15 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
 
       var poseLandmarksProto = poseLandmarksProtoPacket.Get();
       var poseWorldLandmarksProto = outputPackets.At<LandmarkListVectorPacket, List<LandmarkList>>(_POSE_WORLD_LANDMARKS_STREAM_NAME).Get();
-      var segmentationMasks = outputPackets.At<ImageVectorPacket, List<Image>>(_SEGMENTATION_MASK_STREAM_NAME)?.Get();
+
+      List<Image> segmentationMasks = null;
+      using (var segmentationMaskPacket = outputPackets.At<ImageVectorPacket, List<Image>>(_SEGMENTATION_MASK_STREAM_NAME))
+      {
+        if (segmentationMaskPacket != null)
+        {
+          segmentationMasks = segmentationMaskPacket.Get();
+        }
+      }
 
       return PoseLandmarkerResult.CreateFrom(poseLandmarksProto, poseWorldLandmarksProto, segmentationMasks);
     }
