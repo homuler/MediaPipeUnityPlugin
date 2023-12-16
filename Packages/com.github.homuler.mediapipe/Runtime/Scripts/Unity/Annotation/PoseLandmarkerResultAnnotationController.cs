@@ -35,6 +35,11 @@ namespace Mediapipe.Unity
       if (_currentTarget.segmentationMasks != null)
       {
         ReadMask(_currentTarget.segmentationMasks);
+        // TODO: stop disposing masks here
+        foreach (var mask in _currentTarget.segmentationMasks)
+        {
+          mask.Dispose();
+        }
       }
       annotation.Draw(_currentTarget.poseLandmarks, _visualizeZ);
     }
