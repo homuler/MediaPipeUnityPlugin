@@ -507,8 +507,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _bootstrapPrefab: {fileID: 968918444066301895, guid: 1146a9de09159a948b683e94fb3d3c95,
     type: 3}
-  bootstrap: {fileID: 1399753306286750402, guid: 1146a9de09159a948b683e94fb3d3c95,
-    type: 3}
   screen: {fileID: 1006057043}
   runningMode: 0
   _faceLandmarkerResultAnnotationController: {fileID: 1006057044}
