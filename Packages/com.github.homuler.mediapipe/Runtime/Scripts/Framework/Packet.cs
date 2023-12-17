@@ -184,7 +184,7 @@ namespace Mediapipe
     }
 
     /// <summary>
-    ///   Create an Image Packet.
+    ///   Create an <see cref="Image"/> Packet.
     /// </summary>
     public static Packet CreateImage(Image value)
     {
@@ -195,7 +195,7 @@ namespace Mediapipe
     }
 
     /// <summary>
-    ///   Create an Image Packet.
+    ///   Create an <see cref="Image"> Packet.
     /// </summary>
     /// <param name="timestampMicrosec">
     ///   The timestamp of the packet.
@@ -203,6 +203,31 @@ namespace Mediapipe
     public static Packet CreateImageAt(Image value, long timestampMicrosec)
     {
       UnsafeNativeMethods.mp__MakeImagePacket_At__PI_ll(value.mpPtr, timestampMicrosec, out var ptr).Assert();
+      value.Dispose(); // respect move semantics
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
+    ///   Create an <see cref="ImageFrame"/> Packet.
+    /// </summary>
+    public static Packet CreateImageFrame(ImageFrame value)
+    {
+      UnsafeNativeMethods.mp__MakeImageFramePacket__Pif(value.mpPtr, out var ptr).Assert();
+      value.Dispose(); // respect move semantics
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
+    ///   Create an <see cref="ImageFrame"/> Packet.
+    /// </summary>
+    /// <param name="timestampMicrosec">
+    ///   The timestamp of the packet.
+    /// </param>
+    public static Packet CreateImageFrameAt(ImageFrame value, long timestampMicrosec)
+    {
+      UnsafeNativeMethods.mp__MakeImageFramePacket_At__Pif_ll(value.mpPtr, timestampMicrosec, out var ptr).Assert();
       value.Dispose(); // respect move semantics
 
       return new Packet(ptr, true);
@@ -379,6 +404,23 @@ namespace Mediapipe
     }
 
     /// <summary>
+    ///   Get the content of the <see cref="Packet"/> as an <see cref="ImageFrame"/>.
+    /// </summary>
+    /// <remarks>
+    ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown.
+    /// </remarks>
+    /// <exception cref="MediaPipeException">
+    ///   If the <see cref="Packet"/> doesn't contain <see cref="ImageFrame"/>.
+    /// </exception>
+    public ImageFrame GetImageFrame()
+    {
+      UnsafeNativeMethods.mp_Packet__GetImageFrame(mpPtr, out var ptr).Assert();
+
+      GC.KeepAlive(this);
+      return new ImageFrame(ptr, false);
+    }
+
+    /// <summary>
     ///   Validate if the content of the <see cref="Packet"/> is a boolean.
     /// </summary>
     /// <exception cref="BadStatusException">
@@ -471,6 +513,20 @@ namespace Mediapipe
     public void ValidateAsImage()
     {
       UnsafeNativeMethods.mp_Packet__ValidateAsImage(mpPtr, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      AssertStatusOk(statusPtr);
+    }
+
+    /// <summary>
+    ///   Validate if the content of the <see cref="Packet"/> is an <see cref="ImageFrame"/> .
+    /// </summary>
+    /// <exception cref="BadStatusException">
+    ///   If the <see cref="Packet"/> doesn't contain <see cref="ImageFrame"/> .
+    /// </exception>
+    public void ValidateAsImageFrame()
+    {
+      UnsafeNativeMethods.mp_Packet__ValidateAsImageFrame(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       AssertStatusOk(statusPtr);

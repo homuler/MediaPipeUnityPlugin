@@ -49,6 +49,9 @@ namespace Mediapipe
     public static extern MpReturnCode mp__MakeImageFramePacket_At__Pif_Rt(IntPtr imageFrame, IntPtr timestamp, out IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeImageFramePacket_At__Pif_ll(IntPtr imageFrame, long timestampMicrosec, out IntPtr packet);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__ConsumeImageFrame(IntPtr packet, out IntPtr status, out IntPtr imageFrame);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
