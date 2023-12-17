@@ -234,6 +234,29 @@ namespace Mediapipe
     }
 
     /// <summary>
+    ///   Create an int Packet.
+    /// </summary>
+    public static Packet CreateInt(int value)
+    {
+      UnsafeNativeMethods.mp__MakeIntPacket__i(value, out var ptr).Assert();
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
+    ///   Create a int Packet.
+    /// </summary>
+    /// <param name="timestampMicrosec">
+    ///   The timestamp of the packet.
+    /// </param>
+    public static Packet CreateIntAt(int value, long timestampMicrosec)
+    {
+      UnsafeNativeMethods.mp__MakeIntPacket_At__i_ll(value, timestampMicrosec, out var ptr).Assert();
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
     ///   Get the content of the <see cref="Packet"/> as a boolean.
     /// </summary>
     /// <remarks>
@@ -421,6 +444,23 @@ namespace Mediapipe
     }
 
     /// <summary>
+    ///   Get the content of the <see cref="Packet"/> as an integer.
+    /// </summary>
+    /// <remarks>
+    ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown.
+    /// </remarks>
+    /// <exception cref="MediaPipeException">
+    ///   If the <see cref="Packet"/> doesn't contain <see langword="int"/>  data.
+    /// </exception>
+    public int GetInt()
+    {
+      UnsafeNativeMethods.mp_Packet__GetInt(mpPtr, out var value).Assert();
+
+      GC.KeepAlive(this);
+      return value;
+    }
+
+    /// <summary>
     ///   Validate if the content of the <see cref="Packet"/> is a boolean.
     /// </summary>
     /// <exception cref="BadStatusException">
@@ -505,10 +545,10 @@ namespace Mediapipe
     }
 
     /// <summary>
-    ///   Validate if the content of the <see cref="Packet"/> is an <see cref="Image"/> .
+    ///   Validate if the content of the <see cref="Packet"/> is an <see cref="Image"/>.
     /// </summary>
     /// <exception cref="BadStatusException">
-    ///   If the <see cref="Packet"/> doesn't contain <see cref="Image"/> .
+    ///   If the <see cref="Packet"/> doesn't contain <see cref="Image"/>.
     /// </exception>
     public void ValidateAsImage()
     {
@@ -519,14 +559,28 @@ namespace Mediapipe
     }
 
     /// <summary>
-    ///   Validate if the content of the <see cref="Packet"/> is an <see cref="ImageFrame"/> .
+    ///   Validate if the content of the <see cref="Packet"/> is an <see cref="ImageFrame"/>.
     /// </summary>
     /// <exception cref="BadStatusException">
-    ///   If the <see cref="Packet"/> doesn't contain <see cref="ImageFrame"/> .
+    ///   If the <see cref="Packet"/> doesn't contain <see cref="ImageFrame"/>.
     /// </exception>
     public void ValidateAsImageFrame()
     {
       UnsafeNativeMethods.mp_Packet__ValidateAsImageFrame(mpPtr, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      AssertStatusOk(statusPtr);
+    }
+
+    /// <summary>
+    ///   Validate if the content of the <see cref="Packet"/> is an <see langword="int"/>.
+    /// </summary>
+    /// <exception cref="BadStatusException">
+    ///   If the <see cref="Packet"/> doesn't contain <see langword="int"/>.
+    /// </exception>
+    public void ValidateAsInt()
+    {
+      UnsafeNativeMethods.mp_Packet__ValidateAsInt(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       AssertStatusOk(statusPtr);

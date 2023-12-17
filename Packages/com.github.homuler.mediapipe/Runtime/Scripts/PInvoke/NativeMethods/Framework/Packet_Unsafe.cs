@@ -141,6 +141,9 @@ namespace Mediapipe
     public static extern MpReturnCode mp__MakeIntPacket_At__i_Rt(int value, IntPtr timestamp, out IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeIntPacket_At__i_ll(int value, long timestampMicrosec, out IntPtr packet);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__GetInt(IntPtr packet, out int value);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
