@@ -178,7 +178,7 @@ namespace Mediapipe.Tests
 
     #region FloatVector
     [Test]
-    public void CreateFloatVector_ShouldReturnNewFloatListPacket()
+    public void CreateFloatVector_ShouldReturnNewFloatVectorPacket()
     {
       var value = new float[] { float.MinValue, 0f, float.MaxValue };
       using var packet = Packet.CreateFloatVector(value);
@@ -197,7 +197,7 @@ namespace Mediapipe.Tests
     }
 
     [Test]
-    public void CreateFloatVectorAt_ShouldReturnNewFloatListPacket()
+    public void CreateFloatVectorAt_ShouldReturnNewFloatVectorPacket()
     {
       var value = new float[] { float.MinValue, 0f, float.MaxValue };
       var timestamp = 1;
@@ -255,7 +255,7 @@ namespace Mediapipe.Tests
 
     #region ImageFrame
     [Test]
-    public void CreateImageFrame_ShouldReturnNewImagePacket()
+    public void CreateImageFrame_ShouldReturnNewImageFramePacket()
     {
       var bytes = Enumerable.Range(0, 32).Select(x => (byte)x).ToArray();
       var imageFrame = BuildSRGBAImageFrame(bytes, 4, 2);
@@ -273,7 +273,7 @@ namespace Mediapipe.Tests
     }
 
     [Test]
-    public void CreateImageFrameAt_ShouldReturnNewImagePacket()
+    public void CreateImageFrameAt_ShouldReturnNewImageFramePacket()
     {
       var bytes = Enumerable.Range(0, 32).Select(x => (byte)x).ToArray();
       var timestamp = 1;
@@ -287,6 +287,35 @@ namespace Mediapipe.Tests
         AssertImageFrame(result, 4, 2, ImageFormat.Types.Format.Srgba, bytes);
       }
 
+      Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
+    }
+    #endregion
+
+    #region Int
+    [TestCase(int.MaxValue)]
+    [TestCase(0)]
+    [TestCase(int.MinValue)]
+    public void CreateInt_ShouldReturnNewIntPacket(int value)
+    {
+      using var packet = Packet.CreateInt(value);
+
+      Assert.DoesNotThrow(packet.ValidateAsInt);
+      Assert.AreEqual(value, packet.GetInt());
+
+      using var unsetTimestamp = Timestamp.Unset();
+      Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
+    }
+
+    [TestCase(int.MaxValue)]
+    [TestCase(0)]
+    [TestCase(int.MinValue)]
+    public void CreateIntAt_ShouldReturnNewIntPacket(int value)
+    {
+      var timestamp = 1;
+      using var packet = Packet.CreateIntAt(value, timestamp);
+
+      Assert.DoesNotThrow(packet.ValidateAsInt);
+      Assert.AreEqual(value, packet.GetInt());
       Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
     }
     #endregion

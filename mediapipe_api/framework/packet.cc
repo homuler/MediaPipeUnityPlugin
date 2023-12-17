@@ -270,6 +270,13 @@ MpReturnCode mp__MakeIntPacket_At__i_Rt(int value, mediapipe::Timestamp* timesta
   CATCH_EXCEPTION
 }
 
+MpReturnCode mp__MakeIntPacket_At__i_ll(int value, int64 timestampMicrosec, mediapipe::Packet** packet_out) {
+  TRY
+    *packet_out = new mediapipe::Packet{mediapipe::MakePacket<int>(value).At(mediapipe::Timestamp(timestampMicrosec))};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
 MpReturnCode mp_Packet__GetInt(mediapipe::Packet* packet, int* value_out) {
   TRY_ALL
     *value_out = packet->Get<int>();
