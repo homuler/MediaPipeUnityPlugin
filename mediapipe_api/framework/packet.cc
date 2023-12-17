@@ -42,6 +42,10 @@ MpReturnCode mp_Packet__Timestamp(mediapipe::Packet* packet, mediapipe::Timestam
   CATCH_EXCEPTION
 }
 
+int64 mp_Packet__TimestampMicroseconds(mediapipe::Packet* packet) {
+  return packet->Timestamp().Microseconds();
+}
+
 MpReturnCode mp_Packet__DebugString(mediapipe::Packet* packet, const char** str_out) {
   TRY
     *str_out = strcpy_to_heap(packet->DebugString());
@@ -78,6 +82,13 @@ MpReturnCode mp__MakeBoolPacket_At__b_Rt(bool value, mediapipe::Timestamp* times
   CATCH_EXCEPTION
 }
 
+MpReturnCode mp__MakeBoolPacket_At__b_ll(bool value, int64 timestampMicrosec, mediapipe::Packet** packet_out) {
+  TRY
+    *packet_out = new mediapipe::Packet{mediapipe::MakePacket<bool>(value).At(mediapipe::Timestamp(timestampMicrosec))};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
 MpReturnCode mp_Packet__GetBool(mediapipe::Packet* packet, bool* value_out) {
   TRY_ALL
     *value_out = packet->Get<bool>();
@@ -88,6 +99,26 @@ MpReturnCode mp_Packet__GetBool(mediapipe::Packet* packet, bool* value_out) {
 MpReturnCode mp_Packet__ValidateAsBool(mediapipe::Packet* packet, absl::Status** status_out) {
   TRY
     *status_out = new absl::Status{packet->ValidateAsType<bool>()};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
+// BoolVectorPacket
+MpReturnCode mp__MakeBoolVectorPacket__Pb_i(bool* value, int size, mediapipe::Packet** packet_out) {
+  return mp__MakeVectorPacket(value, size, packet_out);
+}
+
+MpReturnCode mp__MakeBoolVectorPacket_At__Pb_i_ll(bool* value, int size, int64 timestampMicrosec, mediapipe::Packet** packet_out) {
+  return mp__MakeVectorPacket_At(value, size, timestampMicrosec, packet_out);
+}
+
+MpReturnCode mp_Packet__GetBoolVector(mediapipe::Packet* packet, mp_api::StructArray<bool>* value_out) {
+  return mp_Packet__GetStructVector(packet, value_out);
+}
+
+MpReturnCode mp_Packet__ValidateAsBoolVector(mediapipe::Packet* packet, absl::Status** status_out) {
+  TRY
+    *status_out = new absl::Status{packet->ValidateAsType<std::vector<bool>>()};
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }
