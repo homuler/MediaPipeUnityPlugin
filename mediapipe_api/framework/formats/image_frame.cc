@@ -102,6 +102,13 @@ MpReturnCode mp__MakeImageFramePacket_At__Pif_Rt(mediapipe::ImageFrame* image_fr
   CATCH_EXCEPTION
 }
 
+MpReturnCode mp__MakeImageFramePacket_At__Pif_ll(mediapipe::ImageFrame* image_frame, int64 timestampMicrosec, mediapipe::Packet** packet_out) {
+  TRY
+    *packet_out = new mediapipe::Packet{mediapipe::MakePacket<mediapipe::ImageFrame>(std::move(*image_frame)).At(mediapipe::Timestamp(timestampMicrosec))};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
 MpReturnCode mp_Packet__ConsumeImageFrame(mediapipe::Packet* packet, absl::Status** status_out, mediapipe::ImageFrame** value_out) {
   return mp_Packet__Consume(packet, status_out, value_out);
 }

@@ -253,6 +253,44 @@ namespace Mediapipe.Tests
     }
     #endregion
 
+    #region ImageFrame
+    [Test]
+    public void CreateImageFrame_ShouldReturnNewImagePacket()
+    {
+      var bytes = Enumerable.Range(0, 32).Select(x => (byte)x).ToArray();
+      var imageFrame = BuildSRGBAImageFrame(bytes, 4, 2);
+      using var packet = Packet.CreateImageFrame(imageFrame);
+
+      Assert.DoesNotThrow(packet.ValidateAsImageFrame);
+
+      using (var result = packet.GetImageFrame())
+      {
+        AssertImageFrame(result, 4, 2, ImageFormat.Types.Format.Srgba, bytes);
+      }
+
+      using var unsetTimestamp = Timestamp.Unset();
+      Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
+    }
+
+    [Test]
+    public void CreateImageFrameAt_ShouldReturnNewImagePacket()
+    {
+      var bytes = Enumerable.Range(0, 32).Select(x => (byte)x).ToArray();
+      var timestamp = 1;
+      var imageFrame = BuildSRGBAImageFrame(bytes, 4, 2);
+      using var packet = Packet.CreateImageFrameAt(imageFrame, timestamp);
+
+      Assert.DoesNotThrow(packet.ValidateAsImageFrame);
+
+      using (var result = packet.GetImageFrame())
+      {
+        AssertImageFrame(result, 4, 2, ImageFormat.Types.Format.Srgba, bytes);
+      }
+
+      Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
+    }
+    #endregion
+
     #region #Validate
     [Test]
     public void ValidateAsBool_ShouldThrow_When_ValueIsNotSet()
@@ -314,6 +352,16 @@ namespace Mediapipe.Tests
       return new Image(ImageFormat.Types.Format.Srgba, width, height, width * 4, pixelData);
     }
 
+    private ImageFrame BuildSRGBAImageFrame(byte[] bytes, int width, int height)
+    {
+      Assert.AreEqual(bytes.Length, width * height * 4);
+
+      var pixelData = new NativeArray<byte>(bytes.Length, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
+      pixelData.CopyFrom(bytes);
+
+      return new ImageFrame(ImageFormat.Types.Format.Srgba, width, height, width * 4, pixelData);
+    }
+
     private void AssertImage(Image image, int width, int height, ImageFormat.Types.Format format, byte[] expectedBytes)
     {
       Assert.AreEqual(width, image.Width());
@@ -327,6 +375,18 @@ namespace Mediapipe.Tests
 
         Assert.AreEqual(expectedBytes, pixelData);
       }
+    }
+
+    private void AssertImageFrame(ImageFrame imageFrame, int width, int height, ImageFormat.Types.Format format, byte[] expectedBytes)
+    {
+      Assert.AreEqual(width, imageFrame.Width());
+      Assert.AreEqual(height, imageFrame.Height());
+      Assert.AreEqual(format, imageFrame.Format());
+
+      var pixelData = new byte[width * height * ImageFrame.NumberOfChannelsForFormat(format)];
+      Marshal.Copy(imageFrame.MutablePixelData(), pixelData, 0, pixelData.Length);
+
+      Assert.AreEqual(expectedBytes, pixelData);
     }
   }
 }
