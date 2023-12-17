@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 namespace Mediapipe.Tests
 {
-  public class PacketTest
+  public class GenericPacketTest
   {
     #region #DebugString
     [Test]
