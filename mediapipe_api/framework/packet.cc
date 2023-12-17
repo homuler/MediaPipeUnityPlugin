@@ -42,6 +42,10 @@ MpReturnCode mp_Packet__Timestamp(mediapipe::Packet* packet, mediapipe::Timestam
   CATCH_EXCEPTION
 }
 
+int64 mp_Packet__TimestampMicroseconds(mediapipe::Packet* packet) {
+  return packet->Timestamp().Microseconds();
+}
+
 MpReturnCode mp_Packet__DebugString(mediapipe::Packet* packet, const char** str_out) {
   TRY
     *str_out = strcpy_to_heap(packet->DebugString());
@@ -74,6 +78,13 @@ MpReturnCode mp__MakeBoolPacket__b(bool value, mediapipe::Packet** packet_out) {
 MpReturnCode mp__MakeBoolPacket_At__b_Rt(bool value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
   TRY
     *packet_out = new mediapipe::Packet{mediapipe::MakePacket<bool>(value).At(*timestamp)};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
+MpReturnCode mp__MakeBoolPacket_At__b_ll(bool value, int64 timestampMicrosec, mediapipe::Packet** packet_out) {
+  TRY
+    *packet_out = new mediapipe::Packet{mediapipe::MakePacket<bool>(value).At(mediapipe::Timestamp(timestampMicrosec))};
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }

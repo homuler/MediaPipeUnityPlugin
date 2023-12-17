@@ -45,6 +45,9 @@ namespace Mediapipe
     public static extern MpReturnCode mp__MakeBoolPacket_At__b_Rt([MarshalAs(UnmanagedType.I1)] bool value, IntPtr timestamp, out IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeBoolPacket_At__b_ll([MarshalAs(UnmanagedType.I1)] bool value, long timestampMicrosec, out IntPtr packet);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__GetBool(IntPtr packet, [MarshalAs(UnmanagedType.I1)] out bool value);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
