@@ -84,11 +84,11 @@ namespace Mediapipe
 
     public override List<float> Get()
     {
-      UnsafeNativeMethods.mp_Packet__GetFloatVector(mpPtr, out var floatVector).Assert();
+      UnsafeNativeMethods.mp_Packet__GetFloatVector(mpPtr, out var structArray).Assert();
       GC.KeepAlive(this);
 
-      var result = floatVector.Copy();
-      floatVector.Dispose();
+      var result = structArray.Copy<float>();
+      structArray.Dispose();
       return result;
     }
 

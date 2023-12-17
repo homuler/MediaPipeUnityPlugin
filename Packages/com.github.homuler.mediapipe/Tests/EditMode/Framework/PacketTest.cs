@@ -173,6 +173,45 @@ namespace Mediapipe.Tests
     }
     #endregion
 
+    #region FloatVector
+    [Test]
+    public void CreateFloatVector_ShouldReturnNewFloatListPacket()
+    {
+      var value = new float[] { float.MinValue, 0f, float.MaxValue };
+      using var packet = Packet.CreateFloatVector(value);
+
+      Assert.DoesNotThrow(packet.ValidateAsFloatVector);
+
+      var result = packet.GetFloatList();
+      Assert.AreEqual(value.Length, result.Count);
+      for (var i = 0; i < value.Length; i++)
+      {
+        Assert.AreEqual(value[i], result[i]);
+      }
+
+      using var unsetTimestamp = Timestamp.Unset();
+      Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
+    }
+
+    [Test]
+    public void CreateFloatVectorAt_ShouldReturnNewFloatListPacket()
+    {
+      var value = new float[] { float.MinValue, 0f, float.MaxValue };
+      var timestamp = 1;
+      using var packet = Packet.CreateFloatVectorAt(value, timestamp);
+
+      Assert.DoesNotThrow(packet.ValidateAsFloatVector);
+
+      var result = packet.GetFloatList();
+      Assert.AreEqual(value.Length, result.Count);
+      for (var i = 0; i < value.Length; i++)
+      {
+        Assert.AreEqual(value[i], result[i]);
+      }
+      Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
+    }
+    #endregion
+
     #region #Validate
     [Test]
     public void ValidateAsBool_ShouldThrow_When_ValueIsNotSet()
