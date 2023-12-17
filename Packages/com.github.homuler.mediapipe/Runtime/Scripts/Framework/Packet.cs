@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace Mediapipe
 {
@@ -137,6 +138,52 @@ namespace Mediapipe
     }
 
     /// <summary>
+    ///   Create a float array Packet.
+    /// </summary>
+    public static Packet CreateFloatArray(float[] value)
+    {
+      UnsafeNativeMethods.mp__MakeFloatArrayPacket__Pf_i(value, value.Length, out var ptr).Assert();
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
+    ///   Create a float array Packet.
+    /// </summary>
+    /// <param name="timestampMicrosec">
+    ///   The timestamp of the packet.
+    /// </param>
+    public static Packet CreateFloatArrayAt(float[] value, long timestampMicrosec)
+    {
+      UnsafeNativeMethods.mp__MakeFloatArrayPacket_At__Pf_i_ll(value, value.Length, timestampMicrosec, out var ptr).Assert();
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
+    ///   Create a float vector Packet.
+    /// </summary>
+    public static Packet CreateFloatVector(float[] value)
+    {
+      UnsafeNativeMethods.mp__MakeFloatVectorPacket__Pf_i(value, value.Length, out var ptr).Assert();
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
+    ///   Create a float vector Packet.
+    /// </summary>
+    /// <param name="timestampMicrosec">
+    ///   The timestamp of the packet.
+    /// </param>
+    public static Packet CreateFloatVectorAt(float[] value, long timestampMicrosec)
+    {
+      UnsafeNativeMethods.mp__MakeFloatVectorPacket_At__Pf_i_ll(value, value.Length, timestampMicrosec, out var ptr).Assert();
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
     ///   Get the content of the <see cref="Packet"/> as a boolean.
     /// </summary>
     /// <remarks>
@@ -220,6 +267,70 @@ namespace Mediapipe
     }
 
     /// <summary>
+    ///   Get the content of a float array Packet as a <see cref="float[]"/>.
+    /// </summary>
+    public float[] GetFloatArray(int length)
+    {
+      var value = new float[length];
+      GetFloatArray(value);
+
+      return value;
+    }
+
+    /// <summary>
+    ///   Get the content of a float array Packet as a <see cref="float[]"/>.
+    /// </summary>
+    /// <remarks>
+    ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown.
+    /// </remarks>
+    /// <param name="value">
+    ///   The <see cref="float[]"/> to be filled with the content of the <see cref="Packet"/>.
+    /// </param>
+    /// <exception cref="MediaPipeException">
+    ///   If the <see cref="Packet"/> doesn't contain a float array.
+    /// </exception>
+    public void GetFloatArray(float[] value)
+    {
+      UnsafeNativeMethods.mp_Packet__GetFloatArray_i(mpPtr, value.Length, out var arrayPtr).Assert();
+      GC.KeepAlive(this);
+
+      Marshal.Copy(arrayPtr, value, 0, value.Length);
+      UnsafeNativeMethods.delete_array__Pf(arrayPtr);
+    }
+
+    /// <summary>
+    ///   Get the content of a float vector Packet as a <see cref="List{float}"/>.
+    /// </summary>
+    public List<float> GetFloatList()
+    {
+      var value = new List<float>();
+      GetFloatList(value);
+
+      return value;
+    }
+
+    /// <summary>
+    ///   Get the content of a float vector Packet as a <see cref="List{float}"/>.
+    /// </summary>
+    /// <remarks>
+    ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown.
+    /// </remarks>
+    /// <param name="value">
+    ///   The <see cref="List{bool}"/> to be filled with the content of the <see cref="Packet"/>.
+    /// </param>
+    /// <exception cref="MediaPipeException">
+    ///   If the <see cref="Packet"/> doesn't contain std::vector&lt;float&gt; data.
+    /// </exception>
+    public void GetFloatList(List<float> value)
+    {
+      UnsafeNativeMethods.mp_Packet__GetFloatVector(mpPtr, out var structArray).Assert();
+      GC.KeepAlive(this);
+
+      structArray.CopyTo(value);
+      structArray.Dispose();
+    }
+
+    /// <summary>
     ///   Validate if the content of the <see cref="Packet"/> is a boolean.
     /// </summary>
     /// <exception cref="BadStatusException">
@@ -251,7 +362,7 @@ namespace Mediapipe
     ///   Validate if the content of the <see cref="Packet"/> is a double.
     /// </summary>
     /// <exception cref="BadStatusException">
-    ///   If the <see cref="Packet"/> doesn't contain double data;.
+    ///   If the <see cref="Packet"/> doesn't contain double data.
     /// </exception>
     public void ValidateAsDouble()
     {
@@ -265,11 +376,39 @@ namespace Mediapipe
     ///   Validate if the content of the <see cref="Packet"/> is a float.
     /// </summary>
     /// <exception cref="BadStatusException">
-    ///   If the <see cref="Packet"/> doesn't contain float data;.
+    ///   If the <see cref="Packet"/> doesn't contain float data.
     /// </exception>
     public void ValidateAsFloat()
     {
       UnsafeNativeMethods.mp_Packet__ValidateAsFloat(mpPtr, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      AssertStatusOk(statusPtr);
+    }
+
+    /// <summary>
+    ///   Validate if the content of the <see cref="Packet"/> is a float array.
+    /// </summary>
+    /// <exception cref="BadStatusException">
+    ///   If the <see cref="Packet"/> doesn't contain a float array.
+    /// </exception>
+    public void ValidateAsFloatArray()
+    {
+      UnsafeNativeMethods.mp_Packet__ValidateAsFloatArray(mpPtr, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      AssertStatusOk(statusPtr);
+    }
+
+    /// <summary>
+    ///   Validate if the content of the <see cref="Packet"/> is std::vector&lt;float&gt;.
+    /// </summary>
+    /// <exception cref="BadStatusException">
+    ///   If the <see cref="Packet"/> doesn't contain std::vector&lt;bool&gt;.
+    /// </exception>
+    public void ValidateAsFloatVector()
+    {
+      UnsafeNativeMethods.mp_Packet__ValidateAsFloatVector(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       AssertStatusOk(statusPtr);

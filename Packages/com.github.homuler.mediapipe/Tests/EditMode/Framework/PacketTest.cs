@@ -134,6 +134,84 @@ namespace Mediapipe.Tests
     }
     #endregion
 
+    #region FloatArray
+    [Test]
+    public void CreateFloatArray_ShouldReturnNewFloatArrayPacket()
+    {
+      var value = new float[] { float.MinValue, 0f, float.MaxValue };
+      using var packet = Packet.CreateFloatArray(value);
+
+      Assert.DoesNotThrow(packet.ValidateAsFloatArray);
+
+      var result = packet.GetFloatArray(value.Length);
+      Assert.AreEqual(value.Length, result.Length);
+      for (var i = 0; i < value.Length; i++)
+      {
+        Assert.AreEqual(value[i], result[i]);
+      }
+
+      using var unsetTimestamp = Timestamp.Unset();
+      Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
+    }
+
+    [Test]
+    public void CreateFloatArrayAt_ShouldReturnNewFloatArrayPacket()
+    {
+      var value = new float[] { float.MinValue, 0f, float.MaxValue };
+      var timestamp = 1;
+      using var packet = Packet.CreateFloatArrayAt(value, timestamp);
+
+      Assert.DoesNotThrow(packet.ValidateAsFloatArray);
+
+      var result = packet.GetFloatArray(value.Length);
+      Assert.AreEqual(value.Length, result.Length);
+      for (var i = 0; i < value.Length; i++)
+      {
+        Assert.AreEqual(value[i], result[i]);
+      }
+      Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
+    }
+    #endregion
+
+    #region FloatVector
+    [Test]
+    public void CreateFloatVector_ShouldReturnNewFloatListPacket()
+    {
+      var value = new float[] { float.MinValue, 0f, float.MaxValue };
+      using var packet = Packet.CreateFloatVector(value);
+
+      Assert.DoesNotThrow(packet.ValidateAsFloatVector);
+
+      var result = packet.GetFloatList();
+      Assert.AreEqual(value.Length, result.Count);
+      for (var i = 0; i < value.Length; i++)
+      {
+        Assert.AreEqual(value[i], result[i]);
+      }
+
+      using var unsetTimestamp = Timestamp.Unset();
+      Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
+    }
+
+    [Test]
+    public void CreateFloatVectorAt_ShouldReturnNewFloatListPacket()
+    {
+      var value = new float[] { float.MinValue, 0f, float.MaxValue };
+      var timestamp = 1;
+      using var packet = Packet.CreateFloatVectorAt(value, timestamp);
+
+      Assert.DoesNotThrow(packet.ValidateAsFloatVector);
+
+      var result = packet.GetFloatList();
+      Assert.AreEqual(value.Length, result.Count);
+      for (var i = 0; i < value.Length; i++)
+      {
+        Assert.AreEqual(value[i], result[i]);
+      }
+      Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
+    }
+    #endregion
+
     #region #Validate
     [Test]
     public void ValidateAsBool_ShouldThrow_When_ValueIsNotSet()
@@ -156,12 +234,18 @@ namespace Mediapipe.Tests
       _ = Assert.Throws<BadStatusException>(packet.ValidateAsDouble);
     }
 
-
     [Test]
     public void ValidateAsFloat_ShouldThrow_When_ValueIsNotSet()
     {
       using var packet = Packet.CreateEmpty();
       _ = Assert.Throws<BadStatusException>(packet.ValidateAsFloat);
+    }
+
+    [Test]
+    public void ValidateAsFloatArray_ShouldThrow_When_ValueIsNotSet()
+    {
+      using var packet = Packet.CreateEmpty();
+      _ = Assert.Throws<BadStatusException>(packet.ValidateAsFloatArray);
     }
     #endregion
   }

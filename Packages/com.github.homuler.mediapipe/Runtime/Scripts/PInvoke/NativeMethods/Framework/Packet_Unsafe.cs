@@ -99,26 +99,15 @@ namespace Mediapipe
     public static extern MpReturnCode mp_Packet__ValidateAsFloat(IntPtr packet, out IntPtr status);
     #endregion
 
-    #region Int
-    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp__MakeIntPacket__i(int value, out IntPtr packet);
-
-    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp__MakeIntPacket_At__i_Rt(int value, IntPtr timestamp, out IntPtr packet);
-
-    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_Packet__GetInt(IntPtr packet, out int value);
-
-    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_Packet__ValidateAsInt(IntPtr packet, out IntPtr status);
-    #endregion
-
     #region FloatArray
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp__MakeFloatArrayPacket__Pf_i(float[] value, int size, out IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp__MakeFloatArrayPacket_At__Pf_i_Rt(float[] value, int size, IntPtr timestamp, out IntPtr packet);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeFloatArrayPacket_At__Pf_i_ll(float[] value, int size, long timestampMicrosec, out IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__GetFloatArray_i(IntPtr packet, int size, out IntPtr value);
@@ -135,10 +124,27 @@ namespace Mediapipe
     public static extern MpReturnCode mp__MakeFloatVectorPacket_At__Pf_i_Rt(float[] value, int size, IntPtr timestamp, out IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_Packet__GetFloatVector(IntPtr packet, out FloatVector value);
+    public static extern MpReturnCode mp__MakeFloatVectorPacket_At__Pf_i_ll(float[] value, int size, long timestampMicrosec, out IntPtr packet);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__GetFloatVector(IntPtr packet, out StructArray value);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__ValidateAsFloatVector(IntPtr packet, out IntPtr status);
+    #endregion
+
+    #region Int
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeIntPacket__i(int value, out IntPtr packet);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeIntPacket_At__i_Rt(int value, IntPtr timestamp, out IntPtr packet);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__GetInt(IntPtr packet, out int value);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__ValidateAsInt(IntPtr packet, out IntPtr status);
     #endregion
 
     #region String

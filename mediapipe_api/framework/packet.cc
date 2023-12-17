@@ -188,39 +188,10 @@ MpReturnCode mp_Packet__ValidateAsFloat(mediapipe::Packet* packet, absl::Status*
   CATCH_EXCEPTION
 }
 
-// IntPacket
-MpReturnCode mp__MakeIntPacket__i(int value, mediapipe::Packet** packet_out) {
-  TRY
-    *packet_out = new mediapipe::Packet{mediapipe::MakePacket<int>(value)};
-    RETURN_CODE(MpReturnCode::Success);
-  CATCH_EXCEPTION
-}
-
-MpReturnCode mp__MakeIntPacket_At__i_Rt(int value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
-  TRY
-    *packet_out = new mediapipe::Packet{mediapipe::MakePacket<int>(value).At(*timestamp)};
-    RETURN_CODE(MpReturnCode::Success);
-  CATCH_EXCEPTION
-}
-
-MpReturnCode mp_Packet__GetInt(mediapipe::Packet* packet, int* value_out) {
-  TRY_ALL
-    *value_out = packet->Get<int>();
-    RETURN_CODE(MpReturnCode::Success);
-  CATCH_ALL
-}
-
-MpReturnCode mp_Packet__ValidateAsInt(mediapipe::Packet* packet, absl::Status** status_out) {
-  TRY
-    *status_out = new absl::Status{packet->ValidateAsType<int>()};
-    RETURN_CODE(MpReturnCode::Success);
-  CATCH_EXCEPTION
-}
-
 // FloatArrayPacket
 MpReturnCode mp__MakeFloatArrayPacket__Pf_i(float* value, int size, mediapipe::Packet** packet_out) {
   TRY
-    float* array = new float[size];
+    auto array = new float[size];
     std::memcpy(array, value, size * sizeof(float));
     *packet_out = new mediapipe::Packet{mediapipe::Adopt(reinterpret_cast<float(*)[]>(array))};
     RETURN_CODE(MpReturnCode::Success);
@@ -229,9 +200,18 @@ MpReturnCode mp__MakeFloatArrayPacket__Pf_i(float* value, int size, mediapipe::P
 
 MpReturnCode mp__MakeFloatArrayPacket_At__Pf_i_Rt(float* value, int size, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
   TRY
-    float* array = new float[size];
+    auto array = new float[size];
     std::memcpy(array, value, size * sizeof(float));
     *packet_out = new mediapipe::Packet{mediapipe::Adopt(reinterpret_cast<float(*)[]>(array)).At(*timestamp)};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
+MpReturnCode mp__MakeFloatArrayPacket_At__Pf_i_ll(float* value, int size, int64 timestampMicrosec, mediapipe::Packet** packet_out) {
+  TRY
+    auto array = new float[size];
+    std::memcpy(array, value, size * sizeof(float));
+    *packet_out = new mediapipe::Packet{mediapipe::Adopt(reinterpret_cast<float(*)[]>(array)).At(mediapipe::Timestamp(timestampMicrosec))};
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }
@@ -260,6 +240,10 @@ MpReturnCode mp__MakeFloatVectorPacket_At__Pf_i_Rt(float* value, int size, media
   return mp__MakeVectorPacket_At(value, size, timestamp, packet_out);
 }
 
+MpReturnCode mp__MakeFloatVectorPacket_At__Pf_i_ll(float* value, int size, int64 timestampMicrosec, mediapipe::Packet** packet_out) {
+  return mp__MakeVectorPacket_At(value, size, timestampMicrosec, packet_out);
+}
+
 MpReturnCode mp_Packet__GetFloatVector(mediapipe::Packet* packet, mp_api::StructArray<float>* value_out) {
   return mp_Packet__GetStructVector(packet, value_out);
 }
@@ -267,6 +251,35 @@ MpReturnCode mp_Packet__GetFloatVector(mediapipe::Packet* packet, mp_api::Struct
 MpReturnCode mp_Packet__ValidateAsFloatVector(mediapipe::Packet* packet, absl::Status** status_out) {
   TRY
     *status_out = new absl::Status{packet->ValidateAsType<std::vector<float>>()};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
+// IntPacket
+MpReturnCode mp__MakeIntPacket__i(int value, mediapipe::Packet** packet_out) {
+  TRY
+    *packet_out = new mediapipe::Packet{mediapipe::MakePacket<int>(value)};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
+MpReturnCode mp__MakeIntPacket_At__i_Rt(int value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
+  TRY
+    *packet_out = new mediapipe::Packet{mediapipe::MakePacket<int>(value).At(*timestamp)};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
+MpReturnCode mp_Packet__GetInt(mediapipe::Packet* packet, int* value_out) {
+  TRY_ALL
+    *value_out = packet->Get<int>();
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_ALL
+}
+
+MpReturnCode mp_Packet__ValidateAsInt(mediapipe::Packet* packet, absl::Status** status_out) {
+  TRY
+    *status_out = new absl::Status{packet->ValidateAsType<int>()};
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }
