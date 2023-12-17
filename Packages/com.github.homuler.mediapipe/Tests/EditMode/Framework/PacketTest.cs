@@ -76,6 +76,35 @@ namespace Mediapipe.Tests
     }
     #endregion
 
+    #region Double
+    [TestCase(double.MaxValue)]
+    [TestCase(0d)]
+    [TestCase(double.MinValue)]
+    public void CreateDouble_ShouldReturnNewDoublePacket(double value)
+    {
+      using var packet = Packet.CreateDouble(value);
+
+      Assert.DoesNotThrow(packet.ValidateAsDouble);
+      Assert.AreEqual(value, packet.GetDouble());
+
+      using var unsetTimestamp = Timestamp.Unset();
+      Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
+    }
+
+    [TestCase(double.MaxValue)]
+    [TestCase(0d)]
+    [TestCase(double.MinValue)]
+    public void CreateDoubleAt_ShouldReturnNewDoublePacket(double value)
+    {
+      var timestamp = 1;
+      using var packet = Packet.CreateDoubleAt(value, timestamp);
+
+      Assert.DoesNotThrow(packet.ValidateAsDouble);
+      Assert.AreEqual(value, packet.GetDouble());
+      Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
+    }
+    #endregion
+
     #region #Validate
     [Test]
     public void ValidateAsBool_ShouldThrow_When_ValueIsNotSet()
@@ -89,6 +118,13 @@ namespace Mediapipe.Tests
     {
       using var packet = Packet.CreateEmpty();
       _ = Assert.Throws<BadStatusException>(packet.ValidateAsBoolVector);
+    }
+
+    [Test]
+    public void ValidateAsDouble_ShouldThrow_When_ValueIsNotSet()
+    {
+      using var packet = Packet.CreateEmpty();
+      _ = Assert.Throws<BadStatusException>(packet.ValidateAsDouble);
     }
     #endregion
   }

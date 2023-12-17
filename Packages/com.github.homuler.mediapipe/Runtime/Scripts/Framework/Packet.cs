@@ -45,7 +45,7 @@ namespace Mediapipe
     public static Packet CreateForReference(IntPtr ptr) => new Packet(ptr, false);
 
     /// <summary>
-    ///   Create a bool Packet from a boolean.
+    ///   Create a bool Packet.
     /// </summary>
     public static Packet CreateBool(bool value)
     {
@@ -91,10 +91,33 @@ namespace Mediapipe
     }
 
     /// <summary>
+    ///   Create a double Packet.
+    /// </summary>
+    public static Packet CreateDouble(double value)
+    {
+      UnsafeNativeMethods.mp__MakeDoublePacket__d(value, out var ptr).Assert();
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
+    ///   Create a double Packet.
+    /// </summary>
+    /// <param name="timestampMicrosec">
+    ///   The timestamp of the packet.
+    /// </param>
+    public static Packet CreateDoubleAt(double value, long timestampMicrosec)
+    {
+      UnsafeNativeMethods.mp__MakeDoublePacket_At__d_ll(value, timestampMicrosec, out var ptr).Assert();
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
     ///   Get the content of the <see cref="Packet"/> as a boolean.
     /// </summary>
     /// <remarks>
-    ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown. 
+    ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown.
     /// </remarks>
     /// <exception cref="MediaPipeException">
     ///   If the <see cref="Packet"/> doesn't contain bool data.
@@ -121,9 +144,15 @@ namespace Mediapipe
     /// <summary>
     ///   Get the content of a bool vector Packet as a <see cref="List{bool}"/>.
     /// </summary>
+    /// <remarks>
+    ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown.
+    /// </remarks>
     /// <param name="value">
     ///   The <see cref="List{bool}"/> to be filled with the content of the <see cref="Packet"/>.
     /// </param>
+    /// <exception cref="MediaPipeException">
+    ///   If the <see cref="Packet"/> doesn't contain std::vector&lt;bool&gt; data.
+    /// </exception>
     public void GetBoolList(List<bool> value)
     {
       UnsafeNativeMethods.mp_Packet__GetBoolVector(mpPtr, out var structArray).Assert();
@@ -131,6 +160,23 @@ namespace Mediapipe
 
       structArray.CopyTo(value);
       structArray.Dispose();
+    }
+
+    /// <summary>
+    ///   Get the content of the <see cref="Packet"/> as a double.
+    /// </summary>
+    /// <remarks>
+    ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown.
+    /// </remarks>
+    /// <exception cref="MediaPipeException">
+    ///   If the <see cref="Packet"/> doesn't contain double data.
+    /// </exception>
+    public double GetDouble()
+    {
+      UnsafeNativeMethods.mp_Packet__GetDouble(mpPtr, out var value).Assert();
+
+      GC.KeepAlive(this);
+      return value;
     }
 
     /// <summary>
@@ -156,6 +202,20 @@ namespace Mediapipe
     public void ValidateAsBoolVector()
     {
       UnsafeNativeMethods.mp_Packet__ValidateAsBoolVector(mpPtr, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      AssertStatusOk(statusPtr);
+    }
+
+    /// <summary>
+    ///   Validate if the content of the <see cref="Packet"/> is a double.
+    /// </summary>
+    /// <exception cref="BadStatusException">
+    ///   If the <see cref="Packet"/> doesn't contain double data;.
+    /// </exception>
+    public void ValidateAsDouble()
+    {
+      UnsafeNativeMethods.mp_Packet__ValidateAsDouble(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       AssertStatusOk(statusPtr);
