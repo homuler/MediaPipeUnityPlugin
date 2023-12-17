@@ -97,16 +97,23 @@ uint8* mp_PixelWriteLock__Pixels(mediapipe::PixelWriteLock* pixel_read_lock) {
 }
 
 // Packet API
-MpReturnCode mp__MakeImagePacket__Pif(mediapipe::Image* image, mediapipe::Packet** packet_out) {
+MpReturnCode mp__MakeImagePacket__PI(mediapipe::Image* image, mediapipe::Packet** packet_out) {
   TRY_ALL
     *packet_out = new mediapipe::Packet{mediapipe::MakePacket<mediapipe::Image>(std::move(*image))};
     RETURN_CODE(MpReturnCode::Success);
   CATCH_ALL
 }
 
-MpReturnCode mp__MakeImagePacket_At__Pif_Rt(mediapipe::Image* image, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
+MpReturnCode mp__MakeImagePacket_At__PI_Rt(mediapipe::Image* image, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
   TRY_ALL
     *packet_out = new mediapipe::Packet{mediapipe::MakePacket<mediapipe::Image>(std::move(*image)).At(*timestamp)};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_ALL
+}
+
+MpReturnCode mp__MakeImagePacket_At__PI_ll(mediapipe::Image* image, int64 timestampMicrosec, mediapipe::Packet** packet_out) {
+  TRY_ALL
+    *packet_out = new mediapipe::Packet{mediapipe::MakePacket<mediapipe::Image>(std::move(*image)).At(mediapipe::Timestamp(timestampMicrosec))};
     RETURN_CODE(MpReturnCode::Success);
   CATCH_ALL
 }
