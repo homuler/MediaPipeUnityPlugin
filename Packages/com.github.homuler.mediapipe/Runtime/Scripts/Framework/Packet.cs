@@ -114,6 +114,29 @@ namespace Mediapipe
     }
 
     /// <summary>
+    ///   Create a float Packet.
+    /// </summary>
+    public static Packet CreateFloat(float value)
+    {
+      UnsafeNativeMethods.mp__MakeFloatPacket__f(value, out var ptr).Assert();
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
+    ///   Create a float Packet.
+    /// </summary>
+    /// <param name="timestampMicrosec">
+    ///   The timestamp of the packet.
+    /// </param>
+    public static Packet CreateFloatAt(float value, long timestampMicrosec)
+    {
+      UnsafeNativeMethods.mp__MakeFloatPacket_At__f_ll(value, timestampMicrosec, out var ptr).Assert();
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
     ///   Get the content of the <see cref="Packet"/> as a boolean.
     /// </summary>
     /// <remarks>
@@ -180,6 +203,23 @@ namespace Mediapipe
     }
 
     /// <summary>
+    ///   Get the content of the <see cref="Packet"/> as a float.
+    /// </summary>
+    /// <remarks>
+    ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown.
+    /// </remarks>
+    /// <exception cref="MediaPipeException">
+    ///   If the <see cref="Packet"/> doesn't contain float data.
+    /// </exception>
+    public float GetFloat()
+    {
+      UnsafeNativeMethods.mp_Packet__GetFloat(mpPtr, out var value).Assert();
+
+      GC.KeepAlive(this);
+      return value;
+    }
+
+    /// <summary>
     ///   Validate if the content of the <see cref="Packet"/> is a boolean.
     /// </summary>
     /// <exception cref="BadStatusException">
@@ -216,6 +256,20 @@ namespace Mediapipe
     public void ValidateAsDouble()
     {
       UnsafeNativeMethods.mp_Packet__ValidateAsDouble(mpPtr, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      AssertStatusOk(statusPtr);
+    }
+
+    /// <summary>
+    ///   Validate if the content of the <see cref="Packet"/> is a float.
+    /// </summary>
+    /// <exception cref="BadStatusException">
+    ///   If the <see cref="Packet"/> doesn't contain float data;.
+    /// </exception>
+    public void ValidateAsFloat()
+    {
+      UnsafeNativeMethods.mp_Packet__ValidateAsFloat(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       AssertStatusOk(statusPtr);
