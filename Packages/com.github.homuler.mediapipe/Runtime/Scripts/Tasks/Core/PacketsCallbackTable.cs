@@ -7,6 +7,10 @@
 using System;
 using UnityEngine;
 
+#if DEVELOPMENT_BUILD || UNITY_EDITOR
+using UnityEngine.Profiling;
+#endif
+
 namespace Mediapipe.Tasks.Core
 {
   internal class PacketsCallbackTable
@@ -33,6 +37,10 @@ namespace Mediapipe.Tasks.Core
     [AOT.MonoPInvokeCallback(typeof(TaskRunner.NativePacketsCallback))]
     private static void InvokeCallbackIfFound(int callbackId, IntPtr statusPtr, IntPtr packetMapPtr)
     {
+#if DEVELOPMENT_BUILD || UNITY_EDITOR
+      Profiler.BeginThreadProfiling("Mediapipe", "PacketsCallbackTable.InvokeCallbackIfFound");
+      Profiler.BeginSample("PacketsCallbackTable.InvokeCallbackIfFound");
+#endif
       // NOTE: if status is not OK, packetMap will be nullptr
       if (packetMapPtr == IntPtr.Zero)
       {
@@ -43,8 +51,19 @@ namespace Mediapipe.Tasks.Core
 
       if (TryGetValue(callbackId, out var callback))
       {
-        callback(new PacketMap(packetMapPtr, false));
+        try
+        {
+          callback(new PacketMap(packetMapPtr, false));
+        }
+        catch (Exception e)
+        {
+          Debug.LogException(e);
+        }
       }
+#if DEVELOPMENT_BUILD || UNITY_EDITOR
+      Profiler.EndSample();
+      Profiler.EndThreadProfiling();
+#endif
     }
   }
 }
