@@ -4,7 +4,10 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+using System.Linq;
+using System.Runtime.InteropServices;
 using NUnit.Framework;
+using Unity.Collections;
 
 namespace Mediapipe.Tests
 {
@@ -212,6 +215,44 @@ namespace Mediapipe.Tests
     }
     #endregion
 
+    #region Image
+    [Test]
+    public void CreateImage_ShouldReturnNewImagePacket()
+    {
+      var bytes = Enumerable.Range(0, 32).Select(x => (byte)x).ToArray();
+      var image = BuildSRGBAImage(bytes, 4, 2);
+      using var packet = Packet.CreateImage(image);
+
+      Assert.DoesNotThrow(packet.ValidateAsImage);
+
+      using (var result = packet.GetImage())
+      {
+        AssertImage(result, 4, 2, ImageFormat.Types.Format.Srgba, bytes);
+      }
+
+      using var unsetTimestamp = Timestamp.Unset();
+      Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
+    }
+
+    [Test]
+    public void CreateImageAt_ShouldReturnNewImagePacket()
+    {
+      var bytes = Enumerable.Range(0, 32).Select(x => (byte)x).ToArray();
+      var timestamp = 1;
+      var image = BuildSRGBAImage(bytes, 4, 2);
+      using var packet = Packet.CreateImageAt(image, timestamp);
+
+      Assert.DoesNotThrow(packet.ValidateAsImage);
+
+      using (var result = packet.GetImage())
+      {
+        AssertImage(result, 4, 2, ImageFormat.Types.Format.Srgba, bytes);
+      }
+
+      Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
+    }
+    #endregion
+
     #region #Validate
     [Test]
     public void ValidateAsBool_ShouldThrow_When_ValueIsNotSet()
@@ -247,6 +288,45 @@ namespace Mediapipe.Tests
       using var packet = Packet.CreateEmpty();
       _ = Assert.Throws<BadStatusException>(packet.ValidateAsFloatArray);
     }
+
+    [Test]
+    public void ValidateAsFloatVector_ShouldThrow_When_ValueIsNotSet()
+    {
+      using var packet = Packet.CreateEmpty();
+      _ = Assert.Throws<BadStatusException>(packet.ValidateAsFloatVector);
+    }
+
+    [Test]
+    public void ValidateAsImage_ShouldThrow_When_ValueIsNotSet()
+    {
+      using var packet = Packet.CreateEmpty();
+      _ = Assert.Throws<BadStatusException>(packet.ValidateAsImage);
+    }
     #endregion
+
+    private Image BuildSRGBAImage(byte[] bytes, int width, int height)
+    {
+      Assert.AreEqual(bytes.Length, width * height * 4);
+
+      var pixelData = new NativeArray<byte>(bytes.Length, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
+      pixelData.CopyFrom(bytes);
+
+      return new Image(ImageFormat.Types.Format.Srgba, width, height, width * 4, pixelData);
+    }
+
+    private void AssertImage(Image image, int width, int height, ImageFormat.Types.Format format, byte[] expectedBytes)
+    {
+      Assert.AreEqual(width, image.Width());
+      Assert.AreEqual(height, image.Height());
+      Assert.AreEqual(format, image.ImageFormat());
+
+      using (var pixelLock = new PixelWriteLock(image))
+      {
+        var pixelData = new byte[width * height * ImageFrame.NumberOfChannelsForFormat(format)];
+        Marshal.Copy(pixelLock.Pixels(), pixelData, 0, pixelData.Length);
+
+        Assert.AreEqual(expectedBytes, pixelData);
+      }
+    }
   }
 }

@@ -184,6 +184,31 @@ namespace Mediapipe
     }
 
     /// <summary>
+    ///   Create an Image Packet.
+    /// </summary>
+    public static Packet CreateImage(Image value)
+    {
+      UnsafeNativeMethods.mp__MakeImagePacket__PI(value.mpPtr, out var ptr).Assert();
+      value.Dispose(); // respect move semantics
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
+    ///   Create an Image Packet.
+    /// </summary>
+    /// <param name="timestampMicrosec">
+    ///   The timestamp of the packet.
+    /// </param>
+    public static Packet CreateImageAt(Image value, long timestampMicrosec)
+    {
+      UnsafeNativeMethods.mp__MakeImagePacket_At__PI_ll(value.mpPtr, timestampMicrosec, out var ptr).Assert();
+      value.Dispose(); // respect move semantics
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
     ///   Get the content of the <see cref="Packet"/> as a boolean.
     /// </summary>
     /// <remarks>
@@ -301,6 +326,12 @@ namespace Mediapipe
     /// <summary>
     ///   Get the content of a float vector Packet as a <see cref="List{float}"/>.
     /// </summary>
+    /// <remarks>
+    ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown.
+    /// </remarks>
+    /// <exception cref="MediaPipeException">
+    ///   If the <see cref="Packet"/> doesn't contain std::vector&lt;float&gt; data.
+    /// </exception>
     public List<float> GetFloatList()
     {
       var value = new List<float>();
@@ -328,6 +359,23 @@ namespace Mediapipe
 
       structArray.CopyTo(value);
       structArray.Dispose();
+    }
+
+    /// <summary>
+    ///   Get the content of the <see cref="Packet"/> as an <see cref="Image"/>.
+    /// </summary>
+    /// <remarks>
+    ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown.
+    /// </remarks>
+    /// <exception cref="MediaPipeException">
+    ///   If the <see cref="Packet"/> doesn't contain <see cref="Image"/>.
+    /// </exception>
+    public Image GetImage()
+    {
+      UnsafeNativeMethods.mp_Packet__GetImage(mpPtr, out var ptr).Assert();
+
+      GC.KeepAlive(this);
+      return new Image(ptr, false);
     }
 
     /// <summary>
@@ -409,6 +457,20 @@ namespace Mediapipe
     public void ValidateAsFloatVector()
     {
       UnsafeNativeMethods.mp_Packet__ValidateAsFloatVector(mpPtr, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      AssertStatusOk(statusPtr);
+    }
+
+    /// <summary>
+    ///   Validate if the content of the <see cref="Packet"/> is an <see cref="Image"/> .
+    /// </summary>
+    /// <exception cref="BadStatusException">
+    ///   If the <see cref="Packet"/> doesn't contain <see cref="Image"/> .
+    /// </exception>
+    public void ValidateAsImage()
+    {
+      UnsafeNativeMethods.mp_Packet__ValidateAsImage(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       AssertStatusOk(statusPtr);

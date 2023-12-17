@@ -43,10 +43,13 @@ namespace Mediapipe
 
     #region Packet
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp__MakeImagePacket__Pif(IntPtr image, out IntPtr packet);
+    public static extern MpReturnCode mp__MakeImagePacket__PI(IntPtr image, out IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp__MakeImagePacket_At__Pif_Rt(IntPtr image, IntPtr timestamp, out IntPtr packet);
+    public static extern MpReturnCode mp__MakeImagePacket_At__PI_Rt(IntPtr image, IntPtr timestamp, out IntPtr packet);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeImagePacket_At__PI_ll(IntPtr image, long timestampMicrosec, out IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__ConsumeImage(IntPtr packet, out IntPtr status, out IntPtr image);

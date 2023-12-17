@@ -59,8 +59,9 @@ MP_CAPI(void) mp_PixelWriteLock__delete(mediapipe::PixelWriteLock* pixel_Write_l
 MP_CAPI(uint8*) mp_PixelWriteLock__Pixels(mediapipe::PixelWriteLock* pixel_read_lock);
 
 // Packet API
-MP_CAPI(MpReturnCode) mp__MakeImagePacket__Pif(mediapipe::Image* image, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp__MakeImagePacket_At__Pif_Rt(mediapipe::Image* image, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeImagePacket__PI(mediapipe::Image* image, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeImagePacket_At__PI_Rt(mediapipe::Image* image, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeImagePacket_At__PI_ll(mediapipe::Image* image, int64 timestampMicrosec, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__ConsumeImage(mediapipe::Packet* packet, absl::Status **status_out, mediapipe::Image** value_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetImage(mediapipe::Packet* packet, const mediapipe::Image** value_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetImageVector(mediapipe::Packet* packet, mp_api::StructArray<mediapipe::Image*>* value_out);

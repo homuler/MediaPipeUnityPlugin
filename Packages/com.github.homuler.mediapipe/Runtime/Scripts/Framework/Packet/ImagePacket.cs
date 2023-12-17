@@ -20,7 +20,7 @@ namespace Mediapipe
 
     public ImagePacket(Image image) : base()
     {
-      UnsafeNativeMethods.mp__MakeImagePacket__Pif(image.mpPtr, out var ptr).Assert();
+      UnsafeNativeMethods.mp__MakeImagePacket__PI(image.mpPtr, out var ptr).Assert();
       image.Dispose(); // respect move semantics
 
       this.ptr = ptr;
@@ -28,7 +28,7 @@ namespace Mediapipe
 
     public ImagePacket(Image image, Timestamp timestamp) : base()
     {
-      UnsafeNativeMethods.mp__MakeImagePacket_At__Pif_Rt(image.mpPtr, timestamp.mpPtr, out var ptr).Assert();
+      UnsafeNativeMethods.mp__MakeImagePacket_At__PI_Rt(image.mpPtr, timestamp.mpPtr, out var ptr).Assert();
       GC.KeepAlive(timestamp);
       image.Dispose(); // respect move semantics
 
