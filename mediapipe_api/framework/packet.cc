@@ -103,6 +103,26 @@ MpReturnCode mp_Packet__ValidateAsBool(mediapipe::Packet* packet, absl::Status**
   CATCH_EXCEPTION
 }
 
+// BoolVectorPacket
+MpReturnCode mp__MakeBoolVectorPacket__Pb_i(bool* value, int size, mediapipe::Packet** packet_out) {
+  return mp__MakeVectorPacket(value, size, packet_out);
+}
+
+MpReturnCode mp__MakeBoolVectorPacket_At__Pb_i_ll(bool* value, int size, int64 timestampMicrosec, mediapipe::Packet** packet_out) {
+  return mp__MakeVectorPacket_At(value, size, timestampMicrosec, packet_out);
+}
+
+MpReturnCode mp_Packet__GetBoolVector(mediapipe::Packet* packet, mp_api::StructArray<bool>* value_out) {
+  return mp_Packet__GetStructVector(packet, value_out);
+}
+
+MpReturnCode mp_Packet__ValidateAsBoolVector(mediapipe::Packet* packet, absl::Status** status_out) {
+  TRY
+    *status_out = new absl::Status{packet->ValidateAsType<std::vector<bool>>()};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
 // FloatPacket
 MpReturnCode mp__MakeFloatPacket__f(float value, mediapipe::Packet** packet_out) {
   TRY

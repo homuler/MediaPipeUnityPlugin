@@ -52,6 +52,12 @@ MP_CAPI(MpReturnCode) mp__MakeBoolPacket_At__b_ll(bool value, int64 timestampMic
 MP_CAPI(MpReturnCode) mp_Packet__GetBool(mediapipe::Packet* packet, bool* value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsBool(mediapipe::Packet* packet, absl::Status** status_out);
 
+// std::vector<bool>
+MP_CAPI(MpReturnCode) mp__MakeBoolVectorPacket__Pb_i(bool* value, int size, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeBoolVectorPacket_At__Pb_i_ll(bool* value, int size, int64 timestampMicrosec, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetBoolVector(mediapipe::Packet* packet, mp_api::StructArray<bool>* value_out);
+MP_CAPI(MpReturnCode) mp_Packet__ValidateAsBoolVector(mediapipe::Packet* packet, absl::Status** status_out);
+
 // float
 MP_CAPI(MpReturnCode) mp__MakeFloatPacket__f(float value, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeFloatPacket_At__f_Rt(float value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
@@ -142,6 +148,15 @@ inline MpReturnCode mp__MakeVectorPacket_At(const T* array, int size, mediapipe:
   TRY
     std::vector<T> vector(array, array + size);
     *packet_out = new mediapipe::Packet{mediapipe::MakePacket<std::vector<T>>(vector).At(*timestamp)};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
+template <typename T>
+inline MpReturnCode mp__MakeVectorPacket_At(const T* array, int size, int64 timestampMicrosec, mediapipe::Packet** packet_out) {
+  TRY
+    std::vector<T> vector(array, array + size);
+    *packet_out = new mediapipe::Packet{mediapipe::MakePacket<std::vector<T>>(vector).At(mediapipe::Timestamp(timestampMicrosec))};
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }

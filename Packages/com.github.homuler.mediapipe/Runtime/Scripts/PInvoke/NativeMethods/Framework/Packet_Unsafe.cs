@@ -54,6 +54,20 @@ namespace Mediapipe
     public static extern MpReturnCode mp_Packet__ValidateAsBool(IntPtr packet, out IntPtr status);
     #endregion
 
+    #region BoolVector
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeBoolVectorPacket__Pb_i(bool[] value, int size, out IntPtr packet);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeBoolVectorPacket_At__Pb_i_ll(bool[] value, int size, long timestampMicrosec, out IntPtr packet);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__GetBoolVector(IntPtr packet, out StructArray value);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__ValidateAsBoolVector(IntPtr packet, out IntPtr status);
+    #endregion
+
     #region Float
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp__MakeFloatPacket__f(float value, out IntPtr packet);

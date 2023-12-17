@@ -37,12 +37,58 @@ namespace Mediapipe.Tests
     }
     #endregion
 
+    #region BoolVector
+    [Test]
+    public void CreateBoolVector_ShouldReturnNewBoolVectorPacket()
+    {
+      var value = new bool[] { true, false };
+      using var packet = Packet.CreateBoolVector(value);
+
+      Assert.DoesNotThrow(packet.ValidateAsBoolVector);
+
+      var result = packet.GetBoolList();
+      Assert.AreEqual(value.Length, result.Count);
+      for (var i = 0; i < value.Length; i++)
+      {
+        Assert.AreEqual(value[i], result[i]);
+      }
+
+      using var unsetTimestamp = Timestamp.Unset();
+      Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
+    }
+
+    [Test]
+    public void CreateBoolVectorAt_ShouldReturnNewBoolVectorPacket()
+    {
+      var value = new bool[] { true, false };
+      var timestamp = 1;
+      using var packet = Packet.CreateBoolVectorAt(value, timestamp);
+
+      Assert.DoesNotThrow(packet.ValidateAsBoolVector);
+
+      var result = packet.GetBoolList();
+      Assert.AreEqual(value.Length, result.Count);
+      for (var i = 0; i < value.Length; i++)
+      {
+        Assert.AreEqual(value[i], result[i]);
+      }
+      Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
+    }
+    #endregion
+
     #region #Validate
     [Test]
     public void ValidateAsBool_ShouldThrow_When_ValueIsNotSet()
     {
       using var packet = Packet.CreateEmpty();
       _ = Assert.Throws<BadStatusException>(packet.ValidateAsBool);
+    }
+
+    [Test]
+    public void ValidateAsBoolVector_ShouldThrow_When_ValueIsNotSet()
+    {
+      using var packet = Packet.CreateEmpty();
+      _ = Assert.Throws<BadStatusException>(packet.ValidateAsBoolVector);
     }
     #endregion
   }

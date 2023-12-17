@@ -5,6 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using System;
+using System.Collections.Generic;
 
 namespace Mediapipe
 {
@@ -43,6 +44,9 @@ namespace Mediapipe
     /// </param>
     public static Packet CreateForReference(IntPtr ptr) => new Packet(ptr, false);
 
+    /// <summary>
+    ///   Create a bool Packet from a boolean.
+    /// </summary>
     public static Packet CreateBool(bool value)
     {
       UnsafeNativeMethods.mp__MakeBoolPacket__b(value, out var ptr).Assert();
@@ -50,9 +54,38 @@ namespace Mediapipe
       return new Packet(ptr, true);
     }
 
+    /// <summary>
+    ///   Create a bool Packet.
+    /// </summary>
+    /// <param name="timestampMicrosec">
+    ///   The timestamp of the packet.
+    /// </param>
     public static Packet CreateBoolAt(bool value, long timestampMicrosec)
     {
       UnsafeNativeMethods.mp__MakeBoolPacket_At__b_ll(value, timestampMicrosec, out var ptr).Assert();
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
+    ///   Create a bool vector Packet.
+    /// </summary>
+    public static Packet CreateBoolVector(bool[] value)
+    {
+      UnsafeNativeMethods.mp__MakeBoolVectorPacket__Pb_i(value, value.Length, out var ptr).Assert();
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
+    ///   Create a bool vector Packet.
+    /// </summary>
+    /// <param name="timestampMicrosec">
+    ///   The timestamp of the packet.
+    /// </param>
+    public static Packet CreateBoolVectorAt(bool[] value, long timestampMicrosec)
+    {
+      UnsafeNativeMethods.mp__MakeBoolVectorPacket_At__Pb_i_ll(value, value.Length, timestampMicrosec, out var ptr).Assert();
 
       return new Packet(ptr, true);
     }
@@ -75,6 +108,32 @@ namespace Mediapipe
     }
 
     /// <summary>
+    ///   Get the content of a bool vector Packet as a <see cref="List{bool}"/>.
+    /// </summary>
+    public List<bool> GetBoolList()
+    {
+      var value = new List<bool>();
+      GetBoolList(value);
+
+      return value;
+    }
+
+    /// <summary>
+    ///   Get the content of a bool vector Packet as a <see cref="List{bool}"/>.
+    /// </summary>
+    /// <param name="value">
+    ///   The <see cref="List{bool}"/> to be filled with the content of the <see cref="Packet"/>.
+    /// </param>
+    public void GetBoolList(List<bool> value)
+    {
+      UnsafeNativeMethods.mp_Packet__GetBoolVector(mpPtr, out var structArray).Assert();
+      GC.KeepAlive(this);
+
+      structArray.CopyTo(value);
+      structArray.Dispose();
+    }
+
+    /// <summary>
     ///   Validate if the content of the <see cref="Packet"/> is a boolean.
     /// </summary>
     /// <exception cref="BadStatusException">
@@ -83,6 +142,20 @@ namespace Mediapipe
     public void ValidateAsBool()
     {
       UnsafeNativeMethods.mp_Packet__ValidateAsBool(mpPtr, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      AssertStatusOk(statusPtr);
+    }
+
+    /// <summary>
+    ///   Validate if the content of the <see cref="Packet"/> is a std::vector&lt;bool&gt;.
+    /// </summary>
+    /// <exception cref="BadStatusException">
+    ///   If the <see cref="Packet"/> doesn't contain std::vector&lt;bool&gt;.
+    /// </exception>
+    public void ValidateAsBoolVector()
+    {
+      UnsafeNativeMethods.mp_Packet__ValidateAsBoolVector(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       AssertStatusOk(statusPtr);
