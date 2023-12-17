@@ -90,6 +90,9 @@ namespace Mediapipe
     public static extern MpReturnCode mp__MakeFloatPacket_At__f_Rt(float value, IntPtr timestamp, out IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeFloatPacket_At__f_ll(float value, long timestampMicrosec, out IntPtr packet);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__GetFloat(IntPtr packet, out float value);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]

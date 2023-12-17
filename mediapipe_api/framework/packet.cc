@@ -167,6 +167,13 @@ MpReturnCode mp__MakeFloatPacket_At__f_Rt(float value, mediapipe::Timestamp* tim
   CATCH_EXCEPTION
 }
 
+MpReturnCode mp__MakeFloatPacket_At__f_ll(float value, int64 timestampMicrosec, mediapipe::Packet** packet_out) {
+  TRY
+    *packet_out = new mediapipe::Packet{mediapipe::MakePacket<float>(value).At(mediapipe::Timestamp(timestampMicrosec))};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
 MpReturnCode mp_Packet__GetFloat(mediapipe::Packet* packet, float* value_out) {
   TRY_ALL
     *value_out = packet->Get<float>();

@@ -105,6 +105,35 @@ namespace Mediapipe.Tests
     }
     #endregion
 
+    #region Float
+    [TestCase(float.MaxValue)]
+    [TestCase(0f)]
+    [TestCase(float.MinValue)]
+    public void CreateFloat_ShouldReturnNewFloatPacket(float value)
+    {
+      using var packet = Packet.CreateFloat(value);
+
+      Assert.DoesNotThrow(packet.ValidateAsFloat);
+      Assert.AreEqual(value, packet.GetFloat());
+
+      using var unsetTimestamp = Timestamp.Unset();
+      Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
+    }
+
+    [TestCase(float.MaxValue)]
+    [TestCase(0f)]
+    [TestCase(float.MinValue)]
+    public void CreateFloatAt_ShouldReturnNewFloatPacket(float value)
+    {
+      var timestamp = 1;
+      using var packet = Packet.CreateFloatAt(value, timestamp);
+
+      Assert.DoesNotThrow(packet.ValidateAsFloat);
+      Assert.AreEqual(value, packet.GetFloat());
+      Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
+    }
+    #endregion
+
     #region #Validate
     [Test]
     public void ValidateAsBool_ShouldThrow_When_ValueIsNotSet()
@@ -125,6 +154,14 @@ namespace Mediapipe.Tests
     {
       using var packet = Packet.CreateEmpty();
       _ = Assert.Throws<BadStatusException>(packet.ValidateAsDouble);
+    }
+
+
+    [Test]
+    public void ValidateAsFloat_ShouldThrow_When_ValueIsNotSet()
+    {
+      using var packet = Packet.CreateEmpty();
+      _ = Assert.Throws<BadStatusException>(packet.ValidateAsFloat);
     }
     #endregion
   }

@@ -67,6 +67,7 @@ MP_CAPI(MpReturnCode) mp_Packet__ValidateAsDouble(mediapipe::Packet* packet, abs
 // float
 MP_CAPI(MpReturnCode) mp__MakeFloatPacket__f(float value, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeFloatPacket_At__f_Rt(float value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeFloatPacket_At__f_ll(float value, int64 timestampMicrosec, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetFloat(mediapipe::Packet* packet, float* value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsFloat(mediapipe::Packet* packet, absl::Status** status_out);
 
