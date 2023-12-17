@@ -58,6 +58,12 @@ MP_CAPI(MpReturnCode) mp__MakeBoolVectorPacket_At__Pb_i_ll(bool* value, int size
 MP_CAPI(MpReturnCode) mp_Packet__GetBoolVector(mediapipe::Packet* packet, mp_api::StructArray<bool>* value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsBoolVector(mediapipe::Packet* packet, absl::Status** status_out);
 
+// double
+MP_CAPI(MpReturnCode) mp__MakeDoublePacket__d(double value, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeDoublePacket_At__d_ll(double value, int64 timestampMicrosec, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetDouble(mediapipe::Packet* packet, double* value_out);
+MP_CAPI(MpReturnCode) mp_Packet__ValidateAsDouble(mediapipe::Packet* packet, absl::Status** status_out);
+
 // float
 MP_CAPI(MpReturnCode) mp__MakeFloatPacket__f(float value, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeFloatPacket_At__f_Rt(float value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);

@@ -123,6 +123,35 @@ MpReturnCode mp_Packet__ValidateAsBoolVector(mediapipe::Packet* packet, absl::St
   CATCH_EXCEPTION
 }
 
+// DoublePacket
+MpReturnCode mp__MakeDoublePacket__d(double value, mediapipe::Packet** packet_out) {
+  TRY
+    *packet_out = new mediapipe::Packet{mediapipe::MakePacket<double>(value)};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
+MpReturnCode mp__MakeDoublePacket_At__d_ll(double value, int64 timestampMicrosec, mediapipe::Packet** packet_out) {
+  TRY
+    *packet_out = new mediapipe::Packet{mediapipe::MakePacket<double>(value).At(mediapipe::Timestamp(timestampMicrosec))};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
+MpReturnCode mp_Packet__GetDouble(mediapipe::Packet* packet, double* value_out) {
+  TRY_ALL
+    *value_out = packet->Get<double>();
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_ALL
+}
+
+MpReturnCode mp_Packet__ValidateAsDouble(mediapipe::Packet* packet, absl::Status** status_out) {
+  TRY
+    *status_out = new absl::Status{packet->ValidateAsType<double>()};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
 // FloatPacket
 MpReturnCode mp__MakeFloatPacket__f(float value, mediapipe::Packet** packet_out) {
   TRY
