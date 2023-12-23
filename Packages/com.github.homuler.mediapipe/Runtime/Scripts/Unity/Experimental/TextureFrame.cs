@@ -63,6 +63,8 @@ namespace Mediapipe.Unity.Experimental
     public readonly ReleaseEvent OnRelease;
 #pragma warning restore IDE1006
 
+    private RenderTexture _tmpRenderTexture;
+
     private TextureFrame(Texture2D texture)
     {
       _texture = texture;
@@ -72,6 +74,7 @@ namespace Mediapipe.Unity.Experimental
       OnRelease = new ReleaseEvent();
       _instanceId = Guid.NewGuid();
       _InstanceTable.Add(_instanceId, this);
+      _onReadBackRenderTexture = OnReadBackRenderTexture;
     }
 
     public TextureFrame(int width, int height, TextureFormat format) : this(new Texture2D(width, height, format, false)) { }
@@ -135,12 +138,16 @@ namespace Mediapipe.Unity.Experimental
       });
     }
 
+    /// <remarks>
+    ///   This method is not thread-safe.
+    ///   Avoid calling this method again before the returned <see cref="AsyncGPUReadbackRequest.done"/> is <see langword="true"/>.
+    /// </remarks>
     public AsyncGPUReadbackRequest ReadTextureAsync(Texture src, bool flipHorizontally, bool flipVertically)
     {
       var graphicsFormat = GraphicsFormatUtility.GetGraphicsFormat(format, true);
-      var tmpRenderTexture = RenderTexture.GetTemporary(src.width, src.height, 32, graphicsFormat);
+      _tmpRenderTexture = RenderTexture.GetTemporary(src.width, src.height, 32, graphicsFormat);
       var currentRenderTexture = RenderTexture.active;
-      RenderTexture.active = tmpRenderTexture;
+      RenderTexture.active = _tmpRenderTexture;
 
       var scale = new Vector2(1.0f, 1.0f);
       var offset = new Vector2(0.0f, 0.0f);
@@ -154,21 +161,23 @@ namespace Mediapipe.Unity.Experimental
         scale.y = -1.0f;
         offset.y = 1.0f;
       }
-      Graphics.Blit(src, tmpRenderTexture, scale, offset);
-
+      Graphics.Blit(src, _tmpRenderTexture, scale, offset);
       RenderTexture.active = currentRenderTexture;
 
-      return AsyncGPUReadback.Request(tmpRenderTexture, 0, (req) =>
+      return AsyncGPUReadback.Request(_tmpRenderTexture, 0, _onReadBackRenderTexture);
+    }
+
+    private readonly Action<AsyncGPUReadbackRequest> _onReadBackRenderTexture;
+    private void OnReadBackRenderTexture(AsyncGPUReadbackRequest req)
+    {
+      if (_texture == null)
       {
-        if (_texture == null)
-        {
-          return;
-        }
-        _texture.LoadRawTextureData(req.GetData<byte>());
-        _texture.Apply();
-        _ = RevokeNativeTexturePtr();
-        RenderTexture.ReleaseTemporary(tmpRenderTexture);
-      });
+        return;
+      }
+      _texture.LoadRawTextureData(req.GetData<byte>());
+      _texture.Apply();
+      _ = RevokeNativeTexturePtr();
+      RenderTexture.ReleaseTemporary(_tmpRenderTexture);
     }
 
     public Color GetPixel(int x, int y) => _texture.GetPixel(x, y);
