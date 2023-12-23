@@ -27,6 +27,19 @@ namespace Mediapipe
     {
       var protos = new List<T>(_size);
 
+      Deserialize(parser, protos);
+
+      return protos;
+    }
+
+    /// <summary>
+    ///   Deserializes the data as a list of <typeparamref name="T" />.
+    /// </summary>
+    /// <param name="protos">A list of <typeparamref name="T" /> to populate</param>
+    public void Deserialize<T>(pb::MessageParser<T> parser, List<T> protos) where T : pb::IMessage<T>
+    {
+      protos.Clear();
+
       unsafe
       {
         var protoPtr = (SerializedProto*)_data;
@@ -37,8 +50,6 @@ namespace Mediapipe
           protos.Add(serializedProto.Deserialize(parser));
         }
       }
-
-      return protos;
     }
   }
 }

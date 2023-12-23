@@ -520,14 +520,32 @@ namespace Mediapipe
     /// </exception>
     public List<T> GetProtoList<T>(MessageParser<T> parser) where T : IMessage<T>
     {
+      var value = new List<T>();
+      GetProtoList(parser, value);
+
+      return value;
+    }
+
+    /// <summary>
+    ///   Get the content of the <see cref="Packet"/> as a proto message list.
+    /// </summary>
+    /// <remarks>
+    ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown.
+    /// </remarks>
+    /// <param name="value">
+    ///   The <see cref="List{T}"/> to be filled with the content of the <see cref="Packet"/>.
+    /// </param>
+    /// <exception cref="MediaPipeException">
+    ///   If the <see cref="Packet"/> doesn't contain a proto message list.
+    /// </exception>
+    public void GetProtoList<T>(MessageParser<T> parser, List<T> value) where T : IMessage<T>
+    {
       UnsafeNativeMethods.mp_Packet__GetVectorOfProtoMessageLite(mpPtr, out var serializedProtoVector).Assert();
 
       GC.KeepAlive(this);
 
-      var value = serializedProtoVector.Deserialize(parser);
+      serializedProtoVector.Deserialize(parser, value);
       serializedProtoVector.Dispose();
-
-      return value;
     }
 
     /// <summary>
