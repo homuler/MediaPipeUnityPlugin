@@ -182,7 +182,7 @@ namespace Mediapipe
         out IntPtr status, out IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp__PacketFromDynamicProto_At__PKc_PKc_i_ll(string typeName, byte[] proto, int size, long timestampMicrosec,
+    public static extern unsafe MpReturnCode mp__PacketFromDynamicProto_At__PKc_PKc_i_ll(string typeName, byte* proto, int size, long timestampMicrosec,
         out IntPtr status, out IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]

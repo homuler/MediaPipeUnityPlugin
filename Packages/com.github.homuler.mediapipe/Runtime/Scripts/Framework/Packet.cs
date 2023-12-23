@@ -13,7 +13,7 @@ namespace Mediapipe
 {
   public class Packet : MpResourceHandle
   {
-    private Packet(IntPtr ptr, bool isOwner) : base(ptr, isOwner) { }
+    internal Packet(IntPtr ptr, bool isOwner) : base(ptr, isOwner) { }
 
     protected override void DeleteMpPtr()
     {
@@ -277,11 +277,17 @@ namespace Mediapipe
     /// </param>
     public static Packet CreateProtoAt<T>(T value, long timestampMicrosec) where T : IMessage<T>
     {
-      var arr = value.ToByteArray();
-      UnsafeNativeMethods.mp__PacketFromDynamicProto_At__PKc_PKc_i_ll(value.Descriptor.FullName, arr, arr.Length, timestampMicrosec, out var statusPtr, out var ptr).Assert();
+      unsafe
+      {
+        var size = value.CalculateSize();
+        var arr = stackalloc byte[size];
+        value.WriteTo(new Span<byte>(arr, size));
 
-      AssertStatusOk(statusPtr);
-      return new Packet(ptr, true);
+        UnsafeNativeMethods.mp__PacketFromDynamicProto_At__PKc_PKc_i_ll(value.Descriptor.FullName, arr, size, timestampMicrosec, out var statusPtr, out var ptr).Assert();
+        AssertStatusOk(statusPtr);
+
+        return new Packet(ptr, true);
+      }
     }
 
     /// <summary>
