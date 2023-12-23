@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Google.Protobuf;
 
 namespace Mediapipe
 {
@@ -257,6 +258,33 @@ namespace Mediapipe
     }
 
     /// <summary>
+    ///   Create a MediaPipe protobuf message Packet.
+    /// </summary>
+    public static Packet CreateProto<T>(T value) where T : IMessage<T>
+    {
+      var arr = value.ToByteArray();
+      UnsafeNativeMethods.mp__PacketFromDynamicProto__PKc_PKc_i(value.Descriptor.FullName, arr, arr.Length, out var statusPtr, out var ptr).Assert();
+
+      AssertStatusOk(statusPtr);
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
+    ///   Create a MediaPipe protobuf message Packet.
+    /// </summary>
+    /// <param name="timestampMicrosec">
+    ///   The timestamp of the packet.
+    /// </param>
+    public static Packet CreateProtoAt<T>(T value, long timestampMicrosec) where T : IMessage<T>
+    {
+      var arr = value.ToByteArray();
+      UnsafeNativeMethods.mp__PacketFromDynamicProto_At__PKc_PKc_i_ll(value.Descriptor.FullName, arr, arr.Length, timestampMicrosec, out var statusPtr, out var ptr).Assert();
+
+      AssertStatusOk(statusPtr);
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
     ///   Get the content of the <see cref="Packet"/> as a boolean.
     /// </summary>
     /// <remarks>
@@ -461,6 +489,27 @@ namespace Mediapipe
     }
 
     /// <summary>
+    ///   Get the content of the <see cref="Packet"/> as a proto message.
+    /// </summary>
+    /// <remarks>
+    ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown.
+    /// </remarks>
+    /// <exception cref="MediaPipeException">
+    ///   If the <see cref="Packet"/> doesn't contain proto messages.
+    /// </exception>
+    public T GetProto<T>(MessageParser<T> parser) where T : IMessage<T>
+    {
+      UnsafeNativeMethods.mp_Packet__GetProto(mpPtr, out var value).Assert();
+
+      GC.KeepAlive(this);
+
+      var proto = value.Deserialize(parser);
+      value.Dispose();
+
+      return proto;
+    }
+
+    /// <summary>
     ///   Validate if the content of the <see cref="Packet"/> is a boolean.
     /// </summary>
     /// <exception cref="BadStatusException">
@@ -581,6 +630,20 @@ namespace Mediapipe
     public void ValidateAsInt()
     {
       UnsafeNativeMethods.mp_Packet__ValidateAsInt(mpPtr, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      AssertStatusOk(statusPtr);
+    }
+
+    /// <summary>
+    ///   Validate if the content of the <see cref="Packet"/> is a proto message.
+    /// </summary>
+    /// <exception cref="BadStatusException">
+    ///   If the <see cref="Packet"/> doesn't contain proto messages.
+    /// </exception>
+    public void ValidateAsProtoMessageLite()
+    {
+      UnsafeNativeMethods.mp_Packet__ValidateAsProtoMessageLite(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       AssertStatusOk(statusPtr);

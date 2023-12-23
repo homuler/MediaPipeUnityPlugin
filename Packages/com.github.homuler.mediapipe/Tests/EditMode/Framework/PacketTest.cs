@@ -320,6 +320,47 @@ namespace Mediapipe.Tests
     }
     #endregion
 
+    #region Proto
+    [Test]
+    public void CreateProto_ShouldReturnNewProtoPacket()
+    {
+      var value = new NormalizedRect()
+      {
+        Rotation = 0,
+        XCenter = 0.5f,
+        YCenter = 0.5f,
+        Width = 1,
+        Height = 1,
+      };
+      using var packet = Packet.CreateProto(value);
+
+      Assert.DoesNotThrow(packet.ValidateAsProtoMessageLite);
+      Assert.AreEqual(value, packet.GetProto(NormalizedRect.Parser));
+
+      using var unsetTimestamp = Timestamp.Unset();
+      Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
+    }
+
+    [Test]
+    public void CreateProtoAt_ShouldReturnNewProtoPacket()
+    {
+      var timestamp = 1;
+      var value = new NormalizedRect()
+      {
+        Rotation = 0,
+        XCenter = 0.5f,
+        YCenter = 0.5f,
+        Width = 1,
+        Height = 1,
+      };
+      using var packet = Packet.CreateProtoAt(value, timestamp);
+
+      Assert.DoesNotThrow(packet.ValidateAsProtoMessageLite);
+      Assert.AreEqual(value, packet.GetProto(NormalizedRect.Parser));
+      Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
+    }
+    #endregion
+
     #region #Validate
     [Test]
     public void ValidateAsBool_ShouldThrow_When_ValueIsNotSet()

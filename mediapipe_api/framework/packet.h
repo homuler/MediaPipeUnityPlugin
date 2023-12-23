@@ -38,7 +38,6 @@ MP_CAPI(MpReturnCode) mp_Packet__(mediapipe::Packet** packet_out);
 MP_CAPI(void) mp_Packet__delete(mediapipe::Packet* packet);
 MP_CAPI(MpReturnCode) mp_Packet__At__Rt(mediapipe::Packet* packet, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
 MP_CAPI(bool) mp_Packet__IsEmpty(mediapipe::Packet* packet);
-MP_CAPI(MpReturnCode) mp_Packet__ValidateAsProtoMessageLite(mediapipe::Packet* packet, absl::Status** status_out);
 MP_CAPI(MpReturnCode) mp_Packet__Timestamp(mediapipe::Packet* packet, mediapipe::Timestamp** timestamp_out);
 MP_CAPI(int64) mp_Packet__TimestampMicroseconds(mediapipe::Packet* packet);
 MP_CAPI(MpReturnCode) mp_Packet__DebugString(mediapipe::Packet* packet, const char** str_out);
@@ -102,6 +101,15 @@ MP_CAPI(MpReturnCode) mp_Packet__GetByteString(mediapipe::Packet* packet, const 
 MP_CAPI(MpReturnCode) mp_Packet__ConsumeString(mediapipe::Packet* packet, absl::Status** status_out, const char** value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ConsumeByteString(mediapipe::Packet* packet, absl::Status** status_out, const char** value_out, int* size_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsString(mediapipe::Packet* packet, absl::Status** status_out);
+
+// proto
+MP_CAPI(MpReturnCode) mp__PacketFromDynamicProto__PKc_PKc_i(const char* type_name, const char* serialized_proto, int size,
+                                                            absl::Status** status_out, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__PacketFromDynamicProto_At__PKc_PKc_i_ll(const char* type_name, const char* serialized_proto, int size,
+                                                                  int64 timestampMicrosec,
+                                                                  absl::Status** status_out, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetProto(mediapipe::Packet* packet, mp_api::SerializedProto* serialized_proto);
+MP_CAPI(MpReturnCode) mp_Packet__ValidateAsProtoMessageLite(mediapipe::Packet* packet, absl::Status** status_out);
 
 /** PacketMap API */
 MP_CAPI(MpReturnCode) mp_PacketMap__(PacketMap** packet_map_out);

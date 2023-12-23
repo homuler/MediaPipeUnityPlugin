@@ -22,9 +22,6 @@ namespace Mediapipe
     public static extern MpReturnCode mp_Packet__At__Rt(IntPtr packet, IntPtr timestamp, out IntPtr newPacket);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_Packet__ValidateAsProtoMessageLite(IntPtr packet, out IntPtr status);
-
-    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__Timestamp(IntPtr packet, out IntPtr timestamp);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
@@ -177,6 +174,22 @@ namespace Mediapipe
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__ValidateAsString(IntPtr packet, out IntPtr status);
+    #endregion
+
+    #region Proto
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__PacketFromDynamicProto__PKc_PKc_i(string typeName, byte[] proto, int size,
+        out IntPtr status, out IntPtr packet);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__PacketFromDynamicProto_At__PKc_PKc_i_ll(string typeName, byte[] proto, int size, long timestampMicrosec,
+        out IntPtr status, out IntPtr packet);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__GetProto(IntPtr packet, out SerializedProto value);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__ValidateAsProtoMessageLite(IntPtr packet, out IntPtr status);
     #endregion
 
     #region PacketMap
