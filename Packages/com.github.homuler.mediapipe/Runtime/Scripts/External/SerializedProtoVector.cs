@@ -51,5 +51,35 @@ namespace Mediapipe
         }
       }
     }
+
+    /// <summary>
+    ///   Deserializes the data as a list of <typeparamref name="T" />.
+    /// </summary>
+    /// <param name="protos">A list of <typeparamref name="T" /> to populate</param>
+    public void _Deserialize<T>(pb::MessageParser<T> parser, List<T> protos) where T : pb::IMessage<T>
+    {
+      if (protos.Count > _size)
+      {
+        protos.RemoveRange(_size, protos.Count - _size);
+      }
+      unsafe
+      {
+        var protoPtr = (SerializedProto*)_data;
+
+        // overwrite the existing list
+        var len = Math.Min(_size, protos.Count);
+        for (var i = 0; i < len; i++)
+        {
+          var serializedProto = Marshal.PtrToStructure<SerializedProto>((IntPtr)protoPtr++);
+          serializedProto.Deserialize(protos[i]);
+        }
+
+        for (var i = protos.Count; i < _size; i++)
+        {
+          var serializedProto = Marshal.PtrToStructure<SerializedProto>((IntPtr)protoPtr++);
+          protos.Add(serializedProto.Deserialize(parser));
+        }
+      }
+    }
   }
 }
