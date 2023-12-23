@@ -5,7 +5,6 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections.Generic;
-
 using FaceDetectionResult = Mediapipe.Tasks.Components.Containers.DetectionResult;
 
 namespace Mediapipe.Tasks.Vision.FaceDetector
