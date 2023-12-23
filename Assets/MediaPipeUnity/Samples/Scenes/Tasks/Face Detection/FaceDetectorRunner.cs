@@ -6,7 +6,7 @@
 
 using System.Collections;
 using UnityEngine;
-
+using UnityEngine.Rendering;
 using FaceDetectionResult = Mediapipe.Tasks.Components.Containers.DetectionResult;
 
 namespace Mediapipe.Unity.Sample.FaceDetection
@@ -63,6 +63,9 @@ namespace Mediapipe.Unity.Sample.FaceDetection
       var flipVertically = transformationOptions.flipVertically;
       var imageProcessingOptions = new Tasks.Vision.Core.ImageProcessingOptions(rotationDegrees: (int)transformationOptions.rotationAngle);
 
+      AsyncGPUReadbackRequest req = default;
+      var waitUntilReqDone = new WaitUntil(() => req.done);
+
       while (true)
       {
         if (isPaused)
@@ -77,8 +80,8 @@ namespace Mediapipe.Unity.Sample.FaceDetection
         }
 
         // Copy current image to TextureFrame
-        var req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
-        yield return new WaitUntil(() => req.done);
+        req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
+        yield return waitUntilReqDone;
 
         if (req.hasError)
         {
