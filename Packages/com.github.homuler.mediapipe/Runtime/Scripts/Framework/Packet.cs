@@ -28,6 +28,8 @@ namespace Mediapipe
       return value;
     }
 
+    public bool IsEmpty() => SafeNativeMethods.mp_Packet__IsEmpty(mpPtr);
+
     internal static Packet CreateEmpty()
     {
       UnsafeNativeMethods.mp_Packet__(out var ptr).Assert();
