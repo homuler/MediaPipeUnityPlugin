@@ -478,7 +478,7 @@ namespace Mediapipe
     ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown.
     /// </remarks>
     /// <exception cref="MediaPipeException">
-    ///   If the <see cref="Packet"/> doesn't contain <see langword="int"/>  data.
+    ///   If the <see cref="Packet"/> doesn't contain <see langword="int"/> data.
     /// </exception>
     public int GetInt()
     {
@@ -499,7 +499,7 @@ namespace Mediapipe
     /// </exception>
     public T GetProto<T>(MessageParser<T> parser) where T : IMessage<T>
     {
-      UnsafeNativeMethods.mp_Packet__GetProto(mpPtr, out var value).Assert();
+      UnsafeNativeMethods.mp_Packet__GetProtoMessageLite(mpPtr, out var value).Assert();
 
       GC.KeepAlive(this);
 
@@ -507,6 +507,27 @@ namespace Mediapipe
       value.Dispose();
 
       return proto;
+    }
+
+    /// <summary>
+    ///   Get the content of the <see cref="Packet"/> as a proto message list.
+    /// </summary>
+    /// <remarks>
+    ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown.
+    /// </remarks>
+    /// <exception cref="MediaPipeException">
+    ///   If the <see cref="Packet"/> doesn't contain a proto message list.
+    /// </exception>
+    public List<T> GetProtoList<T>(MessageParser<T> parser) where T : IMessage<T>
+    {
+      UnsafeNativeMethods.mp_Packet__GetVectorOfProtoMessageLite(mpPtr, out var serializedProtoVector).Assert();
+
+      GC.KeepAlive(this);
+
+      var value = serializedProtoVector.Deserialize(parser);
+      serializedProtoVector.Dispose();
+
+      return value;
     }
 
     /// <summary>

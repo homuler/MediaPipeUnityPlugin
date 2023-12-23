@@ -186,7 +186,10 @@ namespace Mediapipe
         out IntPtr status, out IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_Packet__GetProto(IntPtr packet, out SerializedProto value);
+    public static extern MpReturnCode mp_Packet__GetProtoMessageLite(IntPtr packet, out SerializedProto value);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__GetVectorOfProtoMessageLite(IntPtr packet, out SerializedProtoVector value);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__ValidateAsProtoMessageLite(IntPtr packet, out IntPtr status);

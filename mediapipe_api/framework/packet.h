@@ -108,7 +108,8 @@ MP_CAPI(MpReturnCode) mp__PacketFromDynamicProto__PKc_PKc_i(const char* type_nam
 MP_CAPI(MpReturnCode) mp__PacketFromDynamicProto_At__PKc_PKc_i_ll(const char* type_name, const char* serialized_proto, int size,
                                                                   int64 timestampMicrosec,
                                                                   absl::Status** status_out, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp_Packet__GetProto(mediapipe::Packet* packet, mp_api::SerializedProto* serialized_proto);
+MP_CAPI(MpReturnCode) mp_Packet__GetProtoMessageLite(mediapipe::Packet* packet, mp_api::SerializedProto* value_out);
+MP_CAPI(MpReturnCode) mp_Packet__GetVectorOfProtoMessageLite(mediapipe::Packet* packet, mp_api::StructArray<mp_api::SerializedProto>* value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsProtoMessageLite(mediapipe::Packet* packet, absl::Status** status_out);
 
 /** PacketMap API */
