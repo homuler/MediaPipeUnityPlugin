@@ -28,13 +28,6 @@ MpReturnCode mp_Packet__At__Rt(mediapipe::Packet* packet, mediapipe::Timestamp* 
 
 bool mp_Packet__IsEmpty(mediapipe::Packet* packet) { return packet->IsEmpty(); }
 
-MpReturnCode mp_Packet__ValidateAsProtoMessageLite(mediapipe::Packet* packet, absl::Status** status_out) {
-  TRY
-    *status_out = new absl::Status{packet->ValidateAsProtoMessageLite()};
-    RETURN_CODE(MpReturnCode::Success);
-  CATCH_EXCEPTION
-}
-
 MpReturnCode mp_Packet__Timestamp(mediapipe::Packet* packet, mediapipe::Timestamp** timestamp_out) {
   TRY
     *timestamp_out = new mediapipe::Timestamp{packet->Timestamp()};
@@ -374,6 +367,50 @@ MpReturnCode mp_Packet__ConsumeByteString(mediapipe::Packet* packet, absl::Statu
 MpReturnCode mp_Packet__ValidateAsString(mediapipe::Packet* packet, absl::Status** status_out) {
   TRY
     *status_out = new absl::Status{packet->ValidateAsType<std::string>()};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
+MpReturnCode mp__PacketFromDynamicProto__PKc_PKc_i(const char* type_name, const char* serialized_proto, int size,
+                                                   absl::Status** status_out, mediapipe::Packet** packet_out) {
+  TRY_ALL
+    auto status_or_packet = mediapipe::packet_internal::PacketFromDynamicProto(type_name, std::string(serialized_proto, size));
+    *status_out = new absl::Status{status_or_packet.status()};
+    if (!status_or_packet.ok()) {
+      *packet_out = nullptr;
+    } else {
+      *packet_out = new mediapipe::Packet{status_or_packet.value()};
+    }
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_ALL
+}
+
+MpReturnCode mp__PacketFromDynamicProto_At__PKc_PKc_i_ll(const char* type_name, const char* serialized_proto, int size,
+                                                         int64 timestampMicrosec,
+                                                         absl::Status** status_out, mediapipe::Packet** packet_out) {
+  TRY_ALL
+    auto status_or_packet = mediapipe::packet_internal::PacketFromDynamicProto(type_name, std::string(serialized_proto, size));
+    *status_out = new absl::Status{status_or_packet.status()};
+    if (!status_or_packet.ok()) {
+      *packet_out = nullptr;
+    } else {
+      *packet_out = new mediapipe::Packet{status_or_packet.value().At(mediapipe::Timestamp(timestampMicrosec))};
+    }
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_ALL
+}
+
+MpReturnCode mp_Packet__GetProto(mediapipe::Packet* packet, mp_api::SerializedProto* serialized_proto) {
+  TRY_ALL
+    const auto& proto = packet->GetProtoMessageLite();
+    SerializeProto(proto, serialized_proto);
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_ALL
+}
+
+MpReturnCode mp_Packet__ValidateAsProtoMessageLite(mediapipe::Packet* packet, absl::Status** status_out) {
+  TRY
+    *status_out = new absl::Status{packet->ValidateAsProtoMessageLite()};
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }
