@@ -400,10 +400,22 @@ MpReturnCode mp__PacketFromDynamicProto_At__PKc_PKc_i_ll(const char* type_name, 
   CATCH_ALL
 }
 
-MpReturnCode mp_Packet__GetProto(mediapipe::Packet* packet, mp_api::SerializedProto* serialized_proto) {
+MpReturnCode mp_Packet__GetProtoMessageLite(mediapipe::Packet* packet, mp_api::SerializedProto* serialized_proto) {
   TRY_ALL
     const auto& proto = packet->GetProtoMessageLite();
     SerializeProto(proto, serialized_proto);
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_ALL
+}
+
+MpReturnCode mp_Packet__GetVectorOfProtoMessageLite(mediapipe::Packet* packet, mp_api::StructArray<mp_api::SerializedProto>* value_out) {
+  TRY_ALL
+    const auto status_or_vec = packet->GetVectorOfProtoMessageLitePtrs();
+    if (!status_or_vec.ok()) {
+      LOG(FATAL) << status_or_vec.status().message();
+    }
+
+    SerializeProtoVector(status_or_vec.value(), value_out);
     RETURN_CODE(MpReturnCode::Success);
   CATCH_ALL
 }

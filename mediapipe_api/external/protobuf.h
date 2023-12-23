@@ -46,6 +46,17 @@ inline void SerializeProtoVector(const std::vector<T>& proto_vec, mp_api::Struct
   serialized_proto_vector->size = static_cast<int>(vec_size);
 }
 
+inline void SerializeProtoVector(const std::vector<const google::protobuf::MessageLite*>& proto_vec, mp_api::StructArray<mp_api::SerializedProto>* serialized_proto_vector) {
+  auto vec_size = proto_vec.size();
+  auto data = new mp_api::SerializedProto[vec_size];
+
+  for (auto i = 0; i < vec_size; ++i) {
+    SerializeProto(*proto_vec[i], &data[i]);
+  }
+  serialized_proto_vector->data = data;
+  serialized_proto_vector->size = static_cast<int>(vec_size);
+}
+
 template <class T>
 inline T ParseFromStringAsProto(const char* serialized_data, int size) {
   T proto;
