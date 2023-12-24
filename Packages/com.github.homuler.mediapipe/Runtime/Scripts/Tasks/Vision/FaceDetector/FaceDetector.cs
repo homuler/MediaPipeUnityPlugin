@@ -29,6 +29,8 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     private readonly Tasks.Core.TaskRunner.PacketsCallback _packetCallback;
 #pragma warning restore IDE0052
 
+    private readonly NormalizedRect _normalizedRect = new NormalizedRect();
+
     private FaceDetector(
       CalculatorGraphConfig graphConfig,
       Core.RunningMode runningMode,
@@ -94,11 +96,11 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     /// </returns>
     public FaceDetectionResult Detect(Image image, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
-      var normalizedRect = ConvertToNormalizedRect(imageProcessingOptions, image, roiAllowed: false);
+      ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
 
       var packetMap = new PacketMap();
       packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImage(image));
-      packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProto(normalizedRect));
+      packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProto(_normalizedRect));
       var outputPackets = ProcessImageData(packetMap);
 
       var outDetectionsPacket = outputPackets.At<DetectionVectorPacket, List<Detection>>(_DETECTIONS_OUT_STREAM_NAME);
@@ -125,12 +127,12 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     /// </returns>
     public FaceDetectionResult DetectForVideo(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
-      var normalizedRect = ConvertToNormalizedRect(imageProcessingOptions, image, roiAllowed: false);
+      ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
       var timestampMicrosec = timestampMs * _MICRO_SECONDS_PER_MILLISECOND;
 
       var packetMap = new PacketMap();
       packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImageAt(image, timestampMicrosec));
-      packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProtoAt(normalizedRect, timestampMicrosec));
+      packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProtoAt(_normalizedRect, timestampMicrosec));
       var outputPackets = ProcessVideoData(packetMap);
 
       var outDetectionsPacket = outputPackets.At<DetectionVectorPacket, List<Detection>>(_DETECTIONS_OUT_STREAM_NAME);
@@ -155,12 +157,12 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     ///   input image.
     public void DetectAsync(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
-      var normalizedRect = ConvertToNormalizedRect(imageProcessingOptions, image, roiAllowed: false);
+      ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
       var timestampMicrosec = timestampMs * _MICRO_SECONDS_PER_MILLISECOND;
 
       var packetMap = new PacketMap();
       packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImageAt(image, timestampMicrosec));
-      packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProtoAt(normalizedRect, timestampMicrosec));
+      packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProtoAt(_normalizedRect, timestampMicrosec));
 
       SendLiveStreamData(packetMap);
     }

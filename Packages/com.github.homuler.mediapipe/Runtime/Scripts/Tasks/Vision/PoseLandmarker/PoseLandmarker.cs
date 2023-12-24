@@ -32,6 +32,8 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
     private readonly Tasks.Core.TaskRunner.PacketsCallback _packetCallback;
 #pragma warning restore IDE0052
 
+    private readonly NormalizedRect _normalizedRect = new NormalizedRect();
+
     private PoseLandmarker(
       CalculatorGraphConfig graphConfig,
       Core.RunningMode runningMode,
@@ -103,11 +105,11 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
     /// </returns>
     public PoseLandmarkerResult Detect(Image image, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
-      var normalizedRect = ConvertToNormalizedRect(imageProcessingOptions, image, roiAllowed: false);
+      ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
 
       var packetMap = new PacketMap();
       packetMap.Emplace(_IMAGE_IN_STREAM_NAME, new ImagePacket(image));
-      packetMap.Emplace(_NORM_RECT_STREAM_NAME, new NormalizedRectPacket(normalizedRect));
+      packetMap.Emplace(_NORM_RECT_STREAM_NAME, new NormalizedRectPacket(_normalizedRect));
       var outputPackets = ProcessImageData(packetMap);
 
       return BuildPoseLandmarkerResult(outputPackets);
@@ -126,14 +128,14 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
     /// </returns>
     public PoseLandmarkerResult DetectForVideo(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
-      var normalizedRect = ConvertToNormalizedRect(imageProcessingOptions, image, roiAllowed: false);
+      ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
 
       PacketMap outputPackets = null;
       using (var timestamp = new Timestamp(timestampMs * _MICRO_SECONDS_PER_MILLISECOND))
       {
         var packetMap = new PacketMap();
         packetMap.Emplace(_IMAGE_IN_STREAM_NAME, new ImagePacket(image, timestamp));
-        packetMap.Emplace(_NORM_RECT_STREAM_NAME, new NormalizedRectPacket(normalizedRect).At(timestamp));
+        packetMap.Emplace(_NORM_RECT_STREAM_NAME, new NormalizedRectPacket(_normalizedRect).At(timestamp));
         outputPackets = ProcessVideoData(packetMap);
       }
 
@@ -154,13 +156,13 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
     ///   input image.
     public void DetectAsync(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
-      var normalizedRect = ConvertToNormalizedRect(imageProcessingOptions, image, roiAllowed: false);
+      ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
 
       using (var timestamp = new Timestamp(timestampMs * _MICRO_SECONDS_PER_MILLISECOND))
       {
         var packetMap = new PacketMap();
         packetMap.Emplace(_IMAGE_IN_STREAM_NAME, new ImagePacket(image, timestamp));
-        packetMap.Emplace(_NORM_RECT_STREAM_NAME, new NormalizedRectPacket(normalizedRect).At(timestamp));
+        packetMap.Emplace(_NORM_RECT_STREAM_NAME, new NormalizedRectPacket(_normalizedRect).At(timestamp));
 
         SendLiveStreamData(packetMap);
       }

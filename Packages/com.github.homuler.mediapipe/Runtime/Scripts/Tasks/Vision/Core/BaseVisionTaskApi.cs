@@ -93,20 +93,22 @@ namespace Mediapipe.Tasks.Vision.Core
       _taskRunner.Send(inputs);
     }
 
-    protected NormalizedRect ConvertToNormalizedRect(ImageProcessingOptions? options, Image image, bool roiAllowed = true)
+    private void ResetNormalizedRect(NormalizedRect normalizedRect)
     {
-      var normalizedRect = new NormalizedRect()
-      {
-        Rotation = 0,
-        XCenter = 0.5f,
-        YCenter = 0.5f,
-        Width = 1,
-        Height = 1,
-      };
+      normalizedRect.Rotation = 0;
+      normalizedRect.XCenter = 0.5f;
+      normalizedRect.YCenter = 0.5f;
+      normalizedRect.Width = 1;
+      normalizedRect.Height = 1;
+    }
+
+    protected void ConfigureNormalizedRect(NormalizedRect target, ImageProcessingOptions? options, Image image, bool roiAllowed = true)
+    {
+      ResetNormalizedRect(target);
 
       if (!(options is ImageProcessingOptions optionsValue))
       {
-        return normalizedRect;
+        return;
       }
 
       if (optionsValue.rotationDegrees % 90 != 0)
@@ -116,7 +118,7 @@ namespace Mediapipe.Tasks.Vision.Core
 
       // Convert to radians counter-clockwise.
       // TODO: use System.MathF.PI
-      normalizedRect.Rotation = -optionsValue.rotationDegrees * UnityEngine.Mathf.PI / 180.0f;
+      target.Rotation = -optionsValue.rotationDegrees * UnityEngine.Mathf.PI / 180.0f;
 
       if (optionsValue.regionOfInterest is Components.Containers.RectF roi)
       {
@@ -134,10 +136,10 @@ namespace Mediapipe.Tasks.Vision.Core
           throw new ArgumentException("Expected RectF values to be in [0,1].");
         }
 
-        normalizedRect.XCenter = (roi.left + roi.right) / 2.0f;
-        normalizedRect.YCenter = (roi.top + roi.bottom) / 2.0f;
-        normalizedRect.Width = roi.right - roi.left;
-        normalizedRect.Height = roi.bottom - roi.top;
+        target.XCenter = (roi.left + roi.right) / 2.0f;
+        target.YCenter = (roi.top + roi.bottom) / 2.0f;
+        target.Width = roi.right - roi.left;
+        target.Height = roi.bottom - roi.top;
       }
 
       // For 90° and 270° rotations, we need to swap width and height.
@@ -152,12 +154,11 @@ namespace Mediapipe.Tasks.Vision.Core
       {
         var ih = image.Height();
         var iw = image.Width();
-        var w = normalizedRect.Height * ih / iw;
-        var h = normalizedRect.Width * iw / ih;
-        normalizedRect.Width = w;
-        normalizedRect.Height = h;
+        var w = target.Height * ih / iw;
+        var h = target.Width * iw / ih;
+        target.Width = w;
+        target.Height = h;
       }
-      return normalizedRect;
     }
 
     /// TODO: make it throw BadStatusException
