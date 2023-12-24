@@ -556,6 +556,22 @@ namespace Mediapipe
       serializedProtoVector.Dispose();
     }
 
+    public void GetDetectionList(List<Detection> detections)
+    {
+      UnsafeNativeMethods.mp_Packet__GetVectorOfProtoMessageLite(mpPtr, out var serializedProtoVector).Assert();
+
+      GC.KeepAlive(this);
+
+      foreach (var detection in detections)
+      {
+        detection.Clear();
+      }
+      var size = serializedProtoVector.WriteTo(Detection.Parser, detections);
+      serializedProtoVector.Dispose();
+
+      detections.RemoveRange(size, detections.Count - size);
+    }
+
     /// <summary>
     ///   Validate if the content of the <see cref="Packet"/> is a boolean.
     /// </summary>

@@ -30,7 +30,7 @@ namespace Mediapipe
       }
     }
 
-    public void Deserialize<T>(T proto) where T : IMessage<T>
+    public void WriteTo<T>(T proto) where T : IMessage<T>
     {
       unsafe
       {
