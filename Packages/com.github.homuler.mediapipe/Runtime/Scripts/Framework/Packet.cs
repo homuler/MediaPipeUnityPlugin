@@ -264,11 +264,17 @@ namespace Mediapipe
     /// </summary>
     public static Packet CreateProto<T>(T value) where T : IMessage<T>
     {
-      var arr = value.ToByteArray();
-      UnsafeNativeMethods.mp__PacketFromDynamicProto__PKc_PKc_i(value.Descriptor.FullName, arr, arr.Length, out var statusPtr, out var ptr).Assert();
+      unsafe
+      {
+        var size = value.CalculateSize();
+        var arr = stackalloc byte[size];
+        value.WriteTo(new Span<byte>(arr, size));
 
-      AssertStatusOk(statusPtr);
-      return new Packet(ptr, true);
+        UnsafeNativeMethods.mp__PacketFromDynamicProto__PKc_PKc_i(value.Descriptor.FullName, arr, size, out var statusPtr, out var ptr).Assert();
+
+        AssertStatusOk(statusPtr);
+        return new Packet(ptr, true);
+      }
     }
 
     /// <summary>

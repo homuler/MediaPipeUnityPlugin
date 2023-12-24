@@ -30,12 +30,15 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
 #pragma warning restore IDE0052
 
     private readonly NormalizedRect _normalizedRect = new NormalizedRect();
+    private readonly List<Detection> _detectionsForRead;
 
     private FaceDetector(
       CalculatorGraphConfig graphConfig,
       Core.RunningMode runningMode,
+      List<Detection> detectionsForRead,
       Tasks.Core.TaskRunner.PacketsCallback packetCallback) : base(graphConfig, runningMode, packetCallback)
     {
+      _detectionsForRead = detectionsForRead;
       _packetCallback = packetCallback;
     }
 
@@ -77,10 +80,12 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
         },
         taskOptions: options);
 
+      var detectionsForRead = new List<Detection>(options.numFaces);
       return new FaceDetector(
         taskInfo.GenerateGraphConfig(options.runningMode == Core.RunningMode.LIVE_STREAM),
         options.runningMode,
-        BuildPacketsCallback(options.resultCallback, options.numFaces));
+        detectionsForRead,
+        BuildPacketsCallback(options, detectionsForRead));
     }
 
     /// <summary>
@@ -96,19 +101,53 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     /// </returns>
     public FaceDetectionResult Detect(Image image, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
+      using var outDetectionsPacket = DetectInternal(image, imageProcessingOptions);
+      if (outDetectionsPacket.IsEmpty())
+      {
+        return FaceDetectionResult.Empty;
+      }
+      outDetectionsPacket.GetDetectionList(_detectionsForRead);
+      return FaceDetectionResult.CreateFrom(_detectionsForRead);
+    }
+
+    /// <summary>
+    ///   Performs face detection on the provided MediaPipe Image.
+    ///
+    ///   Only use this method when the <see cref="FaceDetector" /> is created with the image running mode.
+    /// </summary>
+    /// <param name="result">
+    ///   <see cref="FaceDetectionResult"/> to which the result will be written.
+    ///
+    ///   A face detection result object that contains a list of face detections,
+    ///   each detection has a bounding box that is expressed in the unrotated input
+    ///   frame of reference coordinates system, i.e. in `[0,image_width) x [0,
+    ///   image_height)`, which are the dimensions of the underlying image data.
+    /// </param>
+    /// <returns>
+    ///   <see langword="true"/> if some faces are detected, <see langword="false"/> otherwise.
+    /// </returns>
+    public bool TryDetect(Image image, Core.ImageProcessingOptions? imageProcessingOptions, ref FaceDetectionResult result)
+    {
+      using var outDetectionsPacket = DetectInternal(image, imageProcessingOptions);
+      if (outDetectionsPacket.IsEmpty())
+      {
+        return false;
+      }
+      outDetectionsPacket.GetDetectionList(_detectionsForRead);
+      FaceDetectionResult.Copy(_detectionsForRead, ref result);
+      return true;
+    }
+
+    public Packet DetectInternal(Image image, Core.ImageProcessingOptions? imageProcessingOptions)
+    {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
 
       var packetMap = new PacketMap();
       packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImage(image));
       packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProto(_normalizedRect));
-      var outputPackets = ProcessImageData(packetMap);
 
-      var outDetectionsPacket = outputPackets.At<DetectionVectorPacket, List<Detection>>(_DETECTIONS_OUT_STREAM_NAME);
-      if (outDetectionsPacket.IsEmpty())
-      {
-        return FaceDetectionResult.Empty;
-      }
-      return FaceDetectionResult.CreateFrom(outDetectionsPacket.Get());
+      using var outputPackets = ProcessImageData(packetMap);
+      return outputPackets.At(_DETECTIONS_OUT_STREAM_NAME);
     }
 
     /// <summary>
@@ -167,15 +206,15 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       SendLiveStreamData(packetMap);
     }
 
-    private static Tasks.Core.TaskRunner.PacketsCallback BuildPacketsCallback(FaceDetectorOptions.ResultCallback resultCallback, int numFaces)
+    private static Tasks.Core.TaskRunner.PacketsCallback BuildPacketsCallback(FaceDetectorOptions options, List<Detection> detectionsForRead)
     {
+      var resultCallback = options.resultCallback;
       if (resultCallback == null)
       {
         return null;
       }
 
-      var detections = new List<Detection>(numFaces);
-      var result = FaceDetectionResult.Alloc(numFaces);
+      var result = FaceDetectionResult.Alloc(options.numFaces);
 
       return (PacketMap outputPackets) =>
       {
@@ -202,8 +241,8 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
           return;
         }
 
-        outDetectionsPacket.GetDetectionList(detections);
-        FaceDetectionResult.Copy(detections, ref result);
+        outDetectionsPacket.GetDetectionList(detectionsForRead);
+        FaceDetectionResult.Copy(detectionsForRead, ref result);
 
         resultCallback(result, image, (int)timestamp);
       };

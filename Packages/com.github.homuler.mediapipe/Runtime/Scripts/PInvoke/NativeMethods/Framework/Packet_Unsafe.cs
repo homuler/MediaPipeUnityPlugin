@@ -178,7 +178,7 @@ namespace Mediapipe
 
     #region Proto
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp__PacketFromDynamicProto__PKc_PKc_i(string typeName, byte[] proto, int size,
+    public static extern unsafe MpReturnCode mp__PacketFromDynamicProto__PKc_PKc_i(string typeName, byte* proto, int size,
         out IntPtr status, out IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]

@@ -65,6 +65,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection
 
       AsyncGPUReadbackRequest req = default;
       var waitUntilReqDone = new WaitUntil(() => req.done);
+      var result = FaceDetectionResult.Alloc(options.numFaces);
 
       while (true)
       {
@@ -93,8 +94,15 @@ namespace Mediapipe.Unity.Sample.FaceDetection
         switch (taskApi.runningMode)
         {
           case Tasks.Vision.Core.RunningMode.IMAGE:
-            var result = taskApi.Detect(image, imageProcessingOptions);
-            _detectionResultAnnotationController.DrawNow(result);
+            if (taskApi.TryDetect(image, imageProcessingOptions, ref result))
+            {
+              _detectionResultAnnotationController.DrawNow(result);
+            }
+            else
+            {
+              // clear the annotation
+              _detectionResultAnnotationController.DrawNow(FaceDetectionResult.Empty);
+            }
             break;
           case Tasks.Vision.Core.RunningMode.VIDEO:
             result = taskApi.DetectForVideo(image, (int)GetCurrentTimestampMillisec(), imageProcessingOptions);
