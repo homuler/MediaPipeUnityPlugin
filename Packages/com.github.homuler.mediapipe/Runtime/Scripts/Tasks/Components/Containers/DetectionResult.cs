@@ -98,6 +98,8 @@ namespace Mediapipe.Tasks.Components.Containers
       this.detections = detections;
     }
 
+    public static readonly DetectionResult Empty = new DetectionResult(new List<Detection>());
+
     public static DetectionResult CreateFrom(IReadOnlyList<Mediapipe.Detection> detectionsProto)
     {
       var detections = new List<Detection>(detectionsProto.Count);

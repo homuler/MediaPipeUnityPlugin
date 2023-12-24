@@ -185,13 +185,13 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
         {
           return;
         }
-        var image = outImagePacket.GetImage();
+        using var image = outImagePacket.GetImage();
         var timestamp = outImagePacket.TimestampMicroseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
         if (outDetectionsPacket.IsEmpty())
         {
           resultCallback(
-            new FaceDetectionResult(new List<Components.Containers.Detection>()),
+            FaceDetectionResult.Empty,
             image,
             (int)timestamp);
           return;
