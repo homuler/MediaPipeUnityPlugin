@@ -105,8 +105,15 @@ namespace Mediapipe.Unity.Sample.FaceDetection
             }
             break;
           case Tasks.Vision.Core.RunningMode.VIDEO:
-            result = taskApi.DetectForVideo(image, (int)GetCurrentTimestampMillisec(), imageProcessingOptions);
-            _detectionResultAnnotationController.DrawNow(result);
+            if (taskApi.TryDetectForVideo(image, (int)GetCurrentTimestampMillisec(), imageProcessingOptions, ref result))
+            {
+              _detectionResultAnnotationController.DrawNow(result);
+            }
+            else
+            {
+              // clear the annotation
+              _detectionResultAnnotationController.DrawNow(FaceDetectionResult.Empty);
+            }
             break;
           case Tasks.Vision.Core.RunningMode.LIVE_STREAM:
             taskApi.DetectAsync(image, (int)GetCurrentTimestampMillisec(), imageProcessingOptions);

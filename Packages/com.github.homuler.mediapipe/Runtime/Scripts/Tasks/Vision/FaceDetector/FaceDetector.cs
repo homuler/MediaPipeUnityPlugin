@@ -99,7 +99,7 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     ///   frame of reference coordinates system, i.e. in `[0,image_width) x [0,
     ///   image_height)`, which are the dimensions of the underlying image data.
     /// </returns>
-    public FaceDetectionResult Detect(Image image, Core.ImageProcessingOptions? imageProcessingOptions = null)
+    public FaceDetectionResult Detect(Image image, Core.ImageProcessingOptions? imageProcessingOptions)
     {
       using var outDetectionsPacket = DetectInternal(image, imageProcessingOptions);
       if (outDetectionsPacket.IsEmpty())
@@ -164,7 +164,49 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     ///   frame of reference coordinates system, i.e. in `[0,image_width) x [0,
     ///   image_height)`, which are the dimensions of the underlying image data.
     /// </returns>
-    public FaceDetectionResult DetectForVideo(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions = null)
+    public FaceDetectionResult DetectForVideo(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions)
+    {
+      using var outDetectionsPacket = DetectVideoInternal(image, timestampMs, imageProcessingOptions);
+      if (outDetectionsPacket.IsEmpty())
+      {
+        return FaceDetectionResult.Empty;
+      }
+      outDetectionsPacket.GetDetectionList(_detectionsForRead);
+      return FaceDetectionResult.CreateFrom(_detectionsForRead);
+    }
+
+    /// <summary>
+    ///   Performs face detection on the provided video frames.
+    ///
+    ///   Only use this method when the FaceDetector is created with the video
+    ///   running mode. It's required to provide the video frame's timestamp (in
+    ///   milliseconds) along with the video frame. The input timestamps should be
+    ///   monotonically increasing for adjacent calls of this method.
+    /// </summary>
+    /// <param name="result">
+    ///   <see cref="FaceDetectionResult"/> to which the result will be written.
+    ///
+    ///   A face detection result object that contains a list of face detections,
+    ///   each detection has a bounding box that is expressed in the unrotated input
+    ///   frame of reference coordinates system, i.e. in `[0,image_width) x [0,
+    ///   image_height)`, which are the dimensions of the underlying image data.
+    /// </param>
+    /// <returns>
+    ///   <see langword="true"/> if some faces are detected, <see langword="false"/> otherwise.
+    /// </returns>
+    public bool TryDetectForVideo(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions, ref FaceDetectionResult result)
+    {
+      using var outDetectionsPacket = DetectVideoInternal(image, timestampMs, imageProcessingOptions);
+      if (outDetectionsPacket.IsEmpty())
+      {
+        return false;
+      }
+      outDetectionsPacket.GetDetectionList(_detectionsForRead);
+      FaceDetectionResult.Copy(_detectionsForRead, ref result);
+      return true;
+    }
+
+    public Packet DetectVideoInternal(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions)
     {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
       var timestampMicrosec = timestampMs * _MICRO_SECONDS_PER_MILLISECOND;
@@ -172,14 +214,9 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       var packetMap = new PacketMap();
       packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImageAt(image, timestampMicrosec));
       packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProtoAt(_normalizedRect, timestampMicrosec));
-      var outputPackets = ProcessVideoData(packetMap);
 
-      var outDetectionsPacket = outputPackets.At<DetectionVectorPacket, List<Detection>>(_DETECTIONS_OUT_STREAM_NAME);
-      if (outDetectionsPacket.IsEmpty())
-      {
-        return new FaceDetectionResult(new List<Components.Containers.Detection>());
-      }
-      return FaceDetectionResult.CreateFrom(outDetectionsPacket.Get());
+      using var outputPackets = ProcessVideoData(packetMap);
+      return outputPackets.At(_DETECTIONS_OUT_STREAM_NAME);
     }
 
     /// <summary>
