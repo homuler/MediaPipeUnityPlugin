@@ -80,7 +80,7 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       return new FaceDetector(
         taskInfo.GenerateGraphConfig(options.runningMode == Core.RunningMode.LIVE_STREAM),
         options.runningMode,
-        BuildPacketsCallback(options.resultCallback, new List<Detection>(options.numFaces)));
+        BuildPacketsCallback(options.resultCallback, options.numFaces));
     }
 
     /// <summary>
@@ -106,7 +106,7 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       var outDetectionsPacket = outputPackets.At<DetectionVectorPacket, List<Detection>>(_DETECTIONS_OUT_STREAM_NAME);
       if (outDetectionsPacket.IsEmpty())
       {
-        return new FaceDetectionResult(new List<Components.Containers.Detection>());
+        return FaceDetectionResult.Empty;
       }
       return FaceDetectionResult.CreateFrom(outDetectionsPacket.Get());
     }
@@ -167,12 +167,15 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       SendLiveStreamData(packetMap);
     }
 
-    private static Tasks.Core.TaskRunner.PacketsCallback BuildPacketsCallback(FaceDetectorOptions.ResultCallback resultCallback, List<Detection> detections)
+    private static Tasks.Core.TaskRunner.PacketsCallback BuildPacketsCallback(FaceDetectorOptions.ResultCallback resultCallback, int numFaces)
     {
       if (resultCallback == null)
       {
         return null;
       }
+
+      var detections = new List<Detection>(numFaces);
+      var result = FaceDetectionResult.Alloc(numFaces);
 
       return (PacketMap outputPackets) =>
       {
@@ -199,8 +202,10 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
           return;
         }
 
-        outDetectionsPacket.GetProtoList(Detection.Parser, detections);
-        resultCallback(FaceDetectionResult.CreateFrom(detections), image, (int)timestamp);
+        outDetectionsPacket.GetDetectionList(detections);
+        FaceDetectionResult.Copy(detections, ref result);
+
+        resultCallback(result, image, (int)timestamp);
       };
     }
   }

@@ -11,6 +11,10 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
   /// </summary>
   public sealed class FaceDetectorOptions : Tasks.Core.ITaskOptions
   {
+    /// <remarks>
+    ///   Some field of <paramref name="detectionResult"/> can be reused to reduce GC.Alloc.
+    ///   If you need to refer to the data later, copy the data.
+    /// </remarks>
     /// <param name="detectionResult">
     ///   face detection result object that contains a list of face detections,
     ///   each detection has a bounding box that is expressed in the unrotated
