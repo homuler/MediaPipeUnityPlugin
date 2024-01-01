@@ -180,15 +180,15 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
 
       return (PacketMap outputPackets) =>
       {
-        var outImagePacket = outputPackets.At<ImagePacket, Image>(_IMAGE_OUT_STREAM_NAME);
+        var outImagePacket = outputPackets.At(_IMAGE_OUT_STREAM_NAME);
         if (outImagePacket == null || outImagePacket.IsEmpty())
         {
           return;
         }
 
-        var image = outImagePacket.Get();
+        var image = outImagePacket.GetImage();
         var faceLandmarkerResult = BuildFaceLandmarkerResult(outputPackets);
-        var timestamp = outImagePacket.Timestamp().Microseconds() / _MICRO_SECONDS_PER_MILLISECOND;
+        var timestamp = outImagePacket.TimestampMicroseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
         resultCallback(faceLandmarkerResult, image, timestamp);
       };
