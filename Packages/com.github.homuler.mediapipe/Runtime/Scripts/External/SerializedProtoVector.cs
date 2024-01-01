@@ -52,7 +52,7 @@ namespace Mediapipe
     /// </remarks>
     /// <param name="protos">A list of <typeparamref name="T" /> to populate</param>
     /// <returns>
-    ///   The number of overwritten elements in <paramref name="protos" />.
+    ///   The number of written elements in <paramref name="protos" />.
     /// </returns>
     public int WriteTo<T>(pb::MessageParser<T> parser, List<T> protos) where T : pb::IMessage<T>
     {

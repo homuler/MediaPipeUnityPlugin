@@ -4,8 +4,8 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using Mediapipe.Tasks.Components.Containers;
 using UnityEngine;
 
@@ -19,38 +19,96 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
     /// <summary>
     ///   Detected face landmarks in normalized image coordinates.
     /// </summary>
-    public readonly IReadOnlyList<NormalizedLandmarks> faceLandmarks;
+    public readonly List<NormalizedLandmarks> faceLandmarks;
     /// <summary>
     ///   Optional face blendshapes results.
     /// </summary>
-    public readonly IReadOnlyList<Classifications> faceBlendshapes;
+    public readonly List<Classifications> faceBlendshapes;
     /// <summary>
     ///   Optional facial transformation matrix.
     /// </summary>
-    public readonly IReadOnlyList<Matrix4x4> facialTransformationMatrixes;
+    public readonly List<Matrix4x4> facialTransformationMatrixes;
 
-    internal FaceLandmarkerResult(IReadOnlyList<NormalizedLandmarks> faceLandmarks,
-        IReadOnlyList<Classifications> faceBlendshapes, IReadOnlyList<Matrix4x4> facialTransformationMatrixes)
+    internal FaceLandmarkerResult(List<NormalizedLandmarks> faceLandmarks,
+        List<Classifications> faceBlendshapes, List<Matrix4x4> facialTransformationMatrixes)
     {
       this.faceLandmarks = faceLandmarks;
       this.faceBlendshapes = faceBlendshapes;
       this.facialTransformationMatrixes = facialTransformationMatrixes;
     }
 
-    // TODO: add parameterless constructors
-    internal static FaceLandmarkerResult Empty()
-      => new FaceLandmarkerResult(new List<NormalizedLandmarks>(), new List<Classifications>(), new List<Matrix4x4>());
-
-    internal static FaceLandmarkerResult CreateFrom(IReadOnlyList<NormalizedLandmarkList> faceLandmarksProto,
-        IReadOnlyList<ClassificationList> faceBlendshapesProto, IReadOnlyList<FaceGeometry.Proto.FaceGeometry> facialTransformationMatrixesProto)
+    public static FaceLandmarkerResult Alloc(int capacity, bool outputFaceBlendshapes = false, bool outputFaceTransformationMatrixes = false)
     {
-      var faceLandmarks = faceLandmarksProto.Select(NormalizedLandmarks.CreateFrom).ToList();
-      var faceBlendshapes = faceBlendshapesProto == null ? new List<Classifications>() :
-          faceBlendshapesProto.Select(x => Classifications.CreateFrom(x)).ToList();
-      var facialTransformationMatrixes = facialTransformationMatrixesProto == null ? new List<Matrix4x4>() :
-          facialTransformationMatrixesProto.Select(x => x.PoseTransformMatrix.ToMatrix4x4()).ToList();
-
+      var faceLandmarks = new List<NormalizedLandmarks>(capacity);
+      var faceBlendshapes = outputFaceBlendshapes ? new List<Classifications>(capacity) : null;
+      var facialTransformationMatrixes = outputFaceTransformationMatrixes ? new List<Matrix4x4>(capacity) : null;
       return new FaceLandmarkerResult(faceLandmarks, faceBlendshapes, facialTransformationMatrixes);
+    }
+
+    internal static FaceLandmarkerResult CreateFrom(List<NormalizedLandmarkList> faceLandmarksProto,
+        List<ClassificationList> faceBlendshapesProto, List<FaceGeometry.Proto.FaceGeometry> facialTransformationMatrixesProto)
+    {
+      var result = default(FaceLandmarkerResult);
+
+      Copy(faceLandmarksProto, faceBlendshapesProto, facialTransformationMatrixesProto, ref result);
+      return result;
+    }
+
+    internal static void Copy(List<NormalizedLandmarkList> sourceFaceLandmarks, List<ClassificationList> sourceFaceBlendshapes,
+        List<FaceGeometry.Proto.FaceGeometry> faceGeometries, ref FaceLandmarkerResult destination)
+    {
+      var faceLandmarksList = destination.faceLandmarks ?? new List<NormalizedLandmarks>(sourceFaceLandmarks.Count);
+      if (sourceFaceLandmarks.Count < faceLandmarksList.Count)
+      {
+        faceLandmarksList.RemoveRange(sourceFaceLandmarks.Count, faceLandmarksList.Count - sourceFaceLandmarks.Count);
+      }
+      var copyCount = Math.Min(sourceFaceLandmarks.Count, faceLandmarksList.Count);
+      for (var i = 0; i < copyCount; i++)
+      {
+        var faceLandmarks = faceLandmarksList[i];
+        NormalizedLandmarks.Copy(sourceFaceLandmarks[i], ref faceLandmarks);
+        faceLandmarksList[i] = faceLandmarks;
+      }
+
+      for (var i = copyCount; i < sourceFaceLandmarks.Count; i++)
+      {
+        faceLandmarksList.Add(NormalizedLandmarks.CreateFrom(sourceFaceLandmarks[i]));
+      }
+
+      List<Classifications> faceBlendshapesList = null;
+      if (sourceFaceBlendshapes != null)
+      {
+        faceBlendshapesList = destination.faceBlendshapes ?? new List<Classifications>(sourceFaceBlendshapes.Count);
+        if (sourceFaceBlendshapes.Count < faceBlendshapesList.Count)
+        {
+          faceBlendshapesList.RemoveRange(sourceFaceBlendshapes.Count, faceBlendshapesList.Count - sourceFaceBlendshapes.Count);
+        }
+        copyCount = Math.Min(sourceFaceBlendshapes.Count, faceBlendshapesList.Count);
+        for (var i = 0; i < copyCount; i++)
+        {
+          var faceBlendshapes = faceBlendshapesList[i];
+          Classifications.Copy(sourceFaceBlendshapes[i], ref faceBlendshapes);
+          faceBlendshapesList[i] = faceBlendshapes;
+        }
+
+        for (var i = copyCount; i < sourceFaceBlendshapes.Count; i++)
+        {
+          faceBlendshapesList.Add(Classifications.CreateFrom(sourceFaceBlendshapes[i]));
+        }
+      }
+
+      List<Matrix4x4> faceGeometriesList = null;
+      if (faceGeometries != null)
+      {
+        faceGeometriesList = destination.facialTransformationMatrixes ?? new List<Matrix4x4>(faceGeometries.Count);
+        faceGeometriesList.Clear();
+        for (var i = 0; i < faceGeometries.Count; i++)
+        {
+          faceGeometriesList.Add(faceGeometries[i].PoseTransformMatrix.ToMatrix4x4());
+        }
+      }
+
+      destination = new FaceLandmarkerResult(faceLandmarksList, faceBlendshapesList, faceGeometriesList);
     }
 
     public override string ToString()

@@ -241,9 +241,7 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
     }
 
     private bool TryBuildFaceLandmarkerResult(PacketMap outputPackets, ref FaceLandmarkerResult result)
-    {
-      return TryBuildFaceLandmarkerResult(outputPackets, _faceLandmarksForRead, _faceBlendshapesForRead, _faceGeometriesForRead, ref result);
-    }
+        => TryBuildFaceLandmarkerResult(outputPackets, _faceLandmarksForRead, _faceBlendshapesForRead, _faceGeometriesForRead, ref result);
 
     private static Tasks.Core.TaskRunner.PacketsCallback BuildPacketsCallback(FaceLandmarkerOptions options,
         List<NormalizedLandmarkList> faceLandmarksForRead,
