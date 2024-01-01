@@ -7,6 +7,7 @@
 using System;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
+using UnityEngine;
 
 namespace Mediapipe
 {
@@ -63,6 +64,11 @@ namespace Mediapipe
     /// </remarks>
     public ImageFrame(ImageFormat.Types.Format format, int width, int height, int widthStep, NativeArray<byte> pixelData)
           : this(format, width, height, widthStep, pixelData, _VoidDeleter)
+    { }
+
+    // TODO: detect format from the texture
+    public ImageFrame(ImageFormat.Types.Format format, Texture2D texture) :
+        this(format, texture.width, texture.height, format.NumberOfChannels() * texture.width, texture.GetRawTextureData<byte>())
     { }
 
     protected override void DeleteMpPtr()
