@@ -115,6 +115,9 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     ///
     ///   Only use this method when the <see cref="FaceDetector" /> is created with the image running mode.
     /// </summary>
+    /// <remarks>
+    ///   When faces are not found, <paramref name="result"/> won't be overwritten.
+    /// </remarks>
     /// <param name="result">
     ///   <see cref="FaceDetectionResult"/> to which the result will be written.
     ///
@@ -183,6 +186,9 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     ///   milliseconds) along with the video frame. The input timestamps should be
     ///   monotonically increasing for adjacent calls of this method.
     /// </summary>
+    /// <remarks>
+    ///   When faces are not found, <paramref name="result"/> won't be overwritten.
+    /// </remarks>
     /// <param name="result">
     ///   <see cref="FaceDetectionResult"/> to which the result will be written.
     ///
