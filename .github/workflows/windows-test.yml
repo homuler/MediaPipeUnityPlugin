@@ -33,6 +33,8 @@ jobs:
             Packages/com.github.homuler.mediapipe/Runtime/Plugins/mediapipe_c.dll
             Packages/com.github.homuler.mediapipe/Runtime/Plugins/Protobuf/*.dll
             Packages/com.github.homuler.mediapipe/Runtime/Scripts/Protobuf/**/*.cs
+            Packages/com.github.homuler.mediapipe/PackageResources/MediaPipe/*.bytes
+            Packages/com.github.homuler.mediapipe/PackageResources/MediaPipe/*.txt
           key: libs-windows-2019-v1-${{ hashFiles('cache_key.txt') }}
 
       - name: Remove cache_key.txt

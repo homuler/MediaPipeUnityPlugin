@@ -32,6 +32,8 @@ jobs:
             Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.dylib
             Packages/com.github.homuler.mediapipe/Runtime/Plugins/Protobuf/*.dll
             Packages/com.github.homuler.mediapipe/Runtime/Scripts/Protobuf/**/*.cs
+            Packages/com.github.homuler.mediapipe/PackageResources/MediaPipe/*.bytes
+            Packages/com.github.homuler.mediapipe/PackageResources/MediaPipe/*.txt
           key: libs-macos-11-v1-${{ hashFiles('cache_key.txt') }}
 
       # Setup build tools

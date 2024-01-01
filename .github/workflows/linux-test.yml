@@ -19,8 +19,6 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
 
-
-
       # Cache built libraries
       - name: Concat native library source files
         run: |
@@ -34,6 +32,8 @@ jobs:
             Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.so
             Packages/com.github.homuler.mediapipe/Runtime/Plugins/Protobuf/*.dll
             Packages/com.github.homuler.mediapipe/Runtime/Scripts/Protobuf/**/*.cs
+            Packages/com.github.homuler.mediapipe/PackageResources/MediaPipe/*.bytes
+            Packages/com.github.homuler.mediapipe/PackageResources/MediaPipe/*.txt
           key: libs-ubuntu-20.04-v1-${{ hashFiles('cache_key.txt') }}
 
       # Setup build tools
