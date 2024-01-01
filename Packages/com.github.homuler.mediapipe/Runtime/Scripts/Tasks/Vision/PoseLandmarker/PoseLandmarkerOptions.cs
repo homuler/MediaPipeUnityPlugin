@@ -17,10 +17,10 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
     /// <param name="image">
     ///   The input image that the pose landmarker runs on.
     /// </param>
-    /// <param name="timestampMs">
+    /// <param name="timestampMillisec">
     ///   The input timestamp in milliseconds.
     /// </param>
-    public delegate void ResultCallback(PoseLandmarkerResult poseLandmarksResult, Image image, int timestampMs);
+    public delegate void ResultCallback(PoseLandmarkerResult poseLandmarksResult, Image image, long timestampMillisec);
 
     /// <summary>
     ///   Base options for the pose landmarker task.

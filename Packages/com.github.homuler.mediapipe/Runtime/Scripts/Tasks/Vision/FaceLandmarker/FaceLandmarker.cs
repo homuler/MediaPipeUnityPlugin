@@ -129,12 +129,12 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
     /// <returns>
     ///   The face landmarks detection results.
     /// </returns>
-    public FaceLandmarkerResult DetectForVideo(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions = null)
+    public FaceLandmarkerResult DetectForVideo(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
 
       PacketMap outputPackets = null;
-      using (var timestamp = new Timestamp(timestampMs * _MICRO_SECONDS_PER_MILLISECOND))
+      using (var timestamp = new Timestamp(timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND))
       {
         var packetMap = new PacketMap();
         packetMap.Emplace(_IMAGE_IN_STREAM_NAME, new ImagePacket(image, timestamp));
@@ -157,11 +157,11 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
     ///   input. To lower the overall latency, face landmarker may drop the input
     ///   images if needed. In other words, it's not guaranteed to have output per
     ///   input image.
-    public void DetectAsync(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions = null)
+    public void DetectAsync(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
 
-      using (var timestamp = new Timestamp(timestampMs * _MICRO_SECONDS_PER_MILLISECOND))
+      using (var timestamp = new Timestamp(timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND))
       {
         var packetMap = new PacketMap();
         packetMap.Emplace(_IMAGE_IN_STREAM_NAME, new ImagePacket(image, timestamp));
@@ -190,7 +190,7 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
         var faceLandmarkerResult = BuildFaceLandmarkerResult(outputPackets);
         var timestamp = outImagePacket.Timestamp().Microseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
-        resultCallback(faceLandmarkerResult, image, (int)timestamp);
+        resultCallback(faceLandmarkerResult, image, timestamp);
       };
     }
 

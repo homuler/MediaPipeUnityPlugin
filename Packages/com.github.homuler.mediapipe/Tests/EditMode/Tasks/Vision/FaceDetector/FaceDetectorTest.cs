@@ -239,7 +239,7 @@ namespace Mediapipe.Tests.Tasks.Vision
     {
       var isCallbackInvoked = false;
       var result = DetectionResult.Alloc(0);
-      void callback(DetectionResult detectionResult, Image image, int timestamp)
+      void callback(DetectionResult detectionResult, Image image, long timestamp)
       {
         isCallbackInvoked = true;
         result = detectionResult;
@@ -277,7 +277,7 @@ namespace Mediapipe.Tests.Tasks.Vision
     {
       var isCallbackInvoked = false;
       var result = DetectionResult.Alloc(0);
-      void callback(DetectionResult detectionResult, Image image, int timestamp)
+      void callback(DetectionResult detectionResult, Image image, long timestamp)
       {
         isCallbackInvoked = true;
         result = detectionResult;

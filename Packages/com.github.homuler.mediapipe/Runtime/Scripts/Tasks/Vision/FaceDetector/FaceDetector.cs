@@ -170,9 +170,9 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     ///   frame of reference coordinates system, i.e. in `[0,image_width) x [0,
     ///   image_height)`, which are the dimensions of the underlying image data.
     /// </returns>
-    public FaceDetectionResult DetectForVideo(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions = null)
+    public FaceDetectionResult DetectForVideo(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
-      using var outDetectionsPacket = DetectVideoInternal(image, timestampMs, imageProcessingOptions);
+      using var outDetectionsPacket = DetectVideoInternal(image, timestampMillisec, imageProcessingOptions);
       if (outDetectionsPacket.IsEmpty())
       {
         _emptyResult.Clear();
@@ -204,9 +204,9 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     /// <returns>
     ///   <see langword="true"/> if some faces are detected, <see langword="false"/> otherwise.
     /// </returns>
-    public bool TryDetectForVideo(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions, ref FaceDetectionResult result)
+    public bool TryDetectForVideo(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions, ref FaceDetectionResult result)
     {
-      using var outDetectionsPacket = DetectVideoInternal(image, timestampMs, imageProcessingOptions);
+      using var outDetectionsPacket = DetectVideoInternal(image, timestampMillisec, imageProcessingOptions);
       if (outDetectionsPacket.IsEmpty())
       {
         return false;
@@ -216,10 +216,10 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       return true;
     }
 
-    private Packet DetectVideoInternal(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions)
+    private Packet DetectVideoInternal(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions)
     {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
-      var timestampMicrosec = timestampMs * _MICRO_SECONDS_PER_MILLISECOND;
+      var timestampMicrosec = timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND;
 
       var packetMap = new PacketMap();
       packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImageAt(image, timestampMicrosec));
@@ -241,10 +241,10 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     ///   input. To lower the overall latency, face detector may drop the input
     ///   images if needed. In other words, it's not guaranteed to have output per
     ///   input image.
-    public void DetectAsync(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions = null)
+    public void DetectAsync(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
-      var timestampMicrosec = timestampMs * _MICRO_SECONDS_PER_MILLISECOND;
+      var timestampMicrosec = timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND;
 
       var packetMap = new PacketMap();
       packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImageAt(image, timestampMicrosec));
@@ -286,14 +286,14 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
           resultCallback(
             emptyResult,
             image,
-            (int)timestamp);
+            timestamp);
           return;
         }
 
         outDetectionsPacket.GetDetectionList(detectionsForRead);
         FaceDetectionResult.Copy(detectionsForRead, ref result);
 
-        resultCallback(result, image, (int)timestamp);
+        resultCallback(result, image, timestamp);
       };
     }
   }

@@ -110,7 +110,7 @@ namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
       }
     }
 
-    private void OnFaceLandmarkDetectionOutput(FaceLandmarkerResult result, Image image, int timestamp)
+    private void OnFaceLandmarkDetectionOutput(FaceLandmarkerResult result, Image image, long timestamp)
     {
       _faceLandmarkerResultAnnotationController.DrawLater(result);
     }

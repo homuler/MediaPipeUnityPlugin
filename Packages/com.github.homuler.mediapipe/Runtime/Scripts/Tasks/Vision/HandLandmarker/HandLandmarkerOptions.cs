@@ -17,10 +17,10 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
     /// <param name="image">
     ///   The input image that the hand landmarker runs on.
     /// </param>
-    /// <param name="timestampMs">
+    /// <param name="timestampMillisec">
     ///   The input timestamp in milliseconds.
     /// </param>
-    public delegate void ResultCallback(HandLandmarkerResult handLandmarksResult, Image image, int timestampMs);
+    public delegate void ResultCallback(HandLandmarkerResult handLandmarksResult, Image image, long timestampMillisec);
 
     /// <summary>
     ///   Base options for the hand landmarker task.
