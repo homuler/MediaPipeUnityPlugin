@@ -41,13 +41,10 @@ namespace Mediapipe.Tasks.Components.Containers
 
     public static Detection CreateFrom(Mediapipe.Detection proto)
     {
-      var categories = new List<Category>(proto.Score.Count);
-      var keypointsCount = proto.LocationData.RelativeKeypoints.Count;
-      var keypoints = keypointsCount > 0 ? new List<NormalizedKeypoint>(keypointsCount) : null;
-      var detection = new Detection(categories, new Rect(), keypoints);
+      var result = default(Detection);
 
-      Copy(proto, ref detection);
-      return detection;
+      Copy(proto, ref result);
+      return result;
     }
 
     public static void Copy(Mediapipe.Detection proto, ref Detection destination)
@@ -135,20 +132,17 @@ namespace Mediapipe.Tasks.Components.Containers
       this.detections = detections;
     }
 
-    public void Clear() => detections.Clear();
-
-    public static DetectionResult Empty => Alloc(0);
-
     public static DetectionResult Alloc(int capacity) => new DetectionResult(new List<Detection>(capacity));
 
-    internal static DetectionResult CreateFrom(List<Mediapipe.Detection> detectionsProto)
+    public static DetectionResult CreateFrom(List<Mediapipe.Detection> detectionsProto)
     {
-      var result = Alloc(detectionsProto.Count);
+      var result = default(DetectionResult);
+
       Copy(detectionsProto, ref result);
       return result;
     }
 
-    internal static void Copy(List<Mediapipe.Detection> source, ref DetectionResult destination)
+    public static void Copy(List<Mediapipe.Detection> source, ref DetectionResult destination)
     {
       var detections = destination.detections ?? new List<Detection>(source.Count);
       detections.ResizeTo(source.Count);
@@ -173,6 +167,8 @@ namespace Mediapipe.Tasks.Components.Containers
         Detection.Copy(nativeDetection, ref detection);
         detections[i++] = detection;
       }
+
+      destination = new DetectionResult(detections);
     }
 
     public override string ToString() => $"{{ \"detections\": {Util.Format(detections)} }}";

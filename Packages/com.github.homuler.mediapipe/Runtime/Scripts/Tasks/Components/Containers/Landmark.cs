@@ -167,21 +167,33 @@ namespace Mediapipe.Tasks.Components.Containers
   /// </summary>
   public readonly struct Landmarks
   {
-    public readonly IReadOnlyList<Landmark> landmarks;
+    public readonly List<Landmark> landmarks;
 
-    internal Landmarks(IReadOnlyList<Landmark> landmarks)
+    internal Landmarks(List<Landmark> landmarks)
     {
       this.landmarks = landmarks;
     }
 
+    public static Landmarks Alloc(int capacity) => new Landmarks(new List<Landmark>(capacity));
+
     public static Landmarks CreateFrom(LandmarkList proto)
     {
-      var landmarks = new List<Landmark>(proto.Landmark.Count);
-      foreach (var landmark in proto.Landmark)
+      var result = default(Landmarks);
+
+      Copy(proto, ref result);
+      return result;
+    }
+
+    public static void Copy(LandmarkList source, ref Landmarks destination)
+    {
+      var landmarks = destination.landmarks ?? new List<Landmark>(source.Landmark.Count);
+      landmarks.Clear();
+      for (var i = 0; i < source.Landmark.Count; i++)
       {
-        landmarks.Add(Landmark.CreateFrom(landmark));
+        landmarks.Add(Landmark.CreateFrom(source.Landmark[i]));
       }
-      return new Landmarks(landmarks);
+
+      destination = new Landmarks(landmarks);
     }
 
     public override string ToString() => $"{{ \"landmarks\": {Util.Format(landmarks)} }}";
@@ -199,14 +211,26 @@ namespace Mediapipe.Tasks.Components.Containers
       this.landmarks = landmarks;
     }
 
+    public static NormalizedLandmarks Alloc(int capacity) => new NormalizedLandmarks(new List<NormalizedLandmark>(capacity));
+
     public static NormalizedLandmarks CreateFrom(NormalizedLandmarkList proto)
     {
-      var landmarks = new List<NormalizedLandmark>(proto.Landmark.Count);
-      foreach (var landmark in proto.Landmark)
+      var result = default(NormalizedLandmarks);
+
+      Copy(proto, ref result);
+      return result;
+    }
+
+    public static void Copy(NormalizedLandmarkList source, ref NormalizedLandmarks destination)
+    {
+      var landmarks = destination.landmarks ?? new List<NormalizedLandmark>(source.Landmark.Count);
+      landmarks.Clear();
+      for (var i = 0; i < source.Landmark.Count; i++)
       {
-        landmarks.Add(NormalizedLandmark.CreateFrom(landmark));
+        landmarks.Add(NormalizedLandmark.CreateFrom(source.Landmark[i]));
       }
-      return new NormalizedLandmarks(landmarks);
+
+      destination = new NormalizedLandmarks(landmarks);
     }
 
     internal static void Copy(NativeNormalizedLandmarks source, ref NormalizedLandmarks destination)

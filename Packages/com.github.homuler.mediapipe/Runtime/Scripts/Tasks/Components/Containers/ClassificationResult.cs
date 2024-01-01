@@ -40,23 +40,44 @@ namespace Mediapipe.Tasks.Components.Containers
 
     public static Classifications CreateFrom(Proto.Classifications proto)
     {
-      var categories = new List<Category>(proto.ClassificationList.Classification.Count);
-      foreach (var classification in proto.ClassificationList.Classification)
-      {
-        categories.Add(Category.CreateFrom(classification));
-      }
-      return new Classifications(categories, proto.HeadIndex, proto.HasHeadName ? proto.HeadName : null);
+      var classifications = default(Classifications);
+
+      Copy(proto, ref classifications);
+      return classifications;
     }
 
     public static Classifications CreateFrom(ClassificationList proto, int headIndex = 0, string headName = null)
     {
-      var categories = new List<Category>(proto.Classification.Count);
-      foreach (var classification in proto.Classification)
-      {
-        categories.Add(Category.CreateFrom(classification));
-      }
-      return new Classifications(categories, headIndex, headName);
+      var classifications = default(Classifications);
+
+      Copy(proto, headIndex, headName, ref classifications);
+      return classifications;
     }
+
+    public static void Copy(Proto.Classifications source, ref Classifications destination)
+    {
+      var categories = destination.categories ?? new List<Category>(source.ClassificationList.Classification.Count);
+      categories.Clear();
+      for (var i = 0; i < source.ClassificationList.Classification.Count; i++)
+      {
+        categories.Add(Category.CreateFrom(source.ClassificationList.Classification[i]));
+      }
+      destination = new Classifications(categories, source.HeadIndex, source.HasHeadName ? source.HeadName : null);
+    }
+
+    public static void Copy(ClassificationList source, int headIndex, string headName, ref Classifications destination)
+    {
+      var categories = destination.categories ?? new List<Category>(source.Classification.Count);
+      categories.Clear();
+      for (var i = 0; i < source.Classification.Count; i++)
+      {
+        categories.Add(Category.CreateFrom(source.Classification[i]));
+      }
+
+      destination = new Classifications(categories, headIndex, headName);
+    }
+
+    public static void Copy(ClassificationList source, ref Classifications destination) => Copy(source, 0, null, ref destination);
 
     internal static void Copy(NativeClassifications source, ref Classifications destination)
     {
@@ -102,13 +123,21 @@ namespace Mediapipe.Tasks.Components.Containers
 
     public static ClassificationResult CreateFrom(Proto.ClassificationResult proto)
     {
-      var classifications = new List<Classifications>(proto.Classifications.Count);
-      foreach (var classification in proto.Classifications)
+      var classificationResult = default(ClassificationResult);
+      Copy(proto, ref classificationResult);
+
+      return classificationResult;
+    }
+
+    public static void Copy(Proto.ClassificationResult source, ref ClassificationResult destination)
+    {
+      var classifications = destination.classifications ?? new List<Classifications>(source.Classifications.Count);
+      for (var i = 0; i < source.Classifications.Count; i++)
       {
-        classifications.Add(Classifications.CreateFrom(classification));
+        classifications.Add(Classifications.CreateFrom(source.Classifications[i]));
       }
 #pragma warning disable IDE0004 // for Unity 2020.3.x
-      return new ClassificationResult(classifications, proto.HasTimestampMs ? (long?)proto.TimestampMs : null);
+      destination = new ClassificationResult(classifications, source.HasTimestampMs ? (long?)source.TimestampMs : null);
 #pragma warning restore IDE0004 // for Unity 2020.3.x
     }
 
