@@ -11,7 +11,6 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using System.Text.RegularExpressions;
 using Mediapipe.Tasks.Components.Containers;
-using UnityEngine.Rendering;
 using UnityEngine.Experimental.Rendering;
 
 using Stopwatch = System.Diagnostics.Stopwatch;
@@ -136,7 +135,7 @@ namespace Mediapipe.Tests.Tasks.Vision
         var pixelData = BuildSolidColorData(width, height, UnityEngine.Color.gray);
         using (var image = new Image(ImageFormat.Types.Format.Srgba, width, height, width * 4, pixelData))
         {
-          var result = DetectionResult.Empty;
+          var result = DetectionResult.Alloc(0);
           var found = faceDetector.TryDetect(image, null, ref result);
           Assert.IsFalse(found);
         }
@@ -152,7 +151,7 @@ namespace Mediapipe.Tests.Tasks.Vision
       {
         using (var image = CopyAsImage(_facePicture.Value))
         {
-          var result = DetectionResult.Empty;
+          var result = DetectionResult.Alloc(0);
           var found = faceDetector.TryDetect(image, null, ref result);
           Assert.IsTrue(found);
           Assert.AreEqual(1, result.detections.Count);
@@ -209,7 +208,7 @@ namespace Mediapipe.Tests.Tasks.Vision
         var pixelData = BuildSolidColorData(width, height, UnityEngine.Color.gray);
         using (var image = new Image(ImageFormat.Types.Format.Srgba, width, height, width * 4, pixelData))
         {
-          var result = DetectionResult.Empty;
+          var result = DetectionResult.Alloc(0);
           var found = faceDetector.TryDetectForVideo(image, 1, null, ref result);
           Assert.IsFalse(found);
         }
@@ -225,7 +224,7 @@ namespace Mediapipe.Tests.Tasks.Vision
       {
         using (var image = CopyAsImage(_facePicture.Value))
         {
-          var result = DetectionResult.Empty;
+          var result = DetectionResult.Alloc(0);
           var found = faceDetector.TryDetectForVideo(image, 1, null, ref result);
           Assert.IsTrue(found);
           Assert.AreEqual(1, result.detections.Count);
@@ -239,7 +238,7 @@ namespace Mediapipe.Tests.Tasks.Vision
     public IEnumerator DetectAsync_ShouldInvokeTheCallbackWithAnEmptyResult_When_ImageIsEmpty()
     {
       var isCallbackInvoked = false;
-      var result = DetectionResult.Empty;
+      var result = DetectionResult.Alloc(0);
       void callback(DetectionResult detectionResult, Image image, int timestamp)
       {
         isCallbackInvoked = true;
@@ -277,7 +276,7 @@ namespace Mediapipe.Tests.Tasks.Vision
     public IEnumerator DetectAsync_invokes_the_callback_If_faces_are_detected()
     {
       var isCallbackInvoked = false;
-      var result = DetectionResult.Empty;
+      var result = DetectionResult.Alloc(0);
       void callback(DetectionResult detectionResult, Image image, int timestamp)
       {
         isCallbackInvoked = true;

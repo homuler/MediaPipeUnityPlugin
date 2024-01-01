@@ -117,18 +117,18 @@ namespace Mediapipe.Tasks.Components.Containers
 
     public void Clear() => detections.Clear();
 
-    public static readonly DetectionResult Empty = Alloc(0);
+    public static DetectionResult Empty => Alloc(0);
 
     public static DetectionResult Alloc(int capacity) => new DetectionResult(new List<Detection>(capacity));
 
-    public static DetectionResult CreateFrom(List<Mediapipe.Detection> detectionsProto)
+    internal static DetectionResult CreateFrom(List<Mediapipe.Detection> detectionsProto)
     {
       var result = Alloc(detectionsProto.Count);
       Copy(detectionsProto, ref result);
       return result;
     }
 
-    public static void Copy(List<Mediapipe.Detection> source, ref DetectionResult destination)
+    internal static void Copy(List<Mediapipe.Detection> source, ref DetectionResult destination)
     {
       var detections = destination.detections;
       if (source.Count < detections.Count)

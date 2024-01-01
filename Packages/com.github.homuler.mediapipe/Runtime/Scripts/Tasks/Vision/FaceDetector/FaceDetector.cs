@@ -32,6 +32,8 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     private readonly NormalizedRect _normalizedRect = new NormalizedRect();
     private readonly List<Detection> _detectionsForRead;
 
+    private readonly FaceDetectionResult _emptyResult = FaceDetectionResult.Alloc(0);
+
     private FaceDetector(
       CalculatorGraphConfig graphConfig,
       Core.RunningMode runningMode,
@@ -104,7 +106,8 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       using var outDetectionsPacket = DetectInternal(image, imageProcessingOptions);
       if (outDetectionsPacket.IsEmpty())
       {
-        return FaceDetectionResult.Empty;
+        _emptyResult.Clear();
+        return _emptyResult;
       }
       outDetectionsPacket.GetDetectionList(_detectionsForRead);
       return FaceDetectionResult.CreateFrom(_detectionsForRead);
@@ -172,7 +175,8 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       using var outDetectionsPacket = DetectVideoInternal(image, timestampMs, imageProcessingOptions);
       if (outDetectionsPacket.IsEmpty())
       {
-        return FaceDetectionResult.Empty;
+        _emptyResult.Clear();
+        return _emptyResult;
       }
       outDetectionsPacket.GetDetectionList(_detectionsForRead);
       return FaceDetectionResult.CreateFrom(_detectionsForRead);
@@ -258,6 +262,7 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       }
 
       var result = FaceDetectionResult.Alloc(options.numFaces);
+      var emptyResult = FaceDetectionResult.Alloc(0);
 
       return (PacketMap outputPackets) =>
       {
@@ -277,8 +282,9 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
 
         if (outDetectionsPacket.IsEmpty())
         {
+          emptyResult.Clear();
           resultCallback(
-            FaceDetectionResult.Empty,
+            emptyResult,
             image,
             (int)timestamp);
           return;
