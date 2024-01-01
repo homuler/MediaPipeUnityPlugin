@@ -107,19 +107,14 @@ namespace Mediapipe.Tests.Tasks.Vision
       }
     }
 
-    [UnityTest]
-    public IEnumerator Detect_ShouldReturnFaceDetectionResult_When_FacesAreDetected()
+    [Test]
+    public void Detect_ShouldReturnFaceDetectionResult_When_FacesAreDetected()
     {
       var options = new FaceDetectorOptions(new BaseOptions(BaseOptions.Delegate.CPU, modelAssetBuffer: _faceDetectorModel.Value.bytes), runningMode: RunningMode.IMAGE);
 
       using (var faceDetector = FaceDetector.CreateFromOptions(options))
       {
-        var picture = _facePicture.Value;
-        var texture = new Texture2D(picture.width, picture.height, TextureFormat.RGBA32, false);
-        var req = ReadTextureAsync(picture, texture);
-        yield return new WaitUntil(() => req.done);
-
-        using (var image = new Image(ImageFormat.Types.Format.Srgba, texture))
+        using (var image = CopyAsImage(_facePicture.Value))
         {
           var result = faceDetector.Detect(image, null);
           Assert.AreEqual(1, result.detections.Count);
@@ -148,19 +143,14 @@ namespace Mediapipe.Tests.Tasks.Vision
       }
     }
 
-    [UnityTest]
-    public IEnumerator TryeDetect_ShouldReturnTrue_When_FacesAreDetected()
+    [Test]
+    public void TryeDetect_ShouldReturnTrue_When_FacesAreDetected()
     {
       var options = new FaceDetectorOptions(new BaseOptions(BaseOptions.Delegate.CPU, modelAssetBuffer: _faceDetectorModel.Value.bytes), runningMode: RunningMode.IMAGE);
 
       using (var faceDetector = FaceDetector.CreateFromOptions(options))
       {
-        var picture = _facePicture.Value;
-        var texture = new Texture2D(picture.width, picture.height, TextureFormat.RGBA32, false);
-        var req = ReadTextureAsync(picture, texture);
-        yield return new WaitUntil(() => req.done);
-
-        using (var image = new Image(ImageFormat.Types.Format.Srgba, texture))
+        using (var image = CopyAsImage(_facePicture.Value))
         {
           var result = DetectionResult.Empty;
           var found = faceDetector.TryDetect(image, null, ref result);
@@ -190,19 +180,14 @@ namespace Mediapipe.Tests.Tasks.Vision
       }
     }
 
-    [UnityTest]
-    public IEnumerator DetectForVideo_ShouldReturnFaceDetectionResult_When_FacesAreDetected()
+    [Test]
+    public void DetectForVideo_ShouldReturnFaceDetectionResult_When_FacesAreDetected()
     {
       var options = new FaceDetectorOptions(new BaseOptions(BaseOptions.Delegate.CPU, modelAssetBuffer: _faceDetectorModel.Value.bytes), runningMode: RunningMode.VIDEO);
 
       using (var faceDetector = FaceDetector.CreateFromOptions(options))
       {
-        var picture = _facePicture.Value;
-        var texture = new Texture2D(picture.width, picture.height, TextureFormat.RGBA32, false);
-        var req = ReadTextureAsync(picture, texture);
-        yield return new WaitUntil(() => req.done);
-
-        using (var image = new Image(ImageFormat.Types.Format.Srgba, texture))
+        using (var image = CopyAsImage(_facePicture.Value))
         {
           var result = faceDetector.DetectForVideo(image, 1, null);
           Assert.AreEqual(1, result.detections.Count);
@@ -231,19 +216,14 @@ namespace Mediapipe.Tests.Tasks.Vision
       }
     }
 
-    [UnityTest]
-    public IEnumerator TryDetectForVideo_ShouldReturnTrue_When_FacesAreDetected()
+    [Test]
+    public void TryDetectForVideo_ShouldReturnTrue_When_FacesAreDetected()
     {
       var options = new FaceDetectorOptions(new BaseOptions(BaseOptions.Delegate.CPU, modelAssetBuffer: _faceDetectorModel.Value.bytes), runningMode: RunningMode.VIDEO);
 
       using (var faceDetector = FaceDetector.CreateFromOptions(options))
       {
-        var picture = _facePicture.Value;
-        var texture = new Texture2D(picture.width, picture.height, TextureFormat.RGBA32, false);
-        var req = ReadTextureAsync(picture, texture);
-        yield return new WaitUntil(() => req.done);
-
-        using (var image = new Image(ImageFormat.Types.Format.Srgba, texture))
+        using (var image = CopyAsImage(_facePicture.Value))
         {
           var result = DetectionResult.Empty;
           var found = faceDetector.TryDetectForVideo(image, 1, null, ref result);
@@ -310,12 +290,7 @@ namespace Mediapipe.Tests.Tasks.Vision
 
       using (var faceDetector = FaceDetector.CreateFromOptions(options))
       {
-        var picture = _facePicture.Value;
-        var texture = new Texture2D(picture.width, picture.height, TextureFormat.RGBA32, false);
-        var req = ReadTextureAsync(picture, texture);
-        yield return new WaitUntil(() => req.done);
-
-        using (var image = new Image(ImageFormat.Types.Format.Srgba, texture))
+        using (var image = CopyAsImage(_facePicture.Value))
         {
           faceDetector.DetectAsync(image, 1, null);
         }
@@ -354,32 +329,27 @@ namespace Mediapipe.Tests.Tasks.Vision
       return pixelData;
     }
 
-    // TODO: move this method to a utility class
-    private AsyncGPUReadbackRequest ReadTextureAsync(Texture src, Texture2D target)
+    private Image CopyAsImage(Texture2D src)
     {
-      var graphicsFormat = GraphicsFormatUtility.GetGraphicsFormat(TextureFormat.RGBA32, true);
-      var tmpRenderTexture = RenderTexture.GetTemporary(src.width, src.height, 32, graphicsFormat);
-      var currentRenderTexture = RenderTexture.active;
-      RenderTexture.active = tmpRenderTexture;
+      var srcData = src.GetPixels32();
+      var dst = new Texture2D(src.width, src.height, TextureFormat.RGBA32, false);
 
-      var scale = new Vector2(1.0f, 1.0f);
-      var offset = new Vector2(0.0f, 0.0f);
-      scale.y = -1.0f;
-      offset.y = 1.0f;
-      Graphics.Blit(src, tmpRenderTexture, scale, offset);
+      var dstData = dst.GetPixels32();
+      var w = src.width;
+      var h = src.height;
 
-      RenderTexture.active = currentRenderTexture;
-
-      return AsyncGPUReadback.Request(tmpRenderTexture, 0, (req) =>
+      for (var x = 0; x < w; x++)
       {
-        if (target == null)
+        for (var y = 0; y < h; y++)
         {
-          return;
+          dstData[x + (y * w)] = srcData[x + ((h - y - 1) * w)];
         }
-        target.LoadRawTextureData(req.GetData<byte>());
-        target.Apply();
-        RenderTexture.ReleaseTemporary(tmpRenderTexture);
-      });
+      }
+
+      dst.SetPixels32(dstData);
+      dst.Apply();
+
+      return new Image(ImageFormat.Types.Format.Srgba, dst);
     }
   }
 }
