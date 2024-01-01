@@ -39,17 +39,43 @@ namespace Mediapipe
     public void Deserialize<T>(pb::MessageParser<T> parser, List<T> protos) where T : pb::IMessage<T>
     {
       protos.Clear();
+      _ = WriteTo(parser, protos);
+    }
 
+    /// <summary>
+    ///   Deserializes the data as a list of <typeparamref name="T" />.
+    /// </summary>
+    /// <remarks>
+    ///   The deserialized data will be merged into <paramref name="protos" />.
+    ///   You may want to clear each field of <typeparamref name="T"/> before calling this method.
+    ///   If <see cref="_size"/> is less than <paramref name="protos" />.Count, the superfluous elements in <paramref name="protos" /> will be untouched.
+    /// </remarks>
+    /// <param name="protos">A list of <typeparamref name="T" /> to populate</param>
+    /// <returns>
+    ///   The number of overwritten elements in <paramref name="protos" />.
+    /// </returns>
+    public int WriteTo<T>(pb::MessageParser<T> parser, List<T> protos) where T : pb::IMessage<T>
+    {
       unsafe
       {
         var protoPtr = (SerializedProto*)_data;
 
-        for (var i = 0; i < _size; i++)
+        // overwrite the existing list
+        var len = Math.Min(_size, protos.Count);
+        for (var i = 0; i < len; i++)
+        {
+          var serializedProto = Marshal.PtrToStructure<SerializedProto>((IntPtr)protoPtr++);
+          serializedProto.WriteTo(protos[i]);
+        }
+
+        for (var i = protos.Count; i < _size; i++)
         {
           var serializedProto = Marshal.PtrToStructure<SerializedProto>((IntPtr)protoPtr++);
           protos.Add(serializedProto.Deserialize(parser));
         }
       }
+
+      return _size;
     }
   }
 }

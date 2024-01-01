@@ -62,13 +62,15 @@ namespace Mediapipe
     ///   </list>
     /// </remarks>
     public ImageFrame(ImageFormat.Types.Format format, int width, int height, int widthStep, NativeArray<byte> pixelData)
-          : this(format, width, height, widthStep, pixelData, VoidDeleter)
+          : this(format, width, height, widthStep, pixelData, _VoidDeleter)
     { }
 
     protected override void DeleteMpPtr()
     {
       UnsafeNativeMethods.mp_ImageFrame__delete(ptr);
     }
+
+    private static readonly Deleter _VoidDeleter = VoidDeleter;
 
     [AOT.MonoPInvokeCallback(typeof(Deleter))]
     internal static void VoidDeleter(IntPtr _) { }

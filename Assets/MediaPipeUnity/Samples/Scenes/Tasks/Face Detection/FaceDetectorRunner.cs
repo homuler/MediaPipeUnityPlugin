@@ -6,7 +6,7 @@
 
 using System.Collections;
 using UnityEngine;
-
+using UnityEngine.Rendering;
 using FaceDetectionResult = Mediapipe.Tasks.Components.Containers.DetectionResult;
 
 namespace Mediapipe.Unity.Sample.FaceDetection
@@ -63,6 +63,10 @@ namespace Mediapipe.Unity.Sample.FaceDetection
       var flipVertically = transformationOptions.flipVertically;
       var imageProcessingOptions = new Tasks.Vision.Core.ImageProcessingOptions(rotationDegrees: (int)transformationOptions.rotationAngle);
 
+      AsyncGPUReadbackRequest req = default;
+      var waitUntilReqDone = new WaitUntil(() => req.done);
+      var result = FaceDetectionResult.Alloc(options.numFaces);
+
       while (true)
       {
         if (isPaused)
@@ -77,8 +81,8 @@ namespace Mediapipe.Unity.Sample.FaceDetection
         }
 
         // Copy current image to TextureFrame
-        var req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
-        yield return new WaitUntil(() => req.done);
+        req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
+        yield return waitUntilReqDone;
 
         if (req.hasError)
         {
@@ -90,12 +94,26 @@ namespace Mediapipe.Unity.Sample.FaceDetection
         switch (taskApi.runningMode)
         {
           case Tasks.Vision.Core.RunningMode.IMAGE:
-            var result = taskApi.Detect(image, imageProcessingOptions);
-            _detectionResultAnnotationController.DrawNow(result);
+            if (taskApi.TryDetect(image, imageProcessingOptions, ref result))
+            {
+              _detectionResultAnnotationController.DrawNow(result);
+            }
+            else
+            {
+              // clear the annotation
+              _detectionResultAnnotationController.DrawNow(FaceDetectionResult.Empty);
+            }
             break;
           case Tasks.Vision.Core.RunningMode.VIDEO:
-            result = taskApi.DetectForVideo(image, (int)GetCurrentTimestampMillisec(), imageProcessingOptions);
-            _detectionResultAnnotationController.DrawNow(result);
+            if (taskApi.TryDetectForVideo(image, (int)GetCurrentTimestampMillisec(), imageProcessingOptions, ref result))
+            {
+              _detectionResultAnnotationController.DrawNow(result);
+            }
+            else
+            {
+              // clear the annotation
+              _detectionResultAnnotationController.DrawNow(FaceDetectionResult.Empty);
+            }
             break;
           case Tasks.Vision.Core.RunningMode.LIVE_STREAM:
             taskApi.DetectAsync(image, (int)GetCurrentTimestampMillisec(), imageProcessingOptions);

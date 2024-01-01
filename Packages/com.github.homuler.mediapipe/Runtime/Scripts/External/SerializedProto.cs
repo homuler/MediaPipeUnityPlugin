@@ -6,8 +6,7 @@
 
 using System;
 using System.Runtime.InteropServices;
-
-using pb = Google.Protobuf;
+using Google.Protobuf;
 
 namespace Mediapipe
 {
@@ -22,11 +21,22 @@ namespace Mediapipe
       UnsafeNativeMethods.delete_array__PKc(_str);
     }
 
-    public T Deserialize<T>(pb::MessageParser<T> parser) where T : pb::IMessage<T>
+    public T Deserialize<T>(MessageParser<T> parser) where T : IMessage<T>
     {
-      var bytes = new byte[_length];
-      Marshal.Copy(_str, bytes, 0, bytes.Length);
-      return parser.ParseFrom(bytes);
+      unsafe
+      {
+        var bytes = new ReadOnlySpan<byte>((byte*)_str, _length);
+        return parser.ParseFrom(bytes);
+      }
+    }
+
+    public void WriteTo<T>(T proto) where T : IMessage<T>
+    {
+      unsafe
+      {
+        var bytes = new ReadOnlySpan<byte>((byte*)_str, _length);
+        proto.MergeFrom(bytes);
+      }
     }
   }
 }

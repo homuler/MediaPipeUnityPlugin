@@ -99,11 +99,22 @@ namespace Mediapipe
       return str;
     }
 
+    /// <summary>
+    ///   The optimized implementation of <see cref="Status.AssertOk" />.
+    /// </summary>
     protected static void AssertStatusOk(IntPtr statusPtr)
     {
-      using (var status = new Status(statusPtr, true))
+      var ok = SafeNativeMethods.absl_Status__ok(statusPtr);
+      if (!ok)
       {
-        status.AssertOk();
+        using (var status = new Status(statusPtr, true))
+        {
+          status.AssertOk();
+        }
+      }
+      else
+      {
+        UnsafeNativeMethods.absl_Status__delete(statusPtr);
       }
     }
 

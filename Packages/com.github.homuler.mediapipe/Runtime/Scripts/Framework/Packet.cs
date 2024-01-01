@@ -13,7 +13,7 @@ namespace Mediapipe
 {
   public class Packet : MpResourceHandle
   {
-    private Packet(IntPtr ptr, bool isOwner) : base(ptr, isOwner) { }
+    internal Packet(IntPtr ptr, bool isOwner) : base(ptr, isOwner) { }
 
     protected override void DeleteMpPtr()
     {
@@ -27,6 +27,8 @@ namespace Mediapipe
 
       return value;
     }
+
+    public bool IsEmpty() => SafeNativeMethods.mp_Packet__IsEmpty(mpPtr);
 
     internal static Packet CreateEmpty()
     {
@@ -262,11 +264,17 @@ namespace Mediapipe
     /// </summary>
     public static Packet CreateProto<T>(T value) where T : IMessage<T>
     {
-      var arr = value.ToByteArray();
-      UnsafeNativeMethods.mp__PacketFromDynamicProto__PKc_PKc_i(value.Descriptor.FullName, arr, arr.Length, out var statusPtr, out var ptr).Assert();
+      unsafe
+      {
+        var size = value.CalculateSize();
+        var arr = stackalloc byte[size];
+        value.WriteTo(new Span<byte>(arr, size));
 
-      AssertStatusOk(statusPtr);
-      return new Packet(ptr, true);
+        UnsafeNativeMethods.mp__PacketFromDynamicProto__PKc_PKc_i(value.Descriptor.FullName, arr, size, out var statusPtr, out var ptr).Assert();
+
+        AssertStatusOk(statusPtr);
+        return new Packet(ptr, true);
+      }
     }
 
     /// <summary>
@@ -277,11 +285,17 @@ namespace Mediapipe
     /// </param>
     public static Packet CreateProtoAt<T>(T value, long timestampMicrosec) where T : IMessage<T>
     {
-      var arr = value.ToByteArray();
-      UnsafeNativeMethods.mp__PacketFromDynamicProto_At__PKc_PKc_i_ll(value.Descriptor.FullName, arr, arr.Length, timestampMicrosec, out var statusPtr, out var ptr).Assert();
+      unsafe
+      {
+        var size = value.CalculateSize();
+        var arr = stackalloc byte[size];
+        value.WriteTo(new Span<byte>(arr, size));
 
-      AssertStatusOk(statusPtr);
-      return new Packet(ptr, true);
+        UnsafeNativeMethods.mp__PacketFromDynamicProto_At__PKc_PKc_i_ll(value.Descriptor.FullName, arr, size, timestampMicrosec, out var statusPtr, out var ptr).Assert();
+        AssertStatusOk(statusPtr);
+
+        return new Packet(ptr, true);
+      }
     }
 
     /// <summary>
@@ -546,6 +560,22 @@ namespace Mediapipe
 
       serializedProtoVector.Deserialize(parser, value);
       serializedProtoVector.Dispose();
+    }
+
+    public void GetDetectionList(List<Detection> detections)
+    {
+      UnsafeNativeMethods.mp_Packet__GetVectorOfProtoMessageLite(mpPtr, out var serializedProtoVector).Assert();
+
+      GC.KeepAlive(this);
+
+      foreach (var detection in detections)
+      {
+        detection.Clear();
+      }
+      var size = serializedProtoVector.WriteTo(Detection.Parser, detections);
+      serializedProtoVector.Dispose();
+
+      detections.RemoveRange(size, detections.Count - size);
     }
 
     /// <summary>

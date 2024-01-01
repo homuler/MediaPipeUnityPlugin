@@ -40,7 +40,7 @@ namespace Mediapipe
     ///   </list>
     /// </remarks>
     public Image(ImageFormat.Types.Format format, int width, int height, int widthStep, NativeArray<byte> pixelData)
-          : this(format, width, height, widthStep, pixelData, ImageFrame.VoidDeleter)
+          : this(format, width, height, widthStep, pixelData, _VoidDeleter)
     { }
 
 #if UNITY_EDITOR_LINUX || UNITY_STANDLONE_LINUX || UNITY_ANDROID
@@ -54,6 +54,8 @@ namespace Mediapipe
         this(Gl.GL_TEXTURE_2D, name, width, height, format, callback, glContext)
     { }
 #endif
+
+    private static readonly ImageFrame.Deleter _VoidDeleter = ImageFrame.VoidDeleter;
 
     protected override void DeleteMpPtr()
     {
