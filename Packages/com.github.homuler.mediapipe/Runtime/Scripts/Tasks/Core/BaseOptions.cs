@@ -18,7 +18,7 @@ namespace Mediapipe.Tasks.Core
     public string modelAssetPath { get; } = string.Empty;
     public byte[] modelAssetBuffer { get; } = null;
 
-    public BaseOptions(Delegate delegateCase = Delegate.CPU, string modelAssetPath = "", byte[] modelAssetBuffer = null)
+    public BaseOptions(Delegate delegateCase = Delegate.CPU, string modelAssetPath = null, byte[] modelAssetBuffer = null)
     {
       this.delegateCase = delegateCase;
       this.modelAssetPath = modelAssetPath;

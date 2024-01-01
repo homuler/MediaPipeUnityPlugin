@@ -101,7 +101,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection
             else
             {
               // clear the annotation
-              _detectionResultAnnotationController.DrawNow(FaceDetectionResult.Empty);
+              _detectionResultAnnotationController.DrawNow(default);
             }
             break;
           case Tasks.Vision.Core.RunningMode.VIDEO:
@@ -112,7 +112,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection
             else
             {
               // clear the annotation
-              _detectionResultAnnotationController.DrawNow(FaceDetectionResult.Empty);
+              _detectionResultAnnotationController.DrawNow(default);
             }
             break;
           case Tasks.Vision.Core.RunningMode.LIVE_STREAM:
