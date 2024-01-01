@@ -222,9 +222,9 @@ namespace Mediapipe.Unity.Experimental
 
     public Guid GetInstanceID() => _instanceId;
 
-    public ImageFrame BuildImageFrame() => new ImageFrame(imageFormat, width, height, 4 * width, GetRawTextureData<byte>());
+    public ImageFrame BuildImageFrame() => new ImageFrame(imageFormat, _texture);
 
-    public Image BuildCPUImage() => new Image(imageFormat, width, height, 4 * width, GetRawTextureData<byte>());
+    public Image BuildCPUImage() => new Image(imageFormat, _texture);
 
     public GpuBuffer BuildGpuBuffer(GlContext glContext)
     {
