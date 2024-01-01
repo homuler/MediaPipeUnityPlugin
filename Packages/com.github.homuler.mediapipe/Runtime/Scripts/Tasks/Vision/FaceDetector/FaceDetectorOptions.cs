@@ -25,10 +25,10 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     /// <param name="image">
     ///   The input image that the face detector runs on.
     /// </param>
-    /// <param name="timestampMs">
+    /// <param name="timestampMillisec">
     ///   The input timestamp in milliseconds.
     /// </param>
-    public delegate void ResultCallback(Components.Containers.DetectionResult detectionResult, Image image, int timestampMs);
+    public delegate void ResultCallback(Components.Containers.DetectionResult detectionResult, Image image, long timestampMillisec);
 
     /// <summary>
     ///   Base options for the face detector task.

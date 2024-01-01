@@ -124,7 +124,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection
       }
     }
 
-    private void OnFaceDetectionsOutput(FaceDetectionResult result, Image image, int timestamp)
+    private void OnFaceDetectionsOutput(FaceDetectionResult result, Image image, long timestamp)
     {
       _detectionResultAnnotationController.DrawLater(result);
     }

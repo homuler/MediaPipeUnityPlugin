@@ -126,12 +126,12 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
     /// <returns>
     ///   The pose landmarks detection results.
     /// </returns>
-    public PoseLandmarkerResult DetectForVideo(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions = null)
+    public PoseLandmarkerResult DetectForVideo(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
 
       PacketMap outputPackets = null;
-      using (var timestamp = new Timestamp(timestampMs * _MICRO_SECONDS_PER_MILLISECOND))
+      using (var timestamp = new Timestamp(timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND))
       {
         var packetMap = new PacketMap();
         packetMap.Emplace(_IMAGE_IN_STREAM_NAME, new ImagePacket(image, timestamp));
@@ -154,11 +154,11 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
     ///   input. To lower the overall latency, pose landmarker may drop the input
     ///   images if needed. In other words, it's not guaranteed to have output per
     ///   input image.
-    public void DetectAsync(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions = null)
+    public void DetectAsync(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
 
-      using (var timestamp = new Timestamp(timestampMs * _MICRO_SECONDS_PER_MILLISECOND))
+      using (var timestamp = new Timestamp(timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND))
       {
         var packetMap = new PacketMap();
         packetMap.Emplace(_IMAGE_IN_STREAM_NAME, new ImagePacket(image, timestamp));
@@ -187,7 +187,7 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
         var handLandmarkerResult = BuildPoseLandmarkerResult(outputPackets);
         var timestamp = outImagePacket.Timestamp().Microseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
-        resultCallback(handLandmarkerResult, image, (int)timestamp);
+        resultCallback(handLandmarkerResult, image, timestamp);
       };
     }
 
