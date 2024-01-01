@@ -37,10 +37,9 @@ namespace Mediapipe.Tasks.Core
     [AOT.MonoPInvokeCallback(typeof(TaskRunner.NativePacketsCallback))]
     private static void InvokeCallbackIfFound(int callbackId, IntPtr statusPtr, IntPtr packetMapPtr)
     {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
       Profiler.BeginThreadProfiling("Mediapipe", "PacketsCallbackTable.InvokeCallbackIfFound");
       Profiler.BeginSample("PacketsCallbackTable.InvokeCallbackIfFound");
-#endif
+
       // NOTE: if status is not OK, packetMap will be nullptr
       if (packetMapPtr == IntPtr.Zero)
       {
@@ -60,10 +59,9 @@ namespace Mediapipe.Tasks.Core
           Debug.LogException(e);
         }
       }
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+
       Profiler.EndSample();
       Profiler.EndThreadProfiling();
-#endif
     }
   }
 }
