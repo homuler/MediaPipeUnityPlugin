@@ -117,7 +117,7 @@ namespace Mediapipe.Tasks.Components.Containers
 
     public void Clear() => detections.Clear();
 
-    public static readonly DetectionResult Empty = new DetectionResult(new List<Detection>());
+    public static readonly DetectionResult Empty = Alloc(0);
 
     public static DetectionResult Alloc(int capacity) => new DetectionResult(new List<Detection>(capacity));
 
