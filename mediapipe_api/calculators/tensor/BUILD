@@ -42,6 +42,7 @@ csharp_proto_src(
     deps = [
         "@com_google_mediapipe//mediapipe/calculators/tensor:protos_src",
         "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@com_google_mediapipe//mediapipe/gpu:protos_src",
     ],
 )
 
