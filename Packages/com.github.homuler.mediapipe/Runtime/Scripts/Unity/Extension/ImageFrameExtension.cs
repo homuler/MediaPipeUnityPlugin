@@ -62,7 +62,7 @@ namespace Mediapipe.Unity
       var format = image.ImageFormat();
       using (var pixelWriteLock = new PixelWriteLock(image))
       {
-        return TryReadChannel(format, image.Width(), image.Height(), image.Step(), ImageFrame.ByteDepthForFormat(format),
+        return TryReadChannel(format, image.Width(), image.Height(), image.Step(), format.ByteDepth(),
           channelNumber, pixelWriteLock.Pixels(), channelData, isHorizontallyFlipped, isVerticallyFlipped);
       }
     }
@@ -143,7 +143,7 @@ namespace Mediapipe.Unity
       var format = image.ImageFormat();
       using (var pixelWriteLock = new PixelWriteLock(image))
       {
-        return TryReadChannel(format, image.Width(), image.Height(), image.Step(), ImageFrame.ByteDepthForFormat(format),
+        return TryReadChannel(format, image.Width(), image.Height(), image.Step(), format.ByteDepth(),
           channelNumber, pixelWriteLock.Pixels(), channelData, isHorizontallyFlipped, isVerticallyFlipped);
       }
     }
@@ -220,7 +220,7 @@ namespace Mediapipe.Unity
       var format = image.ImageFormat();
       using (var pixelWriteLock = new PixelWriteLock(image))
       {
-        return TryReadChannel(format, image.Width(), image.Height(), image.Step(), ImageFrame.ByteDepthForFormat(format),
+        return TryReadChannel(format, image.Width(), image.Height(), image.Step(), format.ByteDepth(),
           channelNumber, pixelWriteLock.Pixels(), channelData, isHorizontallyFlipped, isVerticallyFlipped);
       }
     }
@@ -296,7 +296,7 @@ namespace Mediapipe.Unity
       var format = image.ImageFormat();
       using (var pixelWriteLock = new PixelWriteLock(image))
       {
-        return TryReadChannelNormalized(format, image.Width(), image.Height(), image.Step(), ImageFrame.ByteDepthForFormat(format),
+        return TryReadChannelNormalized(format, image.Width(), image.Height(), image.Step(), format.ByteDepth(),
           channelNumber, pixelWriteLock.Pixels(), normalizedChannelData, isHorizontallyFlipped, isVerticallyFlipped);
       }
     }
@@ -341,7 +341,7 @@ namespace Mediapipe.Unity
       var format = image.ImageFormat();
       using (var pixelWriteLock = new PixelWriteLock(image))
       {
-        return TryReadPixelData(format, image.Width(), image.Height(), image.Step(), ImageFrame.ByteDepthForFormat(format), pixelWriteLock.Pixels(), colors);
+        return TryReadPixelData(format, image.Width(), image.Height(), image.Step(), format.ByteDepth(), pixelWriteLock.Pixels(), colors);
       }
     }
 

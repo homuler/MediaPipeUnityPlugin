@@ -117,41 +117,6 @@ namespace Mediapipe
       }
     }
 
-    /// <returns>
-    ///   The depth of each channel in bytes for a <paramref name="format" />.
-    ///   If channels don't make sense in the <paramref name="format" />, returns <c>0</c>.
-    /// </returns>
-    /// <remarks>
-    ///   Unlike the original implementation, this API won't signal SIGABRT.
-    /// </remarks>
-    public static int ByteDepthForFormat(ImageFormat.Types.Format format)
-    {
-      switch (format)
-      {
-        case ImageFormat.Types.Format.Srgb:
-        case ImageFormat.Types.Format.Srgba:
-        case ImageFormat.Types.Format.Sbgra:
-          return 1;
-        case ImageFormat.Types.Format.Srgb48:
-        case ImageFormat.Types.Format.Srgba64:
-          return 2;
-        case ImageFormat.Types.Format.Gray8:
-          return 1;
-        case ImageFormat.Types.Format.Gray16:
-          return 2;
-        case ImageFormat.Types.Format.Vec32F1:
-        case ImageFormat.Types.Format.Vec32F2:
-          return 4;
-        case ImageFormat.Types.Format.Lab8:
-          return 1;
-        case ImageFormat.Types.Format.Ycbcr420P:
-        case ImageFormat.Types.Format.Ycbcr420P10:
-        case ImageFormat.Types.Format.Unknown:
-        default:
-          return 0;
-      }
-    }
-
     public bool IsEmpty()
     {
       return SafeNativeMethods.mp_ImageFrame__IsEmpty(mpPtr);
@@ -218,7 +183,7 @@ namespace Mediapipe
     /// </remarks>
     public int ByteDepth()
     {
-      return ByteDepthForFormat(Format());
+      return Format().ByteDepth();
     }
 
     public int WidthStep()
