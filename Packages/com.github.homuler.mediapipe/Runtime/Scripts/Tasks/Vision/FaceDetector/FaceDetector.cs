@@ -32,8 +32,6 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     private readonly NormalizedRect _normalizedRect = new NormalizedRect();
     private readonly List<Detection> _detectionsForRead;
 
-    private readonly FaceDetectionResult _emptyResult = FaceDetectionResult.Alloc(0);
-
     private FaceDetector(
       CalculatorGraphConfig graphConfig,
       Core.RunningMode runningMode,
@@ -103,14 +101,11 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     /// </returns>
     public FaceDetectionResult Detect(Image image, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
-      using var outDetectionsPacket = DetectInternal(image, imageProcessingOptions);
-      if (outDetectionsPacket.IsEmpty())
-      {
-        _emptyResult.Clear();
-        return _emptyResult;
-      }
-      outDetectionsPacket.GetDetectionList(_detectionsForRead);
-      return FaceDetectionResult.CreateFrom(_detectionsForRead);
+      using var outputPackets = DetectInternal(image, imageProcessingOptions);
+
+      var result = default(FaceDetectionResult);
+      _ = TryBuildFaceDetectorResult(outputPackets, ref result);
+      return result;
     }
 
     /// <summary>
@@ -134,17 +129,11 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     /// </returns>
     public bool TryDetect(Image image, Core.ImageProcessingOptions? imageProcessingOptions, ref FaceDetectionResult result)
     {
-      using var outDetectionsPacket = DetectInternal(image, imageProcessingOptions);
-      if (outDetectionsPacket.IsEmpty())
-      {
-        return false;
-      }
-      outDetectionsPacket.GetDetectionList(_detectionsForRead);
-      FaceDetectionResult.Copy(_detectionsForRead, ref result);
-      return true;
+      using var outputPackets = DetectInternal(image, imageProcessingOptions);
+      return TryBuildFaceDetectorResult(outputPackets, ref result);
     }
 
-    private Packet DetectInternal(Image image, Core.ImageProcessingOptions? imageProcessingOptions)
+    private PacketMap DetectInternal(Image image, Core.ImageProcessingOptions? imageProcessingOptions)
     {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
 
@@ -152,8 +141,7 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImage(image));
       packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProto(_normalizedRect));
 
-      using var outputPackets = ProcessImageData(packetMap);
-      return outputPackets.At(_DETECTIONS_OUT_STREAM_NAME);
+      return ProcessImageData(packetMap);
     }
 
     /// <summary>
@@ -172,14 +160,11 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     /// </returns>
     public FaceDetectionResult DetectForVideo(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
-      using var outDetectionsPacket = DetectVideoInternal(image, timestampMillisec, imageProcessingOptions);
-      if (outDetectionsPacket.IsEmpty())
-      {
-        _emptyResult.Clear();
-        return _emptyResult;
-      }
-      outDetectionsPacket.GetDetectionList(_detectionsForRead);
-      return FaceDetectionResult.CreateFrom(_detectionsForRead);
+      using var outputPackets = DetectVideoInternal(image, timestampMillisec, imageProcessingOptions);
+
+      var result = default(FaceDetectionResult);
+      _ = TryBuildFaceDetectorResult(outputPackets, ref result);
+      return result;
     }
 
     /// <summary>
@@ -206,17 +191,11 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     /// </returns>
     public bool TryDetectForVideo(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions, ref FaceDetectionResult result)
     {
-      using var outDetectionsPacket = DetectVideoInternal(image, timestampMillisec, imageProcessingOptions);
-      if (outDetectionsPacket.IsEmpty())
-      {
-        return false;
-      }
-      outDetectionsPacket.GetDetectionList(_detectionsForRead);
-      FaceDetectionResult.Copy(_detectionsForRead, ref result);
-      return true;
+      using var outputPackets = DetectVideoInternal(image, timestampMillisec, imageProcessingOptions);
+      return TryBuildFaceDetectorResult(outputPackets, ref result);
     }
 
-    private Packet DetectVideoInternal(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions)
+    private PacketMap DetectVideoInternal(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions)
     {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
       var timestampMicrosec = timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND;
@@ -225,8 +204,7 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImageAt(image, timestampMicrosec));
       packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProtoAt(_normalizedRect, timestampMicrosec));
 
-      using var outputPackets = ProcessVideoData(packetMap);
-      return outputPackets.At(_DETECTIONS_OUT_STREAM_NAME);
+      return ProcessVideoData(packetMap);
     }
 
     /// <summary>
@@ -253,6 +231,9 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       SendLiveStreamData(packetMap);
     }
 
+    private bool TryBuildFaceDetectorResult(PacketMap outputPackets, ref FaceDetectionResult result)
+        => TryBuildFaceDetectorResult(outputPackets, _detectionsForRead, ref result);
+
     private static Tasks.Core.TaskRunner.PacketsCallback BuildPacketsCallback(FaceDetectorOptions options, List<Detection> detectionsForRead)
     {
       var resultCallback = options.resultCallback;
@@ -262,39 +243,40 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       }
 
       var result = FaceDetectionResult.Alloc(options.numFaces);
-      var emptyResult = FaceDetectionResult.Alloc(0);
 
       return (PacketMap outputPackets) =>
       {
         using var outImagePacket = outputPackets.At(_IMAGE_OUT_STREAM_NAME);
-        using var outDetectionsPacket = outputPackets.At(_DETECTIONS_OUT_STREAM_NAME);
-        if (outImagePacket == null || outDetectionsPacket == null)
+        if (outImagePacket == null || outImagePacket.IsEmpty())
         {
           return;
         }
 
-        if (outImagePacket.IsEmpty())
-        {
-          return;
-        }
         using var image = outImagePacket.GetImage();
         var timestamp = outImagePacket.TimestampMicroseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
-        if (outDetectionsPacket.IsEmpty())
+        if (TryBuildFaceDetectorResult(outputPackets, detectionsForRead, ref result))
         {
-          emptyResult.Clear();
-          resultCallback(
-            emptyResult,
-            image,
-            timestamp);
-          return;
+          resultCallback(result, image, timestamp);
         }
-
-        outDetectionsPacket.GetDetectionList(detectionsForRead);
-        FaceDetectionResult.Copy(detectionsForRead, ref result);
-
-        resultCallback(result, image, timestamp);
+        else
+        {
+          resultCallback(default, image, timestamp);
+        }
       };
+    }
+
+    private static bool TryBuildFaceDetectorResult(PacketMap outputPackets, List<Detection> detectionsForRead, ref FaceDetectionResult result)
+    {
+      using var detectionsPacket = outputPackets.At(_DETECTIONS_OUT_STREAM_NAME);
+      if (detectionsPacket.IsEmpty())
+      {
+        return false;
+      }
+      detectionsPacket.GetDetectionList(detectionsForRead);
+
+      FaceDetectionResult.Copy(detectionsForRead, ref result);
+      return true;
     }
   }
 }
