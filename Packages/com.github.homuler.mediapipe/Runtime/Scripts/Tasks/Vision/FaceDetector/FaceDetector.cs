@@ -138,7 +138,7 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       return true;
     }
 
-    public Packet DetectInternal(Image image, Core.ImageProcessingOptions? imageProcessingOptions)
+    private Packet DetectInternal(Image image, Core.ImageProcessingOptions? imageProcessingOptions)
     {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
 
@@ -206,7 +206,7 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       return true;
     }
 
-    public Packet DetectVideoInternal(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions)
+    private Packet DetectVideoInternal(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions)
     {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
       var timestampMicrosec = timestampMs * _MICRO_SECONDS_PER_MILLISECOND;
