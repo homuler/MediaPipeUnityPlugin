@@ -80,5 +80,42 @@ namespace Mediapipe
           return 0;
       }
     }
+
+    /// <returns>
+    ///   The channel size for a <paramref name="format" />.
+    ///   If channels don't make sense in the <paramref name="format" />, returns <c>0</c>.
+    /// </returns>
+    /// <remarks>
+    ///   Unlike the original implementation, this API won't signal SIGABRT.
+    /// </remarks>
+    public static int ChannelSize(this ImageFormat.Types.Format format)
+    {
+      switch (format)
+      {
+        case ImageFormat.Types.Format.Srgb:
+        case ImageFormat.Types.Format.Srgba:
+        case ImageFormat.Types.Format.Sbgra:
+          return sizeof(byte);
+        case ImageFormat.Types.Format.Srgb48:
+        case ImageFormat.Types.Format.Srgba64:
+          return sizeof(ushort);
+        case ImageFormat.Types.Format.Gray8:
+          return sizeof(byte);
+        case ImageFormat.Types.Format.Gray16:
+          return sizeof(ushort);
+        case ImageFormat.Types.Format.Vec32F1:
+        case ImageFormat.Types.Format.Vec32F2:
+        case ImageFormat.Types.Format.Vec32F4:
+          // sizeof float may be wrong since it's platform-dependent, but we assume that it's constant across all supported platforms.
+          return sizeof(float);
+        case ImageFormat.Types.Format.Lab8:
+          return sizeof(byte);
+        case ImageFormat.Types.Format.Ycbcr420P:
+        case ImageFormat.Types.Format.Ycbcr420P10:
+        case ImageFormat.Types.Format.Unknown:
+        default:
+          return 0;
+      }
+    }
   }
 }
