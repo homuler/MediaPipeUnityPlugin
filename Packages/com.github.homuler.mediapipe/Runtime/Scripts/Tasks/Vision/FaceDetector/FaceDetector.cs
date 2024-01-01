@@ -99,7 +99,7 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     ///   frame of reference coordinates system, i.e. in `[0,image_width) x [0,
     ///   image_height)`, which are the dimensions of the underlying image data.
     /// </returns>
-    public FaceDetectionResult Detect(Image image, Core.ImageProcessingOptions? imageProcessingOptions)
+    public FaceDetectionResult Detect(Image image, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
       using var outDetectionsPacket = DetectInternal(image, imageProcessingOptions);
       if (outDetectionsPacket.IsEmpty())
@@ -167,7 +167,7 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     ///   frame of reference coordinates system, i.e. in `[0,image_width) x [0,
     ///   image_height)`, which are the dimensions of the underlying image data.
     /// </returns>
-    public FaceDetectionResult DetectForVideo(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions)
+    public FaceDetectionResult DetectForVideo(Image image, int timestampMs, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
       using var outDetectionsPacket = DetectVideoInternal(image, timestampMs, imageProcessingOptions);
       if (outDetectionsPacket.IsEmpty())
