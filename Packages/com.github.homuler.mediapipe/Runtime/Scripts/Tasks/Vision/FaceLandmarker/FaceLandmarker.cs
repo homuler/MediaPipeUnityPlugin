@@ -123,14 +123,42 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
     /// </returns>
     public FaceLandmarkerResult Detect(Image image, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
+      using var outputPackets = DetectInternal(image, imageProcessingOptions);
+
+      var result = default(FaceLandmarkerResult);
+      _ = TryBuildFaceLandmarkerResult(outputPackets, ref result);
+      return result;
+    }
+
+    /// <summary>
+    ///   Performs face landmarks detection on the provided MediaPipe Image.
+    ///
+    ///   Only use this method when the <see cref="FaceLandmarker" /> is created with the image running mode.
+    ///   The image can be of any size with format RGB or RGBA.
+    /// </summary>
+    /// <remarks>
+    ///   When faces are not found, <paramref name="result"/> won't be overwritten.
+    /// </remarks>
+    /// <param name="image">MediaPipe Image.</param>
+    /// <param name="imageProcessingOptions">Options for image processing.</param>
+    /// <returns>
+    ///   <see langword="true"/> if some faces are detected, <see langword="false"/> otherwise.
+    /// </returns>
+    public bool TryDetect(Image image, Core.ImageProcessingOptions? imageProcessingOptions, ref FaceLandmarkerResult result)
+    {
+      using var outputPackets = DetectInternal(image, imageProcessingOptions);
+      return TryBuildFaceLandmarkerResult(outputPackets, ref result);
+    }
+
+    private PacketMap DetectInternal(Image image, Core.ImageProcessingOptions? imageProcessingOptions)
+    {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
 
       var packetMap = new PacketMap();
-      packetMap.Emplace(_IMAGE_IN_STREAM_NAME, new ImagePacket(image));
-      packetMap.Emplace(_NORM_RECT_STREAM_NAME, new NormalizedRectPacket(_normalizedRect));
-      var outputPackets = ProcessImageData(packetMap);
+      packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImage(image));
+      packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProto(_normalizedRect));
 
-      return BuildFaceLandmarkerResult(outputPackets);
+      return ProcessImageData(packetMap);
     }
 
     /// <summary>
@@ -146,18 +174,46 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
     /// </returns>
     public FaceLandmarkerResult DetectForVideo(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
+      using var outputPackets = DetectForVideoInternal(image, timestampMillisec, imageProcessingOptions);
+
+      var result = default(FaceLandmarkerResult);
+      _ = TryBuildFaceLandmarkerResult(outputPackets, ref result);
+      return result;
+    }
+
+    /// <summary>
+    ///   Performs face landmarks detection on the provided video frames.
+    ///
+    ///   Only use this method when the FaceLandmarker is created with the video
+    ///   running mode. It's required to provide the video frame's timestamp (in
+    ///   milliseconds) along with the video frame. The input timestamps should be
+    ///   monotonically increasing for adjacent calls of this method.
+    /// </summary>
+    /// <remarks>
+    ///   When faces are not found, <paramref name="result"/> won't be overwritten.
+    /// </remarks>
+    /// <returns>
+    ///   The face landmarks detection results.
+    /// </returns>
+    /// <returns>
+    ///   <see langword="true"/> if some faces are detected, <see langword="false"/> otherwise.
+    /// </returns>
+    public bool TryDetectForVideo(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions, ref FaceLandmarkerResult result)
+    {
+      using var outputPackets = DetectForVideoInternal(image, timestampMillisec, imageProcessingOptions);
+      return TryBuildFaceLandmarkerResult(outputPackets, ref result);
+    }
+
+    private PacketMap DetectForVideoInternal(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
+    {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
+      var timestampMicrosec = timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND;
 
-      PacketMap outputPackets = null;
-      using (var timestamp = new Timestamp(timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND))
-      {
-        var packetMap = new PacketMap();
-        packetMap.Emplace(_IMAGE_IN_STREAM_NAME, new ImagePacket(image, timestamp));
-        packetMap.Emplace(_NORM_RECT_STREAM_NAME, new NormalizedRectPacket(_normalizedRect).At(timestamp));
-        outputPackets = ProcessVideoData(packetMap);
-      }
+      var packetMap = new PacketMap();
+      packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImageAt(image, timestampMicrosec));
+      packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProtoAt(_normalizedRect, timestampMicrosec));
 
-      return BuildFaceLandmarkerResult(outputPackets);
+      return ProcessVideoData(packetMap);
     }
 
     /// <summary>
@@ -175,18 +231,19 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
     public void DetectAsync(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
+      var timestampMicrosec = timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND;
 
-      using (var timestamp = new Timestamp(timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND))
-      {
-        var packetMap = new PacketMap();
-        packetMap.Emplace(_IMAGE_IN_STREAM_NAME, new ImagePacket(image, timestamp));
-        packetMap.Emplace(_NORM_RECT_STREAM_NAME, new NormalizedRectPacket(_normalizedRect).At(timestamp));
+      var packetMap = new PacketMap();
+      packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImageAt(image, timestampMicrosec));
+      packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProtoAt(_normalizedRect, timestampMicrosec));
 
-        SendLiveStreamData(packetMap);
-      }
+      SendLiveStreamData(packetMap);
     }
 
-    private FaceLandmarkerResult BuildFaceLandmarkerResult(PacketMap outputPackets) => BuildFaceLandmarkerResult(outputPackets, _faceLandmarksForRead, _faceBlendshapesForRead, _faceGeometriesForRead);
+    private bool TryBuildFaceLandmarkerResult(PacketMap outputPackets, ref FaceLandmarkerResult result)
+    {
+      return TryBuildFaceLandmarkerResult(outputPackets, _faceLandmarksForRead, _faceBlendshapesForRead, _faceGeometriesForRead, ref result);
+    }
 
     private static Tasks.Core.TaskRunner.PacketsCallback BuildPacketsCallback(FaceLandmarkerOptions options,
         List<NormalizedLandmarkList> faceLandmarksForRead,
@@ -199,6 +256,8 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
         return null;
       }
 
+      FaceLandmarkerResult faceLandmarkerResult = default;
+
       return (PacketMap outputPackets) =>
       {
         var outImagePacket = outputPackets.At(_IMAGE_OUT_STREAM_NAME);
@@ -208,10 +267,16 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
         }
 
         var image = outImagePacket.GetImage();
-        var faceLandmarkerResult = BuildFaceLandmarkerResult(outputPackets, faceLandmarksForRead, faceBlendshapesForRead, faceGeometriesForRead);
         var timestamp = outImagePacket.TimestampMicroseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
-        resultCallback(faceLandmarkerResult, image, timestamp);
+        if (TryBuildFaceLandmarkerResult(outputPackets, faceLandmarksForRead, faceBlendshapesForRead, faceGeometriesForRead, ref faceLandmarkerResult))
+        {
+          resultCallback(faceLandmarkerResult, image, timestamp);
+        }
+        else
+        {
+          resultCallback(default, image, timestamp);
+        }
       };
     }
 
@@ -226,15 +291,16 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
       outs.RemoveRange(size, outs.Count - size);
     }
 
-    private static FaceLandmarkerResult BuildFaceLandmarkerResult(PacketMap outputPackets,
+    private static bool TryBuildFaceLandmarkerResult(PacketMap outputPackets,
         List<NormalizedLandmarkList> faceLandmarksForRead,
         List<ClassificationList> faceBlendshapesForRead,
-        List<FaceGeometry.Proto.FaceGeometry> faceGeometriesForRead)
+        List<FaceGeometry.Proto.FaceGeometry> faceGeometriesForRead,
+        ref FaceLandmarkerResult result)
     {
       using var faceLandmarksProtoListPacket = outputPackets.At(_NORM_LANDMARKS_STREAM_NAME);
       if (faceLandmarksProtoListPacket.IsEmpty())
       {
-        return FaceLandmarkerResult.Empty();
+        return false;
       }
 
       faceLandmarksProtoListPacket.GetNormalizedLandmarkListList(faceLandmarksForRead);
@@ -255,7 +321,8 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
         faceTransformationMatrixesProtoList = faceGeometriesForRead;
       }
 
-      return FaceLandmarkerResult.CreateFrom(faceLandmarksForRead, faceBlendshapesProtoList, faceTransformationMatrixesProtoList);
+      result = FaceLandmarkerResult.CreateFrom(faceLandmarksForRead, faceBlendshapesProtoList, faceTransformationMatrixesProtoList);
+      return true;
     }
   }
 }
