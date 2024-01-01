@@ -440,7 +440,7 @@ namespace Mediapipe.Tests
 
       using (var pixelLock = new PixelWriteLock(image))
       {
-        var pixelData = new byte[width * height * ImageFrame.NumberOfChannelsForFormat(format)];
+        var pixelData = new byte[width * height * format.NumberOfChannels()];
         Marshal.Copy(pixelLock.Pixels(), pixelData, 0, pixelData.Length);
 
         Assert.AreEqual(expectedBytes, pixelData);
@@ -453,7 +453,7 @@ namespace Mediapipe.Tests
       Assert.AreEqual(height, imageFrame.Height());
       Assert.AreEqual(format, imageFrame.Format());
 
-      var pixelData = new byte[width * height * ImageFrame.NumberOfChannelsForFormat(format)];
+      var pixelData = new byte[width * height * format.NumberOfChannels()];
       Marshal.Copy(imageFrame.MutablePixelData(), pixelData, 0, pixelData.Length);
 
       Assert.AreEqual(expectedBytes, pixelData);

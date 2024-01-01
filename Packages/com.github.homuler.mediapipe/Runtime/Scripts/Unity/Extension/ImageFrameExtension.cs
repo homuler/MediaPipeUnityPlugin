@@ -70,7 +70,7 @@ namespace Mediapipe.Unity
     private static bool TryReadChannel(ImageFormat.Types.Format format, int width, int height, int widthStep, int byteDepth,
       int channelNumber, IntPtr pixelData, byte[] channelData, bool isHorizontallyFlipped, bool isVerticallyFlipped)
     {
-      var channelCount = ImageFrame.NumberOfChannelsForFormat(format);
+      var channelCount = format.NumberOfChannels();
       if (!IsChannelNumberValid(channelCount, channelNumber))
       {
         return false;
@@ -151,7 +151,7 @@ namespace Mediapipe.Unity
     private static bool TryReadChannel(ImageFormat.Types.Format format, int width, int height, int widthStep, int byteDepth,
       int channelNumber, IntPtr pixelData, ushort[] channelData, bool isHorizontallyFlipped, bool isVerticallyFlipped)
     {
-      var channelCount = ImageFrame.NumberOfChannelsForFormat(format);
+      var channelCount = format.NumberOfChannels();
       if (!IsChannelNumberValid(channelCount, channelNumber))
       {
         return false;
@@ -228,7 +228,7 @@ namespace Mediapipe.Unity
     private static bool TryReadChannel(ImageFormat.Types.Format format, int width, int height, int widthStep, int byteDepth,
       int channelNumber, IntPtr pixelData, float[] channelData, bool isHorizontallyFlipped, bool isVerticallyFlipped)
     {
-      var channelCount = ImageFrame.NumberOfChannelsForFormat(format);
+      var channelCount = format.NumberOfChannels();
       if (!IsChannelNumberValid(channelCount, channelNumber))
       {
         return false;
@@ -304,7 +304,7 @@ namespace Mediapipe.Unity
     private static bool TryReadChannelNormalized(ImageFormat.Types.Format format, int width, int height, int widthStep, int byteDepth,
       int channelNumber, IntPtr pixelData, float[] normalizedChannelData, bool isHorizontallyFlipped, bool isVerticallyFlipped)
     {
-      var channelCount = ImageFrame.NumberOfChannelsForFormat(format);
+      var channelCount = format.NumberOfChannels();
       if (!IsChannelNumberValid(channelCount, channelNumber))
       {
         return false;
