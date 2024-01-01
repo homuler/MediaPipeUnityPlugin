@@ -7,6 +7,7 @@
 using System;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
+using UnityEngine;
 
 namespace Mediapipe
 {
@@ -65,6 +66,11 @@ namespace Mediapipe
           : this(format, width, height, widthStep, pixelData, _VoidDeleter)
     { }
 
+    // TODO: detect format from the texture
+    public ImageFrame(ImageFormat.Types.Format format, Texture2D texture) :
+        this(format, texture.width, texture.height, format.NumberOfChannels() * texture.width, texture.GetRawTextureData<byte>())
+    { }
+
     protected override void DeleteMpPtr()
     {
       UnsafeNativeMethods.mp_ImageFrame__delete(ptr);
@@ -74,112 +80,6 @@ namespace Mediapipe
 
     [AOT.MonoPInvokeCallback(typeof(Deleter))]
     internal static void VoidDeleter(IntPtr _) { }
-
-    /// <returns>
-    ///   The number of channels for a <paramref name="format" />.
-    ///   If channels don't make sense in the <paramref name="format" />, returns <c>0</c>.
-    /// </returns>
-    /// <remarks>
-    ///   Unlike the original implementation, this API won't signal SIGABRT.
-    /// </remarks>
-    public static int NumberOfChannelsForFormat(ImageFormat.Types.Format format)
-    {
-      switch (format)
-      {
-        case ImageFormat.Types.Format.Srgb:
-        case ImageFormat.Types.Format.Srgb48:
-          return 3;
-        case ImageFormat.Types.Format.Srgba:
-        case ImageFormat.Types.Format.Srgba64:
-        case ImageFormat.Types.Format.Sbgra:
-          return 4;
-        case ImageFormat.Types.Format.Gray8:
-        case ImageFormat.Types.Format.Gray16:
-          return 1;
-        case ImageFormat.Types.Format.Vec32F1:
-          return 1;
-        case ImageFormat.Types.Format.Vec32F2:
-          return 2;
-        case ImageFormat.Types.Format.Lab8:
-          return 3;
-        case ImageFormat.Types.Format.Ycbcr420P:
-        case ImageFormat.Types.Format.Ycbcr420P10:
-        case ImageFormat.Types.Format.Unknown:
-        default:
-          return 0;
-      }
-    }
-
-    /// <returns>
-    ///   The channel size for a <paramref name="format" />.
-    ///   If channels don't make sense in the <paramref name="format" />, returns <c>0</c>.
-    /// </returns>
-    /// <remarks>
-    ///   Unlike the original implementation, this API won't signal SIGABRT.
-    /// </remarks>
-    public static int ChannelSizeForFormat(ImageFormat.Types.Format format)
-    {
-      switch (format)
-      {
-        case ImageFormat.Types.Format.Srgb:
-        case ImageFormat.Types.Format.Srgba:
-        case ImageFormat.Types.Format.Sbgra:
-          return sizeof(byte);
-        case ImageFormat.Types.Format.Srgb48:
-        case ImageFormat.Types.Format.Srgba64:
-          return sizeof(ushort);
-        case ImageFormat.Types.Format.Gray8:
-          return sizeof(byte);
-        case ImageFormat.Types.Format.Gray16:
-          return sizeof(ushort);
-        case ImageFormat.Types.Format.Vec32F1:
-        case ImageFormat.Types.Format.Vec32F2:
-          // sizeof float may be wrong since it's platform-dependent, but we assume that it's constant across all supported platforms.
-          return sizeof(float);
-        case ImageFormat.Types.Format.Lab8:
-          return sizeof(byte);
-        case ImageFormat.Types.Format.Ycbcr420P:
-        case ImageFormat.Types.Format.Ycbcr420P10:
-        case ImageFormat.Types.Format.Unknown:
-        default:
-          return 0;
-      }
-    }
-
-    /// <returns>
-    ///   The depth of each channel in bytes for a <paramref name="format" />.
-    ///   If channels don't make sense in the <paramref name="format" />, returns <c>0</c>.
-    /// </returns>
-    /// <remarks>
-    ///   Unlike the original implementation, this API won't signal SIGABRT.
-    /// </remarks>
-    public static int ByteDepthForFormat(ImageFormat.Types.Format format)
-    {
-      switch (format)
-      {
-        case ImageFormat.Types.Format.Srgb:
-        case ImageFormat.Types.Format.Srgba:
-        case ImageFormat.Types.Format.Sbgra:
-          return 1;
-        case ImageFormat.Types.Format.Srgb48:
-        case ImageFormat.Types.Format.Srgba64:
-          return 2;
-        case ImageFormat.Types.Format.Gray8:
-          return 1;
-        case ImageFormat.Types.Format.Gray16:
-          return 2;
-        case ImageFormat.Types.Format.Vec32F1:
-        case ImageFormat.Types.Format.Vec32F2:
-          return 4;
-        case ImageFormat.Types.Format.Lab8:
-          return 1;
-        case ImageFormat.Types.Format.Ycbcr420P:
-        case ImageFormat.Types.Format.Ycbcr420P10:
-        case ImageFormat.Types.Format.Unknown:
-        default:
-          return 0;
-      }
-    }
 
     public bool IsEmpty()
     {
@@ -223,7 +123,7 @@ namespace Mediapipe
     /// </remarks>
     public int ChannelSize()
     {
-      return ChannelSizeForFormat(Format());
+      return Format().ChannelSize();
     }
 
     /// <returns>
@@ -235,7 +135,7 @@ namespace Mediapipe
     /// </remarks>
     public int NumberOfChannels()
     {
-      return NumberOfChannelsForFormat(Format());
+      return Format().NumberOfChannels();
     }
 
     /// <returns>
@@ -247,7 +147,7 @@ namespace Mediapipe
     /// </remarks>
     public int ByteDepth()
     {
-      return ByteDepthForFormat(Format());
+      return Format().ByteDepth();
     }
 
     public int WidthStep()
