@@ -8,11 +8,10 @@ using System.Collections;
 using UnityEngine;
 
 using Mediapipe.Tasks.Vision.FaceLandmarker;
+using UnityEngine.Rendering;
 
 namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
 {
-  using RunningMode = Tasks.Vision.Core.RunningMode;
-
   public class FaceLandmarkerRunner : VisionTaskApiRunner<FaceLandmarker>
   {
     [SerializeField] private FaceLandmarkerResultAnnotationController _faceLandmarkerResultAnnotationController;
@@ -41,7 +40,7 @@ namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
 
       yield return AssetLoader.PrepareAssetAsync(config.ModelPath);
 
-      var options = config.GetFaceLandmarkerOptions(config.RunningMode == RunningMode.LIVE_STREAM ? OnFaceLandmarkDetectionOutput : null);
+      var options = config.GetFaceLandmarkerOptions(config.RunningMode == Tasks.Vision.Core.RunningMode.LIVE_STREAM ? OnFaceLandmarkDetectionOutput : null);
       taskApi = FaceLandmarker.CreateFromOptions(options);
       var imageSource = ImageSourceProvider.ImageSource;
 
@@ -67,6 +66,10 @@ namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
       var flipVertically = transformationOptions.flipVertically;
       var imageProcessingOptions = new Tasks.Vision.Core.ImageProcessingOptions(rotationDegrees: (int)transformationOptions.rotationAngle);
 
+      AsyncGPUReadbackRequest req = default;
+      var waitUntilReqDone = new WaitUntil(() => req.done);
+      var result = FaceLandmarkerResult.Alloc(options.numFaces);
+
       while (true)
       {
         if (isPaused)
@@ -81,7 +84,7 @@ namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
         }
 
         // Copy current image to TextureFrame
-        var req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
+        req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
         yield return new WaitUntil(() => req.done);
 
         if (req.hasError)
@@ -93,16 +96,28 @@ namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
         var image = textureFrame.BuildCPUImage();
         switch (taskApi.runningMode)
         {
-          case RunningMode.IMAGE:
-            var result = taskApi.Detect(image, imageProcessingOptions);
-            _faceLandmarkerResultAnnotationController.DrawNow(result);
+          case Tasks.Vision.Core.RunningMode.IMAGE:
+            if (taskApi.TryDetect(image, imageProcessingOptions, ref result))
+            {
+              _faceLandmarkerResultAnnotationController.DrawNow(result);
+            }
+            else
+            {
+              _faceLandmarkerResultAnnotationController.DrawNow(default);
+            }
             break;
-          case RunningMode.VIDEO:
-            result = taskApi.DetectForVideo(image, (int)GetCurrentTimestampMillisec(), imageProcessingOptions);
-            _faceLandmarkerResultAnnotationController.DrawNow(result);
+          case Tasks.Vision.Core.RunningMode.VIDEO:
+            if (taskApi.TryDetectForVideo(image, GetCurrentTimestampMillisec(), imageProcessingOptions, ref result))
+            {
+              _faceLandmarkerResultAnnotationController.DrawNow(result);
+            }
+            else
+            {
+              _faceLandmarkerResultAnnotationController.DrawNow(default);
+            }
             break;
-          case RunningMode.LIVE_STREAM:
-            taskApi.DetectAsync(image, (int)GetCurrentTimestampMillisec(), imageProcessingOptions);
+          case Tasks.Vision.Core.RunningMode.LIVE_STREAM:
+            taskApi.DetectAsync(image, GetCurrentTimestampMillisec(), imageProcessingOptions);
             break;
         }
 
