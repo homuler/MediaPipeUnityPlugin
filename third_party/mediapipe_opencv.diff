@@ -1,18 +1,16 @@
 diff --git a/third_party/BUILD b/third_party/BUILD
-index f6107106..2ca2f162 100644
+index d784fc3c..d2e758b3 100644
 --- a/third_party/BUILD
 +++ b/third_party/BUILD
-@@ -13,9 +13,6 @@
+@@ -13,7 +13,6 @@
  # limitations under the License.
  #
  
--load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
--load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
--
- licenses(["notice"])  # Apache License 2.0
+-load("@rules_foreign_cc//foreign_cc:cmake.bzl", "cmake")
+ load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
  
- package(default_visibility = ["//visibility:public"])
-@@ -56,209 +53,12 @@ cc_library(
+ licenses(["notice"])  # Apache License 2.0
+@@ -53,67 +52,9 @@ cc_library(
      }),
  )
  
@@ -81,18 +79,10 @@ index f6107106..2ca2f162 100644
      visibility = ["//visibility:public"],
  )
  
--bzl_library(
--    name = "opencv_ios_xcframework_files_bzl",
--    srcs = ["opencv_ios_xcframework_files.bzl"],
--    visibility = ["//visibility:private"],
--)
--
--bzl_library(
--    name = "opencv_ios_source_bzl",
--    srcs = ["opencv_ios_source.bzl"],
--    visibility = ["//visibility:private"],
--)
--
+@@ -129,132 +70,6 @@ bzl_library(
+     visibility = ["//visibility:private"],
+ )
+ 
 -# Note: this determines the order in which the libraries are passed to the
 -# linker, so if library A depends on library B, library B must come _after_.
 -# Hence core is at the bottom.
@@ -115,7 +105,7 @@ index f6107106..2ca2f162 100644
 -
 -OPENCV_SO_VERSION = "3.4"
 -
--cmake_external(
+-cmake(
 -    name = "opencv_cmake",
 -    # Values to be passed as -Dkey=value on the CMake command line;
 -    # here are serving to provide some CMake script configuration options
@@ -191,7 +181,7 @@ index f6107106..2ca2f162 100644
 -        "-lpthread",
 -        "-lrt",
 -    ],
--    shared_libraries = select({
+-    out_shared_libs = select({
 -        "@bazel_tools//src/conditions:darwin": ["libopencv_%s.%s.dylib" % (module, OPENCV_SO_VERSION) for module in OPENCV_MODULES],
 -        # Only the shared objects listed here will be linked in the directory
 -        # that Bazel adds to the RUNPATH of dependent executables. You cannot
@@ -199,7 +189,7 @@ index f6107106..2ca2f162 100644
 -        # versioned name is the one that the executables actually reference.
 -        "//conditions:default": ["libopencv_%s.so.%s" % (module, OPENCV_SO_VERSION) for module in OPENCV_MODULES],
 -    }) if OPENCV_SHARED_LIBS else None,
--    static_libraries = [
+-    out_static_libs = [
 -        "libopencv_%s.a" % module
 -        for module in OPENCV_MODULES
 -    ] if not OPENCV_SHARED_LIBS else None,
@@ -210,7 +200,6 @@ index f6107106..2ca2f162 100644
 -    actual = select({
 -        "//mediapipe:android_x86": "@android_opencv//:libopencv_x86",
 -        "//mediapipe:android_x86_64": "@android_opencv//:libopencv_x86_64",
--        "//mediapipe:android_armeabi": "@android_opencv//:libopencv_armeabi-v7a",
 -        "//mediapipe:android_arm": "@android_opencv//:libopencv_armeabi-v7a",
 -        "//mediapipe:android_arm64": "@android_opencv//:libopencv_arm64-v8a",
 -        "//mediapipe:ios": "@ios_opencv//:opencv",

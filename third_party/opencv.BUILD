@@ -71,12 +71,10 @@ alias(
     actual = select({
         "@com_google_mediapipe//mediapipe:android_x86": "@android_opencv//:libopencv_x86",
         "@com_google_mediapipe//mediapipe:android_x86_64": "@android_opencv//:libopencv_x86_64",
-        "@com_google_mediapipe//mediapipe:android_armeabi": "@android_opencv//:libopencv_armeabi-v7a",
         "@com_google_mediapipe//mediapipe:android_arm": "@android_opencv//:libopencv_armeabi-v7a",
         "@com_google_mediapipe//mediapipe:android_arm64": "@android_opencv//:libopencv_arm64-v8a",
         "@com_google_mediapipe//mediapipe:ios": "@ios_opencv//:opencv",
         "@com_google_mediapipe//mediapipe:macos_arm64": "@macos_arm64_opencv//:opencv",
-        "@com_google_mediapipe//mediapipe:macos_i386": "@macos_opencv//:opencv",
         "@com_google_mediapipe//mediapipe:macos_x86_64": "@macos_opencv//:opencv",
         "@com_google_mediapipe//mediapipe:windows": "@windows_opencv//:opencv",
         "@com_google_mediapipe//mediapipe:emscripten": "@wasm_opencv//:opencv",
