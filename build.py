@@ -285,7 +285,6 @@ class BuildCommand(Command):
 
     commands = self._build_common_commands()
     commands.append(f'--config=android_{self.command_args.android}')
-    commands.append(f'--java_runtime_version=remotejdk_11')
     commands.append('//mediapipe_api/java/com/github/homuler/mediapipe:mediapipe_android')
     return commands
 

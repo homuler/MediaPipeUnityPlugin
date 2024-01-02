@@ -1,0 +1,50 @@
+diff --git a/mediapipe/framework/tool/switch_container.proto b/mediapipe/framework/tool/switch_container.proto
+index a9c2d90..f38de33 100644
+--- a/mediapipe/framework/tool/switch_container.proto
++++ b/mediapipe/framework/tool/switch_container.proto
+@@ -27,4 +27,7 @@ message SwitchContainerOptions {
+ 
+   // Use DefaultInputStreamHandler for muxing & demuxing.
+   optional bool synchronize_io = 5;
++
++  optional bool synchronize_demux_io = 6;
++  optional bool synchronize_mux_io = 7;
+ }
+diff --git a/mediapipe/framework/tool/switch_demux_calculator.cc b/mediapipe/framework/tool/switch_demux_calculator.cc
+index 1c1d59d..7ea68d7 100644
+--- a/mediapipe/framework/tool/switch_demux_calculator.cc
++++ b/mediapipe/framework/tool/switch_demux_calculator.cc
+@@ -115,7 +115,7 @@ absl::Status SwitchDemuxCalculator::GetContract(CalculatorContract* cc) {
+     }
+   }
+   auto& options = cc->Options<mediapipe::SwitchContainerOptions>();
+-  if (!options.synchronize_io()) {
++  if (!options.synchronize_io() && !options.synchronize_demux_io()) {
+     cc->SetInputStreamHandler("ImmediateInputStreamHandler");
+   }
+   cc->SetProcessTimestampBounds(true);
+diff --git a/mediapipe/framework/tool/switch_mux_calculator.cc b/mediapipe/framework/tool/switch_mux_calculator.cc
+index 9982ae4..a44bc00 100644
+--- a/mediapipe/framework/tool/switch_mux_calculator.cc
++++ b/mediapipe/framework/tool/switch_mux_calculator.cc
+@@ -154,7 +154,7 @@ absl::Status SwitchMuxCalculator::Process(CalculatorContext* cc) {
+   // Update the input channel index if specified.
+   channel_index_ = tool::GetChannelIndex(*cc, channel_index_);
+ 
+-  if (options_.synchronize_io()) {
++  if (options_.synchronize_io() || options_.synchronize_mux_io()) {
+     // Start with adding input signals into channel_history_ and packet_history_
+     if (cc->Inputs().HasTag("ENABLE") &&
+         !cc->Inputs().Tag("ENABLE").IsEmpty()) {
+diff --git a/mediapipe/modules/pose_landmark/pose_landmark_filtering.pbtxt b/mediapipe/modules/pose_landmark/pose_landmark_filtering.pbtxt
+index bb3665f..27d141c 100644
+--- a/mediapipe/modules/pose_landmark/pose_landmark_filtering.pbtxt
++++ b/mediapipe/modules/pose_landmark/pose_landmark_filtering.pbtxt
+@@ -100,6 +100,7 @@ node {
+   options: {
+     [mediapipe.SwitchContainerOptions.ext] {
+       enable: true
++      synchronize_demux_io: true
+       contained_node: {
+         calculator: "LandmarksSmoothingCalculator"
+         options: {
