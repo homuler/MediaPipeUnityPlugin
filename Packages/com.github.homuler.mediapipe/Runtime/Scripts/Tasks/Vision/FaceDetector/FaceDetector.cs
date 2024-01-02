@@ -5,6 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections.Generic;
+using Mediapipe.Tasks.Components.Containers;
 using FaceDetectionResult = Mediapipe.Tasks.Components.Containers.DetectionResult;
 
 namespace Mediapipe.Tasks.Vision.FaceDetector
@@ -30,15 +31,12 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
 #pragma warning restore IDE0052
 
     private readonly NormalizedRect _normalizedRect = new NormalizedRect();
-    private readonly List<Detection> _detectionsForRead;
 
     private FaceDetector(
       CalculatorGraphConfig graphConfig,
       Core.RunningMode runningMode,
-      List<Detection> detectionsForRead,
       Tasks.Core.TaskRunner.PacketsCallback packetCallback) : base(graphConfig, runningMode, packetCallback)
     {
-      _detectionsForRead = detectionsForRead;
       _packetCallback = packetCallback;
     }
 
@@ -80,12 +78,10 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
         },
         taskOptions: options);
 
-      var detectionsForRead = new List<Detection>(options.numFaces);
       return new FaceDetector(
         taskInfo.GenerateGraphConfig(options.runningMode == Core.RunningMode.LIVE_STREAM),
         options.runningMode,
-        detectionsForRead,
-        BuildPacketsCallback(options, detectionsForRead));
+        BuildPacketsCallback(options));
     }
 
     /// <summary>
@@ -231,10 +227,7 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       SendLiveStreamData(packetMap);
     }
 
-    private bool TryBuildFaceDetectorResult(PacketMap outputPackets, ref FaceDetectionResult result)
-        => TryBuildFaceDetectorResult(outputPackets, _detectionsForRead, ref result);
-
-    private static Tasks.Core.TaskRunner.PacketsCallback BuildPacketsCallback(FaceDetectorOptions options, List<Detection> detectionsForRead)
+    private static Tasks.Core.TaskRunner.PacketsCallback BuildPacketsCallback(FaceDetectorOptions options)
     {
       var resultCallback = options.resultCallback;
       if (resultCallback == null)
@@ -255,7 +248,7 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
         using var image = outImagePacket.GetImage();
         var timestamp = outImagePacket.TimestampMicroseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
-        if (TryBuildFaceDetectorResult(outputPackets, detectionsForRead, ref result))
+        if (TryBuildFaceDetectorResult(outputPackets, ref result))
         {
           resultCallback(result, image, timestamp);
         }
@@ -266,16 +259,14 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       };
     }
 
-    private static bool TryBuildFaceDetectorResult(PacketMap outputPackets, List<Detection> detectionsForRead, ref FaceDetectionResult result)
+    private static bool TryBuildFaceDetectorResult(PacketMap outputPackets, ref FaceDetectionResult result)
     {
       using var detectionsPacket = outputPackets.At(_DETECTIONS_OUT_STREAM_NAME);
       if (detectionsPacket.IsEmpty())
       {
         return false;
       }
-      detectionsPacket.GetDetectionList(detectionsForRead);
-
-      FaceDetectionResult.Copy(detectionsForRead, ref result);
+      detectionsPacket.GetDetectionResult(ref result);
       return true;
     }
   }

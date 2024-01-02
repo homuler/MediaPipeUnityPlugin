@@ -589,17 +589,6 @@ namespace Mediapipe
       return size;
     }
 
-    public void GetClassificationListList(List<ClassificationList> outs)
-    {
-      foreach (var classificationList in outs)
-      {
-        classificationList.Clear();
-      }
-
-      var size = WriteProtoListTo(ClassificationList.Parser, outs);
-      outs.RemoveRange(size, outs.Count - size);
-    }
-
     public void GetDetectionList(List<Detection> outs)
     {
       foreach (var detection in outs)
@@ -608,17 +597,6 @@ namespace Mediapipe
       }
 
       var size = WriteProtoListTo(Detection.Parser, outs);
-      outs.RemoveRange(size, outs.Count - size);
-    }
-
-    public void GetNormalizedLandmarkListList(List<NormalizedLandmarkList> outs)
-    {
-      foreach (var landmarkList in outs)
-      {
-        landmarkList.Clear();
-      }
-
-      var size = WriteProtoListTo(NormalizedLandmarkList.Parser, outs);
       outs.RemoveRange(size, outs.Count - size);
     }
 
