@@ -10,6 +10,14 @@ namespace Mediapipe.Tasks.Components.Containers
 {
   public static class PacketExtension
   {
+    public static void GetClassificationsVector(this Packet packet, List<Classifications> outs)
+    {
+      UnsafeNativeMethods.mp_Packet__GetClassificationsVector(packet.mpPtr, out var classificationResult).Assert();
+      var tmp = new ClassificationResult(outs, null);
+      ClassificationResult.Copy(classificationResult, ref tmp);
+      classificationResult.Dispose();
+    }
+
     public static void GetDetectionResult(this Packet packet, ref DetectionResult value)
     {
       UnsafeNativeMethods.mp_Packet__GetDetectionResult(packet.mpPtr, out var detectionResult).Assert();
