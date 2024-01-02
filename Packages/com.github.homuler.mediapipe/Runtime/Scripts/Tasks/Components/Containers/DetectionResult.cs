@@ -4,7 +4,6 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using System;
 using System.Collections.Generic;
 
 namespace Mediapipe.Tasks.Components.Containers
@@ -53,11 +52,11 @@ namespace Mediapipe.Tasks.Components.Containers
 
     public static void Copy(Mediapipe.Detection proto, ref Detection destination)
     {
-      var categories = destination.categories;
+      var categories = destination.categories ?? new List<Category>(proto.Score.Count);
       categories.Clear();
       for (var idx = 0; idx < proto.Score.Count; idx++)
       {
-        destination.categories.Add(new Category(
+        categories.Add(new Category(
           proto.LabelId.Count > idx ? proto.LabelId[idx] : _DefaultCategoryIndex,
           proto.Score[idx],
           proto.Label.Count > idx ? proto.Label[idx] : "",
@@ -91,6 +90,27 @@ namespace Mediapipe.Tasks.Components.Containers
           keypoint.HasScore ? (float?)keypoint.Score : null
 #pragma warning restore IDE0004
         ));
+      }
+
+      destination = new Detection(categories, boundingBox, keypoints);
+    }
+
+    internal static void Copy(in NativeDetection source, ref Detection destination)
+    {
+      var categories = destination.categories ?? new List<Category>((int)source.categoriesCount);
+      categories.Clear();
+      foreach (var nativeCategory in source.categories)
+      {
+        categories.Add(new Category(nativeCategory));
+      }
+
+      var boundingBox = new Rect(source.boundingBox);
+
+      var keypoints = destination.keypoints ?? new List<NormalizedKeypoint>((int)source.keypointsCount);
+      keypoints.Clear();
+      foreach (var nativeKeypoint in source.keypoints)
+      {
+        keypoints.Add(new NormalizedKeypoint(nativeKeypoint));
       }
 
       destination = new Detection(categories, boundingBox, keypoints);
@@ -130,22 +150,28 @@ namespace Mediapipe.Tasks.Components.Containers
 
     internal static void Copy(List<Mediapipe.Detection> source, ref DetectionResult destination)
     {
-      var detections = destination.detections;
-      if (source.Count < detections.Count)
-      {
-        detections.RemoveRange(source.Count, detections.Count - source.Count);
-      }
-      var copyCount = Math.Min(source.Count, detections.Count);
-      for (var i = 0; i < copyCount; i++)
+      var detections = destination.detections ?? new List<Detection>(source.Count);
+      detections.ResizeTo(source.Count);
+
+      for (var i = 0; i < source.Count; i++)
       {
         var detection = detections[i];
         Detection.Copy(source[i], ref detection);
         detections[i] = detection;
       }
+    }
 
-      for (var i = copyCount; i < source.Count; i++)
+    internal static void Copy(NativeDetectionResult source, ref DetectionResult destination)
+    {
+      var detections = destination.detections ?? new List<Detection>((int)source.detectionsCount);
+      detections.ResizeTo((int)source.detectionsCount);
+
+      var i = 0;
+      foreach (var nativeDetection in source.AsReadOnlySpan())
       {
-        detections.Add(Detection.CreateFrom(source[i]));
+        var detection = detections[i];
+        Detection.Copy(nativeDetection, ref detection);
+        detections[i++] = detection;
       }
     }
 

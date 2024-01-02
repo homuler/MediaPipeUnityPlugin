@@ -10,6 +10,13 @@ namespace Mediapipe.Tasks.Components.Containers
 {
   public static class PacketExtension
   {
+    public static void GetDetectionResult(this Packet packet, ref DetectionResult value)
+    {
+      UnsafeNativeMethods.mp_Packet__GetDetectionResult(packet.mpPtr, out var detectionResult).Assert();
+      DetectionResult.Copy(detectionResult, ref value);
+      detectionResult.Dispose();
+    }
+
     public static void GetNormalizedLandmarksList(this Packet packet, List<NormalizedLandmarks> outs)
     {
       UnsafeNativeMethods.mp_Packet__GetNormalizedLandmarksVector(packet.mpPtr, out var landmarksArray).Assert();

@@ -29,6 +29,8 @@ namespace Mediapipe.Tasks.Components.Containers
       this.bottom = bottom;
     }
 
+    internal Rect(NativeRect nativeRect) : this(nativeRect.left, nativeRect.top, nativeRect.right, nativeRect.bottom) { }
+
     public override string ToString() => $"{{ \"left\": {left}, \"top\": {top}, \"right\": {right}, \"bottom\": {bottom} }}";
   }
 
@@ -47,6 +49,16 @@ namespace Mediapipe.Tasks.Components.Containers
     public readonly float top;
     public readonly float right;
     public readonly float bottom;
+
+    internal RectF(float left, float top, float right, float bottom)
+    {
+      this.left = left;
+      this.top = top;
+      this.right = right;
+      this.bottom = bottom;
+    }
+
+    internal RectF(NativeRectF nativeRect) : this(nativeRect.left, nativeRect.top, nativeRect.right, nativeRect.bottom) { }
 
 #nullable enable
     public override bool Equals(object? obj) => obj is RectF other && Equals(other);

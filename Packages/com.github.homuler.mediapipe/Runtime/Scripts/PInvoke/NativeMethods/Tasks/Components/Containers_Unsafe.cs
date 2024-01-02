@@ -12,6 +12,12 @@ namespace Mediapipe
   internal static partial class UnsafeNativeMethods
   {
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__GetDetectionResult(IntPtr packet, out NativeDetectionResult value);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern void mp_tasks_c_components_containers_CppCloseDetectionResult(NativeDetectionResult data);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__GetNormalizedLandmarksVector(IntPtr packet, out NativeNormalizedLandmarksArray value);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
