@@ -59,7 +59,7 @@ namespace Mediapipe
     public static extern MpReturnCode mp__MakeBoolVectorPacket_At__Pb_i_ll(bool[] value, int size, long timestampMicrosec, out IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_Packet__GetBoolVector(IntPtr packet, out StructArray value);
+    public static extern MpReturnCode mp_Packet__GetBoolVector(IntPtr packet, out StructArray<bool> value);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__ValidateAsBoolVector(IntPtr packet, out IntPtr status);
@@ -124,7 +124,7 @@ namespace Mediapipe
     public static extern MpReturnCode mp__MakeFloatVectorPacket_At__Pf_i_ll(float[] value, int size, long timestampMicrosec, out IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_Packet__GetFloatVector(IntPtr packet, out StructArray value);
+    public static extern MpReturnCode mp_Packet__GetFloatVector(IntPtr packet, out StructArray<float> value);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__ValidateAsFloatVector(IntPtr packet, out IntPtr status);

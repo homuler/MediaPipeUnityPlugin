@@ -87,7 +87,7 @@ namespace Mediapipe
       UnsafeNativeMethods.mp_Packet__GetFloatVector(mpPtr, out var structArray).Assert();
       GC.KeepAlive(this);
 
-      var result = structArray.Copy<float>();
+      var result = structArray.Copy();
       structArray.Dispose();
       return result;
     }
