@@ -10,6 +10,26 @@ using System.Runtime.InteropServices;
 namespace Mediapipe
 {
   [StructLayout(LayoutKind.Sequential)]
+  internal readonly struct NativeLandmark
+  {
+    public readonly float x;
+    public readonly float y;
+    public readonly float z;
+
+    [MarshalAs(UnmanagedType.I1)]
+    public readonly bool hasVisibility;
+    public readonly float visibility;
+
+    [MarshalAs(UnmanagedType.I1)]
+    public readonly bool hasPresence;
+    public readonly float presence;
+
+    private readonly IntPtr _name;
+
+    public string name => Marshal.PtrToStringAnsi(_name);
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
   internal readonly struct NativeNormalizedLandmark
   {
     public readonly float x;
@@ -24,8 +44,25 @@ namespace Mediapipe
     public readonly bool hasPresence;
     public readonly float presence;
 
-    public readonly IntPtr name;
-  };
+    private readonly IntPtr _name;
+
+    public string name => Marshal.PtrToStringAnsi(_name);
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  internal readonly struct NativeLandmarks
+  {
+    private readonly IntPtr _landmarks;
+    public readonly uint landmarksCount;
+
+    public ReadOnlySpan<NativeLandmark> AsReadOnlySpan()
+    {
+      unsafe
+      {
+        return new ReadOnlySpan<NativeLandmark>((NativeLandmark*)_landmarks, (int)landmarksCount);
+      }
+    }
+  }
 
   [StructLayout(LayoutKind.Sequential)]
   internal readonly struct NativeNormalizedLandmarks

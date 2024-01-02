@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-
 // TODO: use System.MathF
 using Mathf = UnityEngine.Mathf;
 
@@ -227,25 +226,14 @@ namespace Mediapipe.Tasks.Components.Containers
   {
     public static void FillWith(this List<NormalizedLandmarks> target, NativeNormalizedLandmarksArray source)
     {
-      if (target.Count > source.size)
-      {
-        target.RemoveRange(source.size, target.Count - source.size);
-      }
+      target.ResizeTo(source.size);
 
-      var copyCount = Math.Min(source.size, target.Count);
       var i = 0;
-      foreach (var nativeLandmarks in source.AsReadOnlySpan().Slice(0, target.Count))
+      foreach (var nativeLandmarks in source.AsReadOnlySpan())
       {
         var landmarks = target[i];
         NormalizedLandmarks.Copy(nativeLandmarks, ref landmarks);
-        target[i++] = landmarks;
-      }
-
-      foreach (var nativeLandmarks in source.AsReadOnlySpan().Slice(copyCount))
-      {
-        var landmarks = default(NormalizedLandmarks);
-        NormalizedLandmarks.Copy(nativeLandmarks, ref landmarks);
-        target.Add(landmarks);
+        target[i] = landmarks;
       }
     }
   }
