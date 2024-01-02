@@ -44,6 +44,37 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
       return new FaceLandmarkerResult(faceLandmarks, faceBlendshapes, facialTransformationMatrixes);
     }
 
+    public void CloneTo(ref FaceLandmarkerResult destination)
+    {
+      if (faceLandmarks == null)
+      {
+        destination = default;
+        return;
+      }
+
+      var dstFaceLandmarks = destination.faceLandmarks ?? new List<NormalizedLandmarks>(faceLandmarks.Count);
+      dstFaceLandmarks.Clear();
+      dstFaceLandmarks.AddRange(faceLandmarks);
+
+      var dstFaceBlendshapes = destination.faceBlendshapes;
+      if (faceBlendshapes != null)
+      {
+        dstFaceBlendshapes ??= new List<Classifications>(faceBlendshapes.Count);
+        dstFaceBlendshapes.Clear();
+        dstFaceBlendshapes.AddRange(faceBlendshapes);
+      }
+
+      var dstFacialTransformationMatrixes = destination.facialTransformationMatrixes;
+      if (facialTransformationMatrixes != null)
+      {
+        dstFacialTransformationMatrixes ??= new List<Matrix4x4>(facialTransformationMatrixes.Count);
+        dstFacialTransformationMatrixes.Clear();
+        dstFacialTransformationMatrixes.AddRange(facialTransformationMatrixes);
+      }
+
+      destination = new FaceLandmarkerResult(dstFaceLandmarks, dstFaceBlendshapes, dstFacialTransformationMatrixes);
+    }
+
     public override string ToString()
       => $"{{ \"faceLandmarks\": {Util.Format(faceLandmarks)}, \"faceBlendshapes\": {Util.Format(faceBlendshapes)}, \"facialTransformationMatrixes\": {Util.Format(facialTransformationMatrixes)} }}";
   }
