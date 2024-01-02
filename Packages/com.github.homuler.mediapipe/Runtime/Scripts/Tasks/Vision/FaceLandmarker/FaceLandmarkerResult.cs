@@ -5,7 +5,6 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections.Generic;
-using System.Linq;
 using Mediapipe.Tasks.Components.Containers;
 using UnityEngine;
 
@@ -19,38 +18,61 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
     /// <summary>
     ///   Detected face landmarks in normalized image coordinates.
     /// </summary>
-    public readonly IReadOnlyList<NormalizedLandmarks> faceLandmarks;
+    public readonly List<NormalizedLandmarks> faceLandmarks;
     /// <summary>
     ///   Optional face blendshapes results.
     /// </summary>
-    public readonly IReadOnlyList<Classifications> faceBlendshapes;
+    public readonly List<Classifications> faceBlendshapes;
     /// <summary>
     ///   Optional facial transformation matrix.
     /// </summary>
-    public readonly IReadOnlyList<Matrix4x4> facialTransformationMatrixes;
+    public readonly List<Matrix4x4> facialTransformationMatrixes;
 
-    internal FaceLandmarkerResult(IReadOnlyList<NormalizedLandmarks> faceLandmarks,
-        IReadOnlyList<Classifications> faceBlendshapes, IReadOnlyList<Matrix4x4> facialTransformationMatrixes)
+    internal FaceLandmarkerResult(List<NormalizedLandmarks> faceLandmarks,
+        List<Classifications> faceBlendshapes, List<Matrix4x4> facialTransformationMatrixes)
     {
       this.faceLandmarks = faceLandmarks;
       this.faceBlendshapes = faceBlendshapes;
       this.facialTransformationMatrixes = facialTransformationMatrixes;
     }
 
-    // TODO: add parameterless constructors
-    internal static FaceLandmarkerResult Empty()
-      => new FaceLandmarkerResult(new List<NormalizedLandmarks>(), new List<Classifications>(), new List<Matrix4x4>());
-
-    internal static FaceLandmarkerResult CreateFrom(IReadOnlyList<NormalizedLandmarkList> faceLandmarksProto,
-        IReadOnlyList<ClassificationList> faceBlendshapesProto, IReadOnlyList<FaceGeometry.Proto.FaceGeometry> facialTransformationMatrixesProto)
+    public static FaceLandmarkerResult Alloc(int capacity, bool outputFaceBlendshapes = false, bool outputFaceTransformationMatrixes = false)
     {
-      var faceLandmarks = faceLandmarksProto.Select(NormalizedLandmarks.CreateFrom).ToList();
-      var faceBlendshapes = faceBlendshapesProto == null ? new List<Classifications>() :
-          faceBlendshapesProto.Select(x => Classifications.CreateFrom(x)).ToList();
-      var facialTransformationMatrixes = facialTransformationMatrixesProto == null ? new List<Matrix4x4>() :
-          facialTransformationMatrixesProto.Select(x => x.PoseTransformMatrix.ToMatrix4x4()).ToList();
-
+      var faceLandmarks = new List<NormalizedLandmarks>(capacity);
+      var faceBlendshapes = outputFaceBlendshapes ? new List<Classifications>(capacity) : null;
+      var facialTransformationMatrixes = outputFaceTransformationMatrixes ? new List<Matrix4x4>(capacity) : null;
       return new FaceLandmarkerResult(faceLandmarks, faceBlendshapes, facialTransformationMatrixes);
+    }
+
+    public void CloneTo(ref FaceLandmarkerResult destination)
+    {
+      if (faceLandmarks == null)
+      {
+        destination = default;
+        return;
+      }
+
+      var dstFaceLandmarks = destination.faceLandmarks ?? new List<NormalizedLandmarks>(faceLandmarks.Count);
+      dstFaceLandmarks.Clear();
+      dstFaceLandmarks.AddRange(faceLandmarks);
+
+      var dstFaceBlendshapes = destination.faceBlendshapes;
+      if (faceBlendshapes != null)
+      {
+        dstFaceBlendshapes ??= new List<Classifications>(faceBlendshapes.Count);
+        dstFaceBlendshapes.Clear();
+        dstFaceBlendshapes.AddRange(faceBlendshapes);
+      }
+
+      var dstFacialTransformationMatrixes = destination.facialTransformationMatrixes;
+      if (facialTransformationMatrixes != null)
+      {
+        dstFacialTransformationMatrixes ??= new List<Matrix4x4>(facialTransformationMatrixes.Count);
+        dstFacialTransformationMatrixes.Clear();
+        dstFacialTransformationMatrixes.AddRange(facialTransformationMatrixes);
+      }
+
+      destination = new FaceLandmarkerResult(dstFaceLandmarks, dstFaceBlendshapes, dstFacialTransformationMatrixes);
     }
 
     public override string ToString()

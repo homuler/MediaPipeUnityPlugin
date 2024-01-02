@@ -562,20 +562,64 @@ namespace Mediapipe
       serializedProtoVector.Dispose();
     }
 
-    public void GetDetectionList(List<Detection> detections)
+    /// <summary>
+    ///   Write the content of the <see cref="Packet"/> as a proto message list.
+    /// </summary>
+    /// <remarks>
+    ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown.
+    /// </remarks>
+    /// <param name="value">
+    ///   The <see cref="List{T}"/> to be filled with the content of the <see cref="Packet"/>.
+    /// </param>
+    /// <returns>
+    ///   The number of written elements in <paramref name="value" />.
+    /// </returns>
+    /// <exception cref="MediaPipeException">
+    ///   If the <see cref="Packet"/> doesn't contain a proto message list.
+    /// </exception>
+    public int WriteProtoListTo<T>(MessageParser<T> parser, List<T> value) where T : IMessage<T>
     {
       UnsafeNativeMethods.mp_Packet__GetVectorOfProtoMessageLite(mpPtr, out var serializedProtoVector).Assert();
 
       GC.KeepAlive(this);
 
-      foreach (var detection in detections)
+      var size = serializedProtoVector.WriteTo(parser, value);
+      serializedProtoVector.Dispose();
+
+      return size;
+    }
+
+    public void GetClassificationListList(List<ClassificationList> outs)
+    {
+      foreach (var classificationList in outs)
+      {
+        classificationList.Clear();
+      }
+
+      var size = WriteProtoListTo(ClassificationList.Parser, outs);
+      outs.RemoveRange(size, outs.Count - size);
+    }
+
+    public void GetDetectionList(List<Detection> outs)
+    {
+      foreach (var detection in outs)
       {
         detection.Clear();
       }
-      var size = serializedProtoVector.WriteTo(Detection.Parser, detections);
-      serializedProtoVector.Dispose();
 
-      detections.RemoveRange(size, detections.Count - size);
+      var size = WriteProtoListTo(Detection.Parser, outs);
+      outs.RemoveRange(size, outs.Count - size);
+    }
+
+    public void GetNormalizedLandmarkListList(List<NormalizedLandmarkList> outs)
+    {
+      foreach (var landmarkList in outs)
+      {
+        landmarkList.Clear();
+      }
+
+      var size = WriteProtoListTo(NormalizedLandmarkList.Parser, outs);
+      outs.RemoveRange(size, outs.Count - size);
     }
 
     /// <summary>

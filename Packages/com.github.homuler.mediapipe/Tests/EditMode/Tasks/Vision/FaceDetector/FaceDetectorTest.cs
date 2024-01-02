@@ -11,7 +11,6 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using System.Text.RegularExpressions;
 using Mediapipe.Tasks.Components.Containers;
-using UnityEngine.Experimental.Rendering;
 
 using Stopwatch = System.Diagnostics.Stopwatch;
 
@@ -101,7 +100,7 @@ namespace Mediapipe.Tests.Tasks.Vision
         using (var image = new Image(ImageFormat.Types.Format.Srgba, width, height, width * 4, pixelData))
         {
           var result = faceDetector.Detect(image, null);
-          Assert.AreEqual(0, result.detections.Count);
+          Assert.IsNull(result.detections);
         }
       }
     }
@@ -116,7 +115,7 @@ namespace Mediapipe.Tests.Tasks.Vision
         using (var image = CopyAsImage(_facePicture.Value))
         {
           var result = faceDetector.Detect(image, null);
-          Assert.AreEqual(1, result.detections.Count);
+          Assert.AreEqual(1, result.detections?.Count);
         }
       }
     }
@@ -154,7 +153,7 @@ namespace Mediapipe.Tests.Tasks.Vision
           var result = DetectionResult.Alloc(0);
           var found = faceDetector.TryDetect(image, null, ref result);
           Assert.IsTrue(found);
-          Assert.AreEqual(1, result.detections.Count);
+          Assert.AreEqual(1, result.detections?.Count);
         }
       }
     }
@@ -174,7 +173,7 @@ namespace Mediapipe.Tests.Tasks.Vision
         using (var image = new Image(ImageFormat.Types.Format.Srgba, width, height, width * 4, pixelData))
         {
           var result = faceDetector.DetectForVideo(image, 1, null);
-          Assert.AreEqual(0, result.detections.Count);
+          Assert.IsNull(result.detections);
         }
       }
     }
@@ -189,7 +188,7 @@ namespace Mediapipe.Tests.Tasks.Vision
         using (var image = CopyAsImage(_facePicture.Value))
         {
           var result = faceDetector.DetectForVideo(image, 1, null);
-          Assert.AreEqual(1, result.detections.Count);
+          Assert.AreEqual(1, result.detections?.Count);
         }
       }
     }
@@ -267,7 +266,7 @@ namespace Mediapipe.Tests.Tasks.Vision
         });
 
         Assert.IsTrue(isCallbackInvoked);
-        Assert.AreEqual(0, result.detections.Count);
+        Assert.IsNull(result.detections);
       }
     }
 
@@ -302,7 +301,7 @@ namespace Mediapipe.Tests.Tasks.Vision
         });
 
         Assert.IsTrue(isCallbackInvoked);
-        Assert.AreEqual(1, result.detections.Count);
+        Assert.AreEqual(1, result.detections?.Count);
       }
     }
     #endregion
