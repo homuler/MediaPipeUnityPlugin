@@ -6,6 +6,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+
 
 // TODO: use System.MathF
 using Mathf = UnityEngine.Mathf;
@@ -105,6 +107,15 @@ namespace Mediapipe.Tasks.Components.Containers
     public readonly float? presence;
     public readonly string name;
 
+    internal NormalizedLandmark(NativeNormalizedLandmark nativeLandmark) : this(
+      nativeLandmark.x, nativeLandmark.y, nativeLandmark.z,
+      nativeLandmark.hasVisibility ? nativeLandmark.visibility : null,
+      nativeLandmark.hasPresence ? nativeLandmark.presence : null,
+      Marshal.PtrToStringAnsi(nativeLandmark.name)
+    )
+    {
+    }
+
     internal NormalizedLandmark(float x, float y, float z, float? visibility, float? presence) : this(x, y, z, visibility, presence, null)
     {
     }
@@ -197,6 +208,45 @@ namespace Mediapipe.Tasks.Components.Containers
       return new NormalizedLandmarks(landmarks);
     }
 
+    internal static void Copy(NativeNormalizedLandmarks source, ref NormalizedLandmarks destination)
+    {
+      var landmarks = destination.landmarks ?? new List<NormalizedLandmark>((int)source.landmarksCount);
+      landmarks.Clear();
+
+      foreach (var nativeLandmark in source.AsReadOnlySpan())
+      {
+        landmarks.Add(new NormalizedLandmark(nativeLandmark));
+      }
+      destination = new NormalizedLandmarks(landmarks);
+    }
+
     public override string ToString() => $"{{ \"landmarks\": {Util.Format(landmarks)} }}";
+  }
+
+  internal static class NativeNormalizedLandmarksArrayExtension
+  {
+    public static void FillWith(this List<NormalizedLandmarks> target, NativeNormalizedLandmarksArray source)
+    {
+      if (target.Count > source.size)
+      {
+        target.RemoveRange(source.size, target.Count - source.size);
+      }
+
+      var copyCount = Math.Min(source.size, target.Count);
+      var i = 0;
+      foreach (var nativeLandmarks in source.AsReadOnlySpan().Slice(0, target.Count))
+      {
+        var landmarks = target[i];
+        NormalizedLandmarks.Copy(nativeLandmarks, ref landmarks);
+        target[i++] = landmarks;
+      }
+
+      foreach (var nativeLandmarks in source.AsReadOnlySpan().Slice(copyCount))
+      {
+        var landmarks = default(NormalizedLandmarks);
+        NormalizedLandmarks.Copy(nativeLandmarks, ref landmarks);
+        target.Add(landmarks);
+      }
+    }
   }
 }
