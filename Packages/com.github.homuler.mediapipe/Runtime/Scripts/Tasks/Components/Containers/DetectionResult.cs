@@ -153,6 +153,8 @@ namespace Mediapipe.Tasks.Components.Containers
         Detection.Copy(source[i], ref detection);
         detections[i] = detection;
       }
+
+      destination = new DetectionResult(detections);
     }
 
     internal static void Copy(NativeDetectionResult source, ref DetectionResult destination)
