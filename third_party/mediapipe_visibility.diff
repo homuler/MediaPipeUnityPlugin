@@ -333,6 +333,19 @@ index 05b25475..61266f80 100644
 +    srcs = glob(["*.proto"]),
 +    visibility = ["//visibility:public"],
 +)
+diff --git a/mediapipe/tasks/c/components/containers/BUILD b/mediapipe/tasks/c/components/containers/BUILD
+index 3c4b557b..b8857b00 100644
+--- a/mediapipe/tasks/c/components/containers/BUILD
++++ b/mediapipe/tasks/c/components/containers/BUILD
+@@ -12,7 +12,7 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ 
+-package(default_visibility = ["//mediapipe/tasks:internal"])
++package(default_visibility = ["//visibility:public"])
+ 
+ licenses(["notice"])
+ 
 diff --git a/mediapipe/tasks/cc/components/containers/proto/BUILD b/mediapipe/tasks/cc/components/containers/proto/BUILD
 index 66255aed..8dab4bbc 100644
 --- a/mediapipe/tasks/cc/components/containers/proto/BUILD

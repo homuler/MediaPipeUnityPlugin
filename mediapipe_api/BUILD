@@ -164,6 +164,7 @@ cc_library(
         "//mediapipe_api/framework/formats:matrix_data",
         "//mediapipe_api/framework/formats:rect",
         "//mediapipe_api/framework/port:logging",
+        "//mediapipe_api/tasks/c/components/containers:landmark",
         "//mediapipe_api/tasks/cc/vision/face_geometry/proto:face_geometry",
         "//mediapipe_api/tasks/cc/core:task_runner",
         "//mediapipe_api/util:resource_util",

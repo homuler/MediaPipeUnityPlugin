@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 // TODO: use System.MathF
 using Mathf = UnityEngine.Mathf;
@@ -105,6 +106,17 @@ namespace Mediapipe.Tasks.Components.Containers
     public readonly float? presence;
     public readonly string name;
 
+    internal NormalizedLandmark(NativeNormalizedLandmark nativeLandmark) : this(
+      nativeLandmark.x, nativeLandmark.y, nativeLandmark.z,
+#pragma warning disable IDE0004 // for Unity 2020.3.x
+      nativeLandmark.hasVisibility ? (float?)nativeLandmark.visibility : null,
+      nativeLandmark.hasPresence ? (float?)nativeLandmark.presence : null,
+#pragma warning restore IDE0004 // for Unity 2020.3.x
+      nativeLandmark.name
+    )
+    {
+    }
+
     internal NormalizedLandmark(float x, float y, float z, float? visibility, float? presence) : this(x, y, z, visibility, presence, null)
     {
     }
@@ -180,9 +192,9 @@ namespace Mediapipe.Tasks.Components.Containers
   /// </summary>
   public readonly struct NormalizedLandmarks
   {
-    public readonly IReadOnlyList<NormalizedLandmark> landmarks;
+    public readonly List<NormalizedLandmark> landmarks;
 
-    internal NormalizedLandmarks(IReadOnlyList<NormalizedLandmark> landmarks)
+    internal NormalizedLandmarks(List<NormalizedLandmark> landmarks)
     {
       this.landmarks = landmarks;
     }
@@ -197,6 +209,34 @@ namespace Mediapipe.Tasks.Components.Containers
       return new NormalizedLandmarks(landmarks);
     }
 
+    internal static void Copy(NativeNormalizedLandmarks source, ref NormalizedLandmarks destination)
+    {
+      var landmarks = destination.landmarks ?? new List<NormalizedLandmark>((int)source.landmarksCount);
+      landmarks.Clear();
+
+      foreach (var nativeLandmark in source.AsReadOnlySpan())
+      {
+        landmarks.Add(new NormalizedLandmark(nativeLandmark));
+      }
+      destination = new NormalizedLandmarks(landmarks);
+    }
+
     public override string ToString() => $"{{ \"landmarks\": {Util.Format(landmarks)} }}";
+  }
+
+  internal static class NativeNormalizedLandmarksArrayExtension
+  {
+    public static void FillWith(this List<NormalizedLandmarks> target, NativeNormalizedLandmarksArray source)
+    {
+      target.ResizeTo(source.size);
+
+      var i = 0;
+      foreach (var nativeLandmarks in source.AsReadOnlySpan())
+      {
+        var landmarks = target[i];
+        NormalizedLandmarks.Copy(nativeLandmarks, ref landmarks);
+        target[i] = landmarks;
+      }
+    }
   }
 }
