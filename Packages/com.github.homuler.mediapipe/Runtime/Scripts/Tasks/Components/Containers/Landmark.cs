@@ -108,9 +108,11 @@ namespace Mediapipe.Tasks.Components.Containers
 
     internal NormalizedLandmark(NativeNormalizedLandmark nativeLandmark) : this(
       nativeLandmark.x, nativeLandmark.y, nativeLandmark.z,
-      nativeLandmark.hasVisibility ? nativeLandmark.visibility : null,
-      nativeLandmark.hasPresence ? nativeLandmark.presence : null,
-      Marshal.PtrToStringAnsi(nativeLandmark.name)
+#pragma warning disable IDE0004 // for Unity 2020.3.x
+      nativeLandmark.hasVisibility ? (float?)nativeLandmark.visibility : null,
+      nativeLandmark.hasPresence ? (float?)nativeLandmark.presence : null,
+#pragma warning restore IDE0004 // for Unity 2020.3.x
+      nativeLandmark.name
     )
     {
     }
@@ -190,9 +192,9 @@ namespace Mediapipe.Tasks.Components.Containers
   /// </summary>
   public readonly struct NormalizedLandmarks
   {
-    public readonly IReadOnlyList<NormalizedLandmark> landmarks;
+    public readonly List<NormalizedLandmark> landmarks;
 
-    internal NormalizedLandmarks(IReadOnlyList<NormalizedLandmark> landmarks)
+    internal NormalizedLandmarks(List<NormalizedLandmark> landmarks)
     {
       this.landmarks = landmarks;
     }
