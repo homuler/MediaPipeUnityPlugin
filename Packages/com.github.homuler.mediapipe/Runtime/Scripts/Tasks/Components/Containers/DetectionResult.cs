@@ -150,7 +150,7 @@ namespace Mediapipe.Tasks.Components.Containers
 
     internal static void Copy(List<Mediapipe.Detection> source, ref DetectionResult destination)
     {
-      var detections = destination.detections;
+      var detections = destination.detections ?? new List<Detection>(source.Count);
       detections.ResizeTo(source.Count);
 
       for (var i = 0; i < source.Count; i++)
@@ -163,7 +163,7 @@ namespace Mediapipe.Tasks.Components.Containers
 
     internal static void Copy(NativeDetectionResult source, ref DetectionResult destination)
     {
-      var detections = destination.detections;
+      var detections = destination.detections ?? new List<Detection>((int)source.detectionsCount);
       detections.ResizeTo((int)source.detectionsCount);
 
       var i = 0;
