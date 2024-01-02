@@ -36,6 +36,16 @@ namespace Mediapipe.Tasks.Components.Containers
       this.score = score;
     }
 
+    internal NormalizedKeypoint(NativeNormalizedKeypoint nativeKeypoint) : this(
+      nativeKeypoint.x,
+      nativeKeypoint.y,
+      nativeKeypoint.label,
+#pragma warning disable IDE0004 // for Unity 2020.3.x
+      nativeKeypoint.hasScore ? (float?)nativeKeypoint.score : null)
+#pragma warning restore IDE0004 // for Unity 2020.3.x
+    {
+    }
+
     public override string ToString() => $"{{ \"x\": {x}, \"y\": {y}, \"label\": \"{label}\", \"score\": {Util.Format(score)} }}";
   }
 }

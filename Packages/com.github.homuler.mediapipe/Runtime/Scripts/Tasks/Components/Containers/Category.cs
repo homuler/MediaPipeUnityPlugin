@@ -43,6 +43,14 @@ namespace Mediapipe.Tasks.Components.Containers
       this.displayName = displayName;
     }
 
+    internal Category(NativeCategory nativeCategory) : this(
+      nativeCategory.index,
+      nativeCategory.score,
+      nativeCategory.categoryName,
+      nativeCategory.displayName)
+    {
+    }
+
     public static Category CreateFrom(Classification proto)
     {
       var categoryName = proto.HasLabel ? proto.Label : null;
