@@ -5,6 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections.Generic;
+using Mediapipe.Tasks.Components.Containers;
 
 namespace Mediapipe.Tasks.Vision.FaceLandmarker
 {
@@ -33,20 +34,14 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
 #pragma warning restore IDE0052
 
     private readonly NormalizedRect _normalizedRect = new NormalizedRect();
-    private readonly List<NormalizedLandmarkList> _faceLandmarksForRead;
-    private readonly List<ClassificationList> _faceBlendshapesForRead;
     private readonly List<FaceGeometry.Proto.FaceGeometry> _faceGeometriesForRead;
 
     private FaceLandmarker(
       CalculatorGraphConfig graphConfig,
       Core.RunningMode runningMode,
-      List<NormalizedLandmarkList> faceLandmarksForRead,
-      List<ClassificationList> faceBlendshapesForRead,
       List<FaceGeometry.Proto.FaceGeometry> faceGeometriesForRead,
       Tasks.Core.TaskRunner.PacketsCallback packetCallback) : base(graphConfig, runningMode, packetCallback)
     {
-      _faceLandmarksForRead = faceLandmarksForRead;
-      _faceBlendshapesForRead = faceBlendshapesForRead;
       _faceGeometriesForRead = faceGeometriesForRead;
       _packetCallback = packetCallback;
     }
@@ -98,16 +93,12 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
         outputStreams: outputStreams,
         taskOptions: options);
 
-      var faceLandmarksForRead = new List<NormalizedLandmarkList>(options.numFaces);
-      var faceBlendshapesForRead = options.outputFaceBlendshapes ? new List<ClassificationList>(options.numFaces) : null;
       var faceGeometriesForRead = options.outputFaceTransformationMatrixes ? new List<FaceGeometry.Proto.FaceGeometry>(options.numFaces) : null;
       return new FaceLandmarker(
         taskInfo.GenerateGraphConfig(options.runningMode == Core.RunningMode.LIVE_STREAM),
         options.runningMode,
-        faceLandmarksForRead,
-        faceBlendshapesForRead,
         faceGeometriesForRead,
-        BuildPacketsCallback(options, faceLandmarksForRead, faceBlendshapesForRead, faceGeometriesForRead));
+        BuildPacketsCallback(options, faceGeometriesForRead));
     }
 
     /// <summary>
@@ -241,11 +232,9 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
     }
 
     private bool TryBuildFaceLandmarkerResult(PacketMap outputPackets, ref FaceLandmarkerResult result)
-        => TryBuildFaceLandmarkerResult(outputPackets, _faceLandmarksForRead, _faceBlendshapesForRead, _faceGeometriesForRead, ref result);
+        => TryBuildFaceLandmarkerResult(outputPackets, _faceGeometriesForRead, ref result);
 
     private static Tasks.Core.TaskRunner.PacketsCallback BuildPacketsCallback(FaceLandmarkerOptions options,
-        List<NormalizedLandmarkList> faceLandmarksForRead,
-        List<ClassificationList> faceBlendshapesForRead,
         List<FaceGeometry.Proto.FaceGeometry> faceGeometriesForRead)
     {
       var resultCallback = options.resultCallback;
@@ -254,7 +243,7 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
         return null;
       }
 
-      FaceLandmarkerResult faceLandmarkerResult = default;
+      var faceLandmarkerResult = FaceLandmarkerResult.Alloc(options.numFaces, options.outputFaceBlendshapes, options.outputFaceTransformationMatrixes);
 
       return (PacketMap outputPackets) =>
       {
@@ -267,7 +256,7 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
         var image = outImagePacket.GetImage();
         var timestamp = outImagePacket.TimestampMicroseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
-        if (TryBuildFaceLandmarkerResult(outputPackets, faceLandmarksForRead, faceBlendshapesForRead, faceGeometriesForRead, ref faceLandmarkerResult))
+        if (TryBuildFaceLandmarkerResult(outputPackets, faceGeometriesForRead, ref faceLandmarkerResult))
         {
           resultCallback(faceLandmarkerResult, image, timestamp);
         }
@@ -290,36 +279,41 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
     }
 
     private static bool TryBuildFaceLandmarkerResult(PacketMap outputPackets,
-        List<NormalizedLandmarkList> faceLandmarksForRead,
-        List<ClassificationList> faceBlendshapesForRead,
         List<FaceGeometry.Proto.FaceGeometry> faceGeometriesForRead,
         ref FaceLandmarkerResult result)
     {
-      using var faceLandmarksProtoListPacket = outputPackets.At(_NORM_LANDMARKS_STREAM_NAME);
-      if (faceLandmarksProtoListPacket.IsEmpty())
+      using var faceLandmarksPacket = outputPackets.At(_NORM_LANDMARKS_STREAM_NAME);
+      if (faceLandmarksPacket.IsEmpty())
       {
         return false;
       }
 
-      faceLandmarksProtoListPacket.GetNormalizedLandmarkListList(faceLandmarksForRead);
+      var faceLandmarks = result.faceLandmarks ?? new List<NormalizedLandmarks>();
+      faceLandmarksPacket.GetNormalizedLandmarksList(result.faceLandmarks);
 
-      List<ClassificationList> faceBlendshapesProtoList = null;
+      var faceBlendshapesList = result.faceBlendshapes;
       using var faceBlendshapesPacket = outputPackets.At(_BLENDSHAPES_STREAM_NAME);
       if (faceBlendshapesPacket != null)
       {
-        faceBlendshapesPacket.GetClassificationListList(faceBlendshapesForRead);
-        faceBlendshapesProtoList = faceBlendshapesForRead;
+        faceBlendshapesList ??= new List<Classifications>();
+        faceBlendshapesPacket.GetClassificationsVector(faceBlendshapesList);
       }
 
-      List<FaceGeometry.Proto.FaceGeometry> faceTransformationMatrixesProtoList = null;
+      var faceTransformationMatrixes = result.facialTransformationMatrixes;
       using var faceTransformationMatrixesPacket = outputPackets.At(_FACE_GEOMETRY_STREAM_NAME);
       if (faceTransformationMatrixesPacket != null)
       {
         GetFaceGeometryList(faceTransformationMatrixesPacket, faceGeometriesForRead);
-        faceTransformationMatrixesProtoList = faceGeometriesForRead;
+        faceTransformationMatrixes ??= new List<UnityEngine.Matrix4x4>(faceGeometriesForRead.Count);
+
+        faceTransformationMatrixes.Clear();
+        foreach (var faceGeometry in faceGeometriesForRead)
+        {
+          faceTransformationMatrixes.Add(faceGeometry.PoseTransformMatrix.ToMatrix4x4());
+        }
       }
 
-      result = FaceLandmarkerResult.CreateFrom(faceLandmarksForRead, faceBlendshapesProtoList, faceTransformationMatrixesProtoList);
+      result = new FaceLandmarkerResult(faceLandmarks, faceBlendshapesList, faceTransformationMatrixes);
       return true;
     }
   }
