@@ -122,6 +122,7 @@ ENV PYTHON_BIN_PATH /usr/bin/python3.9
 COPY packages.config .
 COPY .bazelrc .
 COPY .bazelversion .
+COPY platform_mappings .
 COPY build.py .
 COPY WORKSPACE .
 COPY mediapipe_api mediapipe_api
