@@ -24,9 +24,15 @@ namespace Mediapipe
     public static extern void mp_tasks_c_components_containers_CppCloseDetectionResult(NativeDetectionResult data);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp_Packet__GetLandmarksVector(IntPtr packet, out NativeLandmarksArray value);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern void mp_api_LandmarksArray__delete(NativeLandmarksArray data);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__GetNormalizedLandmarksVector(IntPtr packet, out NativeNormalizedLandmarksArray value);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern void mp_api_NormalizedLandmarksArray__delete(IntPtr data, int size);
+    public static extern void mp_api_NormalizedLandmarksArray__delete(NativeNormalizedLandmarksArray data);
   }
 }

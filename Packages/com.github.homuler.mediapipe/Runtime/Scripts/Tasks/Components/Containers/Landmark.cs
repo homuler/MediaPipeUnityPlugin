@@ -59,6 +59,17 @@ namespace Mediapipe.Tasks.Components.Containers
       this.name = name;
     }
 
+    internal Landmark(NativeLandmark nativeLandmark) : this(
+      nativeLandmark.x, nativeLandmark.y, nativeLandmark.z,
+#pragma warning disable IDE0004 // for Unity 2020.3.x
+      nativeLandmark.hasVisibility ? (float?)nativeLandmark.visibility : null,
+      nativeLandmark.hasPresence ? (float?)nativeLandmark.presence : null,
+#pragma warning restore IDE0004 // for Unity 2020.3.x
+      nativeLandmark.name
+    )
+    {
+    }
+
 #nullable enable
     public override bool Equals(object? obj) => obj is Landmark other && Equals(other);
 #nullable disable
@@ -105,17 +116,6 @@ namespace Mediapipe.Tasks.Components.Containers
     public readonly float? presence;
     public readonly string name;
 
-    internal NormalizedLandmark(NativeNormalizedLandmark nativeLandmark) : this(
-      nativeLandmark.x, nativeLandmark.y, nativeLandmark.z,
-#pragma warning disable IDE0004 // for Unity 2020.3.x
-      nativeLandmark.hasVisibility ? (float?)nativeLandmark.visibility : null,
-      nativeLandmark.hasPresence ? (float?)nativeLandmark.presence : null,
-#pragma warning restore IDE0004 // for Unity 2020.3.x
-      nativeLandmark.name
-    )
-    {
-    }
-
     internal NormalizedLandmark(float x, float y, float z, float? visibility, float? presence) : this(x, y, z, visibility, presence, null)
     {
     }
@@ -128,6 +128,17 @@ namespace Mediapipe.Tasks.Components.Containers
       this.visibility = visibility;
       this.presence = presence;
       this.name = name;
+    }
+
+    internal NormalizedLandmark(NativeNormalizedLandmark nativeLandmark) : this(
+      nativeLandmark.x, nativeLandmark.y, nativeLandmark.z,
+#pragma warning disable IDE0004 // for Unity 2020.3.x
+      nativeLandmark.hasVisibility ? (float?)nativeLandmark.visibility : null,
+      nativeLandmark.hasPresence ? (float?)nativeLandmark.presence : null,
+#pragma warning restore IDE0004 // for Unity 2020.3.x
+      nativeLandmark.name
+    )
+    {
     }
 
 #nullable enable
@@ -195,6 +206,18 @@ namespace Mediapipe.Tasks.Components.Containers
       destination = new Landmarks(landmarks);
     }
 
+    internal static void Copy(NativeLandmarks source, ref Landmarks destination)
+    {
+      var landmarks = destination.landmarks ?? new List<Landmark>((int)source.landmarksCount);
+      landmarks.Clear();
+
+      foreach (var nativeLandmark in source.AsReadOnlySpan())
+      {
+        landmarks.Add(new Landmark(nativeLandmark));
+      }
+      destination = new Landmarks(landmarks);
+    }
+
     public override string ToString() => $"{{ \"landmarks\": {Util.Format(landmarks)} }}";
   }
 
@@ -247,8 +270,21 @@ namespace Mediapipe.Tasks.Components.Containers
     public override string ToString() => $"{{ \"landmarks\": {Util.Format(landmarks)} }}";
   }
 
-  internal static class NativeNormalizedLandmarksArrayExtension
+  internal static class NativeLandmarksArrayExtension
   {
+    public static void FillWith(this List<Landmarks> target, NativeLandmarksArray source)
+    {
+      target.ResizeTo(source.size);
+
+      var i = 0;
+      foreach (var nativeLandmarks in source.AsReadOnlySpan())
+      {
+        var landmarks = target[i];
+        Landmarks.Copy(nativeLandmarks, ref landmarks);
+        target[i] = landmarks;
+      }
+    }
+
     public static void FillWith(this List<NormalizedLandmarks> target, NativeNormalizedLandmarksArray source)
     {
       target.ResizeTo(source.size);
