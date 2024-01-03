@@ -35,16 +35,35 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
       this.handWorldLandmarks = handWorldLandmarks;
     }
 
-    // TODO: add parameterless constructors
-    internal static HandLandmarkerResult Empty()
-      => new HandLandmarkerResult(new List<Classifications>(), new List<NormalizedLandmarks>(), new List<Landmarks>());
-
     public static HandLandmarkerResult Alloc(int capacity)
     {
       var handedness = new List<Classifications>(capacity);
       var handLandmarks = new List<NormalizedLandmarks>(capacity);
       var handWorldLandmarks = new List<Landmarks>(capacity);
       return new HandLandmarkerResult(handedness, handLandmarks, handWorldLandmarks);
+    }
+
+    public void CloneTo(ref HandLandmarkerResult destination)
+    {
+      if (handLandmarks == null)
+      {
+        destination = default;
+        return;
+      }
+
+      var dstHandedness = destination.handedness ?? new List<Classifications>(handedness.Count);
+      dstHandedness.Clear();
+      dstHandedness.AddRange(handedness);
+
+      var dstHandLandmarks = destination.handLandmarks ?? new List<NormalizedLandmarks>(handLandmarks.Count);
+      dstHandLandmarks.Clear();
+      dstHandLandmarks.AddRange(handLandmarks);
+
+      var dstHandWorldLandmarks = destination.handWorldLandmarks ?? new List<Landmarks>(handWorldLandmarks.Count);
+      dstHandWorldLandmarks.Clear();
+      dstHandWorldLandmarks.AddRange(handWorldLandmarks);
+
+      destination = new HandLandmarkerResult(dstHandedness, dstHandLandmarks, dstHandWorldLandmarks);
     }
 
     public override string ToString()

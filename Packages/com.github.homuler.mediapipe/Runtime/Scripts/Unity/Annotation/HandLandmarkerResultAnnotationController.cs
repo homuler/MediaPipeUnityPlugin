@@ -18,11 +18,20 @@ namespace Mediapipe.Unity
 
     public void DrawNow(HandLandmarkerResult target)
     {
-      _currentTarget = target;
+      target.CloneTo(ref _currentTarget);
       SyncNow();
     }
 
-    public void DrawLater(HandLandmarkerResult target) => UpdateCurrentTarget(target, ref _currentTarget);
+    public void DrawLater(HandLandmarkerResult target) => UpdateCurrentTarget(target);
+
+    protected void UpdateCurrentTarget(HandLandmarkerResult newTarget)
+    {
+      if (IsTargetChanged(newTarget, _currentTarget))
+      {
+        newTarget.CloneTo(ref _currentTarget);
+        isStale = true;
+      }
+    }
 
     protected override void SyncNow()
     {
