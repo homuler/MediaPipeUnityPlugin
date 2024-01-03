@@ -9,7 +9,7 @@ MpReturnCode mp_Packet__GetClassificationsVector(mediapipe::Packet* packet, Clas
     auto classifications_vec = std::vector<mediapipe::tasks::components::containers::Classifications>(vec_size);
     for (auto i = 0; i < vec_size; ++i) {
       auto classifications = mediapipe::tasks::components::containers::ConvertToClassifications(proto_vec[i]);
-      classifications_vec.push_back(classifications);
+      classifications_vec[i] = classifications;
     }
 
     mediapipe::tasks::components::containers::ClassificationResult result;
