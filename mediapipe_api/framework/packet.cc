@@ -299,6 +299,13 @@ MpReturnCode mp__MakeStringPacket_At__PKc_Rt(const char* str, mediapipe::Timesta
   CATCH_EXCEPTION
 }
 
+MpReturnCode mp__MakeStringPacket_At__PKc_ll(const char* str, int64 timestampMicrosec, mediapipe::Packet** packet_out) {
+  TRY
+    *packet_out = new mediapipe::Packet{mediapipe::MakePacket<std::string>(std::string(str)).At(mediapipe::Timestamp(timestampMicrosec))};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
 MpReturnCode mp__MakeStringPacket__PKc_i(const char* str, int size, mediapipe::Packet** packet_out) {
   TRY
     *packet_out = new mediapipe::Packet{mediapipe::MakePacket<std::string>(std::string(str, size))};
@@ -309,6 +316,13 @@ MpReturnCode mp__MakeStringPacket__PKc_i(const char* str, int size, mediapipe::P
 MpReturnCode mp__MakeStringPacket_At__PKc_i_Rt(const char* str, int size, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out) {
   TRY
     *packet_out = new mediapipe::Packet{mediapipe::MakePacket<std::string>(std::string(str, size)).At(*timestamp)};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
+MpReturnCode mp__MakeStringPacket_At__PKc_i_ll(const char* str, int size, int64 timestampMicrosec, mediapipe::Packet** packet_out) {
+  TRY
+    *packet_out = new mediapipe::Packet{mediapipe::MakePacket<std::string>(std::string(str, size)).At(mediapipe::Timestamp(timestampMicrosec))};
     RETURN_CODE(MpReturnCode::Success);
   CATCH_EXCEPTION
 }
