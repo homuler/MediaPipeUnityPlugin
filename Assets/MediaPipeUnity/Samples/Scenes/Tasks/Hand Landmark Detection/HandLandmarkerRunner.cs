@@ -8,6 +8,7 @@ using System.Collections;
 using UnityEngine;
 
 using Mediapipe.Tasks.Vision.HandLandmarker;
+using UnityEngine.Rendering;
 
 namespace Mediapipe.Unity.Sample.HandLandmarkDetection
 {
@@ -63,6 +64,10 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
       var flipVertically = transformationOptions.flipVertically;
       var imageProcessingOptions = new Tasks.Vision.Core.ImageProcessingOptions(rotationDegrees: (int)transformationOptions.rotationAngle);
 
+      AsyncGPUReadbackRequest req = default;
+      var waitUntilReqDone = new WaitUntil(() => req.done);
+      var result = HandLandmarkerResult.Alloc(options.numHands);
+
       while (true)
       {
         if (isPaused)
@@ -77,7 +82,7 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
         }
 
         // Copy current image to TextureFrame
-        var req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
+        req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
         yield return new WaitUntil(() => req.done);
 
         if (req.hasError)
@@ -90,12 +95,24 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
         switch (taskApi.runningMode)
         {
           case Tasks.Vision.Core.RunningMode.IMAGE:
-            var result = taskApi.Detect(image, imageProcessingOptions);
-            _handLandmarkerResultAnnotationController.DrawNow(result);
+            if (taskApi.TryDetect(image, imageProcessingOptions, ref result))
+            {
+              _handLandmarkerResultAnnotationController.DrawNow(result);
+            }
+            else
+            {
+              _handLandmarkerResultAnnotationController.DrawNow(default);
+            }
             break;
           case Tasks.Vision.Core.RunningMode.VIDEO:
-            result = taskApi.DetectForVideo(image, GetCurrentTimestampMillisec(), imageProcessingOptions);
-            _handLandmarkerResultAnnotationController.DrawNow(result);
+            if (taskApi.TryDetectForVideo(image, GetCurrentTimestampMillisec(), imageProcessingOptions, ref result))
+            {
+              _handLandmarkerResultAnnotationController.DrawNow(result);
+            }
+            else
+            {
+              _handLandmarkerResultAnnotationController.DrawNow(default);
+            }
             break;
           case Tasks.Vision.Core.RunningMode.LIVE_STREAM:
             taskApi.DetectAsync(image, GetCurrentTimestampMillisec(), imageProcessingOptions);

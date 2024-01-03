@@ -154,6 +154,7 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
     ///   input. To lower the overall latency, pose landmarker may drop the input
     ///   images if needed. In other words, it's not guaranteed to have output per
     ///   input image.
+    /// </summary>
     public void DetectAsync(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);

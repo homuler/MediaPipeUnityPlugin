@@ -5,7 +5,6 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections.Generic;
-using System.Linq;
 using Mediapipe.Tasks.Components.Containers;
 
 namespace Mediapipe.Tasks.Vision.HandLandmarker
@@ -18,36 +17,53 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
     /// <summary>
     ///   Classification of handedness.
     /// </summary>
-    public readonly IReadOnlyList<Classifications> handedness;
+    public readonly List<Classifications> handedness;
     /// <summary>
     ///   Detected hand landmarks in normalized image coordinates.
     /// </summary>
-    public readonly IReadOnlyList<NormalizedLandmarks> handLandmarks;
+    public readonly List<NormalizedLandmarks> handLandmarks;
     /// <summary>
     ///   Detected hand landmarks in world coordinates.
     /// </summary>
-    public readonly IReadOnlyList<Landmarks> handWorldLandmarks;
+    public readonly List<Landmarks> handWorldLandmarks;
 
-    internal HandLandmarkerResult(IReadOnlyList<Classifications> handedness,
-        IReadOnlyList<NormalizedLandmarks> handLandmarks, IReadOnlyList<Landmarks> handWorldLandmarks)
+    internal HandLandmarkerResult(List<Classifications> handedness,
+        List<NormalizedLandmarks> handLandmarks, List<Landmarks> handWorldLandmarks)
     {
       this.handedness = handedness;
       this.handLandmarks = handLandmarks;
       this.handWorldLandmarks = handWorldLandmarks;
     }
 
-    // TODO: add parameterless constructors
-    internal static HandLandmarkerResult Empty()
-      => new HandLandmarkerResult(new List<Classifications>(), new List<NormalizedLandmarks>(), new List<Landmarks>());
-
-    internal static HandLandmarkerResult CreateFrom(IReadOnlyList<ClassificationList> handednessProto,
-        IReadOnlyList<NormalizedLandmarkList> handLandmarksProto, IReadOnlyList<LandmarkList> handWorldLandmarksProto)
+    public static HandLandmarkerResult Alloc(int capacity)
     {
-      var handedness = handednessProto.Select(x => Classifications.CreateFrom(x)).ToList();
-      var handLandmarks = handLandmarksProto.Select(NormalizedLandmarks.CreateFrom).ToList();
-      var handWorldLandmarks = handWorldLandmarksProto.Select(Landmarks.CreateFrom).ToList();
-
+      var handedness = new List<Classifications>(capacity);
+      var handLandmarks = new List<NormalizedLandmarks>(capacity);
+      var handWorldLandmarks = new List<Landmarks>(capacity);
       return new HandLandmarkerResult(handedness, handLandmarks, handWorldLandmarks);
+    }
+
+    public void CloneTo(ref HandLandmarkerResult destination)
+    {
+      if (handLandmarks == null)
+      {
+        destination = default;
+        return;
+      }
+
+      var dstHandedness = destination.handedness ?? new List<Classifications>(handedness.Count);
+      dstHandedness.Clear();
+      dstHandedness.AddRange(handedness);
+
+      var dstHandLandmarks = destination.handLandmarks ?? new List<NormalizedLandmarks>(handLandmarks.Count);
+      dstHandLandmarks.Clear();
+      dstHandLandmarks.AddRange(handLandmarks);
+
+      var dstHandWorldLandmarks = destination.handWorldLandmarks ?? new List<Landmarks>(handWorldLandmarks.Count);
+      dstHandWorldLandmarks.Clear();
+      dstHandWorldLandmarks.AddRange(handWorldLandmarks);
+
+      destination = new HandLandmarkerResult(dstHandedness, dstHandLandmarks, dstHandWorldLandmarks);
     }
 
     public override string ToString()
