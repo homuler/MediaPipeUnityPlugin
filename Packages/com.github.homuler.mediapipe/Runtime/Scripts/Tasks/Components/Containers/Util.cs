@@ -15,7 +15,7 @@ namespace Mediapipe.Tasks.Components.Containers
 
     public static string Format(string value) => value == null ? "null" : $"\"{value}\"";
 
-    public static string Format<T>(IReadOnlyList<T> list)
+    public static string Format<T>(List<T> list)
     {
       if (list == null)
       {
