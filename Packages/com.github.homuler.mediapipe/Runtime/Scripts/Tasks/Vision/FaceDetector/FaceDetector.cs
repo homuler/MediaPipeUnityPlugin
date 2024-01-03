@@ -156,7 +156,7 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     /// </returns>
     public FaceDetectionResult DetectForVideo(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
-      using var outputPackets = DetectVideoInternal(image, timestampMillisec, imageProcessingOptions);
+      using var outputPackets = DetectForVideoInternal(image, timestampMillisec, imageProcessingOptions);
 
       var result = default(FaceDetectionResult);
       _ = TryBuildFaceDetectorResult(outputPackets, ref result);
@@ -187,11 +187,11 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     /// </returns>
     public bool TryDetectForVideo(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions, ref FaceDetectionResult result)
     {
-      using var outputPackets = DetectVideoInternal(image, timestampMillisec, imageProcessingOptions);
+      using var outputPackets = DetectForVideoInternal(image, timestampMillisec, imageProcessingOptions);
       return TryBuildFaceDetectorResult(outputPackets, ref result);
     }
 
-    private PacketMap DetectVideoInternal(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions)
+    private PacketMap DetectForVideoInternal(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions)
     {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
       var timestampMicrosec = timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND;
