@@ -183,8 +183,8 @@ namespace Mediapipe.Unity.Sample.FaceMesh
       var sidePacket = new PacketMap();
 
       SetImageTransformationOptions(sidePacket, imageSource);
-      sidePacket.Emplace("num_faces", new IntPacket(maxNumFaces));
-      sidePacket.Emplace("with_attention", new BoolPacket(refineLandmarks));
+      sidePacket.Emplace("num_faces", Packet.CreateInt(maxNumFaces));
+      sidePacket.Emplace("with_attention", Packet.CreateBool(refineLandmarks));
 
       Debug.Log($"Max Num Faces = {maxNumFaces}");
       Debug.Log($"Refine Landmarks = {refineLandmarks}");

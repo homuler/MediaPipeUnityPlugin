@@ -23,7 +23,7 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
 
     private const string _InputStreamName = "input_video";
 
-    private GpuBufferPacket _outputGpuBufferPacket;
+    private Packet _outputGpuBufferPacket;
     private string _destinationBufferName;
     private TextureFrame _destinationTexture;
 
@@ -63,7 +63,7 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
         throw new InvalidOperationException("This method is only supported for OpenGL ES");
       }
       _destinationTexture = textureFrame;
-      _outputGpuBufferPacket = new GpuBufferPacket(_destinationTexture.BuildGpuBuffer(GpuManager.GlCalculatorHelper.GetGlContext()));
+      _outputGpuBufferPacket = Packet.CreateGpuBuffer(_destinationTexture.BuildGpuBuffer(GpuManager.GlCalculatorHelper.GetGlContext()));
     }
 
     public void AddTextureFrameToInputStream(TextureFrame textureFrame)
@@ -114,8 +114,8 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
       var sidePacket = new PacketMap();
 
       SetImageTransformationOptions(sidePacket, imageSource, true);
-      sidePacket.Emplace("output_rotation", new IntPacket((int)imageSource.rotation));
-      sidePacket.Emplace("num_hands", new IntPacket(maxNumHands));
+      sidePacket.Emplace("output_rotation", Packet.CreateInt((int)imageSource.rotation));
+      sidePacket.Emplace("num_hands", Packet.CreateInt(maxNumHands));
 
       if (configType == ConfigType.OpenGLES)
       {
