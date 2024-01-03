@@ -132,6 +132,9 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
     /// </remarks>
     /// <param name="image">MediaPipe Image.</param>
     /// <param name="imageProcessingOptions">Options for image processing.</param>
+    /// <param name="result">
+    ///   <see cref="FaceLandmarkerResult"/> to which the result will be written.
+    /// </param>
     /// <returns>
     ///   <see langword="true"/> if some faces are detected, <see langword="false"/> otherwise.
     /// </returns>
@@ -183,9 +186,9 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
     /// <remarks>
     ///   When faces are not found, <paramref name="result"/> won't be overwritten.
     /// </remarks>
-    /// <returns>
-    ///   The face landmarks detection results.
-    /// </returns>
+    /// <param name="result">
+    ///   <see cref="FaceLandmarkerResult"/> to which the result will be written.
+    /// </param>
     /// <returns>
     ///   <see langword="true"/> if some faces are detected, <see langword="false"/> otherwise.
     /// </returns>
@@ -219,6 +222,7 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
     ///   input. To lower the overall latency, face landmarker may drop the input
     ///   images if needed. In other words, it's not guaranteed to have output per
     ///   input image.
+    /// </summary>
     public void DetectAsync(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
