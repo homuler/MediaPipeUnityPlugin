@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 
 namespace Mediapipe
 {
+  [Obsolete("Use non-generic Packet instead")]
   public class StringPacket : Packet<string>
   {
     /// <summary>

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 
 namespace Mediapipe
 {
+  [Obsolete("Use non-generic Packet instead")]
   public class DetectionVectorPacket : Packet<List<Detection>>
   {
     /// <summary>

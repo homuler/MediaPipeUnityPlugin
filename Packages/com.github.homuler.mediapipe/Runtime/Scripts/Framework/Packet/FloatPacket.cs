@@ -8,6 +8,7 @@ using System;
 
 namespace Mediapipe
 {
+  [Obsolete("Use non-generic Packet instead")]
   public class FloatPacket : Packet<float>
   {
     /// <summary>

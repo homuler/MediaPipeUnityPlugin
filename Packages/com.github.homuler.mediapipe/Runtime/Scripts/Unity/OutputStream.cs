@@ -380,6 +380,7 @@ namespace Mediapipe.Unity
     }
   }
 
+  [Obsolete("Use non-generic OutputStream instead")]
   public class OutputStream<TPacket, TValue> where TPacket : Packet<TValue>, new()
   {
     private static int _Counter = 0;

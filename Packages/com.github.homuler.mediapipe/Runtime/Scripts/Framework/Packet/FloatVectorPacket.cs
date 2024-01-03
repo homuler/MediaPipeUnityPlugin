@@ -6,7 +6,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Mediapipe
@@ -39,6 +38,7 @@ namespace Mediapipe
     }
   }
 
+  [Obsolete("Use non-generic Packet instead")]
   public class FloatVectorPacket : Packet<List<float>>
   {
     /// <summary>

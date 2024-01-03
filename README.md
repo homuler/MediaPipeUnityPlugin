@@ -40,23 +40,23 @@ node {
 
     private void Start()
     {
-        var graph = new CalculatorGraph(_ConfigText);
-        var poller = graph.AddOutputStreamPoller<string>("out").Value();
-        graph.StartRun().AssertOk();
+        using var graph = new CalculatorGraph(_ConfigText);
+        using var poller = graph.AddOutputStreamPoller<string>("out");
+        graph.StartRun();
 
         for (var i = 0; i < 10; i++)
         {
-            graph.AddPacketToInputStream("in", new StringPacket("Hello World!", new Timestamp(i))).AssertOk();
+            graph.AddPacketToInputStream("in", Packet.CreateStringAt("Hello World!", i));
         }
 
-        graph.CloseInputStream("in").AssertOk();
-        var packet = new StringPacket();
+        graph.CloseInputStream("in");
+        var packet = Packet.CreateEmpty();
 
         while (poller.Next(packet))
         {
-            Debug.Log(packet.Get());
+            Debug.Log(packet.GetString());
         }
-        graph.WaitUntilDone().AssertOk();
+        graph.WaitUntilDone();
     }
 }
 ```

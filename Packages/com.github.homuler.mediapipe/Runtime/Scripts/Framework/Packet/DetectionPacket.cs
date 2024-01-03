@@ -8,6 +8,7 @@ using System;
 
 namespace Mediapipe
 {
+  [Obsolete("Use non-generic Packet instead")]
   public class DetectionPacket : Packet<Detection>
   {
     /// <summary>
