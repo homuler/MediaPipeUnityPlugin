@@ -469,6 +469,52 @@ namespace Mediapipe
     }
 
     /// <summary>
+    ///   Get the content of the <see cref="Packet"/> as a list of <see cref="Image"/>.
+    /// </summary>
+    /// <remarks>
+    ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown.
+    /// </remarks>
+    /// <exception cref="MediaPipeException">
+    ///   If the <see cref="Packet"/> doesn't contain std::vector&lt;Image&gt;.
+    /// </exception>
+    public List<Image> GetImageList()
+    {
+      var value = new List<Image>();
+
+      GetImageList(value);
+      return value;
+    }
+
+    /// <summary>
+    ///   Get the content of the <see cref="Packet"/> as a list of <see cref="Image"/>.
+    /// </summary>
+    /// <remarks>
+    ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown.
+    /// </remarks>
+    /// <param name="value">
+    ///   The <see cref="List{Image}"/> to be filled with the content of the <see cref="Packet"/>.
+    /// </param>
+    /// <exception cref="MediaPipeException">
+    ///   If the <see cref="Packet"/> doesn't contain std::vector&lt;Image&gt;.
+    /// </exception>
+    public void GetImageList(List<Image> value)
+    {
+      UnsafeNativeMethods.mp_Packet__GetImageVector(mpPtr, out var imageArray).Assert();
+      GC.KeepAlive(this);
+
+      foreach (var image in value)
+      {
+        image.Dispose();
+      }
+      value.Clear();
+
+      foreach (var imagePtr in imageArray.AsReadOnlySpan())
+      {
+        value.Add(new Image(imagePtr, false));
+      }
+    }
+
+    /// <summary>
     ///   Get the content of the <see cref="Packet"/> as an <see cref="ImageFrame"/>.
     /// </summary>
     /// <remarks>

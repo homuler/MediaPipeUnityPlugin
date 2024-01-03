@@ -5,6 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections.Generic;
+using Mediapipe.Tasks.Components.Containers;
 
 namespace Mediapipe.Tasks.Vision.PoseLandmarker
 {
@@ -89,7 +90,7 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
       return new PoseLandmarker(
         taskInfo.GenerateGraphConfig(options.runningMode == Core.RunningMode.LIVE_STREAM),
         options.runningMode,
-        BuildPacketsCallback(options.resultCallback));
+        BuildPacketsCallback(options));
     }
 
     /// <summary>
@@ -105,14 +106,42 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
     /// </returns>
     public PoseLandmarkerResult Detect(Image image, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
+      using var outputPackets = DetectInternal(image, imageProcessingOptions);
+
+      var result = default(PoseLandmarkerResult);
+      _ = TryBuildPoseLandmarkerResult(outputPackets, ref result);
+      return result;
+    }
+
+    /// <summary>
+    ///   Performs pose landmarks detection on the provided MediaPipe Image.
+    ///
+    ///   Only use this method when the <see cref="PoseLandmarker" /> is created with the image running mode.
+    ///   The image can be of any size with format RGB or RGBA.
+    /// </summary>
+    /// <param name="image">MediaPipe Image.</param>
+    /// <param name="imageProcessingOptions">Options for image processing.</param>
+    /// <param name="result">
+    ///   <see cref="PoseLandmarkerResult"/> to which the result will be written.
+    /// </param>
+    /// <returns>
+    ///   <see langword="true"/> if some faces are detected, <see langword="false"/> otherwise.
+    /// </returns>
+    public bool TryDetect(Image image, Core.ImageProcessingOptions? imageProcessingOptions, ref PoseLandmarkerResult result)
+    {
+      using var outputPackets = DetectInternal(image, imageProcessingOptions);
+      return TryBuildPoseLandmarkerResult(outputPackets, ref result);
+    }
+
+    private PacketMap DetectInternal(Image image, Core.ImageProcessingOptions? imageProcessingOptions)
+    {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
 
       var packetMap = new PacketMap();
-      packetMap.Emplace(_IMAGE_IN_STREAM_NAME, new ImagePacket(image));
-      packetMap.Emplace(_NORM_RECT_STREAM_NAME, new NormalizedRectPacket(_normalizedRect));
-      var outputPackets = ProcessImageData(packetMap);
+      packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImage(image));
+      packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProto(_normalizedRect));
 
-      return BuildPoseLandmarkerResult(outputPackets);
+      return ProcessImageData(packetMap);
     }
 
     /// <summary>
@@ -128,18 +157,43 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
     /// </returns>
     public PoseLandmarkerResult DetectForVideo(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
+      using var outputPackets = DetectForVideoInternal(image, timestampMillisec, imageProcessingOptions);
+
+      var result = default(PoseLandmarkerResult);
+      _ = TryBuildPoseLandmarkerResult(outputPackets, ref result);
+      return result;
+    }
+
+    /// <summary>
+    ///   Performs pose landmarks detection on the provided video frames.
+    ///
+    ///   Only use this method when the PoseLandmarker is created with the video
+    ///   running mode. It's required to provide the video frame's timestamp (in
+    ///   milliseconds) along with the video frame. The input timestamps should be
+    ///   monotonically increasing for adjacent calls of this method.
+    /// </summary>
+    /// <param name="result">
+    ///   <see cref="PoseLandmarkerResult"/> to which the result will be written.
+    /// </param>
+    /// <returns>
+    ///   <see langword="true"/> if some poses are detected, <see langword="false"/> otherwise.
+    /// </returns>
+    public bool TryDetectForVideo(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions, ref PoseLandmarkerResult result)
+    {
+      using var outputPackets = DetectForVideoInternal(image, timestampMillisec, imageProcessingOptions);
+      return TryBuildPoseLandmarkerResult(outputPackets, ref result);
+    }
+
+    private PacketMap DetectForVideoInternal(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
+    {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
+      var timestampMicrosec = timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND;
 
-      PacketMap outputPackets = null;
-      using (var timestamp = new Timestamp(timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND))
-      {
-        var packetMap = new PacketMap();
-        packetMap.Emplace(_IMAGE_IN_STREAM_NAME, new ImagePacket(image, timestamp));
-        packetMap.Emplace(_NORM_RECT_STREAM_NAME, new NormalizedRectPacket(_normalizedRect).At(timestamp));
-        outputPackets = ProcessVideoData(packetMap);
-      }
+      var packetMap = new PacketMap();
+      packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImageAt(image, timestampMicrosec));
+      packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProtoAt(_normalizedRect, timestampMicrosec));
 
-      return BuildPoseLandmarkerResult(outputPackets);
+      return ProcessVideoData(packetMap);
     }
 
     /// <summary>
@@ -154,66 +208,75 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
     ///   input. To lower the overall latency, pose landmarker may drop the input
     ///   images if needed. In other words, it's not guaranteed to have output per
     ///   input image.
-    /// </summary>
     public void DetectAsync(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
+      var timestampMicrosec = timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND;
 
-      using (var timestamp = new Timestamp(timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND))
-      {
-        var packetMap = new PacketMap();
-        packetMap.Emplace(_IMAGE_IN_STREAM_NAME, new ImagePacket(image, timestamp));
-        packetMap.Emplace(_NORM_RECT_STREAM_NAME, new NormalizedRectPacket(_normalizedRect).At(timestamp));
+      var packetMap = new PacketMap();
+      packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImageAt(image, timestampMicrosec));
+      packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProtoAt(_normalizedRect, timestampMicrosec));
 
-        SendLiveStreamData(packetMap);
-      }
+      SendLiveStreamData(packetMap);
     }
 
-    private static Tasks.Core.TaskRunner.PacketsCallback BuildPacketsCallback(PoseLandmarkerOptions.ResultCallback resultCallback)
+    private static Tasks.Core.TaskRunner.PacketsCallback BuildPacketsCallback(PoseLandmarkerOptions options)
     {
+      var resultCallback = options.resultCallback;
       if (resultCallback == null)
       {
         return null;
       }
 
+      var poseLandmarkerResult = PoseLandmarkerResult.Alloc(options.numPoses, options.outputSegmentationMasks);
+
       return (PacketMap outputPackets) =>
       {
-        var outImagePacket = outputPackets.At<ImagePacket, Image>(_IMAGE_OUT_STREAM_NAME);
+        var outImagePacket = outputPackets.At(_IMAGE_OUT_STREAM_NAME);
         if (outImagePacket == null || outImagePacket.IsEmpty())
         {
           return;
         }
 
-        var image = outImagePacket.Get();
-        var handLandmarkerResult = BuildPoseLandmarkerResult(outputPackets);
-        var timestamp = outImagePacket.Timestamp().Microseconds() / _MICRO_SECONDS_PER_MILLISECOND;
+        var image = outImagePacket.GetImage();
+        var timestamp = outImagePacket.TimestampMicroseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
-        resultCallback(handLandmarkerResult, image, timestamp);
+        if (TryBuildPoseLandmarkerResult(outputPackets, ref poseLandmarkerResult))
+        {
+          resultCallback(poseLandmarkerResult, image, timestamp);
+        }
+        else
+        {
+          resultCallback(default, image, timestamp);
+        }
       };
     }
 
-    private static PoseLandmarkerResult BuildPoseLandmarkerResult(PacketMap outputPackets)
+    private static bool TryBuildPoseLandmarkerResult(PacketMap outputPackets, ref PoseLandmarkerResult result)
     {
-      var poseLandmarksProtoPacket =
-        outputPackets.At<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(_NORM_LANDMARKS_STREAM_NAME);
-      if (poseLandmarksProtoPacket.IsEmpty())
+      using var poseLandmarksPacket = outputPackets.At(_NORM_LANDMARKS_STREAM_NAME);
+      if (poseLandmarksPacket.IsEmpty())
       {
-        return PoseLandmarkerResult.Empty();
+        return false;
       }
 
-      var poseLandmarksProto = poseLandmarksProtoPacket.Get();
-      var poseWorldLandmarksProto = outputPackets.At<LandmarkListVectorPacket, List<LandmarkList>>(_POSE_WORLD_LANDMARKS_STREAM_NAME).Get();
+      var poseLandmarks = result.poseLandmarks ?? new List<NormalizedLandmarks>();
+      poseLandmarksPacket.GetNormalizedLandmarksList(poseLandmarks);
 
-      List<Image> segmentationMasks = null;
-      using (var segmentationMaskPacket = outputPackets.At<ImageVectorPacket, List<Image>>(_SEGMENTATION_MASK_STREAM_NAME))
+      using var poseWorldLandmarksPacket = outputPackets.At(_POSE_WORLD_LANDMARKS_STREAM_NAME);
+      var poseWorldLandmarks = result.poseWorldLandmarks ?? new List<Landmarks>();
+      poseWorldLandmarksPacket.GetLandmarksList(poseWorldLandmarks);
+
+      var segmentationMasks = result.segmentationMasks;
+      using var segmentationMaskPacket = outputPackets.At(_SEGMENTATION_MASK_STREAM_NAME);
+      if (segmentationMaskPacket != null)
       {
-        if (segmentationMaskPacket != null)
-        {
-          segmentationMasks = segmentationMaskPacket.Get();
-        }
+        segmentationMasks ??= new List<Image>();
+        segmentationMaskPacket.GetImageList(segmentationMasks);
       }
 
-      return PoseLandmarkerResult.CreateFrom(poseLandmarksProto, poseWorldLandmarksProto, segmentationMasks);
+      result = new PoseLandmarkerResult(poseLandmarks, poseWorldLandmarks, segmentationMasks);
+      return true;
     }
   }
 }

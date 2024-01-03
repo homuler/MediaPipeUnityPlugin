@@ -8,6 +8,7 @@ using System.Collections;
 using UnityEngine;
 
 using Mediapipe.Tasks.Vision.PoseLandmarker;
+using UnityEngine.Rendering;
 
 namespace Mediapipe.Unity.Sample.PoseLandmarkDetection
 {
@@ -66,6 +67,10 @@ namespace Mediapipe.Unity.Sample.PoseLandmarkDetection
       var flipVertically = transformationOptions.flipVertically;
       var imageProcessingOptions = new Tasks.Vision.Core.ImageProcessingOptions(rotationDegrees: (int)transformationOptions.rotationAngle);
 
+      AsyncGPUReadbackRequest req = default;
+      var waitUntilReqDone = new WaitUntil(() => req.done);
+      var result = PoseLandmarkerResult.Alloc(options.numPoses, options.outputSegmentationMasks);
+
       while (true)
       {
         if (isPaused)
@@ -80,8 +85,8 @@ namespace Mediapipe.Unity.Sample.PoseLandmarkDetection
         }
 
         // Copy current image to TextureFrame
-        var req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
-        yield return new WaitUntil(() => req.done);
+        req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
+        yield return waitUntilReqDone;
 
         if (req.hasError)
         {
@@ -93,12 +98,24 @@ namespace Mediapipe.Unity.Sample.PoseLandmarkDetection
         switch (taskApi.runningMode)
         {
           case Tasks.Vision.Core.RunningMode.IMAGE:
-            var result = taskApi.Detect(image, imageProcessingOptions);
-            _poseLandmarkerResultAnnotationController.DrawNow(result);
+            if (taskApi.TryDetect(image, imageProcessingOptions, ref result))
+            {
+              _poseLandmarkerResultAnnotationController.DrawNow(result);
+            }
+            else
+            {
+              _poseLandmarkerResultAnnotationController.DrawNow(default);
+            }
             break;
           case Tasks.Vision.Core.RunningMode.VIDEO:
-            result = taskApi.DetectForVideo(image, GetCurrentTimestampMillisec(), imageProcessingOptions);
-            _poseLandmarkerResultAnnotationController.DrawNow(result);
+            if (taskApi.TryDetectForVideo(image, GetCurrentTimestampMillisec(), imageProcessingOptions, ref result))
+            {
+              _poseLandmarkerResultAnnotationController.DrawNow(result);
+            }
+            else
+            {
+              _poseLandmarkerResultAnnotationController.DrawNow(default);
+            }
             break;
           case Tasks.Vision.Core.RunningMode.LIVE_STREAM:
             taskApi.DetectAsync(image, GetCurrentTimestampMillisec(), imageProcessingOptions);
