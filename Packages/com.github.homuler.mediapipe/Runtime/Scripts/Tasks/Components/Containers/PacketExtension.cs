@@ -25,6 +25,13 @@ namespace Mediapipe.Tasks.Components.Containers
       detectionResult.Dispose();
     }
 
+    public static void GetLandmarksList(this Packet packet, List<Landmarks> outs)
+    {
+      UnsafeNativeMethods.mp_Packet__GetLandmarksVector(packet.mpPtr, out var landmarksArray).Assert();
+      outs.FillWith(landmarksArray);
+      landmarksArray.Dispose();
+    }
+
     public static void GetNormalizedLandmarksList(this Packet packet, List<NormalizedLandmarks> outs)
     {
       UnsafeNativeMethods.mp_Packet__GetNormalizedLandmarksVector(packet.mpPtr, out var landmarksArray).Assert();

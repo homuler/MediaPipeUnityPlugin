@@ -80,6 +80,26 @@ namespace Mediapipe
   }
 
   [StructLayout(LayoutKind.Sequential)]
+  internal readonly struct NativeLandmarksArray
+  {
+    private readonly IntPtr _data;
+    public readonly int size;
+
+    public void Dispose()
+    {
+      UnsafeNativeMethods.mp_api_LandmarksArray__delete(this);
+    }
+
+    public ReadOnlySpan<NativeLandmarks> AsReadOnlySpan()
+    {
+      unsafe
+      {
+        return new ReadOnlySpan<NativeLandmarks>((NativeLandmarks*)_data, size);
+      }
+    }
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
   internal readonly struct NativeNormalizedLandmarksArray
   {
     private readonly IntPtr _data;
@@ -87,7 +107,7 @@ namespace Mediapipe
 
     public void Dispose()
     {
-      UnsafeNativeMethods.mp_api_NormalizedLandmarksArray__delete(_data, size);
+      UnsafeNativeMethods.mp_api_NormalizedLandmarksArray__delete(this);
     }
 
     public ReadOnlySpan<NativeNormalizedLandmarks> AsReadOnlySpan()
