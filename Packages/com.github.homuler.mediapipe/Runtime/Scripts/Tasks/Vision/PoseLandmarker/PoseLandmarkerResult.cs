@@ -5,7 +5,6 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections.Generic;
-using System.Linq;
 using Mediapipe.Tasks.Components.Containers;
 
 namespace Mediapipe.Tasks.Vision.PoseLandmarker
@@ -18,34 +17,29 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
     /// <summary>
     ///   Detected pose landmarks in normalized image coordinates.
     /// </summary>
-    public readonly IReadOnlyList<NormalizedLandmarks> poseLandmarks;
+    public readonly List<NormalizedLandmarks> poseLandmarks;
     /// <summary>
     ///   Detected pose landmarks in world coordinates.
     /// </summary>
-    public readonly IReadOnlyList<Landmarks> poseWorldLandmarks;
+    public readonly List<Landmarks> poseWorldLandmarks;
     /// <summary>
     ///   Optional segmentation masks for pose.
     /// </summary>
-    public readonly IReadOnlyList<Image> segmentationMasks;
+    public readonly List<Image> segmentationMasks;
 
-    internal PoseLandmarkerResult(IReadOnlyList<NormalizedLandmarks> poseLandmarks,
-      IReadOnlyList<Landmarks> poseWorldLandmarks, IReadOnlyList<Image> segmentationMasks = null)
+    internal PoseLandmarkerResult(List<NormalizedLandmarks> poseLandmarks,
+      List<Landmarks> poseWorldLandmarks, List<Image> segmentationMasks = null)
     {
       this.poseLandmarks = poseLandmarks;
       this.poseWorldLandmarks = poseWorldLandmarks;
       this.segmentationMasks = segmentationMasks;
     }
 
-    // TODO: add parameterless constructors
-    internal static PoseLandmarkerResult Empty()
-      => new PoseLandmarkerResult(new List<NormalizedLandmarks>(), new List<Landmarks>());
-
-    internal static PoseLandmarkerResult CreateFrom(IReadOnlyList<NormalizedLandmarkList> poseLandmarksProto,
-      IReadOnlyList<LandmarkList> poseWorldLandmarksProto, IReadOnlyList<Image> segmentationMasks = null)
+    public static PoseLandmarkerResult Alloc(int capacity, bool outputSegmentationMasks = false)
     {
-      var poseLandmarks = poseLandmarksProto.Select(NormalizedLandmarks.CreateFrom).ToList();
-      var poseWorldLandmarks = poseWorldLandmarksProto.Select(Landmarks.CreateFrom).ToList();
-
+      var poseLandmarks = new List<NormalizedLandmarks>(capacity);
+      var poseWorldLandmarks = new List<Landmarks>(capacity);
+      var segmentationMasks = outputSegmentationMasks ? new List<Image>(capacity) : null;
       return new PoseLandmarkerResult(poseLandmarks, poseWorldLandmarks, segmentationMasks);
     }
 
