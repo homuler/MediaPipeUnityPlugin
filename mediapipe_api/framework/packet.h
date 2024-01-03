@@ -94,8 +94,10 @@ MP_CAPI(MpReturnCode) mp_Packet__ValidateAsInt(mediapipe::Packet* packet, absl::
 // String
 MP_CAPI(MpReturnCode) mp__MakeStringPacket__PKc(const char* str, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeStringPacket_At__PKc_Rt(const char* str, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeStringPacket_At__PKc_ll(const char* str, int64 timestampMicrosec, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeStringPacket__PKc_i(const char* str, int size, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeStringPacket_At__PKc_i_Rt(const char* str, int size, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeStringPacket_At__PKc_i_ll(const char* str, int size, int64 timestampMicrosec, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetString(mediapipe::Packet* packet, const char** value_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetByteString(mediapipe::Packet* packet, const char** value_out, int* size_out);
 MP_CAPI(MpReturnCode) mp_Packet__ConsumeString(mediapipe::Packet* packet, absl::Status** status_out, const char** value_out);

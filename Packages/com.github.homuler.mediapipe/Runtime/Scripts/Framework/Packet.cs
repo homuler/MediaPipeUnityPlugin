@@ -299,6 +299,52 @@ namespace Mediapipe
     }
 
     /// <summary>
+    ///   Create a string Packet.
+    /// </summary>
+    public static Packet CreateString(string value)
+    {
+      UnsafeNativeMethods.mp__MakeStringPacket__PKc(value ?? "", out var ptr).Assert();
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
+    ///   Create a string Packet.
+    /// </summary>
+    public static Packet CreateString(byte[] value)
+    {
+      UnsafeNativeMethods.mp__MakeStringPacket__PKc_i(value, value?.Length ?? 0, out var ptr).Assert();
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
+    ///   Create a string Packet.
+    /// </summary>
+    /// <param name="timestampMicrosec">
+    ///   The timestamp of the packet.
+    /// </param>
+    public static Packet CreateStringAt(string value, long timestampMicrosec)
+    {
+      UnsafeNativeMethods.mp__MakeStringPacket_At__PKc_ll(value ?? "", timestampMicrosec, out var ptr).Assert();
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
+    ///   Create a string Packet.
+    /// </summary>
+    /// <param name="timestampMicrosec">
+    ///   The timestamp of the packet.
+    /// </param>
+    public static Packet CreateStringAt(byte[] value, long timestampMicrosec)
+    {
+      UnsafeNativeMethods.mp__MakeStringPacket_At__PKc_i_ll(value, value?.Length ?? 0, timestampMicrosec, out var ptr).Assert();
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
     ///   Get the content of the <see cref="Packet"/> as a boolean.
     /// </summary>
     /// <remarks>
@@ -345,6 +391,56 @@ namespace Mediapipe
 
       structArray.CopyTo(value);
       structArray.Dispose();
+    }
+
+    /// <summary>
+    ///   Get the content of the <see cref="Packet"/> as <see cref="byte[]"/>.
+    /// </summary>
+    /// <remarks>
+    ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown.
+    /// </remarks>
+    /// <exception cref="MediaPipeException">
+    ///   If the <see cref="Packet"/> doesn't contain <see cref="string"/> data.
+    /// </exception>
+    public byte[] GetBytes()
+    {
+      UnsafeNativeMethods.mp_Packet__GetByteString(mpPtr, out var strPtr, out var size).Assert();
+      GC.KeepAlive(this);
+
+      var bytes = new byte[size];
+      Marshal.Copy(strPtr, bytes, 0, size);
+      UnsafeNativeMethods.delete_array__PKc(strPtr);
+
+      return bytes;
+    }
+
+    /// <summary>
+    ///   Get the content of the <see cref="Packet"/> as <see cref="byte[]"/>.
+    /// </summary>
+    /// <remarks>
+    ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown.
+    /// </remarks>
+    /// <param name="value">
+    ///   The <see cref="byte[]"/> to be filled with the content of the <see cref="Packet"/>.
+    ///   If the length of <paramref name="value"/> is not enough to store the content of the <see cref="Packet"/>,
+    ///   the rest of the content will be discarded.
+    /// </param>
+    /// <returns>
+    ///   The number of written elements in <paramref name="value" />.
+    /// </returns>
+    /// <exception cref="MediaPipeException">
+    ///   If the <see cref="Packet"/> doesn't contain <see cref="string"/> data.
+    /// </exception>
+    public int GetBytes(byte[] value)
+    {
+      UnsafeNativeMethods.mp_Packet__GetByteString(mpPtr, out var strPtr, out var size).Assert();
+      GC.KeepAlive(this);
+
+      var length = Math.Min(size, value.Length);
+      Marshal.Copy(strPtr, value, 0, length);
+      UnsafeNativeMethods.delete_array__PKc(strPtr);
+
+      return length;
     }
 
     /// <summary>
@@ -647,6 +743,23 @@ namespace Mediapipe
     }
 
     /// <summary>
+    ///   Get the content of the <see cref="Packet"/> as a string.
+    /// </summary>
+    /// <remarks>
+    ///   On some platforms (e.g. Windows), it will abort the process when <see cref="MediaPipeException"/> should be thrown.
+    /// </remarks>
+    /// <exception cref="MediaPipeException">
+    ///   If the <see cref="Packet"/> doesn't contain <see cref="string"/> data.
+    /// </exception>
+    public string GetString()
+    {
+      UnsafeNativeMethods.mp_Packet__GetString(mpPtr, out var ptr).Assert();
+
+      GC.KeepAlive(this);
+      return MarshalStringFromNative(ptr);
+    }
+
+    /// <summary>
     ///   Validate if the content of the <see cref="Packet"/> is a boolean.
     /// </summary>
     /// <exception cref="BadStatusException">
@@ -781,6 +894,20 @@ namespace Mediapipe
     public void ValidateAsProtoMessageLite()
     {
       UnsafeNativeMethods.mp_Packet__ValidateAsProtoMessageLite(mpPtr, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      AssertStatusOk(statusPtr);
+    }
+
+    /// <summary>
+    ///   Validate if the content of the <see cref="Packet"/> is a string.
+    /// </summary>
+    /// <exception cref="BadStatusException">
+    ///   If the <see cref="Packet"/> doesn't contain string.
+    /// </exception>
+    public void ValidateAsString()
+    {
+      UnsafeNativeMethods.mp_Packet__ValidateAsString(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       AssertStatusOk(statusPtr);

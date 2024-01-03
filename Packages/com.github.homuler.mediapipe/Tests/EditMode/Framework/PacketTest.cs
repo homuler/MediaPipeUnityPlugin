@@ -361,6 +361,151 @@ namespace Mediapipe.Tests
     }
     #endregion
 
+
+    #region String
+    [Test]
+    public void CreateString_ShouldReturnNewStringPacket_When_ValueIsNullString()
+    {
+      using var packet = Packet.CreateString((string)null);
+
+      Assert.DoesNotThrow(packet.ValidateAsString);
+      Assert.IsNull(packet.GetString());
+
+      using var unsetTimestamp = Timestamp.Unset();
+      Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
+    }
+
+    [Test]
+    public void CreateString_ShouldReturnNewStringPacket_When_ValueIsEmptyString()
+    {
+      using var packet = Packet.CreateString("");
+
+      Assert.DoesNotThrow(packet.ValidateAsString);
+      Assert.IsNull(packet.GetString());
+
+      using var unsetTimestamp = Timestamp.Unset();
+      Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
+    }
+
+    [TestCase("hello")]
+    public void CreateString_ShouldReturnNewStringPacket_When_StringIsGiven(string value)
+    {
+      using var packet = Packet.CreateString(value);
+
+      Assert.DoesNotThrow(packet.ValidateAsString);
+      Assert.AreEqual(value, packet.GetString());
+
+      using var unsetTimestamp = Timestamp.Unset();
+      Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
+    }
+
+    [Test]
+    public void CreateString_ShouldReturnNewStringPacket_When_ValueIsNullArray()
+    {
+      using var packet = Packet.CreateString((byte[])null);
+
+      Assert.DoesNotThrow(packet.ValidateAsString);
+      Assert.IsEmpty(packet.GetBytes());
+
+      using var unsetTimestamp = Timestamp.Unset();
+      Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
+    }
+
+    [Test]
+    public void CreateString_ShouldReturnNewStringPacket_When_ValueIsEmptyArray()
+    {
+      var value = new byte[] { };
+      using var packet = Packet.CreateString(value);
+
+      Assert.DoesNotThrow(packet.ValidateAsString);
+      Assert.IsEmpty(packet.GetBytes());
+
+      using var unsetTimestamp = Timestamp.Unset();
+      Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
+    }
+
+    [Test]
+    public void CreateString_ShouldReturnNewStringPacket_When_ByteArrayIsGiven()
+    {
+      var value = new byte[] { 1, 2, 3 };
+      using var packet = Packet.CreateString(value);
+
+      Assert.DoesNotThrow(packet.ValidateAsString);
+      Assert.AreEqual(value, packet.GetBytes());
+
+      using var unsetTimestamp = Timestamp.Unset();
+      Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
+    }
+
+    [Test]
+    public void CreateStringAt_ShouldReturnNewStringPacket_When_ValueIsNullString()
+    {
+      var timestamp = 1;
+      using var packet = Packet.CreateStringAt((string)null, timestamp);
+
+      Assert.DoesNotThrow(packet.ValidateAsString);
+      Assert.IsNull(packet.GetString());
+      Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
+    }
+
+    [Test]
+    public void CreateStringAt_ShouldReturnNewStringPacket_When_ValueIsEmptyString()
+    {
+      var timestamp = 1;
+      using var packet = Packet.CreateStringAt("", timestamp);
+
+      Assert.DoesNotThrow(packet.ValidateAsString);
+      Assert.IsNull(packet.GetString());
+      Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
+    }
+
+    [TestCase("hello")]
+    public void CreateStringAt_ShouldReturnNewStringPacket_When_StringIsGiven(string value)
+    {
+      var timestamp = 1;
+      using var packet = Packet.CreateStringAt(value, timestamp);
+
+      Assert.DoesNotThrow(packet.ValidateAsString);
+      Assert.AreEqual(value, packet.GetString());
+      Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
+    }
+
+    [Test]
+    public void CreateStringAt_ShouldReturnNewStringPacket_When_ValueIsNullArray()
+    {
+      var timestamp = 1;
+      using var packet = Packet.CreateStringAt((byte[])null, timestamp);
+
+      Assert.DoesNotThrow(packet.ValidateAsString);
+      Assert.IsEmpty(packet.GetBytes());
+      Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
+    }
+
+    [Test]
+    public void CreateStringAt_ShouldReturnNewStringPacket_When_ValueIsEmptyArray()
+    {
+      var timestamp = 1;
+      var value = new byte[] { };
+      using var packet = Packet.CreateStringAt(value, timestamp);
+
+      Assert.DoesNotThrow(packet.ValidateAsString);
+      Assert.IsEmpty(packet.GetBytes());
+      Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
+    }
+
+    [Test]
+    public void CreateStringAt_ShouldReturnNewStringPacket_When_ByteArrayIsGiven()
+    {
+      var timestamp = 1;
+      var value = new byte[] { 1, 2, 3 };
+      using var packet = Packet.CreateStringAt(value, timestamp);
+
+      Assert.DoesNotThrow(packet.ValidateAsString);
+      Assert.AreEqual(value, packet.GetBytes());
+      Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
+    }
+    #endregion
+
     #region #Validate
     [Test]
     public void ValidateAsBool_ShouldThrow_When_ValueIsNotSet()
