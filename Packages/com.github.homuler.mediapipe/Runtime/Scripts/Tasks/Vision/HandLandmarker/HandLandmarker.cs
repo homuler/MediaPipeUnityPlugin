@@ -5,6 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections.Generic;
+using Mediapipe.Tasks.Components.Containers;
 
 namespace Mediapipe.Tasks.Vision.HandLandmarker
 {
@@ -85,7 +86,7 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
       return new HandLandmarker(
         taskInfo.GenerateGraphConfig(options.runningMode == Core.RunningMode.LIVE_STREAM),
         options.runningMode,
-        BuildPacketsCallback(options.resultCallback));
+        BuildPacketsCallback(options));
     }
 
     /// <summary>
@@ -101,14 +102,42 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
     /// </returns>
     public HandLandmarkerResult Detect(Image image, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
+      using var outputPackets = DetectInternal(image, imageProcessingOptions);
+
+      var result = default(HandLandmarkerResult);
+      _ = TryBuildHandLandmarkerResult(outputPackets, ref result);
+      return result;
+    }
+
+    /// <summary>
+    ///   Performs hand landmarks detection on the provided MediaPipe Image.
+    ///
+    ///   Only use this method when the <see cref="HandLandmarker" /> is created with the image running mode.
+    ///   The image can be of any size with format RGB or RGBA.
+    /// </summary>
+    /// <param name="image">MediaPipe Image.</param>
+    /// <param name="imageProcessingOptions">Options for image processing.</param>
+    /// <param name="result">
+    ///   <see cref="HandLandmarkerResult"/> to which the result will be written.
+    /// </param>
+    /// <returns>
+    ///   <see langword="true"/> if some faces are detected, <see langword="false"/> otherwise.
+    /// </returns>
+    public bool TryDetect(Image image, Core.ImageProcessingOptions? imageProcessingOptions, ref HandLandmarkerResult result)
+    {
+      using var outputPackets = DetectInternal(image, imageProcessingOptions);
+      return TryBuildHandLandmarkerResult(outputPackets, ref result);
+    }
+
+    private PacketMap DetectInternal(Image image, Core.ImageProcessingOptions? imageProcessingOptions)
+    {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
 
       var packetMap = new PacketMap();
       packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImage(image));
       packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProto(_normalizedRect));
-      var outputPackets = ProcessImageData(packetMap);
 
-      return BuildHandLandmarkerResult(outputPackets);
+      return ProcessImageData(packetMap);
     }
 
     /// <summary>
@@ -124,15 +153,46 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
     /// </returns>
     public HandLandmarkerResult DetectForVideo(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
+      using var outputPackets = DetectForVideoInternal(image, timestampMillisec, imageProcessingOptions);
+
+      var result = default(HandLandmarkerResult);
+      _ = TryBuildHandLandmarkerResult(outputPackets, ref result);
+      return result;
+    }
+
+    /// <summary>
+    ///   Performs hand landmarks detection on the provided video frames.
+    ///
+    ///   Only use this method when the HandLandmarker is created with the video
+    ///   running mode. It's required to provide the video frame's timestamp (in
+    ///   milliseconds) along with the video frame. The input timestamps should be
+    ///   monotonically increasing for adjacent calls of this method.
+    /// </summary>
+    /// <remarks>
+    ///   When hands are not found, <paramref name="result"/> won't be overwritten.
+    /// </remarks>
+    /// <param name="result">
+    ///   <see cref="HandLandmarkerResult"/> to which the result will be written.
+    /// </param>
+    /// <returns>
+    ///   <see langword="true"/> if some hands are detected, <see langword="false"/> otherwise.
+    /// </returns>
+    public bool TryDetectForVideo(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions, ref HandLandmarkerResult result)
+    {
+      using var outputPackets = DetectForVideoInternal(image, timestampMillisec, imageProcessingOptions);
+      return TryBuildHandLandmarkerResult(outputPackets, ref result);
+    }
+
+    private PacketMap DetectForVideoInternal(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
+    {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
       var timestampMicrosec = timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND;
 
       var packetMap = new PacketMap();
       packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImageAt(image, timestampMicrosec));
       packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProtoAt(_normalizedRect, timestampMicrosec));
-      var outputPackets = ProcessVideoData(packetMap);
 
-      return BuildHandLandmarkerResult(outputPackets);
+      return ProcessVideoData(packetMap);
     }
 
     /// <summary>
@@ -160,12 +220,15 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
       SendLiveStreamData(packetMap);
     }
 
-    private static Tasks.Core.TaskRunner.PacketsCallback BuildPacketsCallback(HandLandmarkerOptions.ResultCallback resultCallback)
+    private static Tasks.Core.TaskRunner.PacketsCallback BuildPacketsCallback(HandLandmarkerOptions options)
     {
+      var resultCallback = options.resultCallback;
       if (resultCallback == null)
       {
         return null;
       }
+
+      var handLandmarkerResult = HandLandmarkerResult.Alloc(options.numHands);
 
       return (PacketMap outputPackets) =>
       {
@@ -177,26 +240,39 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
 
         var image = outImagePacket.GetImage();
         var timestamp = outImagePacket.TimestampMicroseconds() / _MICRO_SECONDS_PER_MILLISECOND;
-        var handLandmarkerResult = BuildHandLandmarkerResult(outputPackets);
 
-        resultCallback(handLandmarkerResult, image, timestamp);
+        if (TryBuildHandLandmarkerResult(outputPackets, ref handLandmarkerResult))
+        {
+          resultCallback(handLandmarkerResult, image, timestamp);
+        }
+        else
+        {
+          resultCallback(default, image, timestamp);
+        }
       };
     }
 
-    private static HandLandmarkerResult BuildHandLandmarkerResult(PacketMap outputPackets)
+    private static bool TryBuildHandLandmarkerResult(PacketMap outputPackets, ref HandLandmarkerResult result)
     {
-      var handLandmarksProtoPacket =
-        outputPackets.At<NormalizedLandmarkListVectorPacket, List<NormalizedLandmarkList>>(_HAND_LANDMARKS_STREAM_NAME);
-      if (handLandmarksProtoPacket.IsEmpty())
+      using var handLandmarksPacket = outputPackets.At(_HAND_LANDMARKS_STREAM_NAME);
+      if (handLandmarksPacket.IsEmpty())
       {
-        return HandLandmarkerResult.Empty();
+        return false;
       }
 
-      var handLandmarksProto = handLandmarksProtoPacket.Get();
-      var handednessProto = outputPackets.At<ClassificationListVectorPacket, List<ClassificationList>>(_HANDEDNESS_STREAM_NAME).Get();
-      var handWorldLandmarksProto = outputPackets.At<LandmarkListVectorPacket, List<LandmarkList>>(_HAND_WORLD_LANDMARKS_STREAM_NAME).Get();
+      var handLandmarks = result.handLandmarks ?? new List<NormalizedLandmarks>();
+      handLandmarksPacket.GetNormalizedLandmarksList(handLandmarks);
 
-      return HandLandmarkerResult.CreateFrom(handednessProto, handLandmarksProto, handWorldLandmarksProto);
+      using var handednessPacket = outputPackets.At(_HANDEDNESS_STREAM_NAME);
+      var handedness = result.handedness ?? new List<Classifications>();
+      handednessPacket.GetClassificationsVector(handedness);
+
+      using var handWorldLandmarksPacket = outputPackets.At(_HAND_WORLD_LANDMARKS_STREAM_NAME);
+      var handWorldLandmarks = result.handWorldLandmarks ?? new List<Landmarks>();
+      handWorldLandmarksPacket.GetLandmarksList(handWorldLandmarks);
+
+      result = new HandLandmarkerResult(handedness, handLandmarks, handWorldLandmarks);
+      return true;
     }
   }
 }
