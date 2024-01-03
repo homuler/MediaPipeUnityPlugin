@@ -4,7 +4,6 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-
 using System.Collections.Generic;
 using Mediapipe.Tasks.Vision.PoseLandmarker;
 using UnityEngine;
@@ -21,13 +20,22 @@ namespace Mediapipe.Unity
 
     public void DrawNow(PoseLandmarkerResult target)
     {
-      _currentTarget = target;
+      target.CloneTo(ref _currentTarget);
       SyncNow();
     }
 
-    public void DrawLater(PoseLandmarkerResult target) => UpdateCurrentTarget(target, ref _currentTarget);
+    public void DrawLater(PoseLandmarkerResult target) => UpdateCurrentTarget(target);
 
     private void ReadMask(IReadOnlyList<Image> segmentationMasks) => annotation.ReadMask(segmentationMasks, isMirrored);
+
+    protected void UpdateCurrentTarget(PoseLandmarkerResult newTarget)
+    {
+      if (IsTargetChanged(newTarget, _currentTarget))
+      {
+        newTarget.CloneTo(ref _currentTarget);
+        isStale = true;
+      }
+    }
 
     protected override void SyncNow()
     {

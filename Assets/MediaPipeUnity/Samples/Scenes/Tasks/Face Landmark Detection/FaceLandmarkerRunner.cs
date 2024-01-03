@@ -85,7 +85,7 @@ namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
 
         // Copy current image to TextureFrame
         req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
-        yield return new WaitUntil(() => req.done);
+        yield return waitUntilReqDone;
 
         if (req.hasError)
         {
