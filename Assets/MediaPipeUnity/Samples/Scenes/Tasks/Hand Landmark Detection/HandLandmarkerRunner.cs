@@ -11,8 +11,6 @@ using Mediapipe.Tasks.Vision.HandLandmarker;
 
 namespace Mediapipe.Unity.Sample.HandLandmarkDetection
 {
-  using RunningMode = Tasks.Vision.Core.RunningMode;
-
   public class HandLandmarkerRunner : VisionTaskApiRunner<HandLandmarker>
   {
     [SerializeField] private HandLandmarkerResultAnnotationController _handLandmarkerResultAnnotationController;
@@ -39,7 +37,7 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
 
       yield return AssetLoader.PrepareAssetAsync(config.ModelPath);
 
-      var options = config.GetHandLandmarkerOptions(config.RunningMode == RunningMode.LIVE_STREAM ? OnHandLandmarkDetectionOutput : null);
+      var options = config.GetHandLandmarkerOptions(config.RunningMode == Tasks.Vision.Core.RunningMode.LIVE_STREAM ? OnHandLandmarkDetectionOutput : null);
       taskApi = HandLandmarker.CreateFromOptions(options);
       var imageSource = ImageSourceProvider.ImageSource;
 
@@ -91,16 +89,16 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
         var image = textureFrame.BuildCPUImage();
         switch (taskApi.runningMode)
         {
-          case RunningMode.IMAGE:
+          case Tasks.Vision.Core.RunningMode.IMAGE:
             var result = taskApi.Detect(image, imageProcessingOptions);
             _handLandmarkerResultAnnotationController.DrawNow(result);
             break;
-          case RunningMode.VIDEO:
-            result = taskApi.DetectForVideo(image, (int)GetCurrentTimestampMillisec(), imageProcessingOptions);
+          case Tasks.Vision.Core.RunningMode.VIDEO:
+            result = taskApi.DetectForVideo(image, GetCurrentTimestampMillisec(), imageProcessingOptions);
             _handLandmarkerResultAnnotationController.DrawNow(result);
             break;
-          case RunningMode.LIVE_STREAM:
-            taskApi.DetectAsync(image, (int)GetCurrentTimestampMillisec(), imageProcessingOptions);
+          case Tasks.Vision.Core.RunningMode.LIVE_STREAM:
+            taskApi.DetectAsync(image, GetCurrentTimestampMillisec(), imageProcessingOptions);
             break;
         }
 
