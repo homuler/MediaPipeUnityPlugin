@@ -104,8 +104,8 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
 
       var packetMap = new PacketMap();
-      packetMap.Emplace(_IMAGE_IN_STREAM_NAME, new ImagePacket(image));
-      packetMap.Emplace(_NORM_RECT_STREAM_NAME, new NormalizedRectPacket(_normalizedRect));
+      packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImage(image));
+      packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProto(_normalizedRect));
       var outputPackets = ProcessImageData(packetMap);
 
       return BuildHandLandmarkerResult(outputPackets);
@@ -125,15 +125,12 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
     public HandLandmarkerResult DetectForVideo(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
+      var timestampMicrosec = timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND;
 
-      PacketMap outputPackets = null;
-      using (var timestamp = new Timestamp(timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND))
-      {
-        var packetMap = new PacketMap();
-        packetMap.Emplace(_IMAGE_IN_STREAM_NAME, new ImagePacket(image, timestamp));
-        packetMap.Emplace(_NORM_RECT_STREAM_NAME, new NormalizedRectPacket(_normalizedRect).At(timestamp));
-        outputPackets = ProcessVideoData(packetMap);
-      }
+      var packetMap = new PacketMap();
+      packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImageAt(image, timestampMicrosec));
+      packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProtoAt(_normalizedRect, timestampMicrosec));
+      var outputPackets = ProcessVideoData(packetMap);
 
       return BuildHandLandmarkerResult(outputPackets);
     }
@@ -153,15 +150,13 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
     public void DetectAsync(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
     {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
+      var timestampMicrosec = timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND;
 
-      using (var timestamp = new Timestamp(timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND))
-      {
-        var packetMap = new PacketMap();
-        packetMap.Emplace(_IMAGE_IN_STREAM_NAME, new ImagePacket(image, timestamp));
-        packetMap.Emplace(_NORM_RECT_STREAM_NAME, new NormalizedRectPacket(_normalizedRect).At(timestamp));
+      var packetMap = new PacketMap();
+      packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImageAt(image, timestampMicrosec));
+      packetMap.Emplace(_NORM_RECT_STREAM_NAME, Packet.CreateProtoAt(_normalizedRect, timestampMicrosec));
 
-        SendLiveStreamData(packetMap);
-      }
+      SendLiveStreamData(packetMap);
     }
 
     private static Tasks.Core.TaskRunner.PacketsCallback BuildPacketsCallback(HandLandmarkerOptions.ResultCallback resultCallback)
@@ -173,15 +168,15 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
 
       return (PacketMap outputPackets) =>
       {
-        var outImagePacket = outputPackets.At<ImagePacket, Image>(_IMAGE_OUT_STREAM_NAME);
+        var outImagePacket = outputPackets.At(_IMAGE_OUT_STREAM_NAME);
         if (outImagePacket == null || outImagePacket.IsEmpty())
         {
           return;
         }
 
-        var image = outImagePacket.Get();
+        var image = outImagePacket.GetImage();
+        var timestamp = outImagePacket.TimestampMicroseconds() / _MICRO_SECONDS_PER_MILLISECOND;
         var handLandmarkerResult = BuildHandLandmarkerResult(outputPackets);
-        var timestamp = outImagePacket.Timestamp().Microseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
         resultCallback(handLandmarkerResult, image, timestamp);
       };
