@@ -27,6 +27,9 @@ namespace Mediapipe
     public static extern MpReturnCode mp__MakeGpuBufferPacket_At__Rgb_Rts(IntPtr gpuBuffer, IntPtr timestamp, out IntPtr packet);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeGpuBufferPacket_At__Rgb_ll(IntPtr gpuBuffer, long timestampMicrosec, out IntPtr packet);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__ConsumeGpuBuffer(IntPtr packet, out IntPtr status, out IntPtr gpuBuffer);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]

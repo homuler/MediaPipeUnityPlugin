@@ -40,6 +40,13 @@ MpReturnCode mp__MakeGpuBufferPacket_At__Rgb_Rts(mediapipe::GpuBuffer* gpu_buffe
   CATCH_EXCEPTION
 }
 
+MpReturnCode mp__MakeGpuBufferPacket_At__Rgb_ll(mediapipe::GpuBuffer* gpu_buffer, int64 timestampMicrosec, mediapipe::Packet** packet_out) {
+  TRY
+    *packet_out = new mediapipe::Packet{mediapipe::MakePacket<mediapipe::GpuBuffer>(std::move(*gpu_buffer)).At(mediapipe::Timestamp(timestampMicrosec))};
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+
 MpReturnCode mp_Packet__ConsumeGpuBuffer(mediapipe::Packet* packet, absl::Status** status_out, mediapipe::GpuBuffer** value_out) {
   return mp_Packet__Consume(packet, status_out, value_out);
 }

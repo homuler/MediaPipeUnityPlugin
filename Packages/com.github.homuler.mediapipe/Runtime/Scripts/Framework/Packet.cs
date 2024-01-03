@@ -187,6 +187,31 @@ namespace Mediapipe
     }
 
     /// <summary>
+    ///   Create an <see cref="GpuBuffer"/> Packet.
+    /// </summary>
+    public static Packet CreateGpuBuffer(GpuBuffer value)
+    {
+      UnsafeNativeMethods.mp__MakeGpuBufferPacket__Rgb(value.mpPtr, out var ptr).Assert();
+      value.Dispose(); // respect move semantics
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
+    ///   Create an <see cref="GpuBuffer"> Packet.
+    /// </summary>
+    /// <param name="timestampMicrosec">
+    ///   The timestamp of the packet.
+    /// </param>
+    public static Packet CreateGpuBufferAt(GpuBuffer value, long timestampMicrosec)
+    {
+      UnsafeNativeMethods.mp__MakeGpuBufferPacket_At__Rgb_ll(value.mpPtr, timestampMicrosec, out var ptr).Assert();
+      value.Dispose(); // respect move semantics
+
+      return new Packet(ptr, true);
+    }
+
+    /// <summary>
     ///   Create an <see cref="Image"/> Packet.
     /// </summary>
     public static Packet CreateImage(Image value)
@@ -838,6 +863,20 @@ namespace Mediapipe
     public void ValidateAsFloatVector()
     {
       UnsafeNativeMethods.mp_Packet__ValidateAsFloatVector(mpPtr, out var statusPtr).Assert();
+
+      GC.KeepAlive(this);
+      AssertStatusOk(statusPtr);
+    }
+
+    /// <summary>
+    ///   Validate if the content of the <see cref="Packet"/> is an <see cref="GpuBuffer"/>.
+    /// </summary>
+    /// <exception cref="BadStatusException">
+    ///   If the <see cref="Packet"/> doesn't contain <see cref="GpuBuffer"/>.
+    /// </exception>
+    public void ValidateAsGpuBuffer()
+    {
+      UnsafeNativeMethods.mp_Packet__ValidateAsGpuBuffer(mpPtr, out var statusPtr).Assert();
 
       GC.KeepAlive(this);
       AssertStatusOk(statusPtr);
