@@ -57,6 +57,7 @@ namespace Mediapipe
 
     protected virtual void DisposeUnmanaged() { }
 
+    /// <summary>Relinquish the ownership</summary>
     public void TransferOwnership()
     {
       isOwner = false;
