@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 using Stopwatch = System.Diagnostics.Stopwatch;
@@ -199,6 +200,28 @@ namespace Mediapipe.Unity.Sample
       textureFrame.Release();
 
       AddPacketToInputStream(streamName, Packet.CreateImageFrameAt(imageFrame, latestTimestamp));
+    }
+
+    protected void AssertResult(params OutputStream.NextResult[] results)
+    {
+      foreach (var result in results)
+      {
+        if (!result.ok)
+        {
+          throw new Exception("Failed to get the next packet");
+        }
+      }
+    }
+
+    protected bool TryGetValue<T>(Packet packet, out T value, Func<Packet, T> getter)
+    {
+      if (packet == null || packet.IsEmpty())
+      {
+        value = default;
+        return false;
+      }
+      value = getter(packet);
+      return true;
     }
 
     protected bool TryGetNext<TPacket, TValue>(OutputStream<TPacket, TValue> stream, out TValue value, bool allowBlock, long currentTimestampMicrosec) where TPacket : Packet<TValue>, new()

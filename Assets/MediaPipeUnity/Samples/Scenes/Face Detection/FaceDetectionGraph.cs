@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Mediapipe.Unity.Sample.FaceDetection
@@ -27,7 +28,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection
       set => _minDetectionConfidence = Mathf.Clamp01(value);
     }
 
-    public event EventHandler<OutputEventArgs<List<Detection>>> OnFaceDetectionsOutput
+    public event EventHandler<OutputStream.OutputEventArgs> OnFaceDetectionsOutput
     {
       add => _faceDetectionsStream.AddListener(value);
       remove => _faceDetectionsStream.RemoveListener(value);
@@ -35,7 +36,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection
 
     private const string _InputStreamName = "input_video";
     private const string _FaceDetectionsStreamName = "face_detections";
-    private OutputStream<DetectionVectorPacket, List<Detection>> _faceDetectionsStream;
+    private OutputStream _faceDetectionsStream;
 
     public override void StartRun(ImageSource imageSource)
     {
@@ -48,7 +49,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection
 
     public override void Stop()
     {
-      _faceDetectionsStream?.Close();
+      _faceDetectionsStream?.Dispose();
       _faceDetectionsStream = null;
       base.Stop();
     }
@@ -58,9 +59,17 @@ namespace Mediapipe.Unity.Sample.FaceDetection
       AddTextureFrameToInputStream(_InputStreamName, textureFrame);
     }
 
-    public bool TryGetNext(out List<Detection> faceDetections, bool allowBlock = true)
+    public async Task<List<Detection>> WaitNext()
     {
-      return TryGetNext(_faceDetectionsStream, out faceDetections, allowBlock, GetCurrentTimestampMicrosec());
+      var result = await _faceDetectionsStream.WaitNextAsync();
+      AssertResult(result);
+
+      _ = TryGetValue(result.packet, out var faceDetections, (packet) =>
+      {
+        return packet.GetProtoList(Detection.Parser);
+      });
+
+      return faceDetections;
     }
 
     protected override IList<WaitForResult> RequestDependentAssets()
@@ -73,15 +82,8 @@ namespace Mediapipe.Unity.Sample.FaceDetection
 
     protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      if (runningMode == RunningMode.NonBlockingSync)
-      {
-        _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(
-            calculatorGraph, _FaceDetectionsStreamName, config.AddPacketPresenceCalculator(_FaceDetectionsStreamName), timeoutMicrosec);
-      }
-      else
-      {
-        _faceDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _FaceDetectionsStreamName, true, timeoutMicrosec);
-      }
+      _faceDetectionsStream = new OutputStream(calculatorGraph, _FaceDetectionsStreamName, true);
+      Debug.Log(timeoutMicrosec);
 
       var faceDetectionCalculators = config.Node.Where((node) => node.Calculator.StartsWith("FaceDetection")).ToList();
       foreach (var calculator in faceDetectionCalculators)
