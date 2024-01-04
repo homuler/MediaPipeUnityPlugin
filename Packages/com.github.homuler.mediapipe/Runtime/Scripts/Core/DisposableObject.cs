@@ -58,12 +58,12 @@ namespace Mediapipe
     protected virtual void DisposeUnmanaged() { }
 
     /// <summary>Relinquish the ownership</summary>
-    public void TransferOwnership()
+    protected void TransferOwnership()
     {
       isOwner = false;
     }
 
-    public void ThrowIfDisposed()
+    protected void ThrowIfDisposed()
     {
       if (isDisposed)
       {

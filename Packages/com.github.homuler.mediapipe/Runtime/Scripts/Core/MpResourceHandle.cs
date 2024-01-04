@@ -45,7 +45,7 @@ namespace Mediapipe
     ///   This method should be called only if the underlying native api moves the pointer.
     /// </summary>
     /// <remarks>If the object itself is no longer used, call <see cref="Dispose" /> instead.</remarks>
-    public void ReleaseMpResource()
+    internal void ReleaseMpResource()
     {
       if (OwnsResource())
       {
