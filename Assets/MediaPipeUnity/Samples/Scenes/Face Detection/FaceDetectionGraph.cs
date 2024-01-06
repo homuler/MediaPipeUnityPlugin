@@ -104,7 +104,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection
       var sidePacket = new PacketMap();
 
       SetImageTransformationOptions(sidePacket, imageSource);
-      sidePacket.Emplace("model_type", new IntPacket((int)modelType));
+      sidePacket.Emplace("model_type", Packet.CreateInt((int)modelType));
 
       Debug.Log($"Model Selection = {modelType}");
 

@@ -9,7 +9,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 using Stopwatch = System.Diagnostics.Stopwatch;
 
@@ -92,7 +91,7 @@ namespace Mediapipe.Unity.Sample
 
     private Stopwatch _stopwatch;
     protected CalculatorGraph calculatorGraph { get; private set; }
-    protected Timestamp latestTimestamp;
+    protected long latestTimestamp;
 
     protected virtual void Start()
     {
@@ -180,26 +179,26 @@ namespace Mediapipe.Unity.Sample
       }
     }
 
-    protected void AddPacketToInputStream<T>(string streamName, Packet<T> packet)
+    protected void AddPacketToInputStream(string streamName, Packet packet)
     {
       calculatorGraph.AddPacketToInputStream(streamName, packet);
     }
 
     protected void AddTextureFrameToInputStream(string streamName, TextureFrame textureFrame)
     {
-      latestTimestamp = GetCurrentTimestamp();
+      latestTimestamp = GetCurrentTimestampMicrosec();
 
       if (configType == ConfigType.OpenGLES)
       {
         var gpuBuffer = textureFrame.BuildGpuBuffer(GpuManager.GlCalculatorHelper.GetGlContext());
-        AddPacketToInputStream(streamName, new GpuBufferPacket(gpuBuffer, latestTimestamp));
+        AddPacketToInputStream(streamName, Packet.CreateGpuBufferAt(gpuBuffer, latestTimestamp));
         return;
       }
 
       var imageFrame = textureFrame.BuildImageFrame();
       textureFrame.Release();
 
-      AddPacketToInputStream(streamName, new ImageFramePacket(imageFrame, latestTimestamp));
+      AddPacketToInputStream(streamName, Packet.CreateImageFrameAt(imageFrame, latestTimestamp));
     }
 
     protected bool TryGetNext<TPacket, TValue>(OutputStream<TPacket, TValue> stream, out TValue value, bool allowBlock, long currentTimestampMicrosec) where TPacket : Packet<TValue>, new()
@@ -211,12 +210,6 @@ namespace Mediapipe.Unity.Sample
     protected long GetCurrentTimestampMicrosec()
     {
       return _stopwatch == null || !_stopwatch.IsRunning ? -1 : _stopwatch.ElapsedTicks / (TimeSpan.TicksPerMillisecond / 1000);
-    }
-
-    protected Timestamp GetCurrentTimestamp()
-    {
-      var microsec = GetCurrentTimestampMicrosec();
-      return microsec < 0 ? Timestamp.Unset() : new Timestamp(microsec);
     }
 
     protected void InitializeCalculatorGraph()
@@ -280,9 +273,9 @@ namespace Mediapipe.Unity.Sample
 
       Debug.Log($"input_rotation = {inputRotation}, input_horizontally_flipped = {inputHorizontallyFlipped}, input_vertically_flipped = {inputVerticallyFlipped}");
 
-      sidePacket.Emplace("input_rotation", new IntPacket((int)inputRotation));
-      sidePacket.Emplace("input_horizontally_flipped", new BoolPacket(inputHorizontallyFlipped));
-      sidePacket.Emplace("input_vertically_flipped", new BoolPacket(inputVerticallyFlipped));
+      sidePacket.Emplace("input_rotation", Packet.CreateInt((int)inputRotation));
+      sidePacket.Emplace("input_horizontally_flipped", Packet.CreateBool(inputHorizontallyFlipped));
+      sidePacket.Emplace("input_vertically_flipped", Packet.CreateBool(inputVerticallyFlipped));
     }
 
     protected WaitForResult WaitForAsset(string assetName, string uniqueKey, long timeoutMillisec, bool overwrite = false)

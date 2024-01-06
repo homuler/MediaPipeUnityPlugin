@@ -93,9 +93,9 @@ namespace Mediapipe.Unity.Sample.HairSegmentation
         outputVerticallyFlipped = !outputVerticallyFlipped;
       }
 
-      sidePacket.Emplace("output_rotation", new IntPacket((int)outputRotation));
-      sidePacket.Emplace("output_horizontally_flipped", new BoolPacket(outputHorizontallyFlipped));
-      sidePacket.Emplace("output_vertically_flipped", new BoolPacket(outputVerticallyFlipped));
+      sidePacket.Emplace("output_rotation", Packet.CreateInt((int)outputRotation));
+      sidePacket.Emplace("output_horizontally_flipped", Packet.CreateBool(outputHorizontallyFlipped));
+      sidePacket.Emplace("output_vertically_flipped", Packet.CreateBool(outputVerticallyFlipped));
 
       Debug.Log($"output_rotation = {outputRotation}, output_horizontally_flipped = {outputHorizontallyFlipped}, output_vertically_flipped = {outputVerticallyFlipped}");
       return sidePacket;
