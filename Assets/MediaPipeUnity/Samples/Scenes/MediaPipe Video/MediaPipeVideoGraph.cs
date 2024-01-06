@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Mediapipe.Unity.Sample.MediaPipeVideo
 {
@@ -15,7 +16,7 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
   {
     public int maxNumHands = 2;
 
-    public event EventHandler<OutputEventArgs<ImageFrame>> OnOutput
+    public event EventHandler<OutputStream.OutputEventArgs> OnOutput
     {
       add => _outputVideoStream.AddListener(value);
       remove => _outputVideoStream.RemoveListener(value);
@@ -28,7 +29,7 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
     private TextureFrame _destinationTexture;
 
     private const string _OutputVideoStreamName = "output_video";
-    private OutputStream<ImageFramePacket, ImageFrame> _outputVideoStream;
+    private OutputStream _outputVideoStream;
 
     public override void StartRun(ImageSource imageSource)
     {
@@ -41,7 +42,7 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
 
     public override void Stop()
     {
-      _outputVideoStream?.Close();
+      _outputVideoStream?.Dispose();
       _outputVideoStream = null;
       base.Stop();
     }
@@ -71,9 +72,17 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
       AddTextureFrameToInputStream(_InputStreamName, textureFrame);
     }
 
-    public bool TryGetNext(out ImageFrame outputVideo, bool allowBlock = true)
+    public async Task<ImageFrame> WaitNextAsync()
     {
-      return TryGetNext(_outputVideoStream, out outputVideo, allowBlock, GetCurrentTimestampMicrosec());
+      var result = await _outputVideoStream.WaitNextAsync();
+      AssertResult(result);
+
+      _ = TryGetValue(result.packet, out var outputVideo, (packet) =>
+      {
+        return packet.GetImageFrame();
+      });
+
+      return outputVideo;
     }
 
     protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
@@ -86,15 +95,7 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
         sinkNode.InputSidePacket.Add($"DESTINATION:{_destinationBufferName}");
       }
 
-      if (runningMode == RunningMode.NonBlockingSync)
-      {
-        _outputVideoStream = new OutputStream<ImageFramePacket, ImageFrame>(
-            calculatorGraph, _OutputVideoStreamName, config.AddPacketPresenceCalculator(_OutputVideoStreamName), timeoutMicrosec);
-      }
-      else
-      {
-        _outputVideoStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _OutputVideoStreamName, true, timeoutMicrosec);
-      }
+      _outputVideoStream = new OutputStream(calculatorGraph, _OutputVideoStreamName, true);
 
       calculatorGraph.Initialize(config);
     }

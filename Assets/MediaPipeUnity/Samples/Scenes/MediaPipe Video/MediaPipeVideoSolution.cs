@@ -63,18 +63,11 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
         yield break;
       }
 
-      ImageFrame outputVideo = null;
+      var task = graphRunner.WaitNextAsync();
+      yield return new WaitUntil(() => task.IsCompleted);
 
-      if (runningMode == RunningMode.Sync)
-      {
-        var _ = graphRunner.TryGetNext(out outputVideo, true);
-      }
-      else if (runningMode == RunningMode.NonBlockingSync)
-      {
-        yield return new WaitUntil(() => graphRunner.TryGetNext(out outputVideo, false));
-      }
-
-      DrawNow(outputVideo);
+      DrawNow(task.Result);
+      task.Result?.Dispose();
     }
 
     private void DrawNow(ImageFrame imageFrame)

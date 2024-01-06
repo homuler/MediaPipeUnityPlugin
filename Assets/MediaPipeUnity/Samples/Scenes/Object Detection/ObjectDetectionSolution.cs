@@ -5,7 +5,6 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity.Sample.ObjectDetection
@@ -31,23 +30,17 @@ namespace Mediapipe.Unity.Sample.ObjectDetection
 
     protected override IEnumerator WaitForNextValue()
     {
-      List<Detection> outputDetections = null;
+      var task = graphRunner.WaitNextAsync();
+      yield return new WaitUntil(() => task.IsCompleted);
 
-      if (runningMode == RunningMode.Sync)
-      {
-        var _ = graphRunner.TryGetNext(out outputDetections, true);
-      }
-      else if (runningMode == RunningMode.NonBlockingSync)
-      {
-        yield return new WaitUntil(() => graphRunner.TryGetNext(out outputDetections, false));
-      }
-
-      _outputDetectionsAnnotationController.DrawNow(outputDetections);
+      _outputDetectionsAnnotationController.DrawNow(task.Result);
     }
 
-    private void OnOutputDetectionsOutput(object stream, OutputEventArgs<List<Detection>> eventArgs)
+    private void OnOutputDetectionsOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
-      _outputDetectionsAnnotationController.DrawLater(eventArgs.value);
+      var packet = eventArgs.packet;
+      var value = packet.IsEmpty() ? default : packet.GetProtoList(Detection.Parser);
+      _outputDetectionsAnnotationController.DrawLater(value);
     }
   }
 }

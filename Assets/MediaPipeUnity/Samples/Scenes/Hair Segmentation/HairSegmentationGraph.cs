@@ -6,13 +6,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Mediapipe.Unity.Sample.HairSegmentation
 {
   public class HairSegmentationGraph : GraphRunner
   {
-    public event EventHandler<OutputEventArgs<ImageFrame>> OnHairMaskOutput
+    public event EventHandler<OutputStream.OutputEventArgs> OnHairMaskOutput
     {
       add => _hairMaskStream.AddListener(value);
       remove => _hairMaskStream.RemoveListener(value);
@@ -24,7 +25,7 @@ namespace Mediapipe.Unity.Sample.HairSegmentation
 
     private const string _InputStreamName = "input_video";
     private const string _HairMaskStreamName = "hair_mask";
-    private OutputStream<ImageFramePacket, ImageFrame> _hairMaskStream;
+    private OutputStream _hairMaskStream;
 
     public override void StartRun(ImageSource imageSource)
     {
@@ -38,7 +39,7 @@ namespace Mediapipe.Unity.Sample.HairSegmentation
 
     public override void Stop()
     {
-      _hairMaskStream?.Close();
+      _hairMaskStream?.Dispose();
       _hairMaskStream = null;
       base.Stop();
     }
@@ -48,9 +49,17 @@ namespace Mediapipe.Unity.Sample.HairSegmentation
       AddTextureFrameToInputStream(_InputStreamName, textureFrame);
     }
 
-    public bool TryGetNext(out ImageFrame hairMask, bool allowBlock = true)
+    public async Task<ImageFrame> WaitNext()
     {
-      return TryGetNext(_hairMaskStream, out hairMask, allowBlock, GetCurrentTimestampMicrosec());
+      var result = await _hairMaskStream.WaitNextAsync();
+      AssertResult(result);
+
+      _ = TryGetValue(result.packet, out var hairMask, (packet) =>
+      {
+        return packet.GetImageFrame();
+      });
+
+      return hairMask;
     }
 
     protected override IList<WaitForResult> RequestDependentAssets()
@@ -62,14 +71,7 @@ namespace Mediapipe.Unity.Sample.HairSegmentation
 
     protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      if (runningMode == RunningMode.NonBlockingSync)
-      {
-        _hairMaskStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _HairMaskStreamName, config.AddPacketPresenceCalculator(_HairMaskStreamName), timeoutMicrosec);
-      }
-      else
-      {
-        _hairMaskStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _HairMaskStreamName, true, timeoutMicrosec);
-      }
+      _hairMaskStream = new OutputStream(calculatorGraph, _HairMaskStreamName, true);
       calculatorGraph.Initialize(config);
     }
 

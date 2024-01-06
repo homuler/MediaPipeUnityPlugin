@@ -6,13 +6,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Mediapipe.Unity.Sample.SelfieSegmentation
 {
   public class SelfieSegmentationGraph : GraphRunner
   {
-    public event EventHandler<OutputEventArgs<ImageFrame>> OnSegmentationMaskOutput
+    public event EventHandler<OutputStream.OutputEventArgs> OnSegmentationMaskOutput
     {
       add => _segmentationMaskStream.AddListener(value);
       remove => _segmentationMaskStream.RemoveListener(value);
@@ -20,7 +21,7 @@ namespace Mediapipe.Unity.Sample.SelfieSegmentation
 
     private const string _InputStreamName = "input_video";
     private const string _SegmentationMaskStreamName = "segmentation_mask";
-    private OutputStream<ImageFramePacket, ImageFrame> _segmentationMaskStream;
+    private OutputStream _segmentationMaskStream;
 
     public override void StartRun(ImageSource imageSource)
     {
@@ -34,7 +35,7 @@ namespace Mediapipe.Unity.Sample.SelfieSegmentation
 
     public override void Stop()
     {
-      _segmentationMaskStream?.Close();
+      _segmentationMaskStream?.Dispose();
       _segmentationMaskStream = null;
       base.Stop();
     }
@@ -44,9 +45,17 @@ namespace Mediapipe.Unity.Sample.SelfieSegmentation
       AddTextureFrameToInputStream(_InputStreamName, textureFrame);
     }
 
-    public bool TryGetNext(out ImageFrame segmentationMask, bool allowBlock = true)
+    public async Task<ImageFrame> WaitNextAsync()
     {
-      return TryGetNext(_segmentationMaskStream, out segmentationMask, allowBlock, GetCurrentTimestampMicrosec());
+      var result = await _segmentationMaskStream.WaitNextAsync();
+      AssertResult(result);
+
+      _ = TryGetValue(result.packet, out var segmentationMask, (packet) =>
+      {
+        return packet.GetImageFrame();
+      });
+
+      return segmentationMask;
     }
 
     protected override IList<WaitForResult> RequestDependentAssets()
@@ -58,14 +67,7 @@ namespace Mediapipe.Unity.Sample.SelfieSegmentation
 
     protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      if (runningMode == RunningMode.NonBlockingSync)
-      {
-        _segmentationMaskStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _SegmentationMaskStreamName, config.AddPacketPresenceCalculator(_SegmentationMaskStreamName), timeoutMicrosec);
-      }
-      else
-      {
-        _segmentationMaskStream = new OutputStream<ImageFramePacket, ImageFrame>(calculatorGraph, _SegmentationMaskStreamName, true, timeoutMicrosec);
-      }
+      _segmentationMaskStream = new OutputStream(calculatorGraph, _SegmentationMaskStreamName, true);
       calculatorGraph.Initialize(config);
     }
 

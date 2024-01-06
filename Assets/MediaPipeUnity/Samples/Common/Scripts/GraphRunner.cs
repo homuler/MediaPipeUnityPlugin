@@ -201,10 +201,26 @@ namespace Mediapipe.Unity.Sample
       AddPacketToInputStream(streamName, Packet.CreateImageFrameAt(imageFrame, latestTimestamp));
     }
 
-    protected bool TryGetNext<TPacket, TValue>(OutputStream<TPacket, TValue> stream, out TValue value, bool allowBlock, long currentTimestampMicrosec) where TPacket : Packet<TValue>, new()
+    protected void AssertResult(params OutputStream.NextResult[] results)
     {
-      var result = stream.TryGetNext(out value, allowBlock);
-      return result || allowBlock || stream.ResetTimestampIfTimedOut(currentTimestampMicrosec, timeoutMicrosec);
+      foreach (var result in results)
+      {
+        if (!result.ok)
+        {
+          throw new Exception("Failed to get the next packet");
+        }
+      }
+    }
+
+    protected bool TryGetValue<T>(Packet packet, out T value, Func<Packet, T> getter)
+    {
+      if (packet == null || packet.IsEmpty())
+      {
+        value = default;
+        return false;
+      }
+      value = getter(packet);
+      return true;
     }
 
     protected long GetCurrentTimestampMicrosec()
