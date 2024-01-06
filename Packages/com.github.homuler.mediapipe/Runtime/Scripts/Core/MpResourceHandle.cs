@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace Mediapipe
 {
-  public abstract class MpResourceHandle : DisposableObject, IMpResourceHandle
+  public abstract class MpResourceHandle : DisposableObject
   {
     private IntPtr _ptr = IntPtr.Zero;
     protected IntPtr ptr
@@ -31,7 +31,6 @@ namespace Mediapipe
       this.ptr = ptr;
     }
 
-    #region IMpResourceHandle
     public IntPtr mpPtr
     {
       get
@@ -41,7 +40,12 @@ namespace Mediapipe
       }
     }
 
-    public void ReleaseMpResource()
+    /// <summary>
+    ///   Relinquish the ownership, and release the resource it owns if necessary.
+    ///   This method should be called only if the underlying native api moves the pointer.
+    /// </summary>
+    /// <remarks>If the object itself is no longer used, call <see cref="Dispose" /> instead.</remarks>
+    internal void ReleaseMpResource()
     {
       if (OwnsResource())
       {
@@ -55,7 +59,6 @@ namespace Mediapipe
     {
       return isOwner && IsResourcePresent();
     }
-    #endregion
 
     protected override void DisposeUnmanaged()
     {

@@ -30,6 +30,15 @@ namespace Mediapipe
 
     public bool IsEmpty() => SafeNativeMethods.mp_Packet__IsEmpty(mpPtr);
 
+    internal void SwitchNativePtr(IntPtr packetPtr)
+    {
+      if (isOwner)
+      {
+        throw new InvalidOperationException("This operation is permitted only when the packet instance is for reference");
+      }
+      ptr = packetPtr;
+    }
+
     public static Packet CreateEmpty()
     {
       UnsafeNativeMethods.mp_Packet__(out var ptr).Assert();
