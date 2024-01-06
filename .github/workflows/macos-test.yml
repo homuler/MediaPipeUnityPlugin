@@ -87,7 +87,7 @@ jobs:
           - macos-12
         unity:
           - { version: "2022.3.16f1", changeset: "d2c21f0ef2f1" }
-          - { version: "2021.3.29f1", changeset: "204d6dc9ae1c" }
+          - { version: "2021.3.33f1", changeset: "ee5a2aa03ab2" }
           - { version: "2020.3.44f1", changeset: "7f159b6136da" }
         exclude:
           - os: macos-12

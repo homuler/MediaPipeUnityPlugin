@@ -212,7 +212,7 @@ jobs:
       - name: Install UnityEditor
         if: ${{ env.BUILD_UNITYPACKAGE == '1' }}
         run: |
-          sudo docker cp $(docker create --rm unityci/editor:2022.3.16f1-base-1):/opt/unity /opt/unity
+          sudo docker cp $(docker create --rm unityci/editor:2022.3.16f1-base-3):/opt/unity /opt/unity
           sudo chown -R $(id -u):$(id -g) /opt/unity
 
           echo -e '#!/bin/bash\nxvfb-run -ae /dev/stdout /opt/unity/Editor/Unity -batchmode "$@"' | sudo tee -a /usr/bin/unity-editor
