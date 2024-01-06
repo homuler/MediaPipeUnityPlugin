@@ -8,7 +8,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
 
 using Stopwatch = System.Diagnostics.Stopwatch;
@@ -222,12 +221,6 @@ namespace Mediapipe.Unity.Sample
       }
       value = getter(packet);
       return true;
-    }
-
-    protected bool TryGetNext<TPacket, TValue>(OutputStream<TPacket, TValue> stream, out TValue value, bool allowBlock, long currentTimestampMicrosec) where TPacket : Packet<TValue>, new()
-    {
-      var result = stream.TryGetNext(out value, allowBlock);
-      return result || allowBlock || stream.ResetTimestampIfTimedOut(currentTimestampMicrosec, timeoutMicrosec);
     }
 
     protected long GetCurrentTimestampMicrosec()
