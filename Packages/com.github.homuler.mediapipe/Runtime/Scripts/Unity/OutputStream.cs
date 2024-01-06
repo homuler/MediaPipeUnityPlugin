@@ -66,7 +66,7 @@ namespace Mediapipe.Unity
       {
         if (_outputPacket == null)
         {
-          _outputPacket = Packet.CreateEmpty();
+          _outputPacket = new Packet();
           _outputPacket.Lock();
         }
         return _outputPacket;
@@ -380,6 +380,7 @@ namespace Mediapipe.Unity
     }
   }
 
+  [Obsolete("Use non-generic OutputStream instead")]
   public class OutputStream<TPacket, TValue> where TPacket : Packet<TValue>, new()
   {
     private static int _Counter = 0;

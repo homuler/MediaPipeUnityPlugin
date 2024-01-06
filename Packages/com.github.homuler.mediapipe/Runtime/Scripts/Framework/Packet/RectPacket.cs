@@ -9,6 +9,7 @@ using Google.Protobuf;
 
 namespace Mediapipe
 {
+  [Obsolete("Use non-generic Packet instead")]
   public class RectPacket : Packet<Rect>
   {
     /// <summary>

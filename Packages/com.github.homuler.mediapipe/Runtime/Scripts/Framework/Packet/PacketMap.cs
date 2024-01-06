@@ -30,6 +30,7 @@ namespace Mediapipe
     ///   This method cannot verify that the packet type corresponding to the <paramref name="key" /> is indeed a <typeparamref name="TPacket" />,
     ///   so you must make sure by youreself that it is.
     /// </remarks>
+    [Obsolete("Use non-generic At instead")]
     public TPacket At<TPacket, TValue>(string key) where TPacket : Packet<TValue>, new()
     {
       UnsafeNativeMethods.mp_PacketMap__find__PKc(mpPtr, key, out var packetPtr).Assert();
@@ -58,6 +59,7 @@ namespace Mediapipe
       return new Packet(packetPtr, true);
     }
 
+    [Obsolete("Use non-generic Emplace instead")]
     public void Emplace<T>(string key, Packet<T> packet)
     {
       UnsafeNativeMethods.mp_PacketMap__emplace__PKc_Rp(mpPtr, key, packet.mpPtr).Assert();

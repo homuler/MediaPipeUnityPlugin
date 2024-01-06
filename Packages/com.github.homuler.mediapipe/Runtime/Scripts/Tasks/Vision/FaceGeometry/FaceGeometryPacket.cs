@@ -8,6 +8,7 @@ using System;
 
 namespace Mediapipe.Tasks.Vision.FaceGeometry
 {
+  [Obsolete("Use non-generic Packet instead")]
   public class FaceGeometryPacket : Packet<Proto.FaceGeometry>
   {
     /// <summary>

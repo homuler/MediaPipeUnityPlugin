@@ -9,6 +9,7 @@ using System.Collections.Generic;
 
 namespace Mediapipe
 {
+  [Obsolete("Use non-generic Packet instead")]
   public class RectVectorPacket : Packet<List<Rect>>
   {
     /// <summary>

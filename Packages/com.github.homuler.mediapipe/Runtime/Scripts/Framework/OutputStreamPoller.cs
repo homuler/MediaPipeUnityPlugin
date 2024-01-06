@@ -44,6 +44,7 @@ namespace Mediapipe
     }
   }
 
+  [Obsolete("Use non-generic OutputStreamPoller instead")]
   public class OutputStreamPoller<T> : MpResourceHandle
   {
     public OutputStreamPoller(IntPtr ptr) : base(ptr) { }

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 
 namespace Mediapipe.Tasks.Vision.FaceGeometry
 {
+  [Obsolete("Use non-generic Packet instead")]
   public class FaceGeometryVectorPacket : Packet<List<Proto.FaceGeometry>>
   {
     /// <summary>

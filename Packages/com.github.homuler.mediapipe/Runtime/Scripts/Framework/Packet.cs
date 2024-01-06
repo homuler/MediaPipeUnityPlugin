@@ -13,6 +13,12 @@ namespace Mediapipe
 {
   public class Packet : MpResourceHandle
   {
+    public Packet() : base(true)
+    {
+      UnsafeNativeMethods.mp_Packet__(out var ptr).Assert();
+      this.ptr = ptr;
+    }
+
     internal Packet(IntPtr ptr, bool isOwner) : base(ptr, isOwner) { }
 
     protected override void DeleteMpPtr()
@@ -37,13 +43,6 @@ namespace Mediapipe
         throw new InvalidOperationException("This operation is permitted only when the packet instance is for reference");
       }
       ptr = packetPtr;
-    }
-
-    public static Packet CreateEmpty()
-    {
-      UnsafeNativeMethods.mp_Packet__(out var ptr).Assert();
-
-      return new Packet(ptr, true);
     }
 
     /// <summary>
