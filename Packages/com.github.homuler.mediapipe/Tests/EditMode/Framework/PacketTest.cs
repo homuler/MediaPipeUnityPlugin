@@ -510,49 +510,49 @@ namespace Mediapipe.Tests
     [Test]
     public void ValidateAsBool_ShouldThrow_When_ValueIsNotSet()
     {
-      using var packet = Packet.CreateEmpty();
+      using var packet = new Packet();
       _ = Assert.Throws<BadStatusException>(packet.ValidateAsBool);
     }
 
     [Test]
     public void ValidateAsBoolVector_ShouldThrow_When_ValueIsNotSet()
     {
-      using var packet = Packet.CreateEmpty();
+      using var packet = new Packet();
       _ = Assert.Throws<BadStatusException>(packet.ValidateAsBoolVector);
     }
 
     [Test]
     public void ValidateAsDouble_ShouldThrow_When_ValueIsNotSet()
     {
-      using var packet = Packet.CreateEmpty();
+      using var packet = new Packet();
       _ = Assert.Throws<BadStatusException>(packet.ValidateAsDouble);
     }
 
     [Test]
     public void ValidateAsFloat_ShouldThrow_When_ValueIsNotSet()
     {
-      using var packet = Packet.CreateEmpty();
+      using var packet = new Packet();
       _ = Assert.Throws<BadStatusException>(packet.ValidateAsFloat);
     }
 
     [Test]
     public void ValidateAsFloatArray_ShouldThrow_When_ValueIsNotSet()
     {
-      using var packet = Packet.CreateEmpty();
+      using var packet = new Packet();
       _ = Assert.Throws<BadStatusException>(packet.ValidateAsFloatArray);
     }
 
     [Test]
     public void ValidateAsFloatVector_ShouldThrow_When_ValueIsNotSet()
     {
-      using var packet = Packet.CreateEmpty();
+      using var packet = new Packet();
       _ = Assert.Throws<BadStatusException>(packet.ValidateAsFloatVector);
     }
 
     [Test]
     public void ValidateAsImage_ShouldThrow_When_ValueIsNotSet()
     {
-      using var packet = Packet.CreateEmpty();
+      using var packet = new Packet();
       _ = Assert.Throws<BadStatusException>(packet.ValidateAsImage);
     }
     #endregion

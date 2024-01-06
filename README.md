@@ -50,7 +50,7 @@ node {
         }
 
         graph.CloseInputStream("in");
-        var packet = Packet.CreateEmpty();
+        var packet = new Packet();
 
         while (poller.Next(packet))
         {

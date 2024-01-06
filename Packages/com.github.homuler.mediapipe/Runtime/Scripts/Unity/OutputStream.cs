@@ -66,7 +66,7 @@ namespace Mediapipe.Unity
       {
         if (_outputPacket == null)
         {
-          _outputPacket = Packet.CreateEmpty();
+          _outputPacket = new Packet();
           _outputPacket.Lock();
         }
         return _outputPacket;
