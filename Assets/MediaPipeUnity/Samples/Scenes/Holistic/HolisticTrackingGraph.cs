@@ -154,6 +154,7 @@ namespace Mediapipe.Unity.Sample.Holistic
 
     public override void Stop()
     {
+      base.Stop();
       _poseDetectionStream?.Dispose();
       _poseDetectionStream = null;
       _poseLandmarksStream?.Dispose();
@@ -170,7 +171,6 @@ namespace Mediapipe.Unity.Sample.Holistic
       _segmentationMaskStream = null;
       _poseRoiStream?.Dispose();
       _poseRoiStream = null;
-      base.Stop();
     }
 
     public void AddTextureFrameToInputStream(TextureFrame textureFrame)

@@ -34,9 +34,9 @@ namespace Mediapipe.Unity.Sample.ObjectDetection
 
     public override void Stop()
     {
+      base.Stop();
       _outputDetectionsStream?.Dispose();
       _outputDetectionsStream = null;
-      base.Stop();
     }
 
     public void AddTextureFrameToInputStream(TextureFrame textureFrame)

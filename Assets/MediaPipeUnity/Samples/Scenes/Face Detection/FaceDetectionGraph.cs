@@ -49,9 +49,9 @@ namespace Mediapipe.Unity.Sample.FaceDetection
 
     public override void Stop()
     {
+      base.Stop();
       _faceDetectionsStream?.Dispose();
       _faceDetectionsStream = null;
-      base.Stop();
     }
 
     public void AddTextureFrameToInputStream(TextureFrame textureFrame)
