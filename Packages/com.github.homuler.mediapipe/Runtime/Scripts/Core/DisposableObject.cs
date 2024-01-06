@@ -66,7 +66,7 @@ namespace Mediapipe
     /// <summary>
     ///   Lock the object to prevent it from being disposed.
     /// </summary>
-    protected void Lock()
+    internal void Lock()
     {
       _isLocked = true;
     }
@@ -74,7 +74,7 @@ namespace Mediapipe
     /// <summary>
     ///   Unlock the object to allow it to be disposed.
     /// </summary>
-    protected void Unlock()
+    internal void Unlock()
     {
       _isLocked = false;
     }

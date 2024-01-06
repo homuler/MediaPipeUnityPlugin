@@ -64,7 +64,11 @@ namespace Mediapipe.Unity
     {
       get
       {
-        _outputPacket ??= Packet.CreateEmpty();
+        if (_outputPacket == null)
+        {
+          _outputPacket = Packet.CreateEmpty();
+          _outputPacket.Lock();
+        }
         return _outputPacket;
       }
     }
@@ -82,7 +86,11 @@ namespace Mediapipe.Unity
     {
       get
       {
-        _referencePacket ??= Packet.CreateForReference(IntPtr.Zero);
+        if (_referencePacket == null)
+        {
+          _referencePacket = Packet.CreateForReference(IntPtr.Zero);
+          _referencePacket.Lock();
+        }
         return _referencePacket;
       }
     }
@@ -160,10 +168,20 @@ namespace Mediapipe.Unity
 
       _poller?.Dispose();
       _poller = null;
-      _outputPacket?.Dispose();
-      _outputPacket = null;
-      _referencePacket?.Dispose();
-      _referencePacket = null;
+
+      if (_outputPacket != null)
+      {
+        _outputPacket.Unlock();
+        _outputPacket.Dispose();
+        _outputPacket = null;
+      }
+
+      if (_referencePacket != null)
+      {
+        _referencePacket.Unlock();
+        _referencePacket.Dispose();
+        _referencePacket = null;
+      }
     }
 
     ~OutputStream()
