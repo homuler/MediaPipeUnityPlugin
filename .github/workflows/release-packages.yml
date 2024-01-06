@@ -1,6 +1,7 @@
 # TODO: attach built packages to the release page
 name: Release Packages
 on:
+  workflow_dispatch: {}
   push:
     tags:
       - v*
