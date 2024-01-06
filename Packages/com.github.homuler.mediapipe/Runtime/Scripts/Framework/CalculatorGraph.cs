@@ -109,6 +109,15 @@ namespace Mediapipe
       return new OutputStreamPoller<T>(pollerPtr);
     }
 
+    public OutputStreamPoller AddOutputStreamPoller(string streamName, bool observeTimestampBounds = false)
+    {
+      UnsafeNativeMethods.mp_CalculatorGraph__AddOutputStreamPoller__PKc_b(mpPtr, streamName, observeTimestampBounds, out var statusPtr, out var pollerPtr).Assert();
+
+      GC.KeepAlive(this);
+      AssertStatusOk(statusPtr);
+      return new OutputStreamPoller(pollerPtr);
+    }
+
     public void Run()
     {
       Run(new PacketMap());
