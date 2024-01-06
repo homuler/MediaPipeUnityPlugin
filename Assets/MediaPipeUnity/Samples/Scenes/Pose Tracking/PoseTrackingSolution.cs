@@ -87,51 +87,53 @@ namespace Mediapipe.Unity.Sample.PoseTracking
 
     protected override IEnumerator WaitForNextValue()
     {
-      Detection poseDetection = null;
-      NormalizedLandmarkList poseLandmarks = null;
-      LandmarkList poseWorldLandmarks = null;
-      ImageFrame segmentationMask = null;
-      NormalizedRect roiFromLandmarks = null;
+      var task = graphRunner.WaitNextAsync();
+      yield return new WaitUntil(() => task.IsCompleted);
 
-      if (runningMode == RunningMode.Sync)
-      {
-        var _ = graphRunner.TryGetNext(out poseDetection, out poseLandmarks, out poseWorldLandmarks, out segmentationMask, out roiFromLandmarks, true);
-      }
-      else if (runningMode == RunningMode.NonBlockingSync)
-      {
-        yield return new WaitUntil(() => graphRunner.TryGetNext(out poseDetection, out poseLandmarks, out poseWorldLandmarks, out segmentationMask, out roiFromLandmarks, false));
-      }
+      var result = task.Result;
+      _poseDetectionAnnotationController.DrawNow(result.poseDetection);
+      _poseLandmarksAnnotationController.DrawNow(result.poseLandmarks);
+      _poseWorldLandmarksAnnotationController.DrawNow(result.poseWorldLandmarks);
+      _segmentationMaskAnnotationController.DrawNow(result.segmentationMask);
+      _roiFromLandmarksAnnotationController.DrawNow(result.roiFromLandmarks);
 
-      _poseDetectionAnnotationController.DrawNow(poseDetection);
-      _poseLandmarksAnnotationController.DrawNow(poseLandmarks);
-      _poseWorldLandmarksAnnotationController.DrawNow(poseWorldLandmarks);
-      _segmentationMaskAnnotationController.DrawNow(segmentationMask);
-      _roiFromLandmarksAnnotationController.DrawNow(roiFromLandmarks);
+      result.segmentationMask?.Dispose();
     }
 
-    private void OnPoseDetectionOutput(object stream, OutputEventArgs<Detection> eventArgs)
+    private void OnPoseDetectionOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
-      _poseDetectionAnnotationController.DrawLater(eventArgs.value);
+      var packet = eventArgs.packet;
+      var value = packet.IsEmpty() ? default : packet.GetProto(Detection.Parser);
+      _poseDetectionAnnotationController.DrawLater(value);
     }
 
-    private void OnPoseLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs)
+    private void OnPoseLandmarksOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
-      _poseLandmarksAnnotationController.DrawLater(eventArgs.value);
+      var packet = eventArgs.packet;
+      var value = packet.IsEmpty() ? default : packet.GetProto(NormalizedLandmarkList.Parser);
+      _poseLandmarksAnnotationController.DrawLater(value);
     }
 
-    private void OnPoseWorldLandmarksOutput(object stream, OutputEventArgs<LandmarkList> eventArgs)
+    private void OnPoseWorldLandmarksOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
-      _poseWorldLandmarksAnnotationController.DrawLater(eventArgs.value);
+      var packet = eventArgs.packet;
+      var value = packet.IsEmpty() ? default : packet.GetProto(LandmarkList.Parser);
+      _poseWorldLandmarksAnnotationController.DrawLater(value);
     }
 
-    private void OnSegmentationMaskOutput(object stream, OutputEventArgs<ImageFrame> eventArgs)
+    private void OnSegmentationMaskOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
-      _segmentationMaskAnnotationController.DrawLater(eventArgs.value);
+      var packet = eventArgs.packet;
+      var value = packet.IsEmpty() ? default : packet.GetImageFrame();
+      _segmentationMaskAnnotationController.DrawLater(value);
+      value?.Dispose();
     }
 
-    private void OnRoiFromLandmarksOutput(object stream, OutputEventArgs<NormalizedRect> eventArgs)
+    private void OnRoiFromLandmarksOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
-      _roiFromLandmarksAnnotationController.DrawLater(eventArgs.value);
+      var packet = eventArgs.packet;
+      var value = packet.IsEmpty() ? default : packet.GetProto(NormalizedRect.Parser);
+      _roiFromLandmarksAnnotationController.DrawLater(value);
     }
   }
 }
