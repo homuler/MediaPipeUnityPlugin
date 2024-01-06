@@ -46,8 +46,6 @@ namespace Mediapipe.Unity
       /// </summary>
       public readonly bool ok;
 
-      public bool isDropped => ok && packet == null;
-
       public NextResult(Packet packet, bool ok)
       {
         this.packet = packet;
