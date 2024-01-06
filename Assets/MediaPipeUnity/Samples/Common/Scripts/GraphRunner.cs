@@ -214,7 +214,7 @@ namespace Mediapipe.Unity.Sample
 
     protected bool TryGetValue<T>(Packet packet, out T value, Func<Packet, T> getter)
     {
-      if (packet == null || packet.IsEmpty())
+      if (packet == null)
       {
         value = default;
         return false;
