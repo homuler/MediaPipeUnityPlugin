@@ -63,37 +63,37 @@ namespace Mediapipe.Unity.Sample.HandTracking
 
     public event EventHandler<OutputStream.OutputEventArgs> OnPalmDetectectionsOutput
     {
-      add => _palmDetectionsStream.AddListener(value);
+      add => _palmDetectionsStream.AddListener(value, timeoutMicrosec);
       remove => _palmDetectionsStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnHandRectsFromPalmDetectionsOutput
     {
-      add => _handRectsFromPalmDetectionsStream.AddListener(value);
+      add => _handRectsFromPalmDetectionsStream.AddListener(value, timeoutMicrosec);
       remove => _handRectsFromPalmDetectionsStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnHandLandmarksOutput
     {
-      add => _handLandmarksStream.AddListener(value);
+      add => _handLandmarksStream.AddListener(value, timeoutMicrosec);
       remove => _handLandmarksStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnHandWorldLandmarksOutput
     {
-      add => _handWorldLandmarksStream.AddListener(value);
+      add => _handWorldLandmarksStream.AddListener(value, timeoutMicrosec);
       remove => _handWorldLandmarksStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnHandRectsFromLandmarksOutput
     {
-      add => _handRectsFromLandmarksStream.AddListener(value);
+      add => _handRectsFromLandmarksStream.AddListener(value, timeoutMicrosec);
       remove => _handRectsFromLandmarksStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnHandednessOutput
     {
-      add => _handednessStream.AddListener(value);
+      add => _handednessStream.AddListener(value, timeoutMicrosec);
       remove => _handednessStream.RemoveListener(value);
     }
 

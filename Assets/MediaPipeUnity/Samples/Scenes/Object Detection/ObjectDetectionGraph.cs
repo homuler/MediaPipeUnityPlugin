@@ -14,7 +14,7 @@ namespace Mediapipe.Unity.Sample.ObjectDetection
   {
     public event EventHandler<OutputStream.OutputEventArgs> OnOutputDetectionsOutput
     {
-      add => _outputDetectionsStream.AddListener(value);
+      add => _outputDetectionsStream.AddListener(value, timeoutMicrosec);
       remove => _outputDetectionsStream.RemoveListener(value);
     }
 

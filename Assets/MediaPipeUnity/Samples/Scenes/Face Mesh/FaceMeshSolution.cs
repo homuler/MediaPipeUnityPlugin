@@ -77,28 +77,28 @@ namespace Mediapipe.Unity.Sample.FaceMesh
     private void OnFaceDetectionsOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet.IsEmpty() ? default : packet.GetProtoList(Detection.Parser);
+      var value = packet == null ? default : packet.GetProtoList(Detection.Parser);
       _faceDetectionsAnnotationController.DrawLater(value);
     }
 
     private void OnMultiFaceLandmarksOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet.IsEmpty() ? default : packet.GetProtoList(NormalizedLandmarkList.Parser);
+      var value = packet == null ? default : packet.GetProtoList(NormalizedLandmarkList.Parser);
       _multiFaceLandmarksAnnotationController.DrawLater(value);
     }
 
     private void OnFaceRectsFromLandmarksOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet.IsEmpty() ? default : packet.GetProtoList(NormalizedRect.Parser);
+      var value = packet == null ? default : packet.GetProtoList(NormalizedRect.Parser);
       _faceRectsFromLandmarksAnnotationController.DrawLater(value);
     }
 
     private void OnFaceRectsFromDetectionsOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet.IsEmpty() ? default : packet.GetProtoList(NormalizedRect.Parser);
+      var value = packet == null ? default : packet.GetProtoList(NormalizedRect.Parser);
       _faceRectsFromDetectionsAnnotationController.DrawLater(value);
     }
   }

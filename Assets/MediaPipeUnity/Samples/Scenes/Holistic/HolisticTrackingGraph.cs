@@ -71,49 +71,49 @@ namespace Mediapipe.Unity.Sample.Holistic
 
     public event EventHandler<OutputStream.OutputEventArgs> OnPoseDetectionOutput
     {
-      add => _poseDetectionStream.AddListener(value);
+      add => _poseDetectionStream.AddListener(value, timeoutMicrosec);
       remove => _poseDetectionStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnPoseLandmarksOutput
     {
-      add => _poseLandmarksStream.AddListener(value);
+      add => _poseLandmarksStream.AddListener(value, timeoutMicrosec);
       remove => _poseLandmarksStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnFaceLandmarksOutput
     {
-      add => _faceLandmarksStream.AddListener(value);
+      add => _faceLandmarksStream.AddListener(value, timeoutMicrosec);
       remove => _faceLandmarksStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnLeftHandLandmarksOutput
     {
-      add => _leftHandLandmarksStream.AddListener(value);
+      add => _leftHandLandmarksStream.AddListener(value, timeoutMicrosec);
       remove => _leftHandLandmarksStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnRightHandLandmarksOutput
     {
-      add => _rightHandLandmarksStream.AddListener(value);
+      add => _rightHandLandmarksStream.AddListener(value, timeoutMicrosec);
       remove => _rightHandLandmarksStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnPoseWorldLandmarksOutput
     {
-      add => _poseWorldLandmarksStream.AddListener(value);
+      add => _poseWorldLandmarksStream.AddListener(value, timeoutMicrosec);
       remove => _poseWorldLandmarksStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnSegmentationMaskOutput
     {
-      add => _segmentationMaskStream.AddListener(value);
+      add => _segmentationMaskStream.AddListener(value, timeoutMicrosec);
       remove => _segmentationMaskStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnPoseRoiOutput
     {
-      add => _poseRoiStream.AddListener(value);
+      add => _poseRoiStream.AddListener(value, timeoutMicrosec);
       remove => _poseRoiStream.RemoveListener(value);
     }
 

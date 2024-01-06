@@ -15,7 +15,7 @@ namespace Mediapipe.Unity.Sample.SelfieSegmentation
   {
     public event EventHandler<OutputStream.OutputEventArgs> OnSegmentationMaskOutput
     {
-      add => _segmentationMaskStream.AddListener(value);
+      add => _segmentationMaskStream.AddListener(value, timeoutMicrosec);
       remove => _segmentationMaskStream.RemoveListener(value);
     }
 

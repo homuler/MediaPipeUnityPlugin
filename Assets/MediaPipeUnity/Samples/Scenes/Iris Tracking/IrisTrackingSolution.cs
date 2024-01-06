@@ -49,21 +49,21 @@ namespace Mediapipe.Unity.Sample.IrisTracking
     private void OnFaceDetectionsOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet.IsEmpty() ? default : packet.GetProtoList(Detection.Parser);
+      var value = packet == null ? default : packet.GetProtoList(Detection.Parser);
       _faceDetectionsAnnotationController.DrawLater(value);
     }
 
     private void OnFaceRectOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet.IsEmpty() ? default : packet.GetProto(NormalizedRect.Parser);
+      var value = packet == null ? default : packet.GetProto(NormalizedRect.Parser);
       _faceRectAnnotationController.DrawLater(value);
     }
 
     private void OnFaceLandmarksWithIrisOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet.IsEmpty() ? default : packet.GetProto(NormalizedLandmarkList.Parser);
+      var value = packet == null ? default : packet.GetProto(NormalizedLandmarkList.Parser);
       _faceLandmarksWithIrisAnnotationController.DrawLater(value);
     }
   }

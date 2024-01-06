@@ -39,7 +39,7 @@ namespace Mediapipe.Unity.Sample.ObjectDetection
     private void OnOutputDetectionsOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet.IsEmpty() ? default : packet.GetProtoList(Detection.Parser);
+      var value = packet == null ? default : packet.GetProtoList(Detection.Parser);
       _outputDetectionsAnnotationController.DrawLater(value);
     }
   }

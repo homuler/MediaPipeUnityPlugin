@@ -62,31 +62,31 @@ namespace Mediapipe.Unity.Sample.PoseTracking
 
     public event EventHandler<OutputStream.OutputEventArgs> OnPoseDetectionOutput
     {
-      add => _poseDetectionStream.AddListener(value);
+      add => _poseDetectionStream.AddListener(value, timeoutMicrosec);
       remove => _poseDetectionStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnPoseLandmarksOutput
     {
-      add => _poseLandmarksStream.AddListener(value);
+      add => _poseLandmarksStream.AddListener(value, timeoutMicrosec);
       remove => _poseLandmarksStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnPoseWorldLandmarksOutput
     {
-      add => _poseWorldLandmarksStream.AddListener(value);
+      add => _poseWorldLandmarksStream.AddListener(value, timeoutMicrosec);
       remove => _poseWorldLandmarksStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnSegmentationMaskOutput
     {
-      add => _segmentationMaskStream.AddListener(value);
+      add => _segmentationMaskStream.AddListener(value, timeoutMicrosec);
       remove => _segmentationMaskStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnRoiFromLandmarksOutput
     {
-      add => _roiFromLandmarksStream.AddListener(value);
+      add => _roiFromLandmarksStream.AddListener(value, timeoutMicrosec);
       remove => _roiFromLandmarksStream.RemoveListener(value);
     }
 
