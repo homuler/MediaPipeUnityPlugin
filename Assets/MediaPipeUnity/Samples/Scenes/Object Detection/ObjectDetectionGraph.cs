@@ -6,12 +6,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Mediapipe.Unity.Sample.ObjectDetection
 {
   public class ObjectDetectionGraph : GraphRunner
   {
-    public event EventHandler<OutputEventArgs<List<Detection>>> OnOutputDetectionsOutput
+    public event EventHandler<OutputStream.OutputEventArgs> OnOutputDetectionsOutput
     {
       add => _outputDetectionsStream.AddListener(value);
       remove => _outputDetectionsStream.RemoveListener(value);
@@ -20,7 +21,7 @@ namespace Mediapipe.Unity.Sample.ObjectDetection
     private const string _InputStreamName = "input_video";
 
     private const string _OutputDetectionsStreamName = "output_detections";
-    private OutputStream<DetectionVectorPacket, List<Detection>> _outputDetectionsStream;
+    private OutputStream _outputDetectionsStream;
 
     public override void StartRun(ImageSource imageSource)
     {
@@ -33,7 +34,7 @@ namespace Mediapipe.Unity.Sample.ObjectDetection
 
     public override void Stop()
     {
-      _outputDetectionsStream?.Close();
+      _outputDetectionsStream?.Dispose();
       _outputDetectionsStream = null;
       base.Stop();
     }
@@ -43,9 +44,17 @@ namespace Mediapipe.Unity.Sample.ObjectDetection
       AddTextureFrameToInputStream(_InputStreamName, textureFrame);
     }
 
-    public bool TryGetNext(out List<Detection> outputDetections, bool allowBlock = true)
+    public async Task<List<Detection>> WaitNextAsync()
     {
-      return TryGetNext(_outputDetectionsStream, out outputDetections, allowBlock, GetCurrentTimestampMicrosec());
+      var result = await _outputDetectionsStream.WaitNextAsync();
+      AssertResult(result);
+
+      _ = TryGetValue(result.packet, out var outputDetections, (packet) =>
+      {
+        return packet.GetProtoList(Detection.Parser);
+      });
+
+      return outputDetections;
     }
 
     protected override IList<WaitForResult> RequestDependentAssets()
@@ -58,15 +67,7 @@ namespace Mediapipe.Unity.Sample.ObjectDetection
 
     protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      if (runningMode == RunningMode.NonBlockingSync)
-      {
-        _outputDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(
-            calculatorGraph, _OutputDetectionsStreamName, config.AddPacketPresenceCalculator(_OutputDetectionsStreamName), timeoutMicrosec);
-      }
-      else
-      {
-        _outputDetectionsStream = new OutputStream<DetectionVectorPacket, List<Detection>>(calculatorGraph, _OutputDetectionsStreamName, true, timeoutMicrosec);
-      }
+      _outputDetectionsStream = new OutputStream(calculatorGraph, _OutputDetectionsStreamName, true);
       calculatorGraph.Initialize(config);
     }
 
