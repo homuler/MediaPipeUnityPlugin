@@ -2,6 +2,79 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.13.0](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.12.0...v0.13.0) (2024-01-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* **sample:** remove Start Scene (#1017)
+* make Status internal (#959)
+* remove StatusOr<T> API  (#958)
+* implement TaskRunner API (#941)
+
+### Features
+
+* add FaceDetector sample ([#975](https://github.com/homuler/MediaPipeUnityPlugin/issues/975)) ([a3af2d8](https://github.com/homuler/MediaPipeUnityPlugin/commit/a3af2d877417057cbbcb7daa67bfe5d0019f2c21))
+* add the numFaces option to FaceDetectorOptions ([#984](https://github.com/homuler/MediaPipeUnityPlugin/issues/984)) ([a1da808](https://github.com/homuler/MediaPipeUnityPlugin/commit/a1da808f0dddfa68c93e0302dca868d5dc852339))
+* build Image/ImageFrame from Texture2D ([#1083](https://github.com/homuler/MediaPipeUnityPlugin/issues/1083)) ([bcce0e9](https://github.com/homuler/MediaPipeUnityPlugin/commit/bcce0e9d1e1c25c53f58972ceb633961cf9716ec))
+* CalculatorGraph supports non-generic Packet ([#1107](https://github.com/homuler/MediaPipeUnityPlugin/issues/1107)) ([dfd2034](https://github.com/homuler/MediaPipeUnityPlugin/commit/dfd203447752b1e6d4bfe7cd98965b7ce4c8d4f4))
+* implement BaseOptions ([#948](https://github.com/homuler/MediaPipeUnityPlugin/issues/948)) ([d1e7b51](https://github.com/homuler/MediaPipeUnityPlugin/commit/d1e7b51b9f31dabf3ce55aa17a1e6c2e8b35300a))
+* implement BaseVisionTaskApi ([#956](https://github.com/homuler/MediaPipeUnityPlugin/issues/956)) ([dde2ee2](https://github.com/homuler/MediaPipeUnityPlugin/commit/dde2ee2363a0b35abdeaff29a866dfc1119f3f9f))
+* implement Components.Containers.* ([#972](https://github.com/homuler/MediaPipeUnityPlugin/issues/972)) ([3eb66c8](https://github.com/homuler/MediaPipeUnityPlugin/commit/3eb66c8bf01883032f3305c2ae19ef8170c2187f))
+* implement DetectionResultAnnotationController ([#983](https://github.com/homuler/MediaPipeUnityPlugin/issues/983)) ([8dbf3f1](https://github.com/homuler/MediaPipeUnityPlugin/commit/8dbf3f1dbbb0ef5b4cd9dfbed9a8d8cf2eb00e76))
+* implement FaceDetector ([#974](https://github.com/homuler/MediaPipeUnityPlugin/issues/974)) ([c777113](https://github.com/homuler/MediaPipeUnityPlugin/commit/c7771138cf2361f6184220424fa751ab90f60672))
+* implement FaceLandmarker ([#992](https://github.com/homuler/MediaPipeUnityPlugin/issues/992)) ([8f79eee](https://github.com/homuler/MediaPipeUnityPlugin/commit/8f79eeeff3d13adffe3083bb1ae1d4a32b5d6025))
+* implement FaceLandmarker sample ([#994](https://github.com/homuler/MediaPipeUnityPlugin/issues/994)) ([4c552e3](https://github.com/homuler/MediaPipeUnityPlugin/commit/4c552e3ff0147c87e23c1750dc94fb42b5be6731))
+* implement HandLandmarker ([#997](https://github.com/homuler/MediaPipeUnityPlugin/issues/997)) ([6030526](https://github.com/homuler/MediaPipeUnityPlugin/commit/6030526b675d898efb2a97a140fa83c366340f5a))
+* implement HandLandmarker sample ([#998](https://github.com/homuler/MediaPipeUnityPlugin/issues/998)) ([887f74b](https://github.com/homuler/MediaPipeUnityPlugin/commit/887f74b12c979e66559aa0fa147fd8cca6829fe9))
+* implement Image ([#957](https://github.com/homuler/MediaPipeUnityPlugin/issues/957)) ([889e8ca](https://github.com/homuler/MediaPipeUnityPlugin/commit/889e8cad23a403215ca4b7316e8ba785586babc5))
+* implement ImageVectorPacket ([#1020](https://github.com/homuler/MediaPipeUnityPlugin/issues/1020)) ([e9f06d0](https://github.com/homuler/MediaPipeUnityPlugin/commit/e9f06d0ee492c87f2216cc3fe06a242ade6c2a5c))
+* implement non-generic OutputStreamPoller ([#1106](https://github.com/homuler/MediaPipeUnityPlugin/issues/1106)) ([73dbdff](https://github.com/homuler/MediaPipeUnityPlugin/commit/73dbdff2a48146a6e8579c779d38c5ed7aea261d))
+* implement non-generic Packet class (bool/bool vector) ([#1068](https://github.com/homuler/MediaPipeUnityPlugin/issues/1068)) ([7441b9c](https://github.com/homuler/MediaPipeUnityPlugin/commit/7441b9c8acd76335a9c7b24404cba8e17955dbdd))
+* implement Packet.CreateDouble, Packet.GetDouble ([#1069](https://github.com/homuler/MediaPipeUnityPlugin/issues/1069)) ([36ba644](https://github.com/homuler/MediaPipeUnityPlugin/commit/36ba64452e45968f1a7d87258d2e086b41bd24d8))
+* implement Packet.CreateFloat, Packet.GetFloat ([#1070](https://github.com/homuler/MediaPipeUnityPlugin/issues/1070)) ([9a042b2](https://github.com/homuler/MediaPipeUnityPlugin/commit/9a042b2e75de5f393cf4ba77bef0c400228aedac))
+* implement Packet.CreateFloatArray(Vector), Packet.GetFloatArray(List) ([#1071](https://github.com/homuler/MediaPipeUnityPlugin/issues/1071)) ([5e0449d](https://github.com/homuler/MediaPipeUnityPlugin/commit/5e0449d6123104dcc5794c751cefc3126a992455))
+* implement Packet.CreateGpuBuffer ([#1104](https://github.com/homuler/MediaPipeUnityPlugin/issues/1104)) ([71c63d9](https://github.com/homuler/MediaPipeUnityPlugin/commit/71c63d9af813086ef282d4af8b97d8ff35dae094))
+* implement Packet.CreateImage, Packet.GetImage ([#1072](https://github.com/homuler/MediaPipeUnityPlugin/issues/1072)) ([6e14fda](https://github.com/homuler/MediaPipeUnityPlugin/commit/6e14fda3b2ba41979565f1bcd7602c82cbe93880))
+* implement Packet.CreateImageFrame, Packet.GetImageFrame ([#1073](https://github.com/homuler/MediaPipeUnityPlugin/issues/1073)) ([b476a43](https://github.com/homuler/MediaPipeUnityPlugin/commit/b476a43795695e54d7c5e274f157ecb99c1dd1b9))
+* implement Packet.CreateInt, Packet.GetInt ([#1074](https://github.com/homuler/MediaPipeUnityPlugin/issues/1074)) ([d495193](https://github.com/homuler/MediaPipeUnityPlugin/commit/d495193dd7081142d1a19c9f171b0d0bcccaaa1e))
+* implement Packet.CreateProto, Packet.GetProto ([#1079](https://github.com/homuler/MediaPipeUnityPlugin/issues/1079)) ([df48262](https://github.com/homuler/MediaPipeUnityPlugin/commit/df48262e26e4b09237e6c1b84dbb3de7736bb081))
+* implement Packet.CreateString, GetString, GetBytes ([#1102](https://github.com/homuler/MediaPipeUnityPlugin/issues/1102)) ([84181bf](https://github.com/homuler/MediaPipeUnityPlugin/commit/84181bf0eebbb625c06112909878ac582dcc4484))
+* implement Packet.GetProtoList ([#1080](https://github.com/homuler/MediaPipeUnityPlugin/issues/1080)) ([0a302b2](https://github.com/homuler/MediaPipeUnityPlugin/commit/0a302b2946e1b8d086bc146d03d8d2a316c199e9))
+* implement PacketsCallbackTable ([#971](https://github.com/homuler/MediaPipeUnityPlugin/issues/971)) ([eeeec33](https://github.com/homuler/MediaPipeUnityPlugin/commit/eeeec337739b4a96912d0f3a57ab3d2822e31f28))
+* implement PoseLandmarker ([#1022](https://github.com/homuler/MediaPipeUnityPlugin/issues/1022)) ([01cdd56](https://github.com/homuler/MediaPipeUnityPlugin/commit/01cdd567ac5939b81114e27e8c13a92bde8275f4))
+* implement PoseLandmarker sample ([#1064](https://github.com/homuler/MediaPipeUnityPlugin/issues/1064)) ([bbd79b9](https://github.com/homuler/MediaPipeUnityPlugin/commit/bbd79b9e9534cb7f07066d0c0b5935473e5e1a5d))
+* implement TaskRunner API ([#941](https://github.com/homuler/MediaPipeUnityPlugin/issues/941)) ([77d0f16](https://github.com/homuler/MediaPipeUnityPlugin/commit/77d0f1628cd9fa991b8846202ade9dc531b50487))
+* implement TextureFrame and TextureFramePool ([#965](https://github.com/homuler/MediaPipeUnityPlugin/issues/965)) ([c827fb1](https://github.com/homuler/MediaPipeUnityPlugin/commit/c827fb1e1bd70cc9a2ca1772d5a5b7e353452799))
+* initialize RectPacket from proto ([#970](https://github.com/homuler/MediaPipeUnityPlugin/issues/970)) ([d8593f7](https://github.com/homuler/MediaPipeUnityPlugin/commit/d8593f79f1ea89d2cf41688abd3a1af21e6c78b9))
+* marshal ClassificationResult ([#1090](https://github.com/homuler/MediaPipeUnityPlugin/issues/1090)) ([36875b2](https://github.com/homuler/MediaPipeUnityPlugin/commit/36875b29834b905b8b9e957ef39cd484db5b3c4a))
+* marshal DetectionResult ([#1089](https://github.com/homuler/MediaPipeUnityPlugin/issues/1089)) ([ff0bd1c](https://github.com/homuler/MediaPipeUnityPlugin/commit/ff0bd1c7aac10e3d3cb89be114e3154dc4f48962))
+* marshal Landmarks ([#1098](https://github.com/homuler/MediaPipeUnityPlugin/issues/1098)) ([04752fd](https://github.com/homuler/MediaPipeUnityPlugin/commit/04752fd4b13e05d038a62957de381d3c7d9bd95f))
+* marshal NormalizedLandmarks ([#1088](https://github.com/homuler/MediaPipeUnityPlugin/issues/1088)) ([6e5fa2e](https://github.com/homuler/MediaPipeUnityPlugin/commit/6e5fa2e47cf14e5fd95165eb81594d22668c0ea7))
+* port ClassificationResult and Landmark ([#991](https://github.com/homuler/MediaPipeUnityPlugin/issues/991)) ([7252d53](https://github.com/homuler/MediaPipeUnityPlugin/commit/7252d53c1c0b23b5ae39cb4b44f97b2f5039f327))
+* read pixel data from Image ([2f37866](https://github.com/homuler/MediaPipeUnityPlugin/commit/2f3786687a4852d3a2fdd9888eb968b895c55dca))
+* **sample:** drop non-blocking sync mode ([#1110](https://github.com/homuler/MediaPipeUnityPlugin/issues/1110)) ([589b335](https://github.com/homuler/MediaPipeUnityPlugin/commit/589b3352049692aef6933dd7e58705ec66b96b6b))
+* **sample:** remove Start Scene ([#1017](https://github.com/homuler/MediaPipeUnityPlugin/issues/1017)) ([059b0b2](https://github.com/homuler/MediaPipeUnityPlugin/commit/059b0b2f6991f3130a9a4b6c9d48ed5f4c93714e))
+
+
+### Bug Fixes
+
+* avoid a callback being invoked after the OutputStream has been disposed ([#1112](https://github.com/homuler/MediaPipeUnityPlugin/issues/1112)) ([74c1c85](https://github.com/homuler/MediaPipeUnityPlugin/commit/74c1c8500afeca379ea6ba6a5cb9e9d1b08f1aa4))
+* determine the GrahpicsFormat at runtime ([#980](https://github.com/homuler/MediaPipeUnityPlugin/issues/980)) ([514a0a9](https://github.com/homuler/MediaPipeUnityPlugin/commit/514a0a96605518ac14d52546f3a8e893827b4acb))
+* dispose segmentation mask packets ([#1066](https://github.com/homuler/MediaPipeUnityPlugin/issues/1066)) ([370bc5c](https://github.com/homuler/MediaPipeUnityPlugin/commit/370bc5c765e5ee5c646855c331294ba73689341b))
+* dispose TextureFrame references instantly ([#981](https://github.com/homuler/MediaPipeUnityPlugin/issues/981)) ([678596f](https://github.com/homuler/MediaPipeUnityPlugin/commit/678596fd9014d0c5c4445d7063b7d3fb5a48cfdd))
+* fix the bazel version to build bazel ([#995](https://github.com/homuler/MediaPipeUnityPlugin/issues/995)) ([bf5ec2a](https://github.com/homuler/MediaPipeUnityPlugin/commit/bf5ec2a8aed221a827f2425f1bd65d7a8f63e0ef))
+* flickering when running asynchronously ([#1111](https://github.com/homuler/MediaPipeUnityPlugin/issues/1111)) ([7e1b939](https://github.com/homuler/MediaPipeUnityPlugin/commit/7e1b939f77fe9abbda9815512219fa4668b149fd))
+* get pixel data pointer correctly ([#1061](https://github.com/homuler/MediaPipeUnityPlugin/issues/1061)) ([ec3e4d7](https://github.com/homuler/MediaPipeUnityPlugin/commit/ec3e4d726b378dc3117dbdf40ddffc5df9193c24))
+* modelAssetBuffer cannot be specified ([#1084](https://github.com/homuler/MediaPipeUnityPlugin/issues/1084)) ([3ee44bd](https://github.com/homuler/MediaPipeUnityPlugin/commit/3ee44bdb51da5fcf4619873fe1ce701309c33bac))
+* pass timestamp millisec as a long value ([#1094](https://github.com/homuler/MediaPipeUnityPlugin/issues/1094)) ([af78c5d](https://github.com/homuler/MediaPipeUnityPlugin/commit/af78c5d2c03be9bf877f69d894bd6bc37ee977c1))
+* proper autofit image if camera is rotated ([#1043](https://github.com/homuler/MediaPipeUnityPlugin/issues/1043)) ([2d2863e](https://github.com/homuler/MediaPipeUnityPlugin/commit/2d2863ea740a6a5ad01854ea88ab5f48be2a36b6))
+* switch front/back cameras ([#1060](https://github.com/homuler/MediaPipeUnityPlugin/issues/1060)) ([6a74693](https://github.com/homuler/MediaPipeUnityPlugin/commit/6a746931eca55e97c8373c3678637d4cb7407abf))
+
+
+* make Status internal ([#959](https://github.com/homuler/MediaPipeUnityPlugin/issues/959)) ([9b3d33c](https://github.com/homuler/MediaPipeUnityPlugin/commit/9b3d33c79790f76277abe282df0c93373585db87))
+* remove StatusOr<T> API  ([#958](https://github.com/homuler/MediaPipeUnityPlugin/issues/958)) ([dd4c50e](https://github.com/homuler/MediaPipeUnityPlugin/commit/dd4c50eccdf297da895b00aeae0145d60173ec0b))
+
 ## [0.12.0](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.11.0...v0.12.0) (2023-06-24)
 
 
