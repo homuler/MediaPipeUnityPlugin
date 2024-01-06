@@ -26,7 +26,7 @@ namespace Mediapipe.Unity
     {
       /// <summary>
       ///   <see cref="Packet"/> that contains the output value.
-      ///   <see langword="null"/> if there's no output.
+      ///   As long as it's not <see langword="null"/>, it's guaranteed that <see cref="Packet.IsEmpty"/> is <see langword="false"/>.
       /// </summary>
       public readonly Packet packet;
       public readonly long timestampMicrosecond;
@@ -40,6 +40,10 @@ namespace Mediapipe.Unity
 
     public readonly struct NextResult
     {
+      /// <summary>
+      ///   <see cref="Packet"/> that contains the output value.
+      ///   As long as it's not <see langword="null"/>, it's guaranteed that <see cref="Packet.IsEmpty"/> is <see langword="false"/>.
+      /// </summary>
       public readonly Packet packet;
       /// <summary>
       ///   <see langword="true"/> if the next packet is retrieved successfully; otherwise <see langword="false"/>.
@@ -343,6 +347,10 @@ namespace Mediapipe.Unity
         var stream = (OutputStream)state;
         if (stream.Next(out var packet)) // this blocks the thread
         {
+          if (packet.IsEmpty())
+          {
+            return new NextResult(null, true);
+          }
           return new NextResult(packet, true);
         }
         return new NextResult(null, false);
