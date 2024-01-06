@@ -67,13 +67,13 @@ namespace Mediapipe.Unity.Sample.IrisTracking
 
     public override void Stop()
     {
+      base.Stop();
       _faceDetectionsStream?.Dispose();
       _faceDetectionsStream = null;
       _faceRectStream?.Dispose();
       _faceRectStream = null;
       _faceLandmarksWithIrisStream?.Dispose();
       _faceLandmarksWithIrisStream = null;
-      base.Stop();
     }
 
     public void AddTextureFrameToInputStream(TextureFrame textureFrame)

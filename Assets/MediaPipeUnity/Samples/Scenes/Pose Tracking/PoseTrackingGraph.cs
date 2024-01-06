@@ -118,6 +118,7 @@ namespace Mediapipe.Unity.Sample.PoseTracking
 
     public override void Stop()
     {
+      base.Stop();
       _poseDetectionStream?.Dispose();
       _poseDetectionStream = null;
       _poseLandmarksStream?.Dispose();
@@ -128,7 +129,6 @@ namespace Mediapipe.Unity.Sample.PoseTracking
       _segmentationMaskStream = null;
       _roiFromLandmarksStream?.Dispose();
       _roiFromLandmarksStream = null;
-      base.Stop();
     }
 
     public void AddTextureFrameToInputStream(TextureFrame textureFrame)

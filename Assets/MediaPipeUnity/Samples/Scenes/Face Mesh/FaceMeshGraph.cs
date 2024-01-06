@@ -99,6 +99,7 @@ namespace Mediapipe.Unity.Sample.FaceMesh
 
     public override void Stop()
     {
+      base.Stop();
       _faceDetectionsStream?.Dispose();
       _faceDetectionsStream = null;
       _multiFaceLandmarksStream?.Dispose();
@@ -107,7 +108,6 @@ namespace Mediapipe.Unity.Sample.FaceMesh
       _faceRectsFromLandmarksStream = null;
       _faceRectsFromDetectionsStream?.Dispose();
       _faceRectsFromDetectionsStream = null;
-      base.Stop();
     }
 
     public void AddTextureFrameToInputStream(TextureFrame textureFrame)

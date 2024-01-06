@@ -42,9 +42,9 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
 
     public override void Stop()
     {
+      base.Stop();
       _outputVideoStream?.Dispose();
       _outputVideoStream = null;
-      base.Stop();
     }
 
 

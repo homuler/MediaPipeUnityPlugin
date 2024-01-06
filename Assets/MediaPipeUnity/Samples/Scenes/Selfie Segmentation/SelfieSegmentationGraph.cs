@@ -35,9 +35,9 @@ namespace Mediapipe.Unity.Sample.SelfieSegmentation
 
     public override void Stop()
     {
+      base.Stop();
       _segmentationMaskStream?.Dispose();
       _segmentationMaskStream = null;
-      base.Stop();
     }
 
     public void AddTextureFrameToInputStream(TextureFrame textureFrame)

@@ -128,6 +128,7 @@ namespace Mediapipe.Unity.Sample.HandTracking
 
     public override void Stop()
     {
+      base.Stop();
       _palmDetectionsStream?.Dispose();
       _palmDetectionsStream = null;
       _handRectsFromPalmDetectionsStream?.Dispose();
@@ -140,7 +141,6 @@ namespace Mediapipe.Unity.Sample.HandTracking
       _handRectsFromLandmarksStream = null;
       _handednessStream?.Dispose();
       _handednessStream = null;
-      base.Stop();
     }
 
     public void AddTextureFrameToInputStream(TextureFrame textureFrame)

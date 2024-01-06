@@ -39,9 +39,9 @@ namespace Mediapipe.Unity.Sample.HairSegmentation
 
     public override void Stop()
     {
+      base.Stop();
       _hairMaskStream?.Dispose();
       _hairMaskStream = null;
-      base.Stop();
     }
 
     public void AddTextureFrameToInputStream(TextureFrame textureFrame)
