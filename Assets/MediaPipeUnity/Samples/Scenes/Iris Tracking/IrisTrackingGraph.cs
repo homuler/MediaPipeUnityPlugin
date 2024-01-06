@@ -28,19 +28,19 @@ namespace Mediapipe.Unity.Sample.IrisTracking
   {
     public event EventHandler<OutputStream.OutputEventArgs> OnFaceDetectionsOutput
     {
-      add => _faceDetectionsStream.AddListener(value);
+      add => _faceDetectionsStream.AddListener(value, timeoutMicrosec);
       remove => _faceDetectionsStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnFaceRectOutput
     {
-      add => _faceRectStream.AddListener(value);
+      add => _faceRectStream.AddListener(value, timeoutMicrosec);
       remove => _faceRectStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnFaceLandmarksWithIrisOutput
     {
-      add => _faceLandmarksWithIrisStream.AddListener(value);
+      add => _faceLandmarksWithIrisStream.AddListener(value, timeoutMicrosec);
       remove => _faceLandmarksWithIrisStream.RemoveListener(value);
     }
 

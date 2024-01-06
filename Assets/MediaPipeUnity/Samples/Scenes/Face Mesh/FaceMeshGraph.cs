@@ -51,25 +51,25 @@ namespace Mediapipe.Unity.Sample.FaceMesh
 
     public event EventHandler<OutputStream.OutputEventArgs> OnFaceDetectionsOutput
     {
-      add => _faceDetectionsStream.AddListener(value);
+      add => _faceDetectionsStream.AddListener(value, timeoutMicrosec);
       remove => _faceDetectionsStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnMultiFaceLandmarksOutput
     {
-      add => _multiFaceLandmarksStream.AddListener(value);
+      add => _multiFaceLandmarksStream.AddListener(value, timeoutMicrosec);
       remove => _multiFaceLandmarksStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnFaceRectsFromLandmarksOutput
     {
-      add => _faceRectsFromLandmarksStream.AddListener(value);
+      add => _faceRectsFromLandmarksStream.AddListener(value, timeoutMicrosec);
       remove => _faceRectsFromLandmarksStream.RemoveListener(value);
     }
 
     public event EventHandler<OutputStream.OutputEventArgs> OnFaceRectsFromDetectionsOutput
     {
-      add => _faceRectsFromDetectionsStream.AddListener(value);
+      add => _faceRectsFromDetectionsStream.AddListener(value, timeoutMicrosec);
       remove => _faceRectsFromDetectionsStream.RemoveListener(value);
     }
 

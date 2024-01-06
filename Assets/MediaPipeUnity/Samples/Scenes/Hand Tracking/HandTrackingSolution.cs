@@ -5,7 +5,6 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity.Sample.HandTracking
@@ -81,35 +80,35 @@ namespace Mediapipe.Unity.Sample.HandTracking
     private void OnPalmDetectionsOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet.IsEmpty() ? default : packet.GetProtoList(Detection.Parser);
+      var value = packet == null ? default : packet.GetProtoList(Detection.Parser);
       _palmDetectionsAnnotationController.DrawLater(value);
     }
 
     private void OnHandRectsFromPalmDetectionsOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet.IsEmpty() ? default : packet.GetProtoList(NormalizedRect.Parser);
+      var value = packet == null ? default : packet.GetProtoList(NormalizedRect.Parser);
       _handRectsFromPalmDetectionsAnnotationController.DrawLater(value);
     }
 
     private void OnHandLandmarksOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet.IsEmpty() ? default : packet.GetProtoList(NormalizedLandmarkList.Parser);
+      var value = packet == null ? default : packet.GetProtoList(NormalizedLandmarkList.Parser);
       _handLandmarksAnnotationController.DrawLater(value);
     }
 
     private void OnHandRectsFromLandmarksOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet.IsEmpty() ? default : packet.GetProtoList(NormalizedRect.Parser);
+      var value = packet == null ? default : packet.GetProtoList(NormalizedRect.Parser);
       _handRectsFromLandmarksAnnotationController.DrawLater(value);
     }
 
     private void OnHandednessOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet.IsEmpty() ? default : packet.GetProtoList(ClassificationList.Parser);
+      var value = packet == null ? default : packet.GetProtoList(ClassificationList.Parser);
       _handLandmarksAnnotationController.DrawLater(value);
     }
   }

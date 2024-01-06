@@ -18,7 +18,7 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
 
     public event EventHandler<OutputStream.OutputEventArgs> OnOutput
     {
-      add => _outputVideoStream.AddListener(value);
+      add => _outputVideoStream.AddListener(value, timeoutMicrosec);
       remove => _outputVideoStream.RemoveListener(value);
     }
 

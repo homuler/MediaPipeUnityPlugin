@@ -24,11 +24,17 @@ namespace Mediapipe.Unity
   {
     public readonly struct OutputEventArgs
     {
+      /// <summary>
+      ///   <see cref="Packet"/> that contains the output value.
+      ///   <see langword="null"/> if there's no output.
+      /// </summary>
       public readonly Packet packet;
+      public readonly long timestampMicrosecond;
 
-      public OutputEventArgs(Packet packet)
+      internal OutputEventArgs(Packet packet, long timestampMicrosecond)
       {
         this.packet = packet;
+        this.timestampMicrosecond = timestampMicrosecond;
       }
     }
 
@@ -80,6 +86,7 @@ namespace Mediapipe.Unity
     private Task<NextResult> _waitTask;
 
     private event EventHandler<OutputEventArgs> OnReceived;
+    private long _lastTimestampMicrosec;
 
     private Packet _referencePacket;
     private Packet referencePacket
@@ -196,7 +203,23 @@ namespace Mediapipe.Unity
       _poller = _calculatorGraph.AddOutputStreamPoller(streamName, observeTimestampBounds);
     }
 
-    public void AddListener(EventHandler<OutputEventArgs> callback)
+    /// <summary>
+    /// </summary>
+    /// <remarks>
+    ///   When <see cref="observeTimestampBounds" /> is set to <see langword="true"/>, <see cref="callback"/> can be invoked with an empty packet.
+    ///   However, in some cases, most of the output packets can be empty even if the output must be present.<br/>
+    ///   In that case, specify <paramref name="emptyPacketThresholdMicrosecond" /> to mitigate the problem.
+    /// </remarks>
+    /// <param name="callback"></param>
+    /// <param name="emptyPacketThresholdMicrosecond">
+    ///   When <see cref="observeTimestampBounds" /> is set to <see langword="true"/>, <see cref="callback"/> can be invoked with an empty packet.
+    ///   However, in some cases, most of the output packets can be empty even if the output must be present.<br/>
+    ///
+    ///   This parameter specifies the duration for ignoring empty packets.
+    ///   That is, when receiving an empty packet, <paramref name="callback"/> will not be invoked
+    ///   unless the specified time has elapsed since the last non-empty output was received.
+    /// </param>
+    public void AddListener(EventHandler<OutputEventArgs> callback, long emptyPacketThresholdMicrosecond = 0)
     {
       ThrowIfDisposed();
 
@@ -204,7 +227,22 @@ namespace Mediapipe.Unity
       {
         _calculatorGraph.ObserveOutputStream(streamName, _id, InvokeIfOutputStreamFound, observeTimestampBounds);
       }
-      OnReceived += callback;
+
+      if (emptyPacketThresholdMicrosecond <= 0)
+      {
+        OnReceived += callback;
+        return;
+      }
+
+      OnReceived += (sender, eventArgs) =>
+      {
+        var stream = (OutputStream)sender;
+        if (eventArgs.packet == null && eventArgs.timestampMicrosecond - stream._lastTimestampMicrosec <= emptyPacketThresholdMicrosecond)
+        {
+          return;
+        }
+        callback(stream, eventArgs);
+      };
     }
 
     public void RemoveListener(EventHandler<OutputEventArgs> eventHandler)
@@ -338,7 +376,14 @@ namespace Mediapipe.Unity
 
     private void InvokeOnReceived(Packet nextPacket)
     {
-      OnReceived?.Invoke(this, new OutputEventArgs(nextPacket));
+      var isEmpty = nextPacket.IsEmpty();
+      var timestampMicrosec = nextPacket.TimestampMicroseconds();
+      if (!isEmpty)
+      {
+        // not thread-safe
+        _lastTimestampMicrosec = Math.Max(timestampMicrosec, _lastTimestampMicrosec);
+      }
+      OnReceived?.Invoke(this, new OutputEventArgs(isEmpty ? null : nextPacket, timestampMicrosec));
     }
 
     private void ThrowIfDisposed()
@@ -366,9 +411,7 @@ namespace Mediapipe.Unity
 
         var packet = outputStream.referencePacket;
         packet.SwitchNativePtr(packetPtr);
-
         outputStream.InvokeOnReceived(packet);
-
         packet.ReleaseMpResource();
 
         return StatusArgs.Ok();

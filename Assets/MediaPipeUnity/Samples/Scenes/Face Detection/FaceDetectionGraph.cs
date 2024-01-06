@@ -30,7 +30,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection
 
     public event EventHandler<OutputStream.OutputEventArgs> OnFaceDetectionsOutput
     {
-      add => _faceDetectionsStream.AddListener(value);
+      add => _faceDetectionsStream.AddListener(value, timeoutMicrosec);
       remove => _faceDetectionsStream.RemoveListener(value);
     }
 

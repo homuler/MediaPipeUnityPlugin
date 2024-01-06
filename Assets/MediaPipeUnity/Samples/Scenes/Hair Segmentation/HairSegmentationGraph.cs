@@ -15,7 +15,7 @@ namespace Mediapipe.Unity.Sample.HairSegmentation
   {
     public event EventHandler<OutputStream.OutputEventArgs> OnHairMaskOutput
     {
-      add => _hairMaskStream.AddListener(value);
+      add => _hairMaskStream.AddListener(value, timeoutMicrosec);
       remove => _hairMaskStream.RemoveListener(value);
     }
 
