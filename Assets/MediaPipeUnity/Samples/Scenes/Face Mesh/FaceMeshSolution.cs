@@ -5,7 +5,6 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity.Sample.FaceMesh
@@ -65,44 +64,42 @@ namespace Mediapipe.Unity.Sample.FaceMesh
 
     protected override IEnumerator WaitForNextValue()
     {
-      List<Detection> faceDetections = null;
-      List<NormalizedLandmarkList> multiFaceLandmarks = null;
-      List<NormalizedRect> faceRectsFromLandmarks = null;
-      List<NormalizedRect> faceRectsFromDetections = null;
+      var task = graphRunner.WaitNext();
+      yield return new WaitUntil(() => task.IsCompleted);
 
-      if (runningMode == RunningMode.Sync)
-      {
-        var _ = graphRunner.TryGetNext(out faceDetections, out multiFaceLandmarks, out faceRectsFromLandmarks, out faceRectsFromDetections, true);
-      }
-      else if (runningMode == RunningMode.NonBlockingSync)
-      {
-        yield return new WaitUntil(() => graphRunner.TryGetNext(out faceDetections, out multiFaceLandmarks, out faceRectsFromLandmarks, out faceRectsFromDetections, false));
-      }
-
-      _faceDetectionsAnnotationController.DrawNow(faceDetections);
-      _multiFaceLandmarksAnnotationController.DrawNow(multiFaceLandmarks);
-      _faceRectsFromLandmarksAnnotationController.DrawNow(faceRectsFromLandmarks);
-      _faceRectsFromDetectionsAnnotationController.DrawNow(faceRectsFromDetections);
+      var result = task.Result;
+      _faceDetectionsAnnotationController.DrawNow(result.faceDetections);
+      _multiFaceLandmarksAnnotationController.DrawNow(result.multiFaceLandmarks);
+      _faceRectsFromLandmarksAnnotationController.DrawNow(result.faceRectsFromLandmarks);
+      _faceRectsFromDetectionsAnnotationController.DrawNow(result.faceRectsFromDetections);
     }
 
-    private void OnFaceDetectionsOutput(object stream, OutputEventArgs<List<Detection>> eventArgs)
+    private void OnFaceDetectionsOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
-      _faceDetectionsAnnotationController.DrawLater(eventArgs.value);
+      var packet = eventArgs.packet;
+      var value = packet.IsEmpty() ? default : packet.GetProtoList(Detection.Parser);
+      _faceDetectionsAnnotationController.DrawLater(value);
     }
 
-    private void OnMultiFaceLandmarksOutput(object stream, OutputEventArgs<List<NormalizedLandmarkList>> eventArgs)
+    private void OnMultiFaceLandmarksOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
-      _multiFaceLandmarksAnnotationController.DrawLater(eventArgs.value);
+      var packet = eventArgs.packet;
+      var value = packet.IsEmpty() ? default : packet.GetProtoList(NormalizedLandmarkList.Parser);
+      _multiFaceLandmarksAnnotationController.DrawLater(value);
     }
 
-    private void OnFaceRectsFromLandmarksOutput(object stream, OutputEventArgs<List<NormalizedRect>> eventArgs)
+    private void OnFaceRectsFromLandmarksOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
-      _faceRectsFromLandmarksAnnotationController.DrawLater(eventArgs.value);
+      var packet = eventArgs.packet;
+      var value = packet.IsEmpty() ? default : packet.GetProtoList(NormalizedRect.Parser);
+      _faceRectsFromLandmarksAnnotationController.DrawLater(value);
     }
 
-    private void OnFaceRectsFromDetectionsOutput(object stream, OutputEventArgs<List<NormalizedRect>> eventArgs)
+    private void OnFaceRectsFromDetectionsOutput(object stream, OutputStream.OutputEventArgs eventArgs)
     {
-      _faceRectsFromDetectionsAnnotationController.DrawLater(eventArgs.value);
+      var packet = eventArgs.packet;
+      var value = packet.IsEmpty() ? default : packet.GetProtoList(NormalizedRect.Parser);
+      _faceRectsFromDetectionsAnnotationController.DrawLater(value);
     }
   }
 }
