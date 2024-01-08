@@ -456,6 +456,10 @@ namespace Mediapipe
       UnsafeNativeMethods.mp_Packet__GetString(packet.mpPtr, out var ptr).Assert();
       GC.KeepAlive(packet);
 
+      if (ptr == IntPtr.Zero)
+      {
+        return string.Empty;
+      }
       var str = Marshal.PtrToStringAnsi(ptr);
       UnsafeNativeMethods.delete_array__PKc(ptr);
 

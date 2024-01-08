@@ -370,7 +370,7 @@ namespace Mediapipe.Tests
       using var packet = Packet.CreateString((string)null);
 
       Assert.DoesNotThrow(packet.Validate);
-      Assert.IsNull(packet.Get());
+      Assert.IsEmpty(packet.Get());
 
       using var unsetTimestamp = Timestamp.Unset();
       Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
@@ -382,7 +382,7 @@ namespace Mediapipe.Tests
       using var packet = Packet.CreateString("");
 
       Assert.DoesNotThrow(packet.Validate);
-      Assert.IsNull(packet.Get());
+      Assert.IsEmpty(packet.Get());
 
       using var unsetTimestamp = Timestamp.Unset();
       Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
@@ -406,7 +406,7 @@ namespace Mediapipe.Tests
       using var packet = Packet.CreateString((byte[])null);
 
       Assert.DoesNotThrow(packet.Validate);
-      Assert.IsEmpty(packet.Get());
+      Assert.IsEmpty(packet.GetBytes());
 
       using var unsetTimestamp = Timestamp.Unset();
       Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
@@ -419,7 +419,7 @@ namespace Mediapipe.Tests
       using var packet = Packet.CreateString(value);
 
       Assert.DoesNotThrow(packet.Validate);
-      Assert.IsEmpty(packet.Get());
+      Assert.IsEmpty(packet.GetBytes());
 
       using var unsetTimestamp = Timestamp.Unset();
       Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
@@ -432,7 +432,7 @@ namespace Mediapipe.Tests
       using var packet = Packet.CreateString(value);
 
       Assert.DoesNotThrow(packet.Validate);
-      Assert.AreEqual(value, packet.Get());
+      Assert.AreEqual(value, packet.GetBytes());
 
       using var unsetTimestamp = Timestamp.Unset();
       Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
@@ -445,7 +445,7 @@ namespace Mediapipe.Tests
       using var packet = Packet.CreateStringAt((string)null, timestamp);
 
       Assert.DoesNotThrow(packet.Validate);
-      Assert.IsNull(packet.Get());
+      Assert.IsEmpty(packet.Get());
       Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
     }
 
@@ -456,7 +456,7 @@ namespace Mediapipe.Tests
       using var packet = Packet.CreateStringAt("", timestamp);
 
       Assert.DoesNotThrow(packet.Validate);
-      Assert.IsNull(packet.Get());
+      Assert.IsEmpty(packet.Get());
       Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
     }
 
@@ -478,7 +478,7 @@ namespace Mediapipe.Tests
       using var packet = Packet.CreateStringAt((byte[])null, timestamp);
 
       Assert.DoesNotThrow(packet.Validate);
-      Assert.IsEmpty(packet.Get());
+      Assert.IsEmpty(packet.GetBytes());
       Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
     }
 
@@ -490,7 +490,7 @@ namespace Mediapipe.Tests
       using var packet = Packet.CreateStringAt(value, timestamp);
 
       Assert.DoesNotThrow(packet.Validate);
-      Assert.IsEmpty(packet.Get());
+      Assert.IsEmpty(packet.GetBytes());
       Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
     }
 
@@ -502,7 +502,7 @@ namespace Mediapipe.Tests
       using var packet = Packet.CreateStringAt(value, timestamp);
 
       Assert.DoesNotThrow(packet.Validate);
-      Assert.AreEqual(value, packet.Get());
+      Assert.AreEqual(value, packet.GetBytes());
       Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
     }
     #endregion
