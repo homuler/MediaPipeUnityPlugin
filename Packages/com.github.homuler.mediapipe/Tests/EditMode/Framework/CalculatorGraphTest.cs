@@ -99,7 +99,7 @@ output_stream: ""out""
     {
       using (var sidePacket = new PacketMap())
       {
-        sidePacket.Emplace("flag", new BoolPacket(true));
+        sidePacket.Emplace("flag", Packet.CreateBool(true));
 
         using (var graph = new CalculatorGraph())
         {
@@ -115,7 +115,7 @@ output_stream: ""out""
     {
       using (var sidePacket = new PacketMap())
       {
-        sidePacket.Emplace("flag", new BoolPacket(true));
+        sidePacket.Emplace("flag", Packet.CreateBool(true));
 
         using (var graph = new CalculatorGraph(_ValidConfigText))
         {

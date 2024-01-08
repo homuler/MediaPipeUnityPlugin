@@ -86,10 +86,10 @@ output_stream: ""out""
       using (var taskRunner = TaskRunner.Create(passThroughConfig))
       {
         var packetMap = new PacketMap();
-        packetMap.Emplace("in", new IntPacket(1));
+        packetMap.Emplace("in", Packet.CreateInt(1));
 
         var outputMap = taskRunner.Process(packetMap);
-        Assert.AreEqual(1, outputMap.At<IntPacket, int>("out").Get());
+        Assert.AreEqual(1, outputMap.At("out").GetInt());
         Assert.True(packetMap.isDisposed);
       }
     }
@@ -102,7 +102,7 @@ output_stream: ""out""
       using (var taskRunner = TaskRunner.Create(passThroughConfig))
       {
         var packetMap = new PacketMap();
-        packetMap.Emplace("in", new IntPacket(1, new Timestamp(1)));
+        packetMap.Emplace("in", Packet.CreateIntAt(1, 1));
 
         var exception = Assert.Throws<BadStatusException>(() => taskRunner.Send(packetMap));
         Assert.AreEqual(StatusCode.InvalidArgument, exception.statusCode);
@@ -128,7 +128,7 @@ output_stream: ""out""
       using (var taskRunner = TaskRunner.Create(passThroughConfig, 0, HandlePassThroughResult))
       {
         var packetMap = new PacketMap();
-        packetMap.Emplace("in", new IntPacket(1, new Timestamp(1)));
+        packetMap.Emplace("in", Packet.CreateIntAt(1, 1));
         Assert.DoesNotThrow(() => taskRunner.Send(packetMap));
         Assert.True(packetMap.isDisposed);
       }
