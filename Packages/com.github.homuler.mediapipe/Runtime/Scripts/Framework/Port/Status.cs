@@ -137,6 +137,25 @@ namespace Mediapipe
       UnsafeNativeMethods.absl_Status__delete(ptr);
     }
 
+    /// <summary>
+    ///   The optimized implementation of <see cref="AssertOk" />.
+    /// </summary>
+    public static void UnsafeAssertOk(IntPtr statusPtr)
+    {
+      var ok = SafeNativeMethods.absl_Status__ok(statusPtr);
+      if (!ok)
+      {
+        using (var status = new Status(statusPtr, true))
+        {
+          status.AssertOk();
+        }
+      }
+      else
+      {
+        UnsafeNativeMethods.absl_Status__delete(statusPtr);
+      }
+    }
+
     private bool? _ok;
     private int? _rawCode;
 

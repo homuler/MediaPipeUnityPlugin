@@ -5,6 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity.Sample.FaceMesh
@@ -74,28 +75,28 @@ namespace Mediapipe.Unity.Sample.FaceMesh
       _faceRectsFromDetectionsAnnotationController.DrawNow(result.faceRectsFromDetections);
     }
 
-    private void OnFaceDetectionsOutput(object stream, OutputStream.OutputEventArgs eventArgs)
+    private void OnFaceDetectionsOutput(object stream, OutputStream<List<Detection>>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.GetProtoList(Detection.Parser);
       _faceDetectionsAnnotationController.DrawLater(value);
     }
 
-    private void OnMultiFaceLandmarksOutput(object stream, OutputStream.OutputEventArgs eventArgs)
+    private void OnMultiFaceLandmarksOutput(object stream, OutputStream<List<NormalizedLandmarkList>>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.GetProtoList(NormalizedLandmarkList.Parser);
       _multiFaceLandmarksAnnotationController.DrawLater(value);
     }
 
-    private void OnFaceRectsFromLandmarksOutput(object stream, OutputStream.OutputEventArgs eventArgs)
+    private void OnFaceRectsFromLandmarksOutput(object stream, OutputStream<List<NormalizedRect>>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.GetProtoList(NormalizedRect.Parser);
       _faceRectsFromLandmarksAnnotationController.DrawLater(value);
     }
 
-    private void OnFaceRectsFromDetectionsOutput(object stream, OutputStream.OutputEventArgs eventArgs)
+    private void OnFaceRectsFromDetectionsOutput(object stream, OutputStream<List<NormalizedRect>>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.GetProtoList(NormalizedRect.Parser);

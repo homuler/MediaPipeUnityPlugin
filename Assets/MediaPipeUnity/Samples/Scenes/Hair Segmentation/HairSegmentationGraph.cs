@@ -13,7 +13,7 @@ namespace Mediapipe.Unity.Sample.HairSegmentation
 {
   public class HairSegmentationGraph : GraphRunner
   {
-    public event EventHandler<OutputStream.OutputEventArgs> OnHairMaskOutput
+    public event EventHandler<OutputStream<ImageFrame>.OutputEventArgs> OnHairMaskOutput
     {
       add => _hairMaskStream.AddListener(value, timeoutMicrosec);
       remove => _hairMaskStream.RemoveListener(value);
@@ -25,7 +25,7 @@ namespace Mediapipe.Unity.Sample.HairSegmentation
 
     private const string _InputStreamName = "input_video";
     private const string _HairMaskStreamName = "hair_mask";
-    private OutputStream _hairMaskStream;
+    private OutputStream<ImageFrame> _hairMaskStream;
 
     public override void StartRun(ImageSource imageSource)
     {
@@ -71,7 +71,7 @@ namespace Mediapipe.Unity.Sample.HairSegmentation
 
     protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      _hairMaskStream = new OutputStream(calculatorGraph, _HairMaskStreamName, true);
+      _hairMaskStream = new OutputStream<ImageFrame>(calculatorGraph, _HairMaskStreamName, true);
       calculatorGraph.Initialize(config);
     }
 

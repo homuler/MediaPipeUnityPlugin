@@ -10,17 +10,7 @@ using System.Threading.Tasks;
 
 namespace Mediapipe.Unity
 {
-  public class OutputEventArgs<T> : EventArgs
-  {
-    public readonly T value;
-
-    public OutputEventArgs(T value)
-    {
-      this.value = value;
-    }
-  }
-
-  public sealed class OutputStream : IDisposable
+  public sealed class OutputStream<T> : IDisposable
   {
     public readonly struct OutputEventArgs
     {
@@ -28,10 +18,10 @@ namespace Mediapipe.Unity
       ///   <see cref="Packet"/> that contains the output value.
       ///   As long as it's not <see langword="null"/>, it's guaranteed that <see cref="Packet.IsEmpty"/> is <see langword="false"/>.
       /// </summary>
-      public readonly Packet packet;
+      public readonly Packet<T> packet;
       public readonly long timestampMicrosecond;
 
-      internal OutputEventArgs(Packet packet, long timestampMicrosecond)
+      internal OutputEventArgs(Packet<T> packet, long timestampMicrosecond)
       {
         this.packet = packet;
         this.timestampMicrosecond = timestampMicrosecond;
@@ -44,13 +34,13 @@ namespace Mediapipe.Unity
       ///   <see cref="Packet"/> that contains the output value.
       ///   As long as it's not <see langword="null"/>, it's guaranteed that <see cref="Packet.IsEmpty"/> is <see langword="false"/>.
       /// </summary>
-      public readonly Packet packet;
+      public readonly Packet<T> packet;
       /// <summary>
       ///   <see langword="true"/> if the next packet is retrieved successfully; otherwise <see langword="false"/>.
       /// </summary>
       public readonly bool ok;
 
-      public NextResult(Packet packet, bool ok)
+      public NextResult(Packet<T> packet, bool ok)
       {
         this.packet = packet;
         this.ok = ok;
@@ -58,7 +48,7 @@ namespace Mediapipe.Unity
     }
 
     private static int _Counter = 0;
-    private static readonly GlobalInstanceTable<int, OutputStream> _InstanceTable = new GlobalInstanceTable<int, OutputStream>(20);
+    private static readonly GlobalInstanceTable<int, OutputStream<T>> _InstanceTable = new GlobalInstanceTable<int, OutputStream<T>>(20);
 
     private CalculatorGraph _calculatorGraph;
 
@@ -66,15 +56,15 @@ namespace Mediapipe.Unity
     public readonly string streamName;
     public readonly bool observeTimestampBounds;
 
-    private OutputStreamPoller _poller;
-    private Packet _outputPacket;
-    private Packet outputPacket
+    private OutputStreamPoller<T> _poller;
+    private Packet<T> _outputPacket;
+    private Packet<T> outputPacket
     {
       get
       {
         if (_outputPacket == null)
         {
-          _outputPacket = new Packet();
+          _outputPacket = new Packet<T>();
           _outputPacket.Lock();
         }
         return _outputPacket;
@@ -90,14 +80,14 @@ namespace Mediapipe.Unity
     private event EventHandler<OutputEventArgs> OnReceived;
     private long _lastTimestampMicrosec;
 
-    private Packet _referencePacket;
-    private Packet referencePacket
+    private Packet<T> _referencePacket;
+    private Packet<T> referencePacket
     {
       get
       {
         if (_referencePacket == null)
         {
-          _referencePacket = Packet.CreateForReference(IntPtr.Zero);
+          _referencePacket = Packet<T>.CreateForReference(IntPtr.Zero);
           _referencePacket.Lock();
         }
         return _referencePacket;
@@ -202,7 +192,7 @@ namespace Mediapipe.Unity
     {
       ThrowIfDisposed();
 
-      _poller = _calculatorGraph.AddOutputStreamPoller(streamName, observeTimestampBounds);
+      _poller = _calculatorGraph.AddOutputStreamPoller<T>(streamName, observeTimestampBounds);
     }
 
     /// <summary>
@@ -238,7 +228,7 @@ namespace Mediapipe.Unity
 
       OnReceived += (sender, eventArgs) =>
       {
-        var stream = (OutputStream)sender;
+        var stream = (OutputStream<T>)sender;
         if (eventArgs.packet == null && eventArgs.timestampMicrosecond - stream._lastTimestampMicrosec <= emptyPacketThresholdMicrosecond)
         {
           return;
@@ -344,7 +334,7 @@ namespace Mediapipe.Unity
 
       return Task<NextResult>.Factory.StartNew((state) =>
       {
-        var stream = (OutputStream)state;
+        var stream = (OutputStream<T>)state;
         if (stream.Next(out var packet)) // this blocks the thread
         {
           if (packet.IsEmpty())
@@ -357,7 +347,7 @@ namespace Mediapipe.Unity
       }, this);
     }
 
-    private bool Next(out Packet packet)
+    private bool Next(out Packet<T> packet)
     {
       var result = _poller.Next(outputPacket);
       packet = outputPacket;
@@ -380,7 +370,7 @@ namespace Mediapipe.Unity
       }
     }
 
-    private void InvokeOnReceived(Packet nextPacket)
+    private void InvokeOnReceived(Packet<T> nextPacket)
     {
       var isEmpty = nextPacket.IsEmpty();
       var timestampMicrosec = nextPacket.TimestampMicroseconds();

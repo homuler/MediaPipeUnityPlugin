@@ -16,20 +16,14 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
   {
     public int maxNumHands = 2;
 
-    public event EventHandler<OutputStream.OutputEventArgs> OnOutput
-    {
-      add => _outputVideoStream.AddListener(value, timeoutMicrosec);
-      remove => _outputVideoStream.RemoveListener(value);
-    }
-
     private const string _InputStreamName = "input_video";
 
-    private Packet _outputGpuBufferPacket;
+    private Packet<GpuBuffer> _outputGpuBufferPacket;
     private string _destinationBufferName;
     private TextureFrame _destinationTexture;
 
     private const string _OutputVideoStreamName = "output_video";
-    private OutputStream _outputVideoStream;
+    private OutputStream<ImageFrame> _outputVideoStream;
 
     public override void StartRun(ImageSource imageSource)
     {
@@ -95,7 +89,7 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
         sinkNode.InputSidePacket.Add($"DESTINATION:{_destinationBufferName}");
       }
 
-      _outputVideoStream = new OutputStream(calculatorGraph, _OutputVideoStreamName, true);
+      _outputVideoStream = new OutputStream<ImageFrame>(calculatorGraph, _OutputVideoStreamName, true);
 
       calculatorGraph.Initialize(config);
     }

@@ -251,7 +251,7 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
 
       return (PacketMap outputPackets) =>
       {
-        var outImagePacket = outputPackets.At(_IMAGE_OUT_STREAM_NAME);
+        var outImagePacket = outputPackets.At<Image>(_IMAGE_OUT_STREAM_NAME);
         if (outImagePacket == null || outImagePacket.IsEmpty())
         {
           return;
@@ -271,7 +271,7 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
       };
     }
 
-    private static void GetFaceGeometryList(Packet packet, List<FaceGeometry.Proto.FaceGeometry> outs)
+    private static void GetFaceGeometryList(Packet<List<FaceGeometry.Proto.FaceGeometry>> packet, List<FaceGeometry.Proto.FaceGeometry> outs)
     {
       foreach (var geometry in outs)
       {
@@ -286,7 +286,7 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
         List<FaceGeometry.Proto.FaceGeometry> faceGeometriesForRead,
         ref FaceLandmarkerResult result)
     {
-      using var faceLandmarksPacket = outputPackets.At(_NORM_LANDMARKS_STREAM_NAME);
+      using var faceLandmarksPacket = outputPackets.At<List<NormalizedLandmarks>>(_NORM_LANDMARKS_STREAM_NAME);
       if (faceLandmarksPacket.IsEmpty())
       {
         return false;
@@ -296,7 +296,7 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
       faceLandmarksPacket.GetNormalizedLandmarksList(result.faceLandmarks);
 
       var faceBlendshapesList = result.faceBlendshapes;
-      using var faceBlendshapesPacket = outputPackets.At(_BLENDSHAPES_STREAM_NAME);
+      using var faceBlendshapesPacket = outputPackets.At<List<Classifications>>(_BLENDSHAPES_STREAM_NAME);
       if (faceBlendshapesPacket != null)
       {
         faceBlendshapesList ??= new List<Classifications>();
@@ -304,7 +304,7 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
       }
 
       var faceTransformationMatrixes = result.facialTransformationMatrixes;
-      using var faceTransformationMatrixesPacket = outputPackets.At(_FACE_GEOMETRY_STREAM_NAME);
+      using var faceTransformationMatrixesPacket = outputPackets.At<List<FaceGeometry.Proto.FaceGeometry>>(_FACE_GEOMETRY_STREAM_NAME);
       if (faceTransformationMatrixesPacket != null)
       {
         GetFaceGeometryList(faceTransformationMatrixesPacket, faceGeometriesForRead);

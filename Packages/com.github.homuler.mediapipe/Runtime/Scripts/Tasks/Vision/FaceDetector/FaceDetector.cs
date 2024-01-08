@@ -240,7 +240,7 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
 
       return (PacketMap outputPackets) =>
       {
-        using var outImagePacket = outputPackets.At(_IMAGE_OUT_STREAM_NAME);
+        using var outImagePacket = outputPackets.At<Image>(_IMAGE_OUT_STREAM_NAME);
         if (outImagePacket == null || outImagePacket.IsEmpty())
         {
           return;
@@ -262,7 +262,7 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
 
     private static bool TryBuildFaceDetectorResult(PacketMap outputPackets, ref FaceDetectionResult result)
     {
-      using var detectionsPacket = outputPackets.At(_DETECTIONS_OUT_STREAM_NAME);
+      using var detectionsPacket = outputPackets.At<FaceDetectionResult>(_DETECTIONS_OUT_STREAM_NAME);
       if (detectionsPacket.IsEmpty())
       {
         return false;

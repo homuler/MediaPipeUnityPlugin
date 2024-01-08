@@ -8,7 +8,7 @@ using System;
 
 namespace Mediapipe
 {
-  public class OutputStreamPoller : MpResourceHandle
+  public class OutputStreamPoller<T> : MpResourceHandle
   {
     public OutputStreamPoller(IntPtr ptr) : base(ptr) { }
 
@@ -17,7 +17,7 @@ namespace Mediapipe
       UnsafeNativeMethods.mp_OutputStreamPoller__delete(ptr);
     }
 
-    public bool Next(Packet packet)
+    public bool Next(Packet<T> packet)
     {
       UnsafeNativeMethods.mp_OutputStreamPoller__Next_Ppacket(mpPtr, packet.mpPtr, out var result).Assert();
 

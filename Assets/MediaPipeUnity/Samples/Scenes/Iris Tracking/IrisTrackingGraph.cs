@@ -26,19 +26,19 @@ namespace Mediapipe.Unity.Sample.IrisTracking
 
   public class IrisTrackingGraph : GraphRunner
   {
-    public event EventHandler<OutputStream.OutputEventArgs> OnFaceDetectionsOutput
+    public event EventHandler<OutputStream<List<Detection>>.OutputEventArgs> OnFaceDetectionsOutput
     {
       add => _faceDetectionsStream.AddListener(value, timeoutMicrosec);
       remove => _faceDetectionsStream.RemoveListener(value);
     }
 
-    public event EventHandler<OutputStream.OutputEventArgs> OnFaceRectOutput
+    public event EventHandler<OutputStream<NormalizedRect>.OutputEventArgs> OnFaceRectOutput
     {
       add => _faceRectStream.AddListener(value, timeoutMicrosec);
       remove => _faceRectStream.RemoveListener(value);
     }
 
-    public event EventHandler<OutputStream.OutputEventArgs> OnFaceLandmarksWithIrisOutput
+    public event EventHandler<OutputStream<NormalizedLandmarkList>.OutputEventArgs> OnFaceLandmarksWithIrisOutput
     {
       add => _faceLandmarksWithIrisStream.AddListener(value, timeoutMicrosec);
       remove => _faceLandmarksWithIrisStream.RemoveListener(value);
@@ -50,9 +50,9 @@ namespace Mediapipe.Unity.Sample.IrisTracking
     private const string _FaceRectStreamName = "face_rect";
     private const string _FaceLandmarksWithIrisStreamName = "face_landmarks_with_iris";
 
-    private OutputStream _faceDetectionsStream;
-    private OutputStream _faceRectStream;
-    private OutputStream _faceLandmarksWithIrisStream;
+    private OutputStream<List<Detection>> _faceDetectionsStream;
+    private OutputStream<NormalizedRect> _faceRectStream;
+    private OutputStream<NormalizedLandmarkList> _faceLandmarksWithIrisStream;
 
     public override void StartRun(ImageSource imageSource)
     {
@@ -83,7 +83,7 @@ namespace Mediapipe.Unity.Sample.IrisTracking
 
     public async Task<IrisTrackingResult> WaitNext()
     {
-      var results = await Task.WhenAll(
+      var results = await WhenAll(
         _faceDetectionsStream.WaitNextAsync(),
         _faceRectStream.WaitNextAsync(),
         _faceLandmarksWithIrisStream.WaitNextAsync()
@@ -91,15 +91,15 @@ namespace Mediapipe.Unity.Sample.IrisTracking
 
       AssertResult(results);
 
-      _ = TryGetValue(results[0].packet, out var faceDetections, (packet) =>
+      _ = TryGetValue(results.Item1.packet, out var faceDetections, (packet) =>
       {
         return packet.GetProtoList(Detection.Parser);
       });
-      _ = TryGetValue(results[1].packet, out var faceRect, (packet) =>
+      _ = TryGetValue(results.Item2.packet, out var faceRect, (packet) =>
       {
         return packet.GetProto(NormalizedRect.Parser);
       });
-      _ = TryGetValue(results[2].packet, out var faceLandmarksWithIris, (packet) =>
+      _ = TryGetValue(results.Item3.packet, out var faceLandmarksWithIris, (packet) =>
       {
         return packet.GetProto(NormalizedLandmarkList.Parser);
       });
@@ -118,9 +118,9 @@ namespace Mediapipe.Unity.Sample.IrisTracking
 
     protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      _faceDetectionsStream = new OutputStream(calculatorGraph, _FaceDetectionsStreamName, true);
-      _faceRectStream = new OutputStream(calculatorGraph, _FaceRectStreamName, true);
-      _faceLandmarksWithIrisStream = new OutputStream(calculatorGraph, _FaceLandmarksWithIrisStreamName, true);
+      _faceDetectionsStream = new OutputStream<List<Detection>>(calculatorGraph, _FaceDetectionsStreamName, true);
+      _faceRectStream = new OutputStream<NormalizedRect>(calculatorGraph, _FaceRectStreamName, true);
+      _faceLandmarksWithIrisStream = new OutputStream<NormalizedLandmarkList>(calculatorGraph, _FaceLandmarksWithIrisStreamName, true);
       calculatorGraph.Initialize(config);
     }
 
