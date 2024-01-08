@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.14.0](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.13.1...v0.14.0) (2024-01-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* strongly-typed Packet, once again (#1120)
+* remove deprecated APIs (#1119)
+
+### Features
+
+* remove deprecated APIs ([#1119](https://github.com/homuler/MediaPipeUnityPlugin/issues/1119)) ([a6e67e3](https://github.com/homuler/MediaPipeUnityPlugin/commit/a6e67e3b2832fafc93aedf2d9ab7c9100af10da0))
+* strongly-typed Packet, once again ([#1120](https://github.com/homuler/MediaPipeUnityPlugin/issues/1120)) ([4f3668e](https://github.com/homuler/MediaPipeUnityPlugin/commit/4f3668e2d99211e1c35a67092772d02f9d0b4376))
+
 ### [0.13.1](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.13.0...v0.13.1) (2024-01-06)
 
 ## [0.13.0](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.12.0...v0.13.0) (2024-01-06)
