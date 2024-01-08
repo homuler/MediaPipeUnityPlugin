@@ -21,8 +21,8 @@ namespace Mediapipe.Tests
     {
       using var packet = Packet.CreateBool(value);
 
-      Assert.DoesNotThrow(packet.ValidateAsBool);
-      Assert.AreEqual(value, packet.GetBool());
+      Assert.DoesNotThrow(packet.Validate);
+      Assert.AreEqual(value, packet.Get());
 
       using var unsetTimestamp = Timestamp.Unset();
       Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
@@ -35,8 +35,8 @@ namespace Mediapipe.Tests
       var timestamp = 1;
       using var packet = Packet.CreateBoolAt(value, timestamp);
 
-      Assert.DoesNotThrow(packet.ValidateAsBool);
-      Assert.AreEqual(value, packet.GetBool());
+      Assert.DoesNotThrow(packet.Validate);
+      Assert.AreEqual(value, packet.Get());
       Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
     }
     #endregion
@@ -48,9 +48,9 @@ namespace Mediapipe.Tests
       var value = new bool[] { true, false };
       using var packet = Packet.CreateBoolVector(value);
 
-      Assert.DoesNotThrow(packet.ValidateAsBoolVector);
+      Assert.DoesNotThrow(packet.Validate);
 
-      var result = packet.GetBoolList();
+      var result = packet.Get();
       Assert.AreEqual(value.Length, result.Count);
       for (var i = 0; i < value.Length; i++)
       {
@@ -68,9 +68,9 @@ namespace Mediapipe.Tests
       var timestamp = 1;
       using var packet = Packet.CreateBoolVectorAt(value, timestamp);
 
-      Assert.DoesNotThrow(packet.ValidateAsBoolVector);
+      Assert.DoesNotThrow(packet.Validate);
 
-      var result = packet.GetBoolList();
+      var result = packet.Get();
       Assert.AreEqual(value.Length, result.Count);
       for (var i = 0; i < value.Length; i++)
       {
@@ -88,8 +88,8 @@ namespace Mediapipe.Tests
     {
       using var packet = Packet.CreateDouble(value);
 
-      Assert.DoesNotThrow(packet.ValidateAsDouble);
-      Assert.AreEqual(value, packet.GetDouble());
+      Assert.DoesNotThrow(packet.Validate);
+      Assert.AreEqual(value, packet.Get());
 
       using var unsetTimestamp = Timestamp.Unset();
       Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
@@ -103,8 +103,8 @@ namespace Mediapipe.Tests
       var timestamp = 1;
       using var packet = Packet.CreateDoubleAt(value, timestamp);
 
-      Assert.DoesNotThrow(packet.ValidateAsDouble);
-      Assert.AreEqual(value, packet.GetDouble());
+      Assert.DoesNotThrow(packet.Validate);
+      Assert.AreEqual(value, packet.Get());
       Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
     }
     #endregion
@@ -117,8 +117,8 @@ namespace Mediapipe.Tests
     {
       using var packet = Packet.CreateFloat(value);
 
-      Assert.DoesNotThrow(packet.ValidateAsFloat);
-      Assert.AreEqual(value, packet.GetFloat());
+      Assert.DoesNotThrow(packet.Validate);
+      Assert.AreEqual(value, packet.Get());
 
       using var unsetTimestamp = Timestamp.Unset();
       Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
@@ -132,8 +132,8 @@ namespace Mediapipe.Tests
       var timestamp = 1;
       using var packet = Packet.CreateFloatAt(value, timestamp);
 
-      Assert.DoesNotThrow(packet.ValidateAsFloat);
-      Assert.AreEqual(value, packet.GetFloat());
+      Assert.DoesNotThrow(packet.Validate);
+      Assert.AreEqual(value, packet.Get());
       Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
     }
     #endregion
@@ -145,9 +145,9 @@ namespace Mediapipe.Tests
       var value = new float[] { float.MinValue, 0f, float.MaxValue };
       using var packet = Packet.CreateFloatArray(value);
 
-      Assert.DoesNotThrow(packet.ValidateAsFloatArray);
+      Assert.DoesNotThrow(packet.Validate);
 
-      var result = packet.GetFloatArray(value.Length);
+      var result = packet.Get(value.Length);
       Assert.AreEqual(value.Length, result.Length);
       for (var i = 0; i < value.Length; i++)
       {
@@ -165,9 +165,9 @@ namespace Mediapipe.Tests
       var timestamp = 1;
       using var packet = Packet.CreateFloatArrayAt(value, timestamp);
 
-      Assert.DoesNotThrow(packet.ValidateAsFloatArray);
+      Assert.DoesNotThrow(packet.Validate);
 
-      var result = packet.GetFloatArray(value.Length);
+      var result = packet.Get(value.Length);
       Assert.AreEqual(value.Length, result.Length);
       for (var i = 0; i < value.Length; i++)
       {
@@ -184,9 +184,9 @@ namespace Mediapipe.Tests
       var value = new float[] { float.MinValue, 0f, float.MaxValue };
       using var packet = Packet.CreateFloatVector(value);
 
-      Assert.DoesNotThrow(packet.ValidateAsFloatVector);
+      Assert.DoesNotThrow(packet.Validate);
 
-      var result = packet.GetFloatList();
+      var result = packet.Get();
       Assert.AreEqual(value.Length, result.Count);
       for (var i = 0; i < value.Length; i++)
       {
@@ -204,9 +204,9 @@ namespace Mediapipe.Tests
       var timestamp = 1;
       using var packet = Packet.CreateFloatVectorAt(value, timestamp);
 
-      Assert.DoesNotThrow(packet.ValidateAsFloatVector);
+      Assert.DoesNotThrow(packet.Validate);
 
-      var result = packet.GetFloatList();
+      var result = packet.Get();
       Assert.AreEqual(value.Length, result.Count);
       for (var i = 0; i < value.Length; i++)
       {
@@ -224,9 +224,9 @@ namespace Mediapipe.Tests
       var image = BuildSRGBAImage(bytes, 4, 2);
       using var packet = Packet.CreateImage(image);
 
-      Assert.DoesNotThrow(packet.ValidateAsImage);
+      Assert.DoesNotThrow(packet.Validate);
 
-      using (var result = packet.GetImage())
+      using (var result = packet.Get())
       {
         AssertImage(result, 4, 2, ImageFormat.Types.Format.Srgba, bytes);
       }
@@ -243,9 +243,9 @@ namespace Mediapipe.Tests
       var image = BuildSRGBAImage(bytes, 4, 2);
       using var packet = Packet.CreateImageAt(image, timestamp);
 
-      Assert.DoesNotThrow(packet.ValidateAsImage);
+      Assert.DoesNotThrow(packet.Validate);
 
-      using (var result = packet.GetImage())
+      using (var result = packet.Get())
       {
         AssertImage(result, 4, 2, ImageFormat.Types.Format.Srgba, bytes);
       }
@@ -262,9 +262,9 @@ namespace Mediapipe.Tests
       var imageFrame = BuildSRGBAImageFrame(bytes, 4, 2);
       using var packet = Packet.CreateImageFrame(imageFrame);
 
-      Assert.DoesNotThrow(packet.ValidateAsImageFrame);
+      Assert.DoesNotThrow(packet.Validate);
 
-      using (var result = packet.GetImageFrame())
+      using (var result = packet.Get())
       {
         AssertImageFrame(result, 4, 2, ImageFormat.Types.Format.Srgba, bytes);
       }
@@ -281,9 +281,9 @@ namespace Mediapipe.Tests
       var imageFrame = BuildSRGBAImageFrame(bytes, 4, 2);
       using var packet = Packet.CreateImageFrameAt(imageFrame, timestamp);
 
-      Assert.DoesNotThrow(packet.ValidateAsImageFrame);
+      Assert.DoesNotThrow(packet.Validate);
 
-      using (var result = packet.GetImageFrame())
+      using (var result = packet.Get())
       {
         AssertImageFrame(result, 4, 2, ImageFormat.Types.Format.Srgba, bytes);
       }
@@ -300,8 +300,8 @@ namespace Mediapipe.Tests
     {
       using var packet = Packet.CreateInt(value);
 
-      Assert.DoesNotThrow(packet.ValidateAsInt);
-      Assert.AreEqual(value, packet.GetInt());
+      Assert.DoesNotThrow(packet.Validate);
+      Assert.AreEqual(value, packet.Get());
 
       using var unsetTimestamp = Timestamp.Unset();
       Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
@@ -315,8 +315,8 @@ namespace Mediapipe.Tests
       var timestamp = 1;
       using var packet = Packet.CreateIntAt(value, timestamp);
 
-      Assert.DoesNotThrow(packet.ValidateAsInt);
-      Assert.AreEqual(value, packet.GetInt());
+      Assert.DoesNotThrow(packet.Validate);
+      Assert.AreEqual(value, packet.Get());
       Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
     }
     #endregion
@@ -335,8 +335,8 @@ namespace Mediapipe.Tests
       };
       using var packet = Packet.CreateProto(value);
 
-      Assert.DoesNotThrow(packet.ValidateAsProtoMessageLite);
-      Assert.AreEqual(value, packet.GetProto(NormalizedRect.Parser));
+      Assert.DoesNotThrow(packet.Validate);
+      Assert.AreEqual(value, packet.Get(NormalizedRect.Parser));
 
       using var unsetTimestamp = Timestamp.Unset();
       Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
@@ -356,8 +356,8 @@ namespace Mediapipe.Tests
       };
       using var packet = Packet.CreateProtoAt(value, timestamp);
 
-      Assert.DoesNotThrow(packet.ValidateAsProtoMessageLite);
-      Assert.AreEqual(value, packet.GetProto(NormalizedRect.Parser));
+      Assert.DoesNotThrow(packet.Validate);
+      Assert.AreEqual(value, packet.Get(NormalizedRect.Parser));
       Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
     }
     #endregion
@@ -369,8 +369,8 @@ namespace Mediapipe.Tests
     {
       using var packet = Packet.CreateString((string)null);
 
-      Assert.DoesNotThrow(packet.ValidateAsString);
-      Assert.IsNull(packet.GetString());
+      Assert.DoesNotThrow(packet.Validate);
+      Assert.IsEmpty(packet.Get());
 
       using var unsetTimestamp = Timestamp.Unset();
       Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
@@ -381,8 +381,8 @@ namespace Mediapipe.Tests
     {
       using var packet = Packet.CreateString("");
 
-      Assert.DoesNotThrow(packet.ValidateAsString);
-      Assert.IsNull(packet.GetString());
+      Assert.DoesNotThrow(packet.Validate);
+      Assert.IsEmpty(packet.Get());
 
       using var unsetTimestamp = Timestamp.Unset();
       Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
@@ -393,8 +393,8 @@ namespace Mediapipe.Tests
     {
       using var packet = Packet.CreateString(value);
 
-      Assert.DoesNotThrow(packet.ValidateAsString);
-      Assert.AreEqual(value, packet.GetString());
+      Assert.DoesNotThrow(packet.Validate);
+      Assert.AreEqual(value, packet.Get());
 
       using var unsetTimestamp = Timestamp.Unset();
       Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
@@ -405,7 +405,7 @@ namespace Mediapipe.Tests
     {
       using var packet = Packet.CreateString((byte[])null);
 
-      Assert.DoesNotThrow(packet.ValidateAsString);
+      Assert.DoesNotThrow(packet.Validate);
       Assert.IsEmpty(packet.GetBytes());
 
       using var unsetTimestamp = Timestamp.Unset();
@@ -418,7 +418,7 @@ namespace Mediapipe.Tests
       var value = new byte[] { };
       using var packet = Packet.CreateString(value);
 
-      Assert.DoesNotThrow(packet.ValidateAsString);
+      Assert.DoesNotThrow(packet.Validate);
       Assert.IsEmpty(packet.GetBytes());
 
       using var unsetTimestamp = Timestamp.Unset();
@@ -431,7 +431,7 @@ namespace Mediapipe.Tests
       var value = new byte[] { 1, 2, 3 };
       using var packet = Packet.CreateString(value);
 
-      Assert.DoesNotThrow(packet.ValidateAsString);
+      Assert.DoesNotThrow(packet.Validate);
       Assert.AreEqual(value, packet.GetBytes());
 
       using var unsetTimestamp = Timestamp.Unset();
@@ -444,8 +444,8 @@ namespace Mediapipe.Tests
       var timestamp = 1;
       using var packet = Packet.CreateStringAt((string)null, timestamp);
 
-      Assert.DoesNotThrow(packet.ValidateAsString);
-      Assert.IsNull(packet.GetString());
+      Assert.DoesNotThrow(packet.Validate);
+      Assert.IsEmpty(packet.Get());
       Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
     }
 
@@ -455,8 +455,8 @@ namespace Mediapipe.Tests
       var timestamp = 1;
       using var packet = Packet.CreateStringAt("", timestamp);
 
-      Assert.DoesNotThrow(packet.ValidateAsString);
-      Assert.IsNull(packet.GetString());
+      Assert.DoesNotThrow(packet.Validate);
+      Assert.IsEmpty(packet.Get());
       Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
     }
 
@@ -466,8 +466,8 @@ namespace Mediapipe.Tests
       var timestamp = 1;
       using var packet = Packet.CreateStringAt(value, timestamp);
 
-      Assert.DoesNotThrow(packet.ValidateAsString);
-      Assert.AreEqual(value, packet.GetString());
+      Assert.DoesNotThrow(packet.Validate);
+      Assert.AreEqual(value, packet.Get());
       Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
     }
 
@@ -477,7 +477,7 @@ namespace Mediapipe.Tests
       var timestamp = 1;
       using var packet = Packet.CreateStringAt((byte[])null, timestamp);
 
-      Assert.DoesNotThrow(packet.ValidateAsString);
+      Assert.DoesNotThrow(packet.Validate);
       Assert.IsEmpty(packet.GetBytes());
       Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
     }
@@ -489,7 +489,7 @@ namespace Mediapipe.Tests
       var value = new byte[] { };
       using var packet = Packet.CreateStringAt(value, timestamp);
 
-      Assert.DoesNotThrow(packet.ValidateAsString);
+      Assert.DoesNotThrow(packet.Validate);
       Assert.IsEmpty(packet.GetBytes());
       Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
     }
@@ -501,7 +501,7 @@ namespace Mediapipe.Tests
       var value = new byte[] { 1, 2, 3 };
       using var packet = Packet.CreateStringAt(value, timestamp);
 
-      Assert.DoesNotThrow(packet.ValidateAsString);
+      Assert.DoesNotThrow(packet.Validate);
       Assert.AreEqual(value, packet.GetBytes());
       Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
     }
@@ -512,49 +512,49 @@ namespace Mediapipe.Tests
     public void ValidateAsBool_ShouldThrow_When_ValueIsNotSet()
     {
       using var packet = new Packet<bool>();
-      _ = Assert.Throws<BadStatusException>(packet.ValidateAsBool);
+      _ = Assert.Throws<BadStatusException>(packet.Validate);
     }
 
     [Test]
     public void ValidateAsBoolVector_ShouldThrow_When_ValueIsNotSet()
     {
       using var packet = new Packet<List<bool>>();
-      _ = Assert.Throws<BadStatusException>(packet.ValidateAsBoolVector);
+      _ = Assert.Throws<BadStatusException>(packet.Validate);
     }
 
     [Test]
     public void ValidateAsDouble_ShouldThrow_When_ValueIsNotSet()
     {
       using var packet = new Packet<double>();
-      _ = Assert.Throws<BadStatusException>(packet.ValidateAsDouble);
+      _ = Assert.Throws<BadStatusException>(packet.Validate);
     }
 
     [Test]
     public void ValidateAsFloat_ShouldThrow_When_ValueIsNotSet()
     {
       using var packet = new Packet<float>();
-      _ = Assert.Throws<BadStatusException>(packet.ValidateAsFloat);
+      _ = Assert.Throws<BadStatusException>(packet.Validate);
     }
 
     [Test]
     public void ValidateAsFloatArray_ShouldThrow_When_ValueIsNotSet()
     {
       using var packet = new Packet<float[]>();
-      _ = Assert.Throws<BadStatusException>(packet.ValidateAsFloatArray);
+      _ = Assert.Throws<BadStatusException>(packet.Validate);
     }
 
     [Test]
     public void ValidateAsFloatVector_ShouldThrow_When_ValueIsNotSet()
     {
       using var packet = new Packet<List<float>>();
-      _ = Assert.Throws<BadStatusException>(packet.ValidateAsFloatVector);
+      _ = Assert.Throws<BadStatusException>(packet.Validate);
     }
 
     [Test]
     public void ValidateAsImage_ShouldThrow_When_ValueIsNotSet()
     {
       using var packet = new Packet<Image>();
-      _ = Assert.Throws<BadStatusException>(packet.ValidateAsImage);
+      _ = Assert.Throws<BadStatusException>(packet.Validate);
     }
     #endregion
 

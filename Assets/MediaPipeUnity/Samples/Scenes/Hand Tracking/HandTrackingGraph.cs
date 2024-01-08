@@ -162,27 +162,27 @@ namespace Mediapipe.Unity.Sample.HandTracking
 
       _ = TryGetValue(results.Item1.packet, out var palmDetections, (packet) =>
       {
-        return packet.GetProtoList(Detection.Parser);
+        return packet.Get(Detection.Parser);
       });
       _ = TryGetValue(results.Item2.packet, out var handRectsFromPalmDetections, (packet) =>
       {
-        return packet.GetProtoList(NormalizedRect.Parser);
+        return packet.Get(NormalizedRect.Parser);
       });
       _ = TryGetValue(results.Item3.packet, out var handLandmarks, (packet) =>
       {
-        return packet.GetProtoList(NormalizedLandmarkList.Parser);
+        return packet.Get(NormalizedLandmarkList.Parser);
       });
       _ = TryGetValue(results.Item4.packet, out var handWorldLandmarks, (packet) =>
       {
-        return packet.GetProtoList(LandmarkList.Parser);
+        return packet.Get(LandmarkList.Parser);
       });
       _ = TryGetValue(results.Item5.packet, out var handRectsFromLandmarks, (packet) =>
       {
-        return packet.GetProtoList(NormalizedRect.Parser);
+        return packet.Get(NormalizedRect.Parser);
       });
       _ = TryGetValue(results.Item6.packet, out var handedness, (packet) =>
       {
-        return packet.GetProtoList(ClassificationList.Parser);
+        return packet.Get(ClassificationList.Parser);
       });
 
       return new HandTrackingResult(palmDetections, handRectsFromPalmDetections, handLandmarks, handWorldLandmarks, handRectsFromLandmarks, handedness);

@@ -127,19 +127,19 @@ namespace Mediapipe.Unity.Sample.FaceMesh
 
       _ = TryGetValue(results.Item1.packet, out var faceDetections, (packet) =>
       {
-        return packet.GetProtoList(Detection.Parser);
+        return packet.Get(Detection.Parser);
       });
       _ = TryGetValue(results.Item2.packet, out var multiFaceLandmarks, (packet) =>
       {
-        return packet.GetProtoList(NormalizedLandmarkList.Parser);
+        return packet.Get(NormalizedLandmarkList.Parser);
       });
       _ = TryGetValue(results.Item3.packet, out var faceRectsFromLandmarks, (packet) =>
       {
-        return packet.GetProtoList(NormalizedRect.Parser);
+        return packet.Get(NormalizedRect.Parser);
       });
       _ = TryGetValue(results.Item4.packet, out var faceRectsFromDetections, (packet) =>
       {
-        return packet.GetProtoList(NormalizedRect.Parser);
+        return packet.Get(NormalizedRect.Parser);
       });
 
       return new FaceMeshResult(faceDetections, multiFaceLandmarks, faceRectsFromLandmarks, faceRectsFromDetections);

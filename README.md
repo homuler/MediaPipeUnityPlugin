@@ -50,11 +50,11 @@ node {
         }
 
         graph.CloseInputStream("in");
-        var packet = new Packet();
+        var packet = new Packet<string>();
 
         while (poller.Next(packet))
         {
-            Debug.Log(packet.GetString());
+            Debug.Log(packet.Get());
         }
         graph.WaitUntilDone();
     }

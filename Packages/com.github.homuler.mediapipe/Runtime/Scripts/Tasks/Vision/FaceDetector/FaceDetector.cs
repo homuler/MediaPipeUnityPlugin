@@ -246,7 +246,7 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
           return;
         }
 
-        using var image = outImagePacket.GetImage();
+        using var image = outImagePacket.Get();
         var timestamp = outImagePacket.TimestampMicroseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
         if (TryBuildFaceDetectorResult(outputPackets, ref result))
@@ -267,7 +267,7 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       {
         return false;
       }
-      detectionsPacket.GetDetectionResult(ref result);
+      detectionsPacket.Get(ref result);
       return true;
     }
   }

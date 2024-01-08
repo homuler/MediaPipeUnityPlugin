@@ -50,11 +50,7 @@ namespace Mediapipe.Unity.Sample.SelfieSegmentation
       var result = await _segmentationMaskStream.WaitNextAsync();
       AssertResult(result);
 
-      _ = TryGetValue(result.packet, out var segmentationMask, (packet) =>
-      {
-        return packet.GetImageFrame();
-      });
-
+      _ = TryGetValue(result.packet, out var segmentationMask);
       return segmentationMask;
     }
 
