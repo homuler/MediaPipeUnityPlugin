@@ -25,8 +25,8 @@ namespace Mediapipe.Tests
     {
       using (var packetMap = new PacketMap())
       {
-        var flagPacket = new BoolPacket(true);
-        var valuePacket = new FloatPacket(1.0f);
+        var flagPacket = Packet.CreateBool(true);
+        var valuePacket = Packet.CreateFloat(1.0f);
         packetMap.Emplace("flag", flagPacket);
         packetMap.Emplace("value", valuePacket);
 
@@ -44,13 +44,13 @@ namespace Mediapipe.Tests
       using (var packetMap = new PacketMap())
       {
         Assert.AreEqual(0, packetMap.size);
-        Assert.IsNull(packetMap.At<FloatPacket, float>("value"));
+        Assert.IsNull(packetMap.At("value"));
 
-        var flagPacket = new FloatPacket(1.0f);
+        var flagPacket = Packet.CreateFloat(1.0f);
         packetMap.Emplace("value", flagPacket);
 
         Assert.AreEqual(1, packetMap.size);
-        Assert.AreEqual(1.0f, packetMap.At<FloatPacket, float>("value").Get());
+        Assert.AreEqual(1.0f, packetMap.At("value").GetFloat());
         Assert.True(flagPacket.isDisposed);
       }
     }
@@ -60,13 +60,13 @@ namespace Mediapipe.Tests
     {
       using (var packetMap = new PacketMap())
       {
-        var oldValuePacket = new FloatPacket(1.0f);
+        var oldValuePacket = Packet.CreateFloat(1.0f);
         packetMap.Emplace("value", oldValuePacket);
-        Assert.AreEqual(1.0f, packetMap.At<FloatPacket, float>("value").Get());
+        Assert.AreEqual(1.0f, packetMap.At("value").GetFloat());
 
-        var newValuePacket = new FloatPacket(2.0f);
+        var newValuePacket = Packet.CreateFloat(2.0f);
         packetMap.Emplace("value", newValuePacket);
-        Assert.AreEqual(1.0f, packetMap.At<FloatPacket, float>("value").Get());
+        Assert.AreEqual(1.0f, packetMap.At("value").GetFloat());
       }
     }
     #endregion
@@ -89,7 +89,7 @@ namespace Mediapipe.Tests
     {
       using (var packetMap = new PacketMap())
       {
-        packetMap.Emplace("value", new BoolPacket(true));
+        packetMap.Emplace("value", Packet.CreateBool(true));
         Assert.AreEqual(1, packetMap.size);
 
         var count = packetMap.Erase("value");
@@ -116,8 +116,8 @@ namespace Mediapipe.Tests
     {
       using (var packetMap = new PacketMap())
       {
-        packetMap.Emplace("flag", new BoolPacket(true));
-        packetMap.Emplace("value", new FloatPacket(1.0f));
+        packetMap.Emplace("flag", Packet.CreateBool(true));
+        packetMap.Emplace("value", Packet.CreateFloat(1.0f));
         Assert.AreEqual(2, packetMap.size);
 
         packetMap.Clear();

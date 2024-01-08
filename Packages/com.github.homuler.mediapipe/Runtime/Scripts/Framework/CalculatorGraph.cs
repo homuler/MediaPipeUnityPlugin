@@ -15,8 +15,6 @@ namespace Mediapipe
   {
     public delegate StatusArgs NativePacketCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr);
     public delegate void PacketCallback(Packet packet);
-    [Obsolete("Use non-generic PacketCallback instead")]
-    public delegate void PacketCallback<TPacket, TValue>(TPacket packet) where TPacket : Packet<TValue>;
 
     public CalculatorGraph() : base()
     {
@@ -77,33 +75,6 @@ namespace Mediapipe
       AssertStatusOk(statusPtr);
     }
 
-    [Obsolete("Use non-generic ObserveOutputStream")]
-    public void ObserveOutputStream<TPacket, TValue>(string streamName, PacketCallback<TPacket, TValue> packetCallback, bool observeTimestampBounds, out GCHandle callbackHandle) where TPacket : Packet<TValue>, new()
-    {
-      NativePacketCallback nativePacketCallback = (IntPtr graphPtr, int streamId, IntPtr packetPtr) =>
-      {
-        try
-        {
-          var packet = Packet<TValue>.Create<TPacket>(packetPtr, false);
-          packetCallback(packet);
-          return StatusArgs.Ok();
-        }
-        catch (Exception e)
-        {
-          return StatusArgs.Internal(e.ToString());
-        }
-      };
-      callbackHandle = GCHandle.Alloc(nativePacketCallback, GCHandleType.Pinned);
-
-      ObserveOutputStream(streamName, 0, nativePacketCallback, observeTimestampBounds);
-    }
-
-    [Obsolete("Use non-generic ObserveOutputStream")]
-    public void ObserveOutputStream<TPacket, TValue>(string streamName, PacketCallback<TPacket, TValue> packetCallback, out GCHandle callbackHandle) where TPacket : Packet<TValue>, new()
-    {
-      ObserveOutputStream(streamName, packetCallback, false, out callbackHandle);
-    }
-
     public void ObserveOutputStream(string streamName, PacketCallback packetCallback, bool observeTimestampBounds, out GCHandle callbackHandle)
     {
       NativePacketCallback nativePacketCallback = (IntPtr graphPtr, int streamId, IntPtr packetPtr) =>
@@ -127,16 +98,6 @@ namespace Mediapipe
     public void ObserveOutputStream(string streamName, PacketCallback packetCallback, out GCHandle callbackHandle)
     {
       ObserveOutputStream(streamName, packetCallback, false, out callbackHandle);
-    }
-
-    [Obsolete("Use non-generic AddOutputStreamPoller")]
-    public OutputStreamPoller<T> AddOutputStreamPoller<T>(string streamName, bool observeTimestampBounds = false)
-    {
-      UnsafeNativeMethods.mp_CalculatorGraph__AddOutputStreamPoller__PKc_b(mpPtr, streamName, observeTimestampBounds, out var statusPtr, out var pollerPtr).Assert();
-
-      GC.KeepAlive(this);
-      AssertStatusOk(statusPtr);
-      return new OutputStreamPoller<T>(pollerPtr);
     }
 
     public OutputStreamPoller AddOutputStreamPoller(string streamName, bool observeTimestampBounds = false)
@@ -195,16 +156,6 @@ namespace Mediapipe
     public bool HasError()
     {
       return SafeNativeMethods.mp_CalculatorGraph__HasError(mpPtr);
-    }
-
-    [Obsolete("Use non-generic AddPacketToInputStream instead")]
-    public void AddPacketToInputStream<T>(string streamName, Packet<T> packet)
-    {
-      UnsafeNativeMethods.mp_CalculatorGraph__AddPacketToInputStream__PKc_Ppacket(mpPtr, streamName, packet.mpPtr, out var statusPtr).Assert();
-      packet.Dispose(); // respect move semantics
-
-      GC.KeepAlive(this);
-      AssertStatusOk(statusPtr);
     }
 
     public void AddPacketToInputStream(string streamName, Packet packet)

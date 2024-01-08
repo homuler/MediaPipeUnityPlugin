@@ -174,7 +174,7 @@ node {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PassThroughConfigText));
         using (var sidePacket = new PacketMap())
         {
-          sidePacket.Emplace("in", new IntPacket(0));
+          sidePacket.Emplace("in", Packet.CreateInt(0));
           Assert.DoesNotThrow(() => config.ValidateRequiredSidePackets(sidePacket));
         }
       }
@@ -215,8 +215,8 @@ node {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ImageTransformationConfigText));
         using (var sidePacket = new PacketMap())
         {
-          sidePacket.Emplace("input_horizontally_flipped", new BoolPacket(false));
-          sidePacket.Emplace("input_vertically_flipped", new BoolPacket(true));
+          sidePacket.Emplace("input_horizontally_flipped", Packet.CreateBool(false));
+          sidePacket.Emplace("input_vertically_flipped", Packet.CreateBool(true));
           var exception = Assert.Throws<BadStatusException>(() => config.ValidateRequiredSidePackets(sidePacket));
           Assert.AreEqual(StatusCode.InvalidArgument, exception.statusCode);
         }
@@ -231,9 +231,9 @@ node {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ImageTransformationConfigText));
         using (var sidePacket = new PacketMap())
         {
-          sidePacket.Emplace("input_horizontally_flipped", new BoolPacket(false));
-          sidePacket.Emplace("input_vertically_flipped", new BoolPacket(true));
-          sidePacket.Emplace("input_rotation", new StringPacket("0"));
+          sidePacket.Emplace("input_horizontally_flipped", Packet.CreateBool(false));
+          sidePacket.Emplace("input_vertically_flipped", Packet.CreateBool(true));
+          sidePacket.Emplace("input_rotation", Packet.CreateString("0"));
           var exception = Assert.Throws<BadStatusException>(() => config.ValidateRequiredSidePackets(sidePacket));
           Assert.AreEqual(StatusCode.InvalidArgument, exception.statusCode);
         }
@@ -248,9 +248,9 @@ node {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ImageTransformationConfigText));
         using (var sidePacket = new PacketMap())
         {
-          sidePacket.Emplace("input_horizontally_flipped", new BoolPacket(false));
-          sidePacket.Emplace("input_vertically_flipped", new BoolPacket(true));
-          sidePacket.Emplace("input_rotation", new IntPacket(0));
+          sidePacket.Emplace("input_horizontally_flipped", Packet.CreateBool(false));
+          sidePacket.Emplace("input_vertically_flipped", Packet.CreateBool(true));
+          sidePacket.Emplace("input_rotation", Packet.CreateInt(0));
           Assert.DoesNotThrow(() => config.ValidateRequiredSidePackets(sidePacket));
         }
       }
