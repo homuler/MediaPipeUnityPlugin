@@ -39,7 +39,7 @@ namespace Mediapipe.Unity.Sample.SelfieSegmentation
       task.Result?.Dispose();
     }
 
-    private void OnSegmentationMaskOutput(object stream, OutputStream.OutputEventArgs eventArgs)
+    private void OnSegmentationMaskOutput(object stream, OutputStream<ImageFrame>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.GetImageFrame();

@@ -61,37 +61,37 @@ namespace Mediapipe.Unity.Sample.HandTracking
       set => _minTrackingConfidence = Mathf.Clamp01(value);
     }
 
-    public event EventHandler<OutputStream.OutputEventArgs> OnPalmDetectectionsOutput
+    public event EventHandler<OutputStream<List<Detection>>.OutputEventArgs> OnPalmDetectectionsOutput
     {
       add => _palmDetectionsStream.AddListener(value, timeoutMicrosec);
       remove => _palmDetectionsStream.RemoveListener(value);
     }
 
-    public event EventHandler<OutputStream.OutputEventArgs> OnHandRectsFromPalmDetectionsOutput
+    public event EventHandler<OutputStream<List<NormalizedRect>>.OutputEventArgs> OnHandRectsFromPalmDetectionsOutput
     {
       add => _handRectsFromPalmDetectionsStream.AddListener(value, timeoutMicrosec);
       remove => _handRectsFromPalmDetectionsStream.RemoveListener(value);
     }
 
-    public event EventHandler<OutputStream.OutputEventArgs> OnHandLandmarksOutput
+    public event EventHandler<OutputStream<List<NormalizedLandmarkList>>.OutputEventArgs> OnHandLandmarksOutput
     {
       add => _handLandmarksStream.AddListener(value, timeoutMicrosec);
       remove => _handLandmarksStream.RemoveListener(value);
     }
 
-    public event EventHandler<OutputStream.OutputEventArgs> OnHandWorldLandmarksOutput
+    public event EventHandler<OutputStream<List<LandmarkList>>.OutputEventArgs> OnHandWorldLandmarksOutput
     {
       add => _handWorldLandmarksStream.AddListener(value, timeoutMicrosec);
       remove => _handWorldLandmarksStream.RemoveListener(value);
     }
 
-    public event EventHandler<OutputStream.OutputEventArgs> OnHandRectsFromLandmarksOutput
+    public event EventHandler<OutputStream<List<NormalizedRect>>.OutputEventArgs> OnHandRectsFromLandmarksOutput
     {
       add => _handRectsFromLandmarksStream.AddListener(value, timeoutMicrosec);
       remove => _handRectsFromLandmarksStream.RemoveListener(value);
     }
 
-    public event EventHandler<OutputStream.OutputEventArgs> OnHandednessOutput
+    public event EventHandler<OutputStream<List<ClassificationList>>.OutputEventArgs> OnHandednessOutput
     {
       add => _handednessStream.AddListener(value, timeoutMicrosec);
       remove => _handednessStream.RemoveListener(value);
@@ -105,12 +105,12 @@ namespace Mediapipe.Unity.Sample.HandTracking
     private const string _HandRectsFromLandmarksStreamName = "hand_rects_from_landmarks";
     private const string _HandednessStreamName = "handedness";
 
-    private OutputStream _palmDetectionsStream;
-    private OutputStream _handRectsFromPalmDetectionsStream;
-    private OutputStream _handLandmarksStream;
-    private OutputStream _handWorldLandmarksStream;
-    private OutputStream _handRectsFromLandmarksStream;
-    private OutputStream _handednessStream;
+    private OutputStream<List<Detection>> _palmDetectionsStream;
+    private OutputStream<List<NormalizedRect>> _handRectsFromPalmDetectionsStream;
+    private OutputStream<List<NormalizedLandmarkList>> _handLandmarksStream;
+    private OutputStream<List<LandmarkList>> _handWorldLandmarksStream;
+    private OutputStream<List<NormalizedRect>> _handRectsFromLandmarksStream;
+    private OutputStream<List<ClassificationList>> _handednessStream;
 
     public override void StartRun(ImageSource imageSource)
     {
@@ -150,7 +150,7 @@ namespace Mediapipe.Unity.Sample.HandTracking
 
     public async Task<HandTrackingResult> WaitNext()
     {
-      var results = await Task.WhenAll(
+      var results = await WhenAll(
         _palmDetectionsStream.WaitNextAsync(),
         _handRectsFromPalmDetectionsStream.WaitNextAsync(),
         _handLandmarksStream.WaitNextAsync(),
@@ -160,27 +160,27 @@ namespace Mediapipe.Unity.Sample.HandTracking
       );
       AssertResult(results);
 
-      _ = TryGetValue(results[0].packet, out var palmDetections, (packet) =>
+      _ = TryGetValue(results.Item1.packet, out var palmDetections, (packet) =>
       {
         return packet.GetProtoList(Detection.Parser);
       });
-      _ = TryGetValue(results[1].packet, out var handRectsFromPalmDetections, (packet) =>
+      _ = TryGetValue(results.Item2.packet, out var handRectsFromPalmDetections, (packet) =>
       {
         return packet.GetProtoList(NormalizedRect.Parser);
       });
-      _ = TryGetValue(results[2].packet, out var handLandmarks, (packet) =>
+      _ = TryGetValue(results.Item3.packet, out var handLandmarks, (packet) =>
       {
         return packet.GetProtoList(NormalizedLandmarkList.Parser);
       });
-      _ = TryGetValue(results[3].packet, out var handWorldLandmarks, (packet) =>
+      _ = TryGetValue(results.Item4.packet, out var handWorldLandmarks, (packet) =>
       {
         return packet.GetProtoList(LandmarkList.Parser);
       });
-      _ = TryGetValue(results[4].packet, out var handRectsFromLandmarks, (packet) =>
+      _ = TryGetValue(results.Item5.packet, out var handRectsFromLandmarks, (packet) =>
       {
         return packet.GetProtoList(NormalizedRect.Parser);
       });
-      _ = TryGetValue(results[5].packet, out var handedness, (packet) =>
+      _ = TryGetValue(results.Item6.packet, out var handedness, (packet) =>
       {
         return packet.GetProtoList(ClassificationList.Parser);
       });
@@ -199,12 +199,12 @@ namespace Mediapipe.Unity.Sample.HandTracking
 
     protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      _palmDetectionsStream = new OutputStream(calculatorGraph, _PalmDetectionsStreamName, true);
-      _handRectsFromPalmDetectionsStream = new OutputStream(calculatorGraph, _HandRectsFromPalmDetectionsStreamName, true);
-      _handLandmarksStream = new OutputStream(calculatorGraph, _HandLandmarksStreamName, true);
-      _handWorldLandmarksStream = new OutputStream(calculatorGraph, _HandWorldLandmarksStreamName, true);
-      _handRectsFromLandmarksStream = new OutputStream(calculatorGraph, _HandRectsFromLandmarksStreamName, true);
-      _handednessStream = new OutputStream(calculatorGraph, _HandednessStreamName, true);
+      _palmDetectionsStream = new OutputStream<List<Detection>>(calculatorGraph, _PalmDetectionsStreamName, true);
+      _handRectsFromPalmDetectionsStream = new OutputStream<List<NormalizedRect>>(calculatorGraph, _HandRectsFromPalmDetectionsStreamName, true);
+      _handLandmarksStream = new OutputStream<List<NormalizedLandmarkList>>(calculatorGraph, _HandLandmarksStreamName, true);
+      _handWorldLandmarksStream = new OutputStream<List<LandmarkList>>(calculatorGraph, _HandWorldLandmarksStreamName, true);
+      _handRectsFromLandmarksStream = new OutputStream<List<NormalizedRect>>(calculatorGraph, _HandRectsFromLandmarksStreamName, true);
+      _handednessStream = new OutputStream<List<ClassificationList>>(calculatorGraph, _HandednessStreamName, true);
 
       using (var validatedGraphConfig = new ValidatedGraphConfig())
       {

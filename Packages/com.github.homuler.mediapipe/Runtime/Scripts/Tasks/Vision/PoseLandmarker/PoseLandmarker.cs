@@ -232,7 +232,7 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
 
       return (PacketMap outputPackets) =>
       {
-        var outImagePacket = outputPackets.At(_IMAGE_OUT_STREAM_NAME);
+        var outImagePacket = outputPackets.At<Image>(_IMAGE_OUT_STREAM_NAME);
         if (outImagePacket == null || outImagePacket.IsEmpty())
         {
           return;
@@ -254,7 +254,7 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
 
     private static bool TryBuildPoseLandmarkerResult(PacketMap outputPackets, ref PoseLandmarkerResult result)
     {
-      using var poseLandmarksPacket = outputPackets.At(_NORM_LANDMARKS_STREAM_NAME);
+      using var poseLandmarksPacket = outputPackets.At<List<NormalizedLandmarks>>(_NORM_LANDMARKS_STREAM_NAME);
       if (poseLandmarksPacket.IsEmpty())
       {
         return false;
@@ -263,12 +263,12 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
       var poseLandmarks = result.poseLandmarks ?? new List<NormalizedLandmarks>();
       poseLandmarksPacket.GetNormalizedLandmarksList(poseLandmarks);
 
-      using var poseWorldLandmarksPacket = outputPackets.At(_POSE_WORLD_LANDMARKS_STREAM_NAME);
+      using var poseWorldLandmarksPacket = outputPackets.At<List<Landmarks>>(_POSE_WORLD_LANDMARKS_STREAM_NAME);
       var poseWorldLandmarks = result.poseWorldLandmarks ?? new List<Landmarks>();
       poseWorldLandmarksPacket.GetLandmarksList(poseWorldLandmarks);
 
       var segmentationMasks = result.segmentationMasks;
-      using var segmentationMaskPacket = outputPackets.At(_SEGMENTATION_MASK_STREAM_NAME);
+      using var segmentationMaskPacket = outputPackets.At<List<Image>>(_SEGMENTATION_MASK_STREAM_NAME);
       if (segmentationMaskPacket != null)
       {
         segmentationMasks ??= new List<Image>();

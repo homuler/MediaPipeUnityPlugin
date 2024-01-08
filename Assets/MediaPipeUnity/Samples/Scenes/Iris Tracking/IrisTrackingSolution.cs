@@ -5,6 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity.Sample.IrisTracking
@@ -46,21 +47,21 @@ namespace Mediapipe.Unity.Sample.IrisTracking
       _faceLandmarksWithIrisAnnotationController.DrawNow(result.faceLandmarksWithIris);
     }
 
-    private void OnFaceDetectionsOutput(object stream, OutputStream.OutputEventArgs eventArgs)
+    private void OnFaceDetectionsOutput(object stream, OutputStream<List<Detection>>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.GetProtoList(Detection.Parser);
       _faceDetectionsAnnotationController.DrawLater(value);
     }
 
-    private void OnFaceRectOutput(object stream, OutputStream.OutputEventArgs eventArgs)
+    private void OnFaceRectOutput(object stream, OutputStream<NormalizedRect>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.GetProto(NormalizedRect.Parser);
       _faceRectAnnotationController.DrawLater(value);
     }
 
-    private void OnFaceLandmarksWithIrisOutput(object stream, OutputStream.OutputEventArgs eventArgs)
+    private void OnFaceLandmarksWithIrisOutput(object stream, OutputStream<NormalizedLandmarkList>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.GetProto(NormalizedLandmarkList.Parser);

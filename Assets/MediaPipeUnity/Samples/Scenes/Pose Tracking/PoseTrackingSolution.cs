@@ -100,28 +100,28 @@ namespace Mediapipe.Unity.Sample.PoseTracking
       result.segmentationMask?.Dispose();
     }
 
-    private void OnPoseDetectionOutput(object stream, OutputStream.OutputEventArgs eventArgs)
+    private void OnPoseDetectionOutput(object stream, OutputStream<Detection>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.GetProto(Detection.Parser);
       _poseDetectionAnnotationController.DrawLater(value);
     }
 
-    private void OnPoseLandmarksOutput(object stream, OutputStream.OutputEventArgs eventArgs)
+    private void OnPoseLandmarksOutput(object stream, OutputStream<NormalizedLandmarkList>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.GetProto(NormalizedLandmarkList.Parser);
       _poseLandmarksAnnotationController.DrawLater(value);
     }
 
-    private void OnPoseWorldLandmarksOutput(object stream, OutputStream.OutputEventArgs eventArgs)
+    private void OnPoseWorldLandmarksOutput(object stream, OutputStream<LandmarkList>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.GetProto(LandmarkList.Parser);
       _poseWorldLandmarksAnnotationController.DrawLater(value);
     }
 
-    private void OnSegmentationMaskOutput(object stream, OutputStream.OutputEventArgs eventArgs)
+    private void OnSegmentationMaskOutput(object stream, OutputStream<ImageFrame>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.GetImageFrame();
@@ -129,7 +129,7 @@ namespace Mediapipe.Unity.Sample.PoseTracking
       value?.Dispose();
     }
 
-    private void OnRoiFromLandmarksOutput(object stream, OutputStream.OutputEventArgs eventArgs)
+    private void OnRoiFromLandmarksOutput(object stream, OutputStream<NormalizedRect>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.GetProto(NormalizedRect.Parser);

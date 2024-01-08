@@ -4,6 +4,7 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
@@ -510,49 +511,49 @@ namespace Mediapipe.Tests
     [Test]
     public void ValidateAsBool_ShouldThrow_When_ValueIsNotSet()
     {
-      using var packet = new Packet();
+      using var packet = new Packet<bool>();
       _ = Assert.Throws<BadStatusException>(packet.ValidateAsBool);
     }
 
     [Test]
     public void ValidateAsBoolVector_ShouldThrow_When_ValueIsNotSet()
     {
-      using var packet = new Packet();
+      using var packet = new Packet<List<bool>>();
       _ = Assert.Throws<BadStatusException>(packet.ValidateAsBoolVector);
     }
 
     [Test]
     public void ValidateAsDouble_ShouldThrow_When_ValueIsNotSet()
     {
-      using var packet = new Packet();
+      using var packet = new Packet<double>();
       _ = Assert.Throws<BadStatusException>(packet.ValidateAsDouble);
     }
 
     [Test]
     public void ValidateAsFloat_ShouldThrow_When_ValueIsNotSet()
     {
-      using var packet = new Packet();
+      using var packet = new Packet<float>();
       _ = Assert.Throws<BadStatusException>(packet.ValidateAsFloat);
     }
 
     [Test]
     public void ValidateAsFloatArray_ShouldThrow_When_ValueIsNotSet()
     {
-      using var packet = new Packet();
+      using var packet = new Packet<float[]>();
       _ = Assert.Throws<BadStatusException>(packet.ValidateAsFloatArray);
     }
 
     [Test]
     public void ValidateAsFloatVector_ShouldThrow_When_ValueIsNotSet()
     {
-      using var packet = new Packet();
+      using var packet = new Packet<List<float>>();
       _ = Assert.Throws<BadStatusException>(packet.ValidateAsFloatVector);
     }
 
     [Test]
     public void ValidateAsImage_ShouldThrow_When_ValueIsNotSet()
     {
-      using var packet = new Packet();
+      using var packet = new Packet<Image>();
       _ = Assert.Throws<BadStatusException>(packet.ValidateAsImage);
     }
     #endregion

@@ -60,31 +60,31 @@ namespace Mediapipe.Unity.Sample.PoseTracking
       set => _minTrackingConfidence = Mathf.Clamp01(value);
     }
 
-    public event EventHandler<OutputStream.OutputEventArgs> OnPoseDetectionOutput
+    public event EventHandler<OutputStream<Detection>.OutputEventArgs> OnPoseDetectionOutput
     {
       add => _poseDetectionStream.AddListener(value, timeoutMicrosec);
       remove => _poseDetectionStream.RemoveListener(value);
     }
 
-    public event EventHandler<OutputStream.OutputEventArgs> OnPoseLandmarksOutput
+    public event EventHandler<OutputStream<NormalizedLandmarkList>.OutputEventArgs> OnPoseLandmarksOutput
     {
       add => _poseLandmarksStream.AddListener(value, timeoutMicrosec);
       remove => _poseLandmarksStream.RemoveListener(value);
     }
 
-    public event EventHandler<OutputStream.OutputEventArgs> OnPoseWorldLandmarksOutput
+    public event EventHandler<OutputStream<LandmarkList>.OutputEventArgs> OnPoseWorldLandmarksOutput
     {
       add => _poseWorldLandmarksStream.AddListener(value, timeoutMicrosec);
       remove => _poseWorldLandmarksStream.RemoveListener(value);
     }
 
-    public event EventHandler<OutputStream.OutputEventArgs> OnSegmentationMaskOutput
+    public event EventHandler<OutputStream<ImageFrame>.OutputEventArgs> OnSegmentationMaskOutput
     {
       add => _segmentationMaskStream.AddListener(value, timeoutMicrosec);
       remove => _segmentationMaskStream.RemoveListener(value);
     }
 
-    public event EventHandler<OutputStream.OutputEventArgs> OnRoiFromLandmarksOutput
+    public event EventHandler<OutputStream<NormalizedRect>.OutputEventArgs> OnRoiFromLandmarksOutput
     {
       add => _roiFromLandmarksStream.AddListener(value, timeoutMicrosec);
       remove => _roiFromLandmarksStream.RemoveListener(value);
@@ -97,11 +97,11 @@ namespace Mediapipe.Unity.Sample.PoseTracking
     private const string _SegmentationMaskStreamName = "segmentation_mask";
     private const string _RoiFromLandmarksStreamName = "roi_from_landmarks";
 
-    private OutputStream _poseDetectionStream;
-    private OutputStream _poseLandmarksStream;
-    private OutputStream _poseWorldLandmarksStream;
-    private OutputStream _segmentationMaskStream;
-    private OutputStream _roiFromLandmarksStream;
+    private OutputStream<Detection> _poseDetectionStream;
+    private OutputStream<NormalizedLandmarkList> _poseLandmarksStream;
+    private OutputStream<LandmarkList> _poseWorldLandmarksStream;
+    private OutputStream<ImageFrame> _segmentationMaskStream;
+    private OutputStream<NormalizedRect> _roiFromLandmarksStream;
 
     public override void StartRun(ImageSource imageSource)
     {
@@ -138,7 +138,7 @@ namespace Mediapipe.Unity.Sample.PoseTracking
 
     public async Task<PoseTrackingResult> WaitNextAsync()
     {
-      var results = await Task.WhenAll(
+      var results = await WhenAll(
         _poseDetectionStream.WaitNextAsync(),
         _poseLandmarksStream.WaitNextAsync(),
         _poseWorldLandmarksStream.WaitNextAsync(),
@@ -147,23 +147,23 @@ namespace Mediapipe.Unity.Sample.PoseTracking
       );
       AssertResult(results);
 
-      _ = TryGetValue(results[0].packet, out var poseDetection, (packet) =>
+      _ = TryGetValue(results.Item1.packet, out var poseDetection, (packet) =>
       {
         return packet.GetProto(Detection.Parser);
       });
-      _ = TryGetValue(results[1].packet, out var poseLandmarks, (packet) =>
+      _ = TryGetValue(results.Item2.packet, out var poseLandmarks, (packet) =>
       {
         return packet.GetProto(NormalizedLandmarkList.Parser);
       });
-      _ = TryGetValue(results[2].packet, out var poseWorldLandmarks, (packet) =>
+      _ = TryGetValue(results.Item3.packet, out var poseWorldLandmarks, (packet) =>
       {
         return packet.GetProto(LandmarkList.Parser);
       });
-      _ = TryGetValue(results[3].packet, out var segmentationMask, (packet) =>
+      _ = TryGetValue(results.Item4.packet, out var segmentationMask, (packet) =>
       {
         return packet.GetImageFrame();
       });
-      _ = TryGetValue(results[4].packet, out var roiFromLandmarks, (packet) =>
+      _ = TryGetValue(results.Item5.packet, out var roiFromLandmarks, (packet) =>
       {
         return packet.GetProto(NormalizedRect.Parser);
       });
@@ -181,11 +181,11 @@ namespace Mediapipe.Unity.Sample.PoseTracking
 
     protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      _poseDetectionStream = new OutputStream(calculatorGraph, _PoseDetectionStreamName, true);
-      _poseLandmarksStream = new OutputStream(calculatorGraph, _PoseLandmarksStreamName, true);
-      _poseWorldLandmarksStream = new OutputStream(calculatorGraph, _PoseWorldLandmarksStreamName, true);
-      _segmentationMaskStream = new OutputStream(calculatorGraph, _SegmentationMaskStreamName, true);
-      _roiFromLandmarksStream = new OutputStream(calculatorGraph, _RoiFromLandmarksStreamName, true);
+      _poseDetectionStream = new OutputStream<Detection>(calculatorGraph, _PoseDetectionStreamName, true);
+      _poseLandmarksStream = new OutputStream<NormalizedLandmarkList>(calculatorGraph, _PoseLandmarksStreamName, true);
+      _poseWorldLandmarksStream = new OutputStream<LandmarkList>(calculatorGraph, _PoseWorldLandmarksStreamName, true);
+      _segmentationMaskStream = new OutputStream<ImageFrame>(calculatorGraph, _SegmentationMaskStreamName, true);
+      _roiFromLandmarksStream = new OutputStream<NormalizedRect>(calculatorGraph, _RoiFromLandmarksStreamName, true);
 
       using (var validatedGraphConfig = new ValidatedGraphConfig())
       {

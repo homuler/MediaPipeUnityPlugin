@@ -38,7 +38,7 @@ namespace Mediapipe.Unity.Sample.HairSegmentation
       task.Result?.Dispose();
     }
 
-    private void OnHairMaskOutput(object stream, OutputStream.OutputEventArgs eventArgs)
+    private void OnHairMaskOutput(object stream, OutputStream<ImageFrame>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.GetImageFrame();

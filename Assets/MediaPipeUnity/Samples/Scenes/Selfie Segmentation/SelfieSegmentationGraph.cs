@@ -13,7 +13,7 @@ namespace Mediapipe.Unity.Sample.SelfieSegmentation
 {
   public class SelfieSegmentationGraph : GraphRunner
   {
-    public event EventHandler<OutputStream.OutputEventArgs> OnSegmentationMaskOutput
+    public event EventHandler<OutputStream<ImageFrame>.OutputEventArgs> OnSegmentationMaskOutput
     {
       add => _segmentationMaskStream.AddListener(value, timeoutMicrosec);
       remove => _segmentationMaskStream.RemoveListener(value);
@@ -21,7 +21,7 @@ namespace Mediapipe.Unity.Sample.SelfieSegmentation
 
     private const string _InputStreamName = "input_video";
     private const string _SegmentationMaskStreamName = "segmentation_mask";
-    private OutputStream _segmentationMaskStream;
+    private OutputStream<ImageFrame> _segmentationMaskStream;
 
     public override void StartRun(ImageSource imageSource)
     {
@@ -67,7 +67,7 @@ namespace Mediapipe.Unity.Sample.SelfieSegmentation
 
     protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      _segmentationMaskStream = new OutputStream(calculatorGraph, _SegmentationMaskStreamName, true);
+      _segmentationMaskStream = new OutputStream<ImageFrame>(calculatorGraph, _SegmentationMaskStreamName, true);
       calculatorGraph.Initialize(config);
     }
 

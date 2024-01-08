@@ -12,7 +12,7 @@ namespace Mediapipe.Unity.Sample.ObjectDetection
 {
   public class ObjectDetectionGraph : GraphRunner
   {
-    public event EventHandler<OutputStream.OutputEventArgs> OnOutputDetectionsOutput
+    public event EventHandler<OutputStream<List<Detection>>.OutputEventArgs> OnOutputDetectionsOutput
     {
       add => _outputDetectionsStream.AddListener(value, timeoutMicrosec);
       remove => _outputDetectionsStream.RemoveListener(value);
@@ -21,7 +21,7 @@ namespace Mediapipe.Unity.Sample.ObjectDetection
     private const string _InputStreamName = "input_video";
 
     private const string _OutputDetectionsStreamName = "output_detections";
-    private OutputStream _outputDetectionsStream;
+    private OutputStream<List<Detection>> _outputDetectionsStream;
 
     public override void StartRun(ImageSource imageSource)
     {
@@ -67,7 +67,7 @@ namespace Mediapipe.Unity.Sample.ObjectDetection
 
     protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      _outputDetectionsStream = new OutputStream(calculatorGraph, _OutputDetectionsStreamName, true);
+      _outputDetectionsStream = new OutputStream<List<Detection>>(calculatorGraph, _OutputDetectionsStreamName, true);
       calculatorGraph.Initialize(config);
     }
 

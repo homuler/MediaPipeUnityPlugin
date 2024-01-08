@@ -5,6 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity.Sample.HandTracking
@@ -77,35 +78,35 @@ namespace Mediapipe.Unity.Sample.HandTracking
       _handRectsFromLandmarksAnnotationController.DrawNow(result.handRectsFromLandmarks);
     }
 
-    private void OnPalmDetectionsOutput(object stream, OutputStream.OutputEventArgs eventArgs)
+    private void OnPalmDetectionsOutput(object stream, OutputStream<List<Detection>>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.GetProtoList(Detection.Parser);
       _palmDetectionsAnnotationController.DrawLater(value);
     }
 
-    private void OnHandRectsFromPalmDetectionsOutput(object stream, OutputStream.OutputEventArgs eventArgs)
+    private void OnHandRectsFromPalmDetectionsOutput(object stream, OutputStream<List<NormalizedRect>>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.GetProtoList(NormalizedRect.Parser);
       _handRectsFromPalmDetectionsAnnotationController.DrawLater(value);
     }
 
-    private void OnHandLandmarksOutput(object stream, OutputStream.OutputEventArgs eventArgs)
+    private void OnHandLandmarksOutput(object stream, OutputStream<List<NormalizedLandmarkList>>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.GetProtoList(NormalizedLandmarkList.Parser);
       _handLandmarksAnnotationController.DrawLater(value);
     }
 
-    private void OnHandRectsFromLandmarksOutput(object stream, OutputStream.OutputEventArgs eventArgs)
+    private void OnHandRectsFromLandmarksOutput(object stream, OutputStream<List<NormalizedRect>>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.GetProtoList(NormalizedRect.Parser);
       _handRectsFromLandmarksAnnotationController.DrawLater(value);
     }
 
-    private void OnHandednessOutput(object stream, OutputStream.OutputEventArgs eventArgs)
+    private void OnHandednessOutput(object stream, OutputStream<List<ClassificationList>>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.GetProtoList(ClassificationList.Parser);

@@ -232,7 +232,7 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
 
       return (PacketMap outputPackets) =>
       {
-        var outImagePacket = outputPackets.At(_IMAGE_OUT_STREAM_NAME);
+        var outImagePacket = outputPackets.At<Image>(_IMAGE_OUT_STREAM_NAME);
         if (outImagePacket == null || outImagePacket.IsEmpty())
         {
           return;
@@ -254,7 +254,7 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
 
     private static bool TryBuildHandLandmarkerResult(PacketMap outputPackets, ref HandLandmarkerResult result)
     {
-      using var handLandmarksPacket = outputPackets.At(_HAND_LANDMARKS_STREAM_NAME);
+      using var handLandmarksPacket = outputPackets.At<List<NormalizedLandmarks>>(_HAND_LANDMARKS_STREAM_NAME);
       if (handLandmarksPacket.IsEmpty())
       {
         return false;
@@ -263,11 +263,11 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
       var handLandmarks = result.handLandmarks ?? new List<NormalizedLandmarks>();
       handLandmarksPacket.GetNormalizedLandmarksList(handLandmarks);
 
-      using var handednessPacket = outputPackets.At(_HANDEDNESS_STREAM_NAME);
+      using var handednessPacket = outputPackets.At<List<Classifications>>(_HANDEDNESS_STREAM_NAME);
       var handedness = result.handedness ?? new List<Classifications>();
       handednessPacket.GetClassificationsVector(handedness);
 
-      using var handWorldLandmarksPacket = outputPackets.At(_HAND_WORLD_LANDMARKS_STREAM_NAME);
+      using var handWorldLandmarksPacket = outputPackets.At<List<Landmarks>>(_HAND_WORLD_LANDMARKS_STREAM_NAME);
       var handWorldLandmarks = result.handWorldLandmarks ?? new List<Landmarks>();
       handWorldLandmarksPacket.GetLandmarksList(handWorldLandmarks);
 

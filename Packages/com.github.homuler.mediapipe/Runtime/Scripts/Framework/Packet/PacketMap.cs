@@ -30,7 +30,7 @@ namespace Mediapipe
     ///   This method cannot verify that the packet type corresponding to the <paramref name="key" /> is indeed a <typeparamref name="TPacket" />,
     ///   so you must make sure by youreself that it is.
     /// </remarks>
-    public Packet At(string key)
+    public Packet<T> At<T>(string key)
     {
       UnsafeNativeMethods.mp_PacketMap__find__PKc(mpPtr, key, out var packetPtr).Assert();
 
@@ -39,10 +39,10 @@ namespace Mediapipe
         return default; // null
       }
       GC.KeepAlive(this);
-      return new Packet(packetPtr, true);
+      return new Packet<T>(packetPtr, true);
     }
 
-    public void Emplace(string key, Packet packet)
+    public void Emplace<T>(string key, Packet<T> packet)
     {
       UnsafeNativeMethods.mp_PacketMap__emplace__PKc_Rp(mpPtr, key, packet.mpPtr).Assert();
       packet.Dispose(); // respect move semantics

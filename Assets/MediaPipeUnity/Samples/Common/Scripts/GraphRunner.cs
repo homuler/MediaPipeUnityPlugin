@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 using Stopwatch = System.Diagnostics.Stopwatch;
@@ -179,7 +180,7 @@ namespace Mediapipe.Unity.Sample
       }
     }
 
-    protected void AddPacketToInputStream(string streamName, Packet packet)
+    protected void AddPacketToInputStream<T>(string streamName, Packet<T> packet)
     {
       calculatorGraph.AddPacketToInputStream(streamName, packet);
     }
@@ -201,18 +202,12 @@ namespace Mediapipe.Unity.Sample
       AddPacketToInputStream(streamName, Packet.CreateImageFrameAt(imageFrame, latestTimestamp));
     }
 
-    protected void AssertResult(params OutputStream.NextResult[] results)
+    protected bool TryGetValue<T>(Packet<T> packet, out T value)
     {
-      foreach (var result in results)
-      {
-        if (!result.ok)
-        {
-          throw new Exception("Failed to get the next packet");
-        }
-      }
+      return TryGetValue(packet, out value, (packet) => packet.Get());
     }
 
-    protected bool TryGetValue<T>(Packet packet, out T value, Func<Packet, T> getter)
+    protected bool TryGetValue<T>(Packet<T> packet, out T value, Func<Packet<T>, T> getter)
     {
       if (packet == null)
       {
@@ -221,6 +216,153 @@ namespace Mediapipe.Unity.Sample
       }
       value = getter(packet);
       return true;
+    }
+
+    protected void AssertResult<T>(OutputStream<T>.NextResult result)
+    {
+      if (!result.ok)
+      {
+        throw new Exception("Failed to get the next packet");
+      }
+    }
+
+    protected void AssertResult<T1, T2>((OutputStream<T1>.NextResult, OutputStream<T2>.NextResult) result)
+    {
+      AssertResult(result.Item1);
+      AssertResult(result.Item2);
+    }
+
+    protected void AssertResult<T1, T2, T3>((OutputStream<T1>.NextResult, OutputStream<T2>.NextResult, OutputStream<T3>.NextResult) result)
+    {
+      AssertResult(result.Item1);
+      AssertResult(result.Item2);
+      AssertResult(result.Item3);
+    }
+
+    protected void AssertResult<T1, T2, T3, T4>((OutputStream<T1>.NextResult, OutputStream<T2>.NextResult, OutputStream<T3>.NextResult, OutputStream<T4>.NextResult) result)
+    {
+      AssertResult(result.Item1);
+      AssertResult(result.Item2);
+      AssertResult(result.Item3);
+      AssertResult(result.Item4);
+    }
+
+    protected void AssertResult<T1, T2, T3, T4, T5>(
+      (
+        OutputStream<T1>.NextResult,
+        OutputStream<T2>.NextResult,
+        OutputStream<T3>.NextResult,
+        OutputStream<T4>.NextResult,
+        OutputStream<T5>.NextResult
+      ) result)
+    {
+      AssertResult(result.Item1);
+      AssertResult(result.Item2);
+      AssertResult(result.Item3);
+      AssertResult(result.Item4);
+      AssertResult(result.Item5);
+    }
+
+    protected void AssertResult<T1, T2, T3, T4, T5, T6>(
+      (
+        OutputStream<T1>.NextResult,
+        OutputStream<T2>.NextResult,
+        OutputStream<T3>.NextResult,
+        OutputStream<T4>.NextResult,
+        OutputStream<T5>.NextResult,
+        OutputStream<T6>.NextResult
+      ) result)
+    {
+      AssertResult(result.Item1);
+      AssertResult(result.Item2);
+      AssertResult(result.Item3);
+      AssertResult(result.Item4);
+      AssertResult(result.Item5);
+      AssertResult(result.Item6);
+    }
+
+    protected void AssertResult<T1, T2, T3, T4, T5, T6, T7>(
+      (
+        OutputStream<T1>.NextResult,
+        OutputStream<T2>.NextResult,
+        OutputStream<T3>.NextResult,
+        OutputStream<T4>.NextResult,
+        OutputStream<T5>.NextResult,
+        OutputStream<T6>.NextResult,
+        OutputStream<T7>.NextResult
+      ) result)
+    {
+      AssertResult(result.Item1);
+      AssertResult(result.Item2);
+      AssertResult(result.Item3);
+      AssertResult(result.Item4);
+      AssertResult(result.Item5);
+      AssertResult(result.Item6);
+      AssertResult(result.Item7);
+    }
+
+    protected void AssertResult<T1, T2, T3, T4, T5, T6, T7, T8>(
+      (
+        OutputStream<T1>.NextResult,
+        OutputStream<T2>.NextResult,
+        OutputStream<T3>.NextResult,
+        OutputStream<T4>.NextResult,
+        OutputStream<T5>.NextResult,
+        OutputStream<T6>.NextResult,
+        OutputStream<T7>.NextResult,
+        OutputStream<T8>.NextResult
+      ) result)
+    {
+      AssertResult(result.Item1);
+      AssertResult(result.Item2);
+      AssertResult(result.Item3);
+      AssertResult(result.Item4);
+      AssertResult(result.Item5);
+      AssertResult(result.Item6);
+      AssertResult(result.Item7);
+      AssertResult(result.Item8);
+    }
+
+    protected async Task<(T1, T2)> WhenAll<T1, T2>(Task<T1> task1, Task<T2> task2)
+    {
+      await Task.WhenAll(task1, task2);
+      return (task1.Result, task2.Result);
+    }
+
+    protected async Task<(T1, T2, T3)> WhenAll<T1, T2, T3>(Task<T1> task1, Task<T2> task2, Task<T3> task3)
+    {
+      await Task.WhenAll(task1, task2, task3);
+      return (task1.Result, task2.Result, task3.Result);
+    }
+
+    protected async Task<(T1, T2, T3, T4)> WhenAll<T1, T2, T3, T4>(Task<T1> task1, Task<T2> task2, Task<T3> task3, Task<T4> task4)
+    {
+      await Task.WhenAll(task1, task2, task3, task4);
+      return (task1.Result, task2.Result, task3.Result, task4.Result);
+    }
+
+    protected async Task<(T1, T2, T3, T4, T5)> WhenAll<T1, T2, T3, T4, T5>(Task<T1> task1, Task<T2> task2, Task<T3> task3, Task<T4> task4, Task<T5> task5)
+    {
+      await Task.WhenAll(task1, task2, task3, task4, task5);
+      return (task1.Result, task2.Result, task3.Result, task4.Result, task5.Result);
+    }
+
+    protected async Task<(T1, T2, T3, T4, T5, T6)> WhenAll<T1, T2, T3, T4, T5, T6>(Task<T1> task1, Task<T2> task2, Task<T3> task3, Task<T4> task4, Task<T5> task5, Task<T6> task6)
+    {
+      await Task.WhenAll(task1, task2, task3, task4, task5, task6);
+      return (task1.Result, task2.Result, task3.Result, task4.Result, task5.Result, task6.Result);
+    }
+
+    protected async Task<(T1, T2, T3, T4, T5, T6, T7)> WhenAll<T1, T2, T3, T4, T5, T6, T7>(Task<T1> task1, Task<T2> task2, Task<T3> task3, Task<T4> task4, Task<T5> task5, Task<T6> task6, Task<T7> task7)
+    {
+      await Task.WhenAll(task1, task2, task3, task4, task5, task6, task7);
+      return (task1.Result, task2.Result, task3.Result, task4.Result, task5.Result, task6.Result, task7.Result);
+    }
+
+    protected async Task<(T1, T2, T3, T4, T5, T6, T7, T8)> WhenAll<T1, T2, T3, T4, T5, T6, T7, T8>(Task<T1> task1, Task<T2> task2, Task<T3> task3, Task<T4> task4, Task<T5> task5, Task<T6> task6, Task<T7> task7, Task<T8> task8)
+    {
+      await Task.WhenAll(task1, task2, task3, task4, task5, task6, task7, task8);
+      return (task1.Result, task2.Result, task3.Result, task4.Result, task5.Result, task6.Result, task7.Result, task8.Result);
     }
 
     protected long GetCurrentTimestampMicrosec()

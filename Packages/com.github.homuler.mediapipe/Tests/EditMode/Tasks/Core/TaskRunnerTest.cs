@@ -89,7 +89,7 @@ output_stream: ""out""
         packetMap.Emplace("in", Packet.CreateInt(1));
 
         var outputMap = taskRunner.Process(packetMap);
-        Assert.AreEqual(1, outputMap.At("out").GetInt());
+        Assert.AreEqual(1, outputMap.At<int>("out").GetInt());
         Assert.True(packetMap.isDisposed);
       }
     }

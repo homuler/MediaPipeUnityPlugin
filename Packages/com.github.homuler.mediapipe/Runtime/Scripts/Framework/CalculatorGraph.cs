@@ -14,7 +14,7 @@ namespace Mediapipe
   public class CalculatorGraph : MpResourceHandle
   {
     public delegate StatusArgs NativePacketCallback(IntPtr graphPtr, int streamId, IntPtr packetPtr);
-    public delegate void PacketCallback(Packet packet);
+    public delegate void PacketCallback<T>(Packet<T> packet);
 
     public CalculatorGraph() : base()
     {
@@ -75,13 +75,13 @@ namespace Mediapipe
       AssertStatusOk(statusPtr);
     }
 
-    public void ObserveOutputStream(string streamName, PacketCallback packetCallback, bool observeTimestampBounds, out GCHandle callbackHandle)
+    public void ObserveOutputStream<T>(string streamName, PacketCallback<T> packetCallback, bool observeTimestampBounds, out GCHandle callbackHandle)
     {
       NativePacketCallback nativePacketCallback = (IntPtr graphPtr, int streamId, IntPtr packetPtr) =>
       {
         try
         {
-          var packet = Packet.CreateForReference(packetPtr);
+          var packet = Packet<T>.CreateForReference(packetPtr);
           packetCallback(packet);
           return StatusArgs.Ok();
         }
@@ -95,18 +95,18 @@ namespace Mediapipe
       ObserveOutputStream(streamName, 0, nativePacketCallback, observeTimestampBounds);
     }
 
-    public void ObserveOutputStream(string streamName, PacketCallback packetCallback, out GCHandle callbackHandle)
+    public void ObserveOutputStream<T>(string streamName, PacketCallback<T> packetCallback, out GCHandle callbackHandle)
     {
       ObserveOutputStream(streamName, packetCallback, false, out callbackHandle);
     }
 
-    public OutputStreamPoller AddOutputStreamPoller(string streamName, bool observeTimestampBounds = false)
+    public OutputStreamPoller<T> AddOutputStreamPoller<T>(string streamName, bool observeTimestampBounds = false)
     {
       UnsafeNativeMethods.mp_CalculatorGraph__AddOutputStreamPoller__PKc_b(mpPtr, streamName, observeTimestampBounds, out var statusPtr, out var pollerPtr).Assert();
 
       GC.KeepAlive(this);
       AssertStatusOk(statusPtr);
-      return new OutputStreamPoller(pollerPtr);
+      return new OutputStreamPoller<T>(pollerPtr);
     }
 
     public void Run()
@@ -158,7 +158,7 @@ namespace Mediapipe
       return SafeNativeMethods.mp_CalculatorGraph__HasError(mpPtr);
     }
 
-    public void AddPacketToInputStream(string streamName, Packet packet)
+    public void AddPacketToInputStream<T>(string streamName, Packet<T> packet)
     {
       UnsafeNativeMethods.mp_CalculatorGraph__AddPacketToInputStream__PKc_Ppacket(mpPtr, streamName, packet.mpPtr, out var statusPtr).Assert();
       packet.Dispose(); // respect move semantics

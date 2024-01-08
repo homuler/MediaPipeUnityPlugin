@@ -44,13 +44,13 @@ namespace Mediapipe.Tests
       using (var packetMap = new PacketMap())
       {
         Assert.AreEqual(0, packetMap.size);
-        Assert.IsNull(packetMap.At("value"));
+        Assert.IsNull(packetMap.At<float>("value"));
 
         var flagPacket = Packet.CreateFloat(1.0f);
         packetMap.Emplace("value", flagPacket);
 
         Assert.AreEqual(1, packetMap.size);
-        Assert.AreEqual(1.0f, packetMap.At("value").GetFloat());
+        Assert.AreEqual(1.0f, packetMap.At<float>("value").GetFloat());
         Assert.True(flagPacket.isDisposed);
       }
     }
@@ -62,11 +62,11 @@ namespace Mediapipe.Tests
       {
         var oldValuePacket = Packet.CreateFloat(1.0f);
         packetMap.Emplace("value", oldValuePacket);
-        Assert.AreEqual(1.0f, packetMap.At("value").GetFloat());
+        Assert.AreEqual(1.0f, packetMap.At<float>("value").GetFloat());
 
         var newValuePacket = Packet.CreateFloat(2.0f);
         packetMap.Emplace("value", newValuePacket);
-        Assert.AreEqual(1.0f, packetMap.At("value").GetFloat());
+        Assert.AreEqual(1.0f, packetMap.At<float>("value").GetFloat());
       }
     }
     #endregion

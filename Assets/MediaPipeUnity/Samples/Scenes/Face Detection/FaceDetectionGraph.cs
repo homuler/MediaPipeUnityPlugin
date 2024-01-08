@@ -28,7 +28,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection
       set => _minDetectionConfidence = Mathf.Clamp01(value);
     }
 
-    public event EventHandler<OutputStream.OutputEventArgs> OnFaceDetectionsOutput
+    public event EventHandler<OutputStream<List<Detection>>.OutputEventArgs> OnFaceDetectionsOutput
     {
       add => _faceDetectionsStream.AddListener(value, timeoutMicrosec);
       remove => _faceDetectionsStream.RemoveListener(value);
@@ -36,7 +36,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection
 
     private const string _InputStreamName = "input_video";
     private const string _FaceDetectionsStreamName = "face_detections";
-    private OutputStream _faceDetectionsStream;
+    private OutputStream<List<Detection>> _faceDetectionsStream;
 
     public override void StartRun(ImageSource imageSource)
     {
@@ -82,7 +82,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection
 
     protected override void ConfigureCalculatorGraph(CalculatorGraphConfig config)
     {
-      _faceDetectionsStream = new OutputStream(calculatorGraph, _FaceDetectionsStreamName, true);
+      _faceDetectionsStream = new OutputStream<List<Detection>>(calculatorGraph, _FaceDetectionsStreamName, true);
       Debug.Log(timeoutMicrosec);
 
       var faceDetectionCalculators = config.Node.Where((node) => node.Calculator.StartsWith("FaceDetection")).ToList();

@@ -5,6 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mediapipe.Unity.Sample.ObjectDetection
@@ -36,7 +37,7 @@ namespace Mediapipe.Unity.Sample.ObjectDetection
       _outputDetectionsAnnotationController.DrawNow(task.Result);
     }
 
-    private void OnOutputDetectionsOutput(object stream, OutputStream.OutputEventArgs eventArgs)
+    private void OnOutputDetectionsOutput(object stream, OutputStream<List<Detection>>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.GetProtoList(Detection.Parser);
