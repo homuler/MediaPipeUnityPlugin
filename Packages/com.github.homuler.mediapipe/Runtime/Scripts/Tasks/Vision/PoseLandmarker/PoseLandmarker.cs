@@ -238,7 +238,7 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
           return;
         }
 
-        var image = outImagePacket.GetImage();
+        var image = outImagePacket.Get();
         var timestamp = outImagePacket.TimestampMicroseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
         if (TryBuildPoseLandmarkerResult(outputPackets, ref poseLandmarkerResult))
@@ -261,18 +261,18 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
       }
 
       var poseLandmarks = result.poseLandmarks ?? new List<NormalizedLandmarks>();
-      poseLandmarksPacket.GetNormalizedLandmarksList(poseLandmarks);
+      poseLandmarksPacket.Get(poseLandmarks);
 
       using var poseWorldLandmarksPacket = outputPackets.At<List<Landmarks>>(_POSE_WORLD_LANDMARKS_STREAM_NAME);
       var poseWorldLandmarks = result.poseWorldLandmarks ?? new List<Landmarks>();
-      poseWorldLandmarksPacket.GetLandmarksList(poseWorldLandmarks);
+      poseWorldLandmarksPacket.Get(poseWorldLandmarks);
 
       var segmentationMasks = result.segmentationMasks;
       using var segmentationMaskPacket = outputPackets.At<List<Image>>(_SEGMENTATION_MASK_STREAM_NAME);
       if (segmentationMaskPacket != null)
       {
         segmentationMasks ??= new List<Image>();
-        segmentationMaskPacket.GetImageList(segmentationMasks);
+        segmentationMaskPacket.Get(segmentationMasks);
       }
 
       result = new PoseLandmarkerResult(poseLandmarks, poseWorldLandmarks, segmentationMasks);

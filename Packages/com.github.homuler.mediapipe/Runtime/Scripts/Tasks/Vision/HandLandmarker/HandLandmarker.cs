@@ -238,7 +238,7 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
           return;
         }
 
-        var image = outImagePacket.GetImage();
+        var image = outImagePacket.Get();
         var timestamp = outImagePacket.TimestampMicroseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
         if (TryBuildHandLandmarkerResult(outputPackets, ref handLandmarkerResult))
@@ -261,15 +261,15 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
       }
 
       var handLandmarks = result.handLandmarks ?? new List<NormalizedLandmarks>();
-      handLandmarksPacket.GetNormalizedLandmarksList(handLandmarks);
+      handLandmarksPacket.Get(handLandmarks);
 
       using var handednessPacket = outputPackets.At<List<Classifications>>(_HANDEDNESS_STREAM_NAME);
       var handedness = result.handedness ?? new List<Classifications>();
-      handednessPacket.GetClassificationsVector(handedness);
+      handednessPacket.Get(handedness);
 
       using var handWorldLandmarksPacket = outputPackets.At<List<Landmarks>>(_HAND_WORLD_LANDMARKS_STREAM_NAME);
       var handWorldLandmarks = result.handWorldLandmarks ?? new List<Landmarks>();
-      handWorldLandmarksPacket.GetLandmarksList(handWorldLandmarks);
+      handWorldLandmarksPacket.Get(handWorldLandmarks);
 
       result = new HandLandmarkerResult(handedness, handLandmarks, handWorldLandmarks);
       return true;

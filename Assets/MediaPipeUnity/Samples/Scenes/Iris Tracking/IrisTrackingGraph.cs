@@ -93,15 +93,15 @@ namespace Mediapipe.Unity.Sample.IrisTracking
 
       _ = TryGetValue(results.Item1.packet, out var faceDetections, (packet) =>
       {
-        return packet.GetProtoList(Detection.Parser);
+        return packet.Get(Detection.Parser);
       });
       _ = TryGetValue(results.Item2.packet, out var faceRect, (packet) =>
       {
-        return packet.GetProto(NormalizedRect.Parser);
+        return packet.Get(NormalizedRect.Parser);
       });
       _ = TryGetValue(results.Item3.packet, out var faceLandmarksWithIris, (packet) =>
       {
-        return packet.GetProto(NormalizedLandmarkList.Parser);
+        return packet.Get(NormalizedLandmarkList.Parser);
       });
 
       return new IrisTrackingResult(faceDetections, faceRect, faceLandmarksWithIris);

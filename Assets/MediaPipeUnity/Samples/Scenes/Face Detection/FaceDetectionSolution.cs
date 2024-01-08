@@ -52,7 +52,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection
     private void OnFaceDetectionsOutput(object stream, OutputStream<List<Detection>>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet == null ? default : packet.GetProtoList(Detection.Parser);
+      var value = packet == null ? default : packet.Get(Detection.Parser);
       _faceDetectionsAnnotationController.DrawLater(value);
     }
   }

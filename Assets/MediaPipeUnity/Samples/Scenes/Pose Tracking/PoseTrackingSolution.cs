@@ -103,28 +103,28 @@ namespace Mediapipe.Unity.Sample.PoseTracking
     private void OnPoseDetectionOutput(object stream, OutputStream<Detection>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet == null ? default : packet.GetProto(Detection.Parser);
+      var value = packet == null ? default : packet.Get(Detection.Parser);
       _poseDetectionAnnotationController.DrawLater(value);
     }
 
     private void OnPoseLandmarksOutput(object stream, OutputStream<NormalizedLandmarkList>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet == null ? default : packet.GetProto(NormalizedLandmarkList.Parser);
+      var value = packet == null ? default : packet.Get(NormalizedLandmarkList.Parser);
       _poseLandmarksAnnotationController.DrawLater(value);
     }
 
     private void OnPoseWorldLandmarksOutput(object stream, OutputStream<LandmarkList>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet == null ? default : packet.GetProto(LandmarkList.Parser);
+      var value = packet == null ? default : packet.Get(LandmarkList.Parser);
       _poseWorldLandmarksAnnotationController.DrawLater(value);
     }
 
     private void OnSegmentationMaskOutput(object stream, OutputStream<ImageFrame>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet == null ? default : packet.GetImageFrame();
+      var value = packet == null ? default : packet.Get();
       _segmentationMaskAnnotationController.DrawLater(value);
       value?.Dispose();
     }
@@ -132,7 +132,7 @@ namespace Mediapipe.Unity.Sample.PoseTracking
     private void OnRoiFromLandmarksOutput(object stream, OutputStream<NormalizedRect>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet == null ? default : packet.GetProto(NormalizedRect.Parser);
+      var value = packet == null ? default : packet.Get(NormalizedRect.Parser);
       _roiFromLandmarksAnnotationController.DrawLater(value);
     }
   }

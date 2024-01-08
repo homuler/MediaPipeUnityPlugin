@@ -51,7 +51,7 @@ namespace Mediapipe.Unity.Sample.ObjectDetection
 
       _ = TryGetValue(result.packet, out var outputDetections, (packet) =>
       {
-        return packet.GetProtoList(Detection.Parser);
+        return packet.Get(Detection.Parser);
       });
 
       return outputDetections;

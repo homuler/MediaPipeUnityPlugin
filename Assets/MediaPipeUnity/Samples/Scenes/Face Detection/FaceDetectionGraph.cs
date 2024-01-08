@@ -66,7 +66,7 @@ namespace Mediapipe.Unity.Sample.FaceDetection
 
       _ = TryGetValue(result.packet, out var faceDetections, (packet) =>
       {
-        return packet.GetProtoList(Detection.Parser);
+        return packet.Get(Detection.Parser);
       });
 
       return faceDetections;

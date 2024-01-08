@@ -149,23 +149,20 @@ namespace Mediapipe.Unity.Sample.PoseTracking
 
       _ = TryGetValue(results.Item1.packet, out var poseDetection, (packet) =>
       {
-        return packet.GetProto(Detection.Parser);
+        return packet.Get(Detection.Parser);
       });
       _ = TryGetValue(results.Item2.packet, out var poseLandmarks, (packet) =>
       {
-        return packet.GetProto(NormalizedLandmarkList.Parser);
+        return packet.Get(NormalizedLandmarkList.Parser);
       });
       _ = TryGetValue(results.Item3.packet, out var poseWorldLandmarks, (packet) =>
       {
-        return packet.GetProto(LandmarkList.Parser);
+        return packet.Get(LandmarkList.Parser);
       });
-      _ = TryGetValue(results.Item4.packet, out var segmentationMask, (packet) =>
-      {
-        return packet.GetImageFrame();
-      });
+      _ = TryGetValue(results.Item4.packet, out var segmentationMask);
       _ = TryGetValue(results.Item5.packet, out var roiFromLandmarks, (packet) =>
       {
-        return packet.GetProto(NormalizedRect.Parser);
+        return packet.Get(NormalizedRect.Parser);
       });
 
       return new PoseTrackingResult(poseDetection, poseLandmarks, poseWorldLandmarks, segmentationMask, roiFromLandmarks);

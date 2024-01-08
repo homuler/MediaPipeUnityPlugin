@@ -112,49 +112,49 @@ namespace Mediapipe.Unity.Sample.Holistic
     private void OnPoseDetectionOutput(object stream, OutputStream<Detection>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet == null ? default : packet.GetProto(Detection.Parser);
+      var value = packet == null ? default : packet.Get(Detection.Parser);
       _poseDetectionAnnotationController.DrawLater(value);
     }
 
     private void OnFaceLandmarksOutput(object stream, OutputStream<NormalizedLandmarkList>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet == null ? default : packet.GetProto(NormalizedLandmarkList.Parser);
+      var value = packet == null ? default : packet.Get(NormalizedLandmarkList.Parser);
       _holisticAnnotationController.DrawFaceLandmarkListLater(value);
     }
 
     private void OnPoseLandmarksOutput(object stream, OutputStream<NormalizedLandmarkList>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet == null ? default : packet.GetProto(NormalizedLandmarkList.Parser);
+      var value = packet == null ? default : packet.Get(NormalizedLandmarkList.Parser);
       _holisticAnnotationController.DrawPoseLandmarkListLater(value);
     }
 
     private void OnLeftHandLandmarksOutput(object stream, OutputStream<NormalizedLandmarkList>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet == null ? default : packet.GetProto(NormalizedLandmarkList.Parser);
+      var value = packet == null ? default : packet.Get(NormalizedLandmarkList.Parser);
       _holisticAnnotationController.DrawLeftHandLandmarkListLater(value);
     }
 
     private void OnRightHandLandmarksOutput(object stream, OutputStream<NormalizedLandmarkList>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet == null ? default : packet.GetProto(NormalizedLandmarkList.Parser);
+      var value = packet == null ? default : packet.Get(NormalizedLandmarkList.Parser);
       _holisticAnnotationController.DrawRightHandLandmarkListLater(value);
     }
 
     private void OnPoseWorldLandmarksOutput(object stream, OutputStream<LandmarkList>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet == null ? default : packet.GetProto(LandmarkList.Parser);
+      var value = packet == null ? default : packet.Get(LandmarkList.Parser);
       _poseWorldLandmarksAnnotationController.DrawLater(value);
     }
 
     private void OnSegmentationMaskOutput(object stream, OutputStream<ImageFrame>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet == null ? default : packet.GetImageFrame();
+      var value = packet == null ? default : packet.Get();
       _segmentationMaskAnnotationController.DrawLater(value);
       value?.Dispose();
     }
@@ -162,7 +162,7 @@ namespace Mediapipe.Unity.Sample.Holistic
     private void OnPoseRoiOutput(object stream, OutputStream<NormalizedRect>.OutputEventArgs eventArgs)
     {
       var packet = eventArgs.packet;
-      var value = packet == null ? default : packet.GetProto(NormalizedRect.Parser);
+      var value = packet == null ? default : packet.Get(NormalizedRect.Parser);
       _poseRoiAnnotationController.DrawLater(value);
     }
   }
