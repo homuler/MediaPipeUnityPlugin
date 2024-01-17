@@ -281,7 +281,7 @@ namespace Mediapipe.Tasks.Components.Containers
       {
         var landmarks = target[i];
         Landmarks.Copy(nativeLandmarks, ref landmarks);
-        target[i] = landmarks;
+        target[i++] = landmarks;
       }
     }
 
@@ -294,7 +294,7 @@ namespace Mediapipe.Tasks.Components.Containers
       {
         var landmarks = target[i];
         NormalizedLandmarks.Copy(nativeLandmarks, ref landmarks);
-        target[i] = landmarks;
+        target[i++] = landmarks;
       }
     }
   }
