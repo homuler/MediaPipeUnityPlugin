@@ -11,6 +11,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
+#if UNITY_ANDROID
+using UnityEngine.Rendering;
+#endif
+
 using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Mediapipe.Unity.Sample
