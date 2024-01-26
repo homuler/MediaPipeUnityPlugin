@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.14.1](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.14.0...v0.14.1) (2024-01-26)
+
+
+### Bug Fixes
+
+* all landmarks except the first one are always null ([#1125](https://github.com/homuler/MediaPipeUnityPlugin/issues/1125)) ([73554f2](https://github.com/homuler/MediaPipeUnityPlugin/commit/73554f2cacc4e737cfdce7ff807482b425ba9eb0))
+* **sample:** Android build error ([#1127](https://github.com/homuler/MediaPipeUnityPlugin/issues/1127)) ([77183c6](https://github.com/homuler/MediaPipeUnityPlugin/commit/77183c6fc6147bc035ae3466045123e58fac65f7))
+
 ## [0.14.0](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.13.1...v0.14.0) (2024-01-08)
 
 
