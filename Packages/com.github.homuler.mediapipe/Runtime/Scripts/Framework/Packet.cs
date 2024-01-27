@@ -249,6 +249,56 @@ namespace Mediapipe
     }
 
     /// <summary>
+    ///   Create a Matrix Packet.
+    /// </summary>
+    public static Packet<Matrix> CreateColMajorMatrix(float[] data, int row, int col)
+    {
+      UnsafeNativeMethods.mp__MakeColMajorMatrixPacket__Pf_i_i(data, row, col, out var ptr).Assert();
+
+      return new Packet<Matrix>(ptr, true);
+    }
+
+    /// <summary>
+    ///   Create a Matrix Packet.
+    /// </summary>
+    public static Packet<Matrix> CreateColMajorMatrix(Matrix value)
+    {
+      if (!value.isColMajor)
+      {
+        throw new ArgumentException("Matrix must be col-major");
+      }
+      return CreateColMajorMatrix(value.data, value.rows, value.cols);
+    }
+
+    /// <summary>
+    ///   Create a Matrix Packet.
+    /// </summary>
+    /// <param name="timestampMicrosec">
+    ///   The timestamp of the packet.
+    /// </param>
+    public static Packet<Matrix> CreateColMajorMatrixAt(float[] data, int row, int col, long timestampMicrosec)
+    {
+      UnsafeNativeMethods.mp__MakeColMajorMatrixPacket_At__Pf_i_i_ll(data, row, col, timestampMicrosec, out var ptr).Assert();
+
+      return new Packet<Matrix>(ptr, true);
+    }
+
+    /// <summary>
+    ///   Create a Matrix Packet.
+    /// </summary>
+    /// <param name="timestampMicrosec">
+    ///   The timestamp of the packet.
+    /// </param>
+    public static Packet<Matrix> CreateColMajorMatrixAt(Matrix value, long timestampMicrosec)
+    {
+      if (!value.isColMajor)
+      {
+        throw new ArgumentException("Matrix must be col-major");
+      }
+      return CreateColMajorMatrixAt(value.data, value.rows, value.cols, timestampMicrosec);
+    }
+
+    /// <summary>
     ///   Create a MediaPipe protobuf message Packet.
     /// </summary>
     public static Packet<TMessage> CreateProto<TMessage>(TMessage value) where TMessage : IMessage<TMessage>

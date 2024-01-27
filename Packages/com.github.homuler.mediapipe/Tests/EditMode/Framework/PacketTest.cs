@@ -321,6 +321,44 @@ namespace Mediapipe.Tests
     }
     #endregion
 
+    #region Matrix
+    [Test]
+    public void CreateColMajorMatrix_ShouldReturnNewMatrixPacket()
+    {
+      var value = new Matrix(new float[] { 1, 2, 3, 4, 5, 6 }, 2, 3);
+      using var packet = Packet.CreateColMajorMatrix(value);
+
+      Assert.DoesNotThrow(packet.Validate);
+
+      var result = packet.Get();
+      Assert.AreEqual(value.data, result.data);
+      Assert.AreEqual(value.rows, result.rows);
+      Assert.AreEqual(value.cols, result.cols);
+      Assert.AreEqual(value.layout, result.layout);
+
+      using var unsetTimestamp = Timestamp.Unset();
+      Assert.AreEqual(unsetTimestamp.Microseconds(), packet.TimestampMicroseconds());
+    }
+
+    [Test]
+    public void CreateColMajorMatrixAt_ShouldReturnNewMatrixPacket()
+    {
+      var value = new Matrix(new float[] { 1, 2, 3, 4, 5, 6 }, 2, 3);
+      var timestamp = 1;
+      using var packet = Packet.CreateColMajorMatrixAt(value, timestamp);
+
+      Assert.DoesNotThrow(packet.Validate);
+
+      var result = packet.Get();
+      Assert.AreEqual(value.data, result.data);
+      Assert.AreEqual(value.rows, result.rows);
+      Assert.AreEqual(value.cols, result.cols);
+      Assert.AreEqual(value.layout, result.layout);
+
+      Assert.AreEqual(timestamp, packet.TimestampMicroseconds());
+    }
+    #endregion
+
     #region Proto
     [Test]
     public void CreateProto_ShouldReturnNewProtoPacket()

@@ -13,17 +13,19 @@ namespace Mediapipe
   {
     #region Packet
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp__MakeMatrixPacket__PKc_i(byte[] serializedMatrixData, int size, out IntPtr packet_out);
-
-    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp__MakeMatrixPacket_At__PKc_i_Rt(byte[] serializedMatrixData, int size, IntPtr timestamp, out IntPtr packet_out);
-
-    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
     public static extern MpReturnCode mp_Packet__ValidateAsMatrix(IntPtr packet, out IntPtr status);
 
     [DllImport(MediaPipeLibrary, ExactSpelling = true)]
-    public static extern MpReturnCode mp_Packet__GetMatrix(IntPtr packet, out SerializedProto serializedProto);
+    public static extern MpReturnCode mp_Packet__GetMpMatrix(IntPtr packet, out NativeMatrix matrix);
 
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeColMajorMatrixPacket__Pf_i_i(float[] data, int rows, int cols, out IntPtr packet_out);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern MpReturnCode mp__MakeColMajorMatrixPacket_At__Pf_i_i_ll(float[] data, int rows, int cols, long timestampMicrosec, out IntPtr packet_out);
+
+    [DllImport(MediaPipeLibrary, ExactSpelling = true)]
+    public static extern void mp_api_Matrix__delete(NativeMatrix matrix);
     #endregion
   }
 }

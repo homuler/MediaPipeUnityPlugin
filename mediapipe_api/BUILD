@@ -161,7 +161,7 @@ cc_library(
         "//mediapipe_api/framework/formats:image",
         "//mediapipe_api/framework/formats:image_frame",
         "//mediapipe_api/framework/formats:landmark",
-        "//mediapipe_api/framework/formats:matrix_data",
+        "//mediapipe_api/framework/formats:matrix",
         "//mediapipe_api/framework/formats:rect",
         "//mediapipe_api/framework/port:logging",
         "//mediapipe_api/tasks/c/components/containers:classification_result",

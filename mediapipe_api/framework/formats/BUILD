@@ -77,9 +77,9 @@ cc_library(
 )
 
 cc_library(
-    name = "matrix_data",
-    srcs = ["matrix_data.cc"],
-    hdrs = ["matrix_data.h"],
+    name = "matrix",
+    srcs = ["matrix.cc"],
+    hdrs = ["matrix.h"],
     deps = [
         "//mediapipe_api:common",
         "//mediapipe_api/external/absl:status",
