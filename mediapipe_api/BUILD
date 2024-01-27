@@ -98,6 +98,13 @@ config_setting(
     },
 )
 
+config_setting(
+    name = "audio_classification_switch",
+    flag_values = {
+        ":solutions": "audio_classification",
+    },
+)
+
 selects.config_setting_group(
     name = "enable_face_detection",
     match_any = [":all_solutions_switch", ":face_detection_switch"],
@@ -141,6 +148,11 @@ selects.config_setting_group(
 selects.config_setting_group(
     name = "enable_object_detection",
     match_any = [":all_solutions_switch", ":object_detection_switch"],
+)
+
+selects.config_setting_group(
+    name = "enable_audio_classification",
+    match_any = [":all_solutions_switch", ":audio_classification_switch"],
 )
 
 cc_library(
@@ -445,6 +457,7 @@ mediapipe_files(srcs = [
     "pose_landmarker_full.task",
     "pose_landmarker_heavy.task",
     "pose_landmarker_lite.task",
+    "yamnet_audio_classifier_with_metadata.tflite",
 ])
 
 pkg_asset(
@@ -479,6 +492,9 @@ pkg_asset(
         "//conditions:default": [],
     }) + select({
         ":enable_object_detection": [":object_detection_assets"],
+        "//conditions:default": [],
+    }) + select({
+        ":enable_audio_classification": [":audio_classification_assets"],
         "//conditions:default": [],
     }),
 )
@@ -561,6 +577,13 @@ filegroup(
     srcs = [
         "@mediapipe//mediapipe/models:ssdlite_object_detection.tflite",
         "@mediapipe//mediapipe/models:ssdlite_object_detection_labelmap.txt",
+    ],
+)
+
+filegroup(
+    name = "audio_classification_assets",
+    srcs = [
+        ":yamnet_audio_classifier_with_metadata.tflite",
     ],
 )
 
