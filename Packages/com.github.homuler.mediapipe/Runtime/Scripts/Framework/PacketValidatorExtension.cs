@@ -183,6 +183,20 @@ namespace Mediapipe
     public static void ValidateAsInt(this Packet<int> packet) => Validate(packet);
 
     /// <summary>
+    ///   Validate if the content of the <see cref="Packet"/> is mediapipe::Matrix.
+    /// </summary>
+    /// <exception cref="BadStatusException">
+    ///   If the <see cref="Packet"/> doesn't contain mediapipe::Matrix.
+    /// </exception>
+    public static void Validate(this Packet<Matrix> packet)
+    {
+      UnsafeNativeMethods.mp_Packet__ValidateAsMatrix(packet.mpPtr, out var statusPtr).Assert();
+      GC.KeepAlive(packet);
+
+      Status.UnsafeAssertOk(statusPtr);
+    }
+
+    /// <summary>
     ///   Validate if the content of the <see cref="Packet"/> is a proto message.
     /// </summary>
     /// <exception cref="BadStatusException">
