@@ -4,8 +4,8 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-#ifndef MEDIAPIPE_API_FRAMEWORK_FORMATS_MATRIX_DATA_H_
-#define MEDIAPIPE_API_FRAMEWORK_FORMATS_MATRIX_DATA_H_
+#ifndef MEDIAPIPE_API_FRAMEWORK_FORMATS_MATRIX_H_
+#define MEDIAPIPE_API_FRAMEWORK_FORMATS_MATRIX_H_
 
 #include "mediapipe/framework/formats/matrix.h"
 #include "mediapipe_api/common.h"
@@ -22,4 +22,4 @@ MP_CAPI(MpReturnCode) mp_Packet__ValidateAsMatrix(mediapipe::Packet* packet, abs
 
 }  // extern "C"
 
-#endif  // MEDIAPIPE_API_FRAMEWORK_FORMATS_MATRIX_DATA_H_
+#endif  // MEDIAPIPE_API_FRAMEWORK_FORMATS_MATRIX_H_

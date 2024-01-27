@@ -4,7 +4,7 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-#include "mediapipe_api/framework/formats/matrix_data.h"
+#include "mediapipe_api/framework/formats/matrix.h"
 
 MpReturnCode mp__MakeMatrixPacket__PKc_i(const char* serialized_matrix_data, int size, mediapipe::Packet** packet_out) {
   TRY
