@@ -15,8 +15,12 @@
 
 extern "C" {
 
+MP_CAPI(MpReturnCode) mp_Packet__GetClassificationResult(mediapipe::Packet* packet, ClassificationResult* value_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetClassificationsVector(mediapipe::Packet* packet, ClassificationResult* value_out);
 MP_CAPI(void) mp_tasks_c_components_containers_CppCloseClassificationResult(ClassificationResult data);
+
+MP_CAPI(MpReturnCode) mp_Packet__GetClassificationResultVector(mediapipe::Packet* packet, mp_api::StructArray<ClassificationResult>* value_out);
+MP_CAPI(void) mp_api_ClassificationResultArray__delete(mp_api::StructArray<ClassificationResult> array);
 
 }  // extern "C"
 

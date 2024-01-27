@@ -272,6 +272,19 @@ namespace Mediapipe.Tasks.Components.Containers
 
   internal static class NativeLandmarksArrayExtension
   {
+    public static void FillWith(this List<ClassificationResult> target, NativeClassificationResultArray source)
+    {
+      target.ResizeTo(source.size);
+
+      var i = 0;
+      foreach (var nativeClassificationResult in source.AsReadOnlySpan())
+      {
+        var classificationResult = target[i];
+        ClassificationResult.Copy(nativeClassificationResult, ref classificationResult);
+        target[i++] = classificationResult;
+      }
+    }
+
     public static void FillWith(this List<Landmarks> target, NativeLandmarksArray source)
     {
       target.ResizeTo(source.size);
