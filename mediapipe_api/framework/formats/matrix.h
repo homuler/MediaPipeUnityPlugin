@@ -26,17 +26,11 @@ namespace mp_api {
 
 extern "C" {
 
-MP_CAPI(MpReturnCode) mp__MakeMatrixPacket__PKc_i(const char* serialized_matrix_data, int size, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp__MakeMatrixPacket_At__PKc_i_ll(const char* serialized_matrix_data, int size, int64 timestamp_microsec,
-                                                        mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp__MakeMatrixPacket_At__PKc_i_Rt(const char* serialized_matrix_data, int size, mediapipe::Timestamp* timestamp,
-                                                        mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp_Packet__GetMatrixData(mediapipe::Packet* packet, mp_api::SerializedProto* value_out);
-MP_CAPI(MpReturnCode) mp_Packet__GetMpMatrix(mediapipe::Packet* packet, mp_api::Matrix* value_out);
-MP_CAPI(MpReturnCode) mp_Packet__ValidateAsMatrix(mediapipe::Packet* packet, absl::Status** status_out);
-
 MP_CAPI(MpReturnCode) mp__MakeColMajorMatrixPacket__Pf_i_i(float* pcm_data, int rows, int cols, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeColMajorMatrixPacket_At__Pf_i_i_ll(float* pcm_data, int rows, int cols, int64 timestamp_microsec, mediapipe::Packet** packet_out);
+
+MP_CAPI(MpReturnCode) mp_Packet__GetMpMatrix(mediapipe::Packet* packet, mp_api::Matrix* value_out);
+MP_CAPI(MpReturnCode) mp_Packet__ValidateAsMatrix(mediapipe::Packet* packet, absl::Status** status_out);
 
 MP_CAPI(void) mp_api_Matrix__delete(mp_api::Matrix matrix);
 
