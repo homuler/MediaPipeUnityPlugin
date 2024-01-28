@@ -11,6 +11,13 @@ namespace Mediapipe.Tasks.Components.Containers
 {
   public static class PacketExtension
   {
+    public static void Get(this Packet<ClassificationResult> packet, ref ClassificationResult value)
+    {
+      UnsafeNativeMethods.mp_Packet__GetClassificationResult(packet.mpPtr, out var classificationResult).Assert();
+      ClassificationResult.Copy(classificationResult, ref value);
+      classificationResult.Dispose();
+    }
+
     public static void Get(this Packet<List<Classifications>> packet, List<Classifications> outs)
     {
       UnsafeNativeMethods.mp_Packet__GetClassificationsVector(packet.mpPtr, out var classificationResult).Assert();
@@ -27,6 +34,13 @@ namespace Mediapipe.Tasks.Components.Containers
       UnsafeNativeMethods.mp_Packet__GetDetectionResult(packet.mpPtr, out var detectionResult).Assert();
       DetectionResult.Copy(detectionResult, ref value);
       detectionResult.Dispose();
+    }
+
+    public static void Get(this Packet<List<ClassificationResult>> packet, List<ClassificationResult> outs)
+    {
+      UnsafeNativeMethods.mp_Packet__GetClassificationResultVector(packet.mpPtr, out var classificationResults).Assert();
+      outs.FillWith(classificationResults);
+      classificationResults.Dispose();
     }
 
     [Obsolete("Use Get instead")]

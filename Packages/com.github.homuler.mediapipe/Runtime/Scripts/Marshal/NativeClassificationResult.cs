@@ -55,4 +55,25 @@ namespace Mediapipe
       UnsafeNativeMethods.mp_tasks_c_components_containers_CppCloseClassificationResult(this);
     }
   }
+
+  [StructLayout(LayoutKind.Sequential)]
+  internal readonly struct NativeClassificationResultArray
+  {
+    private readonly IntPtr _data;
+    public readonly int size;
+
+    public void Dispose()
+    {
+      UnsafeNativeMethods.mp_api_ClassificationResultArray__delete(this);
+    }
+
+    public ReadOnlySpan<NativeClassificationResult> AsReadOnlySpan()
+    {
+      unsafe
+      {
+        return new ReadOnlySpan<NativeClassificationResult>((NativeClassificationResult*)_data, size);
+      }
+    }
+  }
+
 }
