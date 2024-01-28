@@ -4,6 +4,9 @@ on:
     inputs:
       ref:
         type: string
+      is_master:
+        type: boolean
+        default: false
     secrets:
       UNITY_EMAIL:
         required: true
@@ -39,7 +42,7 @@ jobs:
       # Setup build tools
       - name: Mount bazel cache
         if: steps.cache-libs.outputs.cache-hit != 'true'
-        uses: actions/cache@v3
+        uses: actions/cache/restore@v3
         with:
           path: /private/var/tmp/_bazel_runner
           key: bazel-macos-11-v1-${{ hashFiles('WORKSPACE') }}-${{ hashFiles('cache_key.txt') }}
@@ -75,6 +78,13 @@ jobs:
           name: macos-package
           path: artifacts.tar
           retention-days: 1
+
+      - name: Cache bazel
+        if: inputs.is_master == 'true' && steps.cache-libs.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v3
+        with:
+          path: /private/var/tmp/_bazel_runner
+          key: bazel-macos-11-v1-${{ hashFiles('WORKSPACE') }}-${{ hashFiles('cache_key.txt') }}
 
   test:
     runs-on: ${{ matrix.os }}

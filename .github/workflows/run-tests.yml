@@ -21,6 +21,7 @@ jobs:
     needs: check-test-trigger
     with:
       ref: ${{ github.event.pull_request.head.sha }}
+      is_master: ${{ github.ref_name == 'master' }}
     secrets:
       UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
       UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
@@ -31,6 +32,7 @@ jobs:
     needs: check-test-trigger
     with:
       ref: ${{ github.event.pull_request.head.sha }}
+      is_master: ${{ github.ref_name == 'master' }}
     secrets:
       UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
       UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
