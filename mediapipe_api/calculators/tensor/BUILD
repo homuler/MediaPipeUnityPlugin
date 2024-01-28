@@ -31,8 +31,8 @@ csharp_proto_src(
     name = "inference_calculator_cs",
     proto_src = "mediapipe/calculators/tensor/inference_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/tensor:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/tensor:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -40,9 +40,9 @@ csharp_proto_src(
     name = "tensor_converter_calculator_cs",
     proto_src = "mediapipe/calculators/tensor/tensor_converter_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/tensor:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
-        "@com_google_mediapipe//mediapipe/gpu:protos_src",
+        "@mediapipe//mediapipe/calculators/tensor:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/gpu:protos_src",
     ],
 )
 
@@ -50,8 +50,8 @@ csharp_proto_src(
     name = "tensors_to_detections_calculator_cs",
     proto_src = "mediapipe/calculators/tensor/tensors_to_detections_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/tensor:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/tensor:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -59,8 +59,8 @@ csharp_proto_src(
     name = "tensors_to_landmarks_calculator_cs",
     proto_src = "mediapipe/calculators/tensor/tensors_to_landmarks_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/tensor:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/tensor:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -68,8 +68,8 @@ csharp_proto_src(
     name = "landmarks_to_tensor_calculator_cs",
     proto_src = "mediapipe/calculators/tensor/landmarks_to_tensor_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/tensor:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/tensor:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -77,8 +77,8 @@ csharp_proto_src(
     name = "tensors_to_floats_calculator_cs",
     proto_src = "mediapipe/calculators/tensor/tensors_to_floats_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/tensor:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/tensor:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -86,9 +86,9 @@ csharp_proto_src(
     name = "tensors_to_classification_calculator_cs",
     proto_src = "mediapipe/calculators/tensor/tensors_to_classification_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/tensor:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
-        "@com_google_mediapipe//mediapipe/util:protos_src",
+        "@mediapipe//mediapipe/calculators/tensor:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/util:protos_src",
     ],
 )
 
@@ -96,9 +96,9 @@ csharp_proto_src(
     name = "image_to_tensor_calculator_cs",
     proto_src = "mediapipe/calculators/tensor/image_to_tensor_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/tensor:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
-        "@com_google_mediapipe//mediapipe/gpu:protos_src",
+        "@mediapipe//mediapipe/calculators/tensor:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/gpu:protos_src",
     ],
 )
 
@@ -106,8 +106,8 @@ csharp_proto_src(
     name = "tensors_to_segmentation_calculator_cs",
     proto_src = "mediapipe/calculators/tensor/tensors_to_segmentation_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/tensor:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
-        "@com_google_mediapipe//mediapipe/gpu:protos_src",
+        "@mediapipe//mediapipe/calculators/tensor:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/gpu:protos_src",
     ],
 )

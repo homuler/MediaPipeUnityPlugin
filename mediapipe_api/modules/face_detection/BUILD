@@ -21,9 +21,9 @@ csharp_proto_src(
     name = "face_detection_cs",
     proto_src = "mediapipe/modules/face_detection/face_detection.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/modules/face_detection:protos_src",
-        "@com_google_mediapipe//mediapipe/calculators/tensor:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
-        "@com_google_mediapipe//mediapipe/gpu:protos_src",
+        "@mediapipe//mediapipe/modules/face_detection:protos_src",
+        "@mediapipe//mediapipe/calculators/tensor:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/gpu:protos_src",
     ],
 )

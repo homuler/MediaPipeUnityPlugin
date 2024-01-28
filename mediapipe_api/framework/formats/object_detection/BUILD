@@ -21,6 +21,6 @@ csharp_proto_src(
     name = "anchor_cs",
     proto_src = "mediapipe/framework/formats/object_detection/anchor.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats/object_detection:protos_src",
+        "@mediapipe//mediapipe/framework/formats/object_detection:protos_src",
     ],
 )

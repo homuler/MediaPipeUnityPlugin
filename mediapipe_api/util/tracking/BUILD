@@ -37,7 +37,7 @@ csharp_proto_src(
     name = "tone_models_cs",
     proto_src = "mediapipe/util/tracking/tone_models.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/util/tracking:protos_src",
+        "@mediapipe//mediapipe/util/tracking:protos_src",
     ],
 )
 
@@ -45,7 +45,7 @@ csharp_proto_src(
     name = "tone_estimation_cs",
     proto_src = "mediapipe/util/tracking/tone_estimation.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/util/tracking:protos_src",
+        "@mediapipe//mediapipe/util/tracking:protos_src",
     ],
 )
 
@@ -53,7 +53,7 @@ csharp_proto_src(
     name = "region_flow_computation_cs",
     proto_src = "mediapipe/util/tracking/region_flow_computation.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/util/tracking:protos_src",
+        "@mediapipe//mediapipe/util/tracking:protos_src",
     ],
 )
 
@@ -61,7 +61,7 @@ csharp_proto_src(
     name = "motion_saliency_cs",
     proto_src = "mediapipe/util/tracking/motion_saliency.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/util/tracking:protos_src",
+        "@mediapipe//mediapipe/util/tracking:protos_src",
     ],
 )
 
@@ -69,7 +69,7 @@ csharp_proto_src(
     name = "motion_estimation_cs",
     proto_src = "mediapipe/util/tracking/motion_estimation.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/util/tracking:protos_src",
+        "@mediapipe//mediapipe/util/tracking:protos_src",
     ],
 )
 
@@ -77,7 +77,7 @@ csharp_proto_src(
     name = "motion_analysis_cs",
     proto_src = "mediapipe/util/tracking/motion_analysis.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/util/tracking:protos_src",
+        "@mediapipe//mediapipe/util/tracking:protos_src",
     ],
 )
 
@@ -85,7 +85,7 @@ csharp_proto_src(
     name = "region_flow_cs",
     proto_src = "mediapipe/util/tracking/region_flow.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/util/tracking:protos_src",
+        "@mediapipe//mediapipe/util/tracking:protos_src",
     ],
 )
 
@@ -93,7 +93,7 @@ csharp_proto_src(
     name = "motion_models_cs",
     proto_src = "mediapipe/util/tracking/motion_models.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/util/tracking:protos_src",
+        "@mediapipe//mediapipe/util/tracking:protos_src",
     ],
 )
 
@@ -101,7 +101,7 @@ csharp_proto_src(
     name = "camera_motion_cs",
     proto_src = "mediapipe/util/tracking/camera_motion.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/util/tracking:protos_src",
+        "@mediapipe//mediapipe/util/tracking:protos_src",
     ],
 )
 
@@ -109,7 +109,7 @@ csharp_proto_src(
     name = "push_pull_filtering_cs",
     proto_src = "mediapipe/util/tracking/push_pull_filtering.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/util/tracking:protos_src",
+        "@mediapipe//mediapipe/util/tracking:protos_src",
     ],
 )
 
@@ -117,7 +117,7 @@ csharp_proto_src(
     name = "frame_selection_solution_evaluator_cs",
     proto_src = "mediapipe/util/tracking/frame_selection_solution_evaluator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/util/tracking:protos_src",
+        "@mediapipe//mediapipe/util/tracking:protos_src",
     ],
 )
 
@@ -125,7 +125,7 @@ csharp_proto_src(
     name = "frame_selection_cs",
     proto_src = "mediapipe/util/tracking/frame_selection.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/util/tracking:protos_src",
+        "@mediapipe//mediapipe/util/tracking:protos_src",
     ],
 )
 
@@ -133,7 +133,7 @@ csharp_proto_src(
     name = "flow_packager_cs",
     proto_src = "mediapipe/util/tracking/flow_packager.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/util/tracking:protos_src",
+        "@mediapipe//mediapipe/util/tracking:protos_src",
     ],
 )
 
@@ -141,7 +141,7 @@ csharp_proto_src(
     name = "tracking_cs",
     proto_src = "mediapipe/util/tracking/tracking.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/util/tracking:protos_src",
+        "@mediapipe//mediapipe/util/tracking:protos_src",
     ],
 )
 
@@ -149,7 +149,7 @@ csharp_proto_src(
     name = "box_tracker_cs",
     proto_src = "mediapipe/util/tracking/box_tracker.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/util/tracking:protos_src",
+        "@mediapipe//mediapipe/util/tracking:protos_src",
     ],
 )
 
@@ -157,7 +157,7 @@ csharp_proto_src(
     name = "tracked_detection_manager_config_cs",
     proto_src = "mediapipe/util/tracking/tracked_detection_manager_config.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/util/tracking:protos_src",
+        "@mediapipe//mediapipe/util/tracking:protos_src",
     ],
 )
 
@@ -165,6 +165,6 @@ csharp_proto_src(
     name = "box_detector_cs",
     proto_src = "mediapipe/util/tracking/box_detector.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/util/tracking:protos_src",
+        "@mediapipe//mediapipe/util/tracking:protos_src",
     ],
 )

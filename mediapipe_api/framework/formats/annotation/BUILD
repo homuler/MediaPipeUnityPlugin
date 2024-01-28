@@ -22,7 +22,7 @@ csharp_proto_src(
     name = "rasterization_cs",
     proto_src = "mediapipe/framework/formats/annotation/rasterization.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats/annotation:protos_src",
+        "@mediapipe//mediapipe/framework/formats/annotation:protos_src",
     ],
 )
 
@@ -30,6 +30,6 @@ csharp_proto_src(
     name = "locus_cs",
     proto_src = "mediapipe/framework/formats/annotation/locus.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats/annotation:protos_src",
+        "@mediapipe//mediapipe/framework/formats/annotation:protos_src",
     ],
 )

@@ -21,7 +21,7 @@ csharp_proto_src(
     name = "classifications_cs",
     proto_src = "mediapipe/tasks/cc/components/containers/proto/classifications.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/tasks/cc/components/containers/proto:protos_src",
-        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+        "@mediapipe//mediapipe/tasks/cc/components/containers/proto:protos_src",
+        "@mediapipe//mediapipe/framework/formats:protos_src",
     ],
 )

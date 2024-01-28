@@ -17,7 +17,7 @@ cc_library(
         "//mediapipe_api:common",
         "//mediapipe_api/framework:packet",
         "//mediapipe_api/external:protobuf",
-        "@com_google_mediapipe//mediapipe/tasks/cc/vision/face_geometry/proto:face_geometry_cc_proto",
+        "@mediapipe//mediapipe/tasks/cc/vision/face_geometry/proto:face_geometry_cc_proto",
     ],
     alwayslink = True,
 )
@@ -36,8 +36,8 @@ csharp_proto_src(
     name = "face_geometry_cs",
     proto_src = "mediapipe/tasks/cc/vision/face_geometry/proto/face_geometry.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/tasks/cc/vision/face_geometry/proto:protos_src",
-        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+        "@mediapipe//mediapipe/tasks/cc/vision/face_geometry/proto:protos_src",
+        "@mediapipe//mediapipe/framework/formats:protos_src",
     ],
 )
 
@@ -45,10 +45,10 @@ csharp_proto_src(
     name = "face_geometry_graph_options_cs",
     proto_src = "mediapipe/tasks/cc/vision/face_geometry/proto/face_geometry_graph_options.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/tasks/cc/core/proto:protos_src",
-        "@com_google_mediapipe//mediapipe/tasks/cc/vision/face_geometry/proto:protos_src",
-        "@com_google_mediapipe//mediapipe/tasks/cc/vision/face_geometry/calculators:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/tasks/cc/core/proto:protos_src",
+        "@mediapipe//mediapipe/tasks/cc/vision/face_geometry/proto:protos_src",
+        "@mediapipe//mediapipe/tasks/cc/vision/face_geometry/calculators:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -56,6 +56,6 @@ csharp_proto_src(
     name = "mesh_3d_cs",
     proto_src = "mediapipe/tasks/cc/vision/face_geometry/proto/mesh_3d.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/tasks/cc/vision/face_geometry/proto:protos_src",
+        "@mediapipe//mediapipe/tasks/cc/vision/face_geometry/proto:protos_src",
     ],
 )

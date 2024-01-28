@@ -69,15 +69,15 @@ alias(
 alias(
     name = "opencv_binary",
     actual = select({
-        "@com_google_mediapipe//mediapipe:android_x86": "@android_opencv//:libopencv_x86",
-        "@com_google_mediapipe//mediapipe:android_x86_64": "@android_opencv//:libopencv_x86_64",
-        "@com_google_mediapipe//mediapipe:android_arm": "@android_opencv//:libopencv_armeabi-v7a",
-        "@com_google_mediapipe//mediapipe:android_arm64": "@android_opencv//:libopencv_arm64-v8a",
-        "@com_google_mediapipe//mediapipe:ios": "@ios_opencv//:opencv",
-        "@com_google_mediapipe//mediapipe:macos_arm64": "@macos_arm64_opencv//:opencv",
-        "@com_google_mediapipe//mediapipe:macos_x86_64": "@macos_opencv//:opencv",
-        "@com_google_mediapipe//mediapipe:windows": "@windows_opencv//:opencv",
-        "@com_google_mediapipe//mediapipe:emscripten": "@wasm_opencv//:opencv",
+        "@mediapipe//mediapipe:android_x86": "@android_opencv//:libopencv_x86",
+        "@mediapipe//mediapipe:android_x86_64": "@android_opencv//:libopencv_x86_64",
+        "@mediapipe//mediapipe:android_arm": "@android_opencv//:libopencv_armeabi-v7a",
+        "@mediapipe//mediapipe:android_arm64": "@android_opencv//:libopencv_arm64-v8a",
+        "@mediapipe//mediapipe:ios": "@ios_opencv//:opencv",
+        "@mediapipe//mediapipe:macos_arm64": "@macos_arm64_opencv//:opencv",
+        "@mediapipe//mediapipe:macos_x86_64": "@macos_opencv//:opencv",
+        "@mediapipe//mediapipe:windows": "@windows_opencv//:opencv",
+        "@mediapipe//mediapipe:emscripten": "@wasm_opencv//:opencv",
         "//conditions:default": "@linux_opencv//:opencv",
     }),
 )
@@ -146,13 +146,13 @@ CACHE_ENTRIES = COMMON_CACHE_ENTRIES | select({
         "BUILD_WITH_STATIC_CRT": "OFF",
         "WITH_LAPACK": "ON",
     },
-    "@com_google_mediapipe//mediapipe:macos_arm64": {
+    "@mediapipe//mediapipe:macos_arm64": {
         "CMAKE_SYSTEM_NAME": "Darwin",
         "CMAKE_SYSTEM_PROCESSOR": "arm64",
         "CMAKE_SYSTEM_ARCHITECTURES": "arm64",
         "CMAKE_OSX_ARCHITECTURES": "arm64",
     },
-    "@com_google_mediapipe//mediapipe:macos_x86_64": {
+    "@mediapipe//mediapipe:macos_x86_64": {
         "CMAKE_SYSTEM_NAME": "Darwin",
         "CMAKE_SYSTEM_PROCESSOR": "x86_64",
         "CMAKE_SYSTEM_ARCHITECTURES": "x86_64",
