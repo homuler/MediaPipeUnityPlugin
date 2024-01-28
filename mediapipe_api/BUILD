@@ -317,6 +317,9 @@ cc_library(
     }) + select({
         ":enable_object_detection": [":object_detection_calculators"],
         "//conditions:default": [],
+    }) + select({
+        ":enable_audio_classification": [":audio_classification_calculators"],
+        "//conditions:default": [],
     }),
 )
 
@@ -440,6 +443,11 @@ cc_library(
             "@mediapipe//mediapipe/graphs/object_detection:mobile_calculators",
         ],
     }),
+)
+
+cc_library(
+    name = "audio_classification_calculators",
+    deps = ["@mediapipe//mediapipe/tasks/cc/audio/audio_classifier:audio_classifier"],
 )
 
 pkg_zip(
