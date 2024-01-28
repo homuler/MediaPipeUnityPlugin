@@ -399,6 +399,16 @@ namespace Mediapipe
       UnsafeNativeMethods.mp_Packet__delete(ptr);
     }
 
+    public Packet<TValue> At(Timestamp timestamp)
+    {
+      UnsafeNativeMethods.mp_Packet__At__Rt(mpPtr, timestamp.mpPtr, out var packetPtr).Assert();
+      GC.KeepAlive(this);
+      GC.KeepAlive(timestamp);
+
+      Dispose();
+      return new Packet<TValue>(packetPtr, true);
+    }
+
     public long TimestampMicroseconds()
     {
       var value = SafeNativeMethods.mp_Packet__TimestampMicroseconds(mpPtr);
