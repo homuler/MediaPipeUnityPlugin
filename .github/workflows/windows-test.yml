@@ -64,6 +64,11 @@ jobs:
         run: |
           set ANDROID_NDK_HOME=
           python build.py build --desktop cpu --opencv cmake -vv
+        shell: cmd
+
+      - name: Shutdown Bazel
+        if: steps.cache-libs.outputs.cache-hit != 'true'
+        run: |
           bazel --output_user_root=C:\_bzl shutdown
         shell: cmd
 
