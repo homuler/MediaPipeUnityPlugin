@@ -278,7 +278,7 @@ http_archive(
     sha256 = "fe346e1aee4f5069c4cbccb88706a9a2b2b4cf98aeb91ec1319be77e07dd7435",
     repo_mapping = {"@com_github_glog_glog" : "@com_github_glog_glog_no_gflags"},
     # TODO: Fix this in AudioTools directly
-    patches = ["@mediapipe//third_party:com_google_audio_tools_fixes.diff"],
+    patches = ["@//third_party:com_google_audio_tools_fixes.diff"],
     patch_args = ["-p1"]
 )
 

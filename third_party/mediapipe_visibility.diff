@@ -346,12 +346,40 @@ index 3c4b557b..b8857b00 100644
  
  licenses(["notice"])
  
+diff --git a/mediapipe/tasks/cc/audio/audio_classifier/proto/BUILD b/mediapipe/tasks/cc/audio/audio_classifier/proto/BUILD
+index 1b3783d5..243e1a84 100644
+--- a/mediapipe/tasks/cc/audio/audio_classifier/proto/BUILD
++++ b/mediapipe/tasks/cc/audio/audio_classifier/proto/BUILD
+@@ -28,3 +28,9 @@ mediapipe_proto_library(
+         "//mediapipe/tasks/cc/core/proto:base_options_proto",
+     ],
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
 diff --git a/mediapipe/tasks/cc/components/containers/proto/BUILD b/mediapipe/tasks/cc/components/containers/proto/BUILD
 index 66255aed..8dab4bbc 100644
 --- a/mediapipe/tasks/cc/components/containers/proto/BUILD
 +++ b/mediapipe/tasks/cc/components/containers/proto/BUILD
 @@ -42,3 +42,9 @@ mediapipe_proto_library(
          "//mediapipe/framework/formats:rect_proto",
+     ],
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
+diff --git a/mediapipe/tasks/cc/components/processors/proto/BUILD b/mediapipe/tasks/cc/components/processors/proto/BUILD
+index 82d4ea21..9b14e8ef 100644
+--- a/mediapipe/tasks/cc/components/processors/proto/BUILD
++++ b/mediapipe/tasks/cc/components/processors/proto/BUILD
+@@ -93,3 +93,9 @@ mediapipe_proto_library(
+         "//mediapipe/framework:calculator_proto",
      ],
  )
 +

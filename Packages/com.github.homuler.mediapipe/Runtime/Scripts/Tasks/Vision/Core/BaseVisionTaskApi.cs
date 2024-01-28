@@ -161,7 +161,6 @@ namespace Mediapipe.Tasks.Vision.Core
       }
     }
 
-    /// TODO: make it throw BadStatusException
     /// <summary>
     ///   Shuts down the mediapipe vision task instance.
     /// </summary>

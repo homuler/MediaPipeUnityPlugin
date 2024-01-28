@@ -98,6 +98,13 @@ config_setting(
     },
 )
 
+config_setting(
+    name = "audio_classification_switch",
+    flag_values = {
+        ":solutions": "audio_classification",
+    },
+)
+
 selects.config_setting_group(
     name = "enable_face_detection",
     match_any = [":all_solutions_switch", ":face_detection_switch"],
@@ -141,6 +148,11 @@ selects.config_setting_group(
 selects.config_setting_group(
     name = "enable_object_detection",
     match_any = [":all_solutions_switch", ":object_detection_switch"],
+)
+
+selects.config_setting_group(
+    name = "enable_audio_classification",
+    match_any = [":all_solutions_switch", ":audio_classification_switch"],
 )
 
 cc_library(
@@ -305,6 +317,9 @@ cc_library(
     }) + select({
         ":enable_object_detection": [":object_detection_calculators"],
         "//conditions:default": [],
+    }) + select({
+        ":enable_audio_classification": [":audio_classification_calculators"],
+        "//conditions:default": [],
     }),
 )
 
@@ -430,6 +445,11 @@ cc_library(
     }),
 )
 
+cc_library(
+    name = "audio_classification_calculators",
+    deps = ["@mediapipe//mediapipe/tasks/cc/audio/audio_classifier:audio_classifier"],
+)
+
 pkg_zip(
     name = "mediapipe_desktop",
     srcs = [
@@ -445,6 +465,7 @@ mediapipe_files(srcs = [
     "pose_landmarker_full.task",
     "pose_landmarker_heavy.task",
     "pose_landmarker_lite.task",
+    "yamnet_audio_classifier_with_metadata.tflite",
 ])
 
 pkg_asset(
@@ -479,6 +500,9 @@ pkg_asset(
         "//conditions:default": [],
     }) + select({
         ":enable_object_detection": [":object_detection_assets"],
+        "//conditions:default": [],
+    }) + select({
+        ":enable_audio_classification": [":audio_classification_assets"],
         "//conditions:default": [],
     }),
 )
@@ -564,6 +588,13 @@ filegroup(
     ],
 )
 
+filegroup(
+    name = "audio_classification_assets",
+    srcs = [
+        ":yamnet_audio_classifier_with_metadata.tflite",
+    ],
+)
+
 pkg_zip(
     name = "mediapipe_proto_srcs",
     srcs = [
@@ -584,6 +615,8 @@ pkg_zip(
         "//mediapipe_api/modules/holistic_landmark/calculators:proto_srcs",
         "//mediapipe_api/tasks/cc/core/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/components/containers/proto:proto_srcs",
+        "//mediapipe_api/tasks/cc/components/processors/proto:proto_srcs",
+        "//mediapipe_api/tasks/cc/audio/audio_classifier/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/face_detector/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/face_landmarker/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/face_geometry/proto:proto_srcs",

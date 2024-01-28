@@ -121,6 +121,8 @@ namespace Mediapipe.Tasks.Components.Containers
       this.timestampMs = timestampMs;
     }
 
+    public static ClassificationResult Alloc(int capacity) => new ClassificationResult(new List<Classifications>(capacity), null);
+
     public static ClassificationResult CreateFrom(Proto.ClassificationResult proto)
     {
       var classificationResult = default(ClassificationResult);
