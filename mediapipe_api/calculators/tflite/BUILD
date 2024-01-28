@@ -28,9 +28,9 @@ csharp_proto_src(
     name = "ssd_anchors_calculator_cs",
     proto_src = "mediapipe/calculators/tflite/ssd_anchors_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/tflite:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
-        "@com_google_mediapipe//mediapipe/framework/formats/object_detection:protos_src",
+        "@mediapipe//mediapipe/calculators/tflite:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/framework/formats/object_detection:protos_src",
     ],
 )
 
@@ -38,8 +38,8 @@ csharp_proto_src(
     name = "tflite_custom_op_resolver_calculator_cs",
     proto_src = "mediapipe/calculators/tflite/tflite_custom_op_resolver_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/tflite:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/tflite:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -47,8 +47,8 @@ csharp_proto_src(
     name = "tflite_inference_calculator_cs",
     proto_src = "mediapipe/calculators/tflite/tflite_inference_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/tflite:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/tflite:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -56,8 +56,8 @@ csharp_proto_src(
     name = "tflite_converter_calculator_cs",
     proto_src = "mediapipe/calculators/tflite/tflite_converter_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/tflite:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/tflite:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -65,8 +65,8 @@ csharp_proto_src(
     name = "tflite_tensors_to_segmentation_calculator_cs",
     proto_src = "mediapipe/calculators/tflite/tflite_tensors_to_segmentation_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/tflite:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/tflite:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -74,8 +74,8 @@ csharp_proto_src(
     name = "tflite_tensors_to_detections_calculator_cs",
     proto_src = "mediapipe/calculators/tflite/tflite_tensors_to_detections_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/tflite:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/tflite:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -83,8 +83,8 @@ csharp_proto_src(
     name = "tflite_tensors_to_classification_calculator_cs",
     proto_src = "mediapipe/calculators/tflite/tflite_tensors_to_classification_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/tflite:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/tflite:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -92,7 +92,7 @@ csharp_proto_src(
     name = "tflite_tensors_to_landmarks_calculator_cs",
     proto_src = "mediapipe/calculators/tflite/tflite_tensors_to_landmarks_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/tflite:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/tflite:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )

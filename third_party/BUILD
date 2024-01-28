@@ -22,28 +22,28 @@ cc_library(
     name = "glog",
     visibility = ["//visibility:public"],
     deps = select({
-        "@com_google_mediapipe//mediapipe:android_x86": [
+        "@mediapipe//mediapipe:android_x86": [
             "@com_github_glog_glog_no_gflags//:glog",
         ],
-        "@com_google_mediapipe//mediapipe:android_x86_64": [
+        "@mediapipe//mediapipe:android_x86_64": [
             "@com_github_glog_glog_no_gflags//:glog",
         ],
-        "@com_google_mediapipe//mediapipe:android_armeabi": [
+        "@mediapipe//mediapipe:android_armeabi": [
             "@com_github_glog_glog_no_gflags//:glog",
         ],
-        "@com_google_mediapipe//mediapipe:android_arm": [
+        "@mediapipe//mediapipe:android_arm": [
             "@com_github_glog_glog_no_gflags//:glog",
         ],
-        "@com_google_mediapipe//mediapipe:android_arm64": [
+        "@mediapipe//mediapipe:android_arm64": [
             "@com_github_glog_glog_no_gflags//:glog",
         ],
-        "@com_google_mediapipe//mediapipe:ios": [
+        "@mediapipe//mediapipe:ios": [
             "@com_github_glog_glog_no_gflags//:glog",
         ],
-        "@com_google_mediapipe//mediapipe:macos": [
+        "@mediapipe//mediapipe:macos": [
             "@com_github_glog_glog//:glog",
         ],
-        "@com_google_mediapipe//mediapipe:windows": [
+        "@mediapipe//mediapipe:windows": [
             "@com_github_glog_glog//:glog",
         ],
         "//conditions:default": [
@@ -56,13 +56,13 @@ cc_library(
     name = "libffmpeg",
     visibility = ["//visibility:public"],
     deps = select({
-        "@com_google_mediapipe//mediapipe:android_x86": [],
-        "@com_google_mediapipe//mediapipe:android_x86_64": [],
-        "@com_google_mediapipe//mediapipe:android_armeabi": [],
-        "@com_google_mediapipe//mediapipe:android_arm": [],
-        "@com_google_mediapipe//mediapipe:android_arm64": [],
-        "@com_google_mediapipe//mediapipe:ios": [],
-        "@com_google_mediapipe//mediapipe:macos": [
+        "@mediapipe//mediapipe:android_x86": [],
+        "@mediapipe//mediapipe:android_x86_64": [],
+        "@mediapipe//mediapipe:android_armeabi": [],
+        "@mediapipe//mediapipe:android_arm": [],
+        "@mediapipe//mediapipe:android_arm64": [],
+        "@mediapipe//mediapipe:ios": [],
+        "@mediapipe//mediapipe:macos": [
             "@macos_ffmpeg//:libffmpeg",
         ],
         "//conditions:default": [

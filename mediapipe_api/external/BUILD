@@ -22,7 +22,7 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         "//mediapipe_api:common",
-        "@com_google_mediapipe//mediapipe/framework/port:parse_text_proto",
+        "@mediapipe//mediapipe/framework/port:parse_text_proto",
         "@com_google_protobuf//:protobuf",
     ],
     alwayslink = True,

@@ -21,8 +21,8 @@ csharp_proto_src(
     name = "face_geometry_pipeline_calculator_options_cs",
     proto_src = "mediapipe/tasks/cc/vision/face_geometry/calculators/geometry_pipeline_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/tasks/cc/core/proto:protos_src",
-        "@com_google_mediapipe//mediapipe/tasks/cc/vision/face_geometry/calculators:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/tasks/cc/core/proto:protos_src",
+        "@mediapipe//mediapipe/tasks/cc/vision/face_geometry/calculators:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )

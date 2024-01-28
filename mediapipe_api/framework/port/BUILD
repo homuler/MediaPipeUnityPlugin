@@ -14,7 +14,7 @@ cc_library(
     hdrs = ["logging.h"],
     deps = [
         "//mediapipe_api:common",
-        "@com_google_mediapipe//mediapipe/framework/port:logging",
+        "@mediapipe//mediapipe/framework/port:logging",
     ],
     alwayslink = True,
 )

@@ -34,8 +34,8 @@ csharp_proto_src(
     name = "opencv_image_encoder_calculator_cs",
     proto_src = "mediapipe/calculators/image/opencv_image_encoder_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/image:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/image:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -43,9 +43,9 @@ csharp_proto_src(
     name = "scale_image_calculator_cs",
     proto_src = "mediapipe/calculators/image/scale_image_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/image:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
-        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+        "@mediapipe//mediapipe/calculators/image:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/framework/formats:protos_src",
     ],
 )
 
@@ -53,8 +53,8 @@ csharp_proto_src(
     name = "set_alpha_calculator_cs",
     proto_src = "mediapipe/calculators/image/set_alpha_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/image:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/image:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -62,8 +62,8 @@ csharp_proto_src(
     name = "image_cropping_calculator_cs",
     proto_src = "mediapipe/calculators/image/image_cropping_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/image:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/image:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -71,8 +71,8 @@ csharp_proto_src(
     name = "bilateral_filter_calculator_cs",
     proto_src = "mediapipe/calculators/image/bilateral_filter_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/image:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/image:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -80,9 +80,9 @@ csharp_proto_src(
     name = "recolor_calculator_cs",
     proto_src = "mediapipe/calculators/image/recolor_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/image:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
-        "@com_google_mediapipe//mediapipe/util:protos_src",
+        "@mediapipe//mediapipe/calculators/image:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/util:protos_src",
     ],
 )
 
@@ -90,8 +90,8 @@ csharp_proto_src(
     name = "segmentation_smoothing_calculator_cs",
     proto_src = "mediapipe/calculators/image/segmentation_smoothing_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/image:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/image:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -99,7 +99,7 @@ csharp_proto_src(
     name = "rotation_mode_cs",
     proto_src = "mediapipe/calculators/image/rotation_mode.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/image:protos_src",
+        "@mediapipe//mediapipe/calculators/image:protos_src",
     ],
 )
 
@@ -107,9 +107,9 @@ csharp_proto_src(
     name = "image_transformation_calculator_cs",
     proto_src = "mediapipe/calculators/image/image_transformation_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/image:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
-        "@com_google_mediapipe//mediapipe/gpu:protos_src",
+        "@mediapipe//mediapipe/calculators/image:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/gpu:protos_src",
     ],
 )
 
@@ -117,8 +117,8 @@ csharp_proto_src(
     name = "image_clone_calculator_cs",
     proto_src = "mediapipe/calculators/image/image_clone_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/image:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/image:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -126,8 +126,8 @@ csharp_proto_src(
     name = "mask_overlay_calculator_cs",
     proto_src = "mediapipe/calculators/image/mask_overlay_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/image:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/image:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -135,8 +135,8 @@ csharp_proto_src(
     name = "opencv_encoded_image_to_image_frame_calculator_cs",
     proto_src = "mediapipe/calculators/image/opencv_encoded_image_to_image_frame_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/image:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/image:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -144,8 +144,8 @@ csharp_proto_src(
     name = "feature_detector_calculator_cs",
     proto_src = "mediapipe/calculators/image/feature_detector_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/image:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/image:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -153,8 +153,8 @@ csharp_proto_src(
     name = "warp_affine_calculator_cs",
     proto_src = "mediapipe/calculators/image/warp_affine_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/image:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
-        "@com_google_mediapipe//mediapipe/gpu:protos_src",
+        "@mediapipe//mediapipe/calculators/image:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/gpu:protos_src",
     ],
 )

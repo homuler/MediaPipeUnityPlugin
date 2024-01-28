@@ -15,8 +15,8 @@ cc_library(
     deps = [
         "//mediapipe_api:common",
         "//mediapipe_api/external:protobuf",
-        "@com_google_mediapipe//mediapipe/tasks/cc/core:mediapipe_builtin_op_resolver",
-        "@com_google_mediapipe//mediapipe/tasks/cc/core:task_runner",
+        "@mediapipe//mediapipe/tasks/cc/core:mediapipe_builtin_op_resolver",
+        "@mediapipe//mediapipe/tasks/cc/core:task_runner",
         "@com_google_absl//absl/status:statusor",
     ],
     alwayslink = True,

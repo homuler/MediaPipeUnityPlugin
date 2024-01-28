@@ -33,8 +33,8 @@ csharp_proto_src(
     name = "concatenate_vector_calculator_cs",
     proto_src = "mediapipe/calculators/core/concatenate_vector_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/core:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/core:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -42,8 +42,8 @@ csharp_proto_src(
     name = "dequantize_byte_array_calculator_cs",
     proto_src = "mediapipe/calculators/core/dequantize_byte_array_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/core:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/core:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -51,8 +51,8 @@ csharp_proto_src(
     name = "packet_cloner_calculator_cs",
     proto_src = "mediapipe/calculators/core/packet_cloner_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/core:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/core:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -60,8 +60,8 @@ csharp_proto_src(
     name = "packet_resampler_calculator_cs",
     proto_src = "mediapipe/calculators/core/packet_resampler_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/core:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/core:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -69,8 +69,8 @@ csharp_proto_src(
     name = "packet_thinner_calculator_cs",
     proto_src = "mediapipe/calculators/core/packet_thinner_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/core:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/core:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -78,8 +78,8 @@ csharp_proto_src(
     name = "split_vector_calculator_cs",
     proto_src = "mediapipe/calculators/core/split_vector_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/core:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/core:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -87,8 +87,8 @@ csharp_proto_src(
     name = "quantize_float_vector_calculator_cs",
     proto_src = "mediapipe/calculators/core/quantize_float_vector_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/core:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/core:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -96,8 +96,8 @@ csharp_proto_src(
     name = "sequence_shift_calculator_cs",
     proto_src = "mediapipe/calculators/core/sequence_shift_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/core:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/core:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -105,8 +105,8 @@ csharp_proto_src(
     name = "gate_calculator_cs",
     proto_src = "mediapipe/calculators/core/gate_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/core:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/core:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -114,9 +114,9 @@ csharp_proto_src(
     name = "constant_side_packet_calculator_cs",
     proto_src = "mediapipe/calculators/core/constant_side_packet_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/core:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
-        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+        "@mediapipe//mediapipe/calculators/core:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/framework/formats:protos_src",
     ],
 )
 
@@ -124,8 +124,8 @@ csharp_proto_src(
     name = "clip_vector_size_calculator_cs",
     proto_src = "mediapipe/calculators/core/clip_vector_size_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/core:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/core:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -133,8 +133,8 @@ csharp_proto_src(
     name = "flow_limiter_calculator_cs",
     proto_src = "mediapipe/calculators/core/flow_limiter_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/core:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/core:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )
 
@@ -142,7 +142,7 @@ csharp_proto_src(
     name = "graph_profile_calculator_cs",
     proto_src = "mediapipe/calculators/core/graph_profile_calculator.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/calculators/core:protos_src",
-        "@com_google_mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/calculators/core:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
     ],
 )

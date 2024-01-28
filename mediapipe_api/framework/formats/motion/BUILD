@@ -21,6 +21,6 @@ csharp_proto_src(
     name = "optical_flow_field_data_cs",
     proto_src = "mediapipe/framework/formats/motion/optical_flow_field_data.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats/motion:protos_src",
+        "@mediapipe//mediapipe/framework/formats/motion:protos_src",
     ],
 )

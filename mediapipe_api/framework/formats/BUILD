@@ -19,7 +19,7 @@ cc_library(
         "//mediapipe_api:common",
         "//mediapipe_api/external:protobuf",
         "//mediapipe_api/framework:packet",
-        "@com_google_mediapipe//mediapipe/framework/formats:classification_cc_proto",
+        "@mediapipe//mediapipe/framework/formats:classification_cc_proto",
     ],
     alwayslink = True,
 )
@@ -32,7 +32,7 @@ cc_library(
         "//mediapipe_api:common",
         "//mediapipe_api/external:protobuf",
         "//mediapipe_api/framework:packet",
-        "@com_google_mediapipe//mediapipe/framework/formats:detection_cc_proto",
+        "@mediapipe//mediapipe/framework/formats:detection_cc_proto",
     ],
     alwayslink = True,
 )
@@ -45,7 +45,7 @@ cc_library(
         "//mediapipe_api:common",
         "//mediapipe_api/framework:packet",
         "@com_google_absl//absl/status",
-        "@com_google_mediapipe//mediapipe/framework/formats:image",
+        "@mediapipe//mediapipe/framework/formats:image",
     ],
     alwayslink = True,
 )
@@ -58,7 +58,7 @@ cc_library(
         "//mediapipe_api:common",
         "//mediapipe_api/external/absl:status",
         "//mediapipe_api/framework:packet",
-        "@com_google_mediapipe//mediapipe/framework/formats:image_frame",
+        "@mediapipe//mediapipe/framework/formats:image_frame",
     ],
     alwayslink = True,
 )
@@ -71,7 +71,7 @@ cc_library(
         "//mediapipe_api:common",
         "//mediapipe_api/external:protobuf",
         "//mediapipe_api/framework:packet",
-        "@com_google_mediapipe//mediapipe/framework/formats:landmark_cc_proto",
+        "@mediapipe//mediapipe/framework/formats:landmark_cc_proto",
     ],
     alwayslink = True,
 )
@@ -84,8 +84,8 @@ cc_library(
         "//mediapipe_api:common",
         "//mediapipe_api/external/absl:status",
         "//mediapipe_api/framework:packet",
-        "@com_google_mediapipe//mediapipe/framework/formats:matrix",
-        "@com_google_mediapipe//mediapipe/framework/formats:matrix_data_cc_proto",
+        "@mediapipe//mediapipe/framework/formats:matrix",
+        "@mediapipe//mediapipe/framework/formats:matrix_data_cc_proto",
     ],
     alwayslink = True,
 )
@@ -98,7 +98,7 @@ cc_library(
         "//mediapipe_api:common",
         "//mediapipe_api/external:protobuf",
         "//mediapipe_api/framework:packet",
-        "@com_google_mediapipe//mediapipe/framework/formats:rect_cc_proto",
+        "@mediapipe//mediapipe/framework/formats:rect_cc_proto",
     ],
     alwayslink = True,
 )
@@ -125,7 +125,7 @@ csharp_proto_src(
     name = "affine_transform_data_cs",
     proto_src = "mediapipe/framework/formats/affine_transform_data.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+        "@mediapipe//mediapipe/framework/formats:protos_src",
     ],
 )
 
@@ -133,7 +133,7 @@ csharp_proto_src(
     name = "classification_cs",
     proto_src = "mediapipe/framework/formats/classification.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+        "@mediapipe//mediapipe/framework/formats:protos_src",
     ],
 )
 
@@ -141,8 +141,8 @@ csharp_proto_src(
     name = "detection_cs",
     proto_src = "mediapipe/framework/formats/detection.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
-        "@com_google_mediapipe//mediapipe/framework/formats/annotation:protos_src",
+        "@mediapipe//mediapipe/framework/formats:protos_src",
+        "@mediapipe//mediapipe/framework/formats/annotation:protos_src",
     ],
 )
 
@@ -150,7 +150,7 @@ csharp_proto_src(
     name = "image_file_properties_cs",
     proto_src = "mediapipe/framework/formats/image_file_properties.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+        "@mediapipe//mediapipe/framework/formats:protos_src",
     ],
 )
 
@@ -158,7 +158,7 @@ csharp_proto_src(
     name = "image_format_cs",
     proto_src = "mediapipe/framework/formats/image_format.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+        "@mediapipe//mediapipe/framework/formats:protos_src",
     ],
 )
 
@@ -166,7 +166,7 @@ csharp_proto_src(
     name = "landmark_cs",
     proto_src = "mediapipe/framework/formats/landmark.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+        "@mediapipe//mediapipe/framework/formats:protos_src",
     ],
 )
 
@@ -174,8 +174,8 @@ csharp_proto_src(
     name = "location_data_cs",
     proto_src = "mediapipe/framework/formats/location_data.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
-        "@com_google_mediapipe//mediapipe/framework/formats/annotation:protos_src",
+        "@mediapipe//mediapipe/framework/formats:protos_src",
+        "@mediapipe//mediapipe/framework/formats/annotation:protos_src",
     ],
 )
 
@@ -183,7 +183,7 @@ csharp_proto_src(
     name = "matrix_data_cs",
     proto_src = "mediapipe/framework/formats/matrix_data.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+        "@mediapipe//mediapipe/framework/formats:protos_src",
     ],
 )
 
@@ -191,7 +191,7 @@ csharp_proto_src(
     name = "rect_cs",
     proto_src = "mediapipe/framework/formats/rect.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+        "@mediapipe//mediapipe/framework/formats:protos_src",
     ],
 )
 
@@ -199,6 +199,6 @@ csharp_proto_src(
     name = "time_series_header_cs",
     proto_src = "mediapipe/framework/formats/time_series_header.proto",
     deps = [
-        "@com_google_mediapipe//mediapipe/framework/formats:protos_src",
+        "@mediapipe//mediapipe/framework/formats:protos_src",
     ],
 )
