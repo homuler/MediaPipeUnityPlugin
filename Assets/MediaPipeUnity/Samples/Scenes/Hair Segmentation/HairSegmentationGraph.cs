@@ -54,7 +54,10 @@ namespace Mediapipe.Unity.Sample.HairSegmentation
       var result = await _hairMaskStream.WaitNextAsync();
       AssertResult(result);
 
-      _ = TryGetValue(result.packet, out var hairMask);
+      _ = TryGetValue(result.packet, out var hairMask, (packet) =>
+      {
+        return packet.Get();
+      });
       return hairMask;
     }
 

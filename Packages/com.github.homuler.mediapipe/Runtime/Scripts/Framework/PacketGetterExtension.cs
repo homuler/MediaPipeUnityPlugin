@@ -505,7 +505,5 @@ namespace Mediapipe
 
     [Obsolete("Use Get instead")]
     public static string GetString(this Packet<string> packet) => Get(packet);
-
-    public static T Get<T>(this Packet<T> packet) => throw new NotImplementedException();
   }
 }

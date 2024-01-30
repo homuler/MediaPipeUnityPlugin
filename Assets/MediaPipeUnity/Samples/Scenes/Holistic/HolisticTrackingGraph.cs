@@ -216,7 +216,10 @@ namespace Mediapipe.Unity.Sample.Holistic
       {
         return packet.Get(LandmarkList.Parser);
       });
-      _ = TryGetValue(results.Item7.packet, out var segmentationMask);
+      _ = TryGetValue(results.Item7.packet, out var segmentationMask, (packet) =>
+      {
+        return packet.Get();
+      });
       _ = TryGetValue(results.Item8.packet, out var poseRoi, (packet) =>
       {
         return packet.Get(NormalizedRect.Parser);
