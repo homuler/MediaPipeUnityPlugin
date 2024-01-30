@@ -71,7 +71,10 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
       var result = await _outputVideoStream.WaitNextAsync();
       AssertResult(result);
 
-      _ = TryGetValue(result.packet, out var outputVideo);
+      _ = TryGetValue(result.packet, out var outputVideo, (packet) =>
+      {
+        return packet.Get();
+      });
       return outputVideo;
     }
 

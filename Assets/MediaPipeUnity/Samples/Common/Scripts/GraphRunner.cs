@@ -206,11 +206,6 @@ namespace Mediapipe.Unity.Sample
       AddPacketToInputStream(streamName, Packet.CreateImageFrameAt(imageFrame, latestTimestamp));
     }
 
-    protected bool TryGetValue<T>(Packet<T> packet, out T value)
-    {
-      return TryGetValue(packet, out value, (packet) => packet.Get());
-    }
-
     protected bool TryGetValue<T>(Packet<T> packet, out T value, Func<Packet<T>, T> getter)
     {
       if (packet == null)

@@ -159,7 +159,10 @@ namespace Mediapipe.Unity.Sample.PoseTracking
       {
         return packet.Get(LandmarkList.Parser);
       });
-      _ = TryGetValue(results.Item4.packet, out var segmentationMask);
+      _ = TryGetValue(results.Item4.packet, out var segmentationMask, (packet) =>
+      {
+        return packet.Get();
+      });
       _ = TryGetValue(results.Item5.packet, out var roiFromLandmarks, (packet) =>
       {
         return packet.Get(NormalizedRect.Parser);
