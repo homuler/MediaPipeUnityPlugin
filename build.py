@@ -285,6 +285,10 @@ class BuildCommand(Command):
 
     commands = self._build_common_commands()
     commands.append(f'--config=android_{self.command_args.android}')
+
+    if self.command_args.android_fat_apk_cpu is not None:
+      commands.append(f'--fat_apk_cpu={",".join(self.command_args.android_fat_apk_cpu)}')
+
     commands.append('//mediapipe_api/java/com/github/homuler/mediapipe:mediapipe_android')
     return commands
 
@@ -425,6 +429,7 @@ class Argument:
     build_command_parser = subparsers.add_parser('build', help='Build and install native libraries')
     build_command_parser.add_argument('--desktop', choices=['cpu', 'gpu'])
     build_command_parser.add_argument('--android', choices=['armv7', 'arm64', 'x86', 'x86_64'])
+    build_command_parser.add_argument('--android_fat_apk_cpu', nargs='+')
     build_command_parser.add_argument('--android_ndk_api_level', type=int, choices=range(16, 31))
     build_command_parser.add_argument('--ios', choices=['arm64'])
     build_command_parser.add_argument('--resources', action=argparse.BooleanOptionalAction, default=True)
