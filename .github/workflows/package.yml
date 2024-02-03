@@ -16,7 +16,7 @@ on:
         default: '--desktop gpu --opencv cmake'
       androidBuildArgs:
         type: string
-        default: '--android fat --android_ndk_api_level 21'
+        default: '--android arm64 --android_ndk_api_level 21'
       macosBuildArgs:
         type: string
         default: '--desktop cpu --opencv cmake --macos_universal'
