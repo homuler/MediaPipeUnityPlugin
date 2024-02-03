@@ -93,7 +93,7 @@ jobs:
           retention-days: 1
 
       - name: Cache bazel
-        if: inputs.is_master == 'true' && steps.cache-libs.outputs.cache-hit != 'true'
+        if: inputs.is_master && steps.cache-libs.outputs.cache-hit != 'true'
         uses: actions/cache/save@v3
         with:
           path: ~/.cache/bazel
