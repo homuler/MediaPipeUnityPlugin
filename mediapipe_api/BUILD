@@ -448,6 +448,10 @@ cc_library(
 cc_library(
     name = "audio_classification_calculators",
     deps = ["@mediapipe//mediapipe/tasks/cc/audio/audio_classifier:audio_classifier"],
+    copts = select({
+        "@platforms//cpu:armv7": ["-mfpu=neon"], # NEON must be enabled for pffft
+        "//conditions:default": [],
+    }),
 )
 
 pkg_zip(
