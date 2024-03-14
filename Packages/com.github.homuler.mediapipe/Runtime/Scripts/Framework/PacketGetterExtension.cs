@@ -308,7 +308,7 @@ namespace Mediapipe
 
       foreach (var imagePtr in imageArray.AsReadOnlySpan())
       {
-        value.Add(new Image(imagePtr, false));
+        value.Add(new Image(imagePtr, true));
       }
     }
 
