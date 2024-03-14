@@ -14,6 +14,7 @@ namespace Mediapipe.Unity
   {
     [SerializeField] private bool _visualizeZ = false;
 
+    private readonly object _currentTargetLock = new object();
     private PoseLandmarkerResult _currentTarget;
 
     public void InitScreen(int maskWidth, int maskHeight) => annotation.InitMask(maskWidth, maskHeight);
@@ -30,7 +31,7 @@ namespace Mediapipe.Unity
 
     protected void UpdateCurrentTarget(PoseLandmarkerResult newTarget)
     {
-      if (IsTargetChanged(newTarget, _currentTarget))
+      lock (_currentTargetLock)
       {
         newTarget.CloneTo(ref _currentTarget);
         isStale = true;
@@ -39,17 +40,20 @@ namespace Mediapipe.Unity
 
     protected override void SyncNow()
     {
-      isStale = false;
-      if (_currentTarget.segmentationMasks != null)
+      lock (_currentTargetLock)
       {
-        ReadMask(_currentTarget.segmentationMasks);
-        // TODO: stop disposing masks here
-        foreach (var mask in _currentTarget.segmentationMasks)
+        isStale = false;
+        if (_currentTarget.segmentationMasks != null)
         {
-          mask.Dispose();
+          ReadMask(_currentTarget.segmentationMasks);
+          // TODO: stop disposing masks here
+          foreach (var mask in _currentTarget.segmentationMasks)
+          {
+            mask.Dispose();
+          }
         }
+        annotation.Draw(_currentTarget.poseLandmarks, _visualizeZ);
       }
-      annotation.Draw(_currentTarget.poseLandmarks, _visualizeZ);
     }
   }
 }
