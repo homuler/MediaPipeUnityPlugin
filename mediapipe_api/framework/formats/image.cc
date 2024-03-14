@@ -133,7 +133,7 @@ MpReturnCode mp_Packet__GetImageVector(mediapipe::Packet* packet, mp_api::Struct
     auto data = new mediapipe::Image*[size];
 
     for (auto i = 0; i < size; ++i) {
-      data[i] = new mediapipe::Image(std::move(vec[i]));
+      data[i] = new mediapipe::Image(vec[i].GetImageFrameSharedPtr());
     }
     value_out->data = data;
     value_out->size = static_cast<int>(size);
