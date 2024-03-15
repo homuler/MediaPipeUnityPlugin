@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.14.2](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.14.1...v0.14.2) (2024-03-15)
+
+
+### Features
+
+* get ClassificationResult / List<ClassificationResult> from Packet ([#1134](https://github.com/homuler/MediaPipeUnityPlugin/issues/1134)) ([b9e0c49](https://github.com/homuler/MediaPipeUnityPlugin/commit/b9e0c49ffe6904409fa787786b0897e28adac70d))
+* implement AudioClassifier  ([#1137](https://github.com/homuler/MediaPipeUnityPlugin/issues/1137)) ([3753fdf](https://github.com/homuler/MediaPipeUnityPlugin/commit/3753fdf78a528464fffd97912e0e2d2f319bb8e2))
+* implement Packet.CreateColMajorMatrix ([#1133](https://github.com/homuler/MediaPipeUnityPlugin/issues/1133)) ([af74bb2](https://github.com/homuler/MediaPipeUnityPlugin/commit/af74bb2450975869aa5146c40c1b3a91074ef940))
+* implement Packet<T>.At ([#1136](https://github.com/homuler/MediaPipeUnityPlugin/issues/1136)) ([d397429](https://github.com/homuler/MediaPipeUnityPlugin/commit/d39742905eb19edf626d33db4e6febea8eb7620f))
+
+
+### Bug Fixes
+
+* dispose native resources of segmentation masks properly ([#1166](https://github.com/homuler/MediaPipeUnityPlugin/issues/1166)) ([019a655](https://github.com/homuler/MediaPipeUnityPlugin/commit/019a65520881d21c5bb7f6c96e409585881c4a67))
+* the sync mode fails when trying to get the ImageFrame result ([#1142](https://github.com/homuler/MediaPipeUnityPlugin/issues/1142)) ([b6961e5](https://github.com/homuler/MediaPipeUnityPlugin/commit/b6961e5590274898755cd1212508b7e4f3459e45))
+
 ### [0.14.1](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.14.0...v0.14.1) (2024-01-26)
 
 
