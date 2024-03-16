@@ -55,7 +55,7 @@ jobs:
           rm cache_key.txt
 
       # Setup Python
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         if: steps.cache-libs.outputs.cache-hit != 'true'
         with:
           python-version: '3.10'
