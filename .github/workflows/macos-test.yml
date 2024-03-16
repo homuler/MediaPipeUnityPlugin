@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: macos-11
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref }}
 
@@ -29,7 +29,7 @@ jobs:
 
       - name: Cache libraries
         id: cache-libs
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.dylib
@@ -42,7 +42,7 @@ jobs:
       # Setup build tools
       - name: Mount bazel cache
         if: steps.cache-libs.outputs.cache-hit != 'true'
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: /private/var/tmp/_bazel_runner
           key: bazel-macos-11-v1-${{ hashFiles('WORKSPACE') }}-${{ hashFiles('cache_key.txt') }}
@@ -55,7 +55,7 @@ jobs:
           rm cache_key.txt
 
       # Setup Python
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         if: steps.cache-libs.outputs.cache-hit != 'true'
         with:
           python-version: '3.10'
@@ -73,7 +73,7 @@ jobs:
         run: |
           tar cvf artifacts.tar Packages/com.github.homuler.mediapipe
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: macos-package
           path: artifacts.tar
@@ -81,7 +81,7 @@ jobs:
 
       - name: Cache bazel
         if: inputs.is_master && steps.cache-libs.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: /private/var/tmp/_bazel_runner
           key: bazel-macos-11-v1-${{ hashFiles('WORKSPACE') }}-${{ hashFiles('cache_key.txt') }}
@@ -130,7 +130,7 @@ jobs:
           rm Unity_*.ulf
 
       - name: Download built artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: macos-package
 
@@ -141,7 +141,7 @@ jobs:
           cd DummyProject
           tar xvf artifacts.tar
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: DummyProject/Library
           key: Library-DummyProject-${{ matrix.os }}-${{ matrix.unity.version }}-v1
@@ -166,7 +166,7 @@ jobs:
         run: |
           [ -f $RESULT_FILE_PATH ] && cat ${RESULT_FILE_PATH}
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: Test results for ${{ matrix.unity.version }} on ${{ matrix.os }}
@@ -177,7 +177,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - uses: geekyeggo/delete-artifact@v2
+      - uses: geekyeggo/delete-artifact@v4
         with:
           name: macos-package
           failOnError: false

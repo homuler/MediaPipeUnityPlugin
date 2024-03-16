@@ -51,7 +51,7 @@ jobs:
   linux-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref }}
 
@@ -68,7 +68,7 @@ jobs:
             python build.py build --bazel_build_opts="${{ inputs.bazelBuildArgs }}" ${{ inputs.linuxBuildArgs }} -vv
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.packageName }}-base
           path: .
@@ -76,7 +76,7 @@ jobs:
   android-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref }}
 
@@ -97,7 +97,7 @@ jobs:
             python build.py build --bazel_build_opts="${{ inputs.bazelBuildArgs }}" ${{ inputs.androidBuildArgs }} -vv
 
       - name: Upload mediapipe_android.aar
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.packageName }}-mediapipe_android.aar
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/Android/mediapipe_android.aar
@@ -105,12 +105,12 @@ jobs:
   macos-build:
     runs-on: macos-12
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref }}
 
       # Setup Python
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
       - name: Install NumPy
@@ -122,7 +122,7 @@ jobs:
           python build.py build --bazel_build_opts="${{ inputs.bazelBuildArgs }}" ${{ inputs.macosBuildArgs }} -vv
 
       - name: Upload libmediapipe_c.dylib
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.packageName }}-libmediapipe_c.dylib
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.dylib
@@ -130,12 +130,12 @@ jobs:
   ios-build:
     runs-on: macos-12
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref }}
 
       # Setup Python
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
       - name: Install NumPy
@@ -159,7 +159,7 @@ jobs:
           python build.py build --bazel_build_opts="${{ inputs.bazelBuildArgs }}" ${{ inputs.iosBuildArgs }} -vv
 
       - name: Upload MediaPipeUnity.framework
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.packageName }}-MediaPipeUnity.framework
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/iOS/MediaPipeUnity.framework
@@ -167,7 +167,7 @@ jobs:
   windows-build:
     runs-on: windows-2019
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref }}
 
@@ -187,7 +187,7 @@ jobs:
         shell: cmd
 
       - name: Upload mediapipe_c.dll
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.packageName }}-mediapipe_c.dll
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/mediapipe_c.dll
@@ -244,26 +244,26 @@ jobs:
           rm Unity_*.ulf
 
       - name: Download the base package
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.packageName }}-base
       - name: Download mediapipe_android.aar
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.packageName }}-mediapipe_android.aar
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/Android
       - name: Download libmediapipe_c.dylib
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.packageName }}-libmediapipe_c.dylib
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins
       - name: Download MediaPipeUnity.framework
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.packageName }}-MediaPipeUnity.framework
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/iOS/MediaPipeUnity.framework
       - name: Download mediapipe_c.dll
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.packageName }}-mediapipe_c.dll
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins
@@ -284,7 +284,7 @@ jobs:
           unity-editor -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.packageName }}
           path: |
@@ -298,27 +298,27 @@ jobs:
     needs:
       - package
     steps:
-      - uses: geekyeggo/delete-artifact@v2
+      - uses: geekyeggo/delete-artifact@v4
         with:
           name: ${{ inputs.packageName }}-base
           failOnError: false
 
-      - uses: geekyeggo/delete-artifact@v2
+      - uses: geekyeggo/delete-artifact@v4
         with:
           name: ${{ inputs.packageName }}-mediapipe_android.aar
           failOnError: false
 
-      - uses: geekyeggo/delete-artifact@v2
+      - uses: geekyeggo/delete-artifact@v4
         with:
           name: ${{ inputs.packageName }}-libmediapipe_c.dylib
           failOnError: false
 
-      - uses: geekyeggo/delete-artifact@v2
+      - uses: geekyeggo/delete-artifact@v4
         with:
           name: ${{ inputs.packageName }}-MediaPipeUnity.framework
           failOnError: false
 
-      - uses: geekyeggo/delete-artifact@v2
+      - uses: geekyeggo/delete-artifact@v4
         with:
           name: ${{ inputs.packageName }}-mediapipe_c.dll
           failOnError: false
