@@ -27,7 +27,7 @@ jobs:
 
       - name: Cache libraries
         id: cache-libs
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             Packages/com.github.homuler.mediapipe/Runtime/Plugins/mediapipe_c.dll
@@ -148,7 +148,7 @@ jobs:
           tar xvf artifacts.tar
         timeout-minutes: 8
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: DummyProject/Library
           key: Library-DummyProject-${{ matrix.os }}-${{ matrix.unity.version }}-v1

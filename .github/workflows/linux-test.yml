@@ -29,7 +29,7 @@ jobs:
 
       - name: Cache libraries
         id: cache-libs
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.so
@@ -42,7 +42,7 @@ jobs:
       # Setup build tools
       - name: Mount bazel cache
         if: steps.cache-libs.outputs.cache-hit != 'true'
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: "~/.cache/bazel"
           key: bazel-ubuntu-20.04-v1-${{ hashFiles('WORKSPACE') }}-${{ hashFiles('cache_key.txt') }}
@@ -94,7 +94,7 @@ jobs:
 
       - name: Cache bazel
         if: inputs.is_master && steps.cache-libs.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: ~/.cache/bazel
           key: bazel-ubuntu-20.04-v1-${{ hashFiles('WORKSPACE') }}-${{ hashFiles('cache_key.txt') }}
@@ -154,7 +154,7 @@ jobs:
           tar xvf artifacts.tar
           echo $(jq '.dependencies += {"com.unity.testtools.codecoverage":"1.2.4"}' Packages/manifest.json) > Packages/manifest.json
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: DummyProject/Library
           key: Library-DummyProject-${{ matrix.os }}-${{ matrix.unityVersion }}-v1
