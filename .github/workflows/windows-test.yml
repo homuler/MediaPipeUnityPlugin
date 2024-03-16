@@ -97,7 +97,7 @@ jobs:
           - { version: "2020.3.44f1", changeset: "7f159b6136da" }
     steps:
       - name: Install UnityHub
-        uses: crazy-max/ghaction-chocolatey@v2
+        uses: crazy-max/ghaction-chocolatey@v3
         with:
           args: install unity-hub -y
       - name: Install UnityEditor
