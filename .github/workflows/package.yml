@@ -298,27 +298,27 @@ jobs:
     needs:
       - package
     steps:
-      - uses: geekyeggo/delete-artifact@v2
+      - uses: geekyeggo/delete-artifact@v4
         with:
           name: ${{ inputs.packageName }}-base
           failOnError: false
 
-      - uses: geekyeggo/delete-artifact@v2
+      - uses: geekyeggo/delete-artifact@v4
         with:
           name: ${{ inputs.packageName }}-mediapipe_android.aar
           failOnError: false
 
-      - uses: geekyeggo/delete-artifact@v2
+      - uses: geekyeggo/delete-artifact@v4
         with:
           name: ${{ inputs.packageName }}-libmediapipe_c.dylib
           failOnError: false
 
-      - uses: geekyeggo/delete-artifact@v2
+      - uses: geekyeggo/delete-artifact@v4
         with:
           name: ${{ inputs.packageName }}-MediaPipeUnity.framework
           failOnError: false
 
-      - uses: geekyeggo/delete-artifact@v2
+      - uses: geekyeggo/delete-artifact@v4
         with:
           name: ${{ inputs.packageName }}-mediapipe_c.dll
           failOnError: false

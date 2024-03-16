@@ -200,7 +200,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - uses: geekyeggo/delete-artifact@v2
+      - uses: geekyeggo/delete-artifact@v4
         with:
           name: linux-package
           failOnError: false
