@@ -77,7 +77,7 @@ jobs:
           tar cvf artifacts.tar Packages/com.github.homuler.mediapipe
         shell: cmd
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: windows-package
           path: artifacts.tar
@@ -178,7 +178,7 @@ jobs:
             cat $env:RESULT_FILE_PATH
           }
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: Test results for ${{ matrix.unity.version }} on ${{ matrix.os }}

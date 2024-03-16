@@ -73,7 +73,7 @@ jobs:
         run: |
           tar cvf artifacts.tar Packages/com.github.homuler.mediapipe
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: macos-package
           path: artifacts.tar
@@ -166,7 +166,7 @@ jobs:
         run: |
           [ -f $RESULT_FILE_PATH ] && cat ${RESULT_FILE_PATH}
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: Test results for ${{ matrix.unity.version }} on ${{ matrix.os }}
