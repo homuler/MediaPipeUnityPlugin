@@ -32,7 +32,7 @@ ios_framework(
         "ipad",
     ],
     infoplists = ["Info.plist"],
-    minimum_os_version = "11.0",
+    minimum_os_version = "12.0",
     visibility = ["//visibility:public"],
     deps = [
         ":mediapipe_c_ios",
