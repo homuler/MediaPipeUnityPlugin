@@ -92,28 +92,40 @@ namespace Mediapipe.Unity
 
     public void Draw(IReadOnlyList<NormalizedLandmark> target, bool visualizeZ = false, int circleVertices = 128)
     {
-      var (faceLandmarks, leftLandmarks, rightLandmarks) = PartitionLandmarkList(target);
-      DrawFaceLandmarkList(faceLandmarks, visualizeZ);
-      DrawLeftIrisLandmarkList(leftLandmarks, visualizeZ, circleVertices);
-      DrawRightIrisLandmarkList(rightLandmarks, visualizeZ, circleVertices);
+      if (ActivateFor(target))
+      {
+        var (faceLandmarks, leftLandmarks, rightLandmarks) = PartitionLandmarkList(target);
+        DrawFaceLandmarkList(faceLandmarks, visualizeZ);
+        DrawLeftIrisLandmarkList(leftLandmarks, visualizeZ, circleVertices);
+        DrawRightIrisLandmarkList(rightLandmarks, visualizeZ, circleVertices);
+      }
     }
 
     public void Draw(NormalizedLandmarkList target, bool visualizeZ = false, int circleVertices = 128)
     {
-      Draw(target.Landmark, visualizeZ, circleVertices);
+      if (ActivateFor(target))
+      {
+        Draw(target.Landmark, visualizeZ, circleVertices);
+      }
     }
 
     public void Draw(IReadOnlyList<mptcc.NormalizedLandmark> target, bool visualizeZ = false, int circleVertices = 128)
     {
-      var (faceLandmarks, leftLandmarks, rightLandmarks) = PartitionLandmarkList(target);
-      DrawFaceLandmarkList(faceLandmarks, visualizeZ);
-      DrawLeftIrisLandmarkList(leftLandmarks, visualizeZ, circleVertices);
-      DrawRightIrisLandmarkList(rightLandmarks, visualizeZ, circleVertices);
+      if (ActivateFor(target))
+      {
+        var (faceLandmarks, leftLandmarks, rightLandmarks) = PartitionLandmarkList(target);
+        DrawFaceLandmarkList(faceLandmarks, visualizeZ);
+        DrawLeftIrisLandmarkList(leftLandmarks, visualizeZ, circleVertices);
+        DrawRightIrisLandmarkList(rightLandmarks, visualizeZ, circleVertices);
+      }
     }
 
     public void Draw(mptcc.NormalizedLandmarks target, bool visualizeZ = false, int circleVertices = 128)
     {
-      Draw(target.landmarks, visualizeZ, circleVertices);
+      if (ActivateFor(target))
+      {
+        Draw(target.landmarks, visualizeZ, circleVertices);
+      }
     }
 
     private void DrawFaceLandmarkList(IReadOnlyList<NormalizedLandmark> target, bool visualizeZ = false)
