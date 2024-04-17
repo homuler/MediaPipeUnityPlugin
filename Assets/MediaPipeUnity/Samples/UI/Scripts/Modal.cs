@@ -24,20 +24,7 @@ namespace Mediapipe.Unity.Sample.UI
     public void OpenAndPause(GameObject contents)
     {
       Open(contents);
-      if (_solution != null)
-      {
-        _solution.Pause();
-      }
-      if (_taskApiRunner != null)
-      {
-        _taskApiRunner.Pause();
-      }
-    }
-
-    public void OpenAndPause(GameObject contents)
-    {
-      Open(contents);
-      _taskApiRunner?.Pause(); // Use null conditional operator
+      _taskApiRunner?.Pause();
     }
 
     public void CloseAndResume(bool forceRestart = false)
