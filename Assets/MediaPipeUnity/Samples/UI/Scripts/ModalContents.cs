@@ -20,7 +20,7 @@ namespace Mediapipe.Unity.Sample.UI
 
     public virtual void Exit()
     {
-      GetModal().Close();
+      GetModal().CloseAndResume();
     }
 
     protected void InitializeDropdown<T>(Dropdown dropdown, string defaultValue)
