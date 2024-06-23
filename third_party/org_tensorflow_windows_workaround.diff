@@ -1,13 +1,31 @@
-diff --git a/tensorflow/lite/CMakeLists.txt b/tensorflow/lite/CMakeLists.txt
-index f79ea9b63de..aba5cfe4d13 100644
---- a/tensorflow/lite/CMakeLists.txt
-+++ b/tensorflow/lite/CMakeLists.txt
-@@ -84,7 +84,7 @@ if(TFLITE_KERNEL_TEST AND ${CMAKE_CROSSCOMPILING})
-   endif()
- endif()
+diff --git a/tensorflow/lite/core/c/operator.cc b/tensorflow/lite/core/c/operator.cc
+index 261504de8e1..a2938edacad 100644
+--- a/tensorflow/lite/core/c/operator.cc
++++ b/tensorflow/lite/core/c/operator.cc
+@@ -25,16 +25,16 @@ limitations under the License.
  
--set(CMAKE_CXX_STANDARD 17)
-+set(CMAKE_CXX_STANDARD 20)
- set(CMAKE_CXX_STANDARD_REQUIRED ON)
- set(_TFLITE_ENABLE_RUY "${TFLITE_ENABLE_RUY}")
- if("${CMAKE_SYSTEM_NAME}" STREQUAL "Android")
+ TfLiteOperator* TfLiteOperatorCreate(TfLiteBuiltinOperator builtin_code,
+                                      const char* custom_name, int version) {
+-  return new TfLiteOperator{.custom_name = custom_name,
+-                            .version = version,
+-                            .init = nullptr,
+-                            .free = nullptr,
+-                            .prepare = nullptr,
+-                            .invoke = nullptr,
+-                            .async_kernel = nullptr,
+-                            .builtin_code = builtin_code,
+-                            .node_index = -1,
+-                            .inplace_operator = kTfLiteInplaceOpNone};
++  return new TfLiteOperator{/* .custom_name = */ custom_name,
++                            /* .version = */ version,
++                            /* .init = */ nullptr,
++                            /* .free = */ nullptr,
++                            /* .prepare = */ nullptr,
++                            /* .invoke = */ nullptr,
++                            /* .async_kernel = */ nullptr,
++                            /* .builtin_code = */ builtin_code,
++                            /* .node_index = */ -1,
++                            /* .inplace_operator = */ kTfLiteInplaceOpNone};
+ }
+ 
+ void TfLiteOperatorDelete(TfLiteOperator* reg) { delete reg; }
