@@ -3,9 +3,11 @@ common --experimental_repo_remote_exec
 
 # Basic build settings
 build --jobs 128
-build --define='absl=1'
-build --features=compiler_param_file
+build --define='absl=1'  # for gtest
 build --enable_platform_specific_config
+
+# Enable stack traces
+test --test_env="GTEST_INSTALL_FAILURE_SIGNAL_HANDLER=1"
 
 # Linux
 build:linux --cxxopt=-std=c++17
@@ -41,13 +43,13 @@ build --apple_generate_dsym
 # for Android.
 build:android --crosstool_top=//external:android/crosstool
 build:android --host_crosstool_top=@bazel_tools//tools/cpp:toolchain
-build:android --cxxopt=-std=c++17
-build:android --copt=-w
 build:android --linkopt=-landroid
 build:android --linkopt=-ldl
 build:android --linkopt=-llog
 build:android --linkopt=-lm
 build:android --linkopt=-Wl,--gc-sections
+# TODO: Remove this flag once we updated to NDK 25
+build:android --define=xnn_enable_arm_i8mm=false
 
 build:android_armv7 --config=android
 build:android_armv7 --cpu=armeabi-v7a
@@ -65,6 +67,7 @@ build:android_x86_64 --config=android
 build:android_x86_64 --cpu=x86_64
 build:android_x86_64 --fat_apk_cpu=x86_64
 
+# iOS configs.
 build:ios --apple_platform_type=ios
 build:ios --copt=-fno-aligned-allocation
 
@@ -105,6 +108,9 @@ build:wasm --cpu=wasm
 build:wasm --host_crosstool_top=@bazel_tools//tools/cpp:toolchain
 build:wasm --copt=-emit-llvm
 build:wasm --cxxopt=-emit-llvm
+
+# Turn off maximum stdout size
+build --experimental_ui_max_stdouterr_bytes=-1
 
 # This bazelrc file is meant to be written by a setup script.
 try-import %workspace%/.configure.bazelrc
