@@ -39,7 +39,7 @@ MP_CAPI(void) mp_Packet__delete(mediapipe::Packet* packet);
 MP_CAPI(MpReturnCode) mp_Packet__At__Rt(mediapipe::Packet* packet, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
 MP_CAPI(bool) mp_Packet__IsEmpty(mediapipe::Packet* packet);
 MP_CAPI(MpReturnCode) mp_Packet__Timestamp(mediapipe::Packet* packet, mediapipe::Timestamp** timestamp_out);
-MP_CAPI(int64) mp_Packet__TimestampMicroseconds(mediapipe::Packet* packet);
+MP_CAPI(int64_t) mp_Packet__TimestampMicroseconds(mediapipe::Packet* packet);
 MP_CAPI(MpReturnCode) mp_Packet__DebugString(mediapipe::Packet* packet, const char** str_out);
 MP_CAPI(MpReturnCode) mp_Packet__RegisteredTypeName(mediapipe::Packet* packet, const char** str_out);
 MP_CAPI(MpReturnCode) mp_Packet__DebugTypeName(mediapipe::Packet* packet, const char** str_out);
@@ -47,57 +47,57 @@ MP_CAPI(MpReturnCode) mp_Packet__DebugTypeName(mediapipe::Packet* packet, const 
 // bool
 MP_CAPI(MpReturnCode) mp__MakeBoolPacket__b(bool value, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeBoolPacket_At__b_Rt(bool value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp__MakeBoolPacket_At__b_ll(bool value, int64 timestampMicrosec, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeBoolPacket_At__b_ll(bool value, int64_t timestampMicrosec, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetBool(mediapipe::Packet* packet, bool* value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsBool(mediapipe::Packet* packet, absl::Status** status_out);
 
 // std::vector<bool>
 MP_CAPI(MpReturnCode) mp__MakeBoolVectorPacket__Pb_i(bool* value, int size, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp__MakeBoolVectorPacket_At__Pb_i_ll(bool* value, int size, int64 timestampMicrosec, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeBoolVectorPacket_At__Pb_i_ll(bool* value, int size, int64_t timestampMicrosec, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetBoolVector(mediapipe::Packet* packet, mp_api::StructArray<bool>* value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsBoolVector(mediapipe::Packet* packet, absl::Status** status_out);
 
 // double
 MP_CAPI(MpReturnCode) mp__MakeDoublePacket__d(double value, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp__MakeDoublePacket_At__d_ll(double value, int64 timestampMicrosec, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeDoublePacket_At__d_ll(double value, int64_t timestampMicrosec, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetDouble(mediapipe::Packet* packet, double* value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsDouble(mediapipe::Packet* packet, absl::Status** status_out);
 
 // float
 MP_CAPI(MpReturnCode) mp__MakeFloatPacket__f(float value, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeFloatPacket_At__f_Rt(float value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp__MakeFloatPacket_At__f_ll(float value, int64 timestampMicrosec, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeFloatPacket_At__f_ll(float value, int64_t timestampMicrosec, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetFloat(mediapipe::Packet* packet, float* value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsFloat(mediapipe::Packet* packet, absl::Status** status_out);
 
 // float[]
 MP_CAPI(MpReturnCode) mp__MakeFloatArrayPacket__Pf_i(float* value, int size, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeFloatArrayPacket_At__Pf_i_Rt(float* value, int size, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp__MakeFloatArrayPacket_At__Pf_i_ll(float* value, int size, int64 timestampMicrosec, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeFloatArrayPacket_At__Pf_i_ll(float* value, int size, int64_t timestampMicrosec, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetFloatArray_i(mediapipe::Packet* packet, int size, const float** value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsFloatArray(mediapipe::Packet* packet, absl::Status** status_out);
 
 // std::vector<float>
 MP_CAPI(MpReturnCode) mp__MakeFloatVectorPacket__Pf_i(float* value, int size, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeFloatVectorPacket_At__Pf_i_Rt(float* value, int size, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp__MakeFloatVectorPacket_At__Pf_i_ll(float* value, int size, int64 timestampMicrosec, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeFloatVectorPacket_At__Pf_i_ll(float* value, int size, int64_t timestampMicrosec, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetFloatVector(mediapipe::Packet* packet, mp_api::StructArray<float>* value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsFloatVector(mediapipe::Packet* packet, absl::Status** status_out);
 
 // int
 MP_CAPI(MpReturnCode) mp__MakeIntPacket__i(int value, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeIntPacket_At__i_Rt(int value, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp__MakeIntPacket_At__i_ll(int value, int64 timestampMicrosec, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeIntPacket_At__i_ll(int value, int64_t timestampMicrosec, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetInt(mediapipe::Packet* packet, int* value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsInt(mediapipe::Packet* packet, absl::Status** status_out);
 
 // String
 MP_CAPI(MpReturnCode) mp__MakeStringPacket__PKc(const char* str, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeStringPacket_At__PKc_Rt(const char* str, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp__MakeStringPacket_At__PKc_ll(const char* str, int64 timestampMicrosec, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeStringPacket_At__PKc_ll(const char* str, int64_t timestampMicrosec, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeStringPacket__PKc_i(const char* str, int size, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeStringPacket_At__PKc_i_Rt(const char* str, int size, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp__MakeStringPacket_At__PKc_i_ll(const char* str, int size, int64 timestampMicrosec, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeStringPacket_At__PKc_i_ll(const char* str, int size, int64_t timestampMicrosec, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetString(mediapipe::Packet* packet, const char** value_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetByteString(mediapipe::Packet* packet, const char** value_out, int* size_out);
 MP_CAPI(MpReturnCode) mp_Packet__ConsumeString(mediapipe::Packet* packet, absl::Status** status_out, const char** value_out);
@@ -108,7 +108,7 @@ MP_CAPI(MpReturnCode) mp_Packet__ValidateAsString(mediapipe::Packet* packet, abs
 MP_CAPI(MpReturnCode) mp__PacketFromDynamicProto__PKc_PKc_i(const char* type_name, const char* serialized_proto, int size,
                                                             absl::Status** status_out, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__PacketFromDynamicProto_At__PKc_PKc_i_ll(const char* type_name, const char* serialized_proto, int size,
-                                                                  int64 timestampMicrosec,
+                                                                  int64_t timestampMicrosec,
                                                                   absl::Status** status_out, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetProtoMessageLite(mediapipe::Packet* packet, mp_api::SerializedProto* value_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetVectorOfProtoMessageLite(mediapipe::Packet* packet, mp_api::StructArray<mp_api::SerializedProto>* value_out);
@@ -174,7 +174,7 @@ inline MpReturnCode mp__MakeVectorPacket_At(const T* array, int size, mediapipe:
 }
 
 template <typename T>
-inline MpReturnCode mp__MakeVectorPacket_At(const T* array, int size, int64 timestampMicrosec, mediapipe::Packet** packet_out) {
+inline MpReturnCode mp__MakeVectorPacket_At(const T* array, int size, int64_t timestampMicrosec, mediapipe::Packet** packet_out) {
   TRY
     std::vector<T> vector(array, array + size);
     *packet_out = new mediapipe::Packet{mediapipe::MakePacket<std::vector<T>>(vector).At(mediapipe::Timestamp(timestampMicrosec))};

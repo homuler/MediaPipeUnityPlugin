@@ -16,7 +16,7 @@ MpReturnCode mp__MakeColMajorMatrixPacket__Pf_i_i(float* pcm_data, int rows, int
   CATCH_EXCEPTION
 }
 
-MpReturnCode mp__MakeColMajorMatrixPacket_At__Pf_i_i_ll(float* pcm_data, int rows, int cols, int64 timestamp_microsec, mediapipe::Packet** packet_out) {
+MpReturnCode mp__MakeColMajorMatrixPacket_At__Pf_i_i_ll(float* pcm_data, int rows, int cols, int64_t timestamp_microsec, mediapipe::Packet** packet_out) {
   TRY
     Eigen::Map<Eigen::MatrixXf> m(pcm_data, rows, cols);
 

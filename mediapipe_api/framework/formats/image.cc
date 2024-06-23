@@ -1,6 +1,6 @@
 #include "mediapipe_api/framework/formats/image.h"
 
-MpReturnCode mp_Image__ui_i_i_i_Pui8_PF(mediapipe::ImageFormat::Format format, int width, int height, int width_step, uint8* pixel_data,
+MpReturnCode mp_Image__ui_i_i_i_Pui8_PF(mediapipe::ImageFormat::Format format, int width, int height, int width_step, uint8_t* pixel_data,
                                         Deleter* deleter, mediapipe::Image** image_out) {
   TRY_ALL
     *image_out = new mediapipe::Image{std::make_shared<mediapipe::ImageFrame>(format, width, height, width_step, pixel_data, deleter)};
@@ -92,7 +92,7 @@ void mp_PixelWriteLock__delete(mediapipe::PixelWriteLock* pixel_Write_lock) {
   delete pixel_Write_lock;
 }
 
-uint8* mp_PixelWriteLock__Pixels(mediapipe::PixelWriteLock* pixel_read_lock) {
+uint8_t* mp_PixelWriteLock__Pixels(mediapipe::PixelWriteLock* pixel_read_lock) {
   return pixel_read_lock->Pixels();
 }
 
@@ -111,7 +111,7 @@ MpReturnCode mp__MakeImagePacket_At__PI_Rt(mediapipe::Image* image, mediapipe::T
   CATCH_ALL
 }
 
-MpReturnCode mp__MakeImagePacket_At__PI_ll(mediapipe::Image* image, int64 timestampMicrosec, mediapipe::Packet** packet_out) {
+MpReturnCode mp__MakeImagePacket_At__PI_ll(mediapipe::Image* image, int64_t timestampMicrosec, mediapipe::Packet** packet_out) {
   TRY_ALL
     *packet_out = new mediapipe::Packet{mediapipe::MakePacket<mediapipe::Image>(std::move(*image)).At(mediapipe::Timestamp(timestampMicrosec))};
     RETURN_CODE(MpReturnCode::Success);

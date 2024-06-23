@@ -25,9 +25,9 @@
 
 extern "C" {
 
-typedef void(Deleter)(uint8*);
+typedef void(Deleter)(uint8_t*);
 
-MP_CAPI(MpReturnCode) mp_Image__ui_i_i_i_Pui8_PF(mediapipe::ImageFormat::Format format, int width, int height, int width_step, uint8* pixel_data,
+MP_CAPI(MpReturnCode) mp_Image__ui_i_i_i_Pui8_PF(mediapipe::ImageFormat::Format format, int width, int height, int width_step, uint8_t* pixel_data,
                                                  Deleter* deleter, mediapipe::Image** image_out);
 
 #if !MEDIAPIPE_DISABLE_GPU
@@ -56,12 +56,12 @@ MP_CAPI(MpReturnCode) mp_Image__ConvertToGpu(mediapipe::Image* image, bool* resu
 
 MP_CAPI(MpReturnCode) mp_PixelWriteLock__RI(mediapipe::Image* image, mediapipe::PixelWriteLock** pixel_Write_lock_out);
 MP_CAPI(void) mp_PixelWriteLock__delete(mediapipe::PixelWriteLock* pixel_Write_lock);
-MP_CAPI(uint8*) mp_PixelWriteLock__Pixels(mediapipe::PixelWriteLock* pixel_read_lock);
+MP_CAPI(uint8_t*) mp_PixelWriteLock__Pixels(mediapipe::PixelWriteLock* pixel_read_lock);
 
 // Packet API
 MP_CAPI(MpReturnCode) mp__MakeImagePacket__PI(mediapipe::Image* image, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeImagePacket_At__PI_Rt(mediapipe::Image* image, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp__MakeImagePacket_At__PI_ll(mediapipe::Image* image, int64 timestampMicrosec, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeImagePacket_At__PI_ll(mediapipe::Image* image, int64_t timestampMicrosec, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__ConsumeImage(mediapipe::Packet* packet, absl::Status **status_out, mediapipe::Image** value_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetImage(mediapipe::Packet* packet, const mediapipe::Image** value_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetImageVector(mediapipe::Packet* packet, mp_api::StructArray<mediapipe::Image*>* value_out);

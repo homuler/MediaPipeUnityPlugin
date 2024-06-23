@@ -128,7 +128,7 @@ jobs:
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.dylib
 
   ios-build:
-    runs-on: macos-12
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
         with:
@@ -140,17 +140,6 @@ jobs:
           python-version: '3.10'
       - name: Install NumPy
         run: pip install --no-cache-dir --user numpy
-
-      - name: Build bazel to circumvent a compile error
-        run: |
-          mkdir bin
-          git clone https://github.com/bazelbuild/bazel.git --depth 1 --single-branch --branch  6.1.1
-          cd bazel
-          git apply ../third_party/bazel_ios_workaround.diff
-          USE_BAZEL_VERSION=6.2.1 bazel build --java_runtime_version=remotejdk_11 //src:bazel
-          cp bazel-bin/src/bazel ../bin
-          cd ..
-          echo "bin" >> $GITHUB_PATH
 
       - name: Build MediaPipeUnity.framework
         run: |

@@ -27,7 +27,32 @@ RUN apt-get update && \
         software-properties-common \
         sudo \
         unzip \
+        wget \
         zip
+
+# Upgrade binutils (>= 2.36)
+RUN curl -O https://ftp.gnu.org/gnu/binutils/binutils-2.36.tar.gz && \
+    tar -xvzof binutils-2.36.tar.gz && \
+    cd binutils-2.36 && \
+    mkdir build && \
+    cd build && \
+    ../configure --prefix=/usr && \
+    make && \
+    make install
+
+# Install gcc-11
+RUN add-apt-repository ppa:ubuntu-toolchain-r/test -y && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends gcc-11 g++-11 && \
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 --slave /usr/bin/g++ g++ /usr/bin/g++-11
+
+# Install Clang 16
+RUN curl https://apt.llvm.org/llvm.sh -o llvm.sh && \
+    chmod +x llvm.sh && \
+    ./llvm.sh 16 && \
+    ln -sf /usr/bin/clang-16 /usr/bin/clang && \
+    ln -sf /usr/bin/clang++-16 /usr/bin/clang++ && \
+    ln -sf /usr/bin/clang-format-16 /usr/bin/clang-format
 
 FROM base AS android
 

@@ -10,24 +10,10 @@ http_archive(
         "https://github.com/bazelbuild/bazel-skylib/releases/download/1.3.0/bazel-skylib-1.3.0.tar.gz",
     ],
 )
-
 load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
-
 bazel_skylib_workspace()
-
 load("@bazel_skylib//lib:versions.bzl", "versions")
-
 versions.check(minimum_bazel_version = "6.1.1")
-
-http_archive(
-    name = "rules_pkg",
-    sha256 = "62eeb544ff1ef41d786e329e1536c1d541bb9bcad27ae984d57f18f314018e66",
-    url = "https://github.com/bazelbuild/rules_pkg/releases/download/0.6.0/rules_pkg-0.6.0.tar.gz",
-)
-
-load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
-
-rules_pkg_dependencies()
 
 # mediapipe
 http_archive(
@@ -36,22 +22,22 @@ http_archive(
         "-p1",
     ],
     patches = [
-        "@//third_party:mediapipe_workaround.diff",
         "@//third_party:mediapipe_opencv.diff",
         "@//third_party:mediapipe_visibility.diff",
         "@//third_party:mediapipe_model_path.diff",
         "@//third_party:mediapipe_extension.diff",
+        "@//third_party:mediapipe_workaround.diff",
     ],
-    sha256 = "c4719fce7a00e097daf3ad972963422ebe190297f5f2288d3ab05e4f856c74c4",
-    strip_prefix = "mediapipe-0.10.9",
-    urls = ["https://github.com/google/mediapipe/archive/v0.10.9.tar.gz"],
+    sha256 = "9d46fa5363f5c4e11c3d1faec71b0746f15c5aab7b5460d0e5655d7af93c6957",
+    strip_prefix = "mediapipe-0.10.14",
+    urls = ["https://github.com/google/mediapipe/archive/v0.10.14.tar.gz"],
 )
 
-# ABSL cpp library lts_2023_01_25.
+# ABSL on 2023-10-18
 http_archive(
     name = "com_google_absl",
     urls = [
-        "https://github.com/abseil/abseil-cpp/archive/refs/tags/20230125.0.tar.gz",
+        "https://github.com/abseil/abseil-cpp/archive//9687a8ea750bfcddf790372093245a1d041b21a3.tar.gz",
     ],
     patches = [
         "@mediapipe//third_party:com_google_absl_windows_patch.diff",
@@ -59,8 +45,8 @@ http_archive(
     patch_args = [
         "-p1",
     ],
-    strip_prefix = "abseil-cpp-20230125.0",
-    sha256 = "3ea49a7d97421b88a8c48a0de16c16048e17725c7ec0f1d3ea2683a2a75adc21",
+    strip_prefix = "abseil-cpp-9687a8ea750bfcddf790372093245a1d041b21a3",
+    sha256 = "f841f78243f179326f2a80b719f2887c38fe226d288ecdc46e2aa091e6aa43bc",
 )
 
 http_archive(
@@ -93,6 +79,32 @@ http_archive(
     patch_args = [
         "-p1",
     ],
+)
+
+http_archive(
+    name = "cpuinfo",
+    sha256 = "a615cac78fad03952cc3e1fd231ce789a8df6e81a5957b64350cb8200364b385",
+    strip_prefix = "cpuinfo-d6860c477c99f1fce9e28eb206891af3c0e1a1d7",
+    urls = [
+        "https://github.com/pytorch/cpuinfo/archive/d6860c477c99f1fce9e28eb206891af3c0e1a1d7.zip"
+    ],
+)
+
+# XNNPACK on 2024-03-27.
+http_archive(
+    name = "XNNPACK",
+    # `curl -L <url> | shasum -a 256`
+    sha256 = "179a680ef85deb5380b850f2551b214e00835c232f5b197dedf7c011a6adf5a6",
+    strip_prefix = "XNNPACK-2fe25b859581a34e77b48b06c640ac1a5a58612e",
+    url = "https://github.com/google/XNNPACK/archive/2fe25b859581a34e77b48b06c640ac1a5a58612e.zip",
+)
+
+# TODO: This is an are indirect depedency. We should factor it out.
+http_archive(
+    name = "pthreadpool",
+    sha256 = "a4cf06de57bfdf8d7b537c61f1c3071bce74e57524fe053e0bbd2332feca7f95",
+    strip_prefix = "pthreadpool-4fe0e1e183925bf8cfa6aae24237e724a96479b8",
+    urls = ["https://github.com/Maratyszcza/pthreadpool/archive/4fe0e1e183925bf8cfa6aae24237e724a96479b8.zip"],
 )
 
 load("//third_party:android_configure.bzl", "android_configure")
@@ -278,7 +290,7 @@ http_archive(
     sha256 = "fe346e1aee4f5069c4cbccb88706a9a2b2b4cf98aeb91ec1319be77e07dd7435",
     repo_mapping = {"@com_github_glog_glog" : "@com_github_glog_glog_no_gflags"},
     # TODO: Fix this in AudioTools directly
-    patches = ["@//third_party:com_google_audio_tools_fixes.diff"],
+    patches = ["@mediapipe//third_party:com_google_audio_tools_fixes.diff"],
     patch_args = ["-p1"]
 )
 
@@ -289,17 +301,18 @@ http_archive(
     build_file = "@mediapipe//third_party:pffft.BUILD",
 )
 
-# sentencepiece
+# Sentencepiece
 http_archive(
     name = "com_google_sentencepiece",
     strip_prefix = "sentencepiece-0.1.96",
+    add_prefix = "sentencepiece",
     sha256 = "8409b0126ebd62b256c685d5757150cf7fcb2b92a2f2b98efb3f38fc36719754",
     urls = [
         "https://github.com/google/sentencepiece/archive/refs/tags/v0.1.96.zip"
     ],
     build_file = "@mediapipe//third_party:sentencepiece.BUILD",
     patches = ["@mediapipe//third_party:com_google_sentencepiece.diff"],
-    patch_args = ["-p1"],
+    patch_args = ["-d", "sentencepiece", "-p1"],
 )
 
 http_archive(
@@ -341,7 +354,7 @@ http_archive(
     name = "ceres_solver",
     url = "https://github.com/ceres-solver/ceres-solver/archive/123fba61cf2611a3c8bddc9d91416db26b10b558.zip",
     patches = [
-        "@mediapipe//third_party:ceres_solver_compatibility_fixes.diff"
+        "@mediapipe//third_party:ceres_solver_compatibility_fixes.diff",
     ],
     patch_args = [
         "-p1",
@@ -467,23 +480,27 @@ http_archive(
 )
 
 # TensorFlow repo should always go after the other external dependencies.
-# TF on 2023-07-26.
-_TENSORFLOW_GIT_COMMIT = "e92261fd4cec0b726692081c4d2966b75abf31dd"
-# curl -L https://github.com/tensorflow/tensorflow/archive/<TENSORFLOW_GIT_COMMIT>.tar.gz | shasum -a 256
-_TENSORFLOW_SHA256 = "478a229bd4ec70a5b568ac23b5ea013d9fca46a47d6c43e30365a0412b9febf4"
+# TF on 2024-05-09.
+_TENSORFLOW_GIT_COMMIT = "8038e44ea38bb889095afaaf6ad05e94adaed8d2"
+# curl -L https://github.com/tensorflow/tensorflow/archive/8038e44ea38bb889095afaaf6ad05e94adaed8d2.tar.gz | shasum -a 256
+_TENSORFLOW_SHA256 = "a00c1503a879eb21c349941bbee54aef8d557d7d2ab770e76fb26668d75aa6e0"
 http_archive(
     name = "org_tensorflow",
     urls = [
       "https://github.com/tensorflow/tensorflow/archive/%s.tar.gz" % _TENSORFLOW_GIT_COMMIT,
     ],
     patches = [
-        "@mediapipe//third_party:org_tensorflow_compatibility_fixes.diff",
         "@mediapipe//third_party:org_tensorflow_system_python.diff",
         # Diff is generated with a script, don't update it manually.
         "@mediapipe//third_party:org_tensorflow_custom_ops.diff",
         # Works around Bazel issue with objc_library.
         # See https://github.com/bazelbuild/bazel/issues/19912
         "@mediapipe//third_party:org_tensorflow_objc_build_fixes.diff",
+        # Restores scores for text pipelines, which return different results
+        # with subgraph reshaping
+        "@mediapipe//third_party:org_tensorflow_disable_subgraph_reshaping.diff",
+        # See https://github.com/tensorflow/tensorflow/issues/69036
+        "@//third_party:org_tensorflow_windows_workaround.diff",
     ],
     patch_args = [
         "-p1",
@@ -598,4 +615,11 @@ http_archive(
     strip_prefix = "Halide-15.0.1-x86-64-windows",
     urls = ["https://github.com/halide/Halide/releases/download/v15.0.1/Halide-15.0.1-x86-64-windows-4c63f1befa1063184c5982b11b6a2cc17d4e5815.zip"],
     build_file = "@mediapipe//third_party:halide.BUILD",
+)
+
+http_archive(
+    name = "com_github_nlohmann_json",
+    sha256 = "6bea5877b1541d353bd77bdfbdb2696333ae5ed8f9e8cc22df657192218cad91",
+    urls = ["https://github.com/nlohmann/json/releases/download/v3.9.1/include.zip"],
+    build_file = "@//third_party:nlohmann.BUILD",
 )

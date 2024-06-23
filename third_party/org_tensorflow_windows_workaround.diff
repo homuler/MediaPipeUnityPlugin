@@ -1,0 +1,31 @@
+diff --git a/tensorflow/lite/core/c/operator.cc b/tensorflow/lite/core/c/operator.cc
+index 261504de8e1..a2938edacad 100644
+--- a/tensorflow/lite/core/c/operator.cc
++++ b/tensorflow/lite/core/c/operator.cc
+@@ -25,16 +25,16 @@ limitations under the License.
+ 
+ TfLiteOperator* TfLiteOperatorCreate(TfLiteBuiltinOperator builtin_code,
+                                      const char* custom_name, int version) {
+-  return new TfLiteOperator{.custom_name = custom_name,
+-                            .version = version,
+-                            .init = nullptr,
+-                            .free = nullptr,
+-                            .prepare = nullptr,
+-                            .invoke = nullptr,
+-                            .async_kernel = nullptr,
+-                            .builtin_code = builtin_code,
+-                            .node_index = -1,
+-                            .inplace_operator = kTfLiteInplaceOpNone};
++  return new TfLiteOperator{/* .custom_name = */ custom_name,
++                            /* .version = */ version,
++                            /* .init = */ nullptr,
++                            /* .free = */ nullptr,
++                            /* .prepare = */ nullptr,
++                            /* .invoke = */ nullptr,
++                            /* .async_kernel = */ nullptr,
++                            /* .builtin_code = */ builtin_code,
++                            /* .node_index = */ -1,
++                            /* .inplace_operator = */ kTfLiteInplaceOpNone};
+ }
+ 
+ void TfLiteOperatorDelete(TfLiteOperator* reg) { delete reg; }

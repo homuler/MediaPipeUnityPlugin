@@ -16,7 +16,7 @@ on:
         required: true
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,7 +37,7 @@ jobs:
             Packages/com.github.homuler.mediapipe/Runtime/Scripts/Protobuf/**/*.cs
             Packages/com.github.homuler.mediapipe/PackageResources/MediaPipe/*.bytes
             Packages/com.github.homuler.mediapipe/PackageResources/MediaPipe/*.txt
-          key: libs-ubuntu-20.04-v1-${{ hashFiles('cache_key.txt') }}
+          key: libs-ubuntu-22.04-v1-${{ hashFiles('cache_key.txt') }}
 
       # Setup build tools
       - name: Mount bazel cache
@@ -45,10 +45,10 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: "~/.cache/bazel"
-          key: bazel-ubuntu-20.04-v1-${{ hashFiles('WORKSPACE') }}-${{ hashFiles('cache_key.txt') }}
+          key: bazel-ubuntu-22.04-v1-${{ hashFiles('WORKSPACE') }}-${{ hashFiles('cache_key.txt') }}
           restore-keys: |
-            bazel-ubuntu-20.04-v1-${{ hashFiles('WORKSPACE') }}-
-            bazel-ubuntu-20.04-v1-
+            bazel-ubuntu-22.04-v1-${{ hashFiles('WORKSPACE') }}-
+            bazel-ubuntu-22.04-v1-
 
       - name: Remove cache_key.txt
         run: |
@@ -63,10 +63,19 @@ jobs:
       - name: Install dependencies
         if: steps.cache-libs.outputs.cache-hit != 'true'
         run: |
-          # install GCC/G++ 8
+          # install GCC/G++ 11
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends gcc-8 g++-8
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 100 --slave /usr/bin/g++ g++ /usr/bin/g++-8
+          sudo apt-get install -y --no-install-recommends gcc-11 g++-11
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 --slave /usr/bin/g++ g++ /usr/bin/g++-11
+
+          # install Clang 16
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 16
+          sudo ln -sf /usr/bin/clang-16 /usr/bin/clang
+          sudo ln -sf /usr/bin/clang++-16 /usr/bin/clang++
+          sudo ln -sf /usr/bin/clang-format-16 /usr/bin/clang-format
 
           # install NuGet
           sudo curl -o /usr/local/bin/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
@@ -97,7 +106,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: ~/.cache/bazel
-          key: bazel-ubuntu-20.04-v1-${{ hashFiles('WORKSPACE') }}-${{ hashFiles('cache_key.txt') }}
+          key: bazel-ubuntu-22.04-v1-${{ hashFiles('WORKSPACE') }}-${{ hashFiles('cache_key.txt') }}
 
   test:
     runs-on: ${{ matrix.os }}
@@ -107,7 +116,6 @@ jobs:
       matrix:
         os:
           - ubuntu-22.04
-          - ubuntu-20.04
         unityVersion:
           - 2022.3.16f1
           - 2021.3.33f1
@@ -190,7 +198,7 @@ jobs:
           retention-days: 7
 
       - uses: actions/upload-artifact@v4
-        if: ${{ matrix.os == 'ubuntu-20.04' && startsWith(matrix.unityVersion, '2021') }}
+        if: ${{ matrix.os == 'ubuntu-22.04' && startsWith(matrix.unityVersion, '2021') }}
         with:
           name: Coverage results
           path: DummyProject/CodeCoverage

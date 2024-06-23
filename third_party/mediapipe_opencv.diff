@@ -1,15 +1,15 @@
 diff --git a/third_party/BUILD b/third_party/BUILD
-index d784fc3c..d2e758b3 100644
+index 78b83fa0..d2e758b3 100644
 --- a/third_party/BUILD
 +++ b/third_party/BUILD
-@@ -13,7 +13,6 @@
- # limitations under the License.
+@@ -14,7 +14,6 @@
  #
  
--load("@rules_foreign_cc//foreign_cc:cmake.bzl", "cmake")
  load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+-load("@rules_foreign_cc//foreign_cc:cmake.bzl", "cmake")
  
  licenses(["notice"])  # Apache License 2.0
+ 
 @@ -53,67 +52,9 @@ cc_library(
      }),
  )

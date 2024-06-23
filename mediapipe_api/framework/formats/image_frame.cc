@@ -13,7 +13,7 @@ MpReturnCode mp_ImageFrame__(mediapipe::ImageFrame** image_frame_out) {
   CATCH_EXCEPTION
 }
 
-MpReturnCode mp_ImageFrame__ui_i_i_ui(mediapipe::ImageFormat::Format format, int width, int height, uint32 alignment_boundary,
+MpReturnCode mp_ImageFrame__ui_i_i_ui(mediapipe::ImageFormat::Format format, int width, int height, uint32_t alignment_boundary,
                                       mediapipe::ImageFrame** image_frame_out) {
   TRY_ALL
     *image_frame_out = new mediapipe::ImageFrame{format, width, height, alignment_boundary};
@@ -21,7 +21,7 @@ MpReturnCode mp_ImageFrame__ui_i_i_ui(mediapipe::ImageFormat::Format format, int
   CATCH_ALL
 }
 
-MpReturnCode mp_ImageFrame__ui_i_i_i_Pui8_PF(mediapipe::ImageFormat::Format format, int width, int height, int width_step, uint8* pixel_data, Deleter* deleter,
+MpReturnCode mp_ImageFrame__ui_i_i_i_Pui8_PF(mediapipe::ImageFormat::Format format, int width, int height, int width_step, uint8_t* pixel_data, Deleter* deleter,
                                              mediapipe::ImageFrame** image_frame_out) {
   TRY_ALL
     *image_frame_out = new mediapipe::ImageFrame{format, width, height, width_step, pixel_data, deleter};
@@ -49,7 +49,7 @@ MpReturnCode mp_ImageFrame__SetAlignmentPaddingAreas(mediapipe::ImageFrame* imag
 
 bool mp_ImageFrame__IsContiguous(mediapipe::ImageFrame* image_frame) { return image_frame->IsContiguous(); }
 
-MpReturnCode mp_ImageFrame__IsAligned__ui(mediapipe::ImageFrame* image_frame, uint32 alignment_boundary, bool* value_out) {
+MpReturnCode mp_ImageFrame__IsAligned__ui(mediapipe::ImageFrame* image_frame, uint32_t alignment_boundary, bool* value_out) {
   TRY_ALL
     *value_out = image_frame->IsAligned(alignment_boundary);
     RETURN_CODE(MpReturnCode::Success);
@@ -64,16 +64,16 @@ int mp_ImageFrame__Height(mediapipe::ImageFrame* image_frame) { return image_fra
 
 int mp_ImageFrame__WidthStep(mediapipe::ImageFrame* image_frame) { return image_frame->WidthStep(); }
 
-uint8* mp_ImageFrame__MutablePixelData(mediapipe::ImageFrame* image_frame) { return image_frame->MutablePixelData(); }
+uint8_t* mp_ImageFrame__MutablePixelData(mediapipe::ImageFrame* image_frame) { return image_frame->MutablePixelData(); }
 
-MpReturnCode mp_ImageFrame__CopyToBuffer__Pui8_i(mediapipe::ImageFrame* image_frame, uint8* buffer, int buffer_size) {
+MpReturnCode mp_ImageFrame__CopyToBuffer__Pui8_i(mediapipe::ImageFrame* image_frame, uint8_t* buffer, int buffer_size) {
   TRY_ALL
     image_frame->CopyToBuffer(buffer, buffer_size);
     RETURN_CODE(MpReturnCode::Success);
   CATCH_ALL
 }
 
-MpReturnCode mp_ImageFrame__CopyToBuffer__Pui16_i(mediapipe::ImageFrame* image_frame, uint16* buffer, int buffer_size) {
+MpReturnCode mp_ImageFrame__CopyToBuffer__Pui16_i(mediapipe::ImageFrame* image_frame, uint16_t* buffer, int buffer_size) {
   TRY_ALL
     image_frame->CopyToBuffer(buffer, buffer_size);
     RETURN_CODE(MpReturnCode::Success);
@@ -102,7 +102,7 @@ MpReturnCode mp__MakeImageFramePacket_At__Pif_Rt(mediapipe::ImageFrame* image_fr
   CATCH_EXCEPTION
 }
 
-MpReturnCode mp__MakeImageFramePacket_At__Pif_ll(mediapipe::ImageFrame* image_frame, int64 timestampMicrosec, mediapipe::Packet** packet_out) {
+MpReturnCode mp__MakeImageFramePacket_At__Pif_ll(mediapipe::ImageFrame* image_frame, int64_t timestampMicrosec, mediapipe::Packet** packet_out) {
   TRY
     *packet_out = new mediapipe::Packet{mediapipe::MakePacket<mediapipe::ImageFrame>(std::move(*image_frame)).At(mediapipe::Timestamp(timestampMicrosec))};
     RETURN_CODE(MpReturnCode::Success);

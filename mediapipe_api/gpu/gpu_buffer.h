@@ -31,7 +31,7 @@ MP_CAPI(mediapipe::GpuBufferFormat) mp_GpuBuffer__format(mediapipe::GpuBuffer* g
 
 MP_CAPI(MpReturnCode) mp__MakeGpuBufferPacket__Rgb(mediapipe::GpuBuffer* gpu_buffer, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp__MakeGpuBufferPacket_At__Rgb_Rts(mediapipe::GpuBuffer* gpu_buffer, mediapipe::Timestamp* timestamp, mediapipe::Packet** packet_out);
-MP_CAPI(MpReturnCode) mp__MakeGpuBufferPacket_At__Rgb_ll(mediapipe::GpuBuffer* gpu_buffer, int64 timestampMicrosec, mediapipe::Packet** packet_out);
+MP_CAPI(MpReturnCode) mp__MakeGpuBufferPacket_At__Rgb_ll(mediapipe::GpuBuffer* gpu_buffer, int64_t timestampMicrosec, mediapipe::Packet** packet_out);
 MP_CAPI(MpReturnCode) mp_Packet__ConsumeGpuBuffer(mediapipe::Packet* packet, absl::Status** status_out, mediapipe::GpuBuffer** value_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetGpuBuffer(mediapipe::Packet* packet, const mediapipe::GpuBuffer** value_out);
 MP_CAPI(MpReturnCode) mp_Packet__ValidateAsGpuBuffer(mediapipe::Packet* packet, absl::Status** status_out);
