@@ -1,5 +1,5 @@
 diff --git a/mediapipe/BUILD b/mediapipe/BUILD
-index 432ed18f..8b70fd77 100644
+index 90edc8a5..adea5964 100644
 --- a/mediapipe/BUILD
 +++ b/mediapipe/BUILD
 @@ -196,6 +196,31 @@ config_setting_and_platform(
@@ -35,7 +35,7 @@ index 432ed18f..8b70fd77 100644
      ["provisioning_profile.mobileprovision"],
      visibility = ["//visibility:public"],
 diff --git a/mediapipe/calculators/tensor/BUILD b/mediapipe/calculators/tensor/BUILD
-index 61862443..b60e4be8 100644
+index bda2ce82..a2f200b5 100644
 --- a/mediapipe/calculators/tensor/BUILD
 +++ b/mediapipe/calculators/tensor/BUILD
 @@ -69,6 +69,7 @@ selects.config_setting_group(
@@ -46,7 +46,7 @@ index 61862443..b60e4be8 100644
      ],
  )
  
-@@ -1131,6 +1132,11 @@ cc_library(
+@@ -1462,6 +1463,11 @@ cc_library(
              "//mediapipe/gpu:gpu_buffer",
              "//mediapipe/gpu:gpu_service",
          ],
@@ -59,7 +59,7 @@ index 61862443..b60e4be8 100644
              ":image_to_tensor_converter_gl_buffer",
              "//mediapipe/gpu:gl_calculator_helper",
 diff --git a/mediapipe/gpu/BUILD b/mediapipe/gpu/BUILD
-index 88864e89..65694002 100644
+index 7e0c45b3..9b4ead93 100644
 --- a/mediapipe/gpu/BUILD
 +++ b/mediapipe/gpu/BUILD
 @@ -169,6 +169,9 @@ cc_library(
@@ -73,7 +73,7 @@ index 88864e89..65694002 100644
      hdrs = ["gl_context.h"],
      copts = select({
 diff --git a/mediapipe/gpu/gl_context_webgl.cc b/mediapipe/gpu/gl_context_webgl.cc
-index 0f14581b..088f9d21 100644
+index 7560fca0..e24865e6 100644
 --- a/mediapipe/gpu/gl_context_webgl.cc
 +++ b/mediapipe/gpu/gl_context_webgl.cc
 @@ -52,6 +52,10 @@ absl::Status GlContext::CreateContextInternal(
@@ -88,7 +88,7 @@ index 0f14581b..088f9d21 100644
    emscripten_webgl_init_context_attributes(&attrs);
    attrs.explicitSwapControl = 0;
 diff --git a/mediapipe/gpu/gl_scaler_calculator.cc b/mediapipe/gpu/gl_scaler_calculator.cc
-index a181287f..1174dc8c 100644
+index 5ab6dedc..d4cd312d 100644
 --- a/mediapipe/gpu/gl_scaler_calculator.cc
 +++ b/mediapipe/gpu/gl_scaler_calculator.cc
 @@ -12,6 +12,8 @@
@@ -100,7 +100,7 @@ index a181287f..1174dc8c 100644
  #include "mediapipe/framework/calculator_framework.h"
  #include "mediapipe/framework/formats/image.h"
  #include "mediapipe/framework/port/ret_check.h"
-@@ -68,6 +70,7 @@ using Image = mediapipe::Image;
+@@ -69,6 +71,7 @@ using Image = mediapipe::Image;
  //   existing calculator options, depending on field merge_fields.
  //   OUTPUT_DIMENSIONS: the output width and height in pixels.
  //   ROTATION: the counterclockwise rotation angle in degrees.
@@ -108,7 +108,7 @@ index a181287f..1174dc8c 100644
  // These can also be specified as options.
  // To enable horizontal or vertical flip, specify them in options.
  // The flipping is applied after rotation.
-@@ -92,6 +95,7 @@ class GlScalerCalculator : public CalculatorBase {
+@@ -96,6 +99,7 @@ class GlScalerCalculator : public CalculatorBase {
  
   private:
    GlCalculatorHelper helper_;
@@ -116,7 +116,7 @@ index a181287f..1174dc8c 100644
    int dst_width_ = 0;
    int dst_height_ = 0;
    float dst_scale_ = -1.f;
-@@ -129,6 +133,9 @@ absl::Status GlScalerCalculator::GetContract(CalculatorContract* cc) {
+@@ -134,6 +138,9 @@ absl::Status GlScalerCalculator::GetContract(CalculatorContract* cc) {
    }
    MP_RETURN_IF_ERROR(GlCalculatorHelper::UpdateContract(cc));
  
@@ -126,7 +126,7 @@ index a181287f..1174dc8c 100644
    if (cc->InputSidePackets().HasTag(kOptionsTag)) {
      cc->InputSidePackets().Tag(kOptionsTag).Set<GlScalerCalculatorOptions>();
    }
-@@ -196,6 +203,11 @@ absl::Status GlScalerCalculator::Open(CalculatorContext* cc) {
+@@ -202,6 +209,11 @@ absl::Status GlScalerCalculator::Open(CalculatorContext* cc) {
      dst_width_ = dimensions[0];
      dst_height_ = dimensions[1];
    }
@@ -138,7 +138,7 @@ index a181287f..1174dc8c 100644
    if (cc->InputSidePackets().HasTag(kRotationTag)) {
      rotation_ccw = cc->InputSidePackets().Tag(kRotationTag).Get<int>();
    }
-@@ -206,7 +218,7 @@ absl::Status GlScalerCalculator::Open(CalculatorContext* cc) {
+@@ -212,7 +224,7 @@ absl::Status GlScalerCalculator::Open(CalculatorContext* cc) {
  }
  
  absl::Status GlScalerCalculator::Process(CalculatorContext* cc) {
@@ -147,23 +147,23 @@ index a181287f..1174dc8c 100644
      if (cc->Inputs().Tag(kOutputDimensionsTag).IsEmpty()) {
        // OUTPUT_DIMENSIONS input stream is specified, but value is missing.
        return absl::OkStatus();
-@@ -288,9 +300,18 @@ absl::Status GlScalerCalculator::Process(CalculatorContext* cc) {
+@@ -294,9 +306,18 @@ absl::Status GlScalerCalculator::Process(CalculatorContext* cc) {
                MakePacket<float>(left_right_padding).At(cc->InputTimestamp()));
      }
  
--    auto dst = helper_.CreateDestinationTexture(dst_width, dst_height,
--                                                GetOutputFormat());
+-    auto dst = helper_.CreateDestinationTexture(
+-        dst_width, dst_height, GetOutputFormat(input.format()));
 -
 +    GlTexture dst;
 +#if MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
 +    // for iOS
-+    dst = helper_.CreateDestinationTexture(dst_width, dst_height, GetOutputFormat());
++    dst = helper_.CreateDestinationTexture(dst_width, dst_height, GetOutputFormat(input.format()));
 +#else
 +    if (dst_buffer_) {
 +      dst_buffer_.internal_storage<mediapipe::GlTextureBuffer>()->Reuse();
 +      dst = helper_.CreateDestinationTexture(dst_buffer_);
 +    } else {
-+      dst = helper_.CreateDestinationTexture(dst_width, dst_height, GetOutputFormat());
++      dst = helper_.CreateDestinationTexture(dst_width, dst_height, GetOutputFormat(input.format()));
 +    }
 +#endif
      helper_.BindFramebuffer(dst);
