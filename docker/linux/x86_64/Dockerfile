@@ -27,7 +27,16 @@ RUN apt-get update && \
         software-properties-common \
         sudo \
         unzip \
+        wget \
         zip
+
+# Install Clang 16
+RUN curl https://apt.llvm.org/llvm.sh -o llvm.sh && \
+    chmod +x llvm.sh && \
+    ./llvm.sh 16 && \
+    ln -sf /usr/bin/clang-16 /usr/bin/clang && \
+    ln -sf /usr/bin/clang++-16 /usr/bin/clang++ && \
+    ln -sf /usr/bin/clang-format-16 /usr/bin/clang-format
 
 FROM base AS android
 
