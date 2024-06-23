@@ -6,7 +6,7 @@
 
 #include "mediapipe_api/framework/timestamp.h"
 
-MpReturnCode mp_Timestamp__l(int64 timestamp, mediapipe::Timestamp** timestamp_out) {
+MpReturnCode mp_Timestamp__l(int64_t timestamp, mediapipe::Timestamp** timestamp_out) {
   TRY
     *timestamp_out = new mediapipe::Timestamp(timestamp);
     RETURN_CODE(MpReturnCode::Success);
@@ -15,11 +15,11 @@ MpReturnCode mp_Timestamp__l(int64 timestamp, mediapipe::Timestamp** timestamp_o
 
 void mp_Timestamp__delete(mediapipe::Timestamp* timestamp) { delete timestamp; }
 
-int64 mp_Timestamp__Value(mediapipe::Timestamp* timestamp) { return timestamp->Value(); }
+int64_t mp_Timestamp__Value(mediapipe::Timestamp* timestamp) { return timestamp->Value(); }
 
 double mp_Timestamp__Seconds(mediapipe::Timestamp* timestamp) { return timestamp->Seconds(); }
 
-int64 mp_Timestamp__Microseconds(mediapipe::Timestamp* timestamp) { return timestamp->Microseconds(); }
+int64_t mp_Timestamp__Microseconds(mediapipe::Timestamp* timestamp) { return timestamp->Microseconds(); }
 
 MpReturnCode mp_Timestamp__DebugString(mediapipe::Timestamp* timestamp, const char** str_out) {
   TRY

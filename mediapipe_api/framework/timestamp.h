@@ -12,11 +12,11 @@
 
 extern "C" {
 
-MP_CAPI(MpReturnCode) mp_Timestamp__l(int64 timestamp, mediapipe::Timestamp** timestamp_out);
+MP_CAPI(MpReturnCode) mp_Timestamp__l(int64_t timestamp, mediapipe::Timestamp** timestamp_out);
 MP_CAPI(void) mp_Timestamp__delete(mediapipe::Timestamp* timestamp);
-MP_CAPI(int64) mp_Timestamp__Value(mediapipe::Timestamp* timestamp);
+MP_CAPI(int64_t) mp_Timestamp__Value(mediapipe::Timestamp* timestamp);
 MP_CAPI(double) mp_Timestamp__Seconds(mediapipe::Timestamp* timestamp);
-MP_CAPI(int64) mp_Timestamp__Microseconds(mediapipe::Timestamp* timestamp);
+MP_CAPI(int64_t) mp_Timestamp__Microseconds(mediapipe::Timestamp* timestamp);
 MP_CAPI(MpReturnCode) mp_Timestamp__DebugString(mediapipe::Timestamp* timestamp, const char** str_out);
 MP_CAPI(bool) mp_Timestamp__IsSpecialValue(mediapipe::Timestamp* timestamp);
 MP_CAPI(bool) mp_Timestamp__IsRangeValue(mediapipe::Timestamp* timestamp);
