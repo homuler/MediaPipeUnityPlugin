@@ -498,6 +498,8 @@ http_archive(
         # Restores scores for text pipelines, which return different results
         # with subgraph reshaping
         "@mediapipe//third_party:org_tensorflow_disable_subgraph_reshaping.diff",
+        # See https://github.com/tensorflow/tensorflow/issues/69036
+        "@//third_party:org_tensorflow_windows_workaround.diff",
     ],
     patch_args = [
         "-p1",
