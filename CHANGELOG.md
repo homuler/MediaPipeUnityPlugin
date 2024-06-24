@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.14.4](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.14.3...v0.14.4) (2024-06-24)
+
+
+### Bug Fixes
+
+* diffs when building or importing ([#1201](https://github.com/homuler/MediaPipeUnityPlugin/issues/1201)) ([b795a98](https://github.com/homuler/MediaPipeUnityPlugin/commit/b795a9861ede9130610ef90a53d1b863b01ca164))
+
+
+### Build System
+
+* MediaPipe v0.10.14 ([#1200](https://github.com/homuler/MediaPipeUnityPlugin/issues/1200)) ([4bae91d](https://github.com/homuler/MediaPipeUnityPlugin/commit/4bae91d9272a37dfe590b24811a2876e1422ad3e))
+* Update the Unity version (2022.3.34f1) ([#1202](https://github.com/homuler/MediaPipeUnityPlugin/issues/1202)) ([77f96d6](https://github.com/homuler/MediaPipeUnityPlugin/commit/77f96d6ec341cb72c216f3b41a7a0e894b4939af))
+
 ### [0.14.3](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.14.2...v0.14.3) (2024-03-15)
 
 ### [0.14.2](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.14.1...v0.14.2) (2024-03-15)
