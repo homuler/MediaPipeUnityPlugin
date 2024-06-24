@@ -1,4 +1,11 @@
 {
+  "types": [
+    {"type":"feat","section":"Features"},
+    {"type":"fix","section":"Bug Fixes"},
+    {"type":"test","section":"Tests", "hidden": true},
+    {"type":"build","section":"Build System"},
+    {"type":"ci","hidden":true}
+  ],
   "bumpFiles": [
     {
       "filename": "Packages/com.github.homuler.mediapipe/package.json",
