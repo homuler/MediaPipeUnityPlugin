@@ -16,7 +16,7 @@ on:
         required: true
 jobs:
   build:
-    runs-on: macos-11
+    runs-on: macos-12
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,7 +37,7 @@ jobs:
             Packages/com.github.homuler.mediapipe/Runtime/Scripts/Protobuf/**/*.cs
             Packages/com.github.homuler.mediapipe/PackageResources/MediaPipe/*.bytes
             Packages/com.github.homuler.mediapipe/PackageResources/MediaPipe/*.txt
-          key: libs-macos-11-v1-${{ hashFiles('cache_key.txt') }}
+          key: libs-macos-12-v1-${{ hashFiles('cache_key.txt') }}
 
       # Setup build tools
       - name: Mount bazel cache
@@ -45,10 +45,10 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: /private/var/tmp/_bazel_runner
-          key: bazel-macos-11-v1-${{ hashFiles('WORKSPACE') }}-${{ hashFiles('cache_key.txt') }}
+          key: bazel-macos-12-v1-${{ hashFiles('WORKSPACE') }}-${{ hashFiles('cache_key.txt') }}
           restore-keys: |
-            bazel-macos-11-v1-${{ hashFiles('WORKSPACE') }}-
-            bazel-macos-11-v1-
+            bazel-macos-12-v1-${{ hashFiles('WORKSPACE') }}-
+            bazel-macos-12-v1-
 
       - name: Remove cache_key.txt
         run: |
@@ -84,7 +84,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: /private/var/tmp/_bazel_runner
-          key: bazel-macos-11-v1-${{ hashFiles('WORKSPACE') }}-${{ hashFiles('cache_key.txt') }}
+          key: bazel-macos-12-v1-${{ hashFiles('WORKSPACE') }}-${{ hashFiles('cache_key.txt') }}
 
   test:
     runs-on: ${{ matrix.os }}
@@ -93,7 +93,6 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - macos-11
           - macos-12
         unity:
           - { version: "2022.3.34f1", changeset: "4886f5360533" }
