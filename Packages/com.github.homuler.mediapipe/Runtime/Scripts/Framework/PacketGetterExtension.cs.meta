@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Packages/com.github.homuler.mediapipe/Runtime/Scripts/Framework/PacketGetterExtension.cs.meta
 guid: f9b7503ece01d51ce9cf0651e8058aac
-========
-guid: 47b5c89010f79d25ab0b8bc6c4458650
->>>>>>>> 99decce (wip):Packages/com.github.homuler.mediapipe/Runtime/Scripts/Framework/PackeGetterExtension.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
