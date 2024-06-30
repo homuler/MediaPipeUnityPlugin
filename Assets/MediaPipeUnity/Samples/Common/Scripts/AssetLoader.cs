@@ -10,9 +10,9 @@ namespace Mediapipe.Unity.Sample
 {
   public static class AssetLoader
   {
-    private static ResourceManager _ResourceManager;
+    private static IResourceManager _ResourceManager;
 
-    public static void Provide(ResourceManager manager) => _ResourceManager = manager;
+    public static void Provide(IResourceManager manager) => _ResourceManager = manager;
 
     public static IEnumerator PrepareAssetAsync(string name, string uniqueKey, bool overwrite = false)
     {
