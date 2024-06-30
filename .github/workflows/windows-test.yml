@@ -94,7 +94,6 @@ jobs:
         unity:
           - { version: "2022.3.34f1", changeset: "4886f5360533" }
           - { version: "2021.3.33f1", changeset: "ee5a2aa03ab2" }
-          - { version: "2020.3.44f1", changeset: "7f159b6136da" }
     steps:
       - name: Install UnityHub
         uses: crazy-max/ghaction-chocolatey@v3
