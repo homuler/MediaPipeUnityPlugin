@@ -9,7 +9,7 @@ using UnityEngine;
 
 using ConditionalAttribute = System.Diagnostics.ConditionalAttribute;
 
-namespace Mediapipe.Unity
+namespace Mediapipe
 {
   public interface IExtendedLogger : ILogger
   {
