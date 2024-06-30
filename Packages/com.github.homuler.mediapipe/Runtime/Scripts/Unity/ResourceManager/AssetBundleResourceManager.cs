@@ -4,34 +4,25 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using System;
 using System.Collections;
 using System.IO;
 using UnityEngine;
 
 namespace Mediapipe.Unity
 {
-  public class AssetBundleResourceManager : ResourceManager
+  public class AssetBundleResourceManager : IResourceManager
   {
     private static readonly string _TAG = nameof(AssetBundleResourceManager);
 
     private static string _AssetBundlePath;
     private static string _CachePathRoot;
 
-    public AssetBundleResourceManager(string assetBundleName, string cachePath = "Cache") : base(PathToResourceAsFile, GetResourceContents)
+    public AssetBundleResourceManager(string assetBundleName, string cachePath = "Cache")
     {
-      // It's safe to update static members because at most one RsourceManager can be initialized.
+      ResourceUtil.EnableCustomResolver();
       _AssetBundlePath = Path.Combine(Application.streamingAssetsPath, assetBundleName);
       _CachePathRoot = Path.Combine(Application.persistentDataPath, cachePath);
     }
-
-    public override bool IsPrepared(string name)
-    {
-      var path = GetCachePathFor(name);
-
-      return File.Exists(path);
-    }
-
 
     private AssetBundleCreateRequest _assetBundleReq;
     private AssetBundle assetBundle => _assetBundleReq?.assetBundle;
@@ -62,9 +53,17 @@ namespace Mediapipe.Unity
       }
     }
 
-    public override IEnumerator PrepareAssetAsync(string name, string uniqueKey, bool overwrite = true)
+    IEnumerator IResourceManager.PrepareAssetAsync(string name, string uniqueKey, bool overwrite)
     {
       var destFilePath = GetCachePathFor(uniqueKey);
+      if (overwrite)
+      {
+        ResourceUtil.SetAssetPath(name, destFilePath);
+      }
+      else
+      {
+        ResourceUtil.AddAssetPath(name, destFilePath);
+      }
 
       if (File.Exists(destFilePath) && !overwrite)
       {
@@ -93,20 +92,6 @@ namespace Mediapipe.Unity
       var bytes = (assetLoadReq.asset as TextAsset).bytes;
       File.WriteAllBytes(destFilePath, bytes);
       Logger.LogVerbose(_TAG, $"{name} is saved to {destFilePath} (length={bytes.Length})");
-    }
-
-    protected static string PathToResourceAsFile(string assetPath)
-    {
-      var assetName = GetAssetNameFromPath(assetPath);
-      return GetCachePathFor(assetName);
-    }
-
-    protected static byte[] GetResourceContents(string path)
-    {
-      Logger.LogDebug($"{path} is requested");
-
-      var cachePath = PathToResourceAsFile(path);
-      return File.ReadAllBytes(cachePath);
     }
 
     private static string GetCachePathFor(string assetName)
