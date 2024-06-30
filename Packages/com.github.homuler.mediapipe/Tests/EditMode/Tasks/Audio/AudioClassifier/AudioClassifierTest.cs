@@ -1,15 +1,22 @@
+// Copyright (c) 2021 homuler
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
+using Mediapipe.Tasks.Components.Containers;
 using Mediapipe.Tasks.Core;
 using Mediapipe.Tasks.Audio.Core;
 using Mediapipe.Tasks.Audio.AudioClassifier;
+using Mediapipe.Unity;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
-using System.Text.RegularExpressions;
-using Mediapipe.Tasks.Components.Containers;
 
 using Stopwatch = System.Diagnostics.Stopwatch;
 
@@ -22,7 +29,7 @@ namespace Mediapipe.Tests.Tasks.Audio
 
     private const int _CallbackTimeoutMillisec = 1000;
 
-    // private static readonly ResourceManager _ResourceManager = new LocalResourceManager();
+    private static readonly IResourceManager _ResourceManager = new LocalResourceManager();
     private readonly Lazy<TextAsset> _audioClassifierModel =
         new Lazy<TextAsset>(() => AssetDatabase.LoadAssetAtPath<TextAsset>($"{_ResourcePath}/yamnet_audio_classifier_with_metadata.bytes"));
 
@@ -55,12 +62,12 @@ namespace Mediapipe.Tests.Tasks.Audio
       });
     }
 
-    [Test, Ignore("TODO: enable to initialize ResourceManager twice")]
+    [Test]
     public void Create_ShouldThrowBadStatusException_When_AssetModelPathDoesNotExist()
     {
       var options = new AudioClassifierOptions(new BaseOptions(BaseOptions.Delegate.CPU, modelAssetPath: "unknown_path.bytes"));
 
-      LogAssert.Expect(LogType.Exception, new Regex("FileNotFoundException"));
+      LogAssert.Expect(LogType.Exception, new Regex("KeyNotFoundException"));
 
       _ = Assert.Throws<BadStatusException>(() =>
       {
@@ -68,11 +75,10 @@ namespace Mediapipe.Tests.Tasks.Audio
       });
     }
 
-    [UnityTest, Ignore("TODO: enable to initialize ResourceManager twice")]
+    [UnityTest]
     public IEnumerator Create_ShouldReturnAudioClassifier_When_AssetModelPathIsValid()
     {
-      // yield return _ResourceManager.PrepareAssetAsync("yamnet_audio_classifier_with_metadata.bytes");
-      yield return null;
+      yield return _ResourceManager.PrepareAssetAsync("yamnet_audio_classifier_with_metadata.bytes");
 
       var options = new AudioClassifierOptions(new BaseOptions(BaseOptions.Delegate.CPU, modelAssetPath: "yamnet_audio_classifier_with_metadata.bytes"));
 
