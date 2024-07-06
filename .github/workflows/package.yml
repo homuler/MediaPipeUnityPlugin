@@ -261,25 +261,50 @@ jobs:
         run: |
           zip -r MediaPipeUnityPlugin-all.zip . -x .git/**\*
 
+      - name: Upload MediaPipeUnityPlugin-all.zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.packageName }}-src-all
+          path: |
+            MediaPipeUnityPlugin-all.zip
+          retention-days: 7
+
+      # avoid "No space left on device" error
+      - name: Remove uploaded files to free up space
+        run: |
+          rm MediaPipeUnityPlugin-all.zip
+
       - name: Export tarball
         run: |
           cd Packages/com.github.homuler.mediapipe
           npm pack
           mv com.github.homuler.mediapipe-*.tgz ../..
 
+      - name: Upload the tarball package
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.packageName }}-tarball
+          path: |
+            com.github.homuler.mediapipe-*.tgz
+          retention-days: 7
+
+      # avoid "No space left on device" error
+      - name: Remove uploaded files to free up space
+        run: |
+          rm com.github.homuler.mediapipe-*.tgz
+
       - name: Export unitypackage
         if: ${{ env.BUILD_UNITYPACKAGE == '1' }}
         run: |
           unity-editor -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
 
-      - name: Upload artifacts
+      - name: Upload the unitypackage
+        if: ${{ env.BUILD_UNITYPACKAGE == '1' }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.packageName }}
+          name: ${{ inputs.packageName }}-unitypackage
           path: |
-            com.github.homuler.mediapipe-*.tgz
             *.unitypackage
-            MediaPipeUnityPlugin-all.zip
           retention-days: 7
 
   clean:
