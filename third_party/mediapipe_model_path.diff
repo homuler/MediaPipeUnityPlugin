@@ -1,5 +1,5 @@
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
-index fdeefb49..77faef88 100644
+index 2e08210e..8e79e6e2 100644
 --- a/mediapipe/util/BUILD
 +++ b/mediapipe/util/BUILD
 @@ -195,14 +195,8 @@ cc_library(
@@ -151,10 +151,65 @@ index 00000000..946be0d4
 +}  // namespace internal
 +}  // namespace mediapipe
 diff --git a/third_party/external_files.bzl b/third_party/external_files.bzl
-index a3893b5f..70fe0344 100644
+index a3893b5f..21ccacb1 100644
 --- a/third_party/external_files.bzl
 +++ b/third_party/external_files.bzl
-@@ -376,6 +376,12 @@ def external_files():
+@@ -304,6 +304,54 @@ def external_files():
+         urls = ["https://storage.googleapis.com/mediapipe-assets/efficientdet_lite0_v1.tflite?generation=1677522750449279"],
+     )
+ 
++    http_file(
++        name = "com_google_mediapipe_efficientdet_lite0_float16_tflite",
++        sha256 = "4b59100025bea1235a84c1038879a6cccc9f6c49f5e41144e91e74d99e780993",
++        urls = ["https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/float16/1/efficientdet_lite0.tflite?generation=1682636011592726"],
++    )
++
++    http_file(
++        name = "com_google_mediapipe_efficientdet_lite0_float32_tflite",
++        sha256 = "40338edf5ec70d43e318b0a716a84d4564cd1802759a7a07170c7e43796dbf58",
++        urls = ["https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/float32/1/efficientdet_lite0.tflite?generation=1682636012161435"],
++    )
++
++    http_file(
++        name = "com_google_mediapipe_efficientdet_lite0_int8_tflite",
++        sha256 = "0720bf247bd76e6594ea28fa9c6f7c5242be774818997dbbeffc4da460c723bb",
++        urls = ["https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/int8/1/efficientdet_lite0.tflite?generation=1682636013497226"],
++    )
++
++    http_file(
++        name = "com_google_mediapipe_efficientdet_lite2_float16_tflite",
++        sha256 = "5d4ebec1029bc9907aeadb9e7b4ac9cb1da6a19d01ad375210a9ae18ba173302",
++        urls = ["https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite2/float16/1/efficientdet_lite2.tflite?generation=1682636018392068"],
++    )
++
++    http_file(
++        name = "com_google_mediapipe_efficientdet_lite2_float32_tflite",
++        sha256 = "ad2abbf2b4e10585e15176fd7b5ef03c28dda959ae26fc142549fdd1814db91d",
++        urls = ["https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite2/float32/1/efficientdet_lite2.tflite?generation=1682636016481075"],
++    )
++
++    http_file(
++        name = "com_google_mediapipe_efficientdet_lite2_int8_tflite",
++        sha256 = "b3f50554cb0ea559e90328845f7d9ba4d13c8bff372914d24e06bc8bb72fa896",
++        urls = ["https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite2/int8/1/efficientdet_lite2.tflite?generation=1682636018933532"],
++    )
++
++    http_file(
++        name = "com_google_mediapipe_ssd_mobilenet_v2_float16_tflite",
++        sha256 = "ee21e12bfdc464100c6008c865ab8294f6a04162e6ed2e11986f1175b02cfab2",
++        urls = ["https://storage.googleapis.com/mediapipe-models/object_detector/ssd_mobilenet_v2/float16/1/ssd_mobilenet_v2.tflite?generation=1683072057787186"],
++    )
++
++    http_file(
++        name = "com_google_mediapipe_ssd_mobilenet_v2_float32_tflite",
++        sha256 = "b8ccb1a25d45455ba52e85f26531948e1cb75efeb94c7c3d456d54fd4d6fbdd2",
++        urls = ["https://storage.googleapis.com/mediapipe-models/object_detector/ssd_mobilenet_v2/float32/1/ssd_mobilenet_v2.tflite?generation=1683072058607165"],
++    )
++
+     http_file(
+         name = "com_google_mediapipe_empty_vocab_for_regex_tokenizer_txt",
+         sha256 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+@@ -376,6 +424,12 @@ def external_files():
          urls = ["https://storage.googleapis.com/mediapipe-assets/face_detection_short_range.tflite?generation=1677044301978921"],
      )
  
@@ -167,7 +222,7 @@ index a3893b5f..70fe0344 100644
      http_file(
          name = "com_google_mediapipe_face_geometry_expected_out_pbtxt",
          sha256 = "4a4ed08055a5bc9281472dd60180d11f0cdc9a15fa1788d87a58af3d06b2c6e4",
-@@ -1144,6 +1150,24 @@ def external_files():
+@@ -1144,6 +1198,24 @@ def external_files():
          urls = ["https://storage.googleapis.com/mediapipe-assets/pose_landmarker.task?generation=1681244249587900"],
      )
  

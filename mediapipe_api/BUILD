@@ -461,12 +461,20 @@ pkg_zip(
 
 mediapipe_files(srcs = [
     "blaze_face_short_range.tflite",
+    "efficientdet_lite0_float16.tflite",
+    "efficientdet_lite0_float32.tflite",
+    "efficientdet_lite0_int8.tflite",
+    "efficientdet_lite2_float16.tflite",
+    "efficientdet_lite2_float32.tflite",
+    "efficientdet_lite2_int8.tflite",
     "face_landmarker_v2.task",
     "face_landmarker_v2_with_blendshapes.task",
     "hand_landmarker.task",
     "pose_landmarker_full.task",
     "pose_landmarker_heavy.task",
     "pose_landmarker_lite.task",
+    "ssd_mobilenet_v2_float16.tflite",
+    "ssd_mobilenet_v2_float32.tflite",
     "yamnet_audio_classifier_with_metadata.tflite",
 ])
 
@@ -585,6 +593,14 @@ filegroup(
 filegroup(
     name = "object_detection_assets",
     srcs = [
+        ":efficientdet_lite0_float16.tflite",
+        ":efficientdet_lite0_float32.tflite",
+        ":efficientdet_lite0_int8.tflite",
+        ":efficientdet_lite2_float16.tflite",
+        ":efficientdet_lite2_float32.tflite",
+        ":efficientdet_lite2_int8.tflite",
+        ":ssd_mobilenet_v2_float16.tflite",
+        ":ssd_mobilenet_v2_float32.tflite",
         "@mediapipe//mediapipe/models:ssdlite_object_detection.tflite",
         "@mediapipe//mediapipe/models:ssdlite_object_detection_labelmap.txt",
     ],
