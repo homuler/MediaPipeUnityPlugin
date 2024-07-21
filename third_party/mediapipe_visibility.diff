@@ -1,5 +1,5 @@
 diff --git a/mediapipe/calculators/audio/BUILD b/mediapipe/calculators/audio/BUILD
-index c12583e5..3717366e 100644
+index 112377d3..dcc42345 100644
 --- a/mediapipe/calculators/audio/BUILD
 +++ b/mediapipe/calculators/audio/BUILD
 @@ -378,3 +378,9 @@ cc_test(
@@ -13,10 +13,10 @@ index c12583e5..3717366e 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/calculators/core/BUILD b/mediapipe/calculators/core/BUILD
-index 729e9149..8200a616 100644
+index 93fd808e..b266c97d 100644
 --- a/mediapipe/calculators/core/BUILD
 +++ b/mediapipe/calculators/core/BUILD
-@@ -1416,3 +1416,9 @@ cc_test(
+@@ -1469,3 +1469,9 @@ cc_test(
          "//mediapipe/framework/port:gtest_main",
      ],
  )
@@ -27,10 +27,10 @@ index 729e9149..8200a616 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/calculators/image/BUILD b/mediapipe/calculators/image/BUILD
-index e32e7165..10c1dc6b 100644
+index ab94df93..386babd9 100644
 --- a/mediapipe/calculators/image/BUILD
 +++ b/mediapipe/calculators/image/BUILD
-@@ -866,3 +866,9 @@ cc_library(
+@@ -883,3 +883,9 @@ cc_library(
      ],
      alwayslink = 1,
  )
@@ -41,11 +41,11 @@ index e32e7165..10c1dc6b 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/calculators/tensor/BUILD b/mediapipe/calculators/tensor/BUILD
-index 61862443..50875b32 100644
+index bda2ce82..6e3e0b8c 100644
 --- a/mediapipe/calculators/tensor/BUILD
 +++ b/mediapipe/calculators/tensor/BUILD
-@@ -1652,3 +1652,9 @@ cc_test(
-         "@com_google_absl//absl/status",
+@@ -2149,3 +2149,9 @@ cc_test(
+         "@com_google_absl//absl/strings",
      ],
  )
 +
@@ -55,11 +55,11 @@ index 61862443..50875b32 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/calculators/tflite/BUILD b/mediapipe/calculators/tflite/BUILD
-index ed9f47a8..b9120bbd 100644
+index 0c0336d0..c52eac60 100644
 --- a/mediapipe/calculators/tflite/BUILD
 +++ b/mediapipe/calculators/tflite/BUILD
-@@ -552,3 +552,9 @@ cc_test(
-         "@org_tensorflow//tensorflow/lite:framework",
+@@ -571,3 +571,9 @@ cc_test(
+         "@org_tensorflow//tensorflow/lite/kernels:builtin_ops",
      ],
  )
 +
@@ -83,10 +83,10 @@ index 375e3806..f93d2796 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/calculators/video/BUILD b/mediapipe/calculators/video/BUILD
-index f17747d2..ecf4b19e 100644
+index a314d442..bbc5085a 100644
 --- a/mediapipe/calculators/video/BUILD
 +++ b/mediapipe/calculators/video/BUILD
-@@ -474,3 +474,9 @@ cc_test(
+@@ -472,3 +472,9 @@ cc_test(
          "//mediapipe/framework/port:status",
      ],
  )
@@ -97,11 +97,11 @@ index f17747d2..ecf4b19e 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/framework/BUILD b/mediapipe/framework/BUILD
-index 38812b39..511b0ebc 100644
+index 8c5540b5..91079542 100644
 --- a/mediapipe/framework/BUILD
 +++ b/mediapipe/framework/BUILD
-@@ -1763,3 +1763,10 @@ cc_test(
-         "@com_google_absl//absl/strings:str_format",
+@@ -1821,3 +1821,10 @@ cc_library(
+         ":memory_manager",
      ],
  )
 +
@@ -112,10 +112,10 @@ index 38812b39..511b0ebc 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/framework/formats/BUILD b/mediapipe/framework/formats/BUILD
-index 047b95d3..3161e292 100644
+index f2d13b53..3adffa03 100644
 --- a/mediapipe/framework/formats/BUILD
 +++ b/mediapipe/framework/formats/BUILD
-@@ -333,6 +333,13 @@ mediapipe_register_type(
+@@ -369,6 +369,13 @@ mediapipe_register_type(
      deps = [":landmark_cc_proto"],
  )
  
@@ -175,10 +175,10 @@ index 703d5d77..a73795f1 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/gpu/BUILD b/mediapipe/gpu/BUILD
-index 88864e89..b1ac62ce 100644
+index 7e0c45b3..b6938687 100644
 --- a/mediapipe/gpu/BUILD
 +++ b/mediapipe/gpu/BUILD
-@@ -1261,3 +1261,9 @@ mediapipe_cc_test(
+@@ -1289,3 +1289,9 @@ mediapipe_cc_test(
          "@com_google_absl//absl/log:absl_check",
      ],
  )
@@ -264,7 +264,7 @@ index b1c89240..cd104754 100644
 +    visibility = ["//visibility:public"],
  )
 diff --git a/mediapipe/modules/face_detection/BUILD b/mediapipe/modules/face_detection/BUILD
-index 12abfbb3..20ae41d0 100644
+index 05eef34e..14f77622 100644
 --- a/mediapipe/modules/face_detection/BUILD
 +++ b/mediapipe/modules/face_detection/BUILD
 @@ -177,3 +177,9 @@ mediapipe_files(
@@ -320,7 +320,7 @@ index bc00b697..374b437e 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/modules/objectron/calculators/BUILD b/mediapipe/modules/objectron/calculators/BUILD
-index 05b25475..61266f80 100644
+index e73bd6a2..8d1c9e0a 100644
 --- a/mediapipe/modules/objectron/calculators/BUILD
 +++ b/mediapipe/modules/objectron/calculators/BUILD
 @@ -430,3 +430,9 @@ cc_test(
@@ -334,7 +334,7 @@ index 05b25475..61266f80 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/tasks/c/components/containers/BUILD b/mediapipe/tasks/c/components/containers/BUILD
-index 3c4b557b..b8857b00 100644
+index a654adab..a35d7680 100644
 --- a/mediapipe/tasks/c/components/containers/BUILD
 +++ b/mediapipe/tasks/c/components/containers/BUILD
 @@ -12,7 +12,7 @@
@@ -389,7 +389,7 @@ index 82d4ea21..9b14e8ef 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/tasks/cc/core/BUILD b/mediapipe/tasks/cc/core/BUILD
-index 9185d0a9..c7d3a609 100644
+index 9c53dcca..98eb9f13 100644
 --- a/mediapipe/tasks/cc/core/BUILD
 +++ b/mediapipe/tasks/cc/core/BUILD
 @@ -14,7 +14,7 @@
@@ -402,10 +402,10 @@ index 9185d0a9..c7d3a609 100644
  licenses(["notice"])
  
 diff --git a/mediapipe/tasks/cc/core/proto/BUILD b/mediapipe/tasks/cc/core/proto/BUILD
-index fbc65759..867de7e8 100644
+index 8392849a..5eaed943 100644
 --- a/mediapipe/tasks/cc/core/proto/BUILD
 +++ b/mediapipe/tasks/cc/core/proto/BUILD
-@@ -69,3 +69,9 @@ mediapipe_proto_library(
+@@ -67,3 +67,9 @@ mediapipe_proto_library(
          "//mediapipe/framework:calculator_proto",
      ],
  )
@@ -444,7 +444,7 @@ index 3f2833f3..1ede1db5 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/tasks/cc/vision/face_geometry/proto/BUILD b/mediapipe/tasks/cc/vision/face_geometry/proto/BUILD
-index e337a345..a8f0ed52 100644
+index 14bdaea8..2f5a32c0 100644
 --- a/mediapipe/tasks/cc/vision/face_geometry/proto/BUILD
 +++ b/mediapipe/tasks/cc/vision/face_geometry/proto/BUILD
 @@ -64,3 +64,9 @@ mediapipe_proto_library(
@@ -499,6 +499,20 @@ index 6f79b9c4..f65ebb86 100644
 +    srcs = glob(["*.proto"]),
 +    visibility = ["//visibility:public"],
 +)
+diff --git a/mediapipe/tasks/cc/vision/object_detector/proto/BUILD b/mediapipe/tasks/cc/vision/object_detector/proto/BUILD
+index 863d69df..3abbc14a 100644
+--- a/mediapipe/tasks/cc/vision/object_detector/proto/BUILD
++++ b/mediapipe/tasks/cc/vision/object_detector/proto/BUILD
+@@ -27,3 +27,9 @@ mediapipe_proto_library(
+         "//mediapipe/tasks/cc/core/proto:base_options_proto",
+     ],
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
 diff --git a/mediapipe/tasks/cc/vision/pose_detector/proto/BUILD b/mediapipe/tasks/cc/vision/pose_detector/proto/BUILD
 index 53e7d5a5..3882cb6a 100644
 --- a/mediapipe/tasks/cc/vision/pose_detector/proto/BUILD
@@ -528,10 +542,10 @@ index 869a1ea6..3cd6bc5a 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
-index fdeefb49..2003230d 100644
+index 2e08210e..e8becd87 100644
 --- a/mediapipe/util/BUILD
 +++ b/mediapipe/util/BUILD
-@@ -441,3 +441,9 @@ cc_test(
+@@ -444,3 +444,9 @@ cc_test(
          "//mediapipe/framework/port:gtest_main",
      ],
  )
