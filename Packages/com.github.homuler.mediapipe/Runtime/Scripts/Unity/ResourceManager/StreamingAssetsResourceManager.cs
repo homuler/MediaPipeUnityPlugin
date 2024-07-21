@@ -29,19 +29,12 @@ namespace Mediapipe.Unity
 
     public StreamingAssetsResourceManager() : this("") { }
 
-    IEnumerator IResourceManager.PrepareAssetAsync(string name, string uniqueKey, bool overwrite)
+    IEnumerator IResourceManager.PrepareAssetAsync(string name, string uniqueKey, bool overwriteDestination)
     {
       var destFilePath = GetCachePathFor(uniqueKey);
-      if (overwrite)
-      {
-        ResourceUtil.SetAssetPath(name, destFilePath);
-      }
-      else
-      {
-        ResourceUtil.AddAssetPath(name, destFilePath);
-      }
+      ResourceUtil.SetAssetPath(name, destFilePath);
 
-      if (File.Exists(destFilePath) && !overwrite)
+      if (File.Exists(destFilePath) && !overwriteDestination)
       {
         Logger.LogInfo(_TAG, $"{name} will not be copied to {destFilePath} because it already exists");
         yield break;
@@ -59,7 +52,7 @@ namespace Mediapipe.Unity
       }
 
       Logger.LogVerbose(_TAG, $"Copying {sourceFilePath} to {destFilePath}...");
-      File.Copy(sourceFilePath, destFilePath, overwrite);
+      File.Copy(sourceFilePath, destFilePath, overwriteDestination);
       Logger.LogVerbose(_TAG, $"{sourceFilePath} is copied to {destFilePath}");
     }
 
