@@ -435,7 +435,9 @@ cc_library(
 
 cc_library(
     name = "object_detection_calculators",
-    deps = select({
+    deps = [
+        "@mediapipe//mediapipe/tasks/cc/vision/object_detector:object_detector",
+    ] + select({
         "@mediapipe//mediapipe/gpu:disable_gpu": [
             "@mediapipe//mediapipe/graphs/object_detection:desktop_tflite_calculators",
         ],
@@ -623,6 +625,7 @@ pkg_zip(
         "//mediapipe_api/tasks/cc/vision/face_geometry/calculators:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/hand_detector/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/hand_landmarker/proto:proto_srcs",
+        "//mediapipe_api/tasks/cc/vision/object_detector/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/pose_detector/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/pose_landmarker/proto:proto_srcs",
         "//mediapipe_api/util:proto_srcs",
