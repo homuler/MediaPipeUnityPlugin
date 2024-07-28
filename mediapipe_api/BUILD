@@ -395,7 +395,9 @@ cc_library(
 
 cc_library(
     name = "image_segmentation_calculators",
-    deps = select({
+    deps = [
+        "@mediapipe//mediapipe/tasks/cc/vision/image_segmenter:image_segmenter",
+    ] + select({
         "@mediapipe//mediapipe/gpu:disable_gpu": [
             "@mediapipe//mediapipe/graphs/selfie_segmentation:selfie_segmentation_cpu_deps",
             "@mediapipe//mediapipe/graphs/hair_segmentation:desktop_calculators",
@@ -612,6 +614,8 @@ pkg_zip(
         "//mediapipe_api/tasks/cc/vision/face_geometry/calculators:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/hand_detector/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/hand_landmarker/proto:proto_srcs",
+        "//mediapipe_api/tasks/cc/vision/image_segmenter/calculators:proto_srcs",
+        "//mediapipe_api/tasks/cc/vision/image_segmenter/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/object_detector/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/pose_detector/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/pose_landmarker/proto:proto_srcs",

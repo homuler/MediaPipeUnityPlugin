@@ -499,6 +499,34 @@ index 6f79b9c4..f65ebb86 100644
 +    srcs = glob(["*.proto"]),
 +    visibility = ["//visibility:public"],
 +)
+diff --git a/mediapipe/tasks/cc/vision/image_segmenter/calculators/BUILD b/mediapipe/tasks/cc/vision/image_segmenter/calculators/BUILD
+index b32c5d05..cd5c4131 100644
+--- a/mediapipe/tasks/cc/vision/image_segmenter/calculators/BUILD
++++ b/mediapipe/tasks/cc/vision/image_segmenter/calculators/BUILD
+@@ -121,3 +121,9 @@ cc_test(
+         "@com_google_absl//absl/types:span",
+     ],
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
+diff --git a/mediapipe/tasks/cc/vision/image_segmenter/proto/BUILD b/mediapipe/tasks/cc/vision/image_segmenter/proto/BUILD
+index 54dc399d..c1c4db01 100644
+--- a/mediapipe/tasks/cc/vision/image_segmenter/proto/BUILD
++++ b/mediapipe/tasks/cc/vision/image_segmenter/proto/BUILD
+@@ -33,3 +33,9 @@ mediapipe_proto_library(
+         "//mediapipe/tasks/cc/core/proto:base_options_proto",
+     ],
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
 diff --git a/mediapipe/tasks/cc/vision/object_detector/proto/BUILD b/mediapipe/tasks/cc/vision/object_detector/proto/BUILD
 index 863d69df..3abbc14a 100644
 --- a/mediapipe/tasks/cc/vision/object_detector/proto/BUILD
