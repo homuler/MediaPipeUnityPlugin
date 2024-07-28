@@ -78,16 +78,9 @@ config_setting(
 )
 
 config_setting(
-    name = "selfie_segmentation_switch",
+    name = "image_segmentation_switch",
     flag_values = {
-        ":solutions": "selfie_segmentation",
-    },
-)
-
-config_setting(
-    name = "hair_segmentation_switch",
-    flag_values = {
-        ":solutions": "hair_segmentation",
+        ":solutions": "image_segmentation",
     },
 )
 
@@ -136,13 +129,8 @@ selects.config_setting_group(
 )
 
 selects.config_setting_group(
-    name = "enable_selfie_segmentation",
-    match_any = [":all_solutions_switch", ":selfie_segmentation_switch"],
-)
-
-selects.config_setting_group(
-    name = "enable_hair_segmentation",
-    match_any = [":all_solutions_switch", ":hair_segmentation_switch"],
+    name = "enable_image_segmentation",
+    match_any = [":all_solutions_switch", ":image_segmentation_switch"],
 )
 
 selects.config_setting_group(
@@ -309,10 +297,7 @@ cc_library(
         ":enable_holistic": [":holistic_calculators"],
         "//conditions:default": [],
     }) + select({
-        ":enable_selfie_segmentation": [":selfie_segmentation_calculators"],
-        "//conditions:default": [],
-    }) + select({
-        ":enable_hair_segmentation": [":hair_segmentation_calculators"],
+        ":enable_image_segmentation": [":image_segmentation_calculators"],
         "//conditions:default": [],
     }) + select({
         ":enable_object_detection": [":object_detection_calculators"],
@@ -409,24 +394,14 @@ cc_library(
 )
 
 cc_library(
-    name = "selfie_segmentation_calculators",
+    name = "image_segmentation_calculators",
     deps = select({
         "@mediapipe//mediapipe/gpu:disable_gpu": [
             "@mediapipe//mediapipe/graphs/selfie_segmentation:selfie_segmentation_cpu_deps",
-        ],
-        "//conditions:default": [
-            "@mediapipe//mediapipe/graphs/selfie_segmentation:selfie_segmentation_gpu_deps",
-        ],
-    }),
-)
-
-cc_library(
-    name = "hair_segmentation_calculators",
-    deps = select({
-        "@mediapipe//mediapipe/gpu:disable_gpu": [
             "@mediapipe//mediapipe/graphs/hair_segmentation:desktop_calculators",
         ],
         "//conditions:default": [
+            "@mediapipe//mediapipe/graphs/selfie_segmentation:selfie_segmentation_gpu_deps",
             "@mediapipe//mediapipe/graphs/hair_segmentation:mobile_calculators",
             "@mediapipe//mediapipe/calculators/image:color_convert_calculator",
         ],
@@ -499,12 +474,8 @@ pkg_asset(
         ":enable_holistic": [":holistic_assets"],
         "//conditions:default": [],
     }) + select({
-        ":enable_selfie_segmentation": [
+        ":enable_image_segmentation": [
             "@mediapipe//mediapipe/modules/selfie_segmentation:selfie_segmentation.tflite",
-        ],
-        "//conditions:default": [],
-    }) + select({
-        ":enable_hair_segmentation": [
             "@mediapipe//mediapipe/models:hair_segmentation.tflite",
         ],
         "//conditions:default": [],
