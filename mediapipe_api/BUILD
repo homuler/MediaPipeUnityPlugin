@@ -78,16 +78,9 @@ config_setting(
 )
 
 config_setting(
-    name = "selfie_segmentation_switch",
+    name = "image_segmentation_switch",
     flag_values = {
-        ":solutions": "selfie_segmentation",
-    },
-)
-
-config_setting(
-    name = "hair_segmentation_switch",
-    flag_values = {
-        ":solutions": "hair_segmentation",
+        ":solutions": "image_segmentation",
     },
 )
 
@@ -136,13 +129,8 @@ selects.config_setting_group(
 )
 
 selects.config_setting_group(
-    name = "enable_selfie_segmentation",
-    match_any = [":all_solutions_switch", ":selfie_segmentation_switch"],
-)
-
-selects.config_setting_group(
-    name = "enable_hair_segmentation",
-    match_any = [":all_solutions_switch", ":hair_segmentation_switch"],
+    name = "enable_image_segmentation",
+    match_any = [":all_solutions_switch", ":image_segmentation_switch"],
 )
 
 selects.config_setting_group(
@@ -309,10 +297,7 @@ cc_library(
         ":enable_holistic": [":holistic_calculators"],
         "//conditions:default": [],
     }) + select({
-        ":enable_selfie_segmentation": [":selfie_segmentation_calculators"],
-        "//conditions:default": [],
-    }) + select({
-        ":enable_hair_segmentation": [":hair_segmentation_calculators"],
+        ":enable_image_segmentation": [":image_segmentation_calculators"],
         "//conditions:default": [],
     }) + select({
         ":enable_object_detection": [":object_detection_calculators"],
@@ -409,24 +394,16 @@ cc_library(
 )
 
 cc_library(
-    name = "selfie_segmentation_calculators",
-    deps = select({
+    name = "image_segmentation_calculators",
+    deps = [
+        "@mediapipe//mediapipe/tasks/cc/vision/image_segmenter:image_segmenter",
+    ] + select({
         "@mediapipe//mediapipe/gpu:disable_gpu": [
             "@mediapipe//mediapipe/graphs/selfie_segmentation:selfie_segmentation_cpu_deps",
-        ],
-        "//conditions:default": [
-            "@mediapipe//mediapipe/graphs/selfie_segmentation:selfie_segmentation_gpu_deps",
-        ],
-    }),
-)
-
-cc_library(
-    name = "hair_segmentation_calculators",
-    deps = select({
-        "@mediapipe//mediapipe/gpu:disable_gpu": [
             "@mediapipe//mediapipe/graphs/hair_segmentation:desktop_calculators",
         ],
         "//conditions:default": [
+            "@mediapipe//mediapipe/graphs/selfie_segmentation:selfie_segmentation_gpu_deps",
             "@mediapipe//mediapipe/graphs/hair_segmentation:mobile_calculators",
             "@mediapipe//mediapipe/calculators/image:color_convert_calculator",
         ],
@@ -460,21 +437,39 @@ pkg_zip(
 )
 
 mediapipe_files(srcs = [
+    # face detector
     "blaze_face_short_range.tflite",
+
+    # face landmarker
+    "face_landmarker_v2.task",
+    "face_landmarker_v2_with_blendshapes.task",
+
+    # hand landmarker
+    "hand_landmarker.task",
+
+    # pose landmarker
+    "pose_landmarker_full.task",
+    "pose_landmarker_heavy.task",
+    "pose_landmarker_lite.task",
+
+    # image segmenter
+    "deeplab_v3.tflite",
+    "hair_segmentation.tflite",
+    "selfie_multiclass_256x256.tflite",
+    "selfie_segmentation.tflite",
+    "selfie_segmentation_landscape.tflite",
+
+    # object detector
     "efficientdet_lite0_float16.tflite",
     "efficientdet_lite0_float32.tflite",
     "efficientdet_lite0_int8.tflite",
     "efficientdet_lite2_float16.tflite",
     "efficientdet_lite2_float32.tflite",
     "efficientdet_lite2_int8.tflite",
-    "face_landmarker_v2.task",
-    "face_landmarker_v2_with_blendshapes.task",
-    "hand_landmarker.task",
-    "pose_landmarker_full.task",
-    "pose_landmarker_heavy.task",
-    "pose_landmarker_lite.task",
     "ssd_mobilenet_v2_float16.tflite",
     "ssd_mobilenet_v2_float32.tflite",
+
+    # audio classifier
     "yamnet_audio_classifier_with_metadata.tflite",
 ])
 
@@ -499,14 +494,7 @@ pkg_asset(
         ":enable_holistic": [":holistic_assets"],
         "//conditions:default": [],
     }) + select({
-        ":enable_selfie_segmentation": [
-            "@mediapipe//mediapipe/modules/selfie_segmentation:selfie_segmentation.tflite",
-        ],
-        "//conditions:default": [],
-    }) + select({
-        ":enable_hair_segmentation": [
-            "@mediapipe//mediapipe/models:hair_segmentation.tflite",
-        ],
+        ":enable_image_segmentation": [":image_segmentation_assets"],
         "//conditions:default": [],
     }) + select({
         ":enable_object_detection": [":object_detection_assets"],
@@ -590,6 +578,19 @@ filegroup(
     ],
 )
 
+
+filegroup(
+    name = "image_segmentation_assets",
+    srcs = [
+        ":deeplab_v3.tflite",
+        ":hair_segmentation.tflite",
+        ":selfie_multiclass_256x256.tflite",
+        ":selfie_segmentation.tflite",
+        ":selfie_segmentation_landscape.tflite",
+    ],
+)
+
+
 filegroup(
     name = "object_detection_assets",
     srcs = [
@@ -641,6 +642,8 @@ pkg_zip(
         "//mediapipe_api/tasks/cc/vision/face_geometry/calculators:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/hand_detector/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/hand_landmarker/proto:proto_srcs",
+        "//mediapipe_api/tasks/cc/vision/image_segmenter/calculators:proto_srcs",
+        "//mediapipe_api/tasks/cc/vision/image_segmenter/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/object_detector/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/pose_detector/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/pose_landmarker/proto:proto_srcs",
