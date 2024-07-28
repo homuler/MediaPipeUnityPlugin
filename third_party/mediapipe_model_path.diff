@@ -151,10 +151,23 @@ index 00000000..946be0d4
 +}  // namespace internal
 +}  // namespace mediapipe
 diff --git a/third_party/external_files.bzl b/third_party/external_files.bzl
-index a3893b5f..21ccacb1 100644
+index a3893b5f..c04ddc99 100644
 --- a/third_party/external_files.bzl
 +++ b/third_party/external_files.bzl
-@@ -304,6 +304,54 @@ def external_files():
+@@ -250,6 +250,12 @@ def external_files():
+         urls = ["https://storage.googleapis.com/mediapipe-assets/deeplabv3_without_metadata.tflite?generation=1678818053623010"],
+     )
+ 
++    http_file(
++        name = "com_google_mediapipe_deeplab_v3_tflite",
++        sha256 = "ff36e24d40547fe9e645e2f4e8745d1876d6e38b332d39a82f0bf0f5d1d561b3",
++        urls = ["https://storage.googleapis.com/mediapipe-models/image_segmenter/deeplab_v3/float32/1/deeplab_v3.tflite?generation=1682480020051142"],
++    )
++
+     http_file(
+         name = "com_google_mediapipe_dense_tflite",
+         sha256 = "6795e7c3a263f44e97be048a5e1166e0921b453bfbaf037f4f69ac5c059ee945",
+@@ -304,6 +310,54 @@ def external_files():
          urls = ["https://storage.googleapis.com/mediapipe-assets/efficientdet_lite0_v1.tflite?generation=1677522750449279"],
      )
  
@@ -209,7 +222,7 @@ index a3893b5f..21ccacb1 100644
      http_file(
          name = "com_google_mediapipe_empty_vocab_for_regex_tokenizer_txt",
          sha256 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-@@ -376,6 +424,12 @@ def external_files():
+@@ -376,6 +430,12 @@ def external_files():
          urls = ["https://storage.googleapis.com/mediapipe-assets/face_detection_short_range.tflite?generation=1677044301978921"],
      )
  
@@ -222,7 +235,7 @@ index a3893b5f..21ccacb1 100644
      http_file(
          name = "com_google_mediapipe_face_geometry_expected_out_pbtxt",
          sha256 = "4a4ed08055a5bc9281472dd60180d11f0cdc9a15fa1788d87a58af3d06b2c6e4",
-@@ -1144,6 +1198,24 @@ def external_files():
+@@ -1144,6 +1204,24 @@ def external_files():
          urls = ["https://storage.googleapis.com/mediapipe-assets/pose_landmarker.task?generation=1681244249587900"],
      )
  
@@ -247,3 +260,16 @@ index a3893b5f..21ccacb1 100644
      http_file(
          name = "com_google_mediapipe_pose_landmark_full_tflite",
          sha256 = "e9a5c5cb17f736fafd4c2ec1da3b3d331d6edbe8a0d32395855aeb2cdfd64b9f",
+@@ -1300,6 +1378,12 @@ def external_files():
+         urls = ["https://storage.googleapis.com/mediapipe-assets/selfie_segmentation.tflite?generation=1683332563830600"],
+     )
+ 
++    http_file(
++        name = "com_google_mediapipe_selfie_multiclass_256x256_tflite",
++        sha256 = "c6748b1253a99067ef71f7e26ca71096cd449baefa8f101900ea23016507e0e0",
++        urls = ["https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_multiclass_256x256/float32/1/selfie_multiclass_256x256.tflite?generation=1682480015568195"],
++    )
++
+     http_file(
+         name = "com_google_mediapipe_sentence_piece_tokenizer_meta_json",
+         sha256 = "416bfe231710502e4a93e1b1950c0c6e5db49cffb256d241ef3d3f2d0d57718b",
