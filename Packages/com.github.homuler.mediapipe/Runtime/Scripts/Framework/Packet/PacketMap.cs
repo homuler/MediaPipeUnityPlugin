@@ -27,7 +27,7 @@ namespace Mediapipe
     public int size => SafeNativeMethods.mp_PacketMap__size(mpPtr);
 
     /// <remarks>
-    ///   This method cannot verify that the packet type corresponding to the <paramref name="key" /> is indeed a <typeparamref name="TPacket" />,
+    ///   This method cannot verify that the packet type corresponding to the <paramref name="key" /> is indeed a <typeparamref name="T" />,
     ///   so you must make sure by youreself that it is.
     /// </remarks>
     public Packet<T> At<T>(string key)
@@ -40,6 +40,24 @@ namespace Mediapipe
       }
       GC.KeepAlive(this);
       return new Packet<T>(packetPtr, true);
+    }
+
+    /// <remarks>
+    ///   This method cannot verify that the packet type corresponding to the <paramref name="key" /> is indeed a <typeparamref name="T" />,
+    ///   so you must make sure by youreself that it is.
+    /// </remarks>
+    public bool TryGet<T>(string key, out Packet<T> packet)
+    {
+      UnsafeNativeMethods.mp_PacketMap__find__PKc(mpPtr, key, out var packetPtr).Assert();
+
+      if (packetPtr == IntPtr.Zero)
+      {
+        packet = default; // null
+        return false;
+      }
+      GC.KeepAlive(this);
+      packet = new Packet<T>(packetPtr, true);
+      return true;
     }
 
     public void Emplace<T>(string key, Packet<T> packet)
