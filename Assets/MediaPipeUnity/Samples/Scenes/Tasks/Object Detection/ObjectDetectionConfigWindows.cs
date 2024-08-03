@@ -27,11 +27,7 @@ namespace Mediapipe.Unity.Sample.ObjectDetection.UI
       InitializeContents();
     }
 
-    public override void Exit()
-    {
-      UnityEngine.Debug.Log($"Exiting: {_isChanged}");
-      GetModal().CloseAndResume(_isChanged);
-    }
+    public override void Exit() => GetModal().CloseAndResume(_isChanged);
 
     private void SwitchDelegate()
     {
