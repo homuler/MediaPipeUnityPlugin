@@ -31,7 +31,7 @@ namespace Mediapipe.Unity.Sample
       {
         return descriptionAttribute.Description;
       }
-      return null;
+      return name;
     }
   }
 }

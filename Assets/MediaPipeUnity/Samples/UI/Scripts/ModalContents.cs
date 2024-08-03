@@ -5,7 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,11 +23,11 @@ namespace Mediapipe.Unity.Sample.UI
       GetModal().Close();
     }
 
-    protected void InitializeDropdown<T>(Dropdown dropdown, string defaultValue)
+    protected void InitializeDropdown<T>(Dropdown dropdown, string defaultValue) where T : Enum
     {
       dropdown.ClearOptions();
 
-      var options = new List<string>(Enum.GetNames(typeof(T)));
+      var options = Enum.GetValues(typeof(T)).Cast<T>().Select(x => x.GetDescription()).ToList();
       dropdown.AddOptions(options);
 
       var defaultValueIndex = options.FindIndex(option => option == defaultValue);
