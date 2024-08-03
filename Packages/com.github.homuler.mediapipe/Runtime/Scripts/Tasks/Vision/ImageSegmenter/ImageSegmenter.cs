@@ -122,6 +122,29 @@ namespace Mediapipe.Tasks.Vision.ImageSegmenter
       return result;
     }
 
+    /// <summary>
+    ///   Performs the actual segmentation task on the provided MediaPipe Image.
+    ///
+    ///   Only use this method when the <see cref="ImageSegmenter" /> is created with the image running mode.
+    /// </summary>
+    /// <param name="image">MediaPipe Image.</param>
+    /// <param name="imageProcessingOptions">Options for image processing.</param>
+    /// <param name="result">
+    ///   <see cref="ImageSegmenterResult"/> to which the result will be written.
+    ///
+    ///   If the output_type is CATEGORY_MASK, the returned vector of images is per-category segmented image mask.
+    ///   If the output_type is CONFIDENCE_MASK, the returned vector of images contains only one confidence image mask.
+    ///   A segmentation result object that contains a list of segmentation masks as images.
+    /// </param>
+    /// <returns>
+    ///   <see langword="true"/> if the segmentation is successful, <see langword="false"/> otherwise.
+    /// </returns>
+    public bool TrySegment(Image image, Core.ImageProcessingOptions? imageProcessingOptions, ref ImageSegmenterResult result)
+    {
+      using var outputPackets = SegmentInternal(image, imageProcessingOptions);
+      return TryBuildImageSegmenterResult(outputPackets, ref result);
+    }
+
     private PacketMap SegmentInternal(Image image, Core.ImageProcessingOptions? imageProcessingOptions)
     {
       ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
@@ -153,6 +176,30 @@ namespace Mediapipe.Tasks.Vision.ImageSegmenter
       var result = default(ImageSegmenterResult);
       _ = TryBuildImageSegmenterResult(outputPackets, ref result);
       return result;
+    }
+
+    /// <summary>
+    ///   Performs segmentation on the provided video frames.
+    ///
+    ///   Only use this method when the ImageSegmenter is created with the video
+    ///   running mode. It's required to provide the video frame's timestamp (in
+    ///   milliseconds) along with the video frame. The input timestamps should be
+    ///   monotonically increasing for adjacent calls of this method.
+    /// </summary>
+    /// <param name="result">
+    ///   <see cref="ImageSegmenterResult"/> to which the result will be written.
+    ///
+    ///   If the output_type is CATEGORY_MASK, the returned vector of images is per-category segmented image mask.
+    ///   If the output_type is CONFIDENCE_MASK, the returned vector of images contains only one confidence image mask.
+    ///   A segmentation result object that contains a list of segmentation masks as images.
+    /// </param>
+    /// <returns>
+    ///   <see langword="true"/> if the segmentation is successful, <see langword="false"/> otherwise.
+    /// </returns>
+    public bool TrySegmentForVideo(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions, ref ImageSegmenterResult result)
+    {
+      using var outputPackets = SegmentForVideoInternal(image, timestampMillisec, imageProcessingOptions);
+      return TryBuildImageSegmenterResult(outputPackets, ref result);
     }
 
     private PacketMap SegmentForVideoInternal(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
