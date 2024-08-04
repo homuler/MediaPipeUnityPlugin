@@ -65,7 +65,7 @@ Shader "Unlit/MediaPipe/Overlay Mask Shader"
                 fixed4 maskCol = tex2D(_MaskTex, i.uv);
                 int idx = int(i.uv.y * _Height) * _Width + int(i.uv.x * _Width);
                 float mask = _MaskBuffer[idx];
-                maskCol.a = mask;
+                maskCol.a = lerp(0.0, mask, step(_Threshold, mask));
                 fixed4 col = lerp(emptyCol, maskCol, step(_Threshold, mask));
 
                 // apply fog

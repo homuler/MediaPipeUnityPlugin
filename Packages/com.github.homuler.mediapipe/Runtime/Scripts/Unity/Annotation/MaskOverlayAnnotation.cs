@@ -76,6 +76,10 @@ namespace Mediapipe.Unity
 
     public void Init(RawImage screen, int width, int height)
     {
+      if (_screenObject != null)
+      {
+        Destroy(_screenObject);
+      }
       // copy the target screen to overlay mask.
       _screenObject = new GameObject("Mask Screen");
       _screenObject.transform.SetParent(screen.transform, false);
