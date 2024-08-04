@@ -1,84 +1,95 @@
-// Copyright (c) 2021 homuler
+// Copyright (c) 2023 homuler
 //
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using System;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using Mediapipe.Unity.Sample.UI;
+using System.ComponentModel;
 
-namespace Mediapipe.Unity.Sample.ObjectDetection.UI
+namespace Mediapipe.Unity.Sample.ObjectDetection
 {
-  public class ObjectDetectionConfig : ModalContents
+  public enum ModelType : int
   {
-    private const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
-    private const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
+    [Description("EfficientDet-Lite0 (float 16)")]
+    EfficientDetLite0Float16 = 0,
 
-    private ObjectDetectionSolution _solution;
-    private Dropdown _runningModeInput;
-    private InputField _timeoutMillisecInput;
+    [Description("EfficientDet-Lite0 (float 32)")]
+    EfficientDetLite0Float32 = 1,
 
-    private bool _isChanged;
+    [Description("EfficientDet-Lite0 (int8)")]
+    EfficientDetLite0Int8 = 2,
 
-    private void Start()
+    [Description("EfficientDet-Lite2 (float 16)")]
+    EfficientDetLite2Float16 = 3,
+
+    [Description("EfficientDet-Lite2 (float 32)")]
+    EfficientDetLite2Float32 = 4,
+
+    [Description("EfficientDet-Lite2 (int8)")]
+    EfficientDetLite2Int8 = 5,
+
+    [Description("SSDMobileNet-V2 (float 16)")]
+    SSDMobileNetV2Float16 = 6,
+
+    [Description("SSDMobileNet-V2 (float 32)")]
+    SSDMobileNetV2Float32 = 7,
+  }
+
+  public class ObjectDetectionConfig
+  {
+    public Tasks.Core.BaseOptions.Delegate Delegate { get; set; } =
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+      Tasks.Core.BaseOptions.Delegate.CPU;
+#else
+    Tasks.Core.BaseOptions.Delegate.GPU;
+#endif
+
+    public ModelType Model { get; set; } = ModelType.EfficientDetLite0Float16;
+
+    public Tasks.Vision.Core.RunningMode RunningMode { get; set; } = Tasks.Vision.Core.RunningMode.LIVE_STREAM;
+
+    public int MaxResults { get; set; } = -1;
+
+    public float ScoreThreshold { get; set; } = 0.5f;
+
+    public string ModelName => Model.GetDescription() ?? Model.ToString();
+    public string ModelPath
     {
-      _solution = GameObject.Find("Solution").GetComponent<ObjectDetectionSolution>();
-      InitializeContents();
-    }
-
-    public override void Exit()
-    {
-      GetModal().CloseAndResume(_isChanged);
-    }
-
-    public void SwitchRunningMode()
-    {
-      _solution.runningMode = (RunningMode)_runningModeInput.value;
-      _isChanged = true;
-    }
-
-    public void SetTimeoutMillisec()
-    {
-      if (int.TryParse(_timeoutMillisecInput.text, out var value))
+      get
       {
-        _solution.timeoutMillisec = value;
-        _isChanged = true;
+        switch (Model)
+        {
+          case ModelType.EfficientDetLite0Float16:
+            return "efficientdet_lite0_float16.bytes";
+          case ModelType.EfficientDetLite0Float32:
+            return "efficientdet_lite0_float32.bytes";
+          case ModelType.EfficientDetLite0Int8:
+            return "efficientdet_lite0_int8.bytes";
+          case ModelType.EfficientDetLite2Float16:
+            return "efficientdet_lite2_float16.bytes";
+          case ModelType.EfficientDetLite2Float32:
+            return "efficientdet_lite2_float32.bytes";
+          case ModelType.EfficientDetLite2Int8:
+            return "efficientdet_lite2_int8.bytes";
+          case ModelType.SSDMobileNetV2Float16:
+            return "ssd_mobilenet_v2_float16.bytes";
+          case ModelType.SSDMobileNetV2Float32:
+            return "ssd_mobilenet_v2_float32.bytes";
+          default:
+            return null;
+        }
       }
     }
 
-    private void InitializeContents()
+    public Tasks.Vision.ObjectDetector.ObjectDetectorOptions GetObjectDetectorOptions(Tasks.Vision.ObjectDetector.ObjectDetectorOptions.ResultCallback resultCallback = null)
     {
-      InitializeRunningMode();
-      InitializeTimeoutMillisec();
-    }
-
-    private void InitializeRunningMode()
-    {
-      _runningModeInput = gameObject.transform.Find(_RunningModePath).gameObject.GetComponent<Dropdown>();
-      _runningModeInput.ClearOptions();
-
-      var options = new List<string>(Enum.GetNames(typeof(RunningMode)));
-      _runningModeInput.AddOptions(options);
-
-      var currentRunningMode = _solution.runningMode;
-      var defaultValue = options.FindIndex(option => option == currentRunningMode.ToString());
-
-      if (defaultValue >= 0)
-      {
-        _runningModeInput.value = defaultValue;
-      }
-
-      _runningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
-    }
-
-    private void InitializeTimeoutMillisec()
-    {
-      _timeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
-      _timeoutMillisecInput.text = _solution.timeoutMillisec.ToString();
-      _timeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });
+      return new Tasks.Vision.ObjectDetector.ObjectDetectorOptions(
+        new Tasks.Core.BaseOptions(Delegate, modelAssetPath: ModelPath),
+        runningMode: RunningMode,
+        maxResults: MaxResults,
+        scoreThreshold: ScoreThreshold,
+        resultCallback: resultCallback
+      );
     }
   }
 }
