@@ -13,7 +13,9 @@ namespace Mediapipe.Unity.Sample.PoseLandmarkDetection
   {
     [Description("Pose landmarker (lite)")]
     BlazePoseLite = 0,
+    [Description("Pose landmarker (Full)")]
     BlazePoseFull = 1,
+    [Description("Pose landmarker (Heavy)")]
     BlazePoseHeavy = 2,
   }
 
