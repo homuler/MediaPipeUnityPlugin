@@ -1,131 +1,63 @@
-// Copyright (c) 2021 homuler
+// Copyright (c) 2023 homuler
 //
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using System;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using Mediapipe.Unity.Sample.UI;
+using System.ComponentModel;
 
-namespace Mediapipe.Unity.Sample.FaceDetection.UI
+namespace Mediapipe.Unity.Sample.FaceDetection
 {
-  public class FaceDetectionConfig : ModalContents
+  public enum ModelType : int
   {
-    private const string _ModelSelectionPath = "Scroll View/Viewport/Contents/Model Selection/Dropdown";
-    private const string _MinDetectionConfidencePath = "Scroll View/Viewport/Contents/Min Detection Confidence/InputField";
-    private const string _RunningModePath = "Scroll View/Viewport/Contents/Running Mode/Dropdown";
-    private const string _TimeoutMillisecPath = "Scroll View/Viewport/Contents/Timeout Millisec/InputField";
+    [Description("BlazeFace (short-range)")]
+    BlazeFaceShortRange = 0,
+  }
 
-    private FaceDetectionSolution _solution;
-    private Dropdown _modelSelectionInput;
-    private InputField _minDetectionConfidenceInput;
-    private Dropdown _runningModeInput;
-    private InputField _timeoutMillisecInput;
+  public class FaceDetectionConfig
+  {
+    public Tasks.Core.BaseOptions.Delegate Delegate { get; set; } =
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+      Tasks.Core.BaseOptions.Delegate.CPU;
+#else
+    Tasks.Core.BaseOptions.Delegate.GPU;
+#endif
 
-    private bool _isChanged;
+    public ModelType Model { get; set; } = ModelType.BlazeFaceShortRange;
 
-    private void Start()
+    public Tasks.Vision.Core.RunningMode RunningMode { get; set; } = Tasks.Vision.Core.RunningMode.LIVE_STREAM;
+
+    public float MinDetectionConfidence { get; set; } = 0.5f;
+
+    public float MinSuppressionThreshold { get; set; } = 0.3f;
+
+    public int NumFaces { get; set; } = 3;
+
+    public string ModelName => Model.GetDescription() ?? Model.ToString();
+    public string ModelPath
     {
-      _solution = GameObject.Find("Solution").GetComponent<FaceDetectionSolution>();
-      InitializeContents();
-    }
-
-    public override void Exit()
-    {
-      GetModal().CloseAndResume(_isChanged);
-    }
-
-    public void SwitchModelType()
-    {
-      _solution.modelType = (FaceDetectionGraph.ModelType)_modelSelectionInput.value;
-      _isChanged = true;
-    }
-
-    public void SetMinDetectionConfidence()
-    {
-      if (float.TryParse(_minDetectionConfidenceInput.text, out var value))
+      get
       {
-        _solution.minDetectionConfidence = value;
-        _isChanged = true;
+        switch (Model)
+        {
+          case ModelType.BlazeFaceShortRange:
+            return "blaze_face_short_range.bytes";
+          default:
+            return null;
+        }
       }
     }
 
-    public void SwitchRunningMode()
+    public Tasks.Vision.FaceDetector.FaceDetectorOptions GetFaceDetectorOptions(Tasks.Vision.FaceDetector.FaceDetectorOptions.ResultCallback resultCallback = null)
     {
-      _solution.runningMode = (RunningMode)_runningModeInput.value;
-      _isChanged = true;
-    }
-
-    public void SetTimeoutMillisec()
-    {
-      if (int.TryParse(_timeoutMillisecInput.text, out var value))
-      {
-        _solution.timeoutMillisec = value;
-        _isChanged = true;
-      }
-    }
-
-    private void InitializeContents()
-    {
-      InitializeModelSelection();
-      InitializeMinDetectionConfidence();
-      InitializeRunningMode();
-      InitializeTimeoutMillisec();
-    }
-
-    private void InitializeModelSelection()
-    {
-      _modelSelectionInput = gameObject.transform.Find(_ModelSelectionPath).gameObject.GetComponent<Dropdown>();
-      _modelSelectionInput.ClearOptions();
-
-      var options = new List<string>(Enum.GetNames(typeof(FaceDetectionGraph.ModelType)));
-      _modelSelectionInput.AddOptions(options);
-
-      var currentModelType = _solution.modelType;
-      var defaultValue = options.FindIndex(option => option == currentModelType.ToString());
-
-      if (defaultValue >= 0)
-      {
-        _modelSelectionInput.value = defaultValue;
-      }
-
-      _modelSelectionInput.onValueChanged.AddListener(delegate { SwitchModelType(); });
-    }
-
-    private void InitializeMinDetectionConfidence()
-    {
-      _minDetectionConfidenceInput = gameObject.transform.Find(_MinDetectionConfidencePath).gameObject.GetComponent<InputField>();
-      _minDetectionConfidenceInput.text = _solution.minDetectionConfidence.ToString();
-      _minDetectionConfidenceInput.onValueChanged.AddListener(delegate { SetMinDetectionConfidence(); });
-    }
-
-    private void InitializeRunningMode()
-    {
-      _runningModeInput = gameObject.transform.Find(_RunningModePath).gameObject.GetComponent<Dropdown>();
-      _runningModeInput.ClearOptions();
-
-      var options = new List<string>(Enum.GetNames(typeof(RunningMode)));
-      _runningModeInput.AddOptions(options);
-
-      var currentRunningMode = _solution.runningMode;
-      var defaultValue = options.FindIndex(option => option == currentRunningMode.ToString());
-
-      if (defaultValue >= 0)
-      {
-        _runningModeInput.value = defaultValue;
-      }
-
-      _runningModeInput.onValueChanged.AddListener(delegate { SwitchRunningMode(); });
-    }
-
-    private void InitializeTimeoutMillisec()
-    {
-      _timeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
-      _timeoutMillisecInput.text = _solution.timeoutMillisec.ToString();
-      _timeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });
+      return new Tasks.Vision.FaceDetector.FaceDetectorOptions(
+        new Tasks.Core.BaseOptions(Delegate, modelAssetPath: ModelPath),
+        runningMode: RunningMode,
+        minDetectionConfidence: MinDetectionConfidence,
+        minSuppressionThreshold: MinSuppressionThreshold,
+        numFaces: NumFaces,
+        resultCallback: resultCallback
+      );
     }
   }
 }
