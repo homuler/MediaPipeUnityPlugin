@@ -202,6 +202,11 @@ jobs:
             echo "BUILD_UNITYPACKAGE=1" >> $GITHUB_ENV
           fi
 
+      # avoid "No space left on device" error
+      - name: Remove unused files to free up space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android
+
       - name: Install UnityEditor
         if: ${{ env.BUILD_UNITYPACKAGE == '1' }}
         run: |
