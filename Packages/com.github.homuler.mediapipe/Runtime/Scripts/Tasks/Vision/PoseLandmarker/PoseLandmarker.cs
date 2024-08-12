@@ -38,7 +38,8 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
     private PoseLandmarker(
       CalculatorGraphConfig graphConfig,
       Core.RunningMode runningMode,
-      Tasks.Core.TaskRunner.PacketsCallback packetCallback) : base(graphConfig, runningMode, packetCallback)
+      GpuResources gpuResources,
+      Tasks.Core.TaskRunner.PacketsCallback packetCallback) : base(graphConfig, runningMode, gpuResources, packetCallback)
     {
       _packetCallback = packetCallback;
     }
@@ -50,24 +51,32 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
     ///   for detecting pose landmarks on single image inputs.
     /// </summary>
     /// <param name="modelPath">Path to the model.</param>
+    /// <param name="gpuResources">
+    ///   <see cref="GpuResources"/> to set to the underlying <see cref="CalculatorGraph"/>.
+    ///   To share the GL context with MediaPipe, <see cref="GlCalculatorHelper.InitializeForTest"/> must be called with it.
+    /// </param>
     /// <returns>
     ///   <see cref="PoseLandmarker" /> object that's created from the model and the default <see cref="PoseLandmarkerOptions" />.
     /// </returns>
-    public static PoseLandmarker CreateFromModelPath(string modelPath)
+    public static PoseLandmarker CreateFromModelPath(string modelPath, GpuResources gpuResources = null)
     {
       var baseOptions = new Tasks.Core.BaseOptions(modelAssetPath: modelPath);
       var options = new PoseLandmarkerOptions(baseOptions, runningMode: Core.RunningMode.IMAGE);
-      return CreateFromOptions(options);
+      return CreateFromOptions(options, gpuResources);
     }
 
     /// <summary>
     ///   Creates the <see cref="PoseLandmarker" /> object from <paramref name="PoseLandmarkerOptions" />.
     /// </summary>
     /// <param name="options">Options for the pose landmarker task.</param>
+    /// <param name="gpuResources">
+    ///   <see cref="GpuResources"/> to set to the underlying <see cref="CalculatorGraph"/>.
+    ///   To share the GL context with MediaPipe, <see cref="GlCalculatorHelper.InitializeForTest"/> must be called with it.
+    /// </param>
     /// <returns>
     ///   <see cref="PoseLandmarker" /> object that's created from <paramref name="options" />.
     /// </returns>
-    public static PoseLandmarker CreateFromOptions(PoseLandmarkerOptions options)
+    public static PoseLandmarker CreateFromOptions(PoseLandmarkerOptions options, GpuResources gpuResources = null)
     {
       var outputStreams = new List<string> {
         string.Join(":", _NORM_LANDMARKS_TAG, _NORM_LANDMARKS_STREAM_NAME),
@@ -90,6 +99,7 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
       return new PoseLandmarker(
         taskInfo.GenerateGraphConfig(options.runningMode == Core.RunningMode.LIVE_STREAM),
         options.runningMode,
+        gpuResources,
         BuildPacketsCallback(options));
     }
 
