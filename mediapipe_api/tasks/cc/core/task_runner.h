@@ -21,9 +21,17 @@ extern "C" {
 typedef std::map<std::string, mediapipe::Packet> PacketMap;
 typedef void NativePacketsCallback(int, absl::Status*, PacketMap*);
 
+#if !MEDIAPIPE_DISABLE_GPU
+MP_CAPI(MpReturnCode) mp_tasks_core_TaskRunner_Create__PKc_i_PF_Pgr(const char* serialized_config, int size,
+                                                                    int callback_id, NativePacketsCallback* packets_callback,
+                                                                    std::shared_ptr<mediapipe::GpuResources>* gpu_resources,
+                                                                    absl::Status** status_out, TaskRunner** task_runner_out);
+#endif  // !MEDIAPIPE_DISABLE_GPU
+
 MP_CAPI(MpReturnCode) mp_tasks_core_TaskRunner_Create__PKc_i_PF(const char* serialized_config, int size,
                                                                 int callback_id, NativePacketsCallback* packets_callback,
                                                                 absl::Status** status_out, TaskRunner** task_runner_out);
+
 MP_CAPI(void) mp_tasks_core_TaskRunner__delete(TaskRunner* task_runner);
 
 MP_CAPI(MpReturnCode) mp_tasks_core_TaskRunner__Process__Ppm(TaskRunner* task_runner, PacketMap* inputs, absl::Status** status_out, PacketMap** value_out);

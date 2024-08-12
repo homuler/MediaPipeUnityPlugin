@@ -14,6 +14,16 @@ namespace Mediapipe.Tasks.Core
     public delegate void NativePacketsCallback(int name, IntPtr status, IntPtr packetMap);
     public delegate void PacketsCallback(PacketMap packetMap);
 
+    public static TaskRunner Create(CalculatorGraphConfig config, GpuResources gpuResources, int callbackId = -1, NativePacketsCallback packetsCallback = null)
+    {
+      var bytes = config.ToByteArray();
+      var gpuResourcesPtr = gpuResources == null ? IntPtr.Zero : gpuResources.sharedPtr;
+      UnsafeNativeMethods.mp_tasks_core_TaskRunner_Create__PKc_i_PF_Pgr(bytes, bytes.Length, callbackId, packetsCallback, gpuResourcesPtr, out var statusPtr, out var taskRunnerPtr).Assert();
+
+      AssertStatusOk(statusPtr);
+      return new TaskRunner(taskRunnerPtr);
+    }
+
     public static TaskRunner Create(CalculatorGraphConfig config, int callbackId = -1, NativePacketsCallback packetsCallback = null)
     {
       var bytes = config.ToByteArray();
