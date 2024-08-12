@@ -9,10 +9,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-#if UNITY_ANDROID
-using System.Runtime.InteropServices;
-#endif
-
 namespace Mediapipe.Unity
 {
   public static class GpuManager
@@ -22,10 +18,7 @@ namespace Mediapipe.Unity
     private delegate void PluginCallback(int eventId);
 
     private static readonly object _SetupLock = new object();
-#pragma warning disable IDE0044
-    private static IntPtr _CurrentContext = IntPtr.Zero;
-#pragma warning restore IDE0044
-    private static bool _IsContextInitialized = false;
+    private static IntPtr _PlatformGlContext = IntPtr.Zero;
 
     public static GpuResources GpuResources { get; private set; }
     public static GlCalculatorHelper GlCalculatorHelper { get; private set; }
@@ -50,48 +43,21 @@ namespace Mediapipe.Unity
           yield break;
         }
 
-#if UNITY_ANDROID
-        _IsContextInitialized = SystemInfo.graphicsDeviceType != GraphicsDeviceType.OpenGLES3;
-        if (!_IsContextInitialized)
+        if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES3)
         {
-          PluginCallback callback = GetCurrentContext;
+          var req = AsyncGlContext.Request(OnGetEglContext);
+          yield return new WaitUntil(() => req.done);
 
-          var fp = Marshal.GetFunctionPointerForDelegate(callback);
-          GL.IssuePluginEvent(fp, 1);
+          if (req.error != null)
+          {
+            Logger.LogException(req.error);
+            yield break;
+          }
         }
-#else
-        _IsContextInitialized = true;
-#endif
-
-        var count = 100;
-        yield return new WaitUntil(() =>
-        {
-          return --count < 0 || _IsContextInitialized;
-        });
-
-        if (!_IsContextInitialized)
-        {
-          Logger.LogError(_TAG, "Failed to get GlContext");
-          yield break;
-        }
-
-#if UNITY_ANDROID
-        if (_CurrentContext == IntPtr.Zero)
-        {
-          Logger.LogWarning(_TAG, "EGL context is not found, so MediaPipe won't share their EGL contexts with Unity");
-        }
-        else
-        {
-          Logger.LogVerbose(_TAG, $"EGL context is found: {_CurrentContext}");
-        }
-#endif
 
         try
         {
-          Logger.LogInfo(_TAG, "Initializing GpuResources...");
-          GpuResources = GpuResources.Create(_CurrentContext);
-
-          Logger.LogInfo(_TAG, "Initializing GlCalculatorHelper...");
+          GpuResources = GpuResources.Create(_PlatformGlContext);
           GlCalculatorHelper = new GlCalculatorHelper();
           GlCalculatorHelper.InitializeForTest(GpuResources);
 
@@ -133,13 +99,30 @@ namespace Mediapipe.Unity
       IsInitialized = false;
     }
 
-    // Currently, it works only on Android
-#if UNITY_ANDROID
-    [AOT.MonoPInvokeCallback(typeof(PluginCallback))]
-    private static void GetCurrentContext(int eventId) {
-      _CurrentContext = Egl.GetCurrentContext();
-      _IsContextInitialized = true;
+    public static void ResetGpuResources(IntPtr platformGlContext)
+    {
+      if (!IsInitialized)
+      {
+        throw new InvalidOperationException("GpuManager is not initialized");
+      }
+      GpuResources?.Dispose();
+
+      GpuResources = new GpuResources(platformGlContext);
+      GlCalculatorHelper.InitializeForTest(GpuResources);
     }
-#endif
+
+    public static GlContext GetGlContext() => GlCalculatorHelper?.GetGlContext();
+
+    private static void OnGetEglContext(AsyncGlContextRequest request)
+    {
+      if (request.platformGlContext == IntPtr.Zero)
+      {
+        Logger.LogWarning(_TAG, "EGL context is not found, so MediaPipe won't share their EGL contexts with Unity");
+        return;
+      }
+      Logger.LogVerbose(_TAG, $"EGL context is found: {request.platformGlContext}");
+
+      _PlatformGlContext = request.platformGlContext;
+    }
   }
 }
