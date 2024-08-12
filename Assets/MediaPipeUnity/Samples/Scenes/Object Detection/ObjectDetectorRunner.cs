@@ -6,13 +6,14 @@
 
 using System;
 using System.Collections;
+using Mediapipe.Tasks.Vision.ObjectDetector;
 using UnityEngine;
 using UnityEngine.Rendering;
 using ObjectDetectionResult = Mediapipe.Tasks.Components.Containers.DetectionResult;
 
 namespace Mediapipe.Unity.Sample.ObjectDetection
 {
-  public class ObjectDetectorRunner : VisionTaskApiRunner<Tasks.Vision.ObjectDetector.ObjectDetector>
+  public class ObjectDetectorRunner : VisionTaskApiRunner<ObjectDetector>
   {
     [SerializeField] private DetectionResultAnnotationController _detectionResultAnnotationController;
 
@@ -38,7 +39,7 @@ namespace Mediapipe.Unity.Sample.ObjectDetection
       yield return AssetLoader.PrepareAssetAsync(config.ModelPath);
 
       var options = config.GetObjectDetectorOptions(config.RunningMode == Tasks.Vision.Core.RunningMode.LIVE_STREAM ? OnObjectDetectionsOutput : null);
-      taskApi = Tasks.Vision.ObjectDetector.ObjectDetector.CreateFromOptions(options);
+      taskApi = ObjectDetector.CreateFromOptions(options, GpuManager.GpuResources);
       var imageSource = ImageSourceProvider.ImageSource;
 
       yield return imageSource.Play();
@@ -67,6 +68,12 @@ namespace Mediapipe.Unity.Sample.ObjectDetection
       var waitUntilReqDone = new WaitUntil(() => req.done);
       var result = ObjectDetectionResult.Alloc(Math.Max(options.maxResults ?? 0, 0));
 
+      // NOTE: we can share the GL context of the render thread with MediaPipe (for now, only on Android)
+      var canUseGpuImage = options.baseOptions.delegateCase == Tasks.Core.BaseOptions.Delegate.GPU &&
+        SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES3 &&
+        GpuManager.GpuResources != null;
+      using var glContext = canUseGpuImage ? GpuManager.GetGlContext() : null;
+
       while (true)
       {
         if (isPaused)
@@ -80,17 +87,28 @@ namespace Mediapipe.Unity.Sample.ObjectDetection
           continue;
         }
 
-        // Copy current image to TextureFrame
-        req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
-        yield return waitUntilReqDone;
-
-        if (req.hasError)
+        // Build the input Image
+        Image image;
+        if (canUseGpuImage)
         {
-          Debug.LogError($"Failed to read texture from the image source, exiting...");
-          break;
+          yield return new WaitForEndOfFrame();
+          textureFrame.ReadTextureOnGPU(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
+          image = textureFrame.BuildGpuImage(glContext);
+        }
+        else
+        {
+          req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
+          yield return waitUntilReqDone;
+
+          if (req.hasError)
+          {
+            Debug.LogError($"Failed to read texture from the image source, exiting...");
+            break;
+          }
+          image = textureFrame.BuildCPUImage();
+          textureFrame.Release();
         }
 
-        var image = textureFrame.BuildCPUImage();
         switch (taskApi.runningMode)
         {
           case Tasks.Vision.Core.RunningMode.IMAGE:
@@ -119,8 +137,6 @@ namespace Mediapipe.Unity.Sample.ObjectDetection
             taskApi.DetectAsync(image, GetCurrentTimestampMillisec(), imageProcessingOptions);
             break;
         }
-
-        textureFrame.Release();
       }
     }
 
