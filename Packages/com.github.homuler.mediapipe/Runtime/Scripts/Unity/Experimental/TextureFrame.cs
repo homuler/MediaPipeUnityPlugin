@@ -215,6 +215,15 @@ namespace Mediapipe.Unity.Experimental
 
     public Image BuildCPUImage() => new Image(imageFormat, _texture);
 
+    public Image BuildGpuImage(GlContext glContext)
+    {
+#if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_ANDROID
+      return new Image(Gl.GL_TEXTURE_2D, GetTextureName(), width, height, gpuBufferformat, OnReleaseTextureFrame, glContext);
+#else
+      throw new NotSupportedException("This method is only supported on Linux or Android");
+#endif
+    }
+
     public GpuBuffer BuildGpuBuffer(GlContext glContext)
     {
 #if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_ANDROID
