@@ -105,44 +105,35 @@ namespace Mediapipe.Unity.Experimental
 
     /// <summary>
     ///   Copy texture data from <paramref name="src" />.
-    ///   If <paramref name="src" /> format is different from <see cref="format" />, it converts the format.
     /// </summary>
     /// <remarks>
-    ///   After calling it, pixel data can't be read from CPU safely.
+    ///   After calling it, pixel data can't be read on CPU safely.
+    ///   If you need to read pixel data on CPU, use <see cref="ReadTextureAsync" /> instead.
     /// </remarks>
-    public bool ReadTextureOnGPU(Texture src)
+    public void ReadTextureOnGPU(Texture src, bool flipHorizontally, bool flipVertically)
     {
-      if (GetTextureFormat(src) != format)
-      {
-        return Graphics.ConvertTexture(src, _texture);
-      }
-      Graphics.CopyTexture(src, _texture);
-      return true;
+      ReadTextureInternal(src, flipHorizontally, flipVertically);
+
+      Graphics.CopyTexture(_tmpRenderTexture, _texture);
+      RenderTexture.ReleaseTemporary(_tmpRenderTexture);
     }
 
-    public AsyncGPUReadbackRequest ReadTextureAsync(Texture src)
-    {
-      if (!ReadTextureOnGPU(src))
-      {
-        throw new InvalidOperationException("Failed to read texture on GPU");
-      }
-
-      return AsyncGPUReadback.Request(_texture, 0, (req) =>
-      {
-        if (_texture == null)
-        {
-          return;
-        }
-        _texture.LoadRawTextureData(req.GetData<byte>());
-        _texture.Apply();
-      });
-    }
-
+    /// <summary>
+    ///   Copy texture data from <paramref name="src" />.
+    /// </summary>
     /// <remarks>
     ///   This method is not thread-safe.
-    ///   Avoid calling this method again before the returned <see cref="AsyncGPUReadbackRequest.done"/> is <see langword="true"/>.
+    ///   Avoid calling another method before the returned <see cref="AsyncGPUReadbackRequest.done"/> becomes <see langword="true"/>.
     /// </remarks>
+    /// <param name="flipHorizontally">If <see langword="true"/>, it will be copied horizontally flipped.</param>
+    /// <param name="flipVertically">If <see langword="true"/>, it will be copied vertically flipped.</param>
     public AsyncGPUReadbackRequest ReadTextureAsync(Texture src, bool flipHorizontally, bool flipVertically)
+    {
+      ReadTextureInternal(src, flipHorizontally, flipVertically);
+      return AsyncGPUReadback.Request(_tmpRenderTexture, 0, _onReadBackRenderTexture);
+    }
+
+    private void ReadTextureInternal(Texture src, bool flipHorizontally, bool flipVertically)
     {
       var graphicsFormat = GraphicsFormatUtility.GetGraphicsFormat(format, true);
       _tmpRenderTexture = RenderTexture.GetTemporary(src.width, src.height, 32, graphicsFormat);
@@ -163,8 +154,6 @@ namespace Mediapipe.Unity.Experimental
       }
       Graphics.Blit(src, _tmpRenderTexture, scale, offset);
       RenderTexture.active = currentRenderTexture;
-
-      return AsyncGPUReadback.Request(_tmpRenderTexture, 0, _onReadBackRenderTexture);
     }
 
     private readonly Action<AsyncGPUReadbackRequest> _onReadBackRenderTexture;
