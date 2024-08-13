@@ -7,10 +7,6 @@
 using System;
 using UnityEngine;
 
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
-using UnityEngine.Profiling;
-#endif
-
 namespace Mediapipe.Tasks.Core
 {
   internal class PacketsCallbackTable
