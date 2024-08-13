@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Mediapipe.Unity.Sample
 {
-  public abstract class VisionTaskApiRunner<TTask> : TaskApiRunner where TTask : Tasks.Vision.Core.BaseVisionTaskApi
+  public abstract class VisionTaskApiRunner<TTask> : BaseRunner where TTask : Tasks.Vision.Core.BaseVisionTaskApi
   {
     [SerializeField] protected Screen screen;
 

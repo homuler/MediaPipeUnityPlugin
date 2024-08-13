@@ -10,7 +10,7 @@ namespace Mediapipe.Unity.Sample.UI
 {
   public class Modal : MonoBehaviour
   {
-    [SerializeField] private TaskApiRunner _taskApiRunner;
+    [SerializeField] private BaseRunner _baseRunner;
 
     private GameObject _contents;
 
@@ -24,9 +24,9 @@ namespace Mediapipe.Unity.Sample.UI
     public void OpenAndPause(GameObject contents)
     {
       Open(contents);
-      if (_taskApiRunner != null)
+      if (_baseRunner != null)
       {
-        _taskApiRunner.Pause();
+        _baseRunner.Pause();
       }
     }
 
@@ -44,23 +44,23 @@ namespace Mediapipe.Unity.Sample.UI
     {
       Close();
 
-      if (_taskApiRunner == null)
+      if (_baseRunner == null)
       {
         return;
       }
 
       if (forceRestart)
       {
-        if (_taskApiRunner != null)
+        if (_baseRunner != null)
         {
-          _taskApiRunner.Play();
+          _baseRunner.Play();
         }
       }
       else
       {
-        if (_taskApiRunner != null)
+        if (_baseRunner != null)
         {
-          _taskApiRunner.Resume();
+          _baseRunner.Resume();
         }
       }
     }

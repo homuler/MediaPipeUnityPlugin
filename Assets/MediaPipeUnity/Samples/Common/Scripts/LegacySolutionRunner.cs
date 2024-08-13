@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Mediapipe.Unity.Sample
 {
-  public abstract class LegacySolutionRunner<TGraphRunner> : TaskApiRunner where TGraphRunner : GraphRunner
+  public abstract class LegacySolutionRunner<TGraphRunner> : BaseRunner where TGraphRunner : GraphRunner
   {
     [SerializeField] protected Screen screen;
     [SerializeField] protected TGraphRunner graphRunner;
