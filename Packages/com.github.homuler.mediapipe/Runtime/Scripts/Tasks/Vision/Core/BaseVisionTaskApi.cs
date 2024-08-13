@@ -26,6 +26,18 @@ namespace Mediapipe.Tasks.Vision.Core
     protected BaseVisionTaskApi(
       CalculatorGraphConfig graphConfig,
       RunningMode runningMode,
+      Tasks.Core.TaskRunner.PacketsCallback packetsCallback) : this(graphConfig, runningMode, null, packetsCallback) { }
+
+    /// <summary>
+    ///   Initializes the `BaseVisionTaskApi` object.
+    /// </summary>
+    /// <exception cref="ArgumentException">
+    ///   The packet callback is not properly set based on the task's running mode.
+    /// </exception>
+    protected BaseVisionTaskApi(
+      CalculatorGraphConfig graphConfig,
+      RunningMode runningMode,
+      GpuResources gpuResources,
       Tasks.Core.TaskRunner.PacketsCallback packetsCallback)
     {
       if (runningMode == RunningMode.LIVE_STREAM)
@@ -41,7 +53,15 @@ namespace Mediapipe.Tasks.Vision.Core
       }
 
       var (callbackId, nativePacketsCallback) = Tasks.Core.PacketsCallbackTable.Add(packetsCallback);
-      _taskRunner = Tasks.Core.TaskRunner.Create(graphConfig, callbackId, nativePacketsCallback);
+
+      if (gpuResources != null)
+      {
+        _taskRunner = Tasks.Core.TaskRunner.Create(graphConfig, gpuResources, callbackId, nativePacketsCallback);
+      }
+      else
+      {
+        _taskRunner = Tasks.Core.TaskRunner.Create(graphConfig, callbackId, nativePacketsCallback);
+      }
       this.runningMode = runningMode;
     }
 

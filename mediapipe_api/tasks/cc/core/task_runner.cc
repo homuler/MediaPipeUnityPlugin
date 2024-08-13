@@ -2,6 +2,45 @@
 
 #include "mediapipe/tasks/cc/core/mediapipe_builtin_op_resolver.h"
 
+#if !MEDIAPIPE_DISABLE_GPU
+MpReturnCode mp_tasks_core_TaskRunner_Create__PKc_i_PF_Pgr(const char* serialized_config, int size,
+                                                           int callback_id, NativePacketsCallback* packets_callback,
+                                                           std::shared_ptr<mediapipe::GpuResources>* gpu_resources,
+                                                           absl::Status** status_out, TaskRunner** task_runner_out) {
+  TRY
+    auto config = ParseFromStringAsProto<mediapipe::CalculatorGraphConfig>(serialized_config, size);
+    mediapipe::tasks::core::PacketsCallback callback = nullptr;
+    if (packets_callback) {
+      callback = [callback_id, packets_callback](absl::StatusOr<PacketMap> status_or_packet_map) -> void {
+        auto status = status_or_packet_map.status();
+        if (!status.ok()) {
+          packets_callback(callback_id, &status, nullptr);
+          return;
+        }
+        auto value = status_or_packet_map.value();
+        packets_callback(callback_id, &status, &value);
+      };
+    }
+
+    auto status_or_task_runner = TaskRunner::Create(
+      std::move(config),
+      absl::make_unique<mediapipe::tasks::core::MediaPipeBuiltinOpResolver>(),
+      std::move(callback),
+      /* default_executor= */ nullptr,
+      /* input_side_packes= */ std::nullopt, *gpu_resources);
+
+    *status_out = new absl::Status{status_or_task_runner.status()};
+    if (status_or_task_runner.ok()) {
+      // NOTE: TaskRunner cannot be moved, so pass the pointer instead.
+      *task_runner_out = status_or_task_runner.value().release();
+    } else {
+      *task_runner_out = nullptr;
+    }
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_EXCEPTION
+}
+#endif  // !MEDIAPIPE_DISABLE_GPU
+
 MpReturnCode mp_tasks_core_TaskRunner_Create__PKc_i_PF(const char* serialized_config, int size,
                                                        int callback_id, NativePacketsCallback* packets_callback,
                                                        absl::Status** status_out, TaskRunner** task_runner_out) {

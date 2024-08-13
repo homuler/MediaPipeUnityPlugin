@@ -39,8 +39,9 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
     private FaceLandmarker(
       CalculatorGraphConfig graphConfig,
       Core.RunningMode runningMode,
+      GpuResources gpuResources,
       List<FaceGeometry.Proto.FaceGeometry> faceGeometriesForRead,
-      Tasks.Core.TaskRunner.PacketsCallback packetCallback) : base(graphConfig, runningMode, packetCallback)
+      Tasks.Core.TaskRunner.PacketsCallback packetCallback) : base(graphConfig, runningMode, gpuResources, packetCallback)
     {
       _faceGeometriesForRead = faceGeometriesForRead;
       _packetCallback = packetCallback;
@@ -53,24 +54,32 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
     ///   for detecting face landmarks on single image inputs.
     /// </summary>
     /// <param name="modelPath">Path to the model.</param>
+    /// <param name="gpuResources">
+    ///   <see cref="GpuResources"/> to set to the underlying <see cref="CalculatorGraph"/>.
+    ///   To share the GL context with MediaPipe, <see cref="GlCalculatorHelper.InitializeForTest"/> must be called with it.
+    /// </param>
     /// <returns>
     ///   <see cref="FaceLandmarker" /> object that's created from the model and the default <see cref="FaceLandmarkerOptions" />.
     /// </returns>
-    public static FaceLandmarker CreateFromModelPath(string modelPath)
+    public static FaceLandmarker CreateFromModelPath(string modelPath, GpuResources gpuResources = null)
     {
       var baseOptions = new Tasks.Core.BaseOptions(modelAssetPath: modelPath);
       var options = new FaceLandmarkerOptions(baseOptions, runningMode: Core.RunningMode.IMAGE);
-      return CreateFromOptions(options);
+      return CreateFromOptions(options, gpuResources);
     }
 
     /// <summary>
     ///   Creates the <see cref="FaceLandmarker" /> object from <paramref name="FaceLandmarkerOptions" />.
     /// </summary>
     /// <param name="options">Options for the face landmarker task.</param>
+    /// <param name="gpuResources">
+    ///   <see cref="GpuResources"/> to set to the underlying <see cref="CalculatorGraph"/>.
+    ///   To share the GL context with MediaPipe, <see cref="GlCalculatorHelper.InitializeForTest"/> must be called with it.
+    /// </param>
     /// <returns>
     ///   <see cref="FaceLandmarker" /> object that's created from <paramref name="options" />.
     /// </returns>
-    public static FaceLandmarker CreateFromOptions(FaceLandmarkerOptions options)
+    public static FaceLandmarker CreateFromOptions(FaceLandmarkerOptions options, GpuResources gpuResources = null)
     {
       var outputStreams = new List<string> {
         string.Join(":", _NORM_LANDMARKS_TAG, _NORM_LANDMARKS_STREAM_NAME),
@@ -97,6 +106,7 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
       return new FaceLandmarker(
         taskInfo.GenerateGraphConfig(options.runningMode == Core.RunningMode.LIVE_STREAM),
         options.runningMode,
+        gpuResources,
         faceGeometriesForRead,
         BuildPacketsCallback(options, faceGeometriesForRead));
     }

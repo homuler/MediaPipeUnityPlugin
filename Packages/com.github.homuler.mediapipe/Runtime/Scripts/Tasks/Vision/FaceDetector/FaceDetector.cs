@@ -35,7 +35,8 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     private FaceDetector(
       CalculatorGraphConfig graphConfig,
       Core.RunningMode runningMode,
-      Tasks.Core.TaskRunner.PacketsCallback packetCallback) : base(graphConfig, runningMode, packetCallback)
+      GpuResources gpuResources,
+      Tasks.Core.TaskRunner.PacketsCallback packetCallback) : base(graphConfig, runningMode, gpuResources, packetCallback)
     {
       _packetCallback = packetCallback;
     }
@@ -47,24 +48,32 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
     ///   for detecting faces on single image inputs.
     /// </summary>
     /// <param name="modelPath">Path to the model.</param>
+    /// <param name="gpuResources">
+    ///   <see cref="GpuResources"/> to set to the underlying <see cref="CalculatorGraph"/>.
+    ///   To share the GL context with MediaPipe, <see cref="GlCalculatorHelper.InitializeForTest"/> must be called with it.
+    /// </param>
     /// <returns>
     ///   <see cref="FaceDetector" /> object that's created from the model and the default <see cref="FaceDetectorOptions" />.
     /// </returns>
-    public static FaceDetector CreateFromModelPath(string modelPath)
+    public static FaceDetector CreateFromModelPath(string modelPath, GpuResources gpuResources = null)
     {
       var baseOptions = new Tasks.Core.BaseOptions(modelAssetPath: modelPath);
       var options = new FaceDetectorOptions(baseOptions, runningMode: Core.RunningMode.IMAGE);
-      return CreateFromOptions(options);
+      return CreateFromOptions(options, gpuResources);
     }
 
     /// <summary>
     ///   Creates the <see cref="FaceDetector" /> object from <paramref name="FaceDetectorOptions" />.
     /// </summary>
     /// <param name="options">Options for the face detector task.</param>
+    /// <param name="gpuResources">
+    ///   <see cref="GpuResources"/> to set to the underlying <see cref="CalculatorGraph"/>.
+    ///   To share the GL context with MediaPipe, <see cref="GlCalculatorHelper.InitializeForTest"/> must be called with it.
+    /// </param>
     /// <returns>
     ///   <see cref="FaceDetector" /> object that's created from <paramref name="options" />.
     /// </returns>
-    public static FaceDetector CreateFromOptions(FaceDetectorOptions options)
+    public static FaceDetector CreateFromOptions(FaceDetectorOptions options, GpuResources gpuResources = null)
     {
       var taskInfo = new Tasks.Core.TaskInfo<FaceDetectorOptions>(
         taskGraph: _TASK_GRAPH_NAME,
@@ -81,6 +90,7 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
       return new FaceDetector(
         taskInfo.GenerateGraphConfig(options.runningMode == Core.RunningMode.LIVE_STREAM),
         options.runningMode,
+        gpuResources,
         BuildPacketsCallback(options));
     }
 

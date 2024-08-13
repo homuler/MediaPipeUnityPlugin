@@ -41,7 +41,8 @@ namespace Mediapipe.Tasks.Vision.ImageSegmenter
     private ImageSegmenter(
       CalculatorGraphConfig graphConfig,
       Core.RunningMode runningMode,
-      Tasks.Core.TaskRunner.PacketsCallback packetCallback) : base(graphConfig, runningMode, packetCallback)
+      GpuResources gpuResources,
+      Tasks.Core.TaskRunner.PacketsCallback packetCallback) : base(graphConfig, runningMode, gpuResources, packetCallback)
     {
       _packetCallback = packetCallback;
       _labels = new Lazy<List<string>>(() => GetLabels());
@@ -54,24 +55,32 @@ namespace Mediapipe.Tasks.Vision.ImageSegmenter
     ///   for performing image segmentation on single image inputs.
     /// </summary>
     /// <param name="modelPath">Path to the model.</param>
+    /// <param name="gpuResources">
+    ///   <see cref="GpuResources"/> to set to the underlying <see cref="CalculatorGraph"/>.
+    ///   To share the GL context with MediaPipe, <see cref="GlCalculatorHelper.InitializeForTest"/> must be called with it.
+    /// </param>
     /// <returns>
     ///   <see cref="ImageSegmenter" /> object that's created from the model and the default <see cref="ImageSegmenterOptions" />.
     /// </returns>
-    public static ImageSegmenter CreateFromModelPath(string modelPath)
+    public static ImageSegmenter CreateFromModelPath(string modelPath, GpuResources gpuResources = null)
     {
       var baseOptions = new Tasks.Core.BaseOptions(modelAssetPath: modelPath);
       var options = new ImageSegmenterOptions(baseOptions, runningMode: Core.RunningMode.IMAGE);
-      return CreateFromOptions(options);
+      return CreateFromOptions(options, gpuResources);
     }
 
     /// <summary>
     ///   Creates the <see cref="ImageSegmenter" /> object from <paramref name="ImageSegmenterOptions" />.
     /// </summary>
     /// <param name="options">Options for the image segmenter task.</param>
+    /// <param name="gpuResources">
+    ///   <see cref="GpuResources"/> to set to the underlying <see cref="CalculatorGraph"/>.
+    ///   To share the GL context with MediaPipe, <see cref="GlCalculatorHelper.InitializeForTest"/> must be called with it.
+    /// </param>
     /// <returns>
     ///   <see cref="ImageSegmenter" /> object that's created from <paramref name="options" />.
     /// </returns>
-    public static ImageSegmenter CreateFromOptions(ImageSegmenterOptions options)
+    public static ImageSegmenter CreateFromOptions(ImageSegmenterOptions options, GpuResources gpuResources = null)
     {
       var outputStreams = new List<string> {
         string.Join(":", _IMAGE_TAG, _IMAGE_OUT_STREAM_NAME),
@@ -98,6 +107,7 @@ namespace Mediapipe.Tasks.Vision.ImageSegmenter
       return new ImageSegmenter(
         taskInfo.GenerateGraphConfig(options.runningMode == Core.RunningMode.LIVE_STREAM),
         options.runningMode,
+        gpuResources,
         BuildPacketsCallback(options));
     }
 
