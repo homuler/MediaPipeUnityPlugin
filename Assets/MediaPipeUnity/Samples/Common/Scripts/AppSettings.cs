@@ -61,7 +61,11 @@ namespace Mediapipe.Unity.Sample
 
     public ImageSourceType defaultImageSource => _defaultImageSource;
     public InferenceMode preferableInferenceMode => _preferableInferenceMode;
-    public AssetLoaderType assetLoaderType => _assetLoaderType;
+    public AssetLoaderType assetLoaderType
+    {
+      get => _assetLoaderType;
+      set => _assetLoaderType = value;
+    }
     public Logger.LogLevel logLevel => _logLevel;
 
     public void ResetGlogFlags()

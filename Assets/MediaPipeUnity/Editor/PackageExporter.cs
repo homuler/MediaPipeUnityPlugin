@@ -34,6 +34,9 @@ public static class PackageExporter
   [MenuItem("Tools/Export Unitypackage")]
   public static void Export()
   {
+    // Default Asset Loader Type is Local
+    OverwriteAssetLoaderType(Mediapipe.Unity.Sample.AppSettings.AssetLoaderType.Local);
+
     var packageRoot = Path.Combine(Application.dataPath, "..", "Packages", "com.github.homuler.mediapipe");
     var version = GetVersion(packageRoot);
 
@@ -99,6 +102,16 @@ public static class PackageExporter
     }
 
     return version;
+  }
+
+  private static void OverwriteAssetLoaderType(Mediapipe.Unity.Sample.AppSettings.AssetLoaderType assetLoaderType)
+  {
+    var appSettings = AssetDatabase.LoadAssetAtPath<Mediapipe.Unity.Sample.AppSettings>("Assets/MediaPipeUnity/Samples/Scenes/AppSettings.asset");
+    appSettings.assetLoaderType = assetLoaderType;
+
+    EditorUtility.SetDirty(appSettings);
+    AssetDatabase.SaveAssets();
+    AssetDatabase.Refresh();
   }
 
   public class PackageJson
