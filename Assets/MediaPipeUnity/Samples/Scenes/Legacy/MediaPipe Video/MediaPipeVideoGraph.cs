@@ -20,7 +20,7 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
 
     private Packet<GpuBuffer> _outputGpuBufferPacket;
     private string _destinationBufferName;
-    private TextureFrame _destinationTexture;
+    private Experimental.TextureFrame _destinationTexture;
 
     private const string _OutputVideoStreamName = "output_video";
     private OutputStream<ImageFrame> _outputVideoStream;
@@ -51,19 +51,19 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
       return base.Initialize(runningMode);
     }
 
-    public void SetupOutputPacket(TextureFrame textureFrame)
+    public void SetupOutputPacket(Experimental.TextureFrame textureFrame, GlContext glContext)
     {
       if (configType != ConfigType.OpenGLES)
       {
         throw new InvalidOperationException("This method is only supported for OpenGL ES");
       }
       _destinationTexture = textureFrame;
-      _outputGpuBufferPacket = Packet.CreateGpuBuffer(_destinationTexture.BuildGpuBuffer(GpuManager.GlCalculatorHelper.GetGlContext()));
+      _outputGpuBufferPacket = Packet.CreateGpuBuffer(_destinationTexture.BuildGpuBuffer(glContext));
     }
 
-    public void AddTextureFrameToInputStream(TextureFrame textureFrame)
+    public void AddTextureFrameToInputStream(Experimental.TextureFrame textureFrame, GlContext glContext = null)
     {
-      AddTextureFrameToInputStream(_InputStreamName, textureFrame);
+      AddTextureFrameToInputStream(_InputStreamName, textureFrame, glContext);
     }
 
     public async Task<ImageFrame> WaitNextAsync()

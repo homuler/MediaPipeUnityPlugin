@@ -6,27 +6,49 @@
 
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Mediapipe.Unity.Sample.MediaPipeVideo
 {
-  public class MediaPipeVideoSolution : ImageSourceSolution<MediaPipeVideoGraph>
+  public class MediaPipeVideoSolution : LegacySolutionRunner<MediaPipeVideoGraph>
   {
     private Texture2D _outputTexture;
+    private Experimental.TextureFramePool _textureFramePool;
 
-    protected override void SetupScreen(ImageSource imageSource)
+    protected override IEnumerator Run()
     {
+      var graphInitRequest = graphRunner.WaitForInit(runningMode);
+      var imageSource = ImageSourceProvider.ImageSource;
+
+      yield return imageSource.Play();
+
+      if (!imageSource.isPrepared)
+      {
+        Debug.LogError("Failed to start ImageSource, exiting...");
+        yield break;
+      }
+
+      // Use RGBA32 as the input format.
+      // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
+      _textureFramePool = new Experimental.TextureFramePool(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32, 10);
+
       // NOTE: The screen will be resized later, keeping the aspect ratio.
       screen.Resize(imageSource.textureWidth, imageSource.textureHeight);
       screen.Rotate(imageSource.rotation.Reverse());
 
+      // NOTE: we can share the GL context of the render thread with MediaPipe (for now, only on Android)
+      var canUseGpuImage = graphRunner.configType == GraphRunner.ConfigType.OpenGLES && GpuManager.GpuResources != null;
+      using var glContext = canUseGpuImage ? GpuManager.GetGlContext() : null;
+
       // Setup output texture
-      if (graphRunner.configType == GraphRunner.ConfigType.OpenGLES)
+      if (canUseGpuImage)
       {
-        if (textureFramePool.TryGetTextureFrame(out var textureFrame))
+        if (_textureFramePool.TryGetTextureFrame(out var textureFrame))
         {
           textureFrame.RemoveAllReleaseListeners();
-          graphRunner.SetupOutputPacket(textureFrame);
+          graphRunner.SetupOutputPacket(textureFrame, glContext);
 
+          // MediaPipe will write the result to the textureFrame
           screen.texture = Texture2D.CreateExternalTexture(textureFrame.width, textureFrame.height, textureFrame.format, false, false, textureFrame.GetNativeTexturePtr());
         }
         else
@@ -39,43 +61,70 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
         _outputTexture = new Texture2D(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32, false);
         screen.texture = _outputTexture;
       }
-    }
 
-    protected override void OnStartRun()
-    {
-      // Do nothing
-    }
-
-    protected override void AddTextureFrameToInputStream(TextureFrame textureFrame)
-    {
-      graphRunner.AddTextureFrameToInputStream(textureFrame);
-    }
-
-    protected override void RenderCurrentFrame(TextureFrame textureFrame)
-    {
-      // Do nothing because the screen will be updated later in `DrawNow`. 
-    }
-
-    protected override IEnumerator WaitForNextValue()
-    {
-      if (graphRunner.configType == GraphRunner.ConfigType.OpenGLES)
+      yield return graphInitRequest;
+      if (graphInitRequest.isError)
       {
+        Debug.LogError(graphInitRequest.error);
         yield break;
       }
 
-      var task = graphRunner.WaitNextAsync();
-      yield return new WaitUntil(() => task.IsCompleted);
+      graphRunner.StartRun(imageSource);
 
-      DrawNow(task.Result);
-      task.Result?.Dispose();
-    }
+      AsyncGPUReadbackRequest req = default;
+      var waitUntilReqDone = new WaitUntil(() => req.done);
 
-    private void DrawNow(ImageFrame imageFrame)
-    {
-      if (imageFrame != null)
+      while (true)
       {
-        _outputTexture.LoadRawTextureData(imageFrame.MutablePixelData(), imageFrame.PixelDataSize());
-        _outputTexture.Apply();
+        if (isPaused)
+        {
+          yield return new WaitWhile(() => isPaused);
+        }
+
+        if (!_textureFramePool.TryGetTextureFrame(out var textureFrame))
+        {
+          yield return new WaitForEndOfFrame();
+          continue;
+        }
+
+        // Copy current image to TextureFrame
+        if (canUseGpuImage)
+        {
+          yield return new WaitForEndOfFrame();
+          textureFrame.ReadTextureOnGPU(imageSource.GetCurrentTexture());
+        }
+        else
+        {
+          req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture());
+          yield return waitUntilReqDone;
+
+          if (req.hasError)
+          {
+            Debug.LogError($"Failed to read texture from the image source, exiting...");
+            break;
+          }
+        }
+
+        graphRunner.AddTextureFrameToInputStream(textureFrame, glContext);
+
+        if (graphRunner.configType == GraphRunner.ConfigType.OpenGLES)
+        {
+          continue;
+        }
+
+        if (runningMode.IsSynchronous())
+        {
+          var task = graphRunner.WaitNextAsync();
+          yield return new WaitUntil(() => task.IsCompleted);
+
+          var imageFrame = task.Result;
+          if (imageFrame != null)
+          {
+            _outputTexture.LoadRawTextureData(imageFrame.MutablePixelData(), imageFrame.PixelDataSize());
+            _outputTexture.Apply();
+            imageFrame.Dispose();
+          }
+        }
       }
     }
   }

@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using UnityEngine.UI;
 
 namespace Mediapipe.Unity.Sample.UI
@@ -19,7 +18,6 @@ namespace Mediapipe.Unity.Sample.UI
     private const string _ResolutionPath = "Scroll View/Viewport/Contents/Resolution/Dropdown";
     private const string _IsHorizontallyFlippedPath = "Scroll View/Viewport/Contents/IsHorizontallyFlipped/Toggle";
 
-    private Solution _solution;
     private Dropdown _sourceTypeInput;
     private Dropdown _sourceInput;
     private Dropdown _resolutionInput;
@@ -29,7 +27,6 @@ namespace Mediapipe.Unity.Sample.UI
 
     private void Start()
     {
-      _solution = GameObject.Find("Solution").GetComponent<Solution>();
       InitializeContents();
     }
 

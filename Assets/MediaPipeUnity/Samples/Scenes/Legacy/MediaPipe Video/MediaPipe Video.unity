@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44402248, g: 0.49316555, b: 0.5722324, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -258,7 +257,6 @@ MonoBehaviour:
     type: 3}
   screen: {fileID: 1567625569}
   graphRunner: {fileID: 1064799460}
-  textureFramePool: {fileID: 1064799463}
   runningMode: 1
 --- !u!114 &1064799463
 MonoBehaviour:
@@ -770,6 +768,11 @@ PrefabInstance:
     - target: {fileID: 8571076843237194833, guid: 140d1d2c406167c50819d89f86d9092e,
         type: 3}
       propertyPath: _solution
+      value: 
+      objectReference: {fileID: 1064799462}
+    - target: {fileID: 8571076843237194833, guid: 140d1d2c406167c50819d89f86d9092e,
+        type: 3}
+      propertyPath: _taskApiRunner
       value: 
       objectReference: {fileID: 1064799462}
     - target: {fileID: 8571076843980202029, guid: 140d1d2c406167c50819d89f86d9092e,

@@ -189,13 +189,13 @@ namespace Mediapipe.Unity.Sample
       calculatorGraph.AddPacketToInputStream(streamName, packet);
     }
 
-    protected void AddTextureFrameToInputStream(string streamName, TextureFrame textureFrame)
+    protected void AddTextureFrameToInputStream(string streamName, Experimental.TextureFrame textureFrame, GlContext glContext = null)
     {
       latestTimestamp = GetCurrentTimestampMicrosec();
 
-      if (configType == ConfigType.OpenGLES)
+      if (glContext != null)
       {
-        var gpuBuffer = textureFrame.BuildGpuBuffer(GpuManager.GlCalculatorHelper.GetGlContext());
+        var gpuBuffer = textureFrame.BuildGpuBuffer(glContext);
         AddPacketToInputStream(streamName, Packet.CreateGpuBufferAt(gpuBuffer, latestTimestamp));
         return;
       }

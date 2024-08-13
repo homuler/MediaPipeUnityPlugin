@@ -173,9 +173,9 @@ namespace Mediapipe.Unity.Sample.Holistic
       _poseRoiStream = null;
     }
 
-    public void AddTextureFrameToInputStream(TextureFrame textureFrame)
+    public void AddTextureFrameToInputStream(Experimental.TextureFrame textureFrame, GlContext glContext = null)
     {
-      AddTextureFrameToInputStream(_InputStreamName, textureFrame);
+      AddTextureFrameToInputStream(_InputStreamName, textureFrame, glContext);
     }
 
     public async Task<HolisticTrackingResult> WaitNextAsync()
