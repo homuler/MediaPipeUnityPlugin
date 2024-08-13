@@ -232,13 +232,13 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
 
       return (PacketMap outputPackets) =>
       {
-        var outImagePacket = outputPackets.At<Image>(_IMAGE_OUT_STREAM_NAME);
+        using var outImagePacket = outputPackets.At<Image>(_IMAGE_OUT_STREAM_NAME);
         if (outImagePacket == null || outImagePacket.IsEmpty())
         {
           return;
         }
 
-        var image = outImagePacket.Get();
+        using var image = outImagePacket.Get();
         var timestamp = outImagePacket.TimestampMicroseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
         if (TryBuildPoseLandmarkerResult(outputPackets, ref poseLandmarkerResult))
