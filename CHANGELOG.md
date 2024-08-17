@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.15.0](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.14.4...v0.15.0) (2024-08-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove ResourceManager base class (#1210)
+* move Logger from Mediapipe.Unity to Mediapipe (#1208)
+* drop Unity 2020 support (#1207)
+
+### Features
+
+* Image Segmentation sample scene ([#1232](https://github.com/homuler/MediaPipeUnityPlugin/issues/1232)) ([94f5a1c](https://github.com/homuler/MediaPipeUnityPlugin/commit/94f5a1cf4034007abae2262956b20894db6b99b1))
+* implement ImageSegmenter ([#1225](https://github.com/homuler/MediaPipeUnityPlugin/issues/1225)) ([7cfa666](https://github.com/homuler/MediaPipeUnityPlugin/commit/7cfa66677d8baa582a8f74a5a1b3e3c70499dc26))
+* implement ObjectDetector ([#1220](https://github.com/homuler/MediaPipeUnityPlugin/issues/1220)) ([e007dd7](https://github.com/homuler/MediaPipeUnityPlugin/commit/e007dd75335ba8a9daba32ba71c4c641f257ec70))
+* Read the input Texture on GPU ([#1245](https://github.com/homuler/MediaPipeUnityPlugin/issues/1245)) ([1dd8fef](https://github.com/homuler/MediaPipeUnityPlugin/commit/1dd8fef93212dbc0ec7c72d6c8bb0229e0a111b8))
+* remove legacy solutions ([#1233](https://github.com/homuler/MediaPipeUnityPlugin/issues/1233)) ([a38f0d6](https://github.com/homuler/MediaPipeUnityPlugin/commit/a38f0d66620be2394635dbb6e5743261aa0c3c92))
+* Task API with GPU Image ([#1242](https://github.com/homuler/MediaPipeUnityPlugin/issues/1242)) ([e9b1fe4](https://github.com/homuler/MediaPipeUnityPlugin/commit/e9b1fe4f9d5da49aad7508e112643a2d5553371b))
+* update the sample app scenes ([#1234](https://github.com/homuler/MediaPipeUnityPlugin/issues/1234)) ([cc53aa8](https://github.com/homuler/MediaPipeUnityPlugin/commit/cc53aa850dcd4fcef9e79c9ec036914924d3e519))
+
+
+### Bug Fixes
+
+* add missing descriptions of PoseLandmarker models ([#1235](https://github.com/homuler/MediaPipeUnityPlugin/issues/1235)) ([d043b90](https://github.com/homuler/MediaPipeUnityPlugin/commit/d043b906feae4bc8bad60910d3cb23eb6c120ec1))
+* dispose callback arguments ([#1244](https://github.com/homuler/MediaPipeUnityPlugin/issues/1244)) ([efb103a](https://github.com/homuler/MediaPipeUnityPlugin/commit/efb103aa6b95c1b8f9596c942fb3bfccc186a554))
+* fail to rerun the sample graph ([#1219](https://github.com/homuler/MediaPipeUnityPlugin/issues/1219)) ([4edbe4e](https://github.com/homuler/MediaPipeUnityPlugin/commit/4edbe4ea9c73c1b0ce167be34b128802fc5126b9))
+* **sample:** workaround for [#1196](https://github.com/homuler/MediaPipeUnityPlugin/issues/1196) ([#1206](https://github.com/homuler/MediaPipeUnityPlugin/issues/1206)) ([1a9b193](https://github.com/homuler/MediaPipeUnityPlugin/commit/1a9b193599b8205287daeab573f48188416f5615))
+
+
+### refactor
+
+* move Logger from Mediapipe.Unity to Mediapipe ([#1208](https://github.com/homuler/MediaPipeUnityPlugin/issues/1208)) ([994beee](https://github.com/homuler/MediaPipeUnityPlugin/commit/994beee01985fea6b2d8180dbbc5f202a9ceabb9))
+* remove ResourceManager base class ([#1210](https://github.com/homuler/MediaPipeUnityPlugin/issues/1210)) ([741dc4a](https://github.com/homuler/MediaPipeUnityPlugin/commit/741dc4a3f79009e342bbb78ae61f8de457f89e72))
+
+
+### Build System
+
+* change the default AssetLoader type ([#1247](https://github.com/homuler/MediaPipeUnityPlugin/issues/1247)) ([ab78d5c](https://github.com/homuler/MediaPipeUnityPlugin/commit/ab78d5c50682a8e2953affd97da4260dc7106c52))
+* drop Unity 2020 support ([#1207](https://github.com/homuler/MediaPipeUnityPlugin/issues/1207)) ([d5b141c](https://github.com/homuler/MediaPipeUnityPlugin/commit/d5b141c440f5830cf132273a0002aa8f795cf98f))
+
 ### [0.14.4](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.14.3...v0.14.4) (2024-06-24)
 
 
