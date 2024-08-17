@@ -12,7 +12,7 @@ using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Mediapipe.Unity.Sample
 {
-  public abstract class TaskApiRunner : MonoBehaviour
+  public abstract class BaseRunner : MonoBehaviour
   {
     private static readonly string _BootstrapName = nameof(Bootstrap);
 

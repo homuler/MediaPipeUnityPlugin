@@ -1,4 +1,4 @@
-// Copyright (c) 2021 homuler
+// Copyright (c) 2023 homuler
 //
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file or at
@@ -9,14 +9,20 @@ using UnityEngine;
 
 namespace Mediapipe.Unity.Sample
 {
-  public abstract class VisionTaskApiRunner<TTask> : BaseRunner where TTask : Tasks.Vision.Core.BaseVisionTaskApi
+  public abstract class LegacySolutionRunner<TGraphRunner> : BaseRunner where TGraphRunner : GraphRunner
   {
     [SerializeField] protected Screen screen;
+    [SerializeField] protected TGraphRunner graphRunner;
 
     private Coroutine _coroutine;
-    protected TTask taskApi;
 
     public RunningMode runningMode;
+
+    public long timeoutMillisec
+    {
+      get => graphRunner.timeoutMillisec;
+      set => graphRunner.timeoutMillisec = value;
+    }
 
     public override void Play()
     {
@@ -45,16 +51,15 @@ namespace Mediapipe.Unity.Sample
       base.Stop();
       StopCoroutine(_coroutine);
       ImageSourceProvider.ImageSource.Stop();
-      taskApi?.Close();
-      taskApi = null;
+      graphRunner.Stop();
     }
 
     protected abstract IEnumerator Run();
 
     protected static void SetupAnnotationController<T>(AnnotationController<T> annotationController, ImageSource imageSource, bool expectedToBeMirrored = false) where T : HierarchicalAnnotation
     {
-      annotationController.isMirrored = expectedToBeMirrored;
-      annotationController.imageSize = new Vector2Int(imageSource.textureWidth, imageSource.textureHeight);
+      annotationController.isMirrored = expectedToBeMirrored ^ imageSource.isHorizontallyFlipped ^ imageSource.isFrontFacing;
+      annotationController.rotationAngle = imageSource.rotation.Reverse();
     }
   }
 }

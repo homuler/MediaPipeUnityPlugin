@@ -6,10 +6,11 @@
 
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Mediapipe.Unity.Sample.Holistic
 {
-  public class HolisticTrackingSolution : ImageSourceSolution<HolisticTrackingGraph>
+  public class HolisticTrackingSolution : LegacySolutionRunner<HolisticTrackingGraph>
   {
     [SerializeField] private RectTransform _worldAnnotationArea;
     [SerializeField] private DetectionAnnotationController _poseDetectionAnnotationController;
@@ -17,6 +18,8 @@ namespace Mediapipe.Unity.Sample.Holistic
     [SerializeField] private PoseWorldLandmarkListAnnotationController _poseWorldLandmarksAnnotationController;
     [SerializeField] private MaskAnnotationController _segmentationMaskAnnotationController;
     [SerializeField] private NormalizedRectAnnotationController _poseRoiAnnotationController;
+
+    private Experimental.TextureFramePool _textureFramePool;
 
     public HolisticTrackingGraph.ModelComplexity modelComplexity
     {
@@ -60,14 +63,34 @@ namespace Mediapipe.Unity.Sample.Holistic
       set => graphRunner.minTrackingConfidence = value;
     }
 
-    protected override void SetupScreen(ImageSource imageSource)
+    protected override IEnumerator Run()
     {
-      base.SetupScreen(imageSource);
-      _worldAnnotationArea.localEulerAngles = imageSource.rotation.Reverse().GetEulerAngles();
-    }
+      var graphInitRequest = graphRunner.WaitForInit(runningMode);
+      var imageSource = ImageSourceProvider.ImageSource;
 
-    protected override void OnStartRun()
-    {
+      yield return imageSource.Play();
+
+      if (!imageSource.isPrepared)
+      {
+        Debug.LogError("Failed to start ImageSource, exiting...");
+        yield break;
+      }
+
+      // Use RGBA32 as the input format.
+      // TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
+      _textureFramePool = new Experimental.TextureFramePool(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32, 10);
+
+      // NOTE: The screen will be resized later, keeping the aspect ratio.
+      screen.Initialize(imageSource);
+      _worldAnnotationArea.localEulerAngles = imageSource.rotation.Reverse().GetEulerAngles();
+
+      yield return graphInitRequest;
+      if (graphInitRequest.isError)
+      {
+        Debug.LogError(graphInitRequest.error);
+        yield break;
+      }
+
       if (!runningMode.IsSynchronous())
       {
         graphRunner.OnPoseDetectionOutput += OnPoseDetectionOutput;
@@ -80,33 +103,72 @@ namespace Mediapipe.Unity.Sample.Holistic
         graphRunner.OnPoseRoiOutput += OnPoseRoiOutput;
       }
 
-      var imageSource = ImageSourceProvider.ImageSource;
       SetupAnnotationController(_poseDetectionAnnotationController, imageSource);
       SetupAnnotationController(_holisticAnnotationController, imageSource);
       SetupAnnotationController(_poseWorldLandmarksAnnotationController, imageSource);
       SetupAnnotationController(_segmentationMaskAnnotationController, imageSource);
       _segmentationMaskAnnotationController.InitScreen(imageSource.textureWidth, imageSource.textureHeight);
       SetupAnnotationController(_poseRoiAnnotationController, imageSource);
-    }
 
-    protected override void AddTextureFrameToInputStream(TextureFrame textureFrame)
-    {
-      graphRunner.AddTextureFrameToInputStream(textureFrame);
-    }
+      graphRunner.StartRun(imageSource);
 
-    protected override IEnumerator WaitForNextValue()
-    {
-      var task = graphRunner.WaitNextAsync();
-      yield return new WaitUntil(() => task.IsCompleted);
+      AsyncGPUReadbackRequest req = default;
+      var waitUntilReqDone = new WaitUntil(() => req.done);
 
-      var result = task.Result;
-      _poseDetectionAnnotationController.DrawNow(result.poseDetection);
-      _holisticAnnotationController.DrawNow(result.faceLandmarks, result.poseLandmarks, result.leftHandLandmarks, result.rightHandLandmarks);
-      _poseWorldLandmarksAnnotationController.DrawNow(result.poseWorldLandmarks);
-      _segmentationMaskAnnotationController.DrawNow(result.segmentationMask);
-      _poseRoiAnnotationController.DrawNow(result.poseRoi);
+      // NOTE: we can share the GL context of the render thread with MediaPipe (for now, only on Android)
+      var canUseGpuImage = graphRunner.configType == GraphRunner.ConfigType.OpenGLES && GpuManager.GpuResources != null;
+      using var glContext = canUseGpuImage ? GpuManager.GetGlContext() : null;
 
-      result.segmentationMask?.Dispose();
+      while (true)
+      {
+        if (isPaused)
+        {
+          yield return new WaitWhile(() => isPaused);
+        }
+
+        if (!_textureFramePool.TryGetTextureFrame(out var textureFrame))
+        {
+          yield return new WaitForEndOfFrame();
+          continue;
+        }
+
+        // Copy current image to TextureFrame
+        if (canUseGpuImage)
+        {
+          yield return new WaitForEndOfFrame();
+          textureFrame.ReadTextureOnGPU(imageSource.GetCurrentTexture());
+        }
+        else
+        {
+          req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture());
+          yield return waitUntilReqDone;
+
+          if (req.hasError)
+          {
+            Debug.LogError($"Failed to read texture from the image source, exiting...");
+            break;
+          }
+        }
+
+        graphRunner.AddTextureFrameToInputStream(textureFrame, glContext);
+
+        if (runningMode.IsSynchronous())
+        {
+          screen.ReadSync(textureFrame);
+
+          var task = graphRunner.WaitNextAsync();
+          yield return new WaitUntil(() => task.IsCompleted);
+
+          var result = task.Result;
+          _poseDetectionAnnotationController.DrawNow(result.poseDetection);
+          _holisticAnnotationController.DrawNow(result.faceLandmarks, result.poseLandmarks, result.leftHandLandmarks, result.rightHandLandmarks);
+          _poseWorldLandmarksAnnotationController.DrawNow(result.poseWorldLandmarks);
+          _segmentationMaskAnnotationController.DrawNow(result.segmentationMask);
+          _poseRoiAnnotationController.DrawNow(result.poseRoi);
+
+          result.segmentationMask?.Dispose();
+        }
+      }
     }
 
     private void OnPoseDetectionOutput(object stream, OutputStream<Detection>.OutputEventArgs eventArgs)

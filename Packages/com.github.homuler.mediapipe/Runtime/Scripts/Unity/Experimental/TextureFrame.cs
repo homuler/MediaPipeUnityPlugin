@@ -110,7 +110,7 @@ namespace Mediapipe.Unity.Experimental
     ///   After calling it, pixel data can't be read on CPU safely.
     ///   If you need to read pixel data on CPU, use <see cref="ReadTextureAsync" /> instead.
     /// </remarks>
-    public void ReadTextureOnGPU(Texture src, bool flipHorizontally, bool flipVertically)
+    public void ReadTextureOnGPU(Texture src, bool flipHorizontally = false, bool flipVertically = false)
     {
       ReadTextureInternal(src, flipHorizontally, flipVertically);
 
@@ -127,7 +127,7 @@ namespace Mediapipe.Unity.Experimental
     /// </remarks>
     /// <param name="flipHorizontally">If <see langword="true"/>, it will be copied horizontally flipped.</param>
     /// <param name="flipVertically">If <see langword="true"/>, it will be copied vertically flipped.</param>
-    public AsyncGPUReadbackRequest ReadTextureAsync(Texture src, bool flipHorizontally, bool flipVertically)
+    public AsyncGPUReadbackRequest ReadTextureAsync(Texture src, bool flipHorizontally = false, bool flipVertically = false)
     {
       ReadTextureInternal(src, flipHorizontally, flipVertically);
       return AsyncGPUReadback.Request(_tmpRenderTexture, 0, _onReadBackRenderTexture);

@@ -46,7 +46,7 @@ namespace Mediapipe.Unity
       _screen.rectTransform.localEulerAngles = rotationAngle.GetEulerAngles();
     }
 
-    public void ReadSync(TextureFrame textureFrame)
+    public void ReadSync(Experimental.TextureFrame textureFrame)
     {
       if (!(texture is Texture2D))
       {
