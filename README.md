@@ -92,30 +92,45 @@ You can also make use of [the Package Workflow](https://github.com/homuler/Media
 | Windows 10/11 (AMD64) [^2] | :heavy_check_mark: |                    |                    |                    | :heavy_check_mark: | :heavy_check_mark: |                    |       |
 
 [^1]: Tested on Arch Linux.
-[^2]: Running MediaPipe on Windows is [experimental](https://google.github.io/mediapipe/getting_started/install.html#installing-on-windows).
+[^2]: Running MediaPipe on Windows is [experimental](https://ai.google.dev/edge/mediapipe/framework/getting_started/install#installing_on_windows).
+
+### Supported Solutions
+This plugin implements the following [MediaPipe Tasks](https://ai.google.dev/edge/mediapipe/solutions/tasks) C# APIs.
+
+cf. [The official available solutions](https://ai.google.dev/edge/mediapipe/solutions/guide#available_solutions)
+
+|         Solution         |      Android       |        iOS         |       Linux        |       macOS        |      Windows       |
+| :----------------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
+|    LLM Inference API     |                    |                    |                    |                    |
+|     Object detection     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+|   Image classification   |                    |                    |                    |                    |                    |
+|    Image segmentation    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Interactive segmentation |                    |                    |                    |                    |                    |
+| Hand landmark detection  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+|   Gesture recognition    |                    |                    |                    |                    |                    |
+|     Image embedding      |                    |                    |                    |                    |                    |
+|      Face detection      | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Face landmark detection  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+|     Face stylization     |                    |                    |                    |                    |                    |
+| Pose landmark detection  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+|     Image generation     |                    |                    |                    |                    |                    |
+|   Text classification    |                    |                    |                    |                    |                    |
+|      Text embedding      |                    |                    |                    |                    |                    |
+|    Language detector     |                    |                    |                    |                    |                    |
+|   Audio classification   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+
+### Legacy Solutions
+You can also use [MediaPipe Framework](https://ai.google.dev/edge/mediapipe/framework), which allows you to run [Legacy Solutions](https://ai.google.dev/edge/mediapipe/solutions/guide#legacy). However, please note that support for these solutions has ended.
 
 ## :plate_with_cutlery: Try the sample app
 
 ### Example Solutions
+Some solutions (including Legacy solutions) can be tested using the sample app.
+Please check [`Assets/MediaPipeUnity/Samples/Scenes`](https://github.com/homuler/MediaPipeUnityPlugin/tree/master/Assets/MediaPipeUnity/Samples/Scenes) to see which solutions have samples.
 
-Here is a list of [solutions](https://google.github.io/mediapipe/solutions/solutions.html) that you can try in the sample app.
-
-> :bell: The graphs you can run are not limited to the ones in this list.
-
-|                         |      Android       |        iOS         |    Linux (GPU)     |    Linux (CPU)     |    macOS (CPU)     |   Windows (CPU)    | WebGL |
-| :---------------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: | ----- |
-|     Face Detection      | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
-|        Face Mesh        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
-|          Iris           | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
-|          Hands          | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
-|          Pose           | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
-|        Holistic         | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
-|   Selfie Segmentation   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
-|    Hair Segmentation    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
-|    Object Detection     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |       |
 ### UnityEditor
 
-Select any scenes under `Mediapipe/Samples/Scenes` and play.
+Select any scenes under `Assets/MediaPipeUnity/Samples/Scenes` and play.
 
 ### Desktop, Android, iOS
 
@@ -123,8 +138,8 @@ Select proper Inference Mode and Asset Loader Type from the Inspector Window.
 
 #### Preferable Inference Mode
 
-If you've built native libraries for CPU (i.e. `--desktop cpu`), select `CPU` for inference mode.\
-When building for Android/iOS, make sure that you select `GPU` for inference mode, because `CPU` inference mode is not supported currently.
+If the native libraries are built for CPU (i.e. `--desktop cpu`), select `CPU` for inference mode.\
+For the libraries distributed on the release page, only the CPU is available for use on Windows and macOS.
 
 ![preferable-inference-mode](https://github.com/homuler/MediaPipeUnityPlugin/assets/4690128/129d18be-8184-43f7-8ac8-56db4df9f9a7)
 
