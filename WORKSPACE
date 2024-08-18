@@ -456,9 +456,9 @@ http_archive(
 http_archive(
     name = "opencv",
     build_file = "@//third_party:opencv.BUILD",
-    sha256 = "5e37b791b2fe42ed39b52d9955920b951ee42d5da95f79fbc9765a08ef733399",
-    strip_prefix = "opencv-3.4.16",
-    urls = ["https://github.com/opencv/opencv/archive/3.4.16.tar.gz"],
+    sha256 = "a1cfdcf6619387ca9e232687504da996aaa9f7b5689986b8331ec02cb61d28ad",
+    strip_prefix = "opencv-4.5.5",
+    urls = ["https://github.com/opencv/opencv/archive/4.5.5.tar.gz"],
 )
 
 new_local_repository(

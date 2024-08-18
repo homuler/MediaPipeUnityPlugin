@@ -41,15 +41,15 @@ cc_library(
     ),
     hdrs = glob([
         # For OpenCV 3.x
-        "include/opencv2/**/*.h*",
+        # "include/opencv2/**/*.h*",
         # For OpenCV 4.x
-        # "include/opencv4/opencv2/**/*.h*",
+        "include/opencv4/opencv2/**/*.h*",
     ]),
     includes = [
         # For OpenCV 3.x
-        "include/",
+        # "include/",
         # For OpenCV 4.x
-        # "include/opencv4/",
+        "include/opencv4/",
     ],
     linkstatic = 1,
     visibility = ["//visibility:public"],

@@ -189,6 +189,7 @@ cmake(
         "//conditions:default": [],
     }),
     lib_source = "@opencv//:all",
+    out_include_dir = "include/opencv4",
     out_lib_dir = ".",
     out_static_libs = select({
         ":dbg_cmake_static_win": ["staticlib/opencv_world3416d.lib"],
@@ -198,7 +199,7 @@ cmake(
         ":dbg_cmake_static_win": ["staticlib/%sd.lib" % lib for lib in OPENCV_3RDPARTY_LIBS],
         ":cmake_static_win": ["staticlib/%s.lib" % lib for lib in OPENCV_3RDPARTY_LIBS],
         "@cpuinfo//:macos_arm64": ["share/OpenCV/3rdparty/lib/lib%s.a" % lib for lib in OPENCV_3RDPARTY_LIBS_M1],
-        "//conditions:default": ["share/OpenCV/3rdparty/lib/lib%s.a" % lib for lib in OPENCV_3RDPARTY_LIBS],
+        "//conditions:default": ["lib/opencv4/3rdparty/lib%s.a" % lib for lib in OPENCV_3RDPARTY_LIBS],
     }),
     out_shared_libs =  [],
     linkopts = select({
