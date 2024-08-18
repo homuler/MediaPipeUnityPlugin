@@ -70,7 +70,7 @@ RUN curl -L --retry 4 --connect-timeout 10 https://www.python.org/ftp/python/%PY
 FROM base as opencv
 
 # Install OpenCV
-RUN curl -L --retry 4 --connect-timeout 10 https://github.com/opencv/opencv/releases/download/3.4.16/opencv-3.4.16-vc14_vc15.exe -o C:\TEMP\opencv-installer.exe && `
+RUN curl -L --retry 4 --connect-timeout 10 https://github.com/opencv/opencv/releases/download/4.5.5/opencv-4.5.5-vc14_vc15.exe -o C:\TEMP\opencv-installer.exe && `
     start /wait C:\TEMP\opencv-installer.exe -gm2 -y -oC:\ && `
     del C:\TEMP\opencv-installer.exe
 

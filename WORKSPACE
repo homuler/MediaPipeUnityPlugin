@@ -461,6 +461,13 @@ http_archive(
     urls = ["https://github.com/opencv/opencv/archive/4.5.5.tar.gz"],
 )
 
+http_archive(
+    name = "opencv_contrib",
+    build_file = "@//third_party:opencv_contrib.BUILD",
+    strip_prefix = "opencv_contrib-4.5.5",
+    urls = ["https://github.com/opencv/opencv_contrib/archive/4.5.5.tar.gz"],
+)
+
 new_local_repository(
     name = "linux_opencv",
     build_file = "@//third_party:opencv_linux.BUILD",

@@ -86,6 +86,7 @@ OPENCV_MODULES = [
     "calib3d",
     "features2d",
     "highgui",
+    "optflow",
     "video",
     "videoio",
     "imgcodecs",
@@ -96,6 +97,7 @@ OPENCV_MODULES = [
 OPENCV_3RDPARTY_LIBS = [
     "IlmImf",
     "libjpeg-turbo",
+    "libopenjp2",
     "libpng",
     "libtiff",
     "zlib",
@@ -111,11 +113,13 @@ COMMON_CACHE_ENTRIES = {
     "BUILD_opencv_apps": "OFF",
     "BUILD_opencv_python": "OFF",
     "BUILD_opencv_world": "ON",
+    "BUILD_opencv_optflow": "ON",
     "BUILD_EXAMPLES": "OFF",
     "BUILD_PERF_TESTS": "OFF",
     "BUILD_TESTS": "OFF",
     "BUILD_JPEG": "ON",
     "BUILD_OPENEXR": "ON",
+    "BUILD_OPENJPEG": "ON",
     "BUILD_PNG": "ON",
     "BUILD_TIFF": "ON",
     "BUILD_ZLIB": "ON",
@@ -137,6 +141,7 @@ COMMON_CACHE_ENTRIES = {
     "BUILD_SHARED_LIBS": "OFF",
     "OPENCV_SKIP_PYTHON_LOADER": "ON",
     "OPENCV_SKIP_VISIBILITY_HIDDEN": "ON",
+    "OPENCV_EXTRA_MODULES_PATH": "$$EXT_BUILD_ROOT$$/external/opencv_contrib/modules",
 }
 
 CACHE_ENTRIES = COMMON_CACHE_ENTRIES | select({
@@ -171,6 +176,9 @@ CACHE_ENTRIES = COMMON_CACHE_ENTRIES | select({
 
 cmake(
     name = "opencv_cmake",
+    data = [
+        "@opencv_contrib//:all",
+    ],
     build_args = [
         "--verbose",
         "--parallel",
@@ -189,11 +197,14 @@ cmake(
         "//conditions:default": [],
     }),
     lib_source = "@opencv//:all",
-    out_include_dir = "include/opencv4",
+    out_include_dir = select({
+        "@bazel_tools//src/conditions:windows": "include",
+        "//conditions:default": "include/opencv4",
+    }),
     out_lib_dir = ".",
     out_static_libs = select({
-        ":dbg_cmake_static_win": ["staticlib/opencv_world3416d.lib"],
-        ":cmake_static_win": ["staticlib/opencv_world3416.lib"],
+        ":dbg_cmake_static_win": ["staticlib/opencv_world455d.lib"],
+        ":cmake_static_win": ["staticlib/opencv_world455.lib"],
         "//conditions:default": ["lib/libopencv_world.a"],
     }) + select({
         ":dbg_cmake_static_win": ["staticlib/%sd.lib" % lib for lib in OPENCV_3RDPARTY_LIBS],
