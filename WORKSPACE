@@ -482,13 +482,13 @@ new_local_repository(
 
 new_local_repository(
     name = "macos_opencv",
-    build_file = "@mediapipe//third_party:opencv_macos.BUILD",
+    build_file = "@//third_party:opencv_macos.BUILD",
     path = "/usr/local",
 )
 
 new_local_repository(
     name = "macos_arm64_opencv",
-    build_file = "@mediapipe//third_party:opencv_macos.BUILD",
+    build_file = "@//third_party:opencv_macos.BUILD",
     path = "/opt/homebrew",
 )
 
