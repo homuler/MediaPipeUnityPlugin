@@ -38,6 +38,16 @@ config_setting(
     },
 )
 
+config_setting(
+    name = "opencv_ios_source_build",
+    flag_values = {
+        ":switch": "cmake",
+    },
+    values = {
+        "apple_platform_type": "ios",
+    },
+)
+
 selects.config_setting_group(
     name = "cmake_static_win",
     match_all = ["@bazel_tools//src/conditions:windows", ":cmake_static"],
@@ -62,6 +72,7 @@ alias(
     name = "opencv",
     actual = select({
         ":cmake_static": ":opencv_cmake",
+        ":opencv_ios_source_build": "@ios_opencv_source//:opencv",
         "//conditions:default": ":opencv_binary",
     }),
 )
