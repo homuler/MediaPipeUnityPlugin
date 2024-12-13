@@ -120,6 +120,7 @@ namespace Mediapipe.Unity
 
     public void SetHandedness(IReadOnlyList<Classification> handedness)
     {
+      handedness[0].Label = handedness[0].Label.Replace("\r", string.Empty);
       if (handedness == null || handedness.Count == 0 || handedness[0].Label == "Left")
       {
         SetHandedness(Hand.Left);
