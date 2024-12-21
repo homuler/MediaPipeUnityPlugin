@@ -37,20 +37,20 @@ ARG NODE_VERSION
 
 RUN setx path "C:\msys64\usr\bin;%PATH%"
 
-# Install Visual C++ Build Tools 2019 and WinSDK
-ARG CHANNEL_URL=https://aka.ms/vs/16/release/channel
+# Install Visual C++ Build Tools 2022 and WinSDK
+ARG CHANNEL_URL=https://aka.ms/vs/17/release/channel
 
 RUN curl --retry 4 --connect-timeout 10 -L https://nodejs.org/dist/v%NODE_VERSION%/node-v%NODE_VERSION%-x64.msi -o C:\TEMP\node-install.msi && `
     start /wait msiexec.exe /i C:\TEMP\node-install.msi /l*vx "%TEMP%\MSI-node-install.log" /qn ADDLOCAL=ALL && `
     del C:\TEMP\node-install.msi && `
     curl --retry 4 --connect-timeout 10 -L %CHANNEL_URL% -o C:\TEMP\VisualStudio.chman && `
-    curl --retry 4 --connect-timeout 10 -L https://aka.ms/vs/16/release/vs_buildtools.exe -o C:\TEMP\vs_buildtools.exe && `
+    curl --retry 4 --connect-timeout 10 -L https://aka.ms/vs/17/release/vs_buildtools.exe -o C:\TEMP\vs_buildtools.exe && `
     C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --nocache `
-        --installPath "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools" `
+        --installPath "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools" `
         --channelUri C:\TEMP\VisualStudio.chman `
         --installChannelUri C:\TEMP\VisualStudio.chman `
         --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended && `
-    curl --retry 4 --connect-timeout 10 -L https://aka.ms/vs/16/release/vc_redist.x64.exe -o C:\TEMP\vc_redist.x64.exe && `
+    curl --retry 4 --connect-timeout 10 -L https://aka.ms/vs/17/release/vc_redist.x64.exe -o C:\TEMP\vc_redist.x64.exe && `
     start /wait C:\TEMP\vc_redist.x64.exe /install /quiet /norestart && `
     del C:\TEMP\vc_redist.x64.exe
 

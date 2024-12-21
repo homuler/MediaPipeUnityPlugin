@@ -113,6 +113,15 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
 
+      - name: Install Clang 16
+        run: |
+          brew install llvm
+          echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> /Users/runner/.bash_profile
+          echo 'export LDFLAGS="-L/usr/local/opt/llvm/lib"' >> /Users/runner/.bash_profile
+          echo 'export CPPFLAGS="-I/usr/local/opt/llvm/include"' >> /Users/runner/.bash_profile
+
+          clang --version
+
       # Setup Python
       - uses: actions/setup-python@v5
         with:
