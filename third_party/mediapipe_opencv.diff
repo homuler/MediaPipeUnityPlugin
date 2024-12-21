@@ -1,16 +1,8 @@
 diff --git a/third_party/BUILD b/third_party/BUILD
-index 78b83fa0..d2e758b3 100644
+index 6b00be7e..c9dc6e62 100644
 --- a/third_party/BUILD
 +++ b/third_party/BUILD
-@@ -14,7 +14,6 @@
- #
- 
- load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
--load("@rules_foreign_cc//foreign_cc:cmake.bzl", "cmake")
- 
- licenses(["notice"])  # Apache License 2.0
- 
-@@ -53,67 +52,9 @@ cc_library(
+@@ -67,108 +67,9 @@ cc_library(
      }),
  )
  
@@ -18,6 +10,14 @@ index 78b83fa0..d2e758b3 100644
 -    name = "opencv_source_build",
 -    define_values = {
 -        "OPENCV": "source",
+-    },
+-    visibility = ["//visibility:public"],
+-)
+-
+-config_setting(
+-    name = "opencv_prebuilt_build",
+-    define_values = {
+-        "OPENCV": "prebuilt",
 -    },
 -    visibility = ["//visibility:public"],
 -)
@@ -66,10 +66,43 @@ index 78b83fa0..d2e758b3 100644
 -    },
 -)
 -
+-config_setting(
+-    name = "opencv_darwin_prebuild",
+-    define_values = {
+-        "OPENCV": "prebuilt",
+-    },
+-    values = {
+-        "apple_platform_type": "macos",
+-        "cpu": "darwin",
+-    },
+-)
+-
+-config_setting(
+-    name = "opencv_darwin_arm64_prebuild",
+-    define_values = {
+-        "OPENCV": "prebuilt",
+-    },
+-    values = {
+-        "apple_platform_type": "macos",
+-        "cpu": "darwin_arm64",
+-    },
+-)
+-
+-alias(
+-    name = "opencv_prebuilt",
+-    actual = select({
+-        "//mediapipe:ios": "@ios_opencv//:opencv",
+-        ":opencv_darwin_prebuild": "//third_party/prebuilts:opencv_darwin",
+-        ":opencv_darwin_arm64_prebuild": "//third_party/prebuilts:opencv_darwin_arm64",
+-        "//conditions:default": ":opencv_cmake",
+-    }),
+-)
+-
  alias(
      name = "opencv",
 -    actual = select({
 -        ":opencv_source_build": ":opencv_cmake",
+-        ":opencv_prebuilt_build": ":opencv_prebuilt",
 -        ":opencv_ios_sim_arm64_source_build": "@ios_opencv_source//:opencv",
 -        ":opencv_ios_arm64_source_build": "@ios_opencv_source//:opencv",
 -        ":opencv_ios_x86_64_source_build": "@ios_opencv_source//:opencv",
@@ -79,7 +112,7 @@ index 78b83fa0..d2e758b3 100644
      visibility = ["//visibility:public"],
  )
  
-@@ -129,132 +70,6 @@ bzl_library(
+@@ -184,132 +85,6 @@ bzl_library(
      visibility = ["//visibility:private"],
  )
  
