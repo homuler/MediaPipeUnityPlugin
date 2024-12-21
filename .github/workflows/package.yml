@@ -107,7 +107,7 @@ jobs:
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/Android/mediapipe_android.aar
 
   macos-build:
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
         with:
