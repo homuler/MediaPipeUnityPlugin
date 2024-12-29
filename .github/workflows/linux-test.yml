@@ -25,7 +25,7 @@ jobs:
       # Cache built libraries
       - name: Concat native library source files
         run: |
-          find WORKSPACE packages.config build.py mediapipe_api/ third_party/ -type f | sort | xargs cat > cache_key.txt
+          find WORKSPACE packages.config build.py .bazelrc mediapipe_api/ third_party/ -type f | sort | xargs cat > cache_key.txt
 
       - name: Cache libraries
         id: cache-libs
