@@ -3,7 +3,7 @@
   "version": "0.15.0",
   "displayName": "MediaPipe Unity Plugin",
   "description": "A Unity Plugin to run MediaPipe CalculatorGraph",
-  "unity": "2021.3",
+  "unity": "2022.3",
   "author": {
     "name": "homuler"
   },
