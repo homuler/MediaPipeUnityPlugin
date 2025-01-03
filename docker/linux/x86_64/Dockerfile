@@ -54,6 +54,15 @@ RUN curl https://apt.llvm.org/llvm.sh -o llvm.sh && \
     ln -sf /usr/bin/clang++-16 /usr/bin/clang++ && \
     ln -sf /usr/bin/clang-format-16 /usr/bin/clang-format
 
+# Install Python 3.12
+RUN add-apt-repository ppa:deadsnakes/ppa -y && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends python3.12 python3.12-dev python3.12-venv python3-pip && \
+    curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python3.12 get-pip.py && \
+    update-alternatives --install /usr/local/bin/python python /usr/bin/python3.12 10
+
+
 FROM base AS android
 
 WORKDIR /tmp
@@ -85,13 +94,6 @@ WORKDIR /tmp
 
 # install Android SDK and NDK
 COPY --from=android /opt/android /opt/android
-
-# Setup Python
-RUN apt-get install -y --no-install-recommends python3.9 python3.9-dev python3.9-distutils && \
-    curl -L https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
-    python3.9 get-pip.py && \
-    update-alternatives --install /usr/local/bin/python python /usr/bin/python3.9 10 && \
-    update-alternatives --install /usr/local/bin/pip pip /usr/local/bin/pip3.9 10
 
 # Install NuGet
 RUN gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
@@ -133,7 +135,7 @@ ENV NPM_PREFIX /home/mediapipe/.npm-packages
 ENV PATH ${NPM_PREFIX}/bin:/home/mediapipe/.local/bin:${PATH}
 
 # install numpy
-RUN pip install --no-cache-dir --user numpy
+RUN python -m pip install --no-cache-dir --user numpy
 
 
 FROM builder
@@ -142,7 +144,7 @@ ARG ANDROID_NDK_VERSION
 
 ENV ANDROID_HOME /opt/android
 ENV ANDROID_NDK_HOME /opt/android/ndk/${ANDROID_NDK_VERSION}
-ENV PYTHON_BIN_PATH /usr/bin/python3.9
+ENV PYTHON_BIN_PATH /usr/bin/python3.12
 
 COPY packages.config .
 COPY .bazelrc .
