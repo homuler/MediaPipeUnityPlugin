@@ -14,7 +14,7 @@ Macro to generate AAR, including libmediapipe_jni.so
 
 load("@build_bazel_rules_android//android:rules.bzl", "android_binary", "android_library")
 
-def mediapipe_aar(name, package = "com.github.homuler.mediapipe", srcs = [], deps = [], jni_deps = [], assets = [], assets_dir = "", target_sdk_version = 27, min_sdk_version = 21):
+def mediapipe_aar(name, package = "com.github.homuler.mediapipe", srcs = [], deps = [], jni_deps = [], assets = [], assets_dir = "", target_sdk_version = 34, min_sdk_version = 21):
     """Generate MediaPipeUnityPlugin AAR.
 
     Args:
