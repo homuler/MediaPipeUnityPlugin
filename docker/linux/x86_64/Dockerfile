@@ -71,8 +71,8 @@ ARG ANDROID_SDK_BUILD_TOOLS_VERSION
 ARG ANDROID_SDK_VERSION
 ARG ANDROID_NDK_VERSION
 
-ENV COMMANDLINETOOLS_ZIP commandlinetools.zip
-ENV COMMANDLINETOOLS_SHA256 124f2d5115eee365df6cf3228ffbca6fc3911d16f8025bebd5b1c6e2fcfa7faf
+ENV COMMANDLINETOOLS_ZIP=commandlinetools.zip
+ENV COMMANDLINETOOLS_SHA256=124f2d5115eee365df6cf3228ffbca6fc3911d16f8025bebd5b1c6e2fcfa7faf
 
 
 RUN curl -L https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip -o ${COMMANDLINETOOLS_ZIP} && \
@@ -131,8 +131,8 @@ RUN addgroup wheel && useradd -u ${UID} -m mediapipe && usermod -aG wheel mediap
 USER mediapipe
 WORKDIR /home/mediapipe
 
-ENV NPM_PREFIX /home/mediapipe/.npm-packages
-ENV PATH ${NPM_PREFIX}/bin:/home/mediapipe/.local/bin:${PATH}
+ENV NPM_PREFIX=/home/mediapipe/.npm-packages
+ENV PATH=${NPM_PREFIX}/bin:/home/mediapipe/.local/bin:${PATH}
 
 # install numpy
 RUN python -m pip install --no-cache-dir --user numpy
@@ -142,9 +142,9 @@ FROM builder
 
 ARG ANDROID_NDK_VERSION
 
-ENV ANDROID_HOME /opt/android
-ENV ANDROID_NDK_HOME /opt/android/ndk/${ANDROID_NDK_VERSION}
-ENV PYTHON_BIN_PATH /usr/bin/python3.12
+ENV ANDROID_HOME=/opt/android
+ENV ANDROID_NDK_HOME=/opt/android/ndk/${ANDROID_NDK_VERSION}
+ENV PYTHON_BIN_PATH=/usr/bin/python3.12
 
 COPY packages.config .
 COPY .bazelrc .
