@@ -16,7 +16,7 @@ on:
         required: true
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -25,7 +25,7 @@ jobs:
       # Cache built libraries
       - name: Concat native library source files
         run: |
-          find WORKSPACE packages.config build.py mediapipe_api/ third_party/ -type f | sort | xargs cat > cache_key.txt
+          find WORKSPACE packages.config build.py .bazelrc mediapipe_api/ third_party/ -type f | sort | xargs cat > cache_key.txt
 
       - name: Cache libraries
         id: cache-libs
@@ -37,7 +37,7 @@ jobs:
             Packages/com.github.homuler.mediapipe/Runtime/Scripts/Protobuf/**/*.cs
             Packages/com.github.homuler.mediapipe/PackageResources/MediaPipe/*.bytes
             Packages/com.github.homuler.mediapipe/PackageResources/MediaPipe/*.txt
-          key: libs-ubuntu-22.04-v1-${{ hashFiles('cache_key.txt') }}
+          key: libs-ubuntu-24.04-v1-${{ hashFiles('cache_key.txt') }}
 
       # Setup build tools
       - name: Mount bazel cache
@@ -45,10 +45,10 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: "~/.cache/bazel"
-          key: bazel-ubuntu-22.04-v1-${{ hashFiles('WORKSPACE') }}-${{ hashFiles('cache_key.txt') }}
+          key: bazel-ubuntu-24.04-v1-${{ hashFiles('WORKSPACE') }}-${{ hashFiles('cache_key.txt') }}
           restore-keys: |
-            bazel-ubuntu-22.04-v1-${{ hashFiles('WORKSPACE') }}-
-            bazel-ubuntu-22.04-v1-
+            bazel-ubuntu-24.04-v1-${{ hashFiles('WORKSPACE') }}-
+            bazel-ubuntu-24.04-v1-
 
       - name: Remove cache_key.txt
         run: |
@@ -63,21 +63,10 @@ jobs:
       - name: Install dependencies
         if: steps.cache-libs.outputs.cache-hit != 'true'
         run: |
-          # install GCC/G++ 11
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends gcc-11 g++-11
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 --slave /usr/bin/g++ g++ /usr/bin/g++-11
-
-          # install Clang 16
-          wget https://apt.llvm.org/llvm.sh
-          chmod +x llvm.sh
-          sudo ./llvm.sh 16
-          sudo ln -sf /usr/bin/clang-16 /usr/bin/clang
-          sudo ln -sf /usr/bin/clang++-16 /usr/bin/clang++
-          sudo ln -sf /usr/bin/clang-format-16 /usr/bin/clang-format
-
           # install NuGet
+          sudo apt update
+          sudo apt-get install -y --no-install-recommends mono-complete
+
           sudo curl -o /usr/local/bin/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
           bash -c 'echo -e "#!/bin/bash\nmono /usr/local/bin/nuget.exe \$@" | sudo tee -a /usr/local/bin/nuget'
           sudo chmod +x /usr/local/bin/nuget
@@ -106,7 +95,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: ~/.cache/bazel
-          key: bazel-ubuntu-22.04-v1-${{ hashFiles('WORKSPACE') }}-${{ hashFiles('cache_key.txt') }}
+          key: bazel-ubuntu-24.04-v1-${{ hashFiles('WORKSPACE') }}-${{ hashFiles('cache_key.txt') }}
 
   test:
     runs-on: ${{ matrix.os }}
@@ -115,7 +104,7 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-22.04
+          - ubuntu-24.04
         unityVersion:
           - 2022.3.34f1
     steps:

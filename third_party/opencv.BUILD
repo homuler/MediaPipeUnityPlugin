@@ -183,16 +183,13 @@ cmake(
     cache_entries = CACHE_ENTRIES,
     generate_args = select({
         "@bazel_tools//src/conditions:windows": [
-            "-G \"Visual Studio 16 2019\"",
+            "-G \"Visual Studio 17 2022\"",
             "-A x64",
         ],
         "//conditions:default": [],
     }),
     lib_source = "@opencv//:all",
-    out_lib_dir = select({
-        "@bazel_tools//src/conditions:windows": "x64/vc16",
-        "//conditions:default": ".", # need to include lib/ and share/OpenCV/3rdparty/lib when building static libs
-    }),
+    out_lib_dir = ".",
     out_static_libs = select({
         ":dbg_cmake_static_win": ["staticlib/opencv_world3416d.lib"],
         ":cmake_static_win": ["staticlib/opencv_world3416.lib"],

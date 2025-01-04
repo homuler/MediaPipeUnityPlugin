@@ -30,21 +30,11 @@ RUN apt-get update && \
         wget \
         zip
 
-# Upgrade binutils (>= 2.36)
-RUN curl -O https://ftp.gnu.org/gnu/binutils/binutils-2.36.tar.gz && \
-    tar -xvzof binutils-2.36.tar.gz && \
-    cd binutils-2.36 && \
-    mkdir build && \
-    cd build && \
-    ../configure --prefix=/usr && \
-    make && \
-    make install
-
-# Install gcc-11
+# Install gcc-13
 RUN add-apt-repository ppa:ubuntu-toolchain-r/test -y && \
     apt-get update && \
-    apt-get install -y --no-install-recommends gcc-11 g++-11 && \
-    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 --slave /usr/bin/g++ g++ /usr/bin/g++-11
+    apt-get install -y --no-install-recommends gcc-13 g++-13 && \
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 100 --slave /usr/bin/g++ g++ /usr/bin/g++-13
 
 # Install Clang 16
 RUN curl https://apt.llvm.org/llvm.sh -o llvm.sh && \
@@ -53,6 +43,17 @@ RUN curl https://apt.llvm.org/llvm.sh -o llvm.sh && \
     ln -sf /usr/bin/clang-16 /usr/bin/clang && \
     ln -sf /usr/bin/clang++-16 /usr/bin/clang++ && \
     ln -sf /usr/bin/clang-format-16 /usr/bin/clang-format
+
+# Upgrade binutils (>= 2.40)
+RUN apt-get install -y --no-install-recommends bison texinfo && \
+    curl -O https://ftp.gnu.org/gnu/binutils/binutils-2.40.tar.gz && \
+    tar -xvzof binutils-2.40.tar.gz && \
+    cd binutils-2.40 && \
+    mkdir build && \
+    cd build && \
+    ../configure --prefix=/usr --enable-gold --enable-ld=default && \
+    make -j `nproc` && \
+    make install
 
 # Install Python 3.12
 RUN add-apt-repository ppa:deadsnakes/ppa -y && \

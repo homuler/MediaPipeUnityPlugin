@@ -10,7 +10,7 @@ on:
         default: package
       bazelBuildArgs:
         type: string
-        default: '--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0'
+        default: '--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0 --macos_minimum_os=13.0 --host_macos_minimum_os=13.0'
       linuxBuildArgs:
         type: string
         default: '--desktop gpu --opencv cmake'
@@ -107,11 +107,16 @@ jobs:
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/Android/mediapipe_android.aar
 
   macos-build:
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref }}
+
+      # NOTE: Clang >= 16.0 is required
+      - name: Select Xcode Version
+        run: |
+          sudo xcode-select -s '/Applications/Xcode_16.app/Contents/Developer'
 
       # Setup Python
       - uses: actions/setup-python@v5
