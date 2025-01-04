@@ -95,7 +95,7 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
         }
         else
         {
-          req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture());
+          req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture(), false, imageSource.isVerticallyFlipped);
           yield return waitUntilReqDone;
 
           if (req.hasError)
