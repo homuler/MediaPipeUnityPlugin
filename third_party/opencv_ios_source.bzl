@@ -15,7 +15,7 @@
 """Custom rules for building iOS OpenCV xcframework from sources."""
 
 load(
-    "@mediapipe//third_party:opencv_ios_xcframework_files.bzl",
+    "@//third_party:opencv_ios_xcframework_files.bzl",
     "OPENCV_XCFRAMEWORK_INFO_PLIST_PATH",
     "OPENCV_XCFRAMEWORK_IOS_DEVICE_FILE_PATHS",
     "OPENCV_XCFRAMEWORK_IOS_SIMULATOR_FILE_PATHS",

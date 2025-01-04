@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # CHANGES:
-#  - OpenCV 4.5.3 -> 4.5.5
+#  - OpenCV 4.5.3 -> 4.10.0
 
 # Description:
 #   OpenCV xcframework for video/image processing on iOS.
@@ -46,11 +46,12 @@ exports_files(["LICENSE"])
 # is mentioned in an open issue in the opencv github repo.
 genrule(
     name = "build_opencv_xcframework",
-    srcs = glob(["opencv-4.5.5/**"]),
+    srcs = glob(["**"]),
     outs = ["opencv2.xcframework.zip"],
     cmd = "&&".join([
-        "$(location opencv-4.5.5/platforms/apple/build_xcframework.py) \
-        --iphonesimulator_archs arm64,x86_64 \
+        "IPHONEOS_DEPLOYMENT_TARGET=12.0 \
+        $(location platforms/apple/build_xcframework.py) \
+        --iphonesimulator_archs x86_64,arm64 \
         --iphoneos_archs arm64 \
         --without dnn \
         --without ml \
@@ -58,7 +59,6 @@ genrule(
         --without photo \
         --without objdetect \
         --without gapi \
-        --without flann \
         --without highgui \
         --without videoio \
         --disable PROTOBUF \

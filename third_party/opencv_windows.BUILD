@@ -19,9 +19,9 @@ licenses(["notice"])  # BSD license
 
 exports_files(["LICENSE"])
 
-OPENCV_VERSION = "455"  # 4.5.5
+OPENCV_VERSION = "4100"  # 4.10.0
 
-# The following build rule assumes that the executable "opencv-4.5.5-vc14_vc15.exe"
+# The following build rule assumes that the executable "opencv-4.10.0-windows.exe"
 # is downloaded and the files are extracted to local.
 # If you install OpenCV separately, please modify the build rule accordingly.
 cc_library(

@@ -214,8 +214,8 @@ cmake(
     }),
     out_lib_dir = ".",
     out_static_libs = select({
-        ":dbg_cmake_static_win": ["staticlib/opencv_world455d.lib"],
-        ":cmake_static_win": ["staticlib/opencv_world455.lib"],
+        ":dbg_cmake_static_win": ["staticlib/opencv_world4100d.lib"],
+        ":cmake_static_win": ["staticlib/opencv_world4100.lib"],
         "//conditions:default": ["lib/libopencv_world.a"],
     }) + select({
         ":dbg_cmake_static_win": ["staticlib/%sd.lib" % lib for lib in OPENCV_3RDPARTY_LIBS],

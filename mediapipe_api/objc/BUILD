@@ -20,8 +20,10 @@ objc_library(
     ],
     deps = [
         "//mediapipe_api:mediapipe_c",
-        "@ios_opencv//:OpencvFramework",
-    ],
+    ] + select({
+        "@opencv//:opencv_ios_source_build": ["@ios_opencv_source//:opencv_xcframework"],
+        "//conditions:default": ["@ios_opencv//:OpencvFramework"],
+    }),
 )
 
 ios_framework(
