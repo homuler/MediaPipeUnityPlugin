@@ -299,9 +299,6 @@ class BuildCommand(Command):
     commands = self._build_common_commands()
     commands += [f'--config=ios_{self.command_args.ios}']
 
-    if self.command_args.apple_bitcode:
-      commands += ['--copt=-fembed-bitcode', '--apple_bitcode=embedded']
-
     commands.append('//mediapipe_api/objc:MediaPipeUnity')
     return commands
 
@@ -440,7 +437,6 @@ class Argument:
         choices=['face_detection', 'face_mesh', 'iris', 'hands', 'pose', 'holistic',
                  'image_segmentation', 'object_detection', 'audio_classification'])
     build_command_parser.add_argument('--linkopt', '-l', action='append', help='Linker options')
-    build_command_parser.add_argument('--apple_bitcode', action=argparse.BooleanOptionalAction, default=True, help='Embed bitcode to iOS Framework')
     build_command_parser.add_argument('--macos_universal', action=argparse.BooleanOptionalAction, default=False, help='Build a universal library')
     build_command_parser.add_argument('--bazel_startup_opts', action='append', help='Bazel startup options')
     build_command_parser.add_argument('--bazel_build_opts', action='append', help='Bazel startup options')
