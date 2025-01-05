@@ -212,7 +212,10 @@ cmake(
         "@bazel_tools//src/conditions:windows": "include",
         "//conditions:default": "include/opencv4",
     }),
-    out_lib_dir = ".",
+    out_lib_dir = select({
+        "@bazel_tools//src/conditions:windows": "x64/vc17",
+        "//conditions:default": ".", # need to include lib/ and share/OpenCV/3rdparty/lib when building static libs
+    }),
     out_static_libs = select({
         ":dbg_cmake_static_win": ["staticlib/opencv_world4100d.lib"],
         ":cmake_static_win": ["staticlib/opencv_world4100.lib"],

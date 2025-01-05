@@ -27,8 +27,8 @@ OPENCV_VERSION = "4100"  # 4.10.0
 cc_library(
     name = "opencv",
     srcs = [
-        "x64/vc15/lib/opencv_world" + OPENCV_VERSION + ".lib",
-        "x64/vc15/bin/opencv_world" + OPENCV_VERSION + ".dll",
+        "x64/vc16/lib/opencv_world" + OPENCV_VERSION + ".lib",
+        "x64/vc16/bin/opencv_world" + OPENCV_VERSION + ".dll",
     ],
     hdrs = glob(["include/opencv4/opencv2/**/*.h*"]),
     includes = ["include/"],
@@ -39,7 +39,7 @@ cc_library(
 filegroup(
     name = "opencv_world_dll",
     srcs = [
-        "x64/vc15/bin/opencv_world" + OPENCV_VERSION + ".dll",
+        "x64/vc16/bin/opencv_world" + OPENCV_VERSION + ".dll",
     ],
     visibility = ["//visibility:public"],
 )
