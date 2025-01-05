@@ -61,7 +61,8 @@ RUN add-apt-repository ppa:deadsnakes/ppa -y && \
     apt-get install -y --no-install-recommends python3.12 python3.12-dev python3.12-venv python3-pip && \
     curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
     python3.12 get-pip.py && \
-    update-alternatives --install /usr/local/bin/python python /usr/bin/python3.12 10
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.12 10 && \
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 10
 
 
 FROM base AS android
