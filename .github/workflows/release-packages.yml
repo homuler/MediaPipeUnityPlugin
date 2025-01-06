@@ -14,7 +14,7 @@ jobs:
       linuxBuildArgs: '--desktop gpu --opencv cmake'
       androidBuildArgs: '--android arm64 --android_ndk_api_level 21'
       macosBuildArgs: '--desktop cpu --opencv cmake --macos_universal'
-      iosBuildArgs: '--ios arm64'
+      iosBuildArgs: '--ios arm64 --opencv cmake'
       windowsBuildArgs: '--desktop cpu --opencv cmake'
     secrets: inherit
 
@@ -26,6 +26,6 @@ jobs:
       linuxBuildArgs: '--linkopt="-s" --desktop gpu --opencv cmake'
       androidBuildArgs: '--linkopt="-s" --android arm64 --android_ndk_api_level 21'
       macosBuildArgs: '--linkopt="-s" --desktop cpu --opencv cmake --macos_universal'
-      iosBuildArgs: '--linkopt="-s" --ios arm64'
+      iosBuildArgs: '--linkopt="-s" --ios arm64 --opencv cmake'
       windowsBuildArgs: '--desktop cpu --opencv cmake'
     secrets: inherit

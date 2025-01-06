@@ -22,7 +22,7 @@ on:
         default: '--desktop cpu --opencv cmake --macos_universal'
       iosBuildArgs:
         type: string
-        default: '--ios arm64'
+        default: '--ios arm64 --opencv cmake'
       windowsBuildArgs:
         type: string
         default: '--desktop cpu --opencv cmake'
