@@ -455,10 +455,24 @@ http_archive(
 
 http_archive(
     name = "opencv",
+    patch_args = [
+        "-p1",
+    ],
+    patches = [
+        "@//third_party:opencv_patch.diff",
+    ],
     build_file = "@//third_party:opencv.BUILD",
-    sha256 = "5e37b791b2fe42ed39b52d9955920b951ee42d5da95f79fbc9765a08ef733399",
-    strip_prefix = "opencv-3.4.16",
-    urls = ["https://github.com/opencv/opencv/archive/3.4.16.tar.gz"],
+    sha256 = "b2171af5be6b26f7a06b1229948bbb2bdaa74fcf5cd097e0af6378fce50a6eb9",
+    strip_prefix = "opencv-4.10.0",
+    urls = ["https://github.com/opencv/opencv/archive/4.10.0.tar.gz"],
+)
+
+http_archive(
+    name = "opencv_contrib",
+    build_file = "@//third_party:opencv_contrib.BUILD",
+    sha256 = "65597f8fb8dc2b876c1b45b928bbcc5f772ddbaf97539bf1b737623d0604cba1",
+    strip_prefix = "opencv_contrib-4.10.0",
+    urls = ["https://github.com/opencv/opencv_contrib/archive/4.10.0.tar.gz"],
 )
 
 new_local_repository(
@@ -475,13 +489,13 @@ new_local_repository(
 
 new_local_repository(
     name = "macos_opencv",
-    build_file = "@mediapipe//third_party:opencv_macos.BUILD",
+    build_file = "@//third_party:opencv_macos.BUILD",
     path = "/usr/local",
 )
 
 new_local_repository(
     name = "macos_arm64_opencv",
-    build_file = "@mediapipe//third_party:opencv_macos.BUILD",
+    build_file = "@//third_party:opencv_macos.BUILD",
     path = "/opt/homebrew",
 )
 
@@ -517,20 +531,22 @@ http_archive(
     url = "https://github.com/opencv/opencv/releases/download/3.2.0/opencv-3.2.0-ios-framework.zip",
 )
 
-# Building an opencv.xcframework from the OpenCV 4.5.3 sources is necessary for
+# Building an opencv.xcframework from the OpenCV 4.10.0 sources is necessary for
 # MediaPipe iOS Task Libraries to be supported on arm64(M1) Macs. An
 # `opencv.xcframework` archive has not been released and it is recommended to
 # build the same from source using a script provided in OpenCV 4.5.0 upwards.
-# OpenCV is fixed to version to 4.5.3 since swift support can only be disabled
-# from 4.5.3 upwards. This is needed to avoid errors when the library is linked
-# in Xcode. Swift support will be added in when the final binary MediaPipe iOS
-# Task libraries are built.
 http_archive(
     name = "ios_opencv_source",
-    build_file = "@mediapipe//third_party:opencv_ios_source.BUILD",
-    sha256 = "a61e7a4618d353140c857f25843f39b2abe5f451b018aab1604ef0bc34cd23d5",
-    type = "zip",
-    url = "https://github.com/opencv/opencv/archive/refs/tags/4.5.3.zip",
+    build_file = "@//third_party:opencv_ios_source.BUILD",
+    patch_args = [
+        "-p1",
+    ],
+    patches = [
+        "@//third_party:opencv_ios_patch.diff",
+    ],
+    sha256 = "b2171af5be6b26f7a06b1229948bbb2bdaa74fcf5cd097e0af6378fce50a6eb9",
+    strip_prefix = "opencv-4.10.0",
+    urls = ["https://github.com/opencv/opencv/archive/4.10.0.tar.gz"],
 )
 
 http_archive(

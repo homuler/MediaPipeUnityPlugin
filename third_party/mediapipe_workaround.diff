@@ -1,3 +1,16 @@
+diff --git a/mediapipe/framework/port/opencv_core_inc.h b/mediapipe/framework/port/opencv_core_inc.h
+index 12862472..1a409417 100644
+--- a/mediapipe/framework/port/opencv_core_inc.h
++++ b/mediapipe/framework/port/opencv_core_inc.h
+@@ -20,7 +20,7 @@
+ #ifdef CV_VERSION_EPOCH  // for OpenCV 2.x
+ #include <opencv2/core/core.hpp>
+ #else
+-#if CV_VERSION_MAJOR == 3
++#if CV_VERSION_MAJOR == 3 || CV_VERSION_MAJOR == 4
+ #include <opencv2/cvconfig.h>
+ #endif
+ 
 diff --git a/mediapipe/tasks/cc/core/task_api_factory.h b/mediapipe/tasks/cc/core/task_api_factory.h
 index a11a23fc..dbb5fe6c 100644
 --- a/mediapipe/tasks/cc/core/task_api_factory.h

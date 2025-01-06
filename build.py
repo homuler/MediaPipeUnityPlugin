@@ -298,6 +298,7 @@ class BuildCommand(Command):
 
     commands = self._build_common_commands()
     commands += [f'--config=ios_{self.command_args.ios}']
+    commands += self._build_opencv_switch()
 
     commands.append('//mediapipe_api/objc:MediaPipeUnity')
     return commands

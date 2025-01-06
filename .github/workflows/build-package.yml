@@ -32,6 +32,6 @@ jobs:
       linuxBuildArgs: ${{ inputs.linuxBuildArgs || '--desktop gpu --opencv cmake' }}
       androidBuildArgs: ${{ inputs.androidBuildArgs || '--android arm64 --android_ndk_api_level 21' }}
       macosBuildArgs: ${{ inputs.macosBuildArgs || '--desktop cpu --opencv cmake --macos_universal' }}
-      iosBuildArgs: ${{ inputs.iosBuildArgs || '--ios arm64' }}
+      iosBuildArgs: ${{ inputs.iosBuildArgs || '--ios arm64 --opencv cmake' }}
       windowsBuildArgs: ${{ inputs.windowsBuildArgs || '--desktop cpu --opencv cmake' }}
     secrets: inherit
