@@ -94,7 +94,7 @@ namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
         {
           yield return new WaitForEndOfFrame();
           textureFrame.ReadTextureOnGPU(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
-          image = textureFrame.BuildGpuImage(glContext);
+          image = textureFrame.BuildGPUImage(glContext);
         }
         else
         {
