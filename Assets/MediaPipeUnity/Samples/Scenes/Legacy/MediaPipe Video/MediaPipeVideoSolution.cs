@@ -100,8 +100,9 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
 
           if (req.hasError)
           {
-            Debug.LogError($"Failed to read texture from the image source, exiting...");
-            break;
+            Debug.LogWarning($"Failed to read texture from the image source");
+            yield return new WaitForEndOfFrame();
+            continue;
           }
         }
 
