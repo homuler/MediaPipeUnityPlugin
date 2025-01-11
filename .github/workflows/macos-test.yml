@@ -98,7 +98,8 @@ jobs:
         os:
           - macos-13
         unity:
-          - { version: "2022.3.34f1", changeset: "4886f5360533" }
+          - { version: "6000.0.33f1", changeset: "433b0a79340b" }
+          - { version: "2022.3.55f1", changeset: "9f374180d209" }
     steps:
       - name: Install UnityEditor
         run: |
