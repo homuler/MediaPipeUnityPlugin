@@ -107,16 +107,14 @@ jobs:
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/Android/mediapipe_android.aar
 
   macos-build:
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref }}
 
-      # NOTE: Clang >= 16.0 is required
-      - name: Select Xcode Version
-        run: |
-          sudo xcode-select -s '/Applications/Xcode_16.app/Contents/Developer'
+      - name: Install NuGet
+        run: brew install nuget
 
       # Setup Python
       - uses: actions/setup-python@v5
