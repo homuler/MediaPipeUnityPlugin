@@ -56,12 +56,10 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
       }
 
       var dstPoseLandmarks = destination.poseLandmarks ?? new List<NormalizedLandmarks>(poseLandmarks.Count);
-      dstPoseLandmarks.Clear();
-      dstPoseLandmarks.AddRange(poseLandmarks);
+      dstPoseLandmarks.CopyFrom(poseLandmarks);
 
       var dstPoseWorldLandmarks = destination.poseWorldLandmarks ?? new List<Landmarks>(poseWorldLandmarks.Count);
-      dstPoseWorldLandmarks.Clear();
-      dstPoseWorldLandmarks.AddRange(poseWorldLandmarks);
+      dstPoseWorldLandmarks.CopyFrom(poseWorldLandmarks);
 
       var dstSegmentationMasks = destination.segmentationMasks;
       if (segmentationMasks != null)

@@ -53,15 +53,13 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
       }
 
       var dstFaceLandmarks = destination.faceLandmarks ?? new List<NormalizedLandmarks>(faceLandmarks.Count);
-      dstFaceLandmarks.Clear();
-      dstFaceLandmarks.AddRange(faceLandmarks);
+      dstFaceLandmarks.CopyFrom(faceLandmarks);
 
       var dstFaceBlendshapes = destination.faceBlendshapes;
       if (faceBlendshapes != null)
       {
         dstFaceBlendshapes ??= new List<Classifications>(faceBlendshapes.Count);
-        dstFaceBlendshapes.Clear();
-        dstFaceBlendshapes.AddRange(faceBlendshapes);
+        dstFaceBlendshapes.CopyFrom(faceBlendshapes);
       }
 
       var dstFacialTransformationMatrixes = destination.facialTransformationMatrixes;

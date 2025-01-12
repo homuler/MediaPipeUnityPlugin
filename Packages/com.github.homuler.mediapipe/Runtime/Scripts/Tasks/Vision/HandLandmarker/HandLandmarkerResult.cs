@@ -52,16 +52,13 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
       }
 
       var dstHandedness = destination.handedness ?? new List<Classifications>(handedness.Count);
-      dstHandedness.Clear();
-      dstHandedness.AddRange(handedness);
+      dstHandedness.CopyFrom(handedness);
 
       var dstHandLandmarks = destination.handLandmarks ?? new List<NormalizedLandmarks>(handLandmarks.Count);
-      dstHandLandmarks.Clear();
-      dstHandLandmarks.AddRange(handLandmarks);
+      dstHandLandmarks.CopyFrom(handLandmarks);
 
       var dstHandWorldLandmarks = destination.handWorldLandmarks ?? new List<Landmarks>(handWorldLandmarks.Count);
-      dstHandWorldLandmarks.Clear();
-      dstHandWorldLandmarks.AddRange(handWorldLandmarks);
+      dstHandWorldLandmarks.CopyFrom(handWorldLandmarks);
 
       destination = new HandLandmarkerResult(dstHandedness, dstHandLandmarks, dstHandWorldLandmarks);
     }
