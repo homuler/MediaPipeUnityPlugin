@@ -71,8 +71,7 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
 
       graphRunner.StartRun(imageSource);
 
-      AsyncGPUReadbackRequest req = default;
-      var waitUntilReqDone = new WaitUntil(() => req.done);
+      var waitForEndOfFrame = new WaitForEndOfFrame();
 
       while (true)
       {
@@ -83,27 +82,19 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
 
         if (!_textureFramePool.TryGetTextureFrame(out var textureFrame))
         {
-          yield return new WaitForEndOfFrame();
+          yield return null;
           continue;
         }
 
+        yield return waitForEndOfFrame;
         // Copy current image to TextureFrame
         if (canUseGpuImage)
         {
-          yield return new WaitForEndOfFrame();
           textureFrame.ReadTextureOnGPU(imageSource.GetCurrentTexture());
         }
         else
         {
-          req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture(), false, imageSource.isVerticallyFlipped);
-          yield return waitUntilReqDone;
-
-          if (req.hasError)
-          {
-            Debug.LogWarning($"Failed to read texture from the image source");
-            yield return new WaitForEndOfFrame();
-            continue;
-          }
+          textureFrame.ReadTextureOnCPU(imageSource.GetCurrentTexture(), false, imageSource.isVerticallyFlipped);
         }
 
         graphRunner.AddTextureFrameToInputStream(textureFrame, glContext);
@@ -113,18 +104,15 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
           continue;
         }
 
-        if (runningMode.IsSynchronous())
-        {
-          var task = graphRunner.WaitNextAsync();
-          yield return new WaitUntil(() => task.IsCompleted);
+        var task = graphRunner.WaitNextAsync();
+        yield return new WaitUntil(() => task.IsCompleted);
 
-          var imageFrame = task.Result;
-          if (imageFrame != null)
-          {
-            _outputTexture.LoadRawTextureData(imageFrame.MutablePixelData(), imageFrame.PixelDataSize());
-            _outputTexture.Apply();
-            imageFrame.Dispose();
-          }
+        var imageFrame = task.Result;
+        if (imageFrame != null)
+        {
+          _outputTexture.LoadRawTextureData(imageFrame.MutablePixelData(), imageFrame.PixelDataSize());
+          _outputTexture.Apply();
+          imageFrame.Dispose();
         }
       }
     }
