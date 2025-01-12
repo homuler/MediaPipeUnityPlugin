@@ -22,6 +22,12 @@ namespace Mediapipe.Unity
     public void DrawNow(PoseLandmarkerResult target)
     {
       target.CloneTo(ref _currentTarget);
+      if (_currentTarget.segmentationMasks != null)
+      {
+        ReadMask(_currentTarget.segmentationMasks);
+        // NOTE: segmentationMasks can still be accessed from newTarget.
+        _currentTarget.segmentationMasks.Clear();
+      }
       SyncNow();
     }
 
@@ -34,6 +40,12 @@ namespace Mediapipe.Unity
       lock (_currentTargetLock)
       {
         newTarget.CloneTo(ref _currentTarget);
+        if (_currentTarget.segmentationMasks != null)
+        {
+          ReadMask(_currentTarget.segmentationMasks);
+          // NOTE: segmentationMasks can still be accessed from newTarget.
+          _currentTarget.segmentationMasks.Clear();
+        }
         isStale = true;
       }
     }
@@ -43,15 +55,6 @@ namespace Mediapipe.Unity
       lock (_currentTargetLock)
       {
         isStale = false;
-        if (_currentTarget.segmentationMasks != null)
-        {
-          ReadMask(_currentTarget.segmentationMasks);
-          // TODO: stop disposing masks here
-          foreach (var mask in _currentTarget.segmentationMasks)
-          {
-            mask.Dispose();
-          }
-        }
         annotation.Draw(_currentTarget.poseLandmarks, _visualizeZ);
       }
     }
