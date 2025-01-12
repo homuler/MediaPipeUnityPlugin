@@ -102,7 +102,7 @@ namespace Mediapipe.Tasks.Components.Containers
       dstCategories.Clear();
       dstCategories.AddRange(categories);
 
-      destination = new Classifications(categories, headIndex, headName);
+      destination = new Classifications(dstCategories, headIndex, headName);
     }
 
     public override string ToString()
