@@ -123,6 +123,7 @@ namespace Mediapipe.Unity.Sample.ImageSegmentation
             {
               _imageSegmenterResultAnnotationController.DrawNow(default);
             }
+            DisposeAllMasks(result);
             break;
           case Tasks.Vision.Core.RunningMode.VIDEO:
             if (taskApi.TrySegmentForVideo(image, GetCurrentTimestampMillisec(), imageProcessingOptions, ref result))
@@ -133,6 +134,7 @@ namespace Mediapipe.Unity.Sample.ImageSegmentation
             {
               _imageSegmenterResultAnnotationController.DrawNow(default);
             }
+            DisposeAllMasks(result);
             break;
           case Tasks.Vision.Core.RunningMode.LIVE_STREAM:
             taskApi.SegmentAsync(image, GetCurrentTimestampMillisec(), imageProcessingOptions);
@@ -141,6 +143,19 @@ namespace Mediapipe.Unity.Sample.ImageSegmentation
       }
     }
 
-    private void OnImageSegmentationOutput(ImageSegmenterResult result, Image image, long timestamp) => _imageSegmenterResultAnnotationController.DrawLater(result);
+    private void OnImageSegmentationOutput(ImageSegmenterResult result, Image image, long timestamp)
+    {
+      _imageSegmenterResultAnnotationController.DrawLater(result);
+      DisposeAllMasks(result);
+    }
+
+    private void DisposeAllMasks(ImageSegmenterResult result)
+    {
+      foreach (var mask in result.confidenceMasks)
+      {
+        mask.Dispose();
+      }
+      result.categoryMask?.Dispose();
+    }
   }
 }

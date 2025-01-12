@@ -34,6 +34,7 @@ namespace Mediapipe.Unity
     public void DrawNow(ImageSegmenterResult target)
     {
       _currentTarget = target;
+      ReadCurrentMasks();
       SyncNow();
     }
 
@@ -43,7 +44,8 @@ namespace Mediapipe.Unity
     {
       lock (_currentTargetLock)
       {
-        newTarget.CloneTo(ref _currentTarget);
+        _currentTarget = newTarget;
+        ReadCurrentMasks();
         isStale = true;
       }
     }
@@ -53,16 +55,19 @@ namespace Mediapipe.Unity
       lock (_currentTargetLock)
       {
         isStale = false;
-        if (_currentTarget.confidenceMasks?.Count > _maskIndex)
-        {
-          annotation.Draw(_currentTarget.confidenceMasks[_maskIndex], isMirrored);
-        }
-        // TODO: stop disposing masks here
-        foreach (var mask in _currentTarget.confidenceMasks)
-        {
-          mask.Dispose();
-        }
-        _currentTarget.categoryMask?.Dispose();
+        annotation.Draw();
+      }
+    }
+
+    private void ReadCurrentMasks()
+    {
+      if (_currentTarget.confidenceMasks?.Count > _maskIndex)
+      {
+        annotation.Read(_currentTarget.confidenceMasks[_maskIndex], isMirrored);
+      }
+      else
+      {
+        annotation.Clear();
       }
     }
   }

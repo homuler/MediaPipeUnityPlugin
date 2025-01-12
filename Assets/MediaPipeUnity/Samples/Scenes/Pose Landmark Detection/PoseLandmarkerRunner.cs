@@ -126,6 +126,7 @@ namespace Mediapipe.Unity.Sample.PoseLandmarkDetection
             {
               _poseLandmarkerResultAnnotationController.DrawNow(default);
             }
+            DisposeAllMasks(result);
             break;
           case Tasks.Vision.Core.RunningMode.VIDEO:
             if (taskApi.TryDetectForVideo(image, GetCurrentTimestampMillisec(), imageProcessingOptions, ref result))
@@ -136,6 +137,7 @@ namespace Mediapipe.Unity.Sample.PoseLandmarkDetection
             {
               _poseLandmarkerResultAnnotationController.DrawNow(default);
             }
+            DisposeAllMasks(result);
             break;
           case Tasks.Vision.Core.RunningMode.LIVE_STREAM:
             taskApi.DetectAsync(image, GetCurrentTimestampMillisec(), imageProcessingOptions);
@@ -144,6 +146,21 @@ namespace Mediapipe.Unity.Sample.PoseLandmarkDetection
       }
     }
 
-    private void OnPoseLandmarkDetectionOutput(PoseLandmarkerResult result, Image image, long timestamp) => _poseLandmarkerResultAnnotationController.DrawLater(result);
+    private void OnPoseLandmarkDetectionOutput(PoseLandmarkerResult result, Image image, long timestamp)
+    {
+      _poseLandmarkerResultAnnotationController.DrawLater(result);
+      DisposeAllMasks(result);
+    }
+
+    private void DisposeAllMasks(PoseLandmarkerResult result)
+    {
+      if (result.segmentationMasks != null)
+      {
+        foreach (var mask in result.segmentationMasks)
+        {
+          mask.Dispose();
+        }
+      }
+    }
   }
 }

@@ -35,19 +35,5 @@ namespace Mediapipe.Tasks.Vision.ImageSegmenter
       var confidenceMasks = outputConfidenceMasks ? new List<Image>() : null;
       return new ImageSegmenterResult(confidenceMasks, null);
     }
-
-    public void CloneTo(ref ImageSegmenterResult destination)
-    {
-      var dstConfidenceMasks = destination.confidenceMasks;
-      dstConfidenceMasks?.Clear();
-      if (confidenceMasks != null)
-      {
-        dstConfidenceMasks ??= new List<Image>(confidenceMasks.Count);
-        dstConfidenceMasks.Clear();
-        dstConfidenceMasks.AddRange(confidenceMasks);
-      }
-
-      destination = new ImageSegmenterResult(dstConfidenceMasks, categoryMask);
-    }
   }
 }
