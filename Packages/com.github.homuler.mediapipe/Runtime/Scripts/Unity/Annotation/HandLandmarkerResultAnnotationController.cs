@@ -14,6 +14,7 @@ namespace Mediapipe.Unity
   {
     [SerializeField] private bool _visualizeZ = false;
 
+    private readonly object _currentTargetLock = new object();
     private HandLandmarkerResult _currentTarget;
 
     public void DrawNow(HandLandmarkerResult target)
@@ -26,7 +27,7 @@ namespace Mediapipe.Unity
 
     protected void UpdateCurrentTarget(HandLandmarkerResult newTarget)
     {
-      if (IsTargetChanged(newTarget, _currentTarget))
+      lock (_currentTargetLock)
       {
         newTarget.CloneTo(ref _currentTarget);
         isStale = true;
@@ -35,9 +36,12 @@ namespace Mediapipe.Unity
 
     protected override void SyncNow()
     {
-      isStale = false;
-      annotation.SetHandedness(_currentTarget.handedness);
-      annotation.Draw(_currentTarget.handLandmarks, _visualizeZ);
+      lock (_currentTargetLock)
+      {
+        isStale = false;
+        annotation.SetHandedness(_currentTarget.handedness);
+        annotation.Draw(_currentTarget.handLandmarks, _visualizeZ);
+      }
     }
   }
 }
