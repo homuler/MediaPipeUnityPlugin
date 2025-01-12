@@ -218,6 +218,21 @@ namespace Mediapipe.Tasks.Components.Containers
       destination = new Landmarks(landmarks);
     }
 
+    public void CloneTo(ref Landmarks destination)
+    {
+      if (landmarks == null)
+      {
+        destination = default;
+        return;
+      }
+
+      var dstLandmarks = destination.landmarks ?? new List<Landmark>(landmarks.Count);
+      dstLandmarks.Clear();
+      dstLandmarks.AddRange(landmarks);
+
+      destination = new Landmarks(dstLandmarks);
+    }
+
     public override string ToString() => $"{{ \"landmarks\": {Util.Format(landmarks)} }}";
   }
 
@@ -267,48 +282,21 @@ namespace Mediapipe.Tasks.Components.Containers
       destination = new NormalizedLandmarks(landmarks);
     }
 
+    public void CloneTo(ref NormalizedLandmarks destination)
+    {
+      if (landmarks == null)
+      {
+        destination = default;
+        return;
+      }
+
+      var dstLandmarks = destination.landmarks ?? new List<NormalizedLandmark>(landmarks.Count);
+      dstLandmarks.Clear();
+      dstLandmarks.AddRange(landmarks);
+
+      destination = new NormalizedLandmarks(dstLandmarks);
+    }
+
     public override string ToString() => $"{{ \"landmarks\": {Util.Format(landmarks)} }}";
-  }
-
-  internal static class NativeLandmarksArrayExtension
-  {
-    public static void FillWith(this List<ClassificationResult> target, NativeClassificationResultArray source)
-    {
-      target.ResizeTo(source.size);
-
-      var i = 0;
-      foreach (var nativeClassificationResult in source.AsReadOnlySpan())
-      {
-        var classificationResult = target[i];
-        ClassificationResult.Copy(nativeClassificationResult, ref classificationResult);
-        target[i++] = classificationResult;
-      }
-    }
-
-    public static void FillWith(this List<Landmarks> target, NativeLandmarksArray source)
-    {
-      target.ResizeTo(source.size);
-
-      var i = 0;
-      foreach (var nativeLandmarks in source.AsReadOnlySpan())
-      {
-        var landmarks = target[i];
-        Landmarks.Copy(nativeLandmarks, ref landmarks);
-        target[i++] = landmarks;
-      }
-    }
-
-    public static void FillWith(this List<NormalizedLandmarks> target, NativeNormalizedLandmarksArray source)
-    {
-      target.ResizeTo(source.size);
-
-      var i = 0;
-      foreach (var nativeLandmarks in source.AsReadOnlySpan())
-      {
-        var landmarks = target[i];
-        NormalizedLandmarks.Copy(nativeLandmarks, ref landmarks);
-        target[i++] = landmarks;
-      }
-    }
   }
 }

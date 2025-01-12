@@ -90,6 +90,21 @@ namespace Mediapipe.Tasks.Components.Containers
       destination = new Classifications(categories, source.headIndex, source.headName);
     }
 
+    public void CloneTo(ref Classifications destination)
+    {
+      if (categories == null)
+      {
+        destination = default;
+        return;
+      }
+
+      var dstCategories = destination.categories ?? new List<Category>(categories.Count);
+      dstCategories.Clear();
+      dstCategories.AddRange(categories);
+
+      destination = new Classifications(categories, headIndex, headName);
+    }
+
     public override string ToString()
       => $"{{ \"categories\": {Util.Format(categories)}, \"headIndex\": {headIndex}, \"headName\": {Util.Format(headName)} }}";
   }
