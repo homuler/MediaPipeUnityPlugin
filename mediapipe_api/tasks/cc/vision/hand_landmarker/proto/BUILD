@@ -14,6 +14,7 @@ pkg_files(
     srcs = [
         ":hand_landmarker_graph_options_cs",
         ":hand_landmarks_detector_graph_options_cs",
+        ":hand_roi_refinement_graph_options_cs",
     ],
     prefix = "Tasks/Vision/HandLandmarker/Proto",
 )
@@ -34,6 +35,18 @@ csharp_proto_src(
 csharp_proto_src(
     name = "hand_landmarks_detector_graph_options_cs",
     proto_src = "mediapipe/tasks/cc/vision/hand_landmarker/proto/hand_landmarks_detector_graph_options.proto",
+    deps = [
+        "@mediapipe//mediapipe/tasks/cc/core/proto:protos_src",
+        "@mediapipe//mediapipe/tasks/cc/vision/hand_landmarker/proto:protos_src",
+        "@mediapipe//mediapipe/calculators/tensor:protos_src",
+        "@mediapipe//mediapipe/framework:protos_src",
+        "@mediapipe//mediapipe/gpu:protos_src",
+    ],
+)
+
+csharp_proto_src(
+    name = "hand_roi_refinement_graph_options_cs",
+    proto_src = "mediapipe/tasks/cc/vision/hand_landmarker/proto/hand_roi_refinement_graph_options.proto",
     deps = [
         "@mediapipe//mediapipe/tasks/cc/core/proto:protos_src",
         "@mediapipe//mediapipe/tasks/cc/vision/hand_landmarker/proto:protos_src",
