@@ -17,6 +17,8 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
     Tasks.Core.BaseOptions.Delegate.GPU;
 #endif
 
+    public ImageReadMode ImageReadMode { get; set; } = ImageReadMode.CPUAsync;
+
     public Tasks.Vision.Core.RunningMode RunningMode { get; set; } = Tasks.Vision.Core.RunningMode.LIVE_STREAM;
 
     public int NumHands { get; set; } = 1;

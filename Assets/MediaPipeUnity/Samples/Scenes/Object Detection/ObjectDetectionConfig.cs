@@ -44,6 +44,8 @@ namespace Mediapipe.Unity.Sample.ObjectDetection
     Tasks.Core.BaseOptions.Delegate.GPU;
 #endif
 
+    public ImageReadMode ImageReadMode { get; set; } = ImageReadMode.CPUAsync;
+
     public ModelType Model { get; set; } = ModelType.EfficientDetLite0Float16;
 
     public Tasks.Vision.Core.RunningMode RunningMode { get; set; } = Tasks.Vision.Core.RunningMode.LIVE_STREAM;

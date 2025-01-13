@@ -29,6 +29,7 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
     protected override IEnumerator Run()
     {
       Debug.Log($"Delegate = {config.Delegate}");
+      Debug.Log($"Image Read Mode = {config.ImageReadMode}");
       Debug.Log($"Running Mode = {config.RunningMode}");
       Debug.Log($"NumHands = {config.NumHands}");
       Debug.Log($"MinHandDetectionConfidence = {config.MinHandDetectionConfidence}");
@@ -65,12 +66,11 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
 
       AsyncGPUReadbackRequest req = default;
       var waitUntilReqDone = new WaitUntil(() => req.done);
+      var waitForEndOfFrame = new WaitForEndOfFrame();
       var result = HandLandmarkerResult.Alloc(options.numHands);
 
       // NOTE: we can share the GL context of the render thread with MediaPipe (for now, only on Android)
-      var canUseGpuImage = options.baseOptions.delegateCase == Tasks.Core.BaseOptions.Delegate.GPU &&
-        SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES3 &&
-        GpuManager.GpuResources != null;
+      var canUseGpuImage = SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES3 && GpuManager.GpuResources != null;
       using var glContext = canUseGpuImage ? GpuManager.GetGlContext() : null;
 
       while (true)
@@ -86,27 +86,38 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
           continue;
         }
 
+        yield return waitForEndOfFrame;
+
         // Build the input Image
         Image image;
-        if (canUseGpuImage)
+        switch (config.ImageReadMode)
         {
-          yield return new WaitForEndOfFrame();
-          textureFrame.ReadTextureOnGPU(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
-          image = textureFrame.BuildGPUImage(glContext);
-        }
-        else
-        {
-          req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
-          yield return waitUntilReqDone;
+          case ImageReadMode.GPU:
+            if (!canUseGpuImage)
+            {
+              throw new System.Exception("ImageReadMode.GPU is not supported");
+            }
+            textureFrame.ReadTextureOnGPU(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
+            image = textureFrame.BuildGPUImage(glContext);
+            break;
+          case ImageReadMode.CPU:
+            textureFrame.ReadTextureOnCPU(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
+            image = textureFrame.BuildCPUImage();
+            textureFrame.Release();
+            break;
+          case ImageReadMode.CPUAsync:
+          default:
+            req = textureFrame.ReadTextureAsync(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
+            yield return waitUntilReqDone;
 
-          if (req.hasError)
-          {
-            Debug.LogWarning($"Failed to read texture from the image source");
-            yield return new WaitForEndOfFrame();
-            continue;
-          }
-          image = textureFrame.BuildCPUImage();
-          textureFrame.Release();
+            if (req.hasError)
+            {
+              Debug.LogWarning($"Failed to read texture from the image source");
+              continue;
+            }
+            image = textureFrame.BuildCPUImage();
+            textureFrame.Release();
+            break;
         }
 
         switch (taskApi.runningMode)

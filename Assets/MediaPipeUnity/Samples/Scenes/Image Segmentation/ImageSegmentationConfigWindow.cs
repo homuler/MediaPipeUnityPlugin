@@ -13,6 +13,7 @@ namespace Mediapipe.Unity.Sample.ImageSegmentation.UI
   public class ImageSegmentationConfigWindow : ModalContents
   {
     [SerializeField] private Dropdown _delegateInput;
+    [SerializeField] private Dropdown _imageReadModeInput;
     [SerializeField] private Dropdown _modelSelectionInput;
     [SerializeField] private Dropdown _runningModeInput;
 
@@ -33,6 +34,13 @@ namespace Mediapipe.Unity.Sample.ImageSegmentation.UI
       _isChanged = true;
     }
 
+    private void SwitchImageReadMode()
+    {
+      _config.ImageReadMode = (ImageReadMode)_imageReadModeInput.value;
+      _isChanged = true;
+    }
+
+
     private void SwitchModelType()
     {
       _config.Model = (ModelType)_modelSelectionInput.value;
@@ -48,6 +56,7 @@ namespace Mediapipe.Unity.Sample.ImageSegmentation.UI
     private void InitializeContents()
     {
       InitializeDelegate();
+      InitializeImageReadMode();
       InitializeModelSelection();
       InitializeRunningMode();
     }
@@ -56,6 +65,12 @@ namespace Mediapipe.Unity.Sample.ImageSegmentation.UI
     {
       InitializeDropdown<Tasks.Core.BaseOptions.Delegate>(_delegateInput, _config.Delegate.ToString());
       _delegateInput.onValueChanged.AddListener(delegate { SwitchDelegate(); });
+    }
+
+    private void InitializeImageReadMode()
+    {
+      InitializeDropdown<ImageReadMode>(_imageReadModeInput, _config.ImageReadMode.GetDescription());
+      _imageReadModeInput.onValueChanged.AddListener(delegate { SwitchImageReadMode(); });
     }
 
     private void InitializeModelSelection()

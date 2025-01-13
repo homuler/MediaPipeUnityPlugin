@@ -13,6 +13,7 @@ namespace Mediapipe.Unity.Sample.ObjectDetection.UI
   public class ObjectDetectionConfigWindow : ModalContents
   {
     [SerializeField] private Dropdown _delegateInput;
+    [SerializeField] private Dropdown _imageReadModeInput;
     [SerializeField] private Dropdown _modelSelectionInput;
     [SerializeField] private Dropdown _runningModeInput;
     [SerializeField] private InputField _scoreThresholdInput;
@@ -32,6 +33,12 @@ namespace Mediapipe.Unity.Sample.ObjectDetection.UI
     private void SwitchDelegate()
     {
       _config.Delegate = (Tasks.Core.BaseOptions.Delegate)_delegateInput.value;
+      _isChanged = true;
+    }
+
+    private void SwitchImageReadMode()
+    {
+      _config.ImageReadMode = (ImageReadMode)_imageReadModeInput.value;
       _isChanged = true;
     }
 
@@ -68,6 +75,7 @@ namespace Mediapipe.Unity.Sample.ObjectDetection.UI
     private void InitializeContents()
     {
       InitializeDelegate();
+      InitializeImageReadMode();
       InitializeModelSelection();
       InitializeRunningMode();
       InitializeScoreThreshold();
@@ -78,6 +86,12 @@ namespace Mediapipe.Unity.Sample.ObjectDetection.UI
     {
       InitializeDropdown<Tasks.Core.BaseOptions.Delegate>(_delegateInput, _config.Delegate.ToString());
       _delegateInput.onValueChanged.AddListener(delegate { SwitchDelegate(); });
+    }
+
+    private void InitializeImageReadMode()
+    {
+      InitializeDropdown<ImageReadMode>(_imageReadModeInput, _config.ImageReadMode.GetDescription());
+      _imageReadModeInput.onValueChanged.AddListener(delegate { SwitchImageReadMode(); });
     }
 
     private void InitializeModelSelection()
