@@ -10,8 +10,10 @@ namespace Mediapipe.Tasks.Core
   {
     public enum Delegate
     {
-      CPU,
-      GPU,
+      CPU = 0,
+      GPU = 1,
+      // Edge TPU acceleration using NNAPI delegate.
+      EDGETPU_NNAPI = 2,
     }
 
     public Delegate delegateCase { get; } = Delegate.CPU;
@@ -39,7 +41,18 @@ namespace Mediapipe.Tasks.Core
           case Delegate.GPU:
             return new Proto.Acceleration
             {
-              Gpu = new InferenceCalculatorOptions.Types.Delegate.Types.Gpu { },
+              Gpu = new InferenceCalculatorOptions.Types.Delegate.Types.Gpu
+              {
+                UseAdvancedGpuApi = true,
+              },
+            };
+          case Delegate.EDGETPU_NNAPI:
+            return new Proto.Acceleration
+            {
+              Nnapi = new InferenceCalculatorOptions.Types.Delegate.Types.Nnapi
+              {
+                AcceleratorName = "google-edgetpu",
+              },
             };
           default:
             return null;
