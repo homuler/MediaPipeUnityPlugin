@@ -27,7 +27,7 @@ namespace Mediapipe.Tests.Tasks.Audio
     private const string _ResourcePath = "Packages/com.github.homuler.mediapipe/PackageResources/MediaPipe";
     private const string _TestResourcePath = "Packages/com.github.homuler.mediapipe/Tests/Resources";
 
-    private const int _CallbackTimeoutMillisec = 1000;
+    private const int _CallbackTimeoutMillisec = 2000;
 
     private static readonly IResourceManager _ResourceManager = new LocalResourceManager();
     private readonly Lazy<TextAsset> _audioClassifierModel =
@@ -298,11 +298,11 @@ namespace Mediapipe.Tests.Tasks.Audio
         stopwatch.Start();
         yield return new WaitUntil(() =>
         {
-          // wait for the callback to be invoked at least twice
-          return invokeCount > 1 || stopwatch.ElapsedMilliseconds > _CallbackTimeoutMillisec;
+          // wait for the callback to be invoked 3 times
+          return invokeCount > 2 || stopwatch.ElapsedMilliseconds > _CallbackTimeoutMillisec;
         });
 
-        Assert.IsTrue(invokeCount > 1);
+        Assert.IsTrue(invokeCount > 2);
         Assert.AreEqual(successCount, invokeCount);
       }
     }
