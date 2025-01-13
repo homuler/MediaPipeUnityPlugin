@@ -32,4 +32,3 @@ Packages/com.github.homuler.mediapipe/PackageResources/MediaPipe/*
 !Packages/com.github.homuler.mediapipe/PackageResources/MediaPipe/*.meta
 Packages/com.github.homuler.mediapipe/PackageResources/MediaPipe/object_detection_3d.bytes.meta
 Packages/com.github.homuler.mediapipe/Runtime/Plugins/Protobuf/*.dll
-Packages/com.github.homuler.mediapipe/Runtime/Scripts/Protobuf/**/*.cs
