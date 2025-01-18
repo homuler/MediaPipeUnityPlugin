@@ -88,8 +88,6 @@ namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
           continue;
         }
 
-        yield return waitForEndOfFrame;
-
         // Build the input Image
         Image image;
         switch (config.ImageReadMode)
@@ -101,11 +99,13 @@ namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
             }
             textureFrame.ReadTextureOnGPU(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
             image = textureFrame.BuildGPUImage(glContext);
+            yield return waitForEndOfFrame;
             break;
           case ImageReadMode.CPU:
             textureFrame.ReadTextureOnCPU(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
             image = textureFrame.BuildCPUImage();
             textureFrame.Release();
+            yield return waitForEndOfFrame;
             break;
           case ImageReadMode.CPUAsync:
           default:
@@ -115,6 +115,7 @@ namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
             if (req.hasError)
             {
               Debug.LogWarning($"Failed to read texture from the image source");
+              yield return waitForEndOfFrame;
               continue;
             }
             image = textureFrame.BuildCPUImage();
