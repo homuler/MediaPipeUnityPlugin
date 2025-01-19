@@ -88,8 +88,6 @@ namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
           continue;
         }
 
-        yield return waitForEndOfFrame;
-
         // Build the input Image
         Image image;
         switch (config.ImageReadMode)
@@ -101,8 +99,12 @@ namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
             }
             textureFrame.ReadTextureOnGPU(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
             image = textureFrame.BuildGPUImage(glContext);
+            // TODO: Currently we wait here for one frame to make sure the texture is fully copied to the TextureFrame before sending it to MediaPipe.
+            // This usually works but is not guaranteed. Find a proper way to do this. See: https://github.com/homuler/MediaPipeUnityPlugin/pull/1311
+            yield return waitForEndOfFrame;
             break;
           case ImageReadMode.CPU:
+            yield return waitForEndOfFrame;
             textureFrame.ReadTextureOnCPU(imageSource.GetCurrentTexture(), flipHorizontally, flipVertically);
             image = textureFrame.BuildCPUImage();
             textureFrame.Release();
