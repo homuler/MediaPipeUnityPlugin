@@ -34,3 +34,21 @@ index a11a23fc..dbb5fe6c 100644
          core::TaskRunner::Create(
              std::move(graph_config), std::move(resolver),
              std::move(packets_callback), std::move(default_executor),
+diff --git a/mediapipe/tasks/cc/vision/holistic_landmarker/holistic_landmarker_graph.cc b/mediapipe/tasks/cc/vision/holistic_landmarker/holistic_landmarker_graph.cc
+index 2ff140c0..128a4326 100644
+--- a/mediapipe/tasks/cc/vision/holistic_landmarker/holistic_landmarker_graph.cc
++++ b/mediapipe/tasks/cc/vision/holistic_landmarker/holistic_landmarker_graph.cc
+@@ -387,6 +387,13 @@ class HolisticLandmarkerGraph : public core::ModelTaskGraph {
+             holistic_options->mutable_face_landmarks_detector_graph_options()
+                 ->mutable_face_blendshapes_graph_options(),
+             kFaceBlendshapesModelName, create_copy));
++        holistic_options->mutable_face_landmarks_detector_graph_options()
++                ->mutable_face_blendshapes_graph_options()
++                ->mutable_base_options()
++                ->mutable_acceleration()
++                ->mutable_xnnpack();
++        ABSL_LOG(WARNING) << "Sets FaceBlendshapesGraph acceleration to xnnpack "
++                          << "by default.";
+       }
+     }
+ 
