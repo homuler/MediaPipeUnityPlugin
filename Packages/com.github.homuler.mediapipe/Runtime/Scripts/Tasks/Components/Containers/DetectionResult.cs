@@ -189,7 +189,7 @@ namespace Mediapipe.Tasks.Components.Containers
       foreach (var nativeDetection in source.AsReadOnlySpan())
       {
         var detection = detections[i];
-        Detection.Copy(nativeDetection, ref detection);
+        Detection.Copy(in nativeDetection, ref detection);
         detections[i++] = detection;
       }
 
