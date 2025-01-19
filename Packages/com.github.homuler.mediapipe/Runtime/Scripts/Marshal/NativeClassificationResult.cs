@@ -17,6 +17,11 @@ namespace Mediapipe
     public readonly int headIndex;
     private readonly IntPtr _headName;
 
+    public void Dispose()
+    {
+      UnsafeNativeMethods.mp_tasks_c_components_containers_CppCloseClassifications(this);
+    }
+
     public ReadOnlySpan<NativeCategory> categories
     {
       get

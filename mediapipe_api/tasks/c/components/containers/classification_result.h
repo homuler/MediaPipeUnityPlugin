@@ -8,6 +8,8 @@
 #define MEDIAPIPE_API_TASKS_C_COMPONENTS_CONTAINERS_CLASSIFICATION_RESULT_H_
 
 #include "mediapipe/framework/packet.h"
+#include "mediapipe/tasks/c/components/containers/category.h"
+#include "mediapipe/tasks/c/components/containers/category_converter.h"
 #include "mediapipe/tasks/c/components/containers/classification_result.h"
 #include "mediapipe/tasks/c/components/containers/classification_result_converter.h"
 #include "mediapipe/tasks/cc/components/containers/classification_result.h"
@@ -15,6 +17,8 @@
 
 extern "C" {
 
+MP_CAPI(MpReturnCode) mp_Packet__GetClassifications(mediapipe::Packet* packet, Classifications* value_out);
+MP_CAPI(void) mp_tasks_c_components_containers_CppCloseClassifications(Classifications data);
 MP_CAPI(MpReturnCode) mp_Packet__GetClassificationResult(mediapipe::Packet* packet, ClassificationResult* value_out);
 MP_CAPI(MpReturnCode) mp_Packet__GetClassificationsVector(mediapipe::Packet* packet, ClassificationResult* value_out);
 MP_CAPI(void) mp_tasks_c_components_containers_CppCloseClassificationResult(ClassificationResult data);

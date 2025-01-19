@@ -11,6 +11,13 @@ namespace Mediapipe.Tasks.Components.Containers
 {
   public static class PacketExtension
   {
+    public static void Get(this Packet<Classifications> packet, ref Classifications value)
+    {
+      UnsafeNativeMethods.mp_Packet__GetClassifications(packet.mpPtr, out var classifications).Assert();
+      Classifications.Copy(classifications, ref value);
+      classifications.Dispose();
+    }
+
     public static void Get(this Packet<ClassificationResult> packet, ref ClassificationResult value)
     {
       UnsafeNativeMethods.mp_Packet__GetClassificationResult(packet.mpPtr, out var classificationResult).Assert();
@@ -46,6 +53,13 @@ namespace Mediapipe.Tasks.Components.Containers
     [Obsolete("Use Get instead")]
     public static void GetDetectionResult(this Packet<DetectionResult> packet, ref DetectionResult value) => Get(packet, ref value);
 
+    public static void Get(this Packet<Landmarks> packet, ref Landmarks outs)
+    {
+      UnsafeNativeMethods.mp_Packet__GetLandmarks(packet.mpPtr, out var landmarks).Assert();
+      Landmarks.Copy(landmarks, ref outs);
+      landmarks.Dispose();
+    }
+
     public static void Get(this Packet<List<Landmarks>> packet, List<Landmarks> outs)
     {
       UnsafeNativeMethods.mp_Packet__GetLandmarksVector(packet.mpPtr, out var landmarksArray).Assert();
@@ -55,6 +69,13 @@ namespace Mediapipe.Tasks.Components.Containers
 
     [Obsolete("Use Get instead")]
     public static void GetLandmarksList(this Packet<List<Landmarks>> packet, List<Landmarks> outs) => Get(packet, outs);
+
+    public static void Get(this Packet<NormalizedLandmarks> packet, ref NormalizedLandmarks outs)
+    {
+      UnsafeNativeMethods.mp_Packet__GetNormalizedLandmarks(packet.mpPtr, out var landmarks).Assert();
+      NormalizedLandmarks.Copy(landmarks, ref outs);
+      landmarks.Dispose();
+    }
 
     public static void Get(this Packet<List<NormalizedLandmarks>> packet, List<NormalizedLandmarks> outs)
     {
