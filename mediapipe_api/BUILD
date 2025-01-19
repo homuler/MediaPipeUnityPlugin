@@ -383,7 +383,9 @@ cc_library(
 
 cc_library(
     name = "holistic_calculators",
-    deps = select({
+    deps = [
+        "@mediapipe//mediapipe/tasks/cc/vision/holistic_landmarker:holistic_landmarker_graph",
+    ] + select({
         "@mediapipe//mediapipe/gpu:disable_gpu": [
             "@mediapipe//mediapipe/graphs/holistic_tracking:holistic_tracking_cpu_graph_deps",
         ],
@@ -446,6 +448,9 @@ mediapipe_files(srcs = [
 
     # hand landmarker
     "hand_landmarker.task",
+
+    # holistic landmarker
+    "holistic_landmarker.task",
 
     # pose landmarker
     "pose_landmarker_full.task",
@@ -563,6 +568,7 @@ filegroup(
 filegroup(
     name = "holistic_assets",
     srcs = [
+        ":holistic_landmarker.task",
         "@mediapipe//mediapipe/modules/face_detection:face_detection_short_range.tflite",
         "@mediapipe//mediapipe/modules/face_landmark:face_landmark.tflite",
         "@mediapipe//mediapipe/modules/face_landmark:face_landmark_with_attention.tflite",
