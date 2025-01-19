@@ -41,13 +41,7 @@ namespace Mediapipe.Tasks.Core
         return new CalculatorGraphConfig()
         {
           Node = {
-            new CalculatorGraphConfig.Types.Node()
-            {
-              Calculator = taskGraph,
-              Options = taskOptions.ToCalculatorOptions(),
-              InputStream = { inputStreams },
-              OutputStream = { outputStreams },
-            },
+            BuildConfigNode(taskGraph, taskOptions, inputStreams, outputStreams),
           },
           InputStream = { inputStreams },
           OutputStream = { outputStreams },
@@ -80,13 +74,7 @@ namespace Mediapipe.Tasks.Core
             OutputStream = { throttledInputStreams.Select(Tool.ParseNameFromStream) },
             Options = flowLimiterOptions,
           },
-          new CalculatorGraphConfig.Types.Node()
-          {
-            Calculator = taskGraph,
-            InputStream = { throttledInputStreams },
-            OutputStream = { outputStreams },
-            Options = taskOptions.ToCalculatorOptions(),
-          },
+          BuildConfigNode(taskGraph, taskOptions, throttledInputStreams, outputStreams),
         },
         InputStream = { inputStreams },
         OutputStream = { outputStreams },
@@ -97,6 +85,31 @@ namespace Mediapipe.Tasks.Core
     {
       Tool.ParseTagAndName(tagIndexName, out var tag, out var name);
       return $"{tag}:throttled_{name}";
+    }
+
+    private static CalculatorGraphConfig.Types.Node BuildConfigNode(string calculator, T taskOptions, IEnumerable<string> inputStreams, IEnumerable<string> outputStreams)
+    {
+      var node = new CalculatorGraphConfig.Types.Node()
+      {
+        Calculator = calculator,
+        InputStream = { inputStreams },
+        OutputStream = { outputStreams },
+      };
+
+      var calculatorOptions = taskOptions.ToCalculatorOptions();
+      if (calculatorOptions != null)
+      {
+        node.Options = calculatorOptions;
+        return node;
+      }
+      var anyOptions = taskOptions.ToAnyOptions();
+      if (anyOptions != null)
+      {
+        node.NodeOptions.Add(anyOptions);
+        return node;
+      }
+
+      throw new NotSupportedException($"{typeof(T)} cannot be converted to Calculator's options");
     }
   }
 }
