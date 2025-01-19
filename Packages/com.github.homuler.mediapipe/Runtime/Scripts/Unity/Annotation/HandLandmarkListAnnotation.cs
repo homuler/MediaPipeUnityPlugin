@@ -75,6 +75,8 @@ namespace Mediapipe.Unity
 
     public PointAnnotation this[int index] => _landmarkListAnnotation[index];
 
+    public int count => _landmarkListAnnotation.count;
+
     private void Start()
     {
       _landmarkListAnnotation.Fill(_LandmarkCount);
@@ -171,7 +173,7 @@ namespace Mediapipe.Unity
 
     public void Draw(IReadOnlyList<mptcc.NormalizedLandmark> target, bool visualizeZ = false)
     {
-      if (ActivateFor(target))
+      if (ActivateFor(target?.Count > 0 ? target : null))
       {
         _landmarkListAnnotation.Draw(target, visualizeZ);
         // Draw explicitly because connection annotation's targets remain the same.

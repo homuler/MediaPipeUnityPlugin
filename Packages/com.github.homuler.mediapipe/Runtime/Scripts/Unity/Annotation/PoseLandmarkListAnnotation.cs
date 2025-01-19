@@ -114,6 +114,8 @@ namespace Mediapipe.Unity
 
     public PointAnnotation this[int index] => _landmarkListAnnotation[index];
 
+    public int count => _landmarkListAnnotation.count;
+
     private void Start()
     {
       _landmarkListAnnotation.Fill(_LandmarkCount);

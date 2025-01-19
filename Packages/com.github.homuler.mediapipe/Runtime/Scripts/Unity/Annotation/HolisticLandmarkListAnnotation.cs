@@ -7,6 +7,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using mptcc = Mediapipe.Tasks.Components.Containers;
+
 namespace Mediapipe.Unity
 {
   public sealed class HolisticLandmarkListAnnotation : HierarchicalAnnotation
@@ -86,19 +88,70 @@ namespace Mediapipe.Unity
       );
     }
 
+    public void Draw(mptcc.NormalizedLandmarks faceLandmarks, mptcc.NormalizedLandmarks poseLandmarks,
+                     mptcc.NormalizedLandmarks leftHandLandmarks, mptcc.NormalizedLandmarks rightHandLandmarks, bool visualizeZ = false, int circleVertices = 128)
+    {
+      var mask = PoseLandmarkListAnnotation.BodyParts.All;
+      if (faceLandmarks.landmarks != null)
+      {
+        mask ^= PoseLandmarkListAnnotation.BodyParts.Face;
+      }
+      if (leftHandLandmarks.landmarks != null)
+      {
+        mask ^= PoseLandmarkListAnnotation.BodyParts.LeftHand;
+      }
+      if (rightHandLandmarks.landmarks != null)
+      {
+        mask ^= PoseLandmarkListAnnotation.BodyParts.RightHand;
+      }
+      _faceLandmarkListAnnotation.Draw(faceLandmarks, visualizeZ, circleVertices);
+      _poseLandmarkListAnnotation.Draw(poseLandmarks, mask, visualizeZ);
+      _leftHandLandmarkListAnnotation.Draw(leftHandLandmarks, visualizeZ);
+      _rightHandLandmarkListAnnotation.Draw(rightHandLandmarks, visualizeZ);
+
+      if (leftHandLandmarks.landmarks != null)
+      {
+        RedrawLeftWristJoint();
+      }
+      if (rightHandLandmarks.landmarks != null)
+      {
+        RedrawRightWristJoint();
+      }
+    }
+
     private void RedrawWristJoints()
     {
-      if (_connectionListAnnotation[0].isEmpty)
+      if (_connectionListAnnotation[0].isEmpty && _poseLandmarkListAnnotation.count > 0 && _leftHandLandmarkListAnnotation.count > 0)
       {
         // connect left elbow and wrist
         _connectionListAnnotation[0].Draw(new Connection(_poseLandmarkListAnnotation[13], _leftHandLandmarkListAnnotation[0]));
       }
-      if (_connectionListAnnotation[1].isEmpty)
+      if (_connectionListAnnotation[1].isEmpty && _poseLandmarkListAnnotation.count > 0 && _rightHandLandmarkListAnnotation.count > 0)
       {
         // connect right elbow and wrist
         _connectionListAnnotation[1].Draw(new Connection(_poseLandmarkListAnnotation[14], _rightHandLandmarkListAnnotation[0]));
       }
       _connectionListAnnotation.Redraw();
+    }
+
+    private void RedrawLeftWristJoint()
+    {
+      if (_connectionListAnnotation[0].isEmpty && _poseLandmarkListAnnotation.count > 0 && _leftHandLandmarkListAnnotation.count > 0)
+      {
+        // connect left elbow and wrist
+        _connectionListAnnotation[0].Draw(new Connection(_poseLandmarkListAnnotation[13], _leftHandLandmarkListAnnotation[0]));
+      }
+      _connectionListAnnotation[0].Redraw();
+    }
+
+    private void RedrawRightWristJoint()
+    {
+      if (_connectionListAnnotation[1].isEmpty && _poseLandmarkListAnnotation.count > 0 && _rightHandLandmarkListAnnotation.count > 0)
+      {
+        // connect right elbow and wrist
+        _connectionListAnnotation[1].Draw(new Connection(_poseLandmarkListAnnotation[14], _rightHandLandmarkListAnnotation[0]));
+      }
+      _connectionListAnnotation[1].Redraw();
     }
   }
 }
