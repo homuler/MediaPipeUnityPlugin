@@ -1,5 +1,45 @@
 #include "mediapipe_api/tasks/c/components/containers/classification_result.h"
 
+MpReturnCode mp_Packet__GetClassifications(mediapipe::Packet* packet, Classifications* value_out) {
+  TRY_ALL
+    // get ClassificationList and convert it to Classifications
+    auto proto = packet->Get<mediapipe::ClassificationList>();
+    auto classifications_in = mediapipe::tasks::components::containers::ConvertToClassifications(proto);
+
+    // cf. mediapipe::tasks::c::components::containers::CppConvertToClassificationResult
+    auto classifications_out = Classifications{};
+    classifications_out.categories_count = classifications_in.categories.size();
+    classifications_out.categories =
+        classifications_out.categories_count
+            ? new Category[classifications_out.categories_count]
+            : nullptr;
+    for (uint32_t j = 0; j < classifications_out.categories_count; ++j) {
+      mediapipe::tasks::c::components::containers::CppConvertToCategory(classifications_in.categories[j],
+                           &(classifications_out.categories[j]));
+    }
+
+    classifications_out.head_index = classifications_in.head_index;
+    classifications_out.head_name =
+        classifications_in.head_name.has_value()
+            ? strdup(classifications_in.head_name->c_str())
+            : nullptr;
+    *value_out = classifications_out;
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_ALL
+}
+
+void mp_tasks_c_components_containers_CppCloseClassifications(Classifications data) {
+  // cf. mediapipe::tasks::c::components::containers::CppCloseClassificationResult
+  for (uint32_t j = 0; j < data.categories_count; ++j) {
+    mediapipe::tasks::c::components::containers::CppCloseCategory(&data.categories[j]);
+  }
+  delete[] data.categories;
+  data.categories = nullptr;
+
+  free(data.head_name);
+  data.head_name = nullptr;
+}
+
 MpReturnCode mp_Packet__GetClassificationResult(mediapipe::Packet* packet, ClassificationResult* value_out) {
   TRY_ALL
     auto proto = packet->Get<mediapipe::tasks::components::containers::proto::ClassificationResult>();

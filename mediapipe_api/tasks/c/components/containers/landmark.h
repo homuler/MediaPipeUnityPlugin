@@ -15,10 +15,14 @@
 
 extern "C" {
 
+MP_CAPI(MpReturnCode) mp_Packet__GetNormalizedLandmarks(mediapipe::Packet* packet, NormalizedLandmarks* value_out);
+MP_CAPI(void) mp_tasks_c_components_containers_CppCloseNormalizedLandmarks(NormalizedLandmarks data);
 MP_CAPI(MpReturnCode) mp_Packet__GetNormalizedLandmarksVector(mediapipe::Packet* packet, mp_api::StructArray<NormalizedLandmarks>* value_out);
-MP_CAPI(void) mp_api_NormalizedLandmarksArray__delete(mp_api::StructArray<NormalizedLandmarks> data);
+MP_CAPI(void) mp_api_NormalizedLandmarksArray__delete(mp_api::StructArray<NormalizedLandmarks> array);
+MP_CAPI(MpReturnCode) mp_Packet__GetLandmarks(mediapipe::Packet* packet, Landmarks* value_out);
+MP_CAPI(void) mp_tasks_c_components_containers_CppCloseLandmarks(Landmarks data);
 MP_CAPI(MpReturnCode) mp_Packet__GetLandmarksVector(mediapipe::Packet* packet, mp_api::StructArray<Landmarks>* value_out);
-MP_CAPI(void) mp_api_LandmarksArray__delete(mp_api::StructArray<Landmarks> data);
+MP_CAPI(void) mp_api_LandmarksArray__delete(mp_api::StructArray<Landmarks> array);
 
 }  // extern "C"
 

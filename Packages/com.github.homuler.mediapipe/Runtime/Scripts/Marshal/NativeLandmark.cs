@@ -55,6 +55,11 @@ namespace Mediapipe
     private readonly IntPtr _landmarks;
     public readonly uint landmarksCount;
 
+    public void Dispose()
+    {
+      UnsafeNativeMethods.mp_tasks_c_components_containers_CppCloseLandmarks(this);
+    }
+
     public ReadOnlySpan<NativeLandmark> AsReadOnlySpan()
     {
       unsafe
@@ -69,6 +74,11 @@ namespace Mediapipe
   {
     private readonly IntPtr _landmarks;
     public readonly uint landmarksCount;
+
+    public void Dispose()
+    {
+      UnsafeNativeMethods.mp_tasks_c_components_containers_CppCloseNormalizedLandmarks(this);
+    }
 
     public ReadOnlySpan<NativeNormalizedLandmark> AsReadOnlySpan()
     {

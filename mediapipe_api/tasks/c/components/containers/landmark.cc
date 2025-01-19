@@ -1,5 +1,20 @@
 #include "mediapipe_api/tasks/c/components/containers/landmark.h"
 
+MpReturnCode mp_Packet__GetNormalizedLandmarks(mediapipe::Packet* packet, NormalizedLandmarks* value_out) {
+  TRY_ALL
+    // get NormalizedLandmarkList and convert it to NormalizedLandmarks*
+    auto proto = packet->Get<mediapipe::NormalizedLandmarkList>();
+    auto landmarks = mediapipe::tasks::components::containers::ConvertToNormalizedLandmarks(proto);
+    mediapipe::tasks::c::components::containers::CppConvertToNormalizedLandmarks(landmarks.landmarks, value_out);
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_ALL
+}
+
+
+void mp_tasks_c_components_containers_CppCloseNormalizedLandmarks(NormalizedLandmarks data) {
+  mediapipe::tasks::c::components::containers::CppCloseNormalizedLandmarks(&data);
+}
+
 MpReturnCode mp_Packet__GetNormalizedLandmarksVector(mediapipe::Packet* packet, mp_api::StructArray<NormalizedLandmarks>* value_out) {
   TRY_ALL
     // get std::vector<NormalizedLandmarkList> and convert it to NormalizedLandmarks*
@@ -26,6 +41,20 @@ void mp_api_NormalizedLandmarksArray__delete(mp_api::StructArray<NormalizedLandm
     mediapipe::tasks::c::components::containers::CppCloseNormalizedLandmarks(landmarks++);
   }
   delete[] array.data;
+}
+
+MpReturnCode mp_Packet__GetLandmarks(mediapipe::Packet* packet, Landmarks* value_out) {
+  TRY_ALL
+    // get LandmarkList and convert it to Landmarks*
+    auto proto = packet->Get<mediapipe::LandmarkList>();
+    auto landmarks = mediapipe::tasks::components::containers::ConvertToLandmarks(proto);
+    mediapipe::tasks::c::components::containers::CppConvertToLandmarks(landmarks.landmarks, value_out);
+    RETURN_CODE(MpReturnCode::Success);
+  CATCH_ALL
+}
+
+void mp_tasks_c_components_containers_CppCloseLandmarks(Landmarks data) {
+  mediapipe::tasks::c::components::containers::CppCloseLandmarks(&data);
 }
 
 MpReturnCode mp_Packet__GetLandmarksVector(mediapipe::Packet* packet, mp_api::StructArray<Landmarks>* value_out) {
