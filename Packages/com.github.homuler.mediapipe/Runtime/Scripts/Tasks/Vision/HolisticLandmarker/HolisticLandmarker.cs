@@ -44,8 +44,6 @@ namespace Mediapipe.Tasks.Vision.HolisticLandmarker
     private readonly Tasks.Core.TaskRunner.PacketsCallback _packetCallback;
 #pragma warning restore IDE0052
 
-    private readonly NormalizedRect _normalizedRect = new NormalizedRect();
-
     private HolisticLandmarker(
       CalculatorGraphConfig graphConfig,
       Core.RunningMode runningMode,
@@ -130,13 +128,12 @@ namespace Mediapipe.Tasks.Vision.HolisticLandmarker
     ///   The image can be of any size with format RGB or RGBA.
     /// </summary>
     /// <param name="image">MediaPipe Image.</param>
-    /// <param name="imageProcessingOptions">Options for image processing.</param>
     /// <returns>
     ///   The holistic landmarks detection results.
     /// </returns>
-    public HolisticLandmarkerResult Detect(Image image, Core.ImageProcessingOptions? imageProcessingOptions = null)
+    public HolisticLandmarkerResult Detect(Image image)
     {
-      using var outputPackets = DetectInternal(image, imageProcessingOptions);
+      using var outputPackets = DetectInternal(image);
 
       var result = default(HolisticLandmarkerResult);
       _ = TryBuildHolisticLandmarkerResult(outputPackets, ref result);
@@ -150,23 +147,20 @@ namespace Mediapipe.Tasks.Vision.HolisticLandmarker
     ///   The image can be of any size with format RGB or RGBA.
     /// </summary>
     /// <param name="image">MediaPipe Image.</param>
-    /// <param name="imageProcessingOptions">Options for image processing.</param>
     /// <param name="result">
     ///   <see cref="HolisticLandmarkerResult"/> to which the result will be written.
     /// </param>
     /// <returns>
     ///   <see langword="true"/> if some faces are detected, <see langword="false"/> otherwise.
     /// </returns>
-    public bool TryDetect(Image image, Core.ImageProcessingOptions? imageProcessingOptions, ref HolisticLandmarkerResult result)
+    public bool TryDetect(Image image, ref HolisticLandmarkerResult result)
     {
-      using var outputPackets = DetectInternal(image, imageProcessingOptions);
+      using var outputPackets = DetectInternal(image);
       return TryBuildHolisticLandmarkerResult(outputPackets, ref result);
     }
 
-    private PacketMap DetectInternal(Image image, Core.ImageProcessingOptions? imageProcessingOptions)
+    private PacketMap DetectInternal(Image image)
     {
-      ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
-
       var packetMap = new PacketMap();
       packetMap.Emplace(_IMAGE_IN_STREAM_NAME, Packet.CreateImage(image));
 
@@ -184,9 +178,9 @@ namespace Mediapipe.Tasks.Vision.HolisticLandmarker
     /// <returns>
     ///   The holistic landmarks detection results.
     /// </returns>
-    public HolisticLandmarkerResult DetectForVideo(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
+    public HolisticLandmarkerResult DetectForVideo(Image image, long timestampMillisec)
     {
-      using var outputPackets = DetectForVideoInternal(image, timestampMillisec, imageProcessingOptions);
+      using var outputPackets = DetectForVideoInternal(image, timestampMillisec);
 
       var result = default(HolisticLandmarkerResult);
       _ = TryBuildHolisticLandmarkerResult(outputPackets, ref result);
@@ -207,15 +201,14 @@ namespace Mediapipe.Tasks.Vision.HolisticLandmarker
     /// <returns>
     ///   <see langword="true"/> if some poses are detected, <see langword="false"/> otherwise.
     /// </returns>
-    public bool TryDetectForVideo(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions, ref HolisticLandmarkerResult result)
+    public bool TryDetectForVideo(Image image, long timestampMillisec, ref HolisticLandmarkerResult result)
     {
-      using var outputPackets = DetectForVideoInternal(image, timestampMillisec, imageProcessingOptions);
+      using var outputPackets = DetectForVideoInternal(image, timestampMillisec);
       return TryBuildHolisticLandmarkerResult(outputPackets, ref result);
     }
 
-    private PacketMap DetectForVideoInternal(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
+    private PacketMap DetectForVideoInternal(Image image, long timestampMillisec)
     {
-      ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
       var timestampMicrosec = timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND;
 
       var packetMap = new PacketMap();
@@ -236,9 +229,8 @@ namespace Mediapipe.Tasks.Vision.HolisticLandmarker
     ///   input. To lower the overall latency, pose landmarker may drop the input
     ///   images if needed. In other words, it's not guaranteed to have output per
     ///   input image.
-    public void DetectAsync(Image image, long timestampMillisec, Core.ImageProcessingOptions? imageProcessingOptions = null)
+    public void DetectAsync(Image image, long timestampMillisec)
     {
-      ConfigureNormalizedRect(_normalizedRect, imageProcessingOptions, image, roiAllowed: false);
       var timestampMicrosec = timestampMillisec * _MICRO_SECONDS_PER_MILLISECOND;
 
       var packetMap = new PacketMap();
