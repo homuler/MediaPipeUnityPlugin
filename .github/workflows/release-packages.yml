@@ -11,6 +11,7 @@ jobs:
     with:
       ref: ${{ github.event.ref }}
       packageName: package-for-development
+      bazelBuildArgs: '--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0 --macos_minimum_os=13.0 --host_macos_minimum_os=13.0'
       linuxBuildArgs: '--desktop gpu --opencv cmake'
       androidBuildArgs: '--android arm64 --android_ndk_api_level 21'
       macosBuildArgs: '--desktop cpu --opencv cmake --macos_universal'
@@ -23,6 +24,7 @@ jobs:
     with:
       ref: ${{ github.event.ref }}
       packageName: package-for-production
+      bazelBuildArgs: '--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0 --macos_minimum_os=13.0 --host_macos_minimum_os=13.0'
       linuxBuildArgs: '--linkopt="-s" --desktop gpu --opencv cmake'
       androidBuildArgs: '--linkopt="-s" --android arm64 --android_ndk_api_level 21'
       macosBuildArgs: '--linkopt="-s" --desktop cpu --opencv cmake --macos_universal'

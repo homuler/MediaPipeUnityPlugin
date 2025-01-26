@@ -5,21 +5,27 @@ on:
       bazelBuildArgs:
         type: string
         description: A value for `--bazel_build_opts`
+        default: '--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0'
       linuxBuildArgs:
         type: string
-        description: Build options for Linux Build
+        required: false
+        description: Build options for Linux Build (skip if empty)
       androidBuildArgs:
         type: string
-        description: Build options for Android Build
+        required: false
+        description: Build options for Android Build (skip if empty)
       macosBuildArgs:
         type: string
-        description: Build options for macOS Build
+        required: false
+        description: Build options for macOS Build (skip if empty)
       iosBuildArgs:
         type: string
-        description: Build options for iOS Build
+        required: false
+        description: Build options for iOS Build (skip if empty)
       windowsBuildArgs:
         type: string
-        description: Build options for Windows Build
+        required: false
+        description: Build options for Windows Build (skip if empty)
   schedule:
     - cron: 0 12 * * 0,3
 jobs:
@@ -28,10 +34,10 @@ jobs:
     with:
       ref: ${{ github.event.ref }}
       packageName: package
-      bazelBuildArgs: ${{ inputs.bazelBuildArgs || '--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0' }}
-      linuxBuildArgs: ${{ inputs.linuxBuildArgs || '--desktop gpu --opencv cmake' }}
-      androidBuildArgs: ${{ inputs.androidBuildArgs || '--android arm64 --android_ndk_api_level 21' }}
-      macosBuildArgs: ${{ inputs.macosBuildArgs || '--desktop cpu --opencv cmake --macos_universal' }}
-      iosBuildArgs: ${{ inputs.iosBuildArgs || '--ios arm64 --opencv cmake' }}
-      windowsBuildArgs: ${{ inputs.windowsBuildArgs || '--desktop cpu --opencv cmake' }}
+      bazelBuildArgs: ${{ inputs.bazelBuildArgs }}
+      linuxBuildArgs: ${{ inputs.linuxBuildArgs }}
+      androidBuildArgs: ${{ inputs.androidBuildArgs }}
+      macosBuildArgs: ${{ inputs.macosBuildArgs }}
+      iosBuildArgs: ${{ inputs.iosBuildArgs }}
+      windowsBuildArgs: ${{ inputs.windowsBuildArgs }}
     secrets: inherit
