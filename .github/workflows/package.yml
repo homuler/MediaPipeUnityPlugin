@@ -151,7 +151,6 @@ jobs:
       - name: Build MediaPipeUnity.framework
         run: |
           unset ANDROID_NDK_HOME
-          sed -i -e 's/PLEASE_SET_YOUR_BUNDLE_ID_HERE/com.github.homuler.mediapipe.unity/g' mediapipe_api/objc/BUILD
           python build.py build --bazel_build_opts="${{ inputs.bazelBuildArgs }}" ${{ inputs.iosBuildArgs }} -vv
 
       - name: Upload MediaPipeUnity.framework
