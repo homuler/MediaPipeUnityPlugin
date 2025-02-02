@@ -10,22 +10,22 @@ on:
         default: package
       bazelBuildArgs:
         type: string
-        default: '--experimental_scale_timeouts=10.0 --http_timeout_scaling=10.0 --macos_minimum_os=13.0 --host_macos_minimum_os=13.0'
+        description: The value for the "--bazel_build_opts" option, which is commonly used
       linuxBuildArgs:
         type: string
-        default: '--desktop gpu --opencv cmake'
+        description: The build command options to be used for Linux Build
       androidBuildArgs:
         type: string
-        default: '--android arm64 --android_ndk_api_level 21'
+        description: The build command options to be used for Android Build
       macosBuildArgs:
         type: string
-        default: '--desktop cpu --opencv cmake --macos_universal'
+        description: The build command options to be used for macOS Build
       iosBuildArgs:
         type: string
-        default: '--ios arm64 --opencv cmake'
+        description: The build command options to be used for iOS Build
       windowsBuildArgs:
         type: string
-        default: '--desktop cpu --opencv cmake'
+        description: The build command options to be used for Windows Build
     secrets:
       UNITY_EMAIL:
         required: false
@@ -85,6 +85,7 @@ jobs:
           ref: ${{ inputs.ref }}
 
       - name: Build a Docker image
+        if: ${{ inputs.androidBuildArgs != '' }}
         run: |
           docker build --no-cache --build-arg UID=$(id -u) -t mediapipe_unity:latest . -f docker/linux/x86_64/Dockerfile
 
@@ -93,6 +94,7 @@ jobs:
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android
 
       - name: Build
+        if: ${{ inputs.androidBuildArgs != '' }}
         run: |
           docker run --rm \
             --mount type=bind,src=$PWD/Packages,dst=/home/mediapipe/Packages \
@@ -103,8 +105,8 @@ jobs:
       - name: Upload mediapipe_android.aar
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.packageName }}-mediapipe_android.aar
-          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/Android/mediapipe_android.aar
+          name: ${{ inputs.packageName }}-Android
+          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/Android
 
   macos-build:
     runs-on: macos-15
@@ -124,6 +126,7 @@ jobs:
         run: pip install --no-cache-dir --user numpy
 
       - name: Build libmediapipe_c.dylib
+        if: ${{ inputs.macosBuildArgs != '' }}
         run: |
           unset ANDROID_NDK_HOME
           python build.py build --bazel_build_opts="${{ inputs.bazelBuildArgs }}" ${{ inputs.macosBuildArgs }} -vv
@@ -131,8 +134,8 @@ jobs:
       - name: Upload libmediapipe_c.dylib
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.packageName }}-libmediapipe_c.dylib
-          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.dylib
+          name: ${{ inputs.packageName }}-macOS-Plugins
+          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/libmediapipe_c.dylib*
 
   ios-build:
     runs-on: macos-14
@@ -149,6 +152,7 @@ jobs:
         run: pip install --no-cache-dir --user numpy
 
       - name: Build MediaPipeUnity.framework
+        if: ${{ inputs.iosBuildArgs != '' }}
         run: |
           unset ANDROID_NDK_HOME
           python build.py build --bazel_build_opts="${{ inputs.bazelBuildArgs }}" ${{ inputs.iosBuildArgs }} -vv
@@ -156,8 +160,8 @@ jobs:
       - name: Upload MediaPipeUnity.framework
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.packageName }}-MediaPipeUnity.framework
-          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/iOS/MediaPipeUnity.framework
+          name: ${{ inputs.packageName }}-iOS
+          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/iOS
 
   windows-build:
     runs-on: windows-2019
@@ -167,12 +171,14 @@ jobs:
           ref: ${{ inputs.ref }}
 
       - name: Build a Docker image
+        if: ${{ inputs.windowsBuildArgs != '' }}
         run: |
           docker build --no-cache -t mediapipe_unity:latest . -f docker/windows/x86_64/Dockerfile
         shell: cmd
         timeout-minutes: 60
 
       - name: Build
+        if: ${{ inputs.windowsBuildArgs != '' }}
         run: |
           docker run --rm --cpus=2 --memory=8g ^
             --mount type=bind,src=%CD%\Packages,dst=C:\mediapipe\Packages ^
@@ -184,8 +190,8 @@ jobs:
       - name: Upload mediapipe_c.dll
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.packageName }}-mediapipe_c.dll
-          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/mediapipe_c.dll
+          name: ${{ inputs.packageName }}-Windows-Plugins
+          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/mediapipe_c.dll*
 
   package:
     runs-on: ubuntu-latest
@@ -247,25 +253,25 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.packageName }}-base
-      - name: Download mediapipe_android.aar
+      - name: Download Android libraries
         uses: actions/download-artifact@v4
         with:
-          name: ${{ inputs.packageName }}-mediapipe_android.aar
+          name: ${{ inputs.packageName }}-Android
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/Android
-      - name: Download libmediapipe_c.dylib
+      - name: Download macOS libraries
         uses: actions/download-artifact@v4
         with:
-          name: ${{ inputs.packageName }}-libmediapipe_c.dylib
+          name: ${{ inputs.packageName }}-macOS-Plugins
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins
-      - name: Download MediaPipeUnity.framework
+      - name: Download iOS libraries
         uses: actions/download-artifact@v4
         with:
-          name: ${{ inputs.packageName }}-MediaPipeUnity.framework
-          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/iOS/MediaPipeUnity.framework
-      - name: Download mediapipe_c.dll
+          name: ${{ inputs.packageName }}-iOS
+          path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/iOS
+      - name: Download Windows libraries
         uses: actions/download-artifact@v4
         with:
-          name: ${{ inputs.packageName }}-mediapipe_c.dll
+          name: ${{ inputs.packageName }}-Windows-Plugins
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins
 
       - name: Zip all
@@ -326,20 +332,20 @@ jobs:
 
       - uses: geekyeggo/delete-artifact@v4
         with:
-          name: ${{ inputs.packageName }}-mediapipe_android.aar
+          name: ${{ inputs.packageName }}-Android
           failOnError: false
 
       - uses: geekyeggo/delete-artifact@v4
         with:
-          name: ${{ inputs.packageName }}-libmediapipe_c.dylib
+          name: ${{ inputs.packageName }}-macOS-Plugins
           failOnError: false
 
       - uses: geekyeggo/delete-artifact@v4
         with:
-          name: ${{ inputs.packageName }}-MediaPipeUnity.framework
+          name: ${{ inputs.packageName }}-iOS
           failOnError: false
 
       - uses: geekyeggo/delete-artifact@v4
         with:
-          name: ${{ inputs.packageName }}-mediapipe_c.dll
+          name: ${{ inputs.packageName }}-Windows-Plugins
           failOnError: false
