@@ -256,6 +256,7 @@ namespace Mediapipe.Tasks.Vision.ImageSegmenter
         return null;
       }
 
+      var lockObj = new object();
       var segmentationResult = ImageSegmenterResult.Alloc(options.outputConfidenceMasks);
 
       return (PacketMap outputPackets) =>
@@ -269,13 +270,16 @@ namespace Mediapipe.Tasks.Vision.ImageSegmenter
         using var image = outImagePacket.Get();
         var timestamp = outImagePacket.TimestampMicroseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
-        if (TryBuildImageSegmenterResult(outputPackets, ref segmentationResult))
+        lock (lockObj)
         {
-          resultCallback(segmentationResult, image, timestamp);
-        }
-        else
-        {
-          resultCallback(default, image, timestamp);
+          if (TryBuildImageSegmenterResult(outputPackets, ref segmentationResult))
+          {
+            resultCallback(segmentationResult, image, timestamp);
+          }
+          else
+          {
+            resultCallback(default, image, timestamp);
+          }
         }
       };
     }

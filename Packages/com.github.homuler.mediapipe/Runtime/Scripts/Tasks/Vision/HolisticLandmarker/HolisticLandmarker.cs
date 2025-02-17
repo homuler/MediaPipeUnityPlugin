@@ -247,6 +247,7 @@ namespace Mediapipe.Tasks.Vision.HolisticLandmarker
         return null;
       }
 
+      var lockObj = new object();
       var holisticLandmarkerResult = new HolisticLandmarkerResult();
 
       return (PacketMap outputPackets) =>
@@ -260,13 +261,16 @@ namespace Mediapipe.Tasks.Vision.HolisticLandmarker
         using var image = outImagePacket.Get();
         var timestamp = outImagePacket.TimestampMicroseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
-        if (TryBuildHolisticLandmarkerResult(outputPackets, ref holisticLandmarkerResult))
+        lock (lockObj)
         {
-          resultCallback(in holisticLandmarkerResult, image, timestamp);
-        }
-        else
-        {
-          resultCallback(default, image, timestamp);
+          if (TryBuildHolisticLandmarkerResult(outputPackets, ref holisticLandmarkerResult))
+          {
+            resultCallback(in holisticLandmarkerResult, image, timestamp);
+          }
+          else
+          {
+            resultCallback(default, image, timestamp);
+          }
         }
       };
     }

@@ -238,6 +238,7 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
         return null;
       }
 
+      var lockObj = new object();
       var handLandmarkerResult = HandLandmarkerResult.Alloc(options.numHands);
 
       return (PacketMap outputPackets) =>
@@ -251,13 +252,16 @@ namespace Mediapipe.Tasks.Vision.HandLandmarker
         using var image = outImagePacket.Get();
         var timestamp = outImagePacket.TimestampMicroseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
-        if (TryBuildHandLandmarkerResult(outputPackets, ref handLandmarkerResult))
+        lock (lockObj)
         {
-          resultCallback(handLandmarkerResult, image, timestamp);
-        }
-        else
-        {
-          resultCallback(default, image, timestamp);
+          if (TryBuildHandLandmarkerResult(outputPackets, ref handLandmarkerResult))
+          {
+            resultCallback(handLandmarkerResult, image, timestamp);
+          }
+          else
+          {
+            resultCallback(default, image, timestamp);
+          }
         }
       };
     }

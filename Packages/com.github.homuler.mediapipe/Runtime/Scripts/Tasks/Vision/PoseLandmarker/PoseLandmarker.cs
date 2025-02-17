@@ -238,6 +238,7 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
         return null;
       }
 
+      var lockObj = new object();
       var poseLandmarkerResult = PoseLandmarkerResult.Alloc(options.numPoses, options.outputSegmentationMasks);
 
       return (PacketMap outputPackets) =>
@@ -251,13 +252,16 @@ namespace Mediapipe.Tasks.Vision.PoseLandmarker
         using var image = outImagePacket.Get();
         var timestamp = outImagePacket.TimestampMicroseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
-        if (TryBuildPoseLandmarkerResult(outputPackets, ref poseLandmarkerResult))
+        lock (lockObj)
         {
-          resultCallback(poseLandmarkerResult, image, timestamp);
-        }
-        else
-        {
-          resultCallback(default, image, timestamp);
+          if (TryBuildPoseLandmarkerResult(outputPackets, ref poseLandmarkerResult))
+          {
+            resultCallback(poseLandmarkerResult, image, timestamp);
+          }
+          else
+          {
+            resultCallback(default, image, timestamp);
+          }
         }
       };
     }

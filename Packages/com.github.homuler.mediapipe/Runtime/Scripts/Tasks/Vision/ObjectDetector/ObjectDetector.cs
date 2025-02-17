@@ -247,6 +247,7 @@ namespace Mediapipe.Tasks.Vision.ObjectDetector
         return null;
       }
 
+      var lockObj = new object();
       var result = ObjectDetectorResult.Alloc(Math.Max(options.maxResults ?? 0, 0));
 
       return (PacketMap outputPackets) =>
@@ -260,13 +261,16 @@ namespace Mediapipe.Tasks.Vision.ObjectDetector
         using var image = outImagePacket.Get();
         var timestamp = outImagePacket.TimestampMicroseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
-        if (TryBuildObjectDetectorResult(outputPackets, ref result))
+        lock (lockObj)
         {
-          resultCallback(result, image, timestamp);
-        }
-        else
-        {
-          resultCallback(default, image, timestamp);
+          if (TryBuildObjectDetectorResult(outputPackets, ref result))
+          {
+            resultCallback(result, image, timestamp);
+          }
+          else
+          {
+            resultCallback(default, image, timestamp);
+          }
         }
       };
     }
