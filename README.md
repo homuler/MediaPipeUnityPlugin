@@ -82,7 +82,7 @@ To run sample scenes on your mobile devices, you need to place required models p
 > :warning: In most cases, you don't need to build the plugin by yourself. Only if the pre-built package doesn't work for you, please build the plugin by yourself.
 
 This repository **doesn't include required libraries or models**, so if you clone this repository, you need to build the plugin by yourself.\
-See [the build guide](./docs/build/README.md) for more details.
+See [the build guide](./docs/Build.md) for more details.
 
 ## Build a package by yourself
 
