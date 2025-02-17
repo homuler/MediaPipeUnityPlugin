@@ -382,11 +382,12 @@ If native libraries (`libmediapipe_c.{so,dylib,dll} / mediapipe_android.aar / Me
 
 1.  Native libraries are incompatible with your device
 
-1.  Libraries built on Linux machines (`libmediapipe_c.so`) won't work on your Windows machine.
-1.  If it occurs on your Android device, maybe
+   -  Libraries built on Linux machines (`libmediapipe_c.so`) won't work on your Windows machine.
+   -  If it occurs on your Android device, maybe
 
-    - the architecture is wrong (`--android armv7`) or
-    - the API Level is not compatible (specify the `--android_ndk_api_level` option when running the [build command](#build-command))
+      - the architecture is wrong (`--android armv7`) or
+      - the API Level is not compatible (specify the `--android_ndk_api_level` option when running the [build command](#build-command)) or
+      - `libc++_shared.so` is not bundled with your apk(cf. [README](../README.md#for-android))
 
 1.  Dependent libraries are not linked
 
