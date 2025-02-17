@@ -155,5 +155,12 @@ namespace Mediapipe.Unity
     {
       return GraphicsFormatUtility.GetTextureFormat(texture.graphicsFormat);
     }
+
+    public Experimental.ImageTransformationOptions GetTransformationOptions(bool expectedToBeMirrored = false)
+    {
+      var shouldFlipHorizontally = (isFrontFacing || expectedToBeMirrored) ^ isHorizontallyFlipped;
+      var shouldFlipVertically = isVerticallyFlipped;
+      return Experimental.ImageTransformationOptions.Build(shouldFlipHorizontally, shouldFlipVertically, rotation);
+    }
   }
 }
