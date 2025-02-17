@@ -246,6 +246,7 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
         return null;
       }
 
+      var lockObj = new object();
       var result = FaceDetectionResult.Alloc(options.numFaces);
 
       return (PacketMap outputPackets) =>
@@ -259,13 +260,16 @@ namespace Mediapipe.Tasks.Vision.FaceDetector
         using var image = outImagePacket.Get();
         var timestamp = outImagePacket.TimestampMicroseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
-        if (TryBuildFaceDetectorResult(outputPackets, ref result))
+        lock (lockObj)
         {
-          resultCallback(result, image, timestamp);
-        }
-        else
-        {
-          resultCallback(default, image, timestamp);
+          if (TryBuildFaceDetectorResult(outputPackets, ref result))
+          {
+            resultCallback(result, image, timestamp);
+          }
+          else
+          {
+            resultCallback(default, image, timestamp);
+          }
         }
       };
     }

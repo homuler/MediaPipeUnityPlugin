@@ -257,6 +257,7 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
         return null;
       }
 
+      var lockObj = new object();
       var faceLandmarkerResult = FaceLandmarkerResult.Alloc(options.numFaces, options.outputFaceBlendshapes, options.outputFaceTransformationMatrixes);
 
       return (PacketMap outputPackets) =>
@@ -270,13 +271,16 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
         using var image = outImagePacket.Get();
         var timestamp = outImagePacket.TimestampMicroseconds() / _MICRO_SECONDS_PER_MILLISECOND;
 
-        if (TryBuildFaceLandmarkerResult(outputPackets, faceGeometriesForRead, ref faceLandmarkerResult))
+        lock (lockObj)
         {
-          resultCallback(faceLandmarkerResult, image, timestamp);
-        }
-        else
-        {
-          resultCallback(default, image, timestamp);
+          if (TryBuildFaceLandmarkerResult(outputPackets, faceGeometriesForRead, ref faceLandmarkerResult))
+          {
+            resultCallback(faceLandmarkerResult, image, timestamp);
+          }
+          else
+          {
+            resultCallback(default, image, timestamp);
+          }
         }
       };
     }
@@ -303,7 +307,7 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
       }
 
       var faceLandmarks = result.faceLandmarks ?? new List<NormalizedLandmarks>();
-      faceLandmarksPacket.Get(result.faceLandmarks);
+      faceLandmarksPacket.Get(faceLandmarks);
 
       var faceBlendshapesList = result.faceBlendshapes;
       using var faceBlendshapesPacket = outputPackets.At<List<Classifications>>(_BLENDSHAPES_STREAM_NAME);
