@@ -61,26 +61,55 @@ node {
 }
 ```
 
-For more detailed usage, see [the API Overview](https://github.com/homuler/MediaPipeUnityPlugin/wiki/API-Overview) page or the tutorial on [the Getting Started page](https://github.com/homuler/MediaPipeUnityPlugin/wiki/Getting-Started).
+For more detailed usage, see [the API Overview](https://github.com/homuler/MediaPipeUnityPlugin/wiki/API-Overview) page or [the tutorials](./docs).
 
 ## :hammer_and_wrench: Installation
 
-This repository **does not contain required libraries** (e.g. `libmediapipe_c.so`, `Google.Protobuf.dll`, etc).\
-You can download them from [the release page](https://github.com/homuler/MediaPipeUnityPlugin/releases) instead.
+Please first download the pre-built package from the [releases page](https://github.com/homuler/MediaPipeUnityPlugin/releases).
 
-|                 file                  |                                                      contents                                                      |
-| :-----------------------------------: | :----------------------------------------------------------------------------------------------------------------: |
-|    `MediaPipeUnityPlugin-all.zip`     | All the source code with required libraries. If you need to run sample scenes on your mobile devices, prefer this. |
-| `com.github.homuler.mediapipe-*.tgz`  |                      [A tarball package](https://docs.unity3d.com/Manual/upm-ui-tarball.html)                      |
-| `MediaPipeUnityPlugin.*.unitypackage` |                                               A `.unitypackage` file                                               |
+| file                                  | contents                                                                 |
+| ------------------------------------- | ------------------------------------------------------------------------ |
+| MediaPipeUnityPlugin-all.zip          | All the source code with required libraries.                             |
+| MediaPipeUnityPlugin-all-stripped.zip | Same as `MediaPipeUnityPlugin-all.zip` but the symbols are stripped.     |
+| com.github.homuler.mediapipe-\*.tgz   | A [tarball package](https://docs.unity3d.com/Manual/upm-ui-tarball.html) |
+| MediaPipeUnityPlugin.\*.unitypackage  | A .unitypackage file                                                     |
 
-If you want to customize the package or minify the package size, you need to build them by yourself.\
-For a step-by-step guide, please refer to the [Installation Guide](https://github.com/homuler/MediaPipeUnityPlugin/wiki/Installation-Guide) on Wiki.\
-You can also make use of [the Package Workflow](https://github.com/homuler/MediaPipeUnityPlugin/blob/master/.github/workflows/package.yml) on Github Actions after forking this repository.
+If you need to run sample scenes on your mobile devices, prefer `MediaPipeUnityPlugin-all.zip` or `MediaPipeUnityPlugin-all-stripped.zip`.\
+To run sample scenes on your mobile devices, you need to place required models properly, but most required setup is already done in `MediaPipeUnityPlugin-all.zip`.\
 
-> :warning: libraries that can be built differ depending on your environment.
+## Build the plugin by yourself
 
-### Supported Platforms
+> :warning: In most cases, you don't need to build the plugin by yourself. Only if the pre-built package doesn't work for you, please build the plugin by yourself.
+
+This repository **doesn't include required libraries or models**, so if you clone this repository, you need to build the plugin by yourself.\
+See [the build guide](./docs/build/README.md) for more details.
+
+## Build a package by yourself
+
+If you want, you can also build the plugin by yourself using `MediaPipeUnityPlugin-all(-stripped).zip`.
+
+### Build a unity package
+
+1. Open this project
+1. Click `Tools > Export Unitypackage`
+   ![export-unity-package](https://user-images.githubusercontent.com/4690128/163669270-2d5365eb-eac1-46b1-aed5-83c28a377090.png)
+
+- `MediaPipeUnity.[version].unitypackage` file will be created at the project root.
+
+### Build a local tarball file
+
+1. Install `npm` command
+1. Build a tarball file
+
+```sh
+cd Packages/com.github.homuler.mediapipe
+npm pack
+# com.github.homuler.mediapipe-[version].tgz will be created
+
+mv com.github.homuler.mediapipe-[version].tgz your/favorite/path
+```
+
+## Supported Platforms
 
 > :warning: GPU mode is not supported on macOS and Windows.
 
@@ -94,7 +123,8 @@ You can also make use of [the Package Workflow](https://github.com/homuler/Media
 [^1]: Tested on Arch Linux.
 [^2]: Running MediaPipe on Windows is [experimental](https://ai.google.dev/edge/mediapipe/framework/getting_started/install#installing_on_windows).
 
-### Supported Solutions
+## Supported Solutions
+
 This plugin implements the following [MediaPipe Tasks](https://ai.google.dev/edge/mediapipe/solutions/tasks) C# APIs.
 
 cf. [The official available solutions](https://ai.google.dev/edge/mediapipe/solutions/guide#available_solutions)
@@ -120,11 +150,50 @@ cf. [The official available solutions](https://ai.google.dev/edge/mediapipe/solu
 |   Audio classification   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 
 ### Legacy Solutions
+
 You can also use [MediaPipe Framework](https://ai.google.dev/edge/mediapipe/framework), which allows you to run [Legacy Solutions](https://ai.google.dev/edge/mediapipe/solutions/guide#legacy). However, please note that support for these solutions has ended.
+
+# :book: Usage
+
+Once you've downloaded the pre-built package, please import the plugin into your project.
+
+- [.unitypackage](https://docs.unity3d.com/Manual/upm-ui-import.html)
+- [.tar.gz](https://docs.unity3d.com/Manual/upm-ui-tarball.html)
+
+## For Android
+
+:skull_and_crossbones: If you need to build your app for Android, **please ensure you include `libstdc++_shared.so` in your APK**[^1], otherwise `DllNotFoundException` will be thrown at runtime.\
+
+[^1]: `mediapipe_android.aar` contains `libopencv_java4.so` and it depends on `libstdc++_shared.so`. However, some project or plugins may already include `libstdc++_shared.so`, so we don't include `libstdc++_shared.so` in `mediapipe_android.aar`.
+
+The easiest way to include `libstdc++_shared.so` in your APK is to place it in the `Assets/Plugins/Android` directory of your project.
+
+You can also include `libstdc++_shared.so` at build time by adding the following code to your [`mainTemplate.gradle` file](https://docs.unity3d.com/Manual/gradle-templates.html), and the sample project is using this method.
+
+```gradle
+// Include libc++_shared.so
+task copyLibcppShared(type: Copy) {
+    def ndkDir = android.ndkDirectory
+    from("$ndkDir/sources/cxx-stl/llvm-libc++/libs") { include '**/libc++_shared.so' }
+    into("$projectDir/src/main/jniLibs")
+}
+clean.dependsOn 'cleanCopyLibcppShared'
+
+tasks.whenTaskAdded { task ->
+    if (task.name == "mergeDebugJniLibFolders" || task.name == "mergeReleaseJniLibFolders") {
+        task.dependsOn("copyLibcppShared")
+    }
+}
+```
 
 ## :plate_with_cutlery: Try the sample app
 
+Before using the plugin in your project, it's strongly recommended that you check if sample scenes work.
+
+![test-face-mesh](https://user-images.githubusercontent.com/4690128/163668702-26357605-c1f2-4678-8fce-3adc258a9aa1.png)
+
 ### Example Solutions
+
 Some solutions (including Legacy solutions) can be tested using the sample app.
 Please check [`Assets/MediaPipeUnity/Samples/Scenes`](https://github.com/homuler/MediaPipeUnityPlugin/tree/master/Assets/MediaPipeUnity/Samples/Scenes) to see which solutions have samples.
 
@@ -150,11 +219,30 @@ To run it on your devices, switch it to `StreamingAssets` and copy the required 
 
 ![asset-loader-type](https://github.com/homuler/MediaPipeUnityPlugin/assets/4690128/f7059140-4da9-4201-a232-83ff07cd63df)
 
-See [the tutorial](https://github.com/homuler/MediaPipeUnityPlugin/wiki/Getting-Started#load-model-files) for more details.
+## :warning: Technical Limitations
 
-## :book: Wiki
+### UnityEditor / Your application may crash!
 
-https://github.com/homuler/MediaPipeUnityPlugin/wiki
+Since this plugin uses native libraries under the hood, if there is a bug in those libraries, the UnityEditor or the application may crash at runtime.
+
+Additionally, in some cases, MediaPipe may crash the entire program by sending a `SIGABRT` signal instead of throwing an exception.
+
+This may not be a problem in production since it usually happens when there's a fatal bug in the application code, and such bugs are probably fixed before release.\
+However, in a development environment, it is very annoying since the UnityEditor crashes.
+
+On Linux and macOS, this plugin avoids UnityEditor crashing by handling `SIGABRT`, so if UnityEditor crashes, please let us know!\
+On Windows, there seem to be no ways to handle `SIGABRT` properly, so if you cannot tolerate this, use a different OS.
+
+### Graphics API
+
+If you want to run inference using a GPU, you cannot use OpenGL Core API.\
+Otherwise, you will encounter an error like the following:
+
+```txt
+InternalException: INTERNAL: ; eglMakeCurrent() returned error 0x3000_mediapipe/mediapipe/gpu/gl_context_egl.cc:261)
+```
+
+In practice, this error only occurs on PC standalone builds, and in such cases, please switch the Graphics API to Vulkan.
 
 ## :scroll: LICENSE
 
