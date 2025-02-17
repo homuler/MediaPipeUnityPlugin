@@ -6,7 +6,7 @@
 
 using NUnit.Framework;
 
-namespace Mediapipe.Unity.Sample.Tests
+namespace Mediapipe.Unity.Experimental.Tests
 {
   public class ImageTransformationOptionsTest
   {

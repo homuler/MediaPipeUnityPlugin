@@ -1,10 +1,10 @@
-// Copyright (c) 2023 homuler
+// Copyright (c) 2021 homuler
 //
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-namespace Mediapipe.Unity.Sample
+namespace Mediapipe.Unity.Experimental
 {
   public readonly struct ImageTransformationOptions
   {
@@ -28,14 +28,4 @@ namespace Mediapipe.Unity.Sample
       return new ImageTransformationOptions(flipHorizontally, flipVertically, rotation);
     }
   }
-
-  public static class ImageSourceExtension
-  {
-    public static ImageTransformationOptions GetTransformationOptions(this ImageSource imageSource, bool expectedToBeMirrored = false)
-    {
-      var shouldFlipHorizontally = (imageSource.isFrontFacing || expectedToBeMirrored) ^ imageSource.isHorizontallyFlipped;
-      var shouldFlipVertically = imageSource.isVerticallyFlipped;
-      return ImageTransformationOptions.Build(shouldFlipHorizontally, shouldFlipVertically, imageSource.rotation);
-    }
-  } 
 }
