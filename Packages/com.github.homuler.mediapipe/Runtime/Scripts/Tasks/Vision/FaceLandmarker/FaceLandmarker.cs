@@ -307,7 +307,7 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
       }
 
       var faceLandmarks = result.faceLandmarks ?? new List<NormalizedLandmarks>();
-      faceLandmarksPacket.Get(result.faceLandmarks);
+      faceLandmarksPacket.Get(faceLandmarks);
 
       var faceBlendshapesList = result.faceBlendshapes;
       using var faceBlendshapesPacket = outputPackets.At<List<Classifications>>(_BLENDSHAPES_STREAM_NAME);
