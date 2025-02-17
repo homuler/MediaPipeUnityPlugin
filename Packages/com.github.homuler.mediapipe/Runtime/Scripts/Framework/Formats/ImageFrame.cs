@@ -66,10 +66,11 @@ namespace Mediapipe
           : this(format, width, height, widthStep, pixelData, _VoidDeleter)
     { }
 
-    // TODO: detect format from the texture
     public ImageFrame(ImageFormat.Types.Format format, Texture2D texture) :
         this(format, texture.width, texture.height, format.NumberOfChannels() * texture.width, texture.GetRawTextureData<byte>())
     { }
+
+    public ImageFrame(Texture2D texture) : this(texture.format.ToImageFormat(), texture) { }
 
     protected override void DeleteMpPtr()
     {
