@@ -93,6 +93,7 @@ namespace Mediapipe.Unity.Experimental
       }
       _glSyncToken?.Dispose();
       _ = _InstanceTable.Remove(_instanceId);
+      UnityEngine.Object.Destroy(_texture);
     }
 
     public void CopyTexture(Texture dst) => Graphics.CopyTexture(_texture, dst);

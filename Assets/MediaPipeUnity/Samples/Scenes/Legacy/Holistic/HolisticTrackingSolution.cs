@@ -63,6 +63,13 @@ namespace Mediapipe.Unity.Sample.Holistic
       set => graphRunner.minTrackingConfidence = value;
     }
 
+    public override void Stop()
+    {
+      base.Stop();
+      _textureFramePool?.Dispose();
+      _textureFramePool = null;
+    }
+
     protected override IEnumerator Run()
     {
       var graphInitRequest = graphRunner.WaitForInit(runningMode);
