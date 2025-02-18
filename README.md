@@ -75,7 +75,7 @@ Please first download the pre-built package from the [releases page](https://git
 | MediaPipeUnityPlugin.\*.unitypackage  | A .unitypackage file                                                     |
 
 If you need to run sample scenes on your mobile devices, prefer `MediaPipeUnityPlugin-all.zip` or `MediaPipeUnityPlugin-all-stripped.zip`.\
-To run sample scenes on your mobile devices, you need to place required models properly, but most required setup is already done in `MediaPipeUnityPlugin-all.zip`.\
+To run sample scenes on your mobile devices, you need to place required models properly, but most required setup is already done in `MediaPipeUnityPlugin-all.zip`.
 
 ## Build the plugin by yourself
 
@@ -162,9 +162,9 @@ Once you've downloaded the pre-built package, please import the plugin into your
 
 ## For Android
 
-:skull_and_crossbones: If you need to build your app for Android, **please ensure you include `libstdc++_shared.so` in your APK**[^1], otherwise `DllNotFoundException` will be thrown at runtime.\
+:skull_and_crossbones: If you need to build your app for Android, **please ensure you include `libstdc++_shared.so` in your APK**[^3], otherwise `DllNotFoundException` will be thrown at runtime.
 
-[^1]: `mediapipe_android.aar` contains `libopencv_java4.so` and it depends on `libstdc++_shared.so`. However, some project or plugins may already include `libstdc++_shared.so`, so we don't include `libstdc++_shared.so` in `mediapipe_android.aar`.
+[^3]: `mediapipe_android.aar` contains `libopencv_java4.so` and it depends on `libstdc++_shared.so`. However, some project or plugins may already include `libstdc++_shared.so`, so we don't include `libstdc++_shared.so` in `mediapipe_android.aar`.
 
 The easiest way to include `libstdc++_shared.so` in your APK is to place it in the `Assets/Plugins/Android` directory of your project.
 
@@ -235,7 +235,7 @@ On Windows, there seem to be no ways to handle `SIGABRT` properly, so if you can
 
 ### Graphics API
 
-If you want to run inference using a GPU, you cannot use OpenGL Core API.\
+If you want to run inference using a GPU, you cannot use OpenGL Core API.
 Otherwise, you will encounter an error like the following:
 
 ```txt
