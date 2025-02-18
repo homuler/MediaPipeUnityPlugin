@@ -15,6 +15,14 @@ namespace Mediapipe.Unity.Sample.MediaPipeVideo
     private Texture2D _outputTexture;
     private Experimental.TextureFramePool _textureFramePool;
 
+    public override void Stop()
+    {
+      base.Stop();
+      _textureFramePool?.Dispose();
+      _textureFramePool = null;
+      Destroy(_outputTexture);
+    }
+
     protected override IEnumerator Run()
     {
       var graphInitRequest = graphRunner.WaitForInit(runningMode);
