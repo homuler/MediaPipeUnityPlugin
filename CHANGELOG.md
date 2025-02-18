@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.16.0](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.15.0...v0.16.0) (2025-02-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* update OpenCV version to 4.10.0 (#1295)
+* MediaPipe v0.10.20 (#1290)
+* use macos-13 image (#1283)
+
+### Features
+
+* create Image/ImageFrame from Texture2D ([#1329](https://github.com/homuler/MediaPipeUnityPlugin/issues/1329)) ([e85d987](https://github.com/homuler/MediaPipeUnityPlugin/commit/e85d987bdcf28ff206cb64473b77f132aa7e0549))
+* drop Unity 2021 support ([#1288](https://github.com/homuler/MediaPipeUnityPlugin/issues/1288)) ([4bf760d](https://github.com/homuler/MediaPipeUnityPlugin/commit/4bf760d42d9a7c1c0a51e40472f26b77c3389bf9))
+* implement HolisticLandmarker ([#1315](https://github.com/homuler/MediaPipeUnityPlugin/issues/1315)) ([da27ade](https://github.com/homuler/MediaPipeUnityPlugin/commit/da27ade660828b6c0e334279641a9f53d04851ca))
+* implement Packet getters for HolisticLandmarker ([#1314](https://github.com/homuler/MediaPipeUnityPlugin/issues/1314)) ([49d8ed5](https://github.com/homuler/MediaPipeUnityPlugin/commit/49d8ed5339c6163b66cbd8d77563e32645e3169d))
+* move ImageTransformationOptions to Packages ([#1327](https://github.com/homuler/MediaPipeUnityPlugin/issues/1327)) ([04b46f4](https://github.com/homuler/MediaPipeUnityPlugin/commit/04b46f4a7bb5f7164783cd8e00a48fcee548b86a))
+* **sample:** implement ImageReadMode ([#1307](https://github.com/homuler/MediaPipeUnityPlugin/issues/1307)) ([bc0aff2](https://github.com/homuler/MediaPipeUnityPlugin/commit/bc0aff218a7cb61cc9d8fa7869f761dcff769c02))
+* support EDGETPU_NNAPI ([#1309](https://github.com/homuler/MediaPipeUnityPlugin/issues/1309)) ([808fbb1](https://github.com/homuler/MediaPipeUnityPlugin/commit/808fbb19d9dc71abe7a19f09cd5bcb90af90c29a))
+
+
+### Bug Fixes
+
+* acquire a lock in a callback to avoid data race ([#1328](https://github.com/homuler/MediaPipeUnityPlugin/issues/1328)) ([acbb6ed](https://github.com/homuler/MediaPipeUnityPlugin/commit/acbb6ed820da6df562aa3866b650d3c9b34bb58a))
+* acquire a lock when drawing annotations ([#1305](https://github.com/homuler/MediaPipeUnityPlugin/issues/1305)) ([d80f33a](https://github.com/homuler/MediaPipeUnityPlugin/commit/d80f33ac737307140c4f6cc778329e352a044e4d))
+* acquire a lock when drawing DetectionResult annotations ([#1306](https://github.com/homuler/MediaPipeUnityPlugin/issues/1306)) ([c8f61ce](https://github.com/homuler/MediaPipeUnityPlugin/commit/c8f61ce6b8fe4a2a6bddc203a40d842c644eb566))
+* add missing in ([#1313](https://github.com/homuler/MediaPipeUnityPlugin/issues/1313)) ([6c37490](https://github.com/homuler/MediaPipeUnityPlugin/commit/6c3749052fbb2628e43975f8aa8221b19e36b2eb))
+* avoid HERMETIC_PYTHON_VERSION errors ([#1292](https://github.com/homuler/MediaPipeUnityPlugin/issues/1292)) ([0243240](https://github.com/homuler/MediaPipeUnityPlugin/commit/02432404f13032b9126335849eec07728efdce8c))
+* build failure on Linux ([#1287](https://github.com/homuler/MediaPipeUnityPlugin/issues/1287)) ([eeaf5fb](https://github.com/homuler/MediaPipeUnityPlugin/commit/eeaf5fbec8f3a73e8bf368ccb623fe7d9592480d))
+* copy categories ([#1304](https://github.com/homuler/MediaPipeUnityPlugin/issues/1304)) ([8eecdfd](https://github.com/homuler/MediaPipeUnityPlugin/commit/8eecdfdc5404f2db6faa8276a0163d5eae77b46c))
+* deep clone to avoid data race ([#1302](https://github.com/homuler/MediaPipeUnityPlugin/issues/1302)) ([45ae71e](https://github.com/homuler/MediaPipeUnityPlugin/commit/45ae71e96334bfaf3b18210b0119e1900d770fdc))
+* keep running CalculatorGraph if another window takes focus ([#1301](https://github.com/homuler/MediaPipeUnityPlugin/issues/1301)) ([f010367](https://github.com/homuler/MediaPipeUnityPlugin/commit/f0103673539ead7b53bfc630791f0e3bf0dcba40))
+* read masks immediately to avoid crash and memory leaks ([#1303](https://github.com/homuler/MediaPipeUnityPlugin/issues/1303)) ([c28b6a3](https://github.com/homuler/MediaPipeUnityPlugin/commit/c28b6a370f675fbaec1c2014cd25b4beae9dfa7a))
+* **sample:** input image is not rotated correctly on iOS ([#1291](https://github.com/homuler/MediaPipeUnityPlugin/issues/1291)) ([c72db36](https://github.com/homuler/MediaPipeUnityPlugin/commit/c72db3668bf0c08ac507655bf3c07d18d3f16049))
+
+
+### Build System
+
+* disable bitcode since it's deprecated ([#1293](https://github.com/homuler/MediaPipeUnityPlugin/issues/1293)) ([dd46334](https://github.com/homuler/MediaPipeUnityPlugin/commit/dd4633460132c3bf1861e77281c671ef563d7a95))
+* fix apk bundle id ([#1321](https://github.com/homuler/MediaPipeUnityPlugin/issues/1321)) ([391c3a2](https://github.com/homuler/MediaPipeUnityPlugin/commit/391c3a2de48206ae85a5fdf0a2b00c4279a57e40))
+* fix the iOS framework bundle id ([#1320](https://github.com/homuler/MediaPipeUnityPlugin/issues/1320)) ([392bf5b](https://github.com/homuler/MediaPipeUnityPlugin/commit/392bf5b407bd6497731a393006fffd68252e42a7))
+* include generated protobuf .cs files ([#1310](https://github.com/homuler/MediaPipeUnityPlugin/issues/1310)) ([a3e30c0](https://github.com/homuler/MediaPipeUnityPlugin/commit/a3e30c04fb3d8bcd50846b56853ca7e429c56369))
+* MediaPipe v0.10.20 ([#1290](https://github.com/homuler/MediaPipeUnityPlugin/issues/1290)) ([cfd83a5](https://github.com/homuler/MediaPipeUnityPlugin/commit/cfd83a580d78c9d4e624affd8039da9047ffc61a))
+* Unity 6 ([#1299](https://github.com/homuler/MediaPipeUnityPlugin/issues/1299)) ([524455c](https://github.com/homuler/MediaPipeUnityPlugin/commit/524455cb5b81d631f6e19c15763f79cd2a2113f1))
+* update OpenCV version to 4.10.0 ([#1295](https://github.com/homuler/MediaPipeUnityPlugin/issues/1295)) ([d1e81f0](https://github.com/homuler/MediaPipeUnityPlugin/commit/d1e81f05bd695ab1d5d50e9da7794b1bd3f47e1d))
+* upgrade python to 3.12 ([#1289](https://github.com/homuler/MediaPipeUnityPlugin/issues/1289)) ([848aea7](https://github.com/homuler/MediaPipeUnityPlugin/commit/848aea7dca167ac0e059f6c2a902c54c00361b17))
+* use macos-13 image ([#1283](https://github.com/homuler/MediaPipeUnityPlugin/issues/1283)) ([bbb5ec7](https://github.com/homuler/MediaPipeUnityPlugin/commit/bbb5ec76874a8cde113ed451e34d182c90e233fa))
+
 ## [0.15.0](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.14.4...v0.15.0) (2024-08-17)
 
 
