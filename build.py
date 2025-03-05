@@ -158,8 +158,12 @@ class BuildCommand(Command):
 
     if self.command_args.ios:
       self.console.info('Building native libaries for iOS...')
+      ios_plugin_dst = os.path.join(_BUILD_RUNTIME_PATH, 'Plugins', 'iOS')
       self._run_command(self._build_ios_commands())
-      self._unzip(self._find_latest_built_framework(), os.path.join(_BUILD_RUNTIME_PATH, 'Plugins', 'iOS'))
+      self._unzip(self._find_latest_built_framework(), ios_plugin_dst)
+      self._copytree(
+        os.path.join(_BAZEL_BIN_PATH, 'mediapipe_api', 'objc', 'MediaPipeUnity.framework.dSYM'),
+        os.path.join(ios_plugin_dst, 'MediaPipeUnity.framework.dSYM'))
 
       self.console.info('Built native libraries for iOS')
 
@@ -299,6 +303,7 @@ class BuildCommand(Command):
     commands = self._build_common_commands()
     commands += [f'--config=ios_{self.command_args.ios}']
     commands += self._build_opencv_switch()
+    commands.append('--apple_generate_dsym')
 
     commands.append('//mediapipe_api/objc:MediaPipeUnity')
     return commands
