@@ -92,6 +92,13 @@ config_setting(
 )
 
 config_setting(
+    name = "gesture_recognition_switch",
+    flag_values = {
+        ":solutions": "gesture_recognition",
+    },
+)
+
+config_setting(
     name = "audio_classification_switch",
     flag_values = {
         ":solutions": "audio_classification",
@@ -136,6 +143,11 @@ selects.config_setting_group(
 selects.config_setting_group(
     name = "enable_object_detection",
     match_any = [":all_solutions_switch", ":object_detection_switch"],
+)
+
+selects.config_setting_group(
+    name = "enable_gesture_recognition",
+    match_any = [":all_solutions_switch", ":gesture_recognition_switch"],
 )
 
 selects.config_setting_group(
@@ -303,6 +315,9 @@ cc_library(
         ":enable_object_detection": [":object_detection_calculators"],
         "//conditions:default": [],
     }) + select({
+        ":enable_gesture_recognition": [":gesture_recognition_calculators"],
+        "//conditions:default": [],
+    }) + select({
         ":enable_audio_classification": [":audio_classification_calculators"],
         "//conditions:default": [],
     }),
@@ -427,6 +442,13 @@ cc_library(
 )
 
 cc_library(
+    name = "gesture_recognition_calculators",
+    deps = [
+        "@mediapipe//mediapipe/tasks/cc/vision/gesture_recognizer:gesture_recognizer",
+    ],
+)
+
+cc_library(
     name = "audio_classification_calculators",
     deps = ["@mediapipe//mediapipe/tasks/cc/audio/audio_classifier:audio_classifier"],
 )
@@ -445,6 +467,9 @@ mediapipe_files(srcs = [
     # face landmarker
     "face_landmarker_v2.task",
     "face_landmarker_v2_with_blendshapes.task",
+
+    # gesture recognizer
+    "gesture_recognizer.task",
 
     # hand landmarker
     "hand_landmarker.task",
@@ -503,6 +528,9 @@ pkg_asset(
         "//conditions:default": [],
     }) + select({
         ":enable_object_detection": [":object_detection_assets"],
+        "//conditions:default": [],
+    }) + select({
+        ":enable_gesture_recognition": [":gesture_recognition_assets"],
         "//conditions:default": [],
     }) + select({
         ":enable_audio_classification": [":audio_classification_assets"],
@@ -610,6 +638,13 @@ filegroup(
         ":ssd_mobilenet_v2_float32.tflite",
         "@mediapipe//mediapipe/models:ssdlite_object_detection.tflite",
         "@mediapipe//mediapipe/models:ssdlite_object_detection_labelmap.txt",
+    ],
+)
+
+filegroup(
+    name = "gesture_recognition_assets",
+    srcs = [
+        ":gesture_recognizer.task",
     ],
 )
 
