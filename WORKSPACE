@@ -32,15 +32,11 @@ http_archive(
         "-p1",
     ],
     patches = [
-        "@//third_party:mediapipe_opencv.diff",
-        "@//third_party:mediapipe_visibility.diff",
-        "@//third_party:mediapipe_model_path.diff",
-        "@//third_party:mediapipe_extension.diff",
-        "@//third_party:mediapipe_workaround.diff",
+        "@//third_party:mediapipe_python_build.diff",
     ],
-    sha256 = "ae0abfc544a37a46f46e20f73010ddbe43cf12b0853701b763d3df1ab986dd36",
-    strip_prefix = "mediapipe-0.10.20",
-    urls = ["https://github.com/google/mediapipe/archive/v0.10.20.tar.gz"],
+    sha256 = "25af3c4cc44dfe929eea226ab6cd0dd53a54fbb199db877cc96aa63d0e45d745",
+    strip_prefix = "mediapipe-0.10.22",
+    urls = ["https://github.com/google-ai-edge/mediapipe/archive/refs/tags/v0.10.22.tar.gz"],
 )
 
 # ABSL on 2023-10-18
