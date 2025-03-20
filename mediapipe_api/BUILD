@@ -649,6 +649,7 @@ pkg_zip(
         "//mediapipe_api/tasks/cc/vision/hand_detector/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/hand_landmarker/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/holistic_landmarker/proto:proto_srcs",
+        "//mediapipe_api/tasks/cc/vision/gesture_recognizer/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/image_segmenter/calculators:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/image_segmenter/proto:proto_srcs",
         "//mediapipe_api/tasks/cc/vision/object_detector/proto:proto_srcs",
