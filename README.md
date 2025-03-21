@@ -137,7 +137,7 @@ cf. [The official available solutions](https://ai.google.dev/edge/mediapipe/solu
 |    Image segmentation    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Interactive segmentation |                    |                    |                    |                    |                    |
 | Hand landmark detection  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-|   Gesture recognition    |                    |                    |                    |                    |                    |
+|   Gesture recognition    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 |     Image embedding      |                    |                    |                    |                    |                    |
 |      Face detection      | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Face landmark detection  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
