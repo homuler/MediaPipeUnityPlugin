@@ -86,16 +86,16 @@ namespace Mediapipe.Tasks.Vision.FaceLandmarker
       // NOTE: z direction is inverted
       if (matrixData.Layout == MatrixData.Types.Layout.RowMajor)
       {
-        matrix.SetRow(0, new Vector4(data[0], data[1], data[2], data[3]));
-        matrix.SetRow(1, new Vector4(data[4], data[5], data[6], data[7]));
-        matrix.SetRow(2, new Vector4(-data[8], -data[9], -data[10], -data[11]));
-        matrix.SetRow(3, new Vector4(data[12], data[13], data[14], data[15]));
+        matrix.SetRow(0, new Vector4(data[0], data[1], -data[2], data[3]));
+        matrix.SetRow(1, new Vector4(data[4], data[5], -data[6], data[7]));
+        matrix.SetRow(2, new Vector4(-data[8], -data[9], data[10], -data[11]));
+        matrix.SetRow(3, new Vector4(data[12], data[13], -data[14], data[15]));
       }
       else
       {
         matrix.SetColumn(0, new Vector4(data[0], data[1], -data[2], data[3]));
         matrix.SetColumn(1, new Vector4(data[4], data[5], -data[6], data[7]));
-        matrix.SetColumn(2, new Vector4(data[8], data[9], -data[10], data[11]));
+        matrix.SetColumn(2, new Vector4(-data[8], -data[9], data[10], -data[11]));
         matrix.SetColumn(3, new Vector4(data[12], data[13], -data[14], data[15]));
       }
       return matrix;
