@@ -69,8 +69,12 @@ class Command:
     self.console.v(f"Changing the mode of '{dest}'...")
     os.chmod(dest, mode)
 
-  def _copytree(self, source, dest):
+  def _copytree(self, source, dest, ignore_nonexistent_source=False):
     self.console.v(f"Copying '{source}' to '{dest}' recursively...")
+
+    if ignore_nonexistent_source and not os.path.exists(source):
+      self.console.v(f"Tried to copy '{source}', but it does not exist")
+      return
 
     if not os.path.exists(dest):
       self.console.v(f"Creating '{dest}'...")
@@ -161,9 +165,12 @@ class BuildCommand(Command):
       ios_plugin_dst = os.path.join(_BUILD_RUNTIME_PATH, 'Plugins', 'iOS')
       self._run_command(self._build_ios_commands())
       self._unzip(self._find_latest_built_framework(), ios_plugin_dst)
+
+      # Copy dSYM files if they exist (when built with `--apple_generate_dsym`)
       self._copytree(
         os.path.join(_BAZEL_BIN_PATH, 'mediapipe_api', 'objc', 'MediaPipeUnity.framework.dSYM'),
-        os.path.join(ios_plugin_dst, 'MediaPipeUnity.framework.dSYM'))
+        os.path.join(ios_plugin_dst, 'MediaPipeUnity.framework.dSYM'),
+        ignore_nonexistent_source=True)
 
       self.console.info('Built native libraries for iOS')
 
@@ -303,7 +310,6 @@ class BuildCommand(Command):
     commands = self._build_common_commands()
     commands += [f'--config=ios_{self.command_args.ios}']
     commands += self._build_opencv_switch()
-    commands.append('--apple_generate_dsym')
 
     commands.append('//mediapipe_api/objc:MediaPipeUnity')
     return commands
