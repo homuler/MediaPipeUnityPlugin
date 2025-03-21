@@ -38,9 +38,9 @@ http_archive(
         "@//third_party:mediapipe_extension.diff",
         "@//third_party:mediapipe_workaround.diff",
     ],
-    sha256 = "ae0abfc544a37a46f46e20f73010ddbe43cf12b0853701b763d3df1ab986dd36",
-    strip_prefix = "mediapipe-0.10.20",
-    urls = ["https://github.com/google/mediapipe/archive/v0.10.20.tar.gz"],
+    sha256 = "25af3c4cc44dfe929eea226ab6cd0dd53a54fbb199db877cc96aa63d0e45d745",
+    strip_prefix = "mediapipe-0.10.22",
+    urls = ["https://github.com/google/mediapipe/archive/v0.10.22.tar.gz"],
 )
 
 # ABSL on 2023-10-18
@@ -197,7 +197,7 @@ http_archive(
     sha256 = "ad37707084a6d4ff41be10cbe8540c75bea057ba79d0de6c367c1bfac6ba0852",
     strip_prefix = "kleidiai-40a926833857fb64786e02f97703e42b1537cb57",
     urls = [
-        "https://gitlab.arm.com/kleidi/kleidiai/-/archive/40a926833857fb64786e02f97703e42b1537cb57/kleidiai-40a926833857fb64786e02f97703e42b1537cb57.zip"
+        "https://gitlab.arm.com/kleidi/kleidiai/-/archive/40a926833857fb64786e02f97703e42b1537cb57/kleidiai-40a926833857fb64786e02f97703e42b1537cb57.zip",
     ],
 )
 
@@ -375,9 +375,9 @@ http_archive(
     # TODO: Fix this in AudioTools directly
     patches = ["@mediapipe//third_party:com_google_audio_tools_fixes.diff"],
     repo_mapping = {"@com_github_glog_glog": "@com_github_glog_glog_no_gflags"},
-    sha256 = "fe346e1aee4f5069c4cbccb88706a9a2b2b4cf98aeb91ec1319be77e07dd7435",
-    strip_prefix = "multichannel-audio-tools-1f6b1319f13282eda6ff1317be13de67f4723860",
-    urls = ["https://github.com/google/multichannel-audio-tools/archive/1f6b1319f13282eda6ff1317be13de67f4723860.zip"],
+    sha256 = "7d7227cc6bb1f8917a9c9013e8f3578ec681c49e20fe2fc38ba90965394de60c",
+    strip_prefix = "multichannel-audio-tools-bbf15de4b7cd825d650296d21917afc07e8fe18b",
+    urls = ["https://github.com/google/multichannel-audio-tools/archive/bbf15de4b7cd825d650296d21917afc07e8fe18b.tar.gz"],
 )
 
 http_archive(
