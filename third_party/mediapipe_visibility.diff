@@ -1,8 +1,8 @@
 diff --git a/mediapipe/calculators/audio/BUILD b/mediapipe/calculators/audio/BUILD
-index d1c69a2c..8166f7d1 100644
+index 3ec914f0..078da7ac 100644
 --- a/mediapipe/calculators/audio/BUILD
 +++ b/mediapipe/calculators/audio/BUILD
-@@ -377,3 +377,9 @@ cc_test(
+@@ -441,3 +441,9 @@ cc_test(
          "@eigen_archive//:eigen3",
      ],
  )
@@ -41,7 +41,7 @@ index b4324064..14809530 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/calculators/tensor/BUILD b/mediapipe/calculators/tensor/BUILD
-index c336c13d..c09cc145 100644
+index 263103e9..1885d0b1 100644
 --- a/mediapipe/calculators/tensor/BUILD
 +++ b/mediapipe/calculators/tensor/BUILD
 @@ -2290,3 +2290,9 @@ cc_test(
@@ -69,10 +69,10 @@ index 2526088d..4fa72db4 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/calculators/util/BUILD b/mediapipe/calculators/util/BUILD
-index 3f0fdb6a..23995796 100644
+index f12cdb28..e8ca863d 100644
 --- a/mediapipe/calculators/util/BUILD
 +++ b/mediapipe/calculators/util/BUILD
-@@ -1850,3 +1850,9 @@ cc_test(
+@@ -1851,3 +1851,9 @@ cc_test(
          "@com_google_absl//absl/status",
      ],
  )
@@ -175,10 +175,10 @@ index 703d5d77..a73795f1 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/gpu/BUILD b/mediapipe/gpu/BUILD
-index c8fa2ad8..760bab18 100644
+index d5afb6de..42713a1d 100644
 --- a/mediapipe/gpu/BUILD
 +++ b/mediapipe/gpu/BUILD
-@@ -1426,3 +1426,9 @@ mediapipe_cc_test(
+@@ -1427,3 +1427,9 @@ mediapipe_cc_test(
          "@com_google_absl//absl/log:absl_check",
      ],
  )
@@ -471,6 +471,20 @@ index aa839d91..8efc28e1 100644
 +    srcs = glob(["*.proto"]),
 +    visibility = ["//visibility:public"],
 +)
+diff --git a/mediapipe/tasks/cc/vision/gesture_recognizer/proto/BUILD b/mediapipe/tasks/cc/vision/gesture_recognizer/proto/BUILD
+index 8e4f2806..3a67358c 100644
+--- a/mediapipe/tasks/cc/vision/gesture_recognizer/proto/BUILD
++++ b/mediapipe/tasks/cc/vision/gesture_recognizer/proto/BUILD
+@@ -64,3 +64,9 @@ mediapipe_proto_library(
+         "//mediapipe/tasks/cc/vision/hand_landmarker/proto:hand_landmarker_graph_options_proto",
+     ],
+ )
++
++filegroup(
++    name = "protos_src",
++    srcs = glob(["*.proto"]),
++    visibility = ["//visibility:public"],
++)
 diff --git a/mediapipe/tasks/cc/vision/hand_detector/proto/BUILD b/mediapipe/tasks/cc/vision/hand_detector/proto/BUILD
 index c1453f42..2339661a 100644
 --- a/mediapipe/tasks/cc/vision/hand_detector/proto/BUILD
@@ -584,10 +598,10 @@ index 869a1ea6..3cd6bc5a 100644
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
-index d8cccf0b..df8ecc97 100644
+index ff5d913e..19fa9265 100644
 --- a/mediapipe/util/BUILD
 +++ b/mediapipe/util/BUILD
-@@ -541,3 +541,9 @@ cc_test(
+@@ -542,3 +542,9 @@ cc_test(
          "@com_google_absl//absl/strings:string_view",
      ],
  )

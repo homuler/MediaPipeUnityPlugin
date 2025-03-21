@@ -436,7 +436,7 @@ class Argument:
     build_command_parser.add_argument('--opencv', choices=['local', 'cmake'], default='local', help='Decide to which OpenCV to link for Desktop native libraries')
     build_command_parser.add_argument('--solutions', nargs='+',
         choices=['face_detection', 'face_mesh', 'iris', 'hands', 'pose', 'holistic',
-                 'image_segmentation', 'object_detection', 'audio_classification'])
+                 'image_segmentation', 'object_detection', 'gesture_recognition', 'audio_classification'])
     build_command_parser.add_argument('--linkopt', '-l', action='append', help='Linker options')
     build_command_parser.add_argument('--macos_universal', action=argparse.BooleanOptionalAction, default=False, help='Build a universal library')
     build_command_parser.add_argument('--bazel_startup_opts', action='append', help='Bazel startup options')
