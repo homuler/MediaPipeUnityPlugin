@@ -1,5 +1,5 @@
 diff --git a/mediapipe/util/BUILD b/mediapipe/util/BUILD
-index d8cccf0b..3b468aac 100644
+index f73785c7..34e60518 100644
 --- a/mediapipe/util/BUILD
 +++ b/mediapipe/util/BUILD
 @@ -251,15 +251,8 @@ cc_library(
@@ -153,7 +153,7 @@ index 00000000..890c03ef
 +}  // namespace internal
 +}  // namespace mediapipe
 diff --git a/third_party/external_files.bzl b/third_party/external_files.bzl
-index 7a04fd8c..003671b3 100644
+index aa717ed9..47539e3e 100644
 --- a/third_party/external_files.bzl
 +++ b/third_party/external_files.bzl
 @@ -250,6 +250,12 @@ def external_files():
@@ -236,8 +236,8 @@ index 7a04fd8c..003671b3 100644
 +
      http_file(
          name = "com_google_mediapipe_face_geometry_expected_out_pbtxt",
-         sha256 = "4a4ed08055a5bc9281472dd60180d11f0cdc9a15fa1788d87a58af3d06b2c6e4",
-@@ -1192,6 +1252,24 @@ def external_files():
+         sha256 = "c23c55c14b24523e7fe51ee9ff90b9d4d32d82852ab3e452af9064e60c91c4d1",
+@@ -1198,6 +1258,24 @@ def external_files():
          urls = ["https://storage.googleapis.com/mediapipe-assets/pose_landmarker.task?generation=1681244249587900"],
      )
  
@@ -262,7 +262,7 @@ index 7a04fd8c..003671b3 100644
      http_file(
          name = "com_google_mediapipe_pose_landmark_full_tflite",
          sha256 = "e9a5c5cb17f736fafd4c2ec1da3b3d331d6edbe8a0d32395855aeb2cdfd64b9f",
-@@ -1348,6 +1426,12 @@ def external_files():
+@@ -1354,6 +1432,12 @@ def external_files():
          urls = ["https://storage.googleapis.com/mediapipe-assets/selfie_segmentation.tflite?generation=1683332563830600"],
      )
  

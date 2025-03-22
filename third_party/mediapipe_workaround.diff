@@ -1,3 +1,18 @@
+diff --git a/mediapipe/framework/output_stream_handler.cc b/mediapipe/framework/output_stream_handler.cc
+index e27d1c68..55f2f3bd 100644
+--- a/mediapipe/framework/output_stream_handler.cc
++++ b/mediapipe/framework/output_stream_handler.cc
+@@ -143,9 +143,7 @@ OutputStreamHandler::GetMonitoringInfo() {
+       continue;
+     }
+     monitoring_info_vector.emplace_back(OutputStreamMonitoringInfo(
+-        {.stream_name = DebugStreamName(id),
+-         .num_packets_added = stream->NumPacketsAdded(),
+-         .next_timestamp_bound = stream->NextTimestampBound()}));
++      {DebugStreamName(id), stream->NumPacketsAdded(), stream->NextTimestampBound()}));
+   }
+   return monitoring_info_vector;
+ }
 diff --git a/mediapipe/framework/port/opencv_core_inc.h b/mediapipe/framework/port/opencv_core_inc.h
 index 12862472..1a409417 100644
 --- a/mediapipe/framework/port/opencv_core_inc.h
