@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.16.1](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.16.0...v0.16.1) (2025-03-23)
+
+
+### Features
+
+* implement GestureRecognizer ([#1352](https://github.com/homuler/MediaPipeUnityPlugin/issues/1352)) ([606bac5](https://github.com/homuler/MediaPipeUnityPlugin/commit/606bac5f882fdc3ce5f3b33d08f8a39f65ddeb25))
+
+
+### Bug Fixes
+
+* Destroy textures to fix memory leak ([#1337](https://github.com/homuler/MediaPipeUnityPlugin/issues/1337)) ([ef8d2c0](https://github.com/homuler/MediaPipeUnityPlugin/commit/ef8d2c022996c66237285210dd271bec857e334d))
+* negate necessary component of matrix ([#1355](https://github.com/homuler/MediaPipeUnityPlugin/issues/1355)) ([aa61073](https://github.com/homuler/MediaPipeUnityPlugin/commit/aa61073176c38a137594d5e8cf3947e70b0077f0))
+
 ## [0.16.0](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.15.0...v0.16.0) (2025-02-18)
 
 

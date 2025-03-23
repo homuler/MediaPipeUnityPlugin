@@ -1,6 +1,6 @@
 {
   "name": "com.github.homuler.mediapipe",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "displayName": "MediaPipe Unity Plugin",
   "description": "A Unity Plugin to run MediaPipe CalculatorGraph",
   "unity": "2022.3",
