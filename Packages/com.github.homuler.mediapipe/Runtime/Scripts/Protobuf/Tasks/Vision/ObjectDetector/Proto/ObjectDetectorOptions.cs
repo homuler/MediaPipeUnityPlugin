@@ -29,21 +29,22 @@ namespace Mediapipe.Tasks.Vision.ObjectDetector.Proto {
             "LnRhc2tzLnZpc2lvbi5vYmplY3RfZGV0ZWN0b3IucHJvdG8aJG1lZGlhcGlw",
             "ZS9mcmFtZXdvcmsvY2FsY3VsYXRvci5wcm90bxosbWVkaWFwaXBlL2ZyYW1l",
             "d29yay9jYWxjdWxhdG9yX29wdGlvbnMucHJvdG8aMG1lZGlhcGlwZS90YXNr",
-            "cy9jYy9jb3JlL3Byb3RvL2Jhc2Vfb3B0aW9ucy5wcm90byLVAgoVT2JqZWN0",
+            "cy9jYy9jb3JlL3Byb3RvL2Jhc2Vfb3B0aW9ucy5wcm90byKcAwoVT2JqZWN0",
             "RGV0ZWN0b3JPcHRpb25zEj0KDGJhc2Vfb3B0aW9ucxgBIAEoCzInLm1lZGlh",
             "cGlwZS50YXNrcy5jb3JlLnByb3RvLkJhc2VPcHRpb25zEiAKFGRpc3BsYXlf",
             "bmFtZXNfbG9jYWxlGAIgASgJOgJlbhIXCgttYXhfcmVzdWx0cxgDIAEoBToC",
             "LTESFwoPc2NvcmVfdGhyZXNob2xkGAQgASgCEhoKEmNhdGVnb3J5X2FsbG93",
-            "bGlzdBgFIAMoCRIZChFjYXRlZ29yeV9kZW55bGlzdBgGIAMoCTJyCgNleHQS",
-            "HC5tZWRpYXBpcGUuQ2FsY3VsYXRvck9wdGlvbnMYise50wEgASgLMkMubWVk",
-            "aWFwaXBlLnRhc2tzLnZpc2lvbi5vYmplY3RfZGV0ZWN0b3IucHJvdG8uT2Jq",
-            "ZWN0RGV0ZWN0b3JPcHRpb25zQlQKNmNvbS5nb29nbGUubWVkaWFwaXBlLnRh",
-            "c2tzLnZpc2lvbi5vYmplY3RkZXRlY3Rvci5wcm90b0IaT2JqZWN0RGV0ZWN0",
-            "b3JPcHRpb25zUHJvdG8="));
+            "bGlzdBgFIAMoCRIZChFjYXRlZ29yeV9kZW55bGlzdBgGIAMoCRIdCg5tdWx0",
+            "aWNsYXNzX25tcxgHIAEoCDoFZmFsc2USJgoZbWluX3N1cHByZXNzaW9uX3Ro",
+            "cmVzaG9sZBgIIAEoAjoDMC4zMnIKA2V4dBIcLm1lZGlhcGlwZS5DYWxjdWxh",
+            "dG9yT3B0aW9ucxiKx7nTASABKAsyQy5tZWRpYXBpcGUudGFza3MudmlzaW9u",
+            "Lm9iamVjdF9kZXRlY3Rvci5wcm90by5PYmplY3REZXRlY3Rvck9wdGlvbnNC",
+            "VAo2Y29tLmdvb2dsZS5tZWRpYXBpcGUudGFza3MudmlzaW9uLm9iamVjdGRl",
+            "dGVjdG9yLnByb3RvQhpPYmplY3REZXRlY3Rvck9wdGlvbnNQcm90bw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Mediapipe.CalculatorReflection.Descriptor, global::Mediapipe.CalculatorOptionsReflection.Descriptor, global::Mediapipe.Tasks.Core.Proto.BaseOptionsReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.Tasks.Vision.ObjectDetector.Proto.ObjectDetectorOptions), global::Mediapipe.Tasks.Vision.ObjectDetector.Proto.ObjectDetectorOptions.Parser, new[]{ "BaseOptions", "DisplayNamesLocale", "MaxResults", "ScoreThreshold", "CategoryAllowlist", "CategoryDenylist" }, null, null, new pb::Extension[] { global::Mediapipe.Tasks.Vision.ObjectDetector.Proto.ObjectDetectorOptions.Extensions.Ext }, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.Tasks.Vision.ObjectDetector.Proto.ObjectDetectorOptions), global::Mediapipe.Tasks.Vision.ObjectDetector.Proto.ObjectDetectorOptions.Parser, new[]{ "BaseOptions", "DisplayNamesLocale", "MaxResults", "ScoreThreshold", "CategoryAllowlist", "CategoryDenylist", "MulticlassNms", "MinSuppressionThreshold" }, null, null, new pb::Extension[] { global::Mediapipe.Tasks.Vision.ObjectDetector.Proto.ObjectDetectorOptions.Extensions.Ext }, null)
           }));
     }
     #endregion
@@ -92,6 +93,8 @@ namespace Mediapipe.Tasks.Vision.ObjectDetector.Proto {
       scoreThreshold_ = other.scoreThreshold_;
       categoryAllowlist_ = other.categoryAllowlist_.Clone();
       categoryDenylist_ = other.categoryDenylist_.Clone();
+      multiclassNms_ = other.multiclassNms_;
+      minSuppressionThreshold_ = other.minSuppressionThreshold_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -244,6 +247,69 @@ namespace Mediapipe.Tasks.Vision.ObjectDetector.Proto {
       get { return categoryDenylist_; }
     }
 
+    /// <summary>Field number for the "multiclass_nms" field.</summary>
+    public const int MulticlassNmsFieldNumber = 7;
+    private readonly static bool MulticlassNmsDefaultValue = false;
+
+    private bool multiclassNms_;
+    /// <summary>
+    /// Whether to use multiclass NMS. That is, each category processes
+    /// non-maximum-suppression separately.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool MulticlassNms {
+      get { if ((_hasBits0 & 4) != 0) { return multiclassNms_; } else { return MulticlassNmsDefaultValue; } }
+      set {
+        _hasBits0 |= 4;
+        multiclassNms_ = value;
+      }
+    }
+    /// <summary>Gets whether the "multiclass_nms" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasMulticlassNms {
+      get { return (_hasBits0 & 4) != 0; }
+    }
+    /// <summary>Clears the value of the "multiclass_nms" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearMulticlassNms() {
+      _hasBits0 &= ~4;
+    }
+
+    /// <summary>Field number for the "min_suppression_threshold" field.</summary>
+    public const int MinSuppressionThresholdFieldNumber = 8;
+    private readonly static float MinSuppressionThresholdDefaultValue = 0.3F;
+
+    private float minSuppressionThreshold_;
+    /// <summary>
+    /// Overlapping threshold for non-maximum-suppression calculator. Only used for
+    /// models without built-in non-maximum-suppression, i.e., models that don't
+    /// use the Detection_Postprocess TFLite Op
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public float MinSuppressionThreshold {
+      get { if ((_hasBits0 & 8) != 0) { return minSuppressionThreshold_; } else { return MinSuppressionThresholdDefaultValue; } }
+      set {
+        _hasBits0 |= 8;
+        minSuppressionThreshold_ = value;
+      }
+    }
+    /// <summary>Gets whether the "min_suppression_threshold" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasMinSuppressionThreshold {
+      get { return (_hasBits0 & 8) != 0; }
+    }
+    /// <summary>Clears the value of the "min_suppression_threshold" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearMinSuppressionThreshold() {
+      _hasBits0 &= ~8;
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -265,6 +331,8 @@ namespace Mediapipe.Tasks.Vision.ObjectDetector.Proto {
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(ScoreThreshold, other.ScoreThreshold)) return false;
       if(!categoryAllowlist_.Equals(other.categoryAllowlist_)) return false;
       if(!categoryDenylist_.Equals(other.categoryDenylist_)) return false;
+      if (MulticlassNms != other.MulticlassNms) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MinSuppressionThreshold, other.MinSuppressionThreshold)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -278,6 +346,8 @@ namespace Mediapipe.Tasks.Vision.ObjectDetector.Proto {
       if (HasScoreThreshold) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(ScoreThreshold);
       hash ^= categoryAllowlist_.GetHashCode();
       hash ^= categoryDenylist_.GetHashCode();
+      if (HasMulticlassNms) hash ^= MulticlassNms.GetHashCode();
+      if (HasMinSuppressionThreshold) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MinSuppressionThreshold);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -314,6 +384,14 @@ namespace Mediapipe.Tasks.Vision.ObjectDetector.Proto {
       }
       categoryAllowlist_.WriteTo(output, _repeated_categoryAllowlist_codec);
       categoryDenylist_.WriteTo(output, _repeated_categoryDenylist_codec);
+      if (HasMulticlassNms) {
+        output.WriteRawTag(56);
+        output.WriteBool(MulticlassNms);
+      }
+      if (HasMinSuppressionThreshold) {
+        output.WriteRawTag(69);
+        output.WriteFloat(MinSuppressionThreshold);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -342,6 +420,14 @@ namespace Mediapipe.Tasks.Vision.ObjectDetector.Proto {
       }
       categoryAllowlist_.WriteTo(ref output, _repeated_categoryAllowlist_codec);
       categoryDenylist_.WriteTo(ref output, _repeated_categoryDenylist_codec);
+      if (HasMulticlassNms) {
+        output.WriteRawTag(56);
+        output.WriteBool(MulticlassNms);
+      }
+      if (HasMinSuppressionThreshold) {
+        output.WriteRawTag(69);
+        output.WriteFloat(MinSuppressionThreshold);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -366,6 +452,12 @@ namespace Mediapipe.Tasks.Vision.ObjectDetector.Proto {
       }
       size += categoryAllowlist_.CalculateSize(_repeated_categoryAllowlist_codec);
       size += categoryDenylist_.CalculateSize(_repeated_categoryDenylist_codec);
+      if (HasMulticlassNms) {
+        size += 1 + 1;
+      }
+      if (HasMinSuppressionThreshold) {
+        size += 1 + 4;
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -395,6 +487,12 @@ namespace Mediapipe.Tasks.Vision.ObjectDetector.Proto {
       }
       categoryAllowlist_.Add(other.categoryAllowlist_);
       categoryDenylist_.Add(other.categoryDenylist_);
+      if (other.HasMulticlassNms) {
+        MulticlassNms = other.MulticlassNms;
+      }
+      if (other.HasMinSuppressionThreshold) {
+        MinSuppressionThreshold = other.MinSuppressionThreshold;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -437,6 +535,14 @@ namespace Mediapipe.Tasks.Vision.ObjectDetector.Proto {
             categoryDenylist_.AddEntriesFrom(input, _repeated_categoryDenylist_codec);
             break;
           }
+          case 56: {
+            MulticlassNms = input.ReadBool();
+            break;
+          }
+          case 69: {
+            MinSuppressionThreshold = input.ReadFloat();
+            break;
+          }
         }
       }
     #endif
@@ -477,6 +583,14 @@ namespace Mediapipe.Tasks.Vision.ObjectDetector.Proto {
           }
           case 50: {
             categoryDenylist_.AddEntriesFrom(ref input, _repeated_categoryDenylist_codec);
+            break;
+          }
+          case 56: {
+            MulticlassNms = input.ReadBool();
+            break;
+          }
+          case 69: {
+            MinSuppressionThreshold = input.ReadFloat();
             break;
           }
         }
