@@ -1,5 +1,5 @@
 diff --git a/third_party/BUILD b/third_party/BUILD
-index 6b00be7e..c9dc6e62 100644
+index 2ab0a7d0..34fadfda 100644
 --- a/third_party/BUILD
 +++ b/third_party/BUILD
 @@ -67,108 +67,9 @@ cc_library(
@@ -112,7 +112,7 @@ index 6b00be7e..c9dc6e62 100644
      visibility = ["//visibility:public"],
  )
  
-@@ -184,132 +85,6 @@ bzl_library(
+@@ -184,155 +85,6 @@ bzl_library(
      visibility = ["//visibility:private"],
  )
  
@@ -168,7 +168,7 @@ index 6b00be7e..c9dc6e62 100644
 -        # For example, when building //mediapipe/calculators/video:opencv_video_encoder_calculator_test,
 -        # the dependency //mediapipe/framework/formats:image_frame_opencv will
 -        # be built as a shared library, which depends on a cv::Mat constructor,
--        # and expects it to be provided by the main exacutable. The main
+-        # and expects it to be provided by the main executable. The main
 -        # executable depends on libimage_frame_opencv.so and links in
 -        # libopencv_core.a, which contains cv::Mat. However, if
 -        # libopencv_core.a marks its symbols as hidden, then cv::Mat is in
@@ -240,6 +240,29 @@ index 6b00be7e..c9dc6e62 100644
 -        "//mediapipe:windows": "@windows_opencv//:opencv",
 -        "//conditions:default": "@linux_opencv//:opencv",
 -    }),
+-)
+-
+-# When "--define EXCLUDE_OPENCV_SO_LIB=1" is set in the build command,
+-# the OpenCV so libraries will be excluded from the AAR package to
+-# save the package size.
+-config_setting(
+-    name = "exclude_opencv_so_lib",
+-    define_values = {
+-        "EXCLUDE_OPENCV_SO_LIB": "1",
+-    },
+-    visibility = ["//visibility:public"],
+-)
+-
+-cc_library(
+-    name = "android_jni_opencv_cc_lib",
+-    srcs = select({
+-        "//mediapipe:android_arm64": ["@android_opencv//:libopencv_java4_so_arm64-v8a"],
+-        "//mediapipe:android_arm": ["@android_opencv//:libopencv_java4_so_armeabi-v7a"],
+-        "//mediapipe:android_x86": ["@android_opencv//:libopencv_java4_so_x86"],
+-        "//mediapipe:android_x86_64": ["@android_opencv//:libopencv_java4_so_x86_64"],
+-        "//conditions:default": [],
+-    }),
+-    alwayslink = 1,
 -)
 -
  cc_library(

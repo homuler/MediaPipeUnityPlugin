@@ -26,7 +26,7 @@ namespace Mediapipe {
           string.Concat(
             "Cj9tZWRpYXBpcGUvY2FsY3VsYXRvcnMvdXRpbC9ub25fbWF4X3N1cHByZXNz",
             "aW9uX2NhbGN1bGF0b3IucHJvdG8SCW1lZGlhcGlwZRokbWVkaWFwaXBlL2Zy",
-            "YW1ld29yay9jYWxjdWxhdG9yLnByb3RvIvUECiJOb25NYXhTdXBwcmVzc2lv",
+            "YW1ld29yay9jYWxjdWxhdG9yLnByb3RvIpQFCiJOb25NYXhTdXBwcmVzc2lv",
             "bkNhbGN1bGF0b3JPcHRpb25zEiAKFW51bV9kZXRlY3Rpb25fc3RyZWFtcxgB",
             "IAEoBToBMRIeChJtYXhfbnVtX2RldGVjdGlvbnMYAiABKAU6Ai0xEh8KE21p",
             "bl9zY29yZV90aHJlc2hvbGQYBiABKAI6Ai0xEiQKGW1pbl9zdXBwcmVzc2lv",
@@ -35,16 +35,17 @@ namespace Mediapipe {
             "T3ZlcmxhcFR5cGU6B0pBQ0NBUkQSHwoXcmV0dXJuX2VtcHR5X2RldGVjdGlv",
             "bnMYBSABKAgSVgoJYWxnb3JpdGhtGAcgASgOMjoubWVkaWFwaXBlLk5vbk1h",
             "eFN1cHByZXNzaW9uQ2FsY3VsYXRvck9wdGlvbnMuTm1zQWxnb3JpdGhtOgdE",
-            "RUZBVUxUImsKC092ZXJsYXBUeXBlEhwKGFVOU1BFQ0lGSUVEX09WRVJMQVBf",
-            "VFlQRRAAEgsKB0pBQ0NBUkQQARIUChBNT0RJRklFRF9KQUNDQVJEEAISGwoX",
-            "SU5URVJTRUNUSU9OX09WRVJfVU5JT04QAyIpCgxObXNBbGdvcml0aG0SCwoH",
-            "REVGQVVMVBAAEgwKCFdFSUdIVEVEEAEyWwoDZXh0EhwubWVkaWFwaXBlLkNh",
-            "bGN1bGF0b3JPcHRpb25zGLyotBogASgLMi0ubWVkaWFwaXBlLk5vbk1heFN1",
-            "cHByZXNzaW9uQ2FsY3VsYXRvck9wdGlvbnM="));
+            "RUZBVUxUEh0KDm11bHRpY2xhc3Nfbm1zGAggASgIOgVmYWxzZSJrCgtPdmVy",
+            "bGFwVHlwZRIcChhVTlNQRUNJRklFRF9PVkVSTEFQX1RZUEUQABILCgdKQUND",
+            "QVJEEAESFAoQTU9ESUZJRURfSkFDQ0FSRBACEhsKF0lOVEVSU0VDVElPTl9P",
+            "VkVSX1VOSU9OEAMiKQoMTm1zQWxnb3JpdGhtEgsKB0RFRkFVTFQQABIMCghX",
+            "RUlHSFRFRBABMlsKA2V4dBIcLm1lZGlhcGlwZS5DYWxjdWxhdG9yT3B0aW9u",
+            "cxi8qLQaIAEoCzItLm1lZGlhcGlwZS5Ob25NYXhTdXBwcmVzc2lvbkNhbGN1",
+            "bGF0b3JPcHRpb25z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Mediapipe.CalculatorReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.NonMaxSuppressionCalculatorOptions), global::Mediapipe.NonMaxSuppressionCalculatorOptions.Parser, new[]{ "NumDetectionStreams", "MaxNumDetections", "MinScoreThreshold", "MinSuppressionThreshold", "OverlapType", "ReturnEmptyDetections", "Algorithm" }, null, new[]{ typeof(global::Mediapipe.NonMaxSuppressionCalculatorOptions.Types.OverlapType), typeof(global::Mediapipe.NonMaxSuppressionCalculatorOptions.Types.NmsAlgorithm) }, new pb::Extension[] { global::Mediapipe.NonMaxSuppressionCalculatorOptions.Extensions.Ext }, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.NonMaxSuppressionCalculatorOptions), global::Mediapipe.NonMaxSuppressionCalculatorOptions.Parser, new[]{ "NumDetectionStreams", "MaxNumDetections", "MinScoreThreshold", "MinSuppressionThreshold", "OverlapType", "ReturnEmptyDetections", "Algorithm", "MulticlassNms" }, null, new[]{ typeof(global::Mediapipe.NonMaxSuppressionCalculatorOptions.Types.OverlapType), typeof(global::Mediapipe.NonMaxSuppressionCalculatorOptions.Types.NmsAlgorithm) }, new pb::Extension[] { global::Mediapipe.NonMaxSuppressionCalculatorOptions.Extensions.Ext }, null)
           }));
     }
     #endregion
@@ -98,6 +99,7 @@ namespace Mediapipe {
       overlapType_ = other.overlapType_;
       returnEmptyDetections_ = other.returnEmptyDetections_;
       algorithm_ = other.algorithm_;
+      multiclassNms_ = other.multiclassNms_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -315,6 +317,33 @@ namespace Mediapipe {
       _hasBits0 &= ~64;
     }
 
+    /// <summary>Field number for the "multiclass_nms" field.</summary>
+    public const int MulticlassNmsFieldNumber = 8;
+    private readonly static bool MulticlassNmsDefaultValue = false;
+
+    private bool multiclassNms_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool MulticlassNms {
+      get { if ((_hasBits0 & 128) != 0) { return multiclassNms_; } else { return MulticlassNmsDefaultValue; } }
+      set {
+        _hasBits0 |= 128;
+        multiclassNms_ = value;
+      }
+    }
+    /// <summary>Gets whether the "multiclass_nms" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasMulticlassNms {
+      get { return (_hasBits0 & 128) != 0; }
+    }
+    /// <summary>Clears the value of the "multiclass_nms" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearMulticlassNms() {
+      _hasBits0 &= ~128;
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -337,6 +366,7 @@ namespace Mediapipe {
       if (OverlapType != other.OverlapType) return false;
       if (ReturnEmptyDetections != other.ReturnEmptyDetections) return false;
       if (Algorithm != other.Algorithm) return false;
+      if (MulticlassNms != other.MulticlassNms) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -351,6 +381,7 @@ namespace Mediapipe {
       if (HasOverlapType) hash ^= OverlapType.GetHashCode();
       if (HasReturnEmptyDetections) hash ^= ReturnEmptyDetections.GetHashCode();
       if (HasAlgorithm) hash ^= Algorithm.GetHashCode();
+      if (HasMulticlassNms) hash ^= MulticlassNms.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -397,6 +428,10 @@ namespace Mediapipe {
         output.WriteRawTag(56);
         output.WriteEnum((int) Algorithm);
       }
+      if (HasMulticlassNms) {
+        output.WriteRawTag(64);
+        output.WriteBool(MulticlassNms);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -435,6 +470,10 @@ namespace Mediapipe {
         output.WriteRawTag(56);
         output.WriteEnum((int) Algorithm);
       }
+      if (HasMulticlassNms) {
+        output.WriteRawTag(64);
+        output.WriteBool(MulticlassNms);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -465,6 +504,9 @@ namespace Mediapipe {
       }
       if (HasAlgorithm) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Algorithm);
+      }
+      if (HasMulticlassNms) {
+        size += 1 + 1;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -498,6 +540,9 @@ namespace Mediapipe {
       }
       if (other.HasAlgorithm) {
         Algorithm = other.Algorithm;
+      }
+      if (other.HasMulticlassNms) {
+        MulticlassNms = other.MulticlassNms;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -542,6 +587,10 @@ namespace Mediapipe {
             Algorithm = (global::Mediapipe.NonMaxSuppressionCalculatorOptions.Types.NmsAlgorithm) input.ReadEnum();
             break;
           }
+          case 64: {
+            MulticlassNms = input.ReadBool();
+            break;
+          }
         }
       }
     #endif
@@ -583,6 +632,10 @@ namespace Mediapipe {
           }
           case 56: {
             Algorithm = (global::Mediapipe.NonMaxSuppressionCalculatorOptions.Types.NmsAlgorithm) input.ReadEnum();
+            break;
+          }
+          case 64: {
+            MulticlassNms = input.ReadBool();
             break;
           }
         }

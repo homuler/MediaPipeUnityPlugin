@@ -1089,8 +1089,8 @@ namespace Mediapipe {
 
         private float derivateCutoff_;
         /// <summary>
-        /// Cutoff frequency for derivate. It is set to 1Hz in the original
-        /// algorithm, but can be tuned to further smooth the speed (i.e. derivate)
+        /// Cutoff frequency for derivative. It is set to 1Hz in the original
+        /// algorithm, but can be tuned to further smooth the speed (i.e. derivative)
         /// on the object.
         /// </summary>
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
