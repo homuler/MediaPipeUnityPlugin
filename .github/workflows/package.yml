@@ -164,7 +164,7 @@ jobs:
           path: Packages/com.github.homuler.mediapipe/Runtime/Plugins/iOS
 
   windows-build:
-    runs-on: windows-2019
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
         with:
