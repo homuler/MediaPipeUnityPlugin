@@ -5,7 +5,7 @@ ARG PYTHON_VERSION=3.12.8
 ARG ANDROID_SDK_VERSION=30
 ARG ANDROID_NDK_VERSION=21.4.7075529
 
-FROM mcr.microsoft.com/windows/servercore:ltsc2019 as base
+FROM mcr.microsoft.com/windows/servercore:ltsc2022 as base
 
 SHELL ["cmd", "/C"]
 
