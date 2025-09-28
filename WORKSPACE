@@ -111,7 +111,7 @@ http_archive(
         "-p1",
     ],
     patches = [
-        "@mediapipe//third_party:zlib.diff",
+        "@//third_party:zlib.patch",
     ],
     sha256 = "b3a24de97a8fdbc835b9833169501030b8977031bcb54b3b3ac13740f846ab30",
     strip_prefix = "zlib-1.2.13",
