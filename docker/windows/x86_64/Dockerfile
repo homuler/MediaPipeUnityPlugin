@@ -2,8 +2,8 @@
 
 ARG NODE_VERSION=18.17.1
 ARG PYTHON_VERSION=3.12.8
-ARG ANDROID_SDK_VERSION=30
-ARG ANDROID_NDK_VERSION=21.4.7075529
+ARG ANDROID_SDK_VERSION=36
+ARG ANDROID_NDK_VERSION=28.2.13676358
 
 FROM mcr.microsoft.com/windows/servercore:ltsc2022 as base
 
@@ -80,21 +80,21 @@ FROM builder as android
 ARG ANDROID_SDK_VERSION
 ARG ANDROID_NDK_VERSION
 
-ENV OPENJDK_ZIP OpenJDK11U-jdk_x64.zip
-ENV OPENJDK_SHA256 087d096032efe273d7e754a25c85d8e8cf44738a3e597ad86f55e0971acc3b8e
-ENV JAVA_HOME C:\Java\jdk-11.0.13+8
+ENV OPENJDK_ZIP OpenJDK17U-jdk_x64.zip
+ENV OPENJDK_SHA256 d1b2bb5a074ba33a0cf4e84aa558f7a563b827f999a71c8e47bdb0dd02af6b9c
+ENV JAVA_HOME C:\Java\jdk-17.0.9+9
 
 # Install Java
-RUN curl -L --retry 4 --connect-timeout 10 https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.13%2B8/OpenJDK11U-jdk_x64_windows_hotspot_11.0.13_8.zip -o C:\TEMP\%OPENJDK_ZIP% && `
+RUN curl -L --retry 4 --connect-timeout 10 https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.9%2B9.1/OpenJDK17U-jdk_x64_windows_hotspot_17.0.9_9.zip -o C:\TEMP\%OPENJDK_ZIP% && `
     for /F %s in ('sha256sum /c/TEMP/%OPENJDK_ZIP%') do ((test "%s" = "%OPENJDK_SHA256%" || (echo %s 'Checksum Failed' && exit 1))) && `
     unzip C:\TEMP\%OPENJDK_ZIP% -d C:\Java && `
     del C:\TEMP\%OPENJDK_ZIP%
 
 ENV COMMANDLINETOOLS_ZIP commandlinetools.zip
-ENV COMMANDLINETOOLS_SHA256 f9e6f91743bcb1cc6905648ca751bc33975b0dd11b50d691c2085d025514278c
+ENV COMMANDLINETOOLS_SHA256 98b565cb657b012dae6794cefc0f66ae1efb4690c699b78a614b4a6a3505b003
 
 # Install Android SDK and NDK
-RUN curl -L --retry 4 --connect-timeout 10 https://dl.google.com/android/repository/commandlinetools-win-7583922_latest.zip -o C:\TEMP\%COMMANDLINETOOLS_ZIP% && `
+RUN curl -L --retry 4 --connect-timeout 10 https://dl.google.com/android/repository/commandlinetools-win-13114758_latest.zip -o C:\TEMP\%COMMANDLINETOOLS_ZIP% && `
     for /F %s in ('sha256sum /c/TEMP/%COMMANDLINETOOLS_ZIP%') do ((test "%s" = "%COMMANDLINETOOLS_SHA256%" || (echo 'Checksum Failed' && exit 1))) && `
     unzip C:\TEMP\%COMMANDLINETOOLS_ZIP% -d C:\Android && `
     del C:\TEMP\%COMMANDLINETOOLS_ZIP%
@@ -103,7 +103,7 @@ RUN curl -L --retry 4 --connect-timeout 10 https://dl.google.com/android/reposit
 RUN powershell -command "for($i=0;$i -lt 30;$i++) { $response += """y`n""" }; $response" | C:\Android\cmdline-tools\bin\sdkmanager --sdk_root=C:\Android --licenses && `
     C:\Android\cmdline-tools\bin\sdkmanager --sdk_root=C:\Android --install `
         "platforms;android-%ANDROID_SDK_VERSION%" `
-        "build-tools;30.0.3" `
+        "build-tools;35.0.0" `
         "ndk;%ANDROID_NDK_VERSION%"
 
 
@@ -115,7 +115,7 @@ ENV ANDROID_HOME C:\Android
 ENV ANDROID_NDK_HOME ${ANDROID_HOME}\ndk\${ANDROID_NDK_VERSION}
 ENV PYTHON_INSTALL_PATH=C:\Python
 ENV PYTHON_BIN_PATH=${PYTHON_INSTALL_PATH}\python.exe
-ENV HERMETIC_PYTHON_VERSION 3.9
+ENV HERMETIC_PYTHON_VERSION 3.12
 
 # Install Bazel and NuGet
 RUN setx path "C:\bin;%PYTHON_INSTALL_PATH%;%PYTHON_INSTALL_PATH%\Scripts;%PATH%" && `
