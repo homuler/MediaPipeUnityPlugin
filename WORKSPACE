@@ -218,6 +218,12 @@ http_archive(
 # pthreadpool is a dependency of XNNPACK, from 2025-04-02
 http_archive(
     name = "pthreadpool",
+    patch_args = [
+        "-p1",
+    ],
+    patches = [
+        "@//third_party:pthreadpool.patch",
+    ],
     # `curl -L <url> | shasum -a 256`
     sha256 = "745e56516d6a58d183eb33d9017732d87cff43ce9f78908906f9faa52633e421",
     strip_prefix = "pthreadpool-b92447772365661680f486e39a91dfe6675adafc",

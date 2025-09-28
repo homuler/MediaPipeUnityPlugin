@@ -1,5 +1,5 @@
 diff --git a/mediapipe/framework/output_stream_handler.cc b/mediapipe/framework/output_stream_handler.cc
-index e27d1c68..55f2f3bd 100644
+index e27d1c688..55f2f3bd3 100644
 --- a/mediapipe/framework/output_stream_handler.cc
 +++ b/mediapipe/framework/output_stream_handler.cc
 @@ -143,9 +143,7 @@ OutputStreamHandler::GetMonitoringInfo() {
@@ -14,7 +14,7 @@ index e27d1c68..55f2f3bd 100644
    return monitoring_info_vector;
  }
 diff --git a/mediapipe/framework/port/opencv_core_inc.h b/mediapipe/framework/port/opencv_core_inc.h
-index 12862472..1a409417 100644
+index 128624725..1a4094173 100644
 --- a/mediapipe/framework/port/opencv_core_inc.h
 +++ b/mediapipe/framework/port/opencv_core_inc.h
 @@ -20,7 +20,7 @@
@@ -27,7 +27,7 @@ index 12862472..1a409417 100644
  #endif
  
 diff --git a/mediapipe/tasks/cc/core/task_api_factory.h b/mediapipe/tasks/cc/core/task_api_factory.h
-index a11a23fc..dbb5fe6c 100644
+index a11a23fcf..dbb5fe6ca 100644
 --- a/mediapipe/tasks/cc/core/task_api_factory.h
 +++ b/mediapipe/tasks/cc/core/task_api_factory.h
 @@ -76,15 +76,17 @@ class TaskApiFactory {
@@ -50,7 +50,7 @@ index a11a23fc..dbb5fe6c 100644
              std::move(graph_config), std::move(resolver),
              std::move(packets_callback), std::move(default_executor),
 diff --git a/mediapipe/tasks/cc/vision/holistic_landmarker/holistic_landmarker_graph.cc b/mediapipe/tasks/cc/vision/holistic_landmarker/holistic_landmarker_graph.cc
-index 2ff140c0..128a4326 100644
+index 2ff140c07..128a43263 100644
 --- a/mediapipe/tasks/cc/vision/holistic_landmarker/holistic_landmarker_graph.cc
 +++ b/mediapipe/tasks/cc/vision/holistic_landmarker/holistic_landmarker_graph.cc
 @@ -387,6 +387,13 @@ class HolisticLandmarkerGraph : public core::ModelTaskGraph {
@@ -67,3 +67,17 @@ index 2ff140c0..128a4326 100644
        }
      }
  
+diff --git a/mediapipe/util/tflite/tflite_model_loader.cc b/mediapipe/util/tflite/tflite_model_loader.cc
+index 4809cdc92..acc97a980 100644
+--- a/mediapipe/util/tflite/tflite_model_loader.cc
++++ b/mediapipe/util/tflite/tflite_model_loader.cc
+@@ -71,7 +71,7 @@ TfLiteModelLoader::LoadFromPathAndGetResource(
+         delete model;
+         res.reset();
+       });
+-  return TfLiteModelWithResource{.model_packet = std::move(model_packet),
+-                                 .resource = std::move(model_resource)};
++  return TfLiteModelWithResource{/*.model_packet = */ std::move(model_packet),
++                                 /*.resource = */ std::move(model_resource)};
+ }
+ }  // namespace mediapipe
