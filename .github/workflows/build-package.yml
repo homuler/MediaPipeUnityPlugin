@@ -9,22 +9,27 @@ on:
       linuxBuildArgs:
         type: string
         required: false
+        default: '--desktop gpu --opencv cmake'
         description: Build options for Linux Build (skip if empty)
       androidBuildArgs:
         type: string
         required: false
+        default: '--android arm64 --android_ndk_api_level 21'
         description: Build options for Android Build (skip if empty)
       macosBuildArgs:
         type: string
         required: false
+        default: '--desktop cpu --opencv cmake --macos_universal'
         description: Build options for macOS Build (skip if empty)
       iosBuildArgs:
         type: string
         required: false
+        default: '--ios arm64 --opencv cmake'
         description: Build options for iOS Build (skip if empty)
       windowsBuildArgs:
         type: string
         required: false
+        default: '--desktop cpu --opencv cmake'
         description: Build options for Windows Build (skip if empty)
   schedule:
     - cron: 0 12 * * 0,3
