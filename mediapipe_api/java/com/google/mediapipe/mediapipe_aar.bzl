@@ -14,7 +14,7 @@ Macro to generate AAR, including libmediapipe_jni.so
 
 load("@build_bazel_rules_android//android:rules.bzl", "android_binary", "android_library")
 
-def mediapipe_aar(name, package = "com.github.homuler.mediapipe", srcs = [], deps = [], jni_deps = [], assets = [], assets_dir = "", target_sdk_version = 34, min_sdk_version = 21):
+def mediapipe_aar(name, package = "com.github.homuler.mediapipe", srcs = [], deps = [], jni_deps = [], assets = [], assets_dir = "", target_sdk_version = 34, min_sdk_version = 23):
     """Generate MediaPipeUnityPlugin AAR.
 
     Args:
@@ -82,7 +82,7 @@ cat > $(OUTS) <<EOF
 <manifest
   xmlns:android="http://schemas.android.com/apk/res/android"
   package="dummy.package.for.so">
-  <uses-sdk android:minSdkVersion="21"/>
+  <uses-sdk android:minSdkVersion="23"/>
 </manifest>
 EOF
 """,
@@ -94,6 +94,7 @@ EOF
         name = name + "_dummy_app",
         manifest = name + "_generated_AndroidManifest.xml",
         custom_package = "dummy.package.for.so",
+        multidex = "native",
         deps = [android_library],
     )
 
