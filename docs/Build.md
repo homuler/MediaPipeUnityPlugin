@@ -292,13 +292,6 @@ When building for Android (Linux/macOS), follow these additional steps:
 
 1. Launch Android Studio, open **SDK Manager > SDK Tools**, and install Android SDK Build Tools and Android NDK
 
-   > :bell: Please note the following two points:
-   >
-   > - While Bazel automatically uses the latest installed Build Tools, versions 31.0.0 and above do not work properly, so you need to uncheck versions 31.0.0 and above.
-   > - Since NDK versions r22 and above are not supported, please use NDK version 21.4.7075529 or lower.
-   >
-   > ![Android Studio (SDK Tools)](https://user-images.githubusercontent.com/4690128/144735652-21339ab0-5a45-4277-b7ee-39d106b5e1e6.png)
-
 1. Set environment variables
 
    ```sh
@@ -307,7 +300,7 @@ When building for Android (Linux/macOS), follow these additional steps:
    export ANDROID_HOME=/path/to/SDK
 
    # Set ANDROID_NDK_HOME
-   # This is typically something like `$ANDROID_HOME/ndk/21.4.7075529`
+   # This is typically something like `$ANDROID_HOME/ndk/28.2.13676358`
    export ANDROID_NDK_HOME=/path/to/NDK
    ```
 
