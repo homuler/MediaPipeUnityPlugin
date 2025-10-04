@@ -1,0 +1,19 @@
+diff --git a/BUILD.bazel b/BUILD.bazel
+index 396537f..081a0a2 100644
+--- a/BUILD.bazel
++++ b/BUILD.bazel
+@@ -67,9 +67,11 @@ cc_library(
+     hdrs = [
+         "include/pthreadpool.h",
+     ],
+-    copts = [
+-        "-std=c11",
+-    ] + select({
++    copts = select({
++        ":windows_x86_64": ["/std:c11", "/experimental:c11atomics"],
++        ":windows_arm64": ["/std:c11", "/experimental:c11atomics"],
++        "//conditions:default": ["-std=c11"],
++    }) + select({
+         ":optimized_build": ["-O2"],
+         "//conditions:default": [],
+     }) + select({

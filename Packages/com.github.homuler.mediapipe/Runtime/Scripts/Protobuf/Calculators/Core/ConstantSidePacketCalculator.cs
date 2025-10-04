@@ -30,30 +30,37 @@ namespace Mediapipe {
             "ay9mb3JtYXRzL2NsYXNzaWZpY2F0aW9uLnByb3RvGiptZWRpYXBpcGUvZnJh",
             "bWV3b3JrL2Zvcm1hdHMvbGFuZG1hcmsucHJvdG8aLW1lZGlhcGlwZS9mcmFt",
             "ZXdvcmsvZm9ybWF0cy9tYXRyaXhfZGF0YS5wcm90bxo0bWVkaWFwaXBlL2Zy",
-            "YW1ld29yay9mb3JtYXRzL3RpbWVfc2VyaWVzX2hlYWRlci5wcm90byKLBgoj",
+            "YW1ld29yay9mb3JtYXRzL3RpbWVfc2VyaWVzX2hlYWRlci5wcm90byKHCAoj",
             "Q29uc3RhbnRTaWRlUGFja2V0Q2FsY3VsYXRvck9wdGlvbnMSUQoGcGFja2V0",
             "GAEgAygLMkEubWVkaWFwaXBlLkNvbnN0YW50U2lkZVBhY2tldENhbGN1bGF0",
             "b3JPcHRpb25zLkNvbnN0YW50U2lkZVBhY2tldBokCgxTdHJpbmdWZWN0b3IS",
-            "FAoMc3RyaW5nX3ZhbHVlGAEgAygJGosEChJDb25zdGFudFNpZGVQYWNrZXQS",
-            "EwoJaW50X3ZhbHVlGAEgASgFSAASFgoMdWludDY0X3ZhbHVlGAUgASgESAAS",
-            "FQoLaW50NjRfdmFsdWUYCyABKANIABIVCgtmbG9hdF92YWx1ZRgCIAEoAkgA",
-            "EhYKDGRvdWJsZV92YWx1ZRgJIAEoAUgAEhQKCmJvb2xfdmFsdWUYAyABKAhI",
-            "ABIWCgxzdHJpbmdfdmFsdWUYBCABKAlIABJCChljbGFzc2lmaWNhdGlvbl9s",
-            "aXN0X3ZhbHVlGAYgASgLMh0ubWVkaWFwaXBlLkNsYXNzaWZpY2F0aW9uTGlz",
-            "dEgAEjYKE2xhbmRtYXJrX2xpc3RfdmFsdWUYByABKAsyFy5tZWRpYXBpcGUu",
-            "TGFuZG1hcmtMaXN0SAASPwoYdGltZV9zZXJpZXNfaGVhZGVyX3ZhbHVlGAog",
-            "ASgLMhsubWVkaWFwaXBlLlRpbWVTZXJpZXNIZWFkZXJIABIyChFtYXRyaXhf",
-            "ZGF0YV92YWx1ZRgMIAEoCzIVLm1lZGlhcGlwZS5NYXRyaXhEYXRhSAASWgoT",
-            "c3RyaW5nX3ZlY3Rvcl92YWx1ZRgNIAEoCzI7Lm1lZGlhcGlwZS5Db25zdGFu",
-            "dFNpZGVQYWNrZXRDYWxjdWxhdG9yT3B0aW9ucy5TdHJpbmdWZWN0b3JIAEIH",
-            "CgV2YWx1ZTJdCgNleHQSHC5tZWRpYXBpcGUuQ2FsY3VsYXRvck9wdGlvbnMY",
-            "haruigEgASgLMi4ubWVkaWFwaXBlLkNvbnN0YW50U2lkZVBhY2tldENhbGN1",
-            "bGF0b3JPcHRpb25z"));
+            "FAoMc3RyaW5nX3ZhbHVlGAEgAygJGiYKC0Zsb2F0VmVjdG9yEhcKC2Zsb2F0",
+            "X3ZhbHVlGAEgAygCQgIQARoiCglJbnRWZWN0b3ISFQoJaW50X3ZhbHVlGAEg",
+            "AygFQgIQARq7BQoSQ29uc3RhbnRTaWRlUGFja2V0EhMKCWludF92YWx1ZRgB",
+            "IAEoBUgAEhYKDHVpbnQ2NF92YWx1ZRgFIAEoBEgAEhUKC2ludDY0X3ZhbHVl",
+            "GAsgASgDSAASFQoLZmxvYXRfdmFsdWUYAiABKAJIABIWCgxkb3VibGVfdmFs",
+            "dWUYCSABKAFIABIUCgpib29sX3ZhbHVlGAMgASgISAASFgoMc3RyaW5nX3Zh",
+            "bHVlGAQgASgJSAASQgoZY2xhc3NpZmljYXRpb25fbGlzdF92YWx1ZRgGIAEo",
+            "CzIdLm1lZGlhcGlwZS5DbGFzc2lmaWNhdGlvbkxpc3RIABI2ChNsYW5kbWFy",
+            "a19saXN0X3ZhbHVlGAcgASgLMhcubWVkaWFwaXBlLkxhbmRtYXJrTGlzdEgA",
+            "Ej8KGHRpbWVfc2VyaWVzX2hlYWRlcl92YWx1ZRgKIAEoCzIbLm1lZGlhcGlw",
+            "ZS5UaW1lU2VyaWVzSGVhZGVySAASMgoRbWF0cml4X2RhdGFfdmFsdWUYDCAB",
+            "KAsyFS5tZWRpYXBpcGUuTWF0cml4RGF0YUgAEloKE3N0cmluZ192ZWN0b3Jf",
+            "dmFsdWUYDSABKAsyOy5tZWRpYXBpcGUuQ29uc3RhbnRTaWRlUGFja2V0Q2Fs",
+            "Y3VsYXRvck9wdGlvbnMuU3RyaW5nVmVjdG9ySAASWAoSZmxvYXRfdmVjdG9y",
+            "X3ZhbHVlGA4gASgLMjoubWVkaWFwaXBlLkNvbnN0YW50U2lkZVBhY2tldENh",
+            "bGN1bGF0b3JPcHRpb25zLkZsb2F0VmVjdG9ySAASVAoQaW50X3ZlY3Rvcl92",
+            "YWx1ZRgPIAEoCzI4Lm1lZGlhcGlwZS5Db25zdGFudFNpZGVQYWNrZXRDYWxj",
+            "dWxhdG9yT3B0aW9ucy5JbnRWZWN0b3JIAEIHCgV2YWx1ZTJdCgNleHQSHC5t",
+            "ZWRpYXBpcGUuQ2FsY3VsYXRvck9wdGlvbnMYharuigEgASgLMi4ubWVkaWFw",
+            "aXBlLkNvbnN0YW50U2lkZVBhY2tldENhbGN1bGF0b3JPcHRpb25z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Mediapipe.CalculatorReflection.Descriptor, global::Mediapipe.ClassificationReflection.Descriptor, global::Mediapipe.LandmarkReflection.Descriptor, global::Mediapipe.MatrixDataReflection.Descriptor, global::Mediapipe.TimeSeriesHeaderReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.ConstantSidePacketCalculatorOptions), global::Mediapipe.ConstantSidePacketCalculatorOptions.Parser, new[]{ "Packet" }, null, null, new pb::Extension[] { global::Mediapipe.ConstantSidePacketCalculatorOptions.Extensions.Ext }, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.StringVector), global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.StringVector.Parser, new[]{ "StringValue" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.ConstantSidePacket), global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.ConstantSidePacket.Parser, new[]{ "IntValue", "Uint64Value", "Int64Value", "FloatValue", "DoubleValue", "BoolValue", "StringValue", "ClassificationListValue", "LandmarkListValue", "TimeSeriesHeaderValue", "MatrixDataValue", "StringVectorValue" }, new[]{ "Value" }, null, null, null)})
+            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.FloatVector), global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.FloatVector.Parser, new[]{ "FloatValue" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.IntVector), global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.IntVector.Parser, new[]{ "IntValue" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.ConstantSidePacket), global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.ConstantSidePacket.Parser, new[]{ "IntValue", "Uint64Value", "Int64Value", "FloatValue", "DoubleValue", "BoolValue", "StringValue", "ClassificationListValue", "LandmarkListValue", "TimeSeriesHeaderValue", "MatrixDataValue", "StringVectorValue", "FloatVectorValue", "IntVectorValue" }, new[]{ "Value" }, null, null, null)})
           }));
     }
     #endregion
@@ -419,6 +426,366 @@ namespace Mediapipe {
 
       }
 
+      public sealed partial class FloatVector : pb::IMessage<FloatVector>
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          , pb::IBufferMessage
+      #endif
+      {
+        private static readonly pb::MessageParser<FloatVector> _parser = new pb::MessageParser<FloatVector>(() => new FloatVector());
+        private pb::UnknownFieldSet _unknownFields;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pb::MessageParser<FloatVector> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pbr::MessageDescriptor Descriptor {
+          get { return global::Mediapipe.ConstantSidePacketCalculatorOptions.Descriptor.NestedTypes[1]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        pbr::MessageDescriptor pb::IMessage.Descriptor {
+          get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public FloatVector() {
+          OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public FloatVector(FloatVector other) : this() {
+          floatValue_ = other.floatValue_.Clone();
+          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public FloatVector Clone() {
+          return new FloatVector(this);
+        }
+
+        /// <summary>Field number for the "float_value" field.</summary>
+        public const int FloatValueFieldNumber = 1;
+        private static readonly pb::FieldCodec<float> _repeated_floatValue_codec
+            = pb::FieldCodec.ForFloat(10);
+        private readonly pbc::RepeatedField<float> floatValue_ = new pbc::RepeatedField<float>();
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public pbc::RepeatedField<float> FloatValue {
+          get { return floatValue_; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override bool Equals(object other) {
+          return Equals(other as FloatVector);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool Equals(FloatVector other) {
+          if (ReferenceEquals(other, null)) {
+            return false;
+          }
+          if (ReferenceEquals(other, this)) {
+            return true;
+          }
+          if(!floatValue_.Equals(other.floatValue_)) return false;
+          return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override int GetHashCode() {
+          int hash = 1;
+          hash ^= floatValue_.GetHashCode();
+          if (_unknownFields != null) {
+            hash ^= _unknownFields.GetHashCode();
+          }
+          return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override string ToString() {
+          return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void WriteTo(pb::CodedOutputStream output) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          output.WriteRawMessage(this);
+        #else
+          floatValue_.WriteTo(output, _repeated_floatValue_codec);
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(output);
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+          floatValue_.WriteTo(ref output, _repeated_floatValue_codec);
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(ref output);
+          }
+        }
+        #endif
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int CalculateSize() {
+          int size = 0;
+          size += floatValue_.CalculateSize(_repeated_floatValue_codec);
+          if (_unknownFields != null) {
+            size += _unknownFields.CalculateSize();
+          }
+          return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(FloatVector other) {
+          if (other == null) {
+            return;
+          }
+          floatValue_.Add(other.floatValue_);
+          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(pb::CodedInputStream input) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          input.ReadRawMessage(this);
+        #else
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                break;
+              case 10:
+              case 13: {
+                floatValue_.AddEntriesFrom(input, _repeated_floatValue_codec);
+                break;
+              }
+            }
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                break;
+              case 10:
+              case 13: {
+                floatValue_.AddEntriesFrom(ref input, _repeated_floatValue_codec);
+                break;
+              }
+            }
+          }
+        }
+        #endif
+
+      }
+
+      public sealed partial class IntVector : pb::IMessage<IntVector>
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          , pb::IBufferMessage
+      #endif
+      {
+        private static readonly pb::MessageParser<IntVector> _parser = new pb::MessageParser<IntVector>(() => new IntVector());
+        private pb::UnknownFieldSet _unknownFields;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pb::MessageParser<IntVector> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pbr::MessageDescriptor Descriptor {
+          get { return global::Mediapipe.ConstantSidePacketCalculatorOptions.Descriptor.NestedTypes[2]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        pbr::MessageDescriptor pb::IMessage.Descriptor {
+          get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public IntVector() {
+          OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public IntVector(IntVector other) : this() {
+          intValue_ = other.intValue_.Clone();
+          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public IntVector Clone() {
+          return new IntVector(this);
+        }
+
+        /// <summary>Field number for the "int_value" field.</summary>
+        public const int IntValueFieldNumber = 1;
+        private static readonly pb::FieldCodec<int> _repeated_intValue_codec
+            = pb::FieldCodec.ForInt32(10);
+        private readonly pbc::RepeatedField<int> intValue_ = new pbc::RepeatedField<int>();
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public pbc::RepeatedField<int> IntValue {
+          get { return intValue_; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override bool Equals(object other) {
+          return Equals(other as IntVector);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool Equals(IntVector other) {
+          if (ReferenceEquals(other, null)) {
+            return false;
+          }
+          if (ReferenceEquals(other, this)) {
+            return true;
+          }
+          if(!intValue_.Equals(other.intValue_)) return false;
+          return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override int GetHashCode() {
+          int hash = 1;
+          hash ^= intValue_.GetHashCode();
+          if (_unknownFields != null) {
+            hash ^= _unknownFields.GetHashCode();
+          }
+          return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override string ToString() {
+          return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void WriteTo(pb::CodedOutputStream output) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          output.WriteRawMessage(this);
+        #else
+          intValue_.WriteTo(output, _repeated_intValue_codec);
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(output);
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+          intValue_.WriteTo(ref output, _repeated_intValue_codec);
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(ref output);
+          }
+        }
+        #endif
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int CalculateSize() {
+          int size = 0;
+          size += intValue_.CalculateSize(_repeated_intValue_codec);
+          if (_unknownFields != null) {
+            size += _unknownFields.CalculateSize();
+          }
+          return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(IntVector other) {
+          if (other == null) {
+            return;
+          }
+          intValue_.Add(other.intValue_);
+          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(pb::CodedInputStream input) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          input.ReadRawMessage(this);
+        #else
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                break;
+              case 10:
+              case 8: {
+                intValue_.AddEntriesFrom(input, _repeated_intValue_codec);
+                break;
+              }
+            }
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                break;
+              case 10:
+              case 8: {
+                intValue_.AddEntriesFrom(ref input, _repeated_intValue_codec);
+                break;
+              }
+            }
+          }
+        }
+        #endif
+
+      }
+
       public sealed partial class ConstantSidePacket : pb::IMessage<ConstantSidePacket>
       #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
           , pb::IBufferMessage
@@ -433,7 +800,7 @@ namespace Mediapipe {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
         public static pbr::MessageDescriptor Descriptor {
-          get { return global::Mediapipe.ConstantSidePacketCalculatorOptions.Descriptor.NestedTypes[1]; }
+          get { return global::Mediapipe.ConstantSidePacketCalculatorOptions.Descriptor.NestedTypes[3]; }
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -489,6 +856,12 @@ namespace Mediapipe {
               break;
             case ValueOneofCase.StringVectorValue:
               StringVectorValue = other.StringVectorValue.Clone();
+              break;
+            case ValueOneofCase.FloatVectorValue:
+              FloatVectorValue = other.FloatVectorValue.Clone();
+              break;
+            case ValueOneofCase.IntVectorValue:
+              IntVectorValue = other.IntVectorValue.Clone();
               break;
           }
 
@@ -743,6 +1116,30 @@ namespace Mediapipe {
           }
         }
 
+        /// <summary>Field number for the "float_vector_value" field.</summary>
+        public const int FloatVectorValueFieldNumber = 14;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.FloatVector FloatVectorValue {
+          get { return valueCase_ == ValueOneofCase.FloatVectorValue ? (global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.FloatVector) value_ : null; }
+          set {
+            value_ = value;
+            valueCase_ = value == null ? ValueOneofCase.None : ValueOneofCase.FloatVectorValue;
+          }
+        }
+
+        /// <summary>Field number for the "int_vector_value" field.</summary>
+        public const int IntVectorValueFieldNumber = 15;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.IntVector IntVectorValue {
+          get { return valueCase_ == ValueOneofCase.IntVectorValue ? (global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.IntVector) value_ : null; }
+          set {
+            value_ = value;
+            valueCase_ = value == null ? ValueOneofCase.None : ValueOneofCase.IntVectorValue;
+          }
+        }
+
         private object value_;
         /// <summary>Enum of possible cases for the "value" oneof.</summary>
         public enum ValueOneofCase {
@@ -759,6 +1156,8 @@ namespace Mediapipe {
           TimeSeriesHeaderValue = 10,
           MatrixDataValue = 12,
           StringVectorValue = 13,
+          FloatVectorValue = 14,
+          IntVectorValue = 15,
         }
         private ValueOneofCase valueCase_ = ValueOneofCase.None;
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -801,6 +1200,8 @@ namespace Mediapipe {
           if (!object.Equals(TimeSeriesHeaderValue, other.TimeSeriesHeaderValue)) return false;
           if (!object.Equals(MatrixDataValue, other.MatrixDataValue)) return false;
           if (!object.Equals(StringVectorValue, other.StringVectorValue)) return false;
+          if (!object.Equals(FloatVectorValue, other.FloatVectorValue)) return false;
+          if (!object.Equals(IntVectorValue, other.IntVectorValue)) return false;
           if (ValueCase != other.ValueCase) return false;
           return Equals(_unknownFields, other._unknownFields);
         }
@@ -821,6 +1222,8 @@ namespace Mediapipe {
           if (valueCase_ == ValueOneofCase.TimeSeriesHeaderValue) hash ^= TimeSeriesHeaderValue.GetHashCode();
           if (valueCase_ == ValueOneofCase.MatrixDataValue) hash ^= MatrixDataValue.GetHashCode();
           if (valueCase_ == ValueOneofCase.StringVectorValue) hash ^= StringVectorValue.GetHashCode();
+          if (valueCase_ == ValueOneofCase.FloatVectorValue) hash ^= FloatVectorValue.GetHashCode();
+          if (valueCase_ == ValueOneofCase.IntVectorValue) hash ^= IntVectorValue.GetHashCode();
           hash ^= (int) valueCase_;
           if (_unknownFields != null) {
             hash ^= _unknownFields.GetHashCode();
@@ -888,6 +1291,14 @@ namespace Mediapipe {
             output.WriteRawTag(106);
             output.WriteMessage(StringVectorValue);
           }
+          if (valueCase_ == ValueOneofCase.FloatVectorValue) {
+            output.WriteRawTag(114);
+            output.WriteMessage(FloatVectorValue);
+          }
+          if (valueCase_ == ValueOneofCase.IntVectorValue) {
+            output.WriteRawTag(122);
+            output.WriteMessage(IntVectorValue);
+          }
           if (_unknownFields != null) {
             _unknownFields.WriteTo(output);
           }
@@ -946,6 +1357,14 @@ namespace Mediapipe {
             output.WriteRawTag(106);
             output.WriteMessage(StringVectorValue);
           }
+          if (valueCase_ == ValueOneofCase.FloatVectorValue) {
+            output.WriteRawTag(114);
+            output.WriteMessage(FloatVectorValue);
+          }
+          if (valueCase_ == ValueOneofCase.IntVectorValue) {
+            output.WriteRawTag(122);
+            output.WriteMessage(IntVectorValue);
+          }
           if (_unknownFields != null) {
             _unknownFields.WriteTo(ref output);
           }
@@ -991,6 +1410,12 @@ namespace Mediapipe {
           }
           if (valueCase_ == ValueOneofCase.StringVectorValue) {
             size += 1 + pb::CodedOutputStream.ComputeMessageSize(StringVectorValue);
+          }
+          if (valueCase_ == ValueOneofCase.FloatVectorValue) {
+            size += 1 + pb::CodedOutputStream.ComputeMessageSize(FloatVectorValue);
+          }
+          if (valueCase_ == ValueOneofCase.IntVectorValue) {
+            size += 1 + pb::CodedOutputStream.ComputeMessageSize(IntVectorValue);
           }
           if (_unknownFields != null) {
             size += _unknownFields.CalculateSize();
@@ -1055,6 +1480,18 @@ namespace Mediapipe {
                 StringVectorValue = new global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.StringVector();
               }
               StringVectorValue.MergeFrom(other.StringVectorValue);
+              break;
+            case ValueOneofCase.FloatVectorValue:
+              if (FloatVectorValue == null) {
+                FloatVectorValue = new global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.FloatVector();
+              }
+              FloatVectorValue.MergeFrom(other.FloatVectorValue);
+              break;
+            case ValueOneofCase.IntVectorValue:
+              if (IntVectorValue == null) {
+                IntVectorValue = new global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.IntVector();
+              }
+              IntVectorValue.MergeFrom(other.IntVectorValue);
               break;
           }
 
@@ -1146,6 +1583,24 @@ namespace Mediapipe {
                 StringVectorValue = subBuilder;
                 break;
               }
+              case 114: {
+                global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.FloatVector subBuilder = new global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.FloatVector();
+                if (valueCase_ == ValueOneofCase.FloatVectorValue) {
+                  subBuilder.MergeFrom(FloatVectorValue);
+                }
+                input.ReadMessage(subBuilder);
+                FloatVectorValue = subBuilder;
+                break;
+              }
+              case 122: {
+                global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.IntVector subBuilder = new global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.IntVector();
+                if (valueCase_ == ValueOneofCase.IntVectorValue) {
+                  subBuilder.MergeFrom(IntVectorValue);
+                }
+                input.ReadMessage(subBuilder);
+                IntVectorValue = subBuilder;
+                break;
+              }
             }
           }
         #endif
@@ -1232,6 +1687,24 @@ namespace Mediapipe {
                 }
                 input.ReadMessage(subBuilder);
                 StringVectorValue = subBuilder;
+                break;
+              }
+              case 114: {
+                global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.FloatVector subBuilder = new global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.FloatVector();
+                if (valueCase_ == ValueOneofCase.FloatVectorValue) {
+                  subBuilder.MergeFrom(FloatVectorValue);
+                }
+                input.ReadMessage(subBuilder);
+                FloatVectorValue = subBuilder;
+                break;
+              }
+              case 122: {
+                global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.IntVector subBuilder = new global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.IntVector();
+                if (valueCase_ == ValueOneofCase.IntVectorValue) {
+                  subBuilder.MergeFrom(IntVectorValue);
+                }
+                input.ReadMessage(subBuilder);
+                IntVectorValue = subBuilder;
                 break;
               }
             }

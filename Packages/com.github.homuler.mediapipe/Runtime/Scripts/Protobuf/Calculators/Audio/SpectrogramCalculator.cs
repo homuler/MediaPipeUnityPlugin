@@ -26,7 +26,7 @@ namespace Mediapipe {
           string.Concat(
             "CjhtZWRpYXBpcGUvY2FsY3VsYXRvcnMvYXVkaW8vc3BlY3Ryb2dyYW1fY2Fs",
             "Y3VsYXRvci5wcm90bxIJbWVkaWFwaXBlGiRtZWRpYXBpcGUvZnJhbWV3b3Jr",
-            "L2NhbGN1bGF0b3IucHJvdG8isAYKHFNwZWN0cm9ncmFtQ2FsY3VsYXRvck9w",
+            "L2NhbGN1bGF0b3IucHJvdG8ikAgKHFNwZWN0cm9ncmFtQ2FsY3VsYXRvck9w",
             "dGlvbnMSHgoWZnJhbWVfZHVyYXRpb25fc2Vjb25kcxgBIAEoARIgChVmcmFt",
             "ZV9vdmVybGFwX3NlY29uZHMYAiABKAE6ATASHgoQcGFkX2ZpbmFsX3BhY2tl",
             "dBgDIAEoCDoEdHJ1ZRJaCgtvdXRwdXRfdHlwZRgEIAEoDjIyLm1lZGlhcGlw",
@@ -38,17 +38,22 @@ namespace Mediapipe {
             "YW1wGAggASgIOgVmYWxzZRITCghmZnRfc2l6ZRgJIAEoBToBMBIWCgtpbnB1",
             "dF9zY2FsZRgKIAEoAjoBMRJaChJzYW1wbGVfYnVmZmVyX21vZGUYCyABKA4y",
             "OC5tZWRpYXBpcGUuU3BlY3Ryb2dyYW1DYWxjdWxhdG9yT3B0aW9ucy5TYW1w",
-            "bGVCdWZmZXJNb2RlOgROT05FIlQKCk91dHB1dFR5cGUSFQoRU1FVQVJFRF9N",
-            "QUdOSVRVREUQABIUChBMSU5FQVJfTUFHTklUVURFEAESDAoIREVDSUJFTFMQ",
-            "AhILCgdDT01QTEVYEAMiPgoKV2luZG93VHlwZRIICgRIQU5OEAASCwoHSEFN",
-            "TUlORxABEgoKBkNPU0lORRACEg0KCVNRUlRfSEFOThAEIicKEFNhbXBsZUJ1",
-            "ZmZlck1vZGUSCAoETk9ORRAAEgkKBVJFU0VUEAEyVQoDZXh0EhwubWVkaWFw",
-            "aXBlLkNhbGN1bGF0b3JPcHRpb25zGMCIqiQgASgLMicubWVkaWFwaXBlLlNw",
-            "ZWN0cm9ncmFtQ2FsY3VsYXRvck9wdGlvbnM="));
+            "bGVCdWZmZXJNb2RlOgROT05FEmoKDW91dHB1dF9sYXlvdXQYDSABKA4yNC5t",
+            "ZWRpYXBpcGUuU3BlY3Ryb2dyYW1DYWxjdWxhdG9yT3B0aW9ucy5PdXRwdXRM",
+            "YXlvdXQ6HVNQRUNUUk9HUkFNX0ZSQU1FU19JTl9DT0xVTU5TIlQKCk91dHB1",
+            "dFR5cGUSFQoRU1FVQVJFRF9NQUdOSVRVREUQABIUChBMSU5FQVJfTUFHTklU",
+            "VURFEAESDAoIREVDSUJFTFMQAhILCgdDT01QTEVYEAMiPgoKV2luZG93VHlw",
+            "ZRIICgRIQU5OEAASCwoHSEFNTUlORxABEgoKBkNPU0lORRACEg0KCVNRUlRf",
+            "SEFOThAEIicKEFNhbXBsZUJ1ZmZlck1vZGUSCAoETk9ORRAAEgkKBVJFU0VU",
+            "EAEicgoMT3V0cHV0TGF5b3V0Eh0KGU9VVFBVVF9MQVlPVVRfVU5TUEVDSUZJ",
+            "RUQQABIhCh1TUEVDVFJPR1JBTV9GUkFNRVNfSU5fQ09MVU1OUxABEiAKHFNQ",
+            "RUNUUk9HUkFNX0NIQU5ORUxTX0lOX1JPV1MQAjJVCgNleHQSHC5tZWRpYXBp",
+            "cGUuQ2FsY3VsYXRvck9wdGlvbnMYwIiqJCABKAsyJy5tZWRpYXBpcGUuU3Bl",
+            "Y3Ryb2dyYW1DYWxjdWxhdG9yT3B0aW9ucw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Mediapipe.CalculatorReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.SpectrogramCalculatorOptions), global::Mediapipe.SpectrogramCalculatorOptions.Parser, new[]{ "FrameDurationSeconds", "FrameOverlapSeconds", "PadFinalPacket", "OutputType", "AllowMultichannelInput", "WindowType", "OutputScale", "UseLocalTimestamp", "FftSize", "InputScale", "SampleBufferMode" }, null, new[]{ typeof(global::Mediapipe.SpectrogramCalculatorOptions.Types.OutputType), typeof(global::Mediapipe.SpectrogramCalculatorOptions.Types.WindowType), typeof(global::Mediapipe.SpectrogramCalculatorOptions.Types.SampleBufferMode) }, new pb::Extension[] { global::Mediapipe.SpectrogramCalculatorOptions.Extensions.Ext }, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.SpectrogramCalculatorOptions), global::Mediapipe.SpectrogramCalculatorOptions.Parser, new[]{ "FrameDurationSeconds", "FrameOverlapSeconds", "PadFinalPacket", "OutputType", "AllowMultichannelInput", "WindowType", "OutputScale", "UseLocalTimestamp", "FftSize", "InputScale", "SampleBufferMode", "OutputLayout" }, null, new[]{ typeof(global::Mediapipe.SpectrogramCalculatorOptions.Types.OutputType), typeof(global::Mediapipe.SpectrogramCalculatorOptions.Types.WindowType), typeof(global::Mediapipe.SpectrogramCalculatorOptions.Types.SampleBufferMode), typeof(global::Mediapipe.SpectrogramCalculatorOptions.Types.OutputLayout) }, new pb::Extension[] { global::Mediapipe.SpectrogramCalculatorOptions.Extensions.Ext }, null)
           }));
     }
     #endregion
@@ -102,6 +107,7 @@ namespace Mediapipe {
       fftSize_ = other.fftSize_;
       inputScale_ = other.inputScale_;
       sampleBufferMode_ = other.sampleBufferMode_;
+      outputLayout_ = other.outputLayout_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -450,6 +456,33 @@ namespace Mediapipe {
       _hasBits0 &= ~1024;
     }
 
+    /// <summary>Field number for the "output_layout" field.</summary>
+    public const int OutputLayoutFieldNumber = 13;
+    private readonly static global::Mediapipe.SpectrogramCalculatorOptions.Types.OutputLayout OutputLayoutDefaultValue = global::Mediapipe.SpectrogramCalculatorOptions.Types.OutputLayout.SpectrogramFramesInColumns;
+
+    private global::Mediapipe.SpectrogramCalculatorOptions.Types.OutputLayout outputLayout_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Mediapipe.SpectrogramCalculatorOptions.Types.OutputLayout OutputLayout {
+      get { if ((_hasBits0 & 2048) != 0) { return outputLayout_; } else { return OutputLayoutDefaultValue; } }
+      set {
+        _hasBits0 |= 2048;
+        outputLayout_ = value;
+      }
+    }
+    /// <summary>Gets whether the "output_layout" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasOutputLayout {
+      get { return (_hasBits0 & 2048) != 0; }
+    }
+    /// <summary>Clears the value of the "output_layout" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearOutputLayout() {
+      _hasBits0 &= ~2048;
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -476,6 +509,7 @@ namespace Mediapipe {
       if (FftSize != other.FftSize) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(InputScale, other.InputScale)) return false;
       if (SampleBufferMode != other.SampleBufferMode) return false;
+      if (OutputLayout != other.OutputLayout) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -494,6 +528,7 @@ namespace Mediapipe {
       if (HasFftSize) hash ^= FftSize.GetHashCode();
       if (HasInputScale) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(InputScale);
       if (HasSampleBufferMode) hash ^= SampleBufferMode.GetHashCode();
+      if (HasOutputLayout) hash ^= OutputLayout.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -556,6 +591,10 @@ namespace Mediapipe {
         output.WriteRawTag(88);
         output.WriteEnum((int) SampleBufferMode);
       }
+      if (HasOutputLayout) {
+        output.WriteRawTag(104);
+        output.WriteEnum((int) OutputLayout);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -610,6 +649,10 @@ namespace Mediapipe {
         output.WriteRawTag(88);
         output.WriteEnum((int) SampleBufferMode);
       }
+      if (HasOutputLayout) {
+        output.WriteRawTag(104);
+        output.WriteEnum((int) OutputLayout);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -652,6 +695,9 @@ namespace Mediapipe {
       }
       if (HasSampleBufferMode) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) SampleBufferMode);
+      }
+      if (HasOutputLayout) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) OutputLayout);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -697,6 +743,9 @@ namespace Mediapipe {
       }
       if (other.HasSampleBufferMode) {
         SampleBufferMode = other.SampleBufferMode;
+      }
+      if (other.HasOutputLayout) {
+        OutputLayout = other.OutputLayout;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -755,6 +804,10 @@ namespace Mediapipe {
           }
           case 88: {
             SampleBufferMode = (global::Mediapipe.SpectrogramCalculatorOptions.Types.SampleBufferMode) input.ReadEnum();
+            break;
+          }
+          case 104: {
+            OutputLayout = (global::Mediapipe.SpectrogramCalculatorOptions.Types.OutputLayout) input.ReadEnum();
             break;
           }
         }
@@ -816,6 +869,10 @@ namespace Mediapipe {
             SampleBufferMode = (global::Mediapipe.SpectrogramCalculatorOptions.Types.SampleBufferMode) input.ReadEnum();
             break;
           }
+          case 104: {
+            OutputLayout = (global::Mediapipe.SpectrogramCalculatorOptions.Types.OutputLayout) input.ReadEnum();
+            break;
+          }
         }
       }
     }
@@ -872,6 +929,22 @@ namespace Mediapipe {
         /// is processed independently.
         /// </summary>
         [pbr::OriginalName("RESET")] Reset = 1,
+      }
+
+      public enum OutputLayout {
+        [pbr::OriginalName("OUTPUT_LAYOUT_UNSPECIFIED")] Unspecified = 0,
+        /// <summary>
+        /// Output is a matrix or a vector of matrices. Within the matrix, each
+        /// column represents the spectrogram for a frame. If the input has multiple
+        /// channels, the output will be a vector of matrices, each matrix
+        /// corresponding to a channel.
+        /// </summary>
+        [pbr::OriginalName("SPECTROGRAM_FRAMES_IN_COLUMNS")] SpectrogramFramesInColumns = 1,
+        /// <summary>
+        /// Output is a one matrix per packet. Within the matrix, each row represents
+        /// a channel.
+        /// </summary>
+        [pbr::OriginalName("SPECTROGRAM_CHANNELS_IN_ROWS")] SpectrogramChannelsInRows = 2,
       }
 
     }
