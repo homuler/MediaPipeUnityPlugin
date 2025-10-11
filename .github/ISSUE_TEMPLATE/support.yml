@@ -25,7 +25,7 @@ body:
     id: unity_version
     attributes:
       label: Unity Version
-      placeholder: 6000.0.33f1
+      placeholder: 6000.0.58f2
     validations:
       required: true
 

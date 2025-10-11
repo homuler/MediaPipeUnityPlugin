@@ -218,6 +218,7 @@ jobs:
       - name: Install UnityEditor
         if: ${{ env.BUILD_UNITYPACKAGE == '1' }}
         run: |
+          # FIXME: use >= 6000.0.58f2
           sudo docker cp $(docker create --rm unityci/editor:6000.0.33f1-base-3):/opt/unity /opt/unity
           sudo chown -R $(id -u):$(id -g) /opt/unity
 

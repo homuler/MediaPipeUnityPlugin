@@ -98,8 +98,8 @@ jobs:
         os:
           - macos-13
         unity:
-          - { version: "6000.0.33f1", changeset: "433b0a79340b" }
-          - { version: "2022.3.55f1", changeset: "9f374180d209" }
+          - { version: "6000.0.33f1", changeset: "433b0a79340b" } # FIXME: use >= 6000.0.58f2
+          - { version: "2022.3.55f1", changeset: "9f374180d209" } # FIXME: use >= 2022.3.62f2
     steps:
       - name: Install UnityEditor
         run: |
