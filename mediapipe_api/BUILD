@@ -194,6 +194,12 @@ cc_library(
             "//mediapipe_api/gpu:gpu_shared_data_internal",
         ],
     }),
+    linkopts = select({
+        "@mediapipe//mediapipe:android": [
+             "-Wl,-z,max-page-size=16384",
+        ],
+        "//conditions:default": [],
+    }),
     alwayslink = True,
 )
 

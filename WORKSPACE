@@ -57,13 +57,22 @@ http_archive(
     urls = ["https://github.com/abseil/abseil-cpp/archive//9687a8ea750bfcddf790372093245a1d041b21a3.tar.gz"],
 )
 
+http_archive(
+    name = "rules_android_ndk",
+    sha256 = "d230a980e0d3a42b85d5fce2cb17ec3ac52b88d2cff5aaf86bae0f05b48adc55",
+    strip_prefix = "rules_android_ndk-d5c9d46a471e8fcd80e7ec5521b78bb2df48f4e0",
+    url = "https://github.com/bazelbuild/rules_android_ndk/archive/d5c9d46a471e8fcd80e7ec5521b78bb2df48f4e0.zip",
+)
+
+load("@rules_android_ndk//:rules.bzl", "android_ndk_repository")
+
 load("//third_party:android_configure.bzl", "android_configure")
 
 android_configure(name = "local_config_android")
 
 load("@local_config_android//:android_configure.bzl", "android_workspace")
 
-android_workspace()
+android_workspace(android_ndk_repository)
 
 http_archive(
     name = "build_bazel_rules_apple",
@@ -516,7 +525,7 @@ http_archive(
     build_file = "@mediapipe//third_party:opencv_android.BUILD",
     strip_prefix = "OpenCV-android-sdk",
     type = "zip",
-    url = "https://github.com/opencv/opencv/releases/download/4.10.0/opencv-4.10.0-android-sdk.zip",
+    url = "https://github.com/opencv/opencv/releases/download/4.12.0/opencv-4.12.0-android-sdk.zip",
 )
 
 # After OpenCV 3.2.0, the pre-compiled opencv2.framework has google protobuf symbols, which will

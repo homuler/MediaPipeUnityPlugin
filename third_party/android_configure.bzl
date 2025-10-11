@@ -54,10 +54,10 @@ def _android_autoconf_impl(repository_ctx):
     ndk_rule = ""
     if ndk_home:
         if not ndk_api_level:
-          ndk_rule = """native.android_ndk_repository(name="androidndk")"""
+          ndk_rule = """android_ndk_repository(name="androidndk")"""
         else:
           ndk_rule = """
-    native.android_ndk_repository(
+    android_ndk_repository(
         name="androidndk",
         api_level={},
     )
@@ -68,9 +68,11 @@ def _android_autoconf_impl(repository_ctx):
 
     repository_ctx.file("BUILD.bazel", "")
     repository_ctx.file("android_configure.bzl", """
-def android_workspace():
+def android_workspace(android_ndk_repository):
     {}
     {}
+    # See https://github.com/bazelbuild/rules_android_ndk/issues/31#issuecomment-1396182185
+    native.bind(name = "android/crosstool", actual = "@androidndk//:toolchain")
     """.format(sdk_rule, ndk_rule))
 
 android_configure = repository_rule(

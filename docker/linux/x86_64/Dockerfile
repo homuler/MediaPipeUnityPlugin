@@ -1,7 +1,7 @@
 ARG UID=1000
-ARG ANDROID_SDK_BUILD_TOOLS_VERSION=30.0.3
-ARG ANDROID_SDK_VERSION=30
-ARG ANDROID_NDK_VERSION=21.4.7075529
+ARG ANDROID_SDK_BUILD_TOOLS_VERSION=35.0.0
+ARG ANDROID_SDK_VERSION=36
+ARG ANDROID_NDK_VERSION=28.2.13676358
 
 FROM ubuntu:22.04 AS base
 
@@ -22,7 +22,7 @@ RUN apt-get update && \
         mesa-common-dev \
         nasm \
         npm \
-        openjdk-11-jdk \
+        openjdk-17-jdk \
         pkg-config \
         software-properties-common \
         sudo \
@@ -74,10 +74,10 @@ ARG ANDROID_SDK_VERSION
 ARG ANDROID_NDK_VERSION
 
 ENV COMMANDLINETOOLS_ZIP=commandlinetools.zip
-ENV COMMANDLINETOOLS_SHA256=124f2d5115eee365df6cf3228ffbca6fc3911d16f8025bebd5b1c6e2fcfa7faf
+ENV COMMANDLINETOOLS_SHA256=7ec965280a073311c339e571cd5de778b9975026cfcbe79f2b1cdcb1e15317ee
 
 
-RUN curl -L https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip -o ${COMMANDLINETOOLS_ZIP} && \
+RUN curl -L https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip -o ${COMMANDLINETOOLS_ZIP} && \
     (test "$(sha256sum ${COMMANDLINETOOLS_ZIP})" = "${COMMANDLINETOOLS_SHA256}  ${COMMANDLINETOOLS_ZIP}" || { echo 'Checksum Failed'; exit 1; }) && \
     unzip ${COMMANDLINETOOLS_ZIP} -d /opt/android
 
