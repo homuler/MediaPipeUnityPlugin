@@ -42,10 +42,83 @@ android {
     }**PACKAGING**
 
     // Include libc++_shared.so
-    task copyLibcppShared(type: Copy) {
-        def ndkDir = android.ndkDirectory
-        from("$ndkDir/sources/cxx-stl/llvm-libc++/libs") { include '**/libc++_shared.so' }
-        into("$projectDir/src/main/jniLibs")
+    task copyLibcppShared {
+        doLast {
+            def ndkDir = android.ndkDirectory
+            def abiFilters = android.defaultConfig.ndk.abiFilters
+            def destDir = file("$projectDir/src/main/jniLibs")
+
+            // Mapping from ABI to architecture triple (for NDK 23+)
+            def abiToTriple = [
+                'arm64-v8a': 'aarch64-linux-android',
+                'armeabi-v7a': 'arm-linux-androideabi',
+                'x86': 'i686-linux-android',
+                'x86_64': 'x86_64-linux-android',
+                'riscv64': 'riscv64-linux-android'
+            ]
+
+            // Find the prebuilt directory (usually there's only one)
+            def prebuiltDir = null
+            def prebuiltBase = file("$ndkDir/toolchains/llvm/prebuilt")
+            if (prebuiltBase.exists()) {
+                def prebuiltDirs = prebuiltBase.listFiles()?.findAll { it.isDirectory() }
+                if (prebuiltDirs && prebuiltDirs.size() > 0) {
+                    prebuiltDir = prebuiltDirs[0]
+                }
+            }
+
+            abiFilters.each { abi ->
+                def copied = false
+
+                // Try NDK 23+ path first
+                if (prebuiltDir != null) {
+                    def triple = abiToTriple[abi]
+                    if (triple != null) {
+                        def libcppPath = file("$prebuiltDir/sysroot/usr/lib/$triple/libc++_shared.so")
+                        if (libcppPath.exists()) {
+                            def destAbiDir = file("$destDir/$abi")
+                            copy {
+                                from libcppPath
+                                into destAbiDir
+                            }
+                            copied = true
+                        }
+                    }
+                }
+
+                // Fallback to old NDK path (NDK 22 and earlier)
+                if (!copied) {
+                    def libcppPath = file("$ndkDir/sources/cxx-stl/llvm-libc++/libs/$abi/libc++_shared.so")
+                    if (libcppPath.exists()) {
+                        def destAbiDir = file("$destDir/$abi")
+                        copy {
+                            from libcppPath
+                            into destAbiDir
+                        }
+                        copied = true
+                    }
+                }
+
+                if (!copied) {
+                    logger.warn("Could not find libc++_shared.so for $abi in NDK")
+                }
+            }
+        }
+    }
+
+    task cleanCopyLibcppShared {
+        doLast {
+            def destDir = file("$projectDir/src/main/jniLibs")
+            def abiFilters = android.defaultConfig.ndk.abiFilters
+
+            abiFilters.each { abi ->
+                def libcppFile = file("$destDir/$abi/libc++_shared.so")
+                if (libcppFile.exists()) {
+                    libcppFile.delete()
+                    println "Deleted libc++_shared.so for $abi"
+                }
+            }
+        }
     }
     clean.dependsOn 'cleanCopyLibcppShared'
 

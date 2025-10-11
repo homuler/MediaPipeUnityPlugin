@@ -106,8 +106,8 @@ jobs:
         os:
           - ubuntu-24.04
         unityVersion:
-          - 6000.0.33f1
-          - 2022.3.55f1
+          - 6000.0.33f1 # FIXME: use >= 6000.0.58f2
+          - 2022.3.55f1 # FIXME: use >= 2022.3.62f2
     steps:
       - name: Install UnityEditor
         run: |
