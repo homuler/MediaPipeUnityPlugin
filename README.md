@@ -170,6 +170,83 @@ The easiest way to include `libstdc++_shared.so` in your APK is to place it in t
 
 You can also include `libstdc++_shared.so` at build time by adding the following code to your [`mainTemplate.gradle` file](https://docs.unity3d.com/Manual/gradle-templates.html), and the sample project is using this method.
 
+<details>
+
+<summary>NDK >= 23</summary>
+
+```gradle
+// Include libc++_shared.so
+task copyLibcppShared {
+    doLast {
+        def ndkDir = android.ndkDirectory
+        def abiFilters = android.defaultConfig.ndk.abiFilters
+        def destDir = file("$projectDir/src/main/jniLibs")
+
+        // Mapping from ABI to architecture triple (for NDK 23+)
+        def abiToTriple = [
+            'arm64-v8a': 'aarch64-linux-android',
+            'armeabi-v7a': 'arm-linux-androideabi',
+            'x86': 'i686-linux-android',
+            'x86_64': 'x86_64-linux-android',
+            'riscv64': 'riscv64-linux-android'
+        ]
+
+        // Find the prebuilt directory (usually there's only one)
+        def prebuiltDir = null
+        def prebuiltBase = file("$ndkDir/toolchains/llvm/prebuilt")
+        if (prebuiltBase.exists()) {
+            def prebuiltDirs = prebuiltBase.listFiles()?.findAll { it.isDirectory() }
+            if (prebuiltDirs && prebuiltDirs.size() > 0) {
+                prebuiltDir = prebuiltDirs[0]
+            }
+        }
+
+        abiFilters.each { abi ->
+            if (prebuiltDir != null) {
+                def triple = abiToTriple[abi]
+                if (triple != null) {
+                    def libcppPath = file("$prebuiltDir/sysroot/usr/lib/$triple/libc++_shared.so")
+                    if (libcppPath.exists()) {
+                        def destAbiDir = file("$destDir/$abi")
+                        copy {
+                            from libcppPath
+                            into destAbiDir
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+task cleanCopyLibcppShared {
+    doLast {
+        def destDir = file("$projectDir/src/main/jniLibs")
+        def abiFilters = android.defaultConfig.ndk.abiFilters
+
+        abiFilters.each { abi ->
+            def libcppFile = file("$destDir/$abi/libc++_shared.so")
+            if (libcppFile.exists()) {
+                libcppFile.delete()
+            }
+        }
+    }
+}
+clean.dependsOn 'cleanCopyLibcppShared'
+
+tasks.whenTaskAdded { task ->
+    if (task.name == "mergeDebugJniLibFolders" || task.name == "mergeReleaseJniLibFolders") {
+        task.dependsOn("copyLibcppShared")
+    }
+}
+```
+
+</details>
+
+<details>
+
+<summary>NDK < 23</summary>
+
 ```gradle
 // Include libc++_shared.so
 task copyLibcppShared(type: Copy) {
@@ -185,6 +262,8 @@ tasks.whenTaskAdded { task ->
     }
 }
 ```
+
+</details>
 
 ## :plate_with_cutlery: Try the sample app
 
