@@ -1,11 +1,5 @@
 {
   "dependencies": {
-    "com.unity.2d.animation": "10.2.1",
-    "com.unity.2d.pixel-perfect": "5.0.3",
-    "com.unity.2d.psdimporter": "9.1.0",
-    "com.unity.2d.sprite": "1.0.0",
-    "com.unity.2d.spriteshape": "10.0.7",
-    "com.unity.2d.tilemap": "1.0.0",
     "com.unity.ai.navigation": "2.0.9",
     "com.unity.collab-proxy": "2.9.3",
     "com.unity.ide.rider": "3.0.38",
