@@ -218,6 +218,7 @@ jobs:
       - name: Install UnityEditor
         if: ${{ env.BUILD_UNITYPACKAGE == '1' }}
         run: |
+          # FIXME: use >= 6000.0.58f2
           sudo docker cp $(docker create --rm unityci/editor:6000.0.33f1-base-3):/opt/unity /opt/unity
           sudo chown -R $(id -u):$(id -g) /opt/unity
 
@@ -290,6 +291,17 @@ jobs:
       - name: Remove uploaded files to free up space
         run: |
           rm MediaPipeUnityPlugin-all.zip
+
+      # NOTE: a workaround to keep using Unity 6000.0.33f1
+      - name: Patch dependencies
+        run: |
+          echo "$(jq '.dependencies["com.unity.test-framework"] = "1.4.5"' Packages/manifest.json)" > Packages/manifest.json
+          echo "$(jq '
+            .dependencies["com.unity.test-framework"].version = "1.4.5" |
+            .dependencies["com.unity.test-framework"].source = "registry" |
+            .dependencies["com.unity.test-framework"].url = "https://packages.unity.com"
+          ' Packages/packages-lock.json)" > Packages/packages-lock.json
+
 
       # NOTE: this step will overwrite AppSettings.asset
       - name: Export unitypackage
