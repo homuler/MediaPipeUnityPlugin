@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.16.2](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.16.1...v0.16.2) (2025-10-12)
+
+
+### Bug Fixes
+
+* workaround for compilation errors on macOS ([#1404](https://github.com/homuler/MediaPipeUnityPlugin/issues/1404)) ([4504bd8](https://github.com/homuler/MediaPipeUnityPlugin/commit/4504bd808286bb48fe3687bb6611052ee87423db))
+
+
+### Build System
+
+* MediaPipe v0.10.22 ([#1357](https://github.com/homuler/MediaPipeUnityPlugin/issues/1357)) ([4fbe60f](https://github.com/homuler/MediaPipeUnityPlugin/commit/4fbe60fcba377ca4254e58eae5f27e07656f6307))
+* stop supporting Ubuntu 20.04 ([#1408](https://github.com/homuler/MediaPipeUnityPlugin/issues/1408)) ([f81cc1d](https://github.com/homuler/MediaPipeUnityPlugin/commit/f81cc1d95a7c0d0eac588d6dedbfd6a76b988273))
+* upgrade the Android NDK version to support 16KB page size ([#1407](https://github.com/homuler/MediaPipeUnityPlugin/issues/1407)) ([f7d125f](https://github.com/homuler/MediaPipeUnityPlugin/commit/f7d125fb37836ee83f6e80766720d04bd06f7a4f))
+* upgrade Unity to support Android 16KB page sizes ([#1409](https://github.com/homuler/MediaPipeUnityPlugin/issues/1409)) ([1c0aee7](https://github.com/homuler/MediaPipeUnityPlugin/commit/1c0aee7f9fa349b51e947f6da65bf53a7f0127d3))
+
 ### [0.16.1](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.16.0...v0.16.1) (2025-03-23)
 
 
