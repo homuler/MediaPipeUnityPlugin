@@ -8,6 +8,8 @@ on:
         type: boolean
         default: false
     secrets:
+      UNITY_LICENSE_BASE64:
+        required: true
       UNITY_EMAIL:
         required: true
       UNITY_PASSWORD:
@@ -106,7 +108,7 @@ jobs:
         os:
           - ubuntu-24.04
         unityVersion:
-          - 6000.0.33f1 # FIXME: use >= 6000.0.58f2
+          - 6000.0.58f2
           - 2022.3.55f1 # FIXME: use >= 2022.3.62f2
     steps:
       - name: Install UnityEditor
@@ -118,21 +120,11 @@ jobs:
           sudo chmod +x /usr/bin/unity-editor
 
       - name: Generate a license activation file
-        run: |
-          unity-editor -quit -createManualActivationFile -logFile || true
-      - name: Request a Unity license file
         env:
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_TOTP_KEY: ${{ secrets.UNITY_TOTP_KEY }}
+          UNITY_LICENSE_BASE64: ${{ secrets.UNITY_LICENSE_BASE64 }}
         run: |
-          npm install -g unity-verify-code
-          git clone https://github.com/homuler/unity-license-activate.git
-          cd unity-license-activate
-          npm install
-          cd ..
-          npm install -g ./unity-license-activate
-          unity-license-activate "$UNITY_EMAIL" "$UNITY_PASSWORD" Unity_v${{ matrix.unityVersion }}.alf --authenticator-key "$UNITY_TOTP_KEY"
+          echo "$UNITY_LICENSE_BASE64" | base64 -d > Unity_lic.ulf
+
       - name: Activate License
         run: |
           unity-editor -quit -batchmode -nographics -logFile -manualLicenseFile $(ls Unity_*.ulf) || true

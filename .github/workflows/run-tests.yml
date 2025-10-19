@@ -23,6 +23,7 @@ jobs:
       ref: ${{ github.event.pull_request.head.sha }}
       is_master: ${{ github.ref_name == 'master' }}
     secrets:
+      UNITY_LICENSE_BASE64: ${{ secrets.UNITY_LICENSE_BASE64 }}
       UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
       UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
       UNITY_TOTP_KEY: ${{ secrets.UNITY_TOTP_KEY }}
@@ -34,6 +35,7 @@ jobs:
       ref: ${{ github.event.pull_request.head.sha }}
       is_master: ${{ github.ref_name == 'master' }}
     secrets:
+      UNITY_LICENSE_BASE64: ${{ secrets.UNITY_LICENSE_BASE64 }}
       UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
       UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
       UNITY_TOTP_KEY: ${{ secrets.UNITY_TOTP_KEY }}
@@ -44,6 +46,7 @@ jobs:
     with:
       ref: ${{ github.event.pull_request.head.sha }}
     secrets:
+      UNITY_LICENSE_BASE64: ${{ secrets.UNITY_LICENSE_BASE64 }}
       UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
       UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
       UNITY_TOTP_KEY: ${{ secrets.UNITY_TOTP_KEY }}
