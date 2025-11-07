@@ -346,7 +346,14 @@ namespace Mediapipe.Tasks.Vision.HolisticLandmarker
 
       using var faceBlendshapesPacket = outputPackets.At<Classifications>(_FACE_BLENDSHAPES_STREAM_NAME);
       var faceBlendshapes = result.faceBlendshapes;
-      faceBlendshapesPacket?.Get(ref faceBlendshapes);
+      if (faceBlendshapesPacket == null || faceBlendshapesPacket.IsEmpty())
+      {
+          faceBlendshapes.categories?.Clear();
+      }
+      else
+      {
+          faceBlendshapesPacket.Get(ref faceBlendshapes);
+      }
 
       using var segmentationMaskPacket = outputPackets.At<Image>(_POSE_SEGMENTATION_MASK_STREAM_NAME);
       var segmentationMask = segmentationMaskPacket?.Get();
