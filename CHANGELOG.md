@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.16.3](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.16.2...v0.16.3) (2025-11-08)
+
+
+### Bug Fixes
+
+* prevent crash in Holistic Landmarker when face is lost ([#1418](https://github.com/homuler/MediaPipeUnityPlugin/issues/1418)) ([41886bd](https://github.com/homuler/MediaPipeUnityPlugin/commit/41886bd3933c70f8d53ec82ff755beabdc4a4faf))
+
 ### [0.16.2](https://github.com/homuler/MediaPipeUnityPlugin/compare/v0.16.1...v0.16.2) (2025-10-12)
 
 
