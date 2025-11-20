@@ -90,7 +90,15 @@ namespace Mediapipe
         Logger.LogDebug(_TAG, $"{assetPath} is requested");
         if (TryGetFilePath(assetPath, out var filePath))
         {
-          return filePath;
+          if (PathHasNonAsciiChars(filePath))
+          {
+            string tempFilePath = Path.Combine(Path.GetTempPath(), Path.GetFileName(filePath));
+            File.Copy(filePath, tempFilePath, true);
+            Logger.LogDebug(_TAG, $"Path {filePath} contains non-ASCII characters. Copied to temp file path: {tempFilePath}");
+            return tempFilePath;
+          }
+          else
+            return filePath;
         }
         throw new KeyNotFoundException($"Failed to find the file path for `{assetPath}`");
       }
@@ -150,6 +158,19 @@ namespace Mediapipe
             return $"{assetName}{extension}";
           }
       }
+    }
+
+    private static bool PathHasNonAsciiChars(string path)
+    {
+      foreach (var c in path)
+      {
+        if (c > 127)
+        {
+          return true;
+        }
+      }
+
+      return false;
     }
   }
 }
