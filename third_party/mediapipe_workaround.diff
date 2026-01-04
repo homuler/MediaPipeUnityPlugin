@@ -1,5 +1,50 @@
+diff --git a/mediapipe/framework/deps/BUILD b/mediapipe/framework/deps/BUILD
+index 2dc600ada..953e12127 100644
+--- a/mediapipe/framework/deps/BUILD
++++ b/mediapipe/framework/deps/BUILD
+@@ -114,6 +114,10 @@ cc_library(
+     name = "platform_strings",
+     srcs = ["platform_strings.cc"],
+     hdrs = ["platform_strings.h"],
++    local_defines = select({
++        "@platforms//os:windows": ["UNICODE"],
++        "//conditions:default": [],
++    }),
+     visibility = ["//visibility:public"],
+ )
+ 
+diff --git a/mediapipe/framework/deps/platform_strings.cc b/mediapipe/framework/deps/platform_strings.cc
+index fa8f3c791..e053d549f 100644
+--- a/mediapipe/framework/deps/platform_strings.cc
++++ b/mediapipe/framework/deps/platform_strings.cc
+@@ -26,21 +26,21 @@ std::string FormatLastError() {
+     return std::string("(no error reported)");
+   }
+ 
+-  LPSTR message_buffer = nullptr;
+-  DWORD size = FormatMessage(
++  LPWSTR message_buffer = nullptr;
++  DWORD size = FormatMessageW(
+       /*dwFlags=*/(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
+                    FORMAT_MESSAGE_IGNORE_INSERTS),
+       /*lpSource=*/NULL,
+       /*dwMessageId=*/message_id,
+       /*dwLanguageId=*/MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+-      /*lpBuffer=*/(LPSTR)&message_buffer,
++      /*lpBuffer=*/reinterpret_cast<LPWSTR>(&message_buffer),
+       /*nSize=*/0,
+       /*Arguments=*/NULL);
+   if (size == 0) {
+     return "(error while trying to format the error message)";
+   }
+ 
+-  std::string message(message_buffer, size);
++  std::wstring message(message_buffer, size);
+   LocalFree(message_buffer);
+   return NativeToUtf8(message);
+ }
 diff --git a/mediapipe/framework/output_stream_handler.cc b/mediapipe/framework/output_stream_handler.cc
-index e27d1c68..55f2f3bd 100644
+index e27d1c688..55f2f3bd3 100644
 --- a/mediapipe/framework/output_stream_handler.cc
 +++ b/mediapipe/framework/output_stream_handler.cc
 @@ -143,9 +143,7 @@ OutputStreamHandler::GetMonitoringInfo() {
@@ -14,7 +59,7 @@ index e27d1c68..55f2f3bd 100644
    return monitoring_info_vector;
  }
 diff --git a/mediapipe/framework/port/opencv_core_inc.h b/mediapipe/framework/port/opencv_core_inc.h
-index 12862472..1a409417 100644
+index 128624725..1a4094173 100644
 --- a/mediapipe/framework/port/opencv_core_inc.h
 +++ b/mediapipe/framework/port/opencv_core_inc.h
 @@ -20,7 +20,7 @@
@@ -26,8 +71,49 @@ index 12862472..1a409417 100644
  #include <opencv2/cvconfig.h>
  #endif
  
+diff --git a/mediapipe/tasks/cc/core/BUILD b/mediapipe/tasks/cc/core/BUILD
+index 9c53dcca7..bd283bf08 100644
+--- a/mediapipe/tasks/cc/core/BUILD
++++ b/mediapipe/tasks/cc/core/BUILD
+@@ -57,7 +57,12 @@ cc_library(
+     name = "external_file_handler",
+     srcs = ["external_file_handler.cc"],
+     hdrs = ["external_file_handler.h"],
++    local_defines = select({
++        "@platforms//os:windows": ["UNICODE"],
++        "//conditions:default": [],
++    }),
+     deps = [
++        "//mediapipe/framework/deps:platform_strings",
+         "//mediapipe/framework/port:integral_types",
+         "//mediapipe/framework/port:status",
+         "//mediapipe/tasks/cc:common",
+diff --git a/mediapipe/tasks/cc/core/external_file_handler.cc b/mediapipe/tasks/cc/core/external_file_handler.cc
+index 069b904e9..d8b5e0364 100644
+--- a/mediapipe/tasks/cc/core/external_file_handler.cc
++++ b/mediapipe/tasks/cc/core/external_file_handler.cc
+@@ -40,6 +40,7 @@ limitations under the License.
+ #include "absl/strings/match.h"
+ #include "absl/strings/str_format.h"
+ #include "absl/strings/string_view.h"
++#include "mediapipe/framework/deps/platform_strings.h"
+ #include "mediapipe/framework/port/status_macros.h"
+ #include "mediapipe/tasks/cc/common.h"
+ #include "mediapipe/tasks/cc/core/proto/external_file.pb.h"
+@@ -124,7 +125,11 @@ absl::Status ExternalFileHandler::MapExternalFile() {
+   if (!external_file_.file_name().empty()) {
+     MP_ASSIGN_OR_RETURN(std::string file_name,
+                         PathToResourceAsFile(external_file_.file_name()));
++#ifdef _WIN32
++    owned_fd_ = _wopen(Utf8ToNative(file_name).c_str(), O_RDONLY | O_BINARY);
++#else
+     owned_fd_ = open(file_name.c_str(), O_RDONLY | O_BINARY);
++#endif
+     if (owned_fd_ < 0) {
+       const std::string error_message = absl::StrFormat(
+           "Unable to open file at %s", external_file_.file_name());
 diff --git a/mediapipe/tasks/cc/core/task_api_factory.h b/mediapipe/tasks/cc/core/task_api_factory.h
-index a11a23fc..dbb5fe6c 100644
+index a11a23fcf..dbb5fe6ca 100644
 --- a/mediapipe/tasks/cc/core/task_api_factory.h
 +++ b/mediapipe/tasks/cc/core/task_api_factory.h
 @@ -76,15 +76,17 @@ class TaskApiFactory {
@@ -50,7 +136,7 @@ index a11a23fc..dbb5fe6c 100644
              std::move(graph_config), std::move(resolver),
              std::move(packets_callback), std::move(default_executor),
 diff --git a/mediapipe/tasks/cc/vision/holistic_landmarker/holistic_landmarker_graph.cc b/mediapipe/tasks/cc/vision/holistic_landmarker/holistic_landmarker_graph.cc
-index 2ff140c0..128a4326 100644
+index 2ff140c07..128a43263 100644
 --- a/mediapipe/tasks/cc/vision/holistic_landmarker/holistic_landmarker_graph.cc
 +++ b/mediapipe/tasks/cc/vision/holistic_landmarker/holistic_landmarker_graph.cc
 @@ -387,6 +387,13 @@ class HolisticLandmarkerGraph : public core::ModelTaskGraph {
