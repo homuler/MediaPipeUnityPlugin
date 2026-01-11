@@ -1,0 +1,89 @@
+Aimbot
+using UnityEngine;
+using Mediapipe.Unity;
+
+public class HeadTracking : MonoBehaviour
+{
+    public FaceLandmarkDetector faceDetector;
+    public Transform playerCamera;
+
+    void Update()
+    {
+        if (faceDetector == null || faceDetector.CurrentResult == null)
+            return;
+
+        var landmarks = faceDetector.CurrentResult;
+
+        // نقاط تظهر اتجاه الرأس
+        Vector3 nose = landmarks[1];
+        Vector3 leftEye = landmarks[33];
+        Vector3 rightEye = landmarks[263];
+
+        // حساب المحور الأفقي
+        float horizontal = (rightEye.x - leftEye.x);
+
+        // حساب ارتفاع الوجه
+        float vertical = (nose.y - leftEye.y);
+
+        // تدوير كاميرا اللاعب حسب حركة الرأس
+        playerCamera.localRotation = Quaternion.Euler(
+            vertical * -30f,   // Pitch
+            horizontal * 40f,  // Yaw
+            0
+        );
+    }
+}
+using UnityEngine;
+
+public class GyroHeadTracking : MonoBehaviour
+{
+    void Start()
+    {
+        Input.gyro.enabled = true;
+    }
+
+    void Update()
+    {
+        Quaternion rotation = Input.gyro.attitude;
+        rotation = new Quaternion(rotation.x, rotation.y, -rotation.z, -rotation.w);
+
+        transform.localRotation = rotation;
+    }
+}
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+<video id="video" autoplay></video>
+
+<script>
+const videoElement = document.getElementById('video');
+
+const faceMesh = new FaceMesh({
+  locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
+});
+
+faceMesh.setOptions({
+  maxNumFaces: 1,
+  refineLandmarks: true,
+  minDetectionConfidence: 0.5,
+  minTrackingConfidence: 0.5
+});
+
+faceMesh.onResults(results => {
+  if (!results.multiFaceLandmarks) return;
+
+  const landmarks = results.multiFaceLandmarks[0];
+
+  const nose = landmarks[1];
+  const leftEye = landmarks[33];
+  const rightEye = landmarks[263];
+
+  let yaw = rightEye.x - leftEye.x;
+  let pitch = nose.y - leftEye.y;
+
+  console.log("Yaw:", yaw, "Pitch:", pitch);
+});
+  
+navigator.mediaDevices.getUserMedia({ video: true })
+  .then(stream => videoElement.srcObject = stream);
+</script>
