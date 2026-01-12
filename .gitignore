@@ -23,6 +23,8 @@
 *.so
 **/*.framework/*
 !**/*.framework/*.meta
+**/*.framework.dSYM/*
+!**/*.framework.dSYM/*.meta
 
 bazel-*
 
